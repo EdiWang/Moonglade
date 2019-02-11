@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@model List<Moonglade.Data.Entities.FriendLink>
+
+<partial name="_SettingsHeader" />
+
+<div class="mb-2">
+    <a class="btn btn-outline-success" asp-controller="Settings" asp-action="CreateFriendLink">
+        <i class="fa fa-plus"></i>
+        New
+    </a>
+</div>
+
+@if (null != ViewBag.HasError && ViewBag.HasError)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Link
+                </th>
+                <th class="table-item-w20">
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderBy(m => m.Title))
+            {
+                <tr>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.LinkUrl
+                    </td>
+                    <td>
+                        <a asp-controller="Settings" asp-action="EditFriendLink" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-controller="Settings" asp-action="DeleteFriendLink" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

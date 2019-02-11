@@ -1,0 +1,269 @@
+﻿@using Microsoft.Extensions.Options
+@using Moonglade.Configuration
+@using Moonglade.Core
+@using Moonglade.Model.Settings
+
+@model PostSlugViewModelWrapper
+@inject IOptions<AppSettings> Settings
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject BlogConfigurationService BlogConfigurationService
+@inject BlogConfig BlogConfig
+
+@{
+    BlogConfig.GetConfiguration(BlogConfigurationService);
+    ViewBag.ShowBloggerIntroInXS = true;
+}
+
+@section keywords {
+    @if (Model.PostModel.Tags.Count > 0)
+    {
+        <meta name="keywords" content="@string.Join(", ", Model.PostModel.Tags.Select(t => t.NormalizedTagName))" />
+    }
+}
+
+@section meta {
+    @if (!Model.PostModel.IsExposedToSiteMap)
+    {
+        <meta name="robots" content="noindex, nofollow" />
+    }
+
+    @if (Model.PostModel.Tags.Count > 0)
+    {
+        <meta name="description" content="@Model.PostModel.Abstract" />
+    }
+
+    <meta name="title" content="@Model.PostModel.Title" />
+    <meta name="displaydate" content="@Model.PostModel.PubDateUtc.ToString("u")">
+    <meta property="og:site_name" content="edi.wang">
+    <meta name="copyright" content="(C) 2009 - @DateTime.UtcNow.Year edi.wang">
+    <meta name="author" content="@BlogConfig.MetaAuthor" />
+}
+
+@section scripts {
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/lib/highlight-js/highlight.min.js"></script>
+    @if (Settings.Value.EnableImageLazyLoad)
+    {
+        <script src="~/js/lazyload.min.js"></script>
+        <script>
+            $(function () {
+                $("img").lazyload({
+                    effect: "fadeIn"
+                });
+            });
+        </script>
+    }
+    <script>
+        $(function () {
+            var pid = $("article").data("postid");
+
+            postSlug.registerRatingButtons(pid);
+            postSlug.resizeImages();
+            postSlug.renderCodeHighlighter();
+
+            $("#img-captcha").click(function () {
+                postSlug.resetCaptchaImage();
+            });
+
+            ajaxPostWithCSRFToken("/post/hit", { postId: pid }, function (data) {
+                console.info("updated post hit");
+            });
+
+            $('#post-qrcode').qrcode(document.URL);
+        });
+    </script>
+}
+
+@if (ViewBag.ErrorMessage != string.Empty)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<article data-postid="@Model.PostModel.PostId">
+    <header class="post-header">
+        <h4 class="post-title">
+            @Model.PostModel.Title
+        </h4>
+        <hr class="d-none d-md-block post-header-hr" />
+
+        <div class="d-block d-sm-none">
+            <div class="post-publish-info bg-light">
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
+                (UTC +8:00)
+                @if (Model.PostModel.LastModifyOn.HasValue)
+                {
+                    <span>(Last Edit @Model.PostModel.LastModifyOn.Value.ToString("yyyy/M/d HH:mm"))</span>
+                }
+            </div>
+        </div>
+
+        <div class="d-none d-md-block post-publish-info bg-light mb-1">
+            <span>
+                <time class="dateline" datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
+                (UTC +8:00)
+                @if (Model.PostModel.LastModifyOn.HasValue)
+                {
+                    <span>(Last Edit @Model.PostModel.LastModifyOn.Value.ToString("yyyy/M/d HH:mm"))</span>
+                }
+            </span>
+            <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits Reads</span>
+        </div>
+
+        <div class="hidden-print">
+            <section class="post-cat-tag-info">
+                <div class="button float-right d-none d-md-block">
+                    @if (Model.PostModel.Tags.Count > 0)
+                    {
+                        <span class="toptags-list toptags-list-sm">
+                            @foreach (var item in Model.PostModel.Tags)
+                            {
+                                <a asp-controller="Tags"
+                                   asp-action="List"
+                                   asp-route-normalizedName="@item.NormalizedTagName"
+                                   rel="@item.TagCount">@item.TagName</a>
+                            }
+                        </span>
+                    }
+                </div>
+                @if (Model.PostModel.Categories.Count > 0)
+                {
+                    <ul class="d-flex flex-row list-unstyled ul-cat-list-desktop">
+                        @foreach (var item in Model.PostModel.Categories)
+                        {
+                            <li>
+                                <a class="btn btn-sm btn-outline-success"
+                                   asp-controller="Category"
+                                   asp-action="List"
+                                   asp-route-categoryName="@item.CategoryRouteName.ToLower()">
+                                    <span class="fas fa-archive" aria-hidden="true"></span>
+                                    @item.CategoryDisplayName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </section>
+        </div>
+
+        <hr class="post-header-hr" />
+    </header>
+    <section class="post-content clearfix">
+        @Html.Raw(Model.PostModel.Content)
+    </section>
+    <partial name="_PostSlugActions" />
+
+    <div class="tag-mobile d-block d-sm-none">
+        <hr />
+        @if (Model.PostModel.Tags.Count > 0)
+        {
+            <span class="toptags-list toptags-list-sm">
+                @foreach (var item in Model.PostModel.Tags)
+                {
+                    <a asp-controller="Tags"
+                       asp-action="List"
+                       asp-route-normalizedName="@item.NormalizedTagName"
+                       rel="@item.TagCount">@item.TagName</a>
+                }
+            </span>
+        }
+    </div>
+</article>
+
+<div class="hidden-print">
+    @if (Settings.Value.EnableComments)
+    {
+        if (Model.PostModel.CommentEnabled)
+        {
+            <div class="card bg-light comment-form-containter mb-4">
+                <div class="card-header">
+                    Comments
+                    <span class="badge badge-secondary float-right">@Model.PostModel.CommentCount</span>
+                </div>
+                <div class="card-body">
+                    <form id="form-comment" asp-controller="Comment" asp-action="NewComment"
+                          data-ajax-begin="onCommentBegin"
+                          data-ajax-complete="onCommentComplete"
+                          data-ajax-failure="onCommentFailed"
+                          data-ajax-success="onCommentSuccess"
+                          data-ajax="true"
+                          data-ajax-method="POST">
+                        <input type="hidden" asp-for="CommentPostModel.PostId" />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="Your Name" asp-for="CommentPostModel.Username" />
+                                    <span asp-validation-for="CommentPostModel.Username" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" placeholder="Email" asp-for="CommentPostModel.Email" />
+                                    <span asp-validation-for="CommentPostModel.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea asp-for="CommentPostModel.Content" class="form-control" cols="60" rows="4" placeholder="Say something" maxlength="512"></textarea>
+                            <span asp-validation-for="CommentPostModel.Content" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Image")" />
+                                        </div>
+                                        <input type="text"
+                                               asp-for="CommentPostModel.CaptchaCode"
+                                               class="form-control"
+                                               placeholder="Captcha Code"
+                                               autocomplete="off"
+                                               minlength="4"
+                                               maxlength="4" />
+                                    </div>
+                                    <span asp-validation-for="CommentPostModel.CaptchaCode" class="text-danger"></span>
+                                </div>
+                                <div class="col">
+                                    <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">Comment of this post is disabled.</div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning">Comment is disabled by blog administrator.</div>
+    }
+
+    <div id="loadingIndicator" style="display: none;" class="mb-4">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                <span class="sr-only">Processing...</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
+        Thanks, your comment is pending approval now. <br />
+        It will show up once blog administrator approved your comment.
+    </div>
+
+    @if (Model.PostModel.CommentCount > 0)
+    {
+        <section id="comments-list">
+            <cache expires-after="@TimeSpan.FromMinutes(20)" vary-by-route="slug">
+                @await Component.InvokeAsync("PostCommentList", new { postId = @Model.PostModel.PostId })
+            </cache>
+        </section>
+    }
+</div>

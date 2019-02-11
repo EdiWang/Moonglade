@@ -1,0 +1,71 @@
+﻿@using Microsoft.Extensions.Options
+@using Moonglade.Core
+@using Moonglade.Model.Settings
+@model IEnumerable<Moonglade.Data.Entities.Comment>
+
+@inject IOptions<AppSettings> Settings
+
+@{
+    string GetUserAvatarChar(string username)
+    {
+        if (string.IsNullOrWhiteSpace(username))    
+        {
+            return "N/A";
+        }
+
+        var sets = username.Split(' ');
+        if (sets.Length == 1)
+        {
+            return sets[0].First().ToString().ToUpper();
+        }
+        return sets.Length >= 2 ? $"{sets[0].First()}{sets[1].First()}".ToUpper() : "N/A";
+    }
+}
+
+@if (null != Model && Model.Any())
+{
+    <div class="comment-list row">
+        @foreach (var item in Model.OrderBy(m => m.CreateOnUtc))
+        {
+            <div class="col-md-1 col-sm-1 col-2 mb-3">
+                <div class="user-avatar-char">
+                    @GetUserAvatarChar(item.Username)
+                </div>
+            </div>
+            <div class="col-md-11 col-sm-11 col-10 mb-3">
+                <div class="card comment-item">
+                    <div class="card-header">
+                        <strong>@item.Username</strong>
+                        <span class="text-muted float-right"> @Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</span>
+                    </div>
+                    <div class="card-body">
+                        @item.CommentContent
+                        <div>
+                            @foreach (var reply in item.CommentReply.OrderByDescending(t => t.ReplyTimeUtc))
+                            {
+                                <hr />
+                                <div class="reply-container">
+                                    <div>
+                                        <strong>
+                                            Edi Wang
+                                        </strong>
+                                        <span class="float-right text-muted">Replied at @Utils.UtcToZoneTime(reply.ReplyTimeUtc.GetValueOrDefault(), Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</span>
+                                    </div>
+                                    <p>
+                                        @reply.ReplyContent
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        No Comments
+    </div>
+}

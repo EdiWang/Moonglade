@@ -1,0 +1,164 @@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using Microsoft.Extensions.Options
+@using Moonglade.Configuration
+@using Moonglade.Core
+@using Moonglade.Model.Settings
+@{
+    var currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
+    string currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
+}
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject IOptions<AppSettings> Settings
+@inject BlogConfigurationService BlogConfigurationService
+@inject BlogConfig BlogConfig
+
+@{
+    BlogConfig.GetConfiguration(BlogConfigurationService);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.SiteTitle
+        <environment include="Development">
+            (Debug)
+        </environment>
+    </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    @if (IsSectionDefined("keywords"))
+    {
+        @RenderSection("keywords", false)
+    }
+    else
+    {
+        <meta name="keywords" content="@Html.Raw(BlogConfig.MetaKeyword)" />
+    }
+    @RenderSection("meta", false)
+    <link rel="start" title="@BlogConfig.SiteTitle" href="~/" />
+    <link rel="alternate" type="application/rss+xml" title="@BlogConfig.FeedSettings.RssTitle" href="~/rss" />
+    <link type="application/opensearchdescription+xml" rel="search" title="@BlogConfig.SiteTitle" href="~/opensearch" />
+    <partial name="_Favicons" />
+    <link href="~/css/mooglade-css-bundle.min.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/js/app/app-js-bundle.min.js" asp-append-version="true"></script>
+    @RenderSection("head", false)
+    <environment exclude="Development">
+        @Html.Raw(JavaScriptSnippet.FullScript)
+    </environment>
+</head>
+<body>
+    <header class="ediblog-header">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-ediblogblue">
+            <div class="container">
+                <div class="animbrand">
+                    <a class="ediwang-logo navbar-brand animate" href="/">
+                        edi.wang
+                    </a>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ediwang-navbar-content" aria-controls="ediwang-navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="ediwang-navbar-content">
+                    <ul class="navbar-nav mr-auto">
+                        <li id="navbar-dropdown-post" class="nav-item @("Category" == currentController ? "dropdown active" : "dropdown")">
+                            <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
+                                <i class="fas fa-book"></i>
+                                Category
+                            </a>
+                            <cache expires-after="@TimeSpan.FromMinutes(60)">
+                                @await Component.InvokeAsync("CategoryMenu")
+                            </cache>
+                        </li>
+
+                        <li class="nav-item @(string.Compare("Tags", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a asp-controller="Tags" asp-action="Index" class="nav-link">
+                                <i class="fas fa-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+
+                        <li class="nav-item @(string.Compare("Archive", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a asp-controller="Archive" asp-action="Index" class="nav-link">
+                                <i class="fas fa-archive"></i>
+                                Archive
+                            </a>
+                        </li>
+                        <li class="nav-item @(string.Compare("Apps", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a asp-controller="Apps" asp-action="Index" class="nav-link">
+                                <i class="fab fa-windows"></i>
+                                Apps
+                            </a>
+                        </li>
+                        <li class="nav-item @(string.Compare("About", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a asp-controller="About" asp-action="Index" class="nav-link">
+                                <i class="fas fa-star"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                    <form class="form-inline search-form my-2 my-lg-0" asp-controller="Search" asp-action="Index">
+                        <input id="term"
+                               class="form-control mr-sm-2"
+                               type="search"
+                               value=""
+                               title="Search"
+                               aria-label="Search"
+                               placeholder="Keyword"
+                               name="term"
+                               maxlength="30">
+                        <button class="btn btn-outline-light btn-search my-2 my-sm-0 d-none d-md-block" type="submit"><i class="fas fa-search"></i></button>
+                        <button class="btn btn-block btn-success d-block d-sm-none mt-1" type="submit"><i class="fas fa-search"></i> Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div id="page-content" class="content">
+        @if (null != ViewBag.ShowBloggerIntroInXS && ViewBag.ShowBloggerIntroInXS)
+        {
+            <section class="blogger-intro-mobile d-block d-sm-none">
+                <div class="card-bkimg-container">
+                    <img class="card-bkimg" alt="" src="~/images/avatar.jpg" />
+                </div>
+                <div class="blogger-intro-content">
+                    <div class="row">
+                        <div class="col-3">
+                            <a asp-controller="About" asp-action="Index">
+                                <img src="~/images/avatar.jpg"
+                                     alt="Edi Wang"
+                                     class="rounded-circle blogger-head-pic" />
+                            </a>
+                        </div>
+                        <div class="col-9">
+                            <h4 class="text-center">
+                                .NET Developer, Microsoft MVP
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+        @if (null != ViewBag.HideSideBar && ViewBag.HideSideBar)
+        {
+            @RenderBody()
+        }
+        else
+        {
+            <div class="container mt-4 mb-5">
+                <div class="row">
+                    <section class="col-xl-9 col-md-12">
+                        @RenderBody()
+                    </section>
+                    <partial name="_Aside" />
+                </div>
+            </div>
+        }
+    </div>
+    <div class="clearfix"></div>
+    <partial name="_Footer" />
+
+    @RenderSection("scripts", false)
+</body>
+</html>

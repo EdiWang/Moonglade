@@ -1,0 +1,82 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@model List<Moonglade.Data.Entities.PingbackHistory>
+
+@Html.AntiForgeryToken()
+
+@section head{
+    <link href="~/css/datatables.min.css" rel="stylesheet" />
+    <script src="~/js/datatables.min.js"></script>
+}
+
+@section scripts{
+    <script>
+        $(function () {
+            $(".btn-delete").click(function () {
+                deletePingback($(this).data("pingbackid"));
+            });
+
+            $("#pingbacks-table").DataTable({
+                "order": [[3, "desc"]],
+                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
+                "pageLength": 10
+            });
+        });
+
+        function deletePingback(pingbackId) {
+            $("#span-processing-" + pingbackId).show();
+            ajaxPostWithCSRFToken("pingback/delete", { pingbackId: pingbackId }, function (data) {
+                $("#pingback-box-" + data).slideUp();
+            });
+        }
+    </script>
+}
+
+<h3>
+    Pingbacks
+</h3>
+<hr />
+
+<table id="pingbacks-table" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Link</th>
+            <th>Destination Server</th>
+            <th>Referenced Post</th>
+            <th>Ping Time (UTC)</th>
+            <th>Operation</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderByDescending(p => p.PingTimeUtc))
+        {
+            <tr id="pingback-box-@item.Id">
+                <td class="table-item-w30">
+                    <strong>
+                        <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
+                    </strong>
+                </td>
+                <td>
+                    @item.Domain <br />
+                    <small class="text-muted">
+                        @item.SourceIp
+                    </small>
+                </td>
+                <td class="table-item-w30">
+                    @item.TargetPostTitle
+                </td>
+                <td data-sort="@item.PingTimeUtc.Value.ToString("yyyyMMddHHmmss")">
+                    @item.PingTimeUtc
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-danger float-right btn-delete" href="#" data-pingbackid="@item.Id">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Delete <span id="span-processing-@item.Id" style="display: none;">(Processing...)</span>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,15 @@
+﻿@model List<Moonglade.Data.Entities.FriendLink>
+
+@if (Model.Any())
+{
+    <ul class="list-unstyled">
+        @foreach (var item in Model)
+        {
+            <li>
+                <a href="@item.LinkUrl" target="_blank">
+                    @item.Title
+                </a>
+            </li>
+        }
+    </ul>
+}

@@ -1,0 +1,153 @@
+﻿@using Microsoft.Extensions.Options
+@using Moonglade.Configuration
+@using Moonglade.Core
+@using Moonglade.Model.Settings
+@inject IOptions<AppSettings> Settings
+@inject BlogConfigurationService BlogConfigurationService
+@inject BlogConfig BlogConfig
+
+@{
+    BlogConfig.GetConfiguration(BlogConfigurationService);
+}
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-3">
+                <h4 class="d-none d-sm-block">Copyright</h4>
+                <div>&copy; 2009 - @DateTime.UtcNow.Year edi.wang</div>
+                <small>Designed and Developed by Edi Wang</small>
+                <br />
+                <small>
+                    Version @Utils.AppVersion
+                </small>
+                <br />
+                <small class="d-none d-sm-inline-block">
+                    Powered by <a href="http://dot.net" target="_blank">.NET Core</a> and <a href="https://azure.microsoft.com/en-us/" target="_blank">Microsoft Azure</a>
+                </small>
+            </div>
+
+            <div class="col-md-3 col-sm-3 d-none d-sm-block">
+                <h4>Subscription</h4>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#subscriptionmodal">
+                            <i class="fa fa-fw fa-rss"></i>
+                            RSS / Atom
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footer-opml-link d-none d-sm-block" href="~/opml" target="_blank">
+                            <i class="fa fa-fw fa-code"></i>
+                            OPML
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 col-sm-3 d-none d-sm-block">
+                <h4>Friend Links</h4>
+                <cache expires-after="@TimeSpan.FromMinutes(60)">
+                    @await Component.InvokeAsync("FriendLink")
+                </cache>
+            </div>
+
+            <div class="col-md-3 col-sm-3">
+                <h4 class="d-none d-sm-block">Follow Me</h4>
+                <div class="qrcode-link">
+                    <a title="QR Code" href="#"
+                       data-toggle="modal" data-target="#qrmodal">
+                        <i class="fas fa-fw fa-qrcode"></i>
+                    </a>
+
+                    <a title="Official WeChat" href="#"
+                       data-toggle="modal" data-target="#wechatmodal">
+                        <i class="fab fa-fw fa-weixin"></i>
+                    </a>
+
+                    <a href="https://github.com/EdiWang" target="_blank">
+                        <i class="fab fa-fw fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="modal fade" id="qrmodal" tabindex="-1" role="dialog" aria-labelledby="qrmodalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrmodalLabel">QR Code</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="site-qrcode m-auto"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="wechatmodal" tabindex="-1" role="dialog" aria-labelledby="qrmodalLabel-wechat" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrmodalLabel-wechat">Official WeChat</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="~/images/qrcode_for_gh_b1c55ef44af1_430.jpg" class="m-auto img-fluid" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="subscriptionmodalLabel">RSS / Atom Feed</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <a asp-controller="Subscription" asp-action="rss" class="btn btn-block btn-primary">
+                            Latest @BlogConfig.FeedSettings.RssItemCount Posts (RSS)
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a asp-controller="Subscription" asp-action="Atom" class="btn btn-block btn-success">
+                            Latest @BlogConfig.FeedSettings.RssItemCount Posts (Atom)
+                        </a>
+                    </div>
+                </div>
+                <div class="card bg-light">
+                    <div class="card-header">RSS for Categories</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <cache expires-after="@TimeSpan.FromMinutes(60)">
+                                @await Component.InvokeAsync("RssCatList")
+                            </cache>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

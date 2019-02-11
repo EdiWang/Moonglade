@@ -1,0 +1,25 @@
+﻿body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei";
+    font-size: 0.9rem;
+    padding: 10px;
+}
+
+img {
+    max-width: 100% !important;
+}
+
+pre {
+    display: block;
+    font-family: "Consolas",monospace;
+    font-size: 12px;
+    line-height: 18.2px;
+    margin: 18px 0 30px;
+    overflow: auto;
+    padding: 5px;
+    vertical-align: baseline;
+    white-space: pre;
+    border-left: 4px solid #ccc;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+}

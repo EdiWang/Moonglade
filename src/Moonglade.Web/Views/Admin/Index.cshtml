@@ -1,0 +1,139 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@section scripts{
+    <script>
+        $(function () {
+            aiMetricReader.getMetricsNumber('/admin/getpv',
+                function (data) {
+                    $("#page-views").html(data);
+                });
+
+            aiMetricReader.getMetricsNumber('/admin/getrequestdurationavg',
+                function (data) {
+                    $("#request-duration").html(data + " ms");
+                });
+
+            aiMetricReader.getMetricsNumber('/admin/getserverexceptions',
+                function (data) {
+                    $("#server-exceptions").html(data);
+                });
+
+            aiMetricReader.getMetricsNumber('/admin/getclientexceptions',
+                function (data) {
+                    $("#client-exceptions").html(data);
+                });
+
+            aiMetricReader.getMetricsNumber('/admin/getprocessmemory',
+                function (data) {
+                    $("#process-memory").html((data / 1024 / 1024).toFixed(1) + " MB");
+                });
+        });
+    </script>
+}
+
+<h3>Dashboard</h3>
+<hr />
+
+<h4>Usage</h4>
+<hr />
+<div class="row">
+    <div class="col-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title mb-1">
+                    <strong>
+                        Server Instance
+                    </strong>
+                </div>
+                <div class="card-subtitle mb-2 text-muted">Azure App Service</div>
+                <h5 id="machine-name">
+                    @Environment.MachineName
+                </h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title mb-1">
+                    <strong>
+                        Page Views
+                    </strong>
+                </div>
+                <div class="card-subtitle mb-2 text-muted">Last 24 Hours</div>
+                <h5 id="page-views">
+                    Fetching...
+                </h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title mb-1">
+                    <strong>
+                        Request Duration
+                    </strong>
+                </div>
+                <div class="card-subtitle mb-2 text-muted">Last 24 Hours (Avg)</div>
+                <h5 id="request-duration">
+                    Fetching...
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mt-3">Health</h4>
+<hr />
+<div class="row mb-3">
+    <div class="col-2">
+        <div class="card border-danger">
+            <div class="card-body">
+                <div class="card-title mb-1">
+                    <strong class="text-danger">
+                        Server Exceptions
+                    </strong>
+                </div>
+                <div class="card-subtitle mb-2 text-muted">Last 24 Hours</div>
+                <h5 id="server-exceptions" class="text-danger">
+                    Fetching...
+                </h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="card border-warning">
+            <div class="card-body">
+                <div class="card-title mb-1">
+                    <strong class="text-warning">
+                        Client Exceptions
+                    </strong>
+                </div>
+                <div class="card-subtitle mb-2 text-muted">Last 24 Hours</div>
+                <h5 id="client-exceptions" class="text-warning">
+                    Fetching...
+                </h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title mb-1">
+                    <strong>
+                        .NET Core Process Memory
+                    </strong>
+                </div>
+                <div class="card-subtitle mb-2 text-muted">Last 24 Hours (Avg)</div>
+                <h5 id="process-memory">
+                    Fetching...
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="https://portal.azure.com" class="btn btn-sm btn-outline-primary" target="_blank">View More in Azure</a>

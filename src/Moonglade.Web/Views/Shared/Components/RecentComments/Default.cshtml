@@ -1,0 +1,38 @@
+﻿@model List<Moonglade.Data.Entities.Comment>
+
+@if (null != Model && Model.Any())
+{
+    <div class="list-group list-group-flush">
+        @foreach (var item in Model)
+        {
+            <div class="list-group-item">
+                <strong data-toggle="tooltip" data-placement="top" title="@item.CreateOnUtc">
+                    <i class="fas fa-user"></i>
+                    @item.Username
+                </strong>
+                <p class="justifytext text-muted recent-comment-item-content">
+                    @item.CommentContent
+                </p>
+            </div>
+            <div class="recent-comment-item-footer">
+                @if (null != item.Post.PostPublish.PubDateUtc)
+                {
+                    <a asp-controller="Post" asp-action="Slug" 
+                       asp-route-year="@item.Post.PostPublish.PubDateUtc.Value.Year"
+                       asp-route-month="@item.Post.PostPublish.PubDateUtc.Value.Month"
+                       asp-route-day="@item.Post.PostPublish.PubDateUtc.Value.Day"
+                       asp-route-slug="@item.Post.Slug"
+                       target="_blank">
+                        <i class="far fa-bookmark"></i> @item.Post.Title
+                    </a>
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        No Comments
+    </div>
+}

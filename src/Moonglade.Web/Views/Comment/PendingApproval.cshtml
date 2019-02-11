@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@using Microsoft.Extensions.Options
+@using Moonglade.Core
+@using Moonglade.Model.Settings
+@model List<Moonglade.Model.CommentGridModel>
+@inject IOptions<AppSettings> Settings
+
+@Html.AntiForgeryToken()
+
+@section scripts{
+    <script>
+        $(function () {
+            $(".btn-approve").click(function () {
+                setApprovalStatus($(this).data("commentid"), true);
+            });
+
+            $(".btn-disapprove").click(function () {
+                setApprovalStatus($(this).data("commentid"), false);
+            });
+        });
+
+        function setApprovalStatus(commentId, status) {
+            $("#span-processing-" + commentId).show();
+
+            ajaxPostWithCSRFToken("set-approval-status", { commentId: commentId, isApproved: status }, function (data) {
+                $("#comment-box-" + data).slideUp();
+            });
+        }
+    </script>
+}
+
+<h3>
+    Comments
+</h3>
+<hr />
+
+<ul class="nav nav-tabs">
+    <li role="presentation" class="nav-item nav-item-non-margin">
+        <a class="nav-link" asp-controller="Comment" asp-action="Manage">Published</a>
+    </li>
+    <li role="presentation" class="nav-item nav-item-non-margin">
+        <a class="nav-link active" asp-controller="Comment" asp-action="PendingApproval">Pending Approval</a>
+    </li>
+</ul>
+
+<div class="mb-3"></div>
+
+@if (Model.Any())
+{
+    foreach (var comment in Model.OrderByDescending(c => c.PubDate))
+    {
+        <div class="comment-box card mb-4" id="comment-box-@comment.Id">
+            <div class="card-header">
+                <strong>
+                    <i class="fa fa-user"></i>
+                    @comment.Username
+                </strong>
+                <span class="text-muted">@comment.IpAddress</span>
+                <a href="mailto:@comment.Email">@comment.Email</a>
+                <span class="text-muted float-right">@Utils.UtcToZoneTime(comment.PubDate.Value, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span>
+            </div>
+            <div class="card-body">
+                <p>
+                    @comment.CommentContent
+                </p>
+                <div>
+                    - @comment.PostTitle
+                </div>
+
+                <div class="float-right">
+                    <span id="span-processing-@comment.Id" style="display: none;">Processing...</span>
+
+                    <a href="#" class="btn btn-sm btn-success btn-approve" data-commentid="@comment.Id">Approve</a>
+                    <a href="#" class="btn btn-sm btn-danger btn-disapprove" data-commentid="@comment.Id">Delete</a>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-info">
+        No comment is pending approval.
+    </div>
+}

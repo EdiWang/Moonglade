@@ -1,0 +1,21 @@
+﻿@model SubscriptionViewModel
+
+@foreach (var item in Model.cats.OrderBy(c => c.Key))
+{
+    <div class="col-6">
+        <div class="tilexsm">
+            <div class="tilexsm-image">
+                <i class="fas fa-rss"></i>
+            </div>
+
+            <div class="tilexsm-info">
+                <div class="tilesm-title">
+                    <a asp-controller="Subscription" asp-action="Rss" asp-route-categoryName="@item.Value"
+                       title="@item.Key">
+                        @item.Key
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

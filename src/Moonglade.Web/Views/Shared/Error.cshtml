@@ -1,0 +1,39 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <title>Website Blow Up</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body class="mt-5">
+    <div class="container text-center">
+        <div class="content">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 class="img-fluid mb-4"
+                 style="min-width: 200px; max-width: 256px;"
+                 viewBox="0 0 20 16" xml:space="preserve">
+            <path fill="#D61F33" d="M10,0L0,16h20L10,0z M11,13.908H9v-2h2V13.908z M9,10.908v-6h2v6H9z" />
+
+            </svg>
+            <div>
+                <h1>Sorry, our site went kaboom...</h1>
+                @if (Model.ShowRequestId)
+                {
+                    <p>
+                        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                    </p>
+                }
+                <div>
+                    Go back to <a class="btn btn-sm btn-default" href="/">Home Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

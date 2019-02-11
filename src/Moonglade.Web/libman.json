@@ -1,0 +1,76 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery@3.3.1",
+      "destination": "wwwroot/lib/jquery",
+      "files": [
+        "jquery.min.js"
+      ]
+    },
+    {
+      "library": "tinymce@4.9.2",
+      "destination": "wwwroot/lib/tinymce",
+      "files": []
+    },
+    {
+      "library": "jquery.qrcode@1.0",
+      "destination": "wwwroot/lib/jquery-qrcode"
+    },
+    {
+      "library": "highlight.js@9.13.1",
+      "destination": "wwwroot/lib/highlight-js",
+      "files": [
+        "highlight.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validate@1.19.0",
+      "destination": "wwwroot/lib/jquery-validate",
+      "files": [
+        "additional-methods.min.js",
+        "jquery.validate.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validation-unobtrusive@3.2.11",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive",
+      "files": [
+        "jquery.validate.unobtrusive.min.js"
+      ]
+    },
+    {
+      "library": "jquery-tagsinput@1.3.6",
+      "destination": "wwwroot/lib/jquery-tagsinput/"
+    },
+    {
+      "library": "twitter-bootstrap@4.2.1",
+      "destination": "wwwroot/lib/twitter-bootstrap/",
+      "files": [
+        "js/bootstrap.min.js",
+        "css/bootstrap.css",
+        "css/bootstrap.min.css"
+      ]
+    },
+    {
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr.js/",
+      "files": [
+        "toastr.min.js",
+        "toastr.min.css"
+      ]
+    },
+    {
+      "library": "popper.js@1.14.6",
+      "destination": "wwwroot/lib/popper.js/",
+      "files": [
+        "umd/popper.min.js"
+      ]
+    },
+    {
+      "library": "jquery.AreYouSure@1.9.0",
+      "destination": "wwwroot/lib/jquery.AreYouSure/"
+    }
+  ]
+}

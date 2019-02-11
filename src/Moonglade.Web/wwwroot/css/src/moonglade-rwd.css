@@ -1,0 +1,127 @@
+﻿@media (min-width: 1200px) {
+    .container {
+        max-width: 1170px;
+    }
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+@media (max-width: 767px) {
+
+    .gdpr-warning-msg {
+        line-height: inherit;
+        margin-bottom: 10px;
+    }
+
+    .blogger-intro-mobile {
+        position: relative;
+    }
+
+    .card-bkimg-container {
+        height: 95px !important;
+    }
+
+    .card-bkimg {
+        min-width: 141% !important;
+        margin-left: -63px !important;
+        margin-top: -124px !important;
+    }
+
+    .blogger-head-pic {
+        height: 65px !important;
+        width: 65px !important;
+    }
+
+    .blogger-intro-content {
+        position: absolute;
+        top: 0;
+        color: #FFF;
+        padding: 15px;
+        width: 100%;
+    }
+
+        .blogger-intro-content h4 {
+            color: #fff;
+            text-shadow: 2px 0 2px #000;
+            background-color: rgba(255,255,255,.2);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            transform: translate(0, 50%);
+        }
+
+    .form-control#term {
+        width: 100% !important;
+    }
+
+    .navbar .nav-item {
+        margin: 0 !important;
+    }
+
+    .navbar .dropdown-menu {
+        box-shadow: none;
+        font-size: 1rem;
+    }
+
+    .pagination {
+        margin: 10px 0;
+    }
+
+    .post-summary-text {
+        line-height: 22px;
+        color: #555;
+    }
+
+    .post-summary-box {
+        margin-left: 0 !important;
+    }
+
+    .article-post-summary {
+        border-bottom: 1px solid #EEE;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .img-timeline {
+        display: none;
+    }
+
+    ul.timeline:before {
+        left: 22px;
+    }
+
+    ul.timeline > li > .timeline-panel {
+        width: calc(100% - 65px);
+        width: -moz-calc(100% - 65px);
+        width: -webkit-calc(100% - 65px);
+    }
+
+    ul.timeline > li > .timeline-badge {
+        left: 0;
+        margin-left: 0;
+        top: 16px;
+        width: 45px;
+        height: 45px;
+        line-height: 45px;
+    }
+
+    ul.timeline > li > .timeline-panel {
+        float: right;
+    }
+
+        ul.timeline > li > .timeline-panel:before {
+            border-left-width: 0;
+            border-right-width: 15px;
+            left: -15px;
+            right: auto;
+        }
+
+        ul.timeline > li > .timeline-panel:after {
+            border-left-width: 0;
+            border-right-width: 14px;
+            left: -14px;
+            right: auto;
+        }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "outputFileName": "wwwroot/css/tinymce-editor-bs-bundle.css",
+    "inputFiles": [
+      "wwwroot/lib/twitter-bootstrap/css/bootstrap.css",
+      "wwwroot/css/src/tinymce-editor-content.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/app-js-bundle.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/jquery.min.js",
+      "wwwroot/lib/jquery-validate/jquery.validate.min.js",
+      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+      "wwwroot/lib/popper.js/umd/popper.min.js",
+      "wwwroot/lib/twitter-bootstrap/js/bootstrap.min.js",
+      "wwwroot/lib/jquery-qrcode/jquery.qrcode.min.js",
+      "wwwroot/lib/toastr.js/toastr.min.js",
+      "wwwroot/js/app/moonglade-base.js",
+      "wwwroot/js/app/postslug.js",
+      "wwwroot/js/app/csrf.js",
+      "wwwroot/js/app/comments.js",
+      "wwwroot/js/lazyload.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/mooglade-css-bundle.css",
+    "inputFiles": [
+      "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
+      "wwwroot/css/src/fontawesome-all.css",
+      "wwwroot/css/src/moonglade-base.css",
+      "wwwroot/css/src/moonglade-rwd.css",
+      "wwwroot/css/src/highlighter-custom.css",
+      "wwwroot/lib/toastr.js/toastr.min.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/errorpages-bundle.css",
+    "inputFiles": [
+      "wwwroot/css/src/errorpages.css",
+      "wwwroot/css/src/normalize.css"
+    ]
+  }
+]

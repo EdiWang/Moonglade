@@ -1,0 +1,7 @@
+﻿#Baiduspider
+User-agent: Baiduspider
+Disallow: /
+
+User-Agent: *
+Disallow: /errorpages/
+Disallow: /css/

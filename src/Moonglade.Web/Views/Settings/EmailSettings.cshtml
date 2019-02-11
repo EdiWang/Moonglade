@@ -1,0 +1,120 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@model EmailSettingsViewModel
+
+<partial name="_SettingsHeader" />
+
+<form id="form-settings" asp-controller="Settings" asp-action="EmailSettings"
+      data-ajax-begin="onUpdateSettingsBegin"
+      data-ajax-complete="onUpdateSettingsComplete"
+      data-ajax-failure="onUpdateSettingsFailed"
+      data-ajax-success="onUpdateSettingsSuccess"
+      data-ajax="true"
+      data-ajax-method="POST">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card mb-4">
+                <div class="card-header">Server Configuration</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="SmtpServer" class="control-label"></label>
+                        <input asp-for="SmtpServer" class="form-control" />
+                        <span asp-validation-for="SmtpServer" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SmtpServerPort" class="control-label"></label>
+                        <input asp-for="SmtpServerPort" class="form-control" />
+                        <span asp-validation-for="SmtpServerPort" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SmtpUserName" class="control-label"></label>
+                        <input asp-for="SmtpUserName" class="form-control" />
+                        <span asp-validation-for="SmtpUserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SmtpPassword" class="control-label"></label>
+                        <div class="text-muted">Leave blank if password is unchanged</div>
+                        <input asp-for="SmtpPassword" class="form-control" />
+                        <span asp-validation-for="SmtpPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="EmailDisplayName" class="control-label"></label>
+                        <input asp-for="EmailDisplayName" class="form-control" />
+                        <span asp-validation-for="EmailDisplayName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="EnableSsl" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnableSsl ? "checked=\"checked\"" : "") id="EnableSsl" name="EnableSsl" type="checkbox" value="true">
+                            <label for="EnableSsl" class="label-success"></label>
+                            <input name="EnableSsl" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="card-footer">
+                    <a href="#" id="a-send-test-mail" class="btn btn-sm btn-outline-primary">Send Test Email</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card mb-4">
+                <div class="card-header">Email Options</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="AdminEmail" class="control-label"></label>
+                        <input asp-for="AdminEmail" class="form-control" />
+                        <span asp-validation-for="AdminEmail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BannedMailDomain" class="control-label"></label>
+                        <div class="text-muted">These domains are blocked from posting comments</div>
+                        <input asp-for="BannedMailDomain" class="form-control" />
+                        <span asp-validation-for="BannedMailDomain" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Notification Options</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="EnableEmailSending" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnableEmailSending ? "checked=\"checked\"" : "") id="EnableEmailSending" name="EnableEmailSending" type="checkbox" value="true">
+                            <label for="EnableEmailSending" class="label-success"></label>
+                            <input name="EnableEmailSending" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="SendEmailOnCommentReply" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.SendEmailOnCommentReply ? "checked=\"checked\"" : "") id="SendEmailOnCommentReply" name="SendEmailOnCommentReply" type="checkbox" value="true">
+                            <label for="SendEmailOnCommentReply" class="label-success"></label>
+                            <input name="SendEmailOnCommentReply" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="SendEmailOnNewComment" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.SendEmailOnNewComment ? "checked=\"checked\"" : "") id="SendEmailOnNewComment" name="SendEmailOnNewComment" type="checkbox" value="true">
+                            <label for="SendEmailOnNewComment" class="label-success"></label>
+                            <input name="SendEmailOnNewComment" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="form-group">
+        <input id="btn-save-settings" type="submit" value="Save" class="btn btn-success" />
+    </div>
+</form>

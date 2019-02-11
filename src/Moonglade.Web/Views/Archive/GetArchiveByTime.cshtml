@@ -1,0 +1,75 @@
+﻿@using Microsoft.Extensions.Options
+@using Moonglade.Core
+@using Moonglade.Model.Settings
+
+@inject IOptions<AppSettings> Settings
+@model List<Moonglade.Data.Entities.Post>
+
+@section head{
+    <style>
+        #keyword {
+            width: 280px;
+        }
+    </style>
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#keyword").keyup(function () {
+                $(".archivelist tr").hide().filter(":contains('" + ($(this).val()) + "')").show();
+            }).keyup();
+        });
+    </script>
+}
+
+<h3>
+    @ViewBag.CurrentListInfo
+</h3>
+<hr />
+<div>
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-warning">
+            No Posts
+        </div>
+    }
+    else
+    {
+        <div class="form-group d-none d-md-block">
+            <input type="text" id="keyword" class="form-control" placeholder="Search" />
+        </div>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Published
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="archivelist">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Post" asp-action="Slug"
+                               asp-route-year="@item.PostPublish.PubDateUtc.Value.Year"
+                               asp-route-month="@item.PostPublish.PubDateUtc.Value.Month"
+                               asp-route-day="@item.PostPublish.PubDateUtc.Value.Day"
+                               asp-route-slug="@item.Slug">
+                                @item.Title
+                            </a>
+                        </td>
+                        <td>
+                            @Utils.UtcToZoneTime(item.PostPublish.PubDateUtc.Value, Settings.Value.TimeZone).ToString("yyyy-MM-dd")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

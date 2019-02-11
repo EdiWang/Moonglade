@@ -1,0 +1,15 @@
+﻿@model List<Moonglade.Model.CategoryInfo>
+
+@if (Model.Count > 0)
+{
+    <ul class="dropdown-menu category-menu">
+        @foreach (var item in Model.OrderBy(c => c.DisplayName))
+        {
+            <li>
+                <a class="dropdown-item" asp-controller="Category" asp-action="List" asp-route-categoryName="@item.Name.ToLower()" title="@item.Note">
+                    @item.DisplayName
+                </a>
+            </li>
+        }
+    </ul>
+}

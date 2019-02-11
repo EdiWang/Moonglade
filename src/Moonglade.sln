@@ -1,0 +1,102 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2003
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web", "Moonglade.Web\Moonglade.Web.csproj", "{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Core", "Moonglade.Core\Moonglade.Core.csproj", "{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{9B62AB08-D68E-440E-819C-2C4636FF9C78}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{97439361-03B4-46C9-BC06-49F76BA57879}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data", "Moonglade.Data\Moonglade.Data.csproj", "{B7151A42-A200-442D-9244-F6A2EADDFEA1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Model", "Moonglade.Model\Moonglade.Model.csproj", "{51AC6A29-09F3-47D5-9491-2150156FF5F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{41072B8B-1052-4CC6-930F-83A5F8EA7482}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{EB748511-FF41-48F3-BC98-0A8BC4408D0E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.ImageStorage", "Moonglade.ImageStorage\Moonglade.ImageStorage.csproj", "{702AEE84-D06A-403F-8D7F-BE1955E9D062}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.AzureApplicationInsights", "Moonglade.AzureApplicationInsights\Moonglade.AzureApplicationInsights.csproj", "{D8B1F726-2A57-4E95-A65D-97722F0AA7E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageStorage", "ImageStorage", "{D793139B-129C-4AD3-A947-957E96D3F841}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.ImageStorage.FileSystem", "Moonglade.ImageStorage.FileSystem\Moonglade.ImageStorage.FileSystem.csproj", "{0E0E0B9A-8562-4087-A5F4-D1F648DC02CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.ImageStorage.AzureBlob", "Moonglade.ImageStorage.AzureBlob\Moonglade.ImageStorage.AzureBlob.csproj", "{DD0E0BCD-25BE-49B9-9125-B1C8DAE8D241}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Configuration", "Moonglade.Configuration\Moonglade.Configuration.csproj", "{D050818F-EDAD-43F1-9824-9627A0B4324C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.Authentication.AzureAd", "Moonglade.Web.Authentication.AzureAd\Moonglade.Web.Authentication.AzureAd.csproj", "{59875167-3394-46B0-9005-CDD30959DED1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7151A42-A200-442D-9244-F6A2EADDFEA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7151A42-A200-442D-9244-F6A2EADDFEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7151A42-A200-442D-9244-F6A2EADDFEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7151A42-A200-442D-9244-F6A2EADDFEA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51AC6A29-09F3-47D5-9491-2150156FF5F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51AC6A29-09F3-47D5-9491-2150156FF5F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51AC6A29-09F3-47D5-9491-2150156FF5F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51AC6A29-09F3-47D5-9491-2150156FF5F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{702AEE84-D06A-403F-8D7F-BE1955E9D062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{702AEE84-D06A-403F-8D7F-BE1955E9D062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{702AEE84-D06A-403F-8D7F-BE1955E9D062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{702AEE84-D06A-403F-8D7F-BE1955E9D062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8B1F726-2A57-4E95-A65D-97722F0AA7E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8B1F726-2A57-4E95-A65D-97722F0AA7E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8B1F726-2A57-4E95-A65D-97722F0AA7E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8B1F726-2A57-4E95-A65D-97722F0AA7E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E0E0B9A-8562-4087-A5F4-D1F648DC02CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E0E0B9A-8562-4087-A5F4-D1F648DC02CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E0E0B9A-8562-4087-A5F4-D1F648DC02CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E0E0B9A-8562-4087-A5F4-D1F648DC02CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD0E0BCD-25BE-49B9-9125-B1C8DAE8D241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD0E0BCD-25BE-49B9-9125-B1C8DAE8D241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD0E0BCD-25BE-49B9-9125-B1C8DAE8D241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD0E0BCD-25BE-49B9-9125-B1C8DAE8D241}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D050818F-EDAD-43F1-9824-9627A0B4324C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D050818F-EDAD-43F1-9824-9627A0B4324C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D050818F-EDAD-43F1-9824-9627A0B4324C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D050818F-EDAD-43F1-9824-9627A0B4324C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59875167-3394-46B0-9005-CDD30959DED1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59875167-3394-46B0-9005-CDD30959DED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59875167-3394-46B0-9005-CDD30959DED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59875167-3394-46B0-9005-CDD30959DED1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A} = {9B62AB08-D68E-440E-819C-2C4636FF9C78}
+		{0A3BCAC1-1759-48F4-A222-71A4C65A23A0} = {97439361-03B4-46C9-BC06-49F76BA57879}
+		{B7151A42-A200-442D-9244-F6A2EADDFEA1} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
+		{51AC6A29-09F3-47D5-9491-2150156FF5F3} = {EB748511-FF41-48F3-BC98-0A8BC4408D0E}
+		{702AEE84-D06A-403F-8D7F-BE1955E9D062} = {D793139B-129C-4AD3-A947-957E96D3F841}
+		{D8B1F726-2A57-4E95-A65D-97722F0AA7E9} = {97439361-03B4-46C9-BC06-49F76BA57879}
+		{D793139B-129C-4AD3-A947-957E96D3F841} = {97439361-03B4-46C9-BC06-49F76BA57879}
+		{0E0E0B9A-8562-4087-A5F4-D1F648DC02CB} = {D793139B-129C-4AD3-A947-957E96D3F841}
+		{DD0E0BCD-25BE-49B9-9125-B1C8DAE8D241} = {D793139B-129C-4AD3-A947-957E96D3F841}
+		{D050818F-EDAD-43F1-9824-9627A0B4324C} = {97439361-03B4-46C9-BC06-49F76BA57879}
+		{59875167-3394-46B0-9005-CDD30959DED1} = {9B62AB08-D68E-440E-819C-2C4636FF9C78}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
+	EndGlobalSection
+EndGlobal

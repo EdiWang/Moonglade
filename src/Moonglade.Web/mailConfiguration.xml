@@ -1,0 +1,54 @@
+﻿<?xml version="1.0"?>
+<MailConfiguration>
+  <CommonConfiguration OverrideToAddress="false" ToAddress="" />
+  <MailMessage MessageType="TestMail" IsHtml="true">
+    <MessageSubject>[edi.wang] Test Email on {MachineName.Value}</MessageSubject>
+    <MessageBody>
+      <![CDATA[
+EdiBlog email settings is successfully configured on machine {MachineName.Value}<br />
+Smtp Server: {SmtpServer.Value}<br />
+Smtp Port: {SmtpServerPort.Value}<br />
+Smtp Username: {SmtpUserName.Value}<br />
+Sender Display Name: {EmailDisplayName.Value}<br />
+Enable SSL: {EnableSsl.Value}<br />
+      ]]>
+    </MessageBody>
+  </MailMessage>
+  <MailMessage MessageType="NewCommentNotification" IsHtml="true">
+    <MessageSubject>[edi.wang] {Username.Value} commentted {Title.Value}</MessageSubject>
+    <MessageBody>
+      <![CDATA[
+{Username.Value} commentted on {Title.Value} <br />
+{CommentContent.Value} <br /> <br />
+Time: {PubDate.Value} <br />
+Email: {Email.Value} <br />
+IP: {IPAddress.Value}
+      ]]>
+    </MessageBody>
+  </MailMessage>
+  <MailMessage MessageType="AdminReplyNotification" IsHtml="true">
+    <MessageSubject>[edi.wang] Edi Wang Replied Your Comment</MessageSubject>
+    <MessageBody>
+      <![CDATA[
+Your comment "{CommentContent.Value}" on <i><a href="{RouteLink.Value}" target="_blank">{PostTitle.Value}</a></i> 
+has been replied:
+<p>
+{ReplyContent.Value}
+</p>
+      ]]>
+    </MessageBody>
+  </MailMessage>
+  <MailMessage MessageType="BeingPinged" IsHtml="true">
+    <MessageSubject>[edi.wang] Post {Title.Value} Was Referenced</MessageSubject>
+    <MessageBody>
+      <![CDATA[
+Source Domain: {SourceDomain.Value} <br />
+Source Url: <a href="{SourceUrl.Value}">{SourceUrl.Value}</a> <br />
+Source Title: {SourceTitle.Value}  <br />
+Source Ip: {SourceIp.Value}  <br />
+Ping Time: {PingTime.Value} <br />
+Direction: {Direction.Value} 
+      ]]>
+    </MessageBody>
+  </MailMessage>
+</MailConfiguration>

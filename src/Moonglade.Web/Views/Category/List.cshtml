@@ -1,0 +1,41 @@
+﻿@using Microsoft.Extensions.Options
+@using Moonglade.Configuration
+@using Moonglade.Core
+
+@model X.PagedList.StaticPagedList<Moonglade.Data.Entities.Post>
+@inject BlogConfigurationService BlogConfigurationService
+@inject BlogConfig BlogConfig
+
+@{
+    BlogConfig.GetConfiguration(BlogConfigurationService);
+}
+
+@{
+    ViewBag.TitlePrefix = ViewBag.CategoryDisplayName + " - " + BlogConfig.SiteTitle;
+    ViewBag.ActionName = "list";
+    ViewBag.ShowBloggerIntroInXS = true;
+}
+
+<h3 class="h3-cat-list">
+    <a class="float-right d-none d-md-block"
+       asp-controller="Subscription"
+       asp-action="Rss"
+       asp-route-categoryName="@(((string)ViewBag.CategoryName).ToLower())" target="_blank"
+       title="Subscribe @(ViewBag.CategoryDisplayName)">
+        <i class="fas fa-rss"></i>
+    </a>
+    <span>@ViewBag.CategoryDisplayName</span>
+    <span class="badge d-inline d-sm-none float-right">@Model.TotalItemCount</span>
+    <small class="d-none d-md-inline">@ViewBag.CategoryDescription</small>
+</h3>
+<hr />
+@if (Model.Any())
+{
+    <partial name="_PostList" />
+}
+else
+{
+    <div class="alert alert-info">
+        No Posts.
+    </div>
+}

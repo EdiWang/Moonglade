@@ -1,0 +1,30 @@
+﻿@model X.PagedList.StaticPagedList<Moonglade.Data.Entities.Post>
+
+@{
+    ViewBag.TitlePrefix = null;
+    ViewBag.ActionName = "Index";
+    ViewBag.ShowBloggerIntroInXS = true;
+}
+
+<h3 class="h3-cat-list">
+    <a class="float-right d-none d-md-block" asp-controller="Subscription" asp-action="Rss" target="_blank" title="Subscribe Top 20 Posts">
+        <i class="fas fa-rss"></i>
+    </a>
+    <span>
+        All Posts
+    </span>
+    <small class="d-none d-md-inline">(@Model.TotalItemCount)</small>
+    <span class="badge d-inline d-sm-none float-right">@Model.TotalItemCount</span>
+</h3>
+<hr />
+
+@if (Model.Any())
+{
+    <partial name="_PostList" />
+}
+else
+{
+    <div class="alert alert-info">
+        No Posts.
+    </div>
+}

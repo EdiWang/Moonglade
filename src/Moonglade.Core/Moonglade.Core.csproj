@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName></SccProjectName>
+    <SccProvider></SccProvider>
+    <SccAuxPath></SccAuxPath>
+    <SccLocalPath></SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Authors>Edi Wang</Authors>
+    <Company>edi.wang</Company>
+    <AssemblyVersion>10.0.0.0</AssemblyVersion>
+    <FileVersion>10.0.0.0</FileVersion>
+    <Version>10.0.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Moonglade.Core.csproj.vspscc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Edi.Blog.Pingback" Version="10.0.1" />
+    <PackageReference Include="Edi.Captcha" Version="1.2.0" />
+    <PackageReference Include="Edi.ImageWatermark" Version="1.0.0" />
+    <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />
+    <PackageReference Include="Edi.SyndicationFeedGenerator" Version="1.0.0" />
+    <PackageReference Include="Edi.TemplateEmail.NetStd" Version="2018.2.0" />
+    <PackageReference Include="Edi.WordFilter" Version="1.1.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.14" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+    <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+  </ItemGroup>
+
+</Project>

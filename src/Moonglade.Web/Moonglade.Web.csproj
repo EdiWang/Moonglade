@@ -1,0 +1,84 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName></SccProjectName>
+    <SccProvider></SccProvider>
+    <SccAuxPath></SccAuxPath>
+    <SccLocalPath></SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
+    <Authors>Edi Wang</Authors>
+    <Company>edi.wang</Company>
+    <Copyright>2019 edi.wang</Copyright>
+    <AssemblyVersion>10.0.0.0</AssemblyVersion>
+    <FileVersion>10.0.0.0</FileVersion>
+    <Version>10.0.6980.1000</Version>
+    <ApplicationInsightsResourceId>/subscriptions/15bf06cf-caa3-4224-b7fb-cad42590472f/resourcegroups/ediwang-netcore/providers/microsoft.insights/components/ediwang-netcore-ai</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/15bf06cf-caa3-4224-b7fb-cad42590472f/resourcegroups/ediwang-netcore/providers/microsoft.insights/components/ediwang-netcore-ai</ApplicationInsightsAnnotationResourceId>
+    <UserSecretsId>ad505235-2dfc-40ee-aeb0-c3956517e224</UserSecretsId>
+    <AspNetCoreModuleName>AspNetCoreModuleV2</AspNetCoreModuleName>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="App_Data\feed\**" />
+    <Content Remove="App_Data\feed\**" />
+    <None Remove="App_Data\feed\**" />
+    <Content Remove="bundleconfig.json" />
+    <Content Remove="compilerconfig.json" />
+    <Content Remove="web.config" />
+    <EmbeddedResource Remove="App_Data\feed\**" />
+    <None Remove="App_Data\opensearch.xml" />
+    <None Remove="App_Data\opml.xml" />
+    <None Remove="Moonglade.Web.csproj.vspscc" />
+    <None Include="bundleconfig.json" />
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="mailConfiguration.xml" CopyToOutputDirectory="Always" />
+    <Content Update="nlog.config" CopyToOutputDirectory="Always" />
+    <Content Include="urlrewrite.xml" CopyToOutputDirectory="Always" />
+    <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <Content Update="libman.json" CopyToPublishDirectory="Never" />
+    <Content Update="bundleconfig.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
+    <PackageReference Include="Edi.Blog.OpmlFileWriter" Version="1.0.0" />
+    <PackageReference Include="Edi.Blog.Pingback" Version="10.0.1" />
+    <PackageReference Include="Edi.Blog.Pingback.MvcExtensions" Version="1.0.0" />
+    <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.6.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
+    <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.9.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.1" />
+    <PackageReference Include="X.PagedList" Version="7.6.0" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.AzureApplicationInsights\Moonglade.AzureApplicationInsights.csproj" />
+    <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+    <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
+    <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+    <ProjectReference Include="..\Moonglade.ImageStorage.AzureBlob\Moonglade.ImageStorage.AzureBlob.csproj" />
+    <ProjectReference Include="..\Moonglade.ImageStorage.FileSystem\Moonglade.ImageStorage.FileSystem.csproj" />
+    <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
+    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+    <ProjectReference Include="..\Moonglade.Web.Authentication.AzureAd\Moonglade.Web.Authentication.AzureAd.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+</Project>

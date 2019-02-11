@@ -1,0 +1,78 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@model List<PostGridModel>
+@section scripts{
+    <script>
+        $(function () {
+            $(".btn-delete").click(function () {
+                var cfm = confirm("Delete Confirmation?");
+                if (cfm) {
+                    deletePost($(this).data("postid"));
+                }
+            });
+
+            $(".btn-restore").click(function () {
+                restorePost($(this).data("postid"));
+            });
+        });
+
+        function deletePost(postid) {
+            $("#span-processing-" + postid).show();
+            ajaxPostWithCSRFToken("delete-from-recycle", { postid: postid }, function (data) {
+                $("#tr-" + data).hide();
+            });
+        }
+
+        function restorePost(postid) {
+            $("#span-processing-" + postid).show();
+            ajaxPostWithCSRFToken("restore", { postid: postid }, function (data) {
+                $("#tr-" + data).hide();
+            });
+        }
+    </script>
+}
+<partial name="_PostManageHeader" />
+
+@if (Model.Any())
+{
+    @Html.AntiForgeryToken()
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model.OrderByDescending(p => p.CreateOnUtc))
+            {
+                <tr id="tr-@post.Id">
+                    <td>@post.Title</td>
+                    <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy HH:mm")</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary btn-restore" data-postid="@post.Id" href="javascript:;">
+                            Restore
+                        </a>
+                        <a class="btn btn-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
+                            Delete
+                        </a>
+                        <span id="span-processing-@post.Id" style="display: none">...</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="empty-recycle">
+        <img src="~/images/empty_recycle.svg" class="img-fluid" />
+        <div class="text-center">
+            <h4>No Posts</h4>
+            <p class="text-muted">no items to show</p>
+        </div>
+    </div>
+}

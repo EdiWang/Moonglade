@@ -1,0 +1,33 @@
+﻿<rewrite>
+  <rules>
+    <rule name="Redirect Misc Homepage URLs to canonical homepage URL" stopProcessing="false">
+      <match url="(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)"/>
+      <conditions logicalGrouping="MatchAll" trackAllCaptures="false">
+        <add input="{REQUEST_METHOD}" pattern="GET"/>
+      </conditions>
+      <action type="Redirect" url="/"/>
+    </rule>
+    <rule name="Prevent Image Hotlinking">
+      <match url=".*\.(gif|jpg|png)$"/>
+      <conditions>
+        <add input="{HTTP_REFERER}" pattern="^$" negate="true"/>
+        <add input="{HTTP_REFERER}" pattern="^https?:\/\/.*edi.wang:?\d{0,5}?\/.*$" negate="true"/>
+        <add input="{HTTP_REFERER}" pattern="^https?:\/\/localhost:?\d{0,5}?\/.*$" negate="true"/>
+        <add input="{HTTP_REFERER}" pattern="^https?:\/\/.*azurewebsites.net:?\d{0,5}?\/.*$" negate="true"/>
+      </conditions>
+      <action type="Rewrite" url="/images/no_hotlinking.png"/>
+    </rule>
+    <rule name="RemoveTrailingSlashRule" stopProcessing="true">
+      <match url="(.*)/$"/>
+      <conditions>
+        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true"/>
+        <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true"/>
+      </conditions>
+      <action type="Redirect" url="{R:1}"/>
+    </rule>
+    <rule name="Migrate Subscription RSS" stopProcessing="true">
+      <match url="subscription/rss" />
+      <action type="Redirect" url="/rss" redirectType="Permanent" />
+    </rule>
+  </rules>
+</rewrite>

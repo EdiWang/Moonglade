@@ -1,0 +1,98 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@model GeneralSettingsViewModel
+
+<partial name="_SettingsHeader" />
+
+<form id="form-settings" asp-controller="Settings" asp-action="General"
+      data-ajax-begin="onUpdateSettingsBegin"
+      data-ajax-complete="onUpdateSettingsComplete"
+      data-ajax-failure="onUpdateSettingsFailed"
+      data-ajax-success="onUpdateSettingsSuccess"
+      data-ajax="true"
+      data-ajax-method="POST">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card mb-3">
+                <div class="card-header">Website</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="SiteTitle" class="control-label"></label>
+                        <input asp-for="SiteTitle" class="form-control" />
+                        <span asp-validation-for="SiteTitle" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MetaKeyword" class="control-label"></label>
+                        <input asp-for="MetaKeyword" class="form-control" />
+                        <span asp-validation-for="MetaKeyword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MetaAuthor" class="control-label"></label>
+                        <input asp-for="MetaAuthor" class="form-control" />
+                        <span asp-validation-for="MetaAuthor" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Owner Information</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="mb-2">
+                            <img src="~/get-blogger-avatar" class="img-thumbnail img-fluid blogadmin-avatar" />
+                        </div>
+                        <a class="btn btn-sm btn-primary" href="#" data-toggle="modal" data-target="#avatarmodal">Change Avatar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">Comments</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="DisharmonyWords" class="control-label"></label>
+                        <textarea asp-for="DisharmonyWords" class="form-control"></textarea>
+                        <span asp-validation-for="DisharmonyWords" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div class="form-group">
+        <input id="btn-save-settings" type="submit" value="Save" class="btn btn-success" />
+    </div>
+</form>
+
+<div class="modal fade" id="avatarmodal" tabindex="-1" role="dialog" aria-labelledby="avatarmodalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarmodalLabel">Change Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" asp-controller="Settings" asp-action="SetBloggerAvatar">
+                    <div class="form-group">
+                        <p>Upload .PNG or .JPG avatar file</p>
+                        <input type="file" name="avatarimage" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Upload" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

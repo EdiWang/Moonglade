@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName></SccProjectName>
+    <SccProvider></SccProvider>
+    <SccAuxPath></SccAuxPath>
+    <SccLocalPath></SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyVersion>10.0.0.0</AssemblyVersion>
+    <Version>10.0.0</Version>
+    <Authors>Edi Wang</Authors>
+    <Company>edi.wang</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Moonglade.ImageStorage.FileSystem.csproj.vspscc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
+    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.HideSideBar = true;
+}
+@section scripts{
+    <script>
+        var isWin10 = function () {
+            var e = navigator.userAgent.toLowerCase();
+            return e.indexOf("windows nt 10") >= 0;
+        }
+
+        $(function () {
+            if (isWin10) {
+                $("#a-win10-store").show();
+            }
+        });
+    </script>
+}
+
+@section head{
+    <style>
+        .into-block-body-md {
+            height: 130px;
+        }
+
+        .title-box {
+            background-image: url(/images/img0.jpg);
+            background-color: #000;
+            padding: 70px 0;
+        }
+
+        @@media(max-width: 767px) {
+            .into-block-body-md {
+                height: inherit;
+            }
+        }
+    </style>
+}
+
+<div class="title-box">
+    <div class="container">
+        <h1>Apps for Windows 10</h1>
+        <h3>Permanent free without Ads</h3>
+    </div>
+</div>
+<div class="sec">
+    <div class="container">
+        <section id="featured">
+            <h3>Tracing</h3>
+            <hr />
+            <div class="row">
+                <div class="col-md-5">
+                    <img src="https://docs.edi.wang/images/tracing/ZH-1.png" class="img-fluid img-thumbnail" />
+                </div>
+                <div class="col-md-7">
+                    <blockquote class="blockquote">
+                        如果你喜欢画图但并不专业，没关系！只要选择你喜爱的图片，使用触控笔标描绘轮廓，就可以保存、分享或打印您的墨迹！拥有大量新特性及易用性改进，并支持Surface Dial等轮盘设备！
+                    </blockquote>
+                    <p>For Windows 10 v1803 and above</p>
+                    <div>
+                        <a href="https://www.microsoft.com/en-us/store/p/tracing/9nblggh6czcl" target="_blank" class="btn btn-success">Microsoft Store</a>
+                        <a href="https://docs.edi.wang/tracing" target="_blank" class="btn btn-outline-secondary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="sec sec-alter">
+    <div class="container">
+        <h3>Character Map UWP</h3>
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                <blockquote class="blockquote">
+                    Character Map, in UWP, it allows you to copy the selected character to XAML code and FontIcon, and export the character into high resolution PNG file
+                </blockquote>
+                <div>
+                    <a href="https://www.microsoft.com/en-us/store/p/character-map-uwp/9wzdncrdxf41" class="btn btn-success">Microsoft Store</a>
+                    <a href="http://ediwang.github.io/Character-Map-UWP/" target="_blank" class="btn btn-outline-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <img src="https://raw.githubusercontent.com/EdiWang/Character-Map-UWP/master/artifacts/main.png" class="img-fluid img-thumbnail" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="sec">
+    <div class="container">
+        <h3>Other Featured Apps</h3>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Simple QRCode Creator</strong>
+                    </div>
+                    <div class="card-body into-block-body-md">
+                        <p>
+                            Create QR Code images, including 2 Factor Authenticator, WiFi, or just basic text!
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://www.microsoft.com/en-us/store/p/simple-qrcode-creator/9nblggh67tv2" class="btn btn-sm btn-primary">Microsoft Store</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-1">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Device Mock</strong>
+                    </div>
+                    <div class="card-body into-block-body-md">
+                        <p>
+                            Fit your screenshot into device frame and get a picture of the device diplaying your screenshot
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://www.microsoft.com/en-us/store/p/device-mock/9wzdncrdxf3x" class="btn btn-sm btn-primary">Microsoft Store</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-1">
+                <div class="card panel-default">
+                    <div class="card-header">
+                        <strong>IP List</strong>
+                    </div>
+                    <div class="card-body into-block-body-md">
+                        <p>
+                            View your Internet and all LAN NIC IP Addresses, including IPV4, IPV6. And Calculate network address and broadcast address.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://www.microsoft.com/en-us/store/p/ip-list/9nblggh6j9r6" class="btn btn-sm btn-primary">Microsoft Store</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="sec sec-alter">
+    <div class="col-md-2 offset-md-5">
+        <a id="a-win10-store"
+           href="ms-windows-store://publisher/?name=Edi Wang"
+           class="btn btn-success d-md-block"
+           style="display: none;">
+            Check Out More Apps
+        </a>
+    </div>
+</div>

@@ -1,0 +1,141 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@using Microsoft.Extensions.Options
+@using Moonglade.Model.Settings
+@model PostEditModel
+@inject IOptions<AppSettings> Settings
+
+@section scripts{
+    <script src="~/lib/jquery-tagsinput/jquery.tagsinput.min.js"></script>
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
+
+    <script>
+        $(function () {
+            postEditor.initEvents();
+            postEditor.loadRichEditor(".post-content-textarea");
+            postEditor.keepAlive();
+        });
+    </script>
+}
+
+<form class="post-edit-form" method="post">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <input type="hidden" asp-for="PostId" />
+
+    <div class="row">
+        <div class="col-md-9 col-xl-10">
+            <input type="text" asp-for="Title" class="form-control form-control-lg" placeholder="Title" />
+            <div>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <hr />
+
+            <div class="mb-1">
+                <div class="form-row">
+                    <div class="col-10">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">post/@(ViewBag.PubDateStr ?? @DateTime.UtcNow.ToString("yyyy/M/d"))/</span>
+                            </div>
+                            <input type="text" asp-for="Slug" class="form-control form-control-sm" placeholder="Slug" />
+                        </div>
+                        <div>
+                            <span asp-validation-for="Slug" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <input type="text" asp-for="ContentLanguageCode" class="form-control form-control-sm" placeholder="Language Code" />
+                        <div>
+                            <span asp-validation-for="ContentLanguageCode" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <textarea asp-for="HtmlContent" class="post-content-textarea"></textarea>
+                <div>
+                    <span asp-validation-for="HtmlContent" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="text" asp-for="Tags" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3 col-xl-2">
+            <div class="card mb-4">
+                <div class="card-header">Options</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="EnableComment" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnableComment ? "checked=\"checked\"" : "") id="EnableComment" name="EnableComment" type="checkbox" value="true">
+                            <label for="EnableComment" class="label-success"></label>
+                            <input name="EnableComment" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="IsPublished" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.IsPublished ? "checked=\"checked\"" : "") id="IsPublished" name="IsPublished" type="checkbox" value="true">
+                            <label for="IsPublished" class="label-success"></label>
+                            <input name="IsPublished" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="FeedIncluded" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.FeedIncluded ? "checked=\"checked\"" : "") id="FeedIncluded" name="FeedIncluded" type="checkbox" value="true">
+                            <label for="FeedIncluded" class="label-success"></label>
+                            <input name="FeedIncluded" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="ExposedToSiteMap" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.ExposedToSiteMap ? "checked=\"checked\"" : "") id="ExposedToSiteMap" name="ExposedToSiteMap" type="checkbox" value="true">
+                            <label for="ExposedToSiteMap" class="label-success"></label>
+                            <input name="ExposedToSiteMap" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header">Categories</div>
+                <div class="card-body">
+                    @if (null != Model.CategoryList && Model.CategoryList.Count > 0)
+                    {
+                        <div class="catlist">
+                            <ul>
+                                @foreach (var item in Model.CategoryList)
+                                {
+                                    <li>
+                                        <div class="custom-control custom-checkbox">
+                                            <input id="cat-@item.Value" name="SelectedCategoryIds" class="custom-control-input" type="checkbox" value="@item.Value"
+                                                   @(item.IsChecked ? "checked=\"checked\"" : null)>
+                                            <label for="cat-@item.Value" class="custom-control-label" >@item.DisplayText</label>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div>
+        <button type="submit" class="btn btn-success ediblogeditor-submit" id="btn-submit">
+            Submit
+        </button>
+        <a asp-controller="Post" asp-action="Manage" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

@@ -1,0 +1,278 @@
+﻿@{
+    ViewBag.TitlePrefix = "About";
+    ViewBag.HideSideBar = true;
+}
+
+@section scripts{
+    <script>
+        $(function () {
+            $(".board a[title]").tooltip();
+        });
+    </script>
+}
+
+<div class="sec pt-4">
+    <div class="container">
+        <h3>About Me</h3>
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                <section id="self-intro">
+                    <blockquote class="blockquote">
+                        <p>
+                            I am a professional .NET developer, Microsoft MVP, and member of the <a href="https://github.com/dotnetcore" target="_blank">.NET Core Community</a>. My job is website development for a fintech company. I also do Windows development besides my job and create Apps for the Windows platform.
+                        </p>
+                    </blockquote>
+                    <p>
+                        Contact me: <a href="mailto:Edi.Wang@outlook.com">Edi.Wang@outlook.com</a>
+                    </p>
+                    <div class="self-intro-links mt-md-5">
+                        <a href="https://mvp.microsoft.com/en-us/PublicProfile/5002809" class="btn btn-outline-success" target="_blank">
+                            <i class="fab fa-fw fa-windows"></i>
+                            MVP Profile
+                        </a>
+
+                        <a href="https://github.com/EdiWang" class="btn btn-outline-success" target="_blank">
+                            <i class="fab fa-fw fa-github"></i>
+                            GitHub
+                        </a>
+                    </div>
+                </section>
+            </div>
+            <div class="col-md-5">
+                <div class="edi-photo mt-3 mt-md-0">
+                    <img class="img-fluid img-thumbnail d-block" src="~/images/about/edi-at-o365.jpg" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="sec sec-alter">
+    <div class="container">
+        <h3>About this Blog</h3>
+        <hr />
+        <blockquote class="blockquote mb-5">
+            <p>
+                This is the personal blog of Edi Wang. It's an <a href="https://dot.net" target="_blank">.NET</a> blog system that was developed by Edi Wang. The project started at June 2008, after 10 years of evolution, it's now fast and reliable. A number of blog system components were also open sourced to the community.
+            </p>
+        </blockquote>
+        <div class="mb-3">
+            <div class="row">
+                <div class="col-md-4 col-sm-4 mb-5 text-center">
+                    <div class="arch-media-logo">
+                        <svg viewBox="0 0 50 50" class="msportalfx-svg-placeholder" role="presentation" focusable="false" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M40.193 44.839a24.898 24.898 0 0 1-15.167 5.151c-7.52 0-14.956-3.376-19.87-9.803C-3.24 29.225-1.168 13.548 9.814 5.148 14.343 1.663 19.686 0 24.979 0c7.52 0 14.958 3.376 19.87 9.809 8.398 10.959 6.305 26.639-4.656 35.03" class="msportalfx-svg-c15"></path><path d="M35.6 29.378a5.385 5.385 0 0 0 7.541 1.004c.123-.094.218-.208.33-.309 2.409 1.697 4.082 2.817 5.025 3.459.279-.723.472-1.417.67-2.142a130.857 130.857 0 0 1-4.29-3.356c.639-1.68.437-3.64-.73-5.171a5.36 5.36 0 0 0-6.936-1.377 224.317 224.317 0 0 1-8.293-7.833c9.165-4.929 15.676-4.207 15.676-4.207-1.087-1.386-2.305-2.6-3.606-3.697-3.865-.597-9.869-.53-16.729 3.119l-.002-.003h-.001a200.322 200.322 0 0 1-6.983-7.712A23.264 23.264 0 0 0 13.96 2.5c1.749 2.862 4.102 5.749 6.754 8.565l.017.017a46.293 46.293 0 0 0-6.944 6.015c-.29.309-.569.62-.842.931a7.546 7.546 0 0 0-4.117.282C6.564 13.425 6.746 9.501 7.104 7.478c-.983 1.03-1.901 2.113-2.692 3.267-.591 2.415-.759 5.898.985 10.095a7.538 7.538 0 0 0-.005 9.153c.176.229.364.442.559.645a37.87 37.87 0 0 0-1.46 8.761c.237.322.237.582.472.896 1.199 1.538 2.705 2.834 4.16 4.008-.18-2.75.014-6.806 1.714-11.372a7.507 7.507 0 0 0 3.483-.566c.64.563 1.31 1.132 2.025 1.711a41.672 41.672 0 0 0 7.285 4.643 4.974 4.974 0 0 0 .968 3.518 4.998 4.998 0 0 0 6.983.919 4.918 4.918 0 0 0 1.108-1.216c3.889.866 7.287 1.019 9.806 1.019.386 0 2.177-2.436 3.203-3.946-1.534.321-6.083.946-12.3-.84a4.952 4.952 0 0 0-.898-1.98c-1.579-2.07-4.466-2.518-6.618-1.133a46.853 46.853 0 0 1-6.758-4.49 46.422 46.422 0 0 1-1.359-1.118 7.578 7.578 0 0 0 .318-7.55c.286-.286.567-.573.871-.857 2.311-2.159 4.485-3.887 6.519-5.274-.082-.076-.156-.156-.236-.233.081.075.157.152.239.227l-.002.001c3.121 2.886 6.43 5.621 9.564 8.065-.829 1.758-.699 3.899.562 5.547z" class="msportalfx-svg-c01"></path></g></svg>
+                    </div>
+                    <hr />
+                    <div>
+                        <h5 class="media-heading">Hosting</h5>
+                        <a href="https://azure.microsoft.com/en-us/services/app-service/web/" target="_blank">
+                            Azure App Services
+                        </a> <br />
+                        <a href="https://azure.microsoft.com/en-us/services/dns/" target="_blank">Azure DNS zones</a>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 mb-5 text-center">
+                    <div class="arch-media-logo">
+                        <svg viewBox="-0.5 0.5 50 50" class="msportalfx-svg-placeholder" role="presentation" focusable="false" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M-.5 7.288v36.111c0 3.749 8.392 6.789 18.743 6.789v-42.9H-.5z" class="msportalfx-svg-c19"></path><path d="M17.986 50.187h.257c10.351 0 18.743-3.038 18.743-6.788V7.288h-19v42.899z" class="msportalfx-svg-c19"></path><path opacity="0.15" d="M17.986 50.187h.257c10.351 0 18.743-3.038 18.743-6.788V7.288h-19v42.899z" class="msportalfx-svg-c01"></path><path d="M36.986 7.288c0 3.749-8.392 6.788-18.743 6.788S-.5 11.037-.5 7.288 7.892.5 18.243.5s18.743 3.039 18.743 6.788" class="msportalfx-svg-c01"></path><path d="M33.154 6.897c0 2.475-6.676 4.479-14.911 4.479S3.331 9.372 3.331 6.897c0-2.474 6.677-4.479 14.912-4.479s14.911 2.005 14.911 4.479" class="msportalfx-svg-c14"></path><path d="M30.03 9.634c1.952-.757 3.125-1.705 3.125-2.735 0-2.475-6.676-4.48-14.912-4.48-8.235 0-14.911 2.005-14.911 4.48 0 1.03 1.173 1.978 3.125 2.735 2.726-1.058 6.986-1.741 11.786-1.741 4.801 0 9.059.683 11.787 1.741" class="msportalfx-svg-c13"></path><path d="M12.29 31.354c0 1.122-.407 1.991-1.221 2.607-.814.616-1.938.924-3.373.924-1.221 0-2.241-.22-3.061-.66v-2.64c.946.803 1.988 1.205 3.126 1.205.55 0 .975-.11 1.275-.33s.45-.511.45-.875c0-.357-.144-.668-.433-.932s-.876-.605-1.761-1.023c-1.804-.846-2.706-2.002-2.706-3.464 0-1.061.393-1.912 1.18-2.553.786-.64 1.831-.961 3.134-.961 1.155 0 2.111.152 2.871.454v2.466c-.797-.55-1.705-.825-2.722-.825-.511 0-.915.108-1.212.325a1.026 1.026 0 0 0-.445.87c0 .374.119.681.359.92.239.239.73.535 1.472.887 1.106.523 1.893 1.053 2.364 1.592.468.54.703 1.211.703 2.013zm12.727-2.672c0 1.391-.317 2.599-.949 3.621-.633 1.023-1.523 1.74-2.672 2.153l3.431 3.176h-3.464l-2.45-2.747c-1.05-.038-1.998-.316-2.842-.833-.844-.516-1.496-1.225-1.955-2.124s-.689-1.902-.689-3.007c0-1.226.249-2.319.746-3.279.498-.96 1.197-1.698 2.099-2.215.902-.516 1.935-.775 3.102-.775 1.088 0 2.063.25 2.924.751.86.5 1.528 1.212 2.004 2.136.477.924.715 1.972.715 3.143zm-2.804.149c0-1.199-.261-2.146-.784-2.842s-1.237-1.044-2.145-1.044c-.924 0-1.663.349-2.219 1.047-.555.699-.833 1.628-.833 2.788 0 1.155.272 2.077.816 2.767.545.69 1.267 1.035 2.169 1.035.919 0 1.647-.334 2.186-1.002.54-.667.81-1.584.81-2.749zm11.803 5.848h-7.044V22.851h2.664v9.667h4.38z" class="msportalfx-svg-c01"></path><path d="M34.755 49.584l2.123.916.224-.265 1.7-1.999 1.719.01 1.973 2.254 2.135-.887-.023-.347-.185-2.643 1.225-1.234 2.957.168.897-2.167-.258-.229-1.96-1.738.012-1.756 2.205-2.016-.866-2.179-.342.025-2.588.186-1.206-1.249.164-3.02-2.124-.914-.224.265-1.702 2-1.72-.011-1.975-2.251-2.134.884.026.35.181 2.64-1.224 1.234-2.955-.168-.896 2.167.259.229 1.959 1.736-.012 1.756-2.207 2.016.867 2.179.343-.025 2.587-.186 1.208 1.251-.163 3.018zm.608-10.956c1.012-2.452 3.778-3.6 6.177-2.565 2.402 1.036 3.525 3.858 2.513 6.308-1.013 2.451-3.78 3.598-6.179 2.565-2.4-1.034-3.524-3.857-2.511-6.308" class="msportalfx-svg-c03"></path></g></svg>
+                    </div>
+                    <hr />
+                    <div>
+                        <h5 class="media-heading">Data &amp; Storage</h5>
+                        <a href="https://azure.microsoft.com/en-us/services/sql-database/" target="_blank">
+                            Azure SQL Database
+                        </a>
+                        <br />
+                        <a href="https://azure.microsoft.com/en-us/services/storage/blobs/" target="_blank">
+                            Azure Blob Storage
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 mb-5 text-center">
+                    <div class="arch-media-logo">
+                        <svg viewBox="0 0 50 50" class="msportalfx-svg-placeholder" role="presentation" focusable="false" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M25.561 23.167a.562.562 0 0 1-.288-.083L6.011 12.045a.578.578 0 0 1 0-1.002L25.149.075c.182-.1.405-.1.579 0L44.994 11.12c.174.102.29.291.29.496 0 .212-.116.4-.29.504L25.853 23.084a.573.573 0 0 1-.292.083" class="msportalfx-svg-c16"></path><path d="M22.792 50a.57.57 0 0 1-.295-.077L3.295 38.917A.567.567 0 0 1 3 38.416V16.331a.586.586 0 0 1 .881-.506L23.08 26.831a.587.587 0 0 1 .286.504v22.086a.575.575 0 0 1-.574.579m5.433 0a.575.575 0 0 1-.583-.579V27.478c0-.207.11-.397.288-.504l19.196-11.002a.601.601 0 0 1 .587 0 .583.583 0 0 1 .287.5v21.943a.58.58 0 0 1-.287.502L28.511 49.923a.534.534 0 0 1-.286.077" class="msportalfx-svg-c15"></path><path opacity="0.5" d="M28.225 50a.575.575 0 0 1-.583-.579V27.478c0-.207.11-.397.288-.504l19.196-11.002a.601.601 0 0 1 .587 0 .583.583 0 0 1 .287.5v21.943a.58.58 0 0 1-.287.502L28.511 49.923a.534.534 0 0 1-.286.077" class="msportalfx-svg-c01"></path></g></svg>
+                    </div>
+                    <hr />
+                    <div>
+                        <h5 class="media-heading">Framework</h5>
+                        <a href="https://asp.net/core">ASP.NET Core</a><br />
+                        <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a> <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="sec">
+    <div class="container">
+        <h3 class="text-center">
+            The Journey of Edi.Wang
+        </h3>
+        <p class="text-center">Development History</p>
+        <hr />
+        <div class="timeline-box">
+            <img src="~/images/about/bg1.png" class="img-fluid img-timeline" style="top: 45px; right: 60px" />
+            <img src="~/images/about/bg2.png" class="img-fluid img-timeline" style="top: 335px; left: 80px" />
+            <img src="~/images/about/bg3.png" class="img-fluid img-timeline" style="bottom: 800px; right: 80px" />
+            <img src="~/images/about/bg4.png" class="img-fluid img-timeline" style="bottom: 505px; left: 80px" />
+            <img src="~/images/about/bg5.png" class="img-fluid img-timeline" style="bottom: 300px; right: 80px" />
+            <ul class="timeline">
+                <li>
+                    <div class="timeline-badge success">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">2003</h4>
+                        </div>
+                        <div class="timeline-body">
+                            <p>
+                                When I was in junior middle school, I was so interested in computer technologies. I studied ASP programming by myself and built my first personal website: <i>HackerInn</i>. This site provides cyber security information and showcase my works.
+                            </p>
+                            <p>
+                                After I entered high school, due to busy school study, I don't have enough time to continue working on my site. As a result, <i>HackerInn</i> was faded out of the Internet.
+                            </p>
+                        </div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-badge info">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">2008</h4>
+                        </div>
+                        <div class="timeline-body">
+                            <p>
+                                After college entrance examination, I planned to build a brand new personal website for demostrating my works.
+                            </p>
+                            <div class="rounded-list">
+                                <ol>
+                                    <li>
+                                        <p>Use Windows Aero style as visual design, make the website looks gorgeous.</p>
+                                    </li>
+                                    <li>
+                                        <p>Use XHTML + CSS as a replacement for table layout, targeting latest browser standards.</p>
+                                    </li>
+                                    <li>
+                                        <p>Use ASP.NET + C# as framework and language of development. Improve significantly on both functionality and security.</p>
+                                    </li>
+                                </ol>
+                            </div>
+                            <p>
+                                After one year development, the website finally came online in July 2009.
+                            </p>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge warning">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">2011</h4>
+                            <p class="text-muted">Code Name: Nordrassil</p>
+                        </div>
+                        <div class="timeline-body">
+                            <p>
+                                New design came out. Clean and unified looks and feels made it easier to browse, RSS and SEO were also improved.
+                            </p>
+                            <p>
+                                Dropped support for IE6.0 and added some CSS3 features.
+                            </p>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge danger">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">2012</h4>
+                        </div>
+                        <div class="timeline-body">
+                            <p>
+                                UI theme changed to facebook style.
+                            </p>
+                            <p>
+                                Finished development of EdiBlog 7.0. The website was renamed to "diaosbook", it's the first version using ASP.NET MVC.
+                            </p>
+                        </div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-badge success">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">2013</h4>
+                        </div>
+                        <div class="timeline-body">
+                            <p>
+                                Redesigned using Bootstrap as front-end framework.
+                            </p>
+                            <p>
+                                Optimized for cloud hosting and mobile devices.
+                            </p>
+                            <p>
+                                Host by Microsoft Azure.
+                            </p>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge info">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">2015</h4>
+                        </div>
+                        <div class="timeline-body">
+                            <p>
+                                Migrated to new domain name: edi.wang.
+                            </p>
+                            <p>
+                                Changed website UI to English to go international.
+                            </p>
+                            <p>
+                                Enhance RWD for different screen sizes.
+                            </p>
+                        </div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-badge warning">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">2018</h4>
+                            <p class="text-muted">Code Name: Moonglade</p>
+                        </div>
+                        <div class="timeline-body">
+                            <p>
+                                Upgrade to FontAwesome 5 and Bootstrap 4.
+                            </p>
+                            <p>
+                                Enhance website performance.
+                            </p>
+                            <p>
+                                Integration with AzureAD.
+                            </p>
+                            <p>
+                                Completely rewrite blog system with <a href="https://dot.net" target="_blank">.NET Core</a>
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

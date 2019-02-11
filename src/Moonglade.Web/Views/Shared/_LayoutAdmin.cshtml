@@ -1,0 +1,138 @@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using Microsoft.Extensions.Options
+@using Moonglade.Configuration
+@using Moonglade.Core
+@using Moonglade.Model.Settings
+@{
+    var currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
+    string currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
+}
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject IOptions<AppSettings> Settings
+@inject BlogConfigurationService BlogConfigurationService
+@inject BlogConfig BlogConfig
+
+@{
+    BlogConfig.GetConfiguration(BlogConfigurationService);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        @BlogConfig.SiteTitle Admin
+        <environment include="Development">
+            (Debug)
+        </environment>
+    </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="keywords" content="@Html.Raw(BlogConfig.MetaKeyword)" />
+    <link rel="start" title="@BlogConfig.SiteTitle" href="~/" />
+    <link rel="alternate" type="application/rss+xml" title="@BlogConfig.FeedSettings.RssTitle" href="~/rss" />
+    <link type="application/opensearchdescription+xml" rel="search" title="@BlogConfig.SiteTitle" href="~/opensearch" />
+    <partial name="_Favicons" />
+    <link href="~/css/mooglade-css-bundle.min.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/js/app/app-js-bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/app/admin.js" asp-append-version="true"></script>
+    @RenderSection("head", false)
+    <environment exclude="Development">
+        @Html.Raw(JavaScriptSnippet.FullScript)
+    </environment>
+</head>
+<body>
+    <header class="ediblog-header">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-ediblogblue">
+            <div class="container-fluid">
+                <a class="ediwang-logo ediwang-logo-admin navbar-brand" asp-controller="Admin" asp-action="Index">
+                    edi.wang &gt; admin
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ediwang-navbar-content" aria-controls="ediwang-navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="ediwang-navbar-content">
+                    <div class="ml-auto">
+                        <span class="navbar-text mr-3">@User.Identity.Name</span>
+                        <a asp-controller="Admin" asp-action="SignOut" class="btn btn-sm btn-danger">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div id="page-content" class="content">
+        <div class="admin-main container-fluid mt-4 mb-5">
+            <div class="row">
+                <div class="col-md-3 col-lg-2">
+                    <aside class="admin-aside">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                Quick Actions
+                            </div>
+                            <div class="card-body">
+                                <a asp-controller="Post" asp-action="Create" class="quick-action btn btn-block btn-success">
+                                    <i class="fas fa-fw fa-plus"></i>
+                                    New Post
+                                </a>
+                                <a asp-controller="Comment" asp-action="PendingApproval" class="quick-action btn btn-block btn-outline-success">
+                                    <i class="far fa-fw fa-comments"></i>
+                                    Pending Comments
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                Menu
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <a asp-controller="Post" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Post" ? "active" : null)">
+                                    <i class="far fa-fw fa-file"></i>
+                                    Posts
+                                </a>
+                                <a asp-controller="Category" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Category" ? "active" : null)">
+                                    <i class="fas fa-fw fa-folder"></i>
+                                    Categories
+                                </a>
+                                <a asp-controller="Tags" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Tags" ? "active" : null)">
+                                    <i class="fas fa-tags"></i>
+                                    Tags
+                                </a>
+                                <a asp-controller="Comment" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Comment" ? "active" : null)">
+                                    <i class="far fa-fw fa-comments"></i>
+                                    Comments
+                                </a>
+                                <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
+                                    <i class="fas fa-fw fa-globe"></i>
+                                    Pingbacks
+                                </a>
+                                <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
+                                    <i class="fas fa-fw fa-cog"></i>
+                                    Settings
+                                </a>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a href="/" class="btn btn-sm btn-light mt-3">
+                                Back to Website
+                            </a>
+                        </div>
+                        <p class="text-muted mt-4 small text-center">
+                            &copy; 2009 - @DateTime.UtcNow.Year edi.wang <br />
+                            Moonglade @Utils.AppVersion
+                        </p>
+                    </aside>
+                </div>
+                <div class="col-md-9 col-lg-10">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    @RenderSection("scripts", false)
+</body>
+</html>

@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.TitlePrefix = "Archive ";
+}
+
+@using System.Globalization
+@using Moonglade.Core
+@model List<Moonglade.Model.ArchiveItem>
+
+@{
+    IEnumerable<int> yearList = new List<int>();
+    if (null != Model && Model.Any())
+    {
+        yearList = (from item in Model
+                    orderby item.Year descending
+                    select item.Year).Distinct();
+    }
+
+    string GetMonthNameByNumber(int number)
+    {
+        if (number > 12 || number < 1)
+        {
+            return string.Empty;
+        }
+
+        return CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
+    }
+}
+
+<h3>
+    Archive Timeline
+</h3>
+<hr />
+
+@if (null != Model && Model.Any())
+{
+    <ul class="timeline" id="monthList">
+        @foreach (var item in yearList)
+        {
+            var queryMonth = Model.Where(obj => obj.Year == item);
+            var yearEndChar = item % 10;
+            var badgeClass = string.Empty;
+            switch (yearEndChar % 5)
+            {
+                case 0:
+                    badgeClass = "primary";
+                    break;
+                case 1:
+                    badgeClass = "success";
+                    break;
+                case 2:
+                    badgeClass = "info";
+                    break;
+                case 3:
+                    badgeClass = "warning";
+                    break;
+                case 4:
+                    badgeClass = "danger";
+                    break;
+            }
+
+            <li class="@(item % 2 == 0 ? "timeline-inverted" : null)">
+                <div class="timeline-badge @badgeClass"><i class="fas fa-clock"></i></div>
+                <div class="timeline-panel">
+                    <div class="timeline-heading">
+                        <h3 class="timeline-title">
+                            <a asp-controller="Archive" asp-action="GetArchiveByTime" asp-route-year="@item">@item</a>
+                        </h3>
+                    </div>
+                    <div class="timeline-body">
+                        <div class="row">
+                            @foreach (var month in queryMonth)
+                            {
+                                <div class="col-md-6 col-sm-6 col-6">
+                                    <span class="badge badge-secondary float-right">@(month.Count)</span>
+                                    <a asp-controller="Archive" asp-action="GetArchiveByTime"
+                                       asp-route-year="@month.Year"
+                                       asp-route-month="@month.Month">
+                                        @GetMonthNameByNumber(month.Month)
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <div class="alert alert-info">No Archive.</div>
+}

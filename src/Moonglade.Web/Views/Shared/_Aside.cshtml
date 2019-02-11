@@ -1,0 +1,53 @@
+﻿<aside class="col-xl-3 d-none d-xl-block">
+    <section class="blog-info-desktop-lg d-none d-xl-block mb-3">
+        <div class="card-bkimg-container">
+            <img class="card-bkimg" alt="" src="~/images/avatar.jpg" />
+        </div>
+        <div class="blog-info-photo-text text-center">
+            <a asp-controller="About" asp-action="Index">
+                <img src="~/images/avatar.jpg"
+                     alt="Edi Wang"
+                     class="media-object rounded-circle center-block blogger-head-pic" />
+            </a>
+            <div class="bor"></div>
+            <div>
+                <h3 class="mt-3">
+                    Edi Wang
+                </h3>
+                <p>
+                    .NET and Windows Developer <br />
+                    Microsoft MVP
+                </p>
+            </div>
+        </div>
+        <div>
+            <a asp-controller="About" asp-action="Index" class="btn btn-success btn-block">
+                About
+            </a>
+        </div>
+    </section>
+
+    <section class="mvp-link mb-4">
+        <img src="~/images/mvp-logo.svg" class="img-fluid" />
+    </section>
+
+    <section class="top-tags mb-4">
+        <div class="card">
+            <div class="card-header">Top Tags</div>
+            <div class="card-body">
+                <cache expires-after="@TimeSpan.FromMinutes(60)">
+                    @await Component.InvokeAsync("HotTags")
+                </cache>
+            </div>
+        </div>
+    </section>
+
+    <section class="recent-comments">
+        <div class="card">
+            <div class="card-header">Recent Comments</div>
+            <cache expires-after="@TimeSpan.FromMinutes(10)">
+                @await Component.InvokeAsync("RecentComments")
+            </cache>
+        </div>
+    </section>
+</aside>
