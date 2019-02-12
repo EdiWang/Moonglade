@@ -1,2 +1,1 @@
-﻿ALTER TABLE BlogConfiguration ALTER COLUMN CfgValue NVARCHAR(MAX)
-GO
+﻿INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (23, 'ReaderView.SiteName', 'edi.wang', GETDATE())

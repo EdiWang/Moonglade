@@ -18,6 +18,9 @@
 
         public FeedSettings FeedSettings { get; set; }
 
+        // TODO: UI and Save
+        public ReaderView ReaderView { get; set; }
+
         private bool _hasInitialized;
 
         public BlogConfig()
@@ -29,6 +32,7 @@
             SiteTitle = string.Empty;
             EmailConfiguration = new EmailConfiguration();
             FeedSettings = new FeedSettings();
+            ReaderView = new ReaderView();
         }
 
         public void GetConfiguration(BlogConfigurationService blogConfigurationService)
@@ -66,6 +70,8 @@
                 FeedSettings.RssGeneratorName = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssGeneratorName)}"];
                 FeedSettings.AuthorName = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.AuthorName)}"];
                 FeedSettings.RssItemCount = int.Parse(cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssItemCount)}"]);
+
+                ReaderView.SiteName = cfgDic[$"{nameof(ReaderView)}.{nameof(ReaderView.SiteName)}"];
 
                 _hasInitialized = true;
             }
