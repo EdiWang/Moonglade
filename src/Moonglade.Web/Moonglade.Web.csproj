@@ -35,7 +35,6 @@
     <None Remove="App_Data\opml.xml" />
     <None Remove="Moonglade.Web.csproj.vspscc" />
     <None Include="bundleconfig.json" />
-    <Folder Include="App_Data\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -80,5 +79,11 @@
 
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="App_Data\0.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

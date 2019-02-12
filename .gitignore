@@ -4,6 +4,12 @@
 ## Sensitive data
 appsettings.Development.json
 
+## Auto Generated Files
+app-js-bundle.min.js
+errorpages-bundle.min.css
+mooglade-css-bundle.min.css
+tinymce-editor-bs-bundle.min.css
+
 # User-specific files
 *.suo
 *.user

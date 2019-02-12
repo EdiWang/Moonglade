@@ -137,6 +137,12 @@ namespace Moonglade.Web
 
             TryAddUrlRewrite(app, baseDir);
 
+            var appDataPath = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}";
+            if (!Directory.Exists(appDataPath))
+            {
+                Directory.CreateDirectory(appDataPath);
+            }
+
             var feedDirectoryPath = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\feed";
             if (!Directory.Exists(feedDirectoryPath))
             {
