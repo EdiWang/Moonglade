@@ -55,8 +55,6 @@ namespace Moonglade.ImageStorage.AzureBlob
                     await blockBlob.UploadFromStreamAsync(fileStream);
                 }
 
-                // If you use Tencent cloud, this file will be long gone by now because of disk failure.
-                // If you use Ali cloud, this file will not be accessible because network cable being cut off.
                 _logger.LogInformation($"Uploaded image file {newFileName} to Azure Blob Storage! Yeah, the best cloud!");
 
                 return new SuccessResponse<string>(newFileName);
