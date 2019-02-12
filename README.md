@@ -11,7 +11,7 @@ This is the new blog system for https://edi.wang, Moonglade project is the succe
 - RSS/Atom/OPML
 - Open Search
 
-### Major Technologies and Frameworks
+## Major Technologies and Frameworks
 - ASP.NET Core
 - Entity Framework Core
 - SQL Server
@@ -24,12 +24,20 @@ This is the new blog system for https://edi.wang, Moonglade project is the succe
 ### Tools
 - .NET Core 2.2 SDK
 - Visual Studio 2017 or Visual Studio Code
+- SQL Server 2017+ / Azure SQL Database Instance
 
 ### Steps
 
+#### Prepare Azure Environment
+
+- Register an App in Azure Active Directory
+- Create an Azure Storage Account (optional but enabled by default, for saving blog post images)
+
+#### Build Source
+
 1. You will need to create a "**appsettings.Development.json**" under ".\src\Moonglade.Web", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
 
-2. Create a dabase using ".\Database\schema-mssql-140.sql", execute ".\Database\Migration.sql", and change the connection string in **appsettings.Development.json**. 
+2. Create a SQL Server dabase using "**.\Database\schema-mssql-140.sql**", execute "**.\Database\Migration.sql**", and update the connection string 'MoongladeDatabase' in **appsettings.Development.json**. 
 
 3. Build **Moonglade.sln**, startup project is: ".\src\Moonglade.Web\Moonglade.Web.csproj"
 
