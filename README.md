@@ -2,9 +2,7 @@
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
-This is the new blog system for https://edi.wang, Moonglade project is the successor of project "Nordrassil", which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using .NET Core, focus on performance and optimized for cloud-based hosting.
-
-![image](https://raw.githubusercontent.com/EdiWang/Moonglade/master/docs/ediwang-arch-1920.png?token=ADJs_xLL4jfffJ_msBOf6Y8petThFULwks5cY_2twA%3D%3D)
+This is the new blog system for https://edi.wang, Moonglade project is the successor of project "Nordrassil", which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using **.NET Core**, focus on performance and optimized for cloud-based hosting.
 
 ## Blog Features
 - Post
@@ -26,16 +24,19 @@ This is the new blog system for https://edi.wang, Moonglade project is the succe
 ## Build and Run
 
 ### Tools
-- .NET Core 2.2 SDK
-- Visual Studio 2017 or Visual Studio Code
+- [.NET Core 2.2 SDK](http://dot.net)
+- [Visual Studio 2017](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
 - SQL Server 2017+ / Azure SQL Database Instance
 
 ### Steps
 
 #### Prepare Azure Environment
 
-- Register an App in Azure Active Directory
-- Create an Azure Storage Account (optional but enabled by default, for saving blog post images)
+- Register an App in **Azure Active Directory**
+  - Set Redirection URI to "https://localhost:5001/signin-oidc"
+  - Copy "**appId**" to set as **AzureAd:ClientId** in later appsettings file
+- Create an **Azure Storage Account** (optional but enabled by default, for saving blog post images)
+  - To save image to file system, set AppSettings:ImageStorageProvider as "**FileSystemImageProvider**" *WANING: This provider code has not been tested yet*
 
 #### Build Source
 
