@@ -4,6 +4,8 @@
 
 This is the new blog system for https://edi.wang, Moonglade project is the successor of project "Nordrassil", which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using .NET Core, focus on performance and optimized for cloud-based hosting.
 
+![image](https://raw.githubusercontent.com/EdiWang/Moonglade/master/docs/ediwang-arch-1280.png?token=ADJs_wVZ8bfYx6ZrGsqLPsSTlK87gKKVks5cY9GbwA%3D%3D)
+
 ## Blog Features
 - Post
 - Comment
