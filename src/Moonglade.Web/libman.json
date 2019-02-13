@@ -10,7 +10,7 @@
       ]
     },
     {
-      "library": "tinymce@4.9.2",
+      "library": "tinymce@4.9.3",
       "destination": "wwwroot/lib/tinymce",
       "files": []
     },
@@ -62,7 +62,7 @@
       ]
     },
     {
-      "library": "popper.js@1.14.6",
+      "library": "popper.js@1.14.7",
       "destination": "wwwroot/lib/popper.js/",
       "files": [
         "umd/popper.min.js"
