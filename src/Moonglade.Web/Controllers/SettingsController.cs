@@ -66,7 +66,8 @@ namespace Moonglade.Web.Controllers
                 DisharmonyWords = _blogConfig.DisharmonyWords,
                 MetaAuthor = _blogConfig.MetaAuthor,
                 MetaKeyword = _blogConfig.MetaKeyword,
-                SiteTitle = _blogConfig.SiteTitle
+                SiteTitle = _blogConfig.SiteTitle,
+                ReaderViewSiteName = _blogConfig.ReaderView.SiteName
             };
             return View(vm);
         }
@@ -81,6 +82,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.MetaAuthor = model.MetaAuthor;
                 _blogConfig.MetaKeyword = model.MetaKeyword;
                 _blogConfig.SiteTitle = model.SiteTitle;
+                _blogConfig.ReaderView.SiteName = model.ReaderViewSiteName;
 
                 var response = _blogConfigurationService.SaveGeneralSettings(_blogConfig);
                 _blogConfig.DumpOldValuesWhenNextLoad();

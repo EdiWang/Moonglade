@@ -18,7 +18,6 @@
 
         public FeedSettings FeedSettings { get; set; }
 
-        // TODO: UI and Save
         public ReaderView ReaderView { get; set; }
 
         private bool _hasInitialized;

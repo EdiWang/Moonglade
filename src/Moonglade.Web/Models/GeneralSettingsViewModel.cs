@@ -24,5 +24,9 @@ namespace Moonglade.Web.Models
         [Required]
         [Display(Name = "Website Title")]
         public string SiteTitle { get; set; }
+
+        [Required]
+        [Display(Name = "Reader View Site Name")]
+        public string ReaderViewSiteName { get; set; }
     }
 }
