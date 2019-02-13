@@ -87,6 +87,7 @@ namespace Moonglade.Configuration
                 if (null != cfg)
                 {
                     cfg.CfgValue = value;
+                    cfg.LastModifiedTimeUtc = DateTime.UtcNow;
                     var rows = Context.SaveChanges();
                     return new Response(rows > 0);
                 }
@@ -112,6 +113,7 @@ namespace Moonglade.Configuration
                     if (null != cfg)
                     {
                         cfg.CfgValue = propertyInfo.GetValue(emailConfiguration, null).ToString();
+                        cfg.LastModifiedTimeUtc = DateTime.UtcNow;
                     }
                 }
 
@@ -135,6 +137,7 @@ namespace Moonglade.Configuration
                     if (null != cfg)
                     {
                         cfg.CfgValue = propertyInfo.GetValue(feedSettings, null).ToString();
+                        cfg.LastModifiedTimeUtc = DateTime.UtcNow;
                     }
                 }
 
