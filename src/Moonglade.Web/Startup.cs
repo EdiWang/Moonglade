@@ -173,6 +173,7 @@ namespace Moonglade.Web
             // Do NOT create or modify anything under application directory
             // e.g. Azure Deployment using WEBSITE_RUN_FROM_PACKAGE will make website root directory read only.
             string tPath = Path.GetTempPath();
+            _logger.LogInformation($"Server environment Temp path: {tPath}");
             string moongladeAppDataPath = Path.Combine(tPath, @"moonglade\App_Data");
             if (Directory.Exists(moongladeAppDataPath))
             {
@@ -181,11 +182,13 @@ namespace Moonglade.Web
 
             Directory.CreateDirectory(moongladeAppDataPath);
             AppDomain.CurrentDomain.SetData(Constants.DataDirectory, moongladeAppDataPath);
+            _logger.LogInformation($"Created Application Data path: {moongladeAppDataPath}");
 
             var feedDirectoryPath = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed";
             if (!Directory.Exists(feedDirectoryPath))
             {
                 Directory.CreateDirectory(feedDirectoryPath);
+                _logger.LogInformation($"Created feed path: {feedDirectoryPath}");
             }
 
             CleanDataCache();
