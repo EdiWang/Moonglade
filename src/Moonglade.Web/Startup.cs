@@ -131,24 +131,7 @@ namespace Moonglade.Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            var baseDir = env.ContentRootPath;
-            AppDomain.CurrentDomain.SetData(Constants.AppBaseDirectory, baseDir);
-            AppDomain.CurrentDomain.SetData(Constants.DataDirectory, Path.Combine(baseDir, "App_Data"));
-
-            TryAddUrlRewrite(app, baseDir);
-
-            var appDataPath = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}";
-            if (!Directory.Exists(appDataPath))
-            {
-                Directory.CreateDirectory(appDataPath);
-            }
-
-            var feedDirectoryPath = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\feed";
-            if (!Directory.Exists(feedDirectoryPath))
-            {
-                Directory.CreateDirectory(feedDirectoryPath);
-            }
-            CleanDataCache();
+            PrepareRuntimePathDependencies(app, env);
 
             app.UseSecurityHeaders(new HeaderPolicyCollection()
                 .AddCustomHeader("X-UA-Compatible", "IE=edge")
@@ -180,6 +163,34 @@ namespace Moonglade.Web
             });
         }
 
+        private void PrepareRuntimePathDependencies(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            var baseDir = env.ContentRootPath;
+            TryAddUrlRewrite(app, baseDir);
+            AppDomain.CurrentDomain.SetData(Constants.AppBaseDirectory, baseDir);
+
+            // Use Temp folder as best practice
+            // Do NOT create or modify anything under application directory
+            // e.g. Azure Deployment using WEBSITE_RUN_FROM_PACKAGE will make website root directory read only.
+            string tPath = Path.GetTempPath();
+            string moongladeAppDataPath = Path.Combine(tPath, @"moonglade\App_Data");
+            if (Directory.Exists(moongladeAppDataPath))
+            {
+                Directory.Delete(moongladeAppDataPath, true);
+            }
+
+            Directory.CreateDirectory(moongladeAppDataPath);
+            AppDomain.CurrentDomain.SetData(Constants.DataDirectory, moongladeAppDataPath);
+
+            var feedDirectoryPath = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed";
+            if (!Directory.Exists(feedDirectoryPath))
+            {
+                Directory.CreateDirectory(feedDirectoryPath);
+            }
+
+            CleanDataCache();
+        }
+
         private void TryAddUrlRewrite(IApplicationBuilder app, string baseDir)
         {
             try
@@ -192,7 +203,8 @@ namespace Moonglade.Web
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "URL Rewrite is non-fatal error, continue running the application.");
+                // URL Rewrite is non-fatal error, continue running the application.
+                _logger.LogError(e, nameof(TryAddUrlRewrite));
             }
         }
 
