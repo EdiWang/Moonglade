@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,12 @@ namespace Moonglade.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var feedDirectoryPath = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed";
+            if (!Directory.Exists(feedDirectoryPath))
+            {
+                Directory.CreateDirectory(feedDirectoryPath);
+            }
+
             var opmlDataFile = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opml.xml";
             if (!System.IO.File.Exists(opmlDataFile))
             {

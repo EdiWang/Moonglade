@@ -6,7 +6,8 @@
 
         public static string DataDirectory = "DataDirectory";
 
-        public const string FileSystemImageStorageFolder = @"App_Data\Uploads";
+        public const string FileSystemImageStorageFolder = @"PostImages";
+
         public static string AppBaseDirectory = "AppBaseDirectory";
     }
 }
