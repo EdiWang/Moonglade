@@ -41,6 +41,9 @@ namespace Moonglade.Web
         private readonly string _azStorageContainerName;
         private readonly string _aesKey;
         private readonly string _aesIv;
+        private readonly string _imageStorageProvider;
+
+        private readonly IConfigurationSection _appSettingsConfigurationSection;
 
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
@@ -59,6 +62,9 @@ namespace Moonglade.Web
             var encryptionSettings = Configuration.GetSection("Encryption");
             _aesKey = encryptionSettings["Key"];
             _aesIv = encryptionSettings["IV"];
+
+            _appSettingsConfigurationSection = Configuration.GetSection(nameof(AppSettings));
+            _imageStorageProvider = _appSettingsConfigurationSection["ImageStorageProvider"];
         }
 
         public IConfiguration Configuration { get; }
@@ -72,7 +78,7 @@ namespace Moonglade.Web
                 options.Cookie.HttpOnly = true;
             });
 
-            services.Configure<AppSettings>(Configuration.GetSection(nameof(AppSettings)));
+            services.Configure<AppSettings>(_appSettingsConfigurationSection);
 
             services.AddAuthentication(sharedOptions =>
                     {
@@ -97,9 +103,18 @@ namespace Moonglade.Web
 
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSingleton(s => new AzureStorageInfo(_azStorageConnectionString, _azStorageContainerName));
-            services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
-            services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
+
+            switch (_imageStorageProvider)
+            {
+                case nameof(AzureStorageImageProvider):
+                    services.AddSingleton(s => new AzureStorageInfo(_azStorageConnectionString, _azStorageContainerName));
+                    services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
+                    break;
+                case nameof(FileSystemImageProvider):
+                    services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
+                    break;
+            }
+
             services.AddSingleton<BlogConfig>();
             services.AddSingleton(m => new MetricsReader(_appInsightEndpoint, _appInsightAppId, _appInsightApiKey));
             services.AddScoped<DeleteSubscriptionCache>();
@@ -124,7 +139,7 @@ namespace Moonglade.Web
                                {
                                    sqlOptions.EnableRetryOnFailure(
                                        maxRetryCount: 3,
-                                       maxRetryDelay: TimeSpan.FromSeconds(30), 
+                                       maxRetryDelay: TimeSpan.FromSeconds(30),
                                        errorNumbersToAdd: null);
                                }));
         }

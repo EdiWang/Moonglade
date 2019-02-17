@@ -35,7 +35,7 @@ namespace Moonglade.Web.Controllers
             IConfiguration configuration,
             IHttpContextAccessor accessor,
             IMemoryCache memoryCache,
-            IEnumerable<IAsyncImageStorageProvider> imageStorageProviders,
+            IAsyncImageStorageProvider imageStorageProvider,
             ISessionBasedCaptcha captcha,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
@@ -44,12 +44,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig = blogConfig;
             _blogConfig.GetConfiguration(blogConfigurationService);
 
-            var imageStorageProviderName = AppSettings.ImageStorageProvider;
-            var pvd = imageStorageProviders.FirstOrDefault(p => p.Name == imageStorageProviderName);
-            if (null != pvd)
-            {
-                _imageStorageProvider = pvd;
-            }
+            _imageStorageProvider = imageStorageProvider;
             _captcha = captcha;
         }
 
