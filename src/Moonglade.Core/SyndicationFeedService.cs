@@ -125,10 +125,7 @@ namespace Moonglade.Core
 
         private IQueryable<Post> GetSubscribedPosts(Guid? categoryId, int? top = null)
         {
-            var query = Context.Post.Include(p => p.PostPublish)
-                                    .Include(p => p.PostCategory)
-                                    .ThenInclude(pc => pc.Category)
-                                    .Where(p => !p.PostPublish.IsDeleted &&
+            var query = Context.Post.Where(p => !p.PostPublish.IsDeleted &&
                                          p.PostPublish.IsPublished &&
                                          p.PostPublish.IsFeedIncluded &&
                                          (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)))
