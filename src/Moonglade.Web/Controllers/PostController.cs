@@ -122,7 +122,7 @@ namespace Moonglade.Web.Controllers
         {
             if (HasCookie(CookieNames.Hit, postId.ToString()))
             {
-                Logger.LogTrace($"User from {HttpContext.Connection.RemoteIpAddress} re-visited post {postId}");
+                Logger.LogTrace($"User re-visited post {postId}");
                 return new EmptyResult();
             }
 
@@ -130,7 +130,7 @@ namespace Moonglade.Web.Controllers
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
-                Logger.LogTrace($"User from {HttpContext.Connection.RemoteIpAddress} hit post: {postId}");
+                Logger.LogTrace($"User hit post: {postId}");
             }
 
             return Json(response);

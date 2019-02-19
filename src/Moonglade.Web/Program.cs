@@ -14,16 +14,13 @@ namespace Moonglade.Web
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Info($"Moonglade is starting, hail Microsoft! \n" +
+                logger.Info($"Moonglade Version {Utils.AppVersion}\n" +
                             $"--------------------------------------------------------\n" +
-                            $" Version: {Utils.AppVersion} \n" +
                             $" Directory: {Environment.CurrentDirectory} \n" +
                             $" x64Process: {Environment.Is64BitProcess} \n" +
                             $" OSVersion: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
-                            $" AppDomain: {AppDomain.CurrentDomain.FriendlyName} \n" +
                             $" UserName: {Environment.UserName} \n" +
                             $"--------------------------------------------------------");
-
                 CreateWebHostBuilder(args).Build().Run();
             }
             catch (Exception ex)

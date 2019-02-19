@@ -60,11 +60,11 @@ namespace Moonglade.Web.Controllers
                     return BadRequest("invalid filename");
                 }
 
-                Logger.LogDebug($"Requesting image file {filename}");
+                Logger.LogTrace($"Requesting image file {filename}");
 
                 var imageEntry = await Cache.GetOrCreateAsync(filename, async entry =>
                 {
-                    Logger.LogDebug($"Image file {filename} not on cache, fetching image...");
+                    Logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
                     entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.ImageCacheSlidingExpirationMinutes);
                     var imgBytesResponse = await _imageStorageProvider.GetAsync(filename);
