@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -47,6 +49,20 @@ namespace Moonglade.Web.Controllers
                 Logger.LogError($"Server Error: {errMessage}");
             }
             return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+
+        protected string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)
+        {
+            var link = linkGenerator.GetUriByAction(HttpContext, action: "Slug", controller: "Post",
+                values: new
+                {
+                    year = pubDate.Year,
+                    month = pubDate.Month,
+                    day = pubDate.Day,
+                    slug = slug
+                });
+            return link;
         }
     }
 }

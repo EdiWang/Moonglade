@@ -6,6 +6,7 @@ using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
@@ -104,12 +105,11 @@ namespace Moonglade.Web.Controllers
                             Logger.LogInformation($"Trying to Ping URL for post: {post.Id}");
 
                             var pubDate = post.PostPublish.PubDateUtc.GetValueOrDefault();
-                            var url =
-                                $"{AppSettings.BindingUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{post.Slug}";
+                            var link = GetPostUrl(_linkGenerator, pubDate, post.Slug);
 
                             if (AppSettings.EnablePingBackSend)
                             {
-                                Task.Run(async () => { await _pingbackSender.TrySendPingAsync(url, post.PostContent); });
+                                Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, post.PostContent); });
                             }
                         }
 
@@ -129,6 +129,7 @@ namespace Moonglade.Web.Controllers
                 return View("CreateOrEdit", model);
             }
         }
+
 
         [Authorize]
         [Route("manage/edit")]
@@ -231,12 +232,11 @@ namespace Moonglade.Web.Controllers
                         Logger.LogInformation($"Trying to Ping URL for post: {post.Id}");
 
                         var pubDate = post.PostPublish.PubDateUtc.GetValueOrDefault();
-                        var url =
-                            $"{AppSettings.BindingUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{post.Slug}";
+                        var link = GetPostUrl(_linkGenerator, pubDate, post.Slug);
 
                         if (AppSettings.EnablePingBackSend)
                         {
-                            Task.Run(async () => { await _pingbackSender.TrySendPingAsync(url, post.PostContent); });
+                            Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, post.PostContent); });
                         }
                     }
 

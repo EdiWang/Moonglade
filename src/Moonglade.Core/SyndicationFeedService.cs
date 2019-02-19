@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Edi.SyndicationFeedGenerator;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,15 +19,21 @@ namespace Moonglade.Core
     {
         private readonly BlogConfig _blogConfig;
 
+        private readonly string baseUrl;
+
         public SyndicationFeedService(
             MoongladeDbContext context,
             ILogger<SyndicationFeedService> logger,
             IOptions<AppSettings> settings,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService) : base(context, logger, settings)
+            BlogConfigurationService blogConfigurationService, 
+            IHttpContextAccessor httpContextAccessor) : base(context, logger, settings)
         {
             _blogConfig = blogConfig;
             _blogConfig.GetConfiguration(blogConfigurationService);
+
+            var acc = httpContextAccessor;
+            baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
         }
 
         public async Task RefreshRssFilesForCategoryAsync(string categoryName)
@@ -39,13 +46,13 @@ namespace Moonglade.Core
 
                 var rw = new SyndicationFeedGenerator
                 {
-                    HostUrl = AppSettings.BindingUrl,
+                    HostUrl = baseUrl,
                     HeadTitle = _blogConfig.FeedSettings.RssTitle,
                     HeadDescription = _blogConfig.FeedSettings.RssDescription,
                     Copyright = _blogConfig.FeedSettings.RssCopyright,
                     Generator = _blogConfig.FeedSettings.RssGeneratorName,
                     FeedItemCollection = itemCollection,
-                    TrackBackUrl = AppSettings.BindingUrl,
+                    TrackBackUrl = baseUrl,
                     MaxContentLength = 0
                 };
 
@@ -67,13 +74,13 @@ namespace Moonglade.Core
 
             var rw = new SyndicationFeedGenerator
             {
-                HostUrl = AppSettings.BindingUrl,
+                HostUrl = baseUrl,
                 HeadTitle = _blogConfig.FeedSettings.RssTitle,
                 HeadDescription = _blogConfig.FeedSettings.RssDescription,
                 Copyright = _blogConfig.FeedSettings.RssCopyright,
                 Generator = _blogConfig.FeedSettings.RssGeneratorName,
                 FeedItemCollection = itemCollection,
-                TrackBackUrl = AppSettings.BindingUrl,
+                TrackBackUrl = baseUrl,
                 MaxContentLength = 0
             };
 
@@ -120,7 +127,7 @@ namespace Moonglade.Core
 
         private string GetPostLink(DateTime pubDateUtc, string slug)
         {
-            return $"{AppSettings.BindingUrl}/post/{pubDateUtc.Year}/{pubDateUtc.Month}/{pubDateUtc.Day}/{slug}";
+            return $"{baseUrl}/post/{pubDateUtc.Year}/{pubDateUtc.Month}/{pubDateUtc.Day}/{slug}";
         }
 
         private IQueryable<Post> GetSubscribedPosts(Guid? categoryId, int? top = null)

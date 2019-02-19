@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Edi.Captcha;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -31,6 +32,8 @@ namespace Moonglade.Web.Controllers
 
         private readonly BlogConfig _blogConfig;
 
+        private readonly LinkGenerator _linkGenerator;
+
         public CommentController(MoongladeDbContext context,
             ILogger<CommentController> logger,
             IOptions<AppSettings> settings,
@@ -42,10 +45,11 @@ namespace Moonglade.Web.Controllers
             PostService postService,
             ISessionBasedCaptcha captcha,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService)
+            BlogConfigurationService blogConfigurationService, LinkGenerator linkGenerator)
             : base(context, logger, settings, configuration, accessor, memoryCache)
         {
             _blogConfig = blogConfig;
+            _linkGenerator = linkGenerator;
             _blogConfig.GetConfiguration(blogConfigurationService);
 
             _commentService = commentService;

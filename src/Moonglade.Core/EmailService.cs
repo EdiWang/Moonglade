@@ -103,7 +103,7 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task SendCommentReplyNotification(CommentReplySummary model)
+        public async Task SendCommentReplyNotification(CommentReplySummary model, string postLink)
         {
             if (string.IsNullOrWhiteSpace(model.Email))
             {
@@ -117,12 +117,7 @@ namespace Moonglade.Core
                 var pipeline = new TemplatePipeline().Map("ReplyTime",
                                                          Utils.UtcToZoneTime(model.ReplyTimeUtc.GetValueOrDefault(), AppSettings.TimeZone))
                                                      .Map("ReplyContent", model.ReplyContent)
-                                                     .Map("RouteLink",
-                                                         $"{AppSettings.BindingUrl}/post/" +
-                                                         $"{model.PubDateUTC.Value.Year}/" +
-                                                         $"{model.PubDateUTC.Value.Month}/" +
-                                                         $"{model.PubDateUTC.Value.Day}/" +
-                                                         $"{model.Slug}")
+                                                     .Map("RouteLink", postLink)
                                                      .Map("PostTitle", model.Title)
                                                      .Map("CommentContent", model.CommentContent);
 
