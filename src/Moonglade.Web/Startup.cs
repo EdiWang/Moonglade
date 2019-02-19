@@ -42,6 +42,7 @@ namespace Moonglade.Web
         private readonly string _aesKey;
         private readonly string _aesIv;
         private readonly string _imageStorageProvider;
+        private readonly bool _enforceHttps;
 
         private readonly IConfigurationSection _appSettingsConfigurationSection;
 
@@ -65,6 +66,7 @@ namespace Moonglade.Web
 
             _appSettingsConfigurationSection = Configuration.GetSection(nameof(AppSettings));
             _imageStorageProvider = _appSettingsConfigurationSection["ImageStorageProvider"];
+            _enforceHttps = bool.Parse(_appSettingsConfigurationSection["EnforceHttps"]);
         }
 
         public IConfiguration Configuration { get; }
@@ -160,10 +162,16 @@ namespace Moonglade.Web
             else
             {
                 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
+            }
+
+            if (_enforceHttps)
+            {
+                _logger.LogInformation("HTTPS is enforced.");
                 app.UseHttpsRedirection();
                 app.UseHsts();
             }
 
+            // Support Chinese contents
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             app.UseStaticFiles();
