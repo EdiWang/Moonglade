@@ -16,7 +16,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Moonglade.AzureApplicationInsights;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data;
@@ -34,9 +33,6 @@ namespace Moonglade.Web
     {
         private readonly ILogger<Startup> _logger;
 
-        private readonly string _appInsightApiKey;
-        private readonly string _appInsightEndpoint;
-        private readonly string _appInsightAppId;
         private readonly string _azStorageConnectionString;
         private readonly string _azStorageContainerName;
         private readonly string _aesKey;
@@ -50,11 +46,6 @@ namespace Moonglade.Web
         {
             Configuration = configuration;
             _logger = logger;
-
-            var appInsightsConfig = Configuration.GetSection("ApplicationInsights");
-            _appInsightAppId = appInsightsConfig["AppId"];
-            _appInsightApiKey = appInsightsConfig["APIKey"];
-            _appInsightEndpoint = appInsightsConfig["APIEndpoint"];
 
             var azureStorageSettings = Configuration.GetSection("AzureStorageSettings");
             _azStorageConnectionString = azureStorageSettings["ConnectionString"];
@@ -118,7 +109,6 @@ namespace Moonglade.Web
             }
 
             services.AddSingleton<BlogConfig>();
-            services.AddSingleton(m => new MetricsReader(_appInsightEndpoint, _appInsightAppId, _appInsightApiKey));
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddTransient<ISessionBasedCaptcha, BasicLetterCaptcha>();
             services.AddTransient<BlogConfigurationService>();
