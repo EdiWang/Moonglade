@@ -61,7 +61,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.AzureApplicationInsights\Moonglade.AzureApplicationInsights.csproj" />
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
