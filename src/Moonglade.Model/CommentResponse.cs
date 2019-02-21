@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Web.Models
+﻿namespace Moonglade.Model
 {
     public class CommentResponse
     {
@@ -11,15 +11,5 @@
             IsSuccess = isSuccess;
             ResponseCode = responseCode;
         }
-    }
-
-    public enum CommentResponseCode
-    {
-        Success,
-        UnknownError,
-        WrongCaptcha,
-        EmailDomainBlocked,
-        CommentDisabled,
-        InvalidModel
     }
 }

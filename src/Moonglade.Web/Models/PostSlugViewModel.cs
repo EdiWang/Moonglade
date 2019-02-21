@@ -9,7 +9,7 @@ namespace Moonglade.Web.Models
         public string Title { get; set; }
         public string Abstract { get; set; }
         public DateTime PubDateUtc { get; set; }
-        public IList<PostDetailViewCategoryInfo> Categories { get; set; }
+        public IList<SimpleCategoryInfoViewModel> Categories { get; set; }
         public string Content { get; set; }
         public int Hits { get; set; }
         public int LikeHits { get; set; }

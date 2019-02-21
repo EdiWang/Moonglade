@@ -3,11 +3,11 @@
     public class PostSlugViewModelWrapper
     {
         public PostSlugViewModel PostModel { get; set; }
-        public CommentPostModel CommentPostModel { get; set; }
+        public NewCommentModel NewCommentModel { get; set; }
 
         public PostSlugViewModelWrapper()
         {
-            CommentPostModel = new CommentPostModel();
+            NewCommentModel = new NewCommentModel();
         }
     }
 }

@@ -189,23 +189,23 @@
                           data-ajax-success="onCommentSuccess"
                           data-ajax="true"
                           data-ajax-method="POST">
-                        <input type="hidden" asp-for="CommentPostModel.PostId" />
+                        <input type="hidden" asp-for="NewCommentModel.PostId" />
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control" placeholder="Your Name" asp-for="CommentPostModel.Username" />
-                                    <span asp-validation-for="CommentPostModel.Username" class="text-danger"></span>
+                                    <input type="text" class="form-control" placeholder="Your Name" asp-for="NewCommentModel.Username" />
+                                    <span asp-validation-for="NewCommentModel.Username" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="Email" asp-for="CommentPostModel.Email" />
-                                    <span asp-validation-for="CommentPostModel.Email" class="text-danger"></span>
+                                    <input type="text" class="form-control" placeholder="Email" asp-for="NewCommentModel.Email" />
+                                    <span asp-validation-for="NewCommentModel.Email" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <textarea asp-for="CommentPostModel.Content" class="form-control" cols="60" rows="4" placeholder="Say something" maxlength="512"></textarea>
-                            <span asp-validation-for="CommentPostModel.Content" class="text-danger"></span>
+                            <textarea asp-for="NewCommentModel.Content" class="form-control" cols="60" rows="4" placeholder="Say something" maxlength="512"></textarea>
+                            <span asp-validation-for="NewCommentModel.Content" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <div class="row">
@@ -215,14 +215,14 @@
                                             <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Image")" />
                                         </div>
                                         <input type="text"
-                                               asp-for="CommentPostModel.CaptchaCode"
+                                               asp-for="NewCommentModel.CaptchaCode"
                                                class="form-control"
                                                placeholder="Captcha Code"
                                                autocomplete="off"
                                                minlength="4"
                                                maxlength="4" />
                                     </div>
-                                    <span asp-validation-for="CommentPostModel.CaptchaCode" class="text-danger"></span>
+                                    <span asp-validation-for="NewCommentModel.CaptchaCode" class="text-danger"></span>
                                 </div>
                                 <div class="col">
                                     <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">

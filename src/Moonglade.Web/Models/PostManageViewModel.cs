@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Models
 {
-    public class PostGridModel
+    public class PostManageViewModel
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

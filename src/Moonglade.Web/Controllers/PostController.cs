@@ -81,7 +81,7 @@ namespace Moonglade.Web.Controllers
                 Abstract = post.ContentAbstract,
                 PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
 
-                Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new PostDetailViewCategoryInfo
+                Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new SimpleCategoryInfoViewModel
                 {
                     CategoryDisplayName = p.DisplayName,
                     CategoryRouteName = p.Title
@@ -111,7 +111,7 @@ namespace Moonglade.Web.Controllers
             }
 
             viewModel.PostModel = postModel;
-            viewModel.CommentPostModel.PostId = post.Id;
+            viewModel.NewCommentModel.PostId = post.Id;
 
             #endregion Fetch Post Main Model
 

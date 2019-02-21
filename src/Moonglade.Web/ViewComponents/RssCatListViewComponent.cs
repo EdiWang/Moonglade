@@ -28,7 +28,7 @@ namespace Moonglade.Web.ViewComponents
                 var query = Context.Category.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Title));
                 var viewModel = new SubscriptionViewModel
                 {
-                    cats = query.ToList()
+                    Cats = query.ToList()
                 };
 
                 return View(viewModel);

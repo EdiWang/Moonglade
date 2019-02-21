@@ -1,8 +1,8 @@
 ﻿namespace Moonglade.Web.Models
 {
-    public class CheckBoxListInfo
+    public class CheckBoxViewModel
     {
-        public CheckBoxListInfo(string displayText, string value, bool isChecked)
+        public CheckBoxViewModel(string displayText, string value, bool isChecked)
         {
             Value = value;
             DisplayText = displayText;

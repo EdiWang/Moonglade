@@ -18,7 +18,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                var query = _categoryService.GetCategoriesAsQueryable().Select(c => new CategoryGridModel
+                var query = _categoryService.GetCategoriesAsQueryable().Select(c => new CategoryEditViewModel
                 {
                     Id = c.Id,
                     DisplayName = c.DisplayName,
@@ -35,7 +35,7 @@ namespace Moonglade.Web.Controllers
 
                 ViewBag.HasError = true;
                 ViewBag.ErrorMessage = e.Message;
-                return View(new List<CategoryGridModel>());
+                return View(new List<CategoryEditViewModel>());
             }
         }
 
@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
         [Route("create")]
         public IActionResult Create()
         {
-            var model = new CategoryGridModel();
+            var model = new CategoryEditViewModel();
             return View("CreateOrEdit", model);
         }
 
@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [Route("create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CategoryGridModel model)
+        public IActionResult Create(CategoryEditViewModel model)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace Moonglade.Web.Controllers
             var r = _categoryService.GetCategory(id);
             if (r.IsSuccess && null != r.Item)
             {
-                var model = new CategoryGridModel
+                var model = new CategoryEditViewModel
                 {
                     Id = r.Item.Id,
                     DisplayName = r.Item.DisplayName,
@@ -116,7 +116,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("edit")]
-        public IActionResult Edit(CategoryGridModel model)
+        public IActionResult Edit(CategoryEditViewModel model)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace Moonglade.Web.Controllers
             var r = _categoryService.GetCategory(id);
             if (r.IsSuccess && null != r.Item)
             {
-                var model = new CategoryGridModel
+                var model = new CategoryEditViewModel
                 {
                     Id = r.Item.Id,
                     DisplayName = r.Item.DisplayName,

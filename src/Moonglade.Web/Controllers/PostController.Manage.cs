@@ -175,7 +175,7 @@ namespace Moonglade.Web.Controllers
                 if (null != catList && catList.Count > 0)
                 {
                     var cbCatList = catList.Select(p =>
-                        new CheckBoxListInfo(
+                        new CheckBoxViewModel(
                             p.DisplayName,
                             p.Id.ToString(),
                             post.PostCategory.Any(q => q.CategoryId == p.Id))).ToList();
@@ -256,12 +256,7 @@ namespace Moonglade.Web.Controllers
         public IActionResult Restore(Guid postId)
         {
             var response = _postService.RestoreFromRecycle(postId);
-            if (response.IsSuccess)
-            {
-                return Json(postId);
-            }
-
-            return ServerError();
+            return response.IsSuccess ? Json(postId) : ServerError();
         }
 
         [Authorize]
@@ -271,12 +266,7 @@ namespace Moonglade.Web.Controllers
         public IActionResult Delete(Guid postId)
         {
             var response = _postService.Delete(postId, true);
-            if (response.IsSuccess)
-            {
-                return Json(postId);
-            }
-
-            return ServerError();
+            return response.IsSuccess ? Json(postId) : ServerError();
         }
 
         [Authorize]
@@ -312,16 +302,16 @@ namespace Moonglade.Web.Controllers
             var catList = _categoryService.GetCategoriesAsQueryable();
             if (null != catList && catList.Any())
             {
-                var cbCatList = catList.Select(p => new CheckBoxListInfo(p.DisplayName, p.Id.ToString(), false)).ToList();
+                var cbCatList = catList.Select(p => new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false)).ToList();
                 view.CategoryList = cbCatList;
             }
 
             return view;
         }
 
-        private List<PostGridModel> QueryToPostGridModel(IQueryable<Post> query)
+        private static List<PostManageViewModel> QueryToPostGridModel(IQueryable<Post> query)
         {
-            var result = query.Select(p => new PostGridModel
+            var result = query.Select(p => new PostManageViewModel
             {
                 Id = p.Id,
                 Title = p.Title,
