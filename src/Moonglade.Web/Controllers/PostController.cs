@@ -15,7 +15,6 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using X.PagedList;
 

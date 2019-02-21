@@ -340,7 +340,7 @@ namespace Moonglade.Web.Controllers
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error uploading avatar image.");
+                Logger.LogError(e, "Error uploading avatar image.");
                 return ServerError();
             }
         }
