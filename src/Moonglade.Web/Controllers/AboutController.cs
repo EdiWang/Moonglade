@@ -10,11 +10,5 @@ namespace Moonglade.Web.Controllers
         {
             return View();
         }
-
-        [Route("privacy")]
-        public IActionResult Privacy()
-        {
-            return View();
-        }
     }
 }
