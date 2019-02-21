@@ -50,7 +50,7 @@
 
 @if (Model.Any())
 {
-    foreach (var comment in Model.OrderByDescending(c => c.PubDate))
+    foreach (var comment in Model.OrderByDescending(c => c.PubDateUtc))
     {
         <div class="comment-box card mb-4" id="comment-box-@comment.Id">
             <div class="card-header">
@@ -60,7 +60,7 @@
                 </strong>
                 <span class="text-muted">@comment.IpAddress</span>
                 <a href="mailto:@comment.Email">@comment.Email</a>
-                <span class="text-muted float-right">@Utils.UtcToZoneTime(comment.PubDate.Value, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span>
+                <span class="text-muted float-right">@Utils.UtcToZoneTime(comment.PubDateUtc.Value, Settings.Value.TimeZone).ToString("MM/dd/yyyy HH:mm")</span>
             </div>
             <div class="card-body">
                 <p>

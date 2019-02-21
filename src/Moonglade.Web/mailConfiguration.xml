@@ -20,7 +20,7 @@ Enable SSL: {EnableSsl.Value}<br />
       <![CDATA[
 {Username.Value} commentted on {Title.Value} <br />
 {CommentContent.Value} <br /> <br />
-Time: {PubDate.Value} <br />
+Time (UTC): {PubDateUtc.Value} <br />
 Email: {Email.Value} <br />
 IP: {IPAddress.Value}
       ]]>

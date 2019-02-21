@@ -29,6 +29,10 @@ namespace Moonglade.Core
             _blogConfig.GetConfiguration(blogConfigurationService);
 
             var configSource = $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\mailConfiguration.xml";
+            if (!File.Exists(configSource))
+            {
+                throw new FileNotFoundException("Configuration file for EmailHelper is not present.", configSource);
+            }
 
             if (EmailHelper == null)
             {
@@ -92,7 +96,7 @@ namespace Moonglade.Core
             var pipeline = new TemplatePipeline().Map("Username", comment.Username)
                                                  .Map("Email", comment.Email)
                                                  .Map("IPAddress", comment.IPAddress)
-                                                 .Map("PubDate", comment.CreateOnUtc.ToString("yyyy-MM-dd HH:mm"))
+                                                 .Map("PubDateUtc", comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
                                                  .Map("Title", postTitle)
                                                  .Map("CommentContent", comment.CommentContent);
 

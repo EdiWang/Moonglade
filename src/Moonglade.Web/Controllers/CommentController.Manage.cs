@@ -37,7 +37,7 @@ namespace Moonglade.Web.Controllers
                     IpAddress = p.IPAddress,
                     CommentContent = p.CommentContent,
                     PostTitle = p.Post.Title,
-                    PubDate = p.CreateOnUtc
+                    PubDateUtc = p.CreateOnUtc
                 });
 
             return View(query.ToList());
