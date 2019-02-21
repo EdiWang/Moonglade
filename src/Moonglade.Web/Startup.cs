@@ -221,10 +221,18 @@ namespace Moonglade.Web
         {
             try
             {
-                using (var sr = File.OpenText(Path.Combine(baseDir, "urlrewrite.xml")))
+                var urlRewriteConfigPath = Path.Combine(baseDir, "urlrewrite.xml");
+                if (File.Exists(urlRewriteConfigPath))
                 {
-                    var options = new RewriteOptions().AddIISUrlRewrite(sr);
-                    app.UseRewriter(options);
+                    using (var sr = File.OpenText(urlRewriteConfigPath))
+                    {
+                        var options = new RewriteOptions().AddIISUrlRewrite(sr);
+                        app.UseRewriter(options);
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning($"Can not find {urlRewriteConfigPath}, skip adding url rewrite.");
                 }
             }
             catch (Exception e)
