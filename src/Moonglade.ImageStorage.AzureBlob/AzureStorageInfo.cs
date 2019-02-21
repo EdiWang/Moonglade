@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection.Metadata;
-using System.Text;
-
-namespace Moonglade.ImageStorage.AzureBlob
+﻿namespace Moonglade.ImageStorage.AzureBlob
 {
     public class AzureStorageInfo
     {
