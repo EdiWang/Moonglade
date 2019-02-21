@@ -51,7 +51,9 @@ namespace Moonglade.Core
                 EmailHelper.EmailSent += (sender, eventArgs) =>
                 {
                     if (sender is MailMessage msg)
+                    {
                         Logger.LogInformation($"Email {msg.Subject} is sent, Success: {eventArgs.IsSuccess}");
+                    }
                 };
             }
         }
