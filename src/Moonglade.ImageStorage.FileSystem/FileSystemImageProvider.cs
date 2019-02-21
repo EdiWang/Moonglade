@@ -28,10 +28,6 @@ namespace Moonglade.ImageStorage.FileSystem
                 if (File.Exists(imagePath))
                 {
                     var extension = Path.GetExtension(imagePath);
-                    if (extension == null)
-                    {
-                        return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ExtensionNameIsNull);
-                    }
 
                     var fileType = extension.Replace(".", string.Empty);
                     var imageBytes = await ReadFileAsync(imagePath);

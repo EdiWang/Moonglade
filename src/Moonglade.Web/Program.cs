@@ -15,12 +15,12 @@ namespace Moonglade.Web
             try
             {
                 logger.Info($"Moonglade Version {Utils.AppVersion}\n" +
-                            $"--------------------------------------------------------\n" +
+                            "--------------------------------------------------------\n" +
                             $" Directory: {Environment.CurrentDirectory} \n" +
                             $" x64Process: {Environment.Is64BitProcess} \n" +
                             $" OSVersion: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
                             $" UserName: {Environment.UserName} \n" +
-                            $"--------------------------------------------------------");
+                            "--------------------------------------------------------");
                 CreateWebHostBuilder(args).Build().Run();
             }
             catch (Exception ex)

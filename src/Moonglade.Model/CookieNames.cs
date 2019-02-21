@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Moonglade.Model
+﻿namespace Moonglade.Model
 {
     public enum CookieNames
     {

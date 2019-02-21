@@ -138,7 +138,7 @@ namespace Moonglade.Core
 
                     // 2. Delete comment itself
                     Context.Remove(comment);
-                    int rows = Context.SaveChanges();
+                    var rows = Context.SaveChanges();
                     return new Response { IsSuccess = rows > 0 };
                 }
                 return new FailedResponse((int)ResponseFailureCode.CommentNotFound);

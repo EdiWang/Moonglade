@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Models
 {
-    public class CategoryGridModel
+    public class CategoryEditViewModel
     {
         [HiddenInput]
         public Guid Id { get; set; }
@@ -22,7 +22,7 @@ namespace Moonglade.Web.Models
         [Display(Name = "Description")]
         public string Note { get; set; }
 
-        public CategoryGridModel()
+        public CategoryEditViewModel()
         {
             Id = Guid.Empty;
         }

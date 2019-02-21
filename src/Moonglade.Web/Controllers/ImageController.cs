@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -158,7 +157,7 @@ namespace Moonglade.Web.Controllers
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error uploading image.");
+                Logger.LogError(e, "Error uploading image.");
                 return ServerError();
             }
         }

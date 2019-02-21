@@ -214,29 +214,29 @@ namespace Moonglade.Web.Controllers
         [HttpGet("create-friendlink")]
         public IActionResult CreateFriendLink()
         {
-            return View("CreateOrEditFriendLink", new FriendLinkEditModel());
+            return View("CreateOrEditFriendLink", new FriendLinkEditViewModel());
         }
 
         [HttpPost("create-friendlink")]
-        public IActionResult CreateFriendLink(FriendLinkEditModel model)
+        public IActionResult CreateFriendLink(FriendLinkEditViewModel viewModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var response = _friendLinkService.AddFriendLink(model.Title, model.LinkUrl);
+                    var response = _friendLinkService.AddFriendLink(viewModel.Title, viewModel.LinkUrl);
                     if (response.IsSuccess)
                     {
                         return RedirectToAction(nameof(ManageFriendLinks));
                     }
                     ModelState.AddModelError(string.Empty, response.Message);
                 }
-                return View("CreateOrEditFriendLink", model);
+                return View("CreateOrEditFriendLink", viewModel);
             }
             catch (Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return View("CreateOrEditFriendLink", model);
+                return View("CreateOrEditFriendLink", viewModel);
             }
         }
 
@@ -248,7 +248,7 @@ namespace Moonglade.Web.Controllers
                 var response = _friendLinkService.GetFriendLink(id);
                 if (response.IsSuccess)
                 {
-                    return View("CreateOrEditFriendLink", new FriendLinkEditModel
+                    return View("CreateOrEditFriendLink", new FriendLinkEditViewModel
                     {
                         Id = response.Item.Id,
                         LinkUrl = response.Item.LinkUrl,
@@ -256,32 +256,32 @@ namespace Moonglade.Web.Controllers
                     });
                 }
                 ModelState.AddModelError(string.Empty, response.Message);
-                return View("CreateOrEditFriendLink", new FriendLinkEditModel());
+                return View("CreateOrEditFriendLink", new FriendLinkEditViewModel());
             }
             catch (Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return View("CreateOrEditFriendLink", new FriendLinkEditModel());
+                return View("CreateOrEditFriendLink", new FriendLinkEditViewModel());
             }
         }
 
         [HttpPost("edit-friendlink")]
-        public IActionResult EditFriendLink(FriendLinkEditModel model)
+        public IActionResult EditFriendLink(FriendLinkEditViewModel viewModel)
         {
             try
             {
-                var response = _friendLinkService.UpdateFriendLink(model.Id, model.Title, model.LinkUrl);
+                var response = _friendLinkService.UpdateFriendLink(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
                 if (response.IsSuccess)
                 {
                     return RedirectToAction(nameof(ManageFriendLinks));
                 }
                 ModelState.AddModelError(string.Empty, response.Message);
-                return View("CreateOrEditFriendLink", new FriendLinkEditModel());
+                return View("CreateOrEditFriendLink", new FriendLinkEditViewModel());
             }
             catch (Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return View("CreateOrEditFriendLink", new FriendLinkEditModel());
+                return View("CreateOrEditFriendLink", new FriendLinkEditViewModel());
             }
         }
 
@@ -340,7 +340,7 @@ namespace Moonglade.Web.Controllers
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error uploading avatar image.");
+                Logger.LogError(e, "Error uploading avatar image.");
                 return ServerError();
             }
         }

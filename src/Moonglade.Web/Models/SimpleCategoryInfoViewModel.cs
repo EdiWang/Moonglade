@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Web.Models
 {
-    public class PostDetailViewCategoryInfo
+    public class SimpleCategoryInfoViewModel
     {
         public string CategoryRouteName { get; set; }
         public string CategoryDisplayName { get; set; }

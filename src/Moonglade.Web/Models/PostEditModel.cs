@@ -18,7 +18,7 @@ namespace Moonglade.Web.Models
         public string Slug { get; set; }
 
         [JsonIgnore]
-        public List<CheckBoxListInfo> CategoryList { get; set; }
+        public List<CheckBoxViewModel> CategoryList { get; set; }
 
         [Required(ErrorMessage = "Please select at least one category.")]
         public Guid[] SelectedCategoryIds { get; set; }

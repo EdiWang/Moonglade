@@ -67,17 +67,17 @@ namespace Moonglade.Web.Controllers
                 if (ModelState.IsValid)
                 {
                     // Validate BasicCaptcha Code
-                    if (!_captcha.ValidateCaptchaCode(model.CommentPostModel.CaptchaCode, HttpContext.Session))
+                    if (!_captcha.ValidateCaptchaCode(model.NewCommentModel.CaptchaCode, HttpContext.Session))
                     {
-                        Logger.LogWarning($"Wrong Captcha Code, model: {JsonConvert.SerializeObject(model.CommentPostModel)}");
-                        ModelState.AddModelError(nameof(model.CommentPostModel.CaptchaCode), "Wrong Captcha Code");
+                        Logger.LogWarning($"Wrong Captcha Code, model: {JsonConvert.SerializeObject(model.NewCommentModel)}");
+                        ModelState.AddModelError(nameof(model.NewCommentModel.CaptchaCode), "Wrong Captcha Code");
 
                         Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         var cResponse = new CommentResponse(false, CommentResponseCode.WrongCaptcha);
                         return Json(cResponse);
                     }
 
-                    var commentPostModel = model.CommentPostModel;
+                    var commentPostModel = model.NewCommentModel;
                     var response = _commentService.NewComment(commentPostModel.Username, commentPostModel.Content,
                                                               commentPostModel.PostId, commentPostModel.Email,
                                                               HttpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),

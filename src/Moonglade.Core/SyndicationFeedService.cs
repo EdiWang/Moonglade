@@ -19,7 +19,7 @@ namespace Moonglade.Core
     {
         private readonly BlogConfig _blogConfig;
 
-        private readonly string baseUrl;
+        private readonly string _baseUrl;
 
         public SyndicationFeedService(
             MoongladeDbContext context,
@@ -33,7 +33,7 @@ namespace Moonglade.Core
             _blogConfig.GetConfiguration(blogConfigurationService);
 
             var acc = httpContextAccessor;
-            baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
+            _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
         }
 
         public async Task RefreshRssFilesForCategoryAsync(string categoryName)
@@ -46,13 +46,13 @@ namespace Moonglade.Core
 
                 var rw = new SyndicationFeedGenerator
                 {
-                    HostUrl = baseUrl,
+                    HostUrl = _baseUrl,
                     HeadTitle = _blogConfig.FeedSettings.RssTitle,
                     HeadDescription = _blogConfig.FeedSettings.RssDescription,
                     Copyright = _blogConfig.FeedSettings.RssCopyright,
                     Generator = _blogConfig.FeedSettings.RssGeneratorName,
                     FeedItemCollection = itemCollection,
-                    TrackBackUrl = baseUrl,
+                    TrackBackUrl = _baseUrl,
                     MaxContentLength = 0
                 };
 
@@ -74,13 +74,13 @@ namespace Moonglade.Core
 
             var rw = new SyndicationFeedGenerator
             {
-                HostUrl = baseUrl,
+                HostUrl = _baseUrl,
                 HeadTitle = _blogConfig.FeedSettings.RssTitle,
                 HeadDescription = _blogConfig.FeedSettings.RssDescription,
                 Copyright = _blogConfig.FeedSettings.RssCopyright,
                 Generator = _blogConfig.FeedSettings.RssGeneratorName,
                 FeedItemCollection = itemCollection,
-                TrackBackUrl = baseUrl,
+                TrackBackUrl = _baseUrl,
                 MaxContentLength = 0
             };
 
@@ -127,7 +127,7 @@ namespace Moonglade.Core
 
         private string GetPostLink(DateTime pubDateUtc, string slug)
         {
-            return $"{baseUrl}/post/{pubDateUtc.Year}/{pubDateUtc.Month}/{pubDateUtc.Day}/{slug}";
+            return $"{_baseUrl}/post/{pubDateUtc.Year}/{pubDateUtc.Month}/{pubDateUtc.Day}/{slug}";
         }
 
         private IQueryable<Post> GetSubscribedPosts(Guid? categoryId, int? top = null)

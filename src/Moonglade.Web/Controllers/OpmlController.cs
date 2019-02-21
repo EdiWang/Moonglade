@@ -76,11 +76,11 @@ namespace Moonglade.Web.Controllers
                 };
 
                 await FileSystemOpmlWriter.WriteOpmlFileAsync($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opml.xml", oi);
-                Logger.LogInformation($"OPML file write completed.");
+                Logger.LogInformation("OPML file write completed.");
 
                 if (!System.IO.File.Exists(opmlDataFile))
                 {
-                    Logger.LogInformation($"OPML file still not found, something just went very very wrong...");
+                    Logger.LogInformation("OPML file still not found, something just went very very wrong...");
                     return NotFound();
                 }
             }
