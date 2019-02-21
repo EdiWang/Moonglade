@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Data;
@@ -33,16 +35,16 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<List<FriendLink>> GetAllFriendLinks()
+        public async Task<Response<List<FriendLink>>> GetAllFriendLinksAsync()
         {
             try
             {
-                var item = Context.FriendLink.ToList();
+                var item = await Context.FriendLink.ToListAsync();
                 return new SuccessResponse<List<FriendLink>>(item);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetAllFriendLinks)}");
+                Logger.LogError(e, $"Error {nameof(GetAllFriendLinksAsync)}");
                 return new FailedResponse<List<FriendLink>>((int)ResponseFailureCode.GeneralException);
             }
         }

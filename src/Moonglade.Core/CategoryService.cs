@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -59,7 +61,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<List<CategoryInfo>> GetCategoryList()
+        public async Task<Response<List<CategoryInfo>>> GetCategoryListAsync()
         {
             try
             {
@@ -71,12 +73,12 @@ namespace Moonglade.Core
                     Note = c.Note
                 });
 
-                var list = query.ToList();
+                var list = await query.ToListAsync();
                 return new SuccessResponse<List<CategoryInfo>>(list);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetCategoryList)}");
+                Logger.LogError(e, $"Error {nameof(GetCategoryListAsync)}");
                 return new FailedResponse<List<CategoryInfo>>((int)ResponseFailureCode.GeneralException);
             }
         }

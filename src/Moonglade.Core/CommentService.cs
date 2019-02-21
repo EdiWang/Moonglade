@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Edi.WordFilter;
@@ -30,7 +31,7 @@ namespace Moonglade.Core
             _blogConfig.GetConfiguration(blogConfigurationService);
         }
 
-        public Response<List<Comment>> GetRecentComments()
+        public async Task<Response<List<Comment>>> GetRecentCommentsAsync()
         {
             try
             {
@@ -40,12 +41,12 @@ namespace Moonglade.Core
                                             .OrderByDescending(c => c.CreateOnUtc)
                                             .Take(AppSettings.RecentCommentsListSize);
 
-                var list = recentComments.ToList();
+                var list = await recentComments.ToListAsync();
                 return new SuccessResponse<List<Comment>>(list);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetRecentComments)}");
+                Logger.LogError(e, $"Error {nameof(GetRecentCommentsAsync)}");
                 return new FailedResponse<List<Comment>>((int)ResponseFailureCode.GeneralException);
             }
         }

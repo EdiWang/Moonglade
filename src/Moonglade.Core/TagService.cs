@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -79,7 +81,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<List<TagInfo>> GetHotTags(int top)
+        public async Task<Response<List<TagInfo>>> GetHotTagsAsync(int top)
         {
             try
             {
@@ -94,7 +96,7 @@ namespace Moonglade.Core
                             NormalizedTagName = t.NormalizedName
                         });
 
-                    var list = hotTags.ToList();
+                    var list = await hotTags.ToListAsync();
                     return new SuccessResponse<List<TagInfo>>(list);
                 }
 
