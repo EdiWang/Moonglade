@@ -21,7 +21,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var item = Context.Category.ToList();
+                var item = Context.Category.AsNoTracking().ToList();
                 return new SuccessResponse<List<Category>>(item);
             }
             catch (Exception e)
@@ -71,7 +71,7 @@ namespace Moonglade.Core
                     DisplayName = c.DisplayName,
                     Name = c.Title,
                     Note = c.Note
-                });
+                }).AsNoTracking();
 
                 var list = await query.ToListAsync();
                 return new SuccessResponse<List<CategoryInfo>>(list);
@@ -83,7 +83,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<List<ArchiveItem>> GetArchiveList()
+        public async Task<Response<List<ArchiveItem>>> GetArchiveListAsync()
         {
             try
             {
@@ -106,12 +106,12 @@ namespace Moonglade.Core
                                 Count = monthList.Select(p => p.Id).Count()
                             };
 
-                var list = query.ToList();
+                var list = await query.ToListAsync();
                 return new SuccessResponse<List<ArchiveItem>>(list);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetArchiveList)}");
+                Logger.LogError(e, $"Error {nameof(GetArchiveListAsync)}");
                 return new FailedResponse<List<ArchiveItem>>((int)ResponseFailureCode.GeneralException);
             }
         }

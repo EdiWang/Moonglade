@@ -22,7 +22,7 @@ namespace Moonglade.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var response = await _commentService.GetRecentCommentsAsync();
+            var response = await _commentService.GetRecentCommentsAsync(AppSettings.RecentCommentsListSize);
             if (response.IsSuccess)
             {
                 return View(response.Item);

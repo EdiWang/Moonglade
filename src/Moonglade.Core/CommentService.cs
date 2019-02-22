@@ -31,7 +31,7 @@ namespace Moonglade.Core
             _blogConfig.GetConfiguration(blogConfigurationService);
         }
 
-        public async Task<Response<List<Comment>>> GetRecentCommentsAsync()
+        public async Task<Response<List<Comment>>> GetRecentCommentsAsync(int top)
         {
             try
             {
@@ -39,7 +39,8 @@ namespace Moonglade.Core
                                             .ThenInclude(p => p.PostPublish)
                                             .Where(c => c.IsApproved.Value)
                                             .OrderByDescending(c => c.CreateOnUtc)
-                                            .Take(AppSettings.RecentCommentsListSize);
+                                            .Take(top)
+                                            .AsNoTracking();
 
                 var list = await recentComments.ToListAsync();
                 return new SuccessResponse<List<Comment>>(list);
@@ -51,12 +52,12 @@ namespace Moonglade.Core
             }
         }
 
-        public IEnumerable<Comment> GetApprovedCommentsOfPost(Guid postId)
+        public List<Comment> GetApprovedCommentsOfPost(Guid postId)
         {
             var comments = Context.Comment.Include(c => c.CommentReply)
-                                           .Where(c => c.PostId == postId &&
-                                                       c.IsApproved != null &&
-                                                       c.IsApproved.Value);
+                                          .Where(c => c.PostId == postId &&
+                                                      c.IsApproved != null &&
+                                                      c.IsApproved.Value).ToList();
             return comments;
         }
 

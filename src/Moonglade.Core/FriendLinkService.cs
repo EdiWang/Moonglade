@@ -39,7 +39,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var item = await Context.FriendLink.ToListAsync();
+                var item = await Context.FriendLink.AsNoTracking().ToListAsync();
                 return new SuccessResponse<List<FriendLink>>(item);
             }
             catch (Exception e)

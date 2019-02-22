@@ -88,7 +88,7 @@ namespace Moonglade.Core
                 if (Context.Tag.Any())
                 {
                     var hotTags = Context.Tag.OrderByDescending(p => p.PostTag.Count)
-                        .Take(top)
+                        .Take(top).AsNoTracking()
                         .Select(t => new TagInfo
                         {
                             TagCount = t.PostTag.Count,
@@ -117,7 +117,7 @@ namespace Moonglade.Core
 
         public List<TagInfo> GetTagCountList()
         {
-            var queryTag = from tag in Context.Tag
+            var queryTag = from tag in Context.Tag.AsNoTracking()
                            select new TagInfo
                            {
                                TagName = tag.DisplayName,

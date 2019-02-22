@@ -99,7 +99,7 @@ namespace Moonglade.Core
             return Context.Post.Include(p => p.PostPublish).Include(p => p.PostExtension);
         }
 
-        public IEnumerable<Post> GetPagedPost(int pageSize, int pageIndex, Guid? categoryId = null)
+        public IQueryable<Post> GetPagedPost(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -110,7 +110,7 @@ namespace Moonglade.Core
             return GetPagedPosts(pageSize, pageIndex, categoryId);
         }
 
-        public IEnumerable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
+        public IQueryable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             var startRow = (pageIndex - 1) * pageSize;
             var query = Context.Post.Where(p => !p.PostPublish.IsDeleted &&

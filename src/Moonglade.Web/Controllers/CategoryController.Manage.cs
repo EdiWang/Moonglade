@@ -130,9 +130,6 @@ namespace Moonglade.Web.Controllers
                         DisplayName = model.DisplayName
                     };
 
-                    var catJson = JsonConvert.SerializeObject(category);
-                    Logger.LogInformation($"Editing category: {catJson}");
-
                     var response = _categoryService.UpdateCategory(category);
 
                     if (response.IsSuccess)
