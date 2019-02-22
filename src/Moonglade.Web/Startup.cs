@@ -4,6 +4,8 @@ using System.Text;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
 using Edi.Net.AesEncryption;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -146,6 +148,9 @@ namespace Moonglade.Web
 
             if (env.IsDevelopment())
             {
+                TelemetryConfiguration.Active.DisableTelemetry = true;
+                TelemetryDebugWriter.IsTracingDisabled = true;
+
                 _logger.LogWarning("Application is running under DEBUG mode.");
                 app.UseDeveloperExceptionPage();
             }
