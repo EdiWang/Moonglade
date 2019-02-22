@@ -42,7 +42,7 @@ namespace Moonglade.Core
             var cat = Context.Category.FirstOrDefault(c => c.Title == categoryName);
             if (null != cat)
             {
-                var itemCollection = GetPostsAsRssFeedItems(cat.Id);
+                var itemCollection = GetPostsAsFeedItems(cat.Id);
 
                 var rw = new SyndicationFeedGenerator
                 {
@@ -56,9 +56,7 @@ namespace Moonglade.Core
                     MaxContentLength = 0
                 };
 
-                Logger.LogInformation($"Writing RSS file for category id {cat.Id}");
                 await rw.WriteRss20FileAsync($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\posts-category-{categoryName}.xml");
-
                 Logger.LogInformation($"Finished refreshing RSS feed for category {categoryName}.");
             }
             else
@@ -70,7 +68,7 @@ namespace Moonglade.Core
         public async Task RefreshFeedFileForPostAsync(bool isAtom)
         {
             Logger.LogInformation("Start refreshing feed for posts.");
-            List<SimpleFeedItem> itemCollection = GetPostsAsRssFeedItems();
+            List<SimpleFeedItem> itemCollection = GetPostsAsFeedItems();
 
             var rw = new SyndicationFeedGenerator
             {
@@ -98,9 +96,9 @@ namespace Moonglade.Core
             Logger.LogInformation("Finished writing feed for posts.");
         }
 
-        private List<SimpleFeedItem> GetPostsAsRssFeedItems(Guid? categoryId = null)
+        private List<SimpleFeedItem> GetPostsAsFeedItems(Guid? categoryId = null)
         {
-            Logger.LogInformation($"{nameof(GetPostsAsRssFeedItems)} - {nameof(categoryId)}: {categoryId}");
+            Logger.LogInformation($"{nameof(GetPostsAsFeedItems)} - {nameof(categoryId)}: {categoryId}");
 
             int? top = null;
             if (_blogConfig.FeedSettings.RssItemCount != 0)

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
@@ -14,8 +13,7 @@ namespace Moonglade.Web.ViewComponents
 
         public PostCommentListViewComponent(
             ILogger<PostCommentListViewComponent> logger,
-            MoongladeDbContext context,
-            IOptions<AppSettings> settings, CommentService commentService) : base(logger, context, settings)
+            IOptions<AppSettings> settings, CommentService commentService) : base(logger, settings)
         {
             _commentService = commentService;
         }

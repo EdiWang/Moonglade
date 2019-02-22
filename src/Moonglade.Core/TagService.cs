@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -79,14 +81,14 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<List<TagInfo>> GetHotTags(int top)
+        public async Task<Response<List<TagInfo>>> GetHotTagsAsync(int top)
         {
             try
             {
                 if (Context.Tag.Any())
                 {
                     var hotTags = Context.Tag.OrderByDescending(p => p.PostTag.Count)
-                        .Take(top)
+                        .Take(top).AsNoTracking()
                         .Select(t => new TagInfo
                         {
                             TagCount = t.PostTag.Count,
@@ -94,7 +96,7 @@ namespace Moonglade.Core
                             NormalizedTagName = t.NormalizedName
                         });
 
-                    var list = hotTags.ToList();
+                    var list = await hotTags.ToListAsync();
                     return new SuccessResponse<List<TagInfo>>(list);
                 }
 
@@ -115,7 +117,7 @@ namespace Moonglade.Core
 
         public List<TagInfo> GetTagCountList()
         {
-            var queryTag = from tag in Context.Tag
+            var queryTag = from tag in Context.Tag.AsNoTracking()
                            select new TagInfo
                            {
                                TagName = tag.DisplayName,

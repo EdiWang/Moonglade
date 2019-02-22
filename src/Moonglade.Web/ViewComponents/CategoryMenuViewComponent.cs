@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -16,22 +15,15 @@ namespace Moonglade.Web.ViewComponents
 
         public CategoryMenuViewComponent(
             ILogger<CategoryMenuViewComponent> logger,
-            MoongladeDbContext context,
-            IOptions<AppSettings> settings, CategoryService categoryService) : base(logger, context, settings)
+            IOptions<AppSettings> settings, CategoryService categoryService) : base(logger, settings)
         {
             _categoryService = categoryService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            await Task.CompletedTask;
-            var response = _categoryService.GetCategoryList();
-            if (response.IsSuccess)
-            {
-                return View(response.Item);
-            }
-            // should not block website
-            return View(new List<CategoryInfo>());
+            var response = await _categoryService.GetCategoryListAsync();
+            return View(response.IsSuccess ? response.Item : new List<CategoryInfo>());
         }
     }
 }

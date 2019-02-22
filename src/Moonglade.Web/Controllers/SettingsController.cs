@@ -198,9 +198,9 @@ namespace Moonglade.Web.Controllers
         #region FriendLinks
 
         [HttpGet("manage-friendlinks")]
-        public IActionResult ManageFriendLinks()
+        public async Task<IActionResult> ManageFriendLinks()
         {
-            var response = _friendLinkService.GetAllFriendLinks();
+            var response = await _friendLinkService.GetAllFriendLinksAsync();
             if (response.IsSuccess)
             {
                 return View(response.Item);

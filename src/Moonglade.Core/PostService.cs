@@ -99,7 +99,7 @@ namespace Moonglade.Core
             return Context.Post.Include(p => p.PostPublish).Include(p => p.PostExtension);
         }
 
-        public IEnumerable<Post> GetPagedPost(int pageSize, int pageIndex, Guid? categoryId = null)
+        public IQueryable<Post> GetPagedPost(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -110,7 +110,7 @@ namespace Moonglade.Core
             return GetPagedPosts(pageSize, pageIndex, categoryId);
         }
 
-        public IEnumerable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
+        public IQueryable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             var startRow = (pageIndex - 1) * pageSize;
             var query = Context.Post.Where(p => !p.PostPublish.IsDeleted &&
@@ -338,7 +338,6 @@ namespace Moonglade.Core
                 if (!postModel.PostPublish.PubDateUtc.HasValue)
                 {
                     postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
-                    postModel.PostPublish.PubDateUtc = DateTime.UtcNow.ToUniversalTime();
                 }
 
                 // 1. Add new tags to tag lib
@@ -395,27 +394,6 @@ namespace Moonglade.Core
             }
         }
 
-        private static void ApplyDefaultValuesOnPost(Post postModel)
-        {
-            if (postModel.Id == Guid.Empty)
-            {
-                postModel.Id = Guid.NewGuid();
-            }
-            if (string.IsNullOrWhiteSpace(postModel.Slug))
-            {
-                postModel.Slug = postModel.Id.ToString();
-            }
-
-            if (null == postModel.PostExtension)
-            {
-                postModel.PostExtension = new PostExtension
-                {
-                    Hits = 0,
-                    Likes = 0
-                };
-            }
-        }
-
         public Response RestoreFromRecycle(Guid postId)
         {
             try
@@ -460,6 +438,27 @@ namespace Moonglade.Core
             {
                 Logger.LogError(e, $"Error Delete(postId: {postId}, isRecycle: {isRecycle})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
+            }
+        }
+
+        private static void ApplyDefaultValuesOnPost(Post postModel)
+        {
+            if (postModel.Id == Guid.Empty)
+            {
+                postModel.Id = Guid.NewGuid();
+            }
+            if (string.IsNullOrWhiteSpace(postModel.Slug))
+            {
+                postModel.Slug = postModel.Id.ToString();
+            }
+
+            if (null == postModel.PostExtension)
+            {
+                postModel.PostExtension = new PostExtension
+                {
+                    Hits = 0,
+                    Likes = 0
+                };
             }
         }
     }

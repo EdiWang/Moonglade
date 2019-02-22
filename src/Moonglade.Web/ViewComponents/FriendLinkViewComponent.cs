@@ -15,18 +15,16 @@ namespace Moonglade.Web.ViewComponents
 
         public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger, IOptions<AppSettings> settings,
             FriendLinkService friendLinkService)
-            : base(logger, settings: settings)
+            : base(logger, settings)
         {
             _friendLinkService = friendLinkService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            await Task.CompletedTask;
-
             try
             {
-                var response = _friendLinkService.GetAllFriendLinks();
+                var response = await _friendLinkService.GetAllFriendLinksAsync();
                 return View(response.IsSuccess ? response.Item : new List<Data.Entities.FriendLink>());
             }
             catch (Exception e)

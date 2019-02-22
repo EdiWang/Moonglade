@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -19,7 +21,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var item = Context.Category.ToList();
+                var item = Context.Category.AsNoTracking().ToList();
                 return new SuccessResponse<List<Category>>(item);
             }
             catch (Exception e)
@@ -59,7 +61,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<List<CategoryInfo>> GetCategoryList()
+        public async Task<Response<List<CategoryInfo>>> GetCategoryListAsync()
         {
             try
             {
@@ -69,19 +71,19 @@ namespace Moonglade.Core
                     DisplayName = c.DisplayName,
                     Name = c.Title,
                     Note = c.Note
-                });
+                }).AsNoTracking();
 
-                var list = query.ToList();
+                var list = await query.ToListAsync();
                 return new SuccessResponse<List<CategoryInfo>>(list);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetCategoryList)}");
+                Logger.LogError(e, $"Error {nameof(GetCategoryListAsync)}");
                 return new FailedResponse<List<CategoryInfo>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public Response<List<ArchiveItem>> GetArchiveList()
+        public async Task<Response<List<ArchiveItem>>> GetArchiveListAsync()
         {
             try
             {
@@ -104,12 +106,12 @@ namespace Moonglade.Core
                                 Count = monthList.Select(p => p.Id).Count()
                             };
 
-                var list = query.ToList();
+                var list = await query.ToListAsync();
                 return new SuccessResponse<List<ArchiveItem>>(list);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetArchiveList)}");
+                Logger.LogError(e, $"Error {nameof(GetArchiveListAsync)}");
                 return new FailedResponse<List<ArchiveItem>>((int)ResponseFailureCode.GeneralException);
             }
         }
