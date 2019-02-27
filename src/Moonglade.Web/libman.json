@@ -45,7 +45,7 @@
       "destination": "wwwroot/lib/jquery-tagsinput/"
     },
     {
-      "library": "twitter-bootstrap@4.2.1",
+      "library": "twitter-bootstrap@4.3.1",
       "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
         "js/bootstrap.min.js",
