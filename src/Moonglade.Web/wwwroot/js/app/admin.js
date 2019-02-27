@@ -29,14 +29,14 @@ var postEditor = {
         if (window.tinyMCE !== undefined) {
             window.tinyMCE.init({
                 selector: textareaSelector,
-                themes: "modern",
-                skin: "lightgray",
+                themes: "silver",
+                skin: "oxide",
                 height: 500,
                 relative_urls: false, // avoid image upload fuck up
                 browser_spellcheck: true,
                 branding: false,
                 fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt 36pt",
-                plugins: "advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table contextmenu directionality template paste textcolor codesample imagetools colorpicker",
+                plugins: "advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools",
                 toolbar: "undo redo | formatselect | fontsizeselect | bold italic strikethrough forecolor backcolor | removeformat | link image codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen",
                 paste_data_images: true,
                 images_upload_url: '/image/upload',

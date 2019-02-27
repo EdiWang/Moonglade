@@ -1,5 +1,13 @@
+/**
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Licensed under the LGPL or a commercial license.
+ * For LGPL see License.txt in the project root for license information.
+ * For commercial licenses see https://www.tiny.cloud/
+ *
+ * Version: 5.0.1 (2019-02-21)
+ */
 (function () {
-var autosave = (function () {
+var autosave = (function (domGlobals) {
     'use strict';
 
     var Cell = function (initial) {
@@ -51,9 +59,9 @@ var autosave = (function () {
     };
     var getAutoSavePrefix = function (editor) {
       var prefix = editor.getParam('autosave_prefix', 'tinymce-autosave-{path}{query}{hash}-{id}-');
-      prefix = prefix.replace(/\{path\}/g, document.location.pathname);
-      prefix = prefix.replace(/\{query\}/g, document.location.search);
-      prefix = prefix.replace(/\{hash\}/g, document.location.hash);
+      prefix = prefix.replace(/\{path\}/g, domGlobals.document.location.pathname);
+      prefix = prefix.replace(/\{query\}/g, domGlobals.document.location.search);
+      prefix = prefix.replace(/\{hash\}/g, domGlobals.document.location.hash);
       prefix = prefix.replace(/\{id\}/g, editor.id);
       return prefix;
     };
@@ -165,34 +173,38 @@ var autosave = (function () {
       return msg;
     };
     var setup = function (editor) {
-      window.onbeforeunload = global$3._beforeUnloadHandler;
+      domGlobals.window.onbeforeunload = global$3._beforeUnloadHandler;
     };
 
-    var postRender = function (editor, started) {
-      return function (e) {
-        var ctrl = e.control;
-        ctrl.disabled(!hasDraft(editor));
-        editor.on('StoreDraft RestoreDraft RemoveDraft', function () {
-          ctrl.disabled(!hasDraft(editor));
-        });
-        startStoreDraft(editor, started);
+    var makeSetupHandler = function (editor, started) {
+      return function (api) {
+        api.setDisabled(!hasDraft(editor));
+        var editorEventCallback = function () {
+          return api.setDisabled(!hasDraft(editor));
+        };
+        editor.on('StoreDraft RestoreDraft RemoveDraft', editorEventCallback);
+        return function () {
+          return editor.off('StoreDraft RestoreDraft RemoveDraft', editorEventCallback);
+        };
       };
     };
     var register = function (editor, started) {
-      editor.addButton('restoredraft', {
-        title: 'Restore last draft',
-        onclick: function () {
+      startStoreDraft(editor, started);
+      editor.ui.registry.addButton('restoredraft', {
+        tooltip: 'Restore last draft',
+        icon: 'restore-draft',
+        onAction: function () {
           restoreLastDraft(editor);
         },
-        onPostRender: postRender(editor, started)
+        onSetup: makeSetupHandler(editor, started)
       });
-      editor.addMenuItem('restoredraft', {
+      editor.ui.registry.addMenuItem('restoredraft', {
         text: 'Restore last draft',
-        onclick: function () {
+        icon: 'restore-draft',
+        onAction: function () {
           restoreLastDraft(editor);
         },
-        onPostRender: postRender(editor, started),
-        context: 'file'
+        onSetup: makeSetupHandler(editor, started)
       });
     };
 
@@ -212,5 +224,5 @@ var autosave = (function () {
 
     return Plugin;
 
-}());
+}(window));
 })();

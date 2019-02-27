@@ -1,5 +1,13 @@
+/**
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Licensed under the LGPL or a commercial license.
+ * For LGPL see License.txt in the project root for license information.
+ * For commercial licenses see https://www.tiny.cloud/
+ *
+ * Version: 5.0.1 (2019-02-21)
+ */
 (function () {
-var imagetools = (function () {
+var imagetools = (function (domGlobals) {
     'use strict';
 
     var Cell = function (initial) {
@@ -25,7 +33,7 @@ var imagetools = (function () {
     var global$1 = tinymce.util.Tools.resolve('tinymce.util.Tools');
 
     function create(width, height) {
-      return resize(document.createElement('canvas'), width, height);
+      return resize(domGlobals.document.createElement('canvas'), width, height);
     }
     function clone(canvas) {
       var tCanvas, ctx;
@@ -84,7 +92,7 @@ var imagetools = (function () {
         doResolve(fn, bind(resolve, this), bind(reject, this));
       };
       var asap = Promise.immediateFn || typeof window.setImmediate === 'function' && window.setImmediate || function (fn) {
-        setTimeout(fn, 1);
+        domGlobals.setTimeout(fn, 1);
       };
       function bind(fn, thisArg) {
         return function () {
@@ -235,25 +243,20 @@ var imagetools = (function () {
     };
     var Promise = window.Promise ? window.Promise : promise();
 
+    var compose = function (fa, fb) {
+      return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+        return fa(fb.apply(null, args));
+      };
+    };
     var constant = function (value) {
       return function () {
         return value;
       };
     };
-    function curry(fn) {
-      var initialArgs = [];
-      for (var _i = 1; _i < arguments.length; _i++) {
-        initialArgs[_i - 1] = arguments[_i];
-      }
-      return function () {
-        var restArgs = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          restArgs[_i] = arguments[_i];
-        }
-        var all = initialArgs.concat(restArgs);
-        return fn.apply(null, all);
-      };
-    }
     var never = constant(false);
     var always = constant(true);
 
@@ -266,13 +269,13 @@ var imagetools = (function () {
       var eq = function (o) {
         return o.isNone();
       };
-      var call$$1 = function (thunk) {
+      var call = function (thunk) {
         return thunk();
       };
       var id = function (n) {
         return n;
       };
-      var noop$$1 = function () {
+      var noop = function () {
       };
       var nul = function () {
         return null;
@@ -288,17 +291,17 @@ var imagetools = (function () {
         isSome: never$1,
         isNone: always$1,
         getOr: id,
-        getOrThunk: call$$1,
+        getOrThunk: call,
         getOrDie: function (msg) {
           throw new Error(msg || 'error: getOrDie called on none.');
         },
         getOrNull: nul,
         getOrUndefined: undef,
         or: id,
-        orThunk: call$$1,
+        orThunk: call,
         map: none,
         ap: none,
-        each: noop$$1,
+        each: noop,
         bind: none,
         flatten: none,
         exists: never$1,
@@ -447,8 +450,8 @@ var imagetools = (function () {
     }
     function blobToImage(blob) {
       return new Promise(function (resolve, reject) {
-        var blobUrl = URL.createObjectURL(blob);
-        var image = new Image();
+        var blobUrl = domGlobals.URL.createObjectURL(blob);
+        var image = new domGlobals.Image();
         var removeListeners = function () {
           image.removeEventListener('load', loaded);
           image.removeEventListener('error', error);
@@ -471,7 +474,7 @@ var imagetools = (function () {
     }
     function anyUriToBlob(url) {
       return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
+        var xhr = new domGlobals.XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.responseType = 'blob';
         xhr.onload = function () {
@@ -536,7 +539,7 @@ var imagetools = (function () {
     }
     function canvasToBlob(canvas, type, quality) {
       type = type || 'image/png';
-      if (HTMLCanvasElement.prototype.toBlob) {
+      if (domGlobals.HTMLCanvasElement.prototype.toBlob) {
         return new Promise(function (resolve) {
           canvas.toBlob(function (blob) {
             resolve(blob);
@@ -586,7 +589,7 @@ var imagetools = (function () {
       });
     }
     function revokeImageUrl(image) {
-      URL.revokeObjectURL(image.src);
+      domGlobals.URL.revokeObjectURL(image.src);
     }
     var Conversions = {
       blobToImage: blobToImage,
@@ -703,7 +706,7 @@ var imagetools = (function () {
       }
       return value;
     }
-    function identity$1() {
+    function identity() {
       return [
         1,
         0,
@@ -1099,7 +1102,7 @@ var imagetools = (function () {
       ], value));
     }
     var ColorMatrix = {
-      identity: identity$1,
+      identity: identity,
       adjust: adjust,
       multiply: multiply,
       adjustContrast: adjustContrast,
@@ -1976,7 +1979,7 @@ var imagetools = (function () {
     var revokeObjectURL = function (u) {
       url().revokeObjectURL(u);
     };
-    var URL$1 = {
+    var URL = {
       createObjectURL: createObjectURL,
       revokeObjectURL: revokeObjectURL
     };
@@ -1988,7 +1991,7 @@ var imagetools = (function () {
     var global$4 = tinymce.util.Tools.resolve('tinymce.util.URI');
 
     var getToolbarItems = function (editor) {
-      return editor.getParam('imagetools_toolbar', 'rotateleft rotateright | flipv fliph | crop editimage imageoptions');
+      return editor.getParam('imagetools_toolbar', 'rotateleft rotateright flipv fliph editimage imageoptions');
     };
     var getProxyUrl = function (editor) {
       return editor.getParam('imagetools_proxy');
@@ -2008,1147 +2011,6 @@ var imagetools = (function () {
     var shouldReuseFilename = function (editor) {
       return editor.getParam('images_reuse_filename', false, 'boolean');
     };
-
-    var global$5 = tinymce.util.Tools.resolve('tinymce.dom.DOMUtils');
-
-    var global$6 = tinymce.util.Tools.resolve('tinymce.ui.Factory');
-
-    function UndoStack () {
-      var data = [];
-      var index = -1;
-      function add(state) {
-        var removed;
-        removed = data.splice(++index);
-        data.push(state);
-        return {
-          state: state,
-          removed: removed
-        };
-      }
-      function undo() {
-        if (canUndo()) {
-          return data[--index];
-        }
-      }
-      function redo() {
-        if (canRedo()) {
-          return data[++index];
-        }
-      }
-      function canUndo() {
-        return index > 0;
-      }
-      function canRedo() {
-        return index !== -1 && index < data.length - 1;
-      }
-      return {
-        data: data,
-        add: add,
-        undo: undo,
-        redo: redo,
-        canUndo: canUndo,
-        canRedo: canRedo
-      };
-    }
-
-    var global$7 = tinymce.util.Tools.resolve('tinymce.geom.Rect');
-
-    var loadImage$1 = function (image) {
-      return new global$3(function (resolve) {
-        var loaded = function () {
-          image.removeEventListener('load', loaded);
-          resolve(image);
-        };
-        if (image.complete) {
-          resolve(image);
-        } else {
-          image.addEventListener('load', loaded);
-        }
-      });
-    };
-    var LoadImage = { loadImage: loadImage$1 };
-
-    var global$8 = tinymce.util.Tools.resolve('tinymce.dom.DomQuery');
-
-    var global$9 = tinymce.util.Tools.resolve('tinymce.util.Observable');
-
-    var global$a = tinymce.util.Tools.resolve('tinymce.util.VK');
-
-    var count = 0;
-    function CropRect (currentRect, viewPortRect, clampRect, containerElm, action) {
-      var instance;
-      var handles;
-      var dragHelpers;
-      var blockers;
-      var prefix = 'mce-';
-      var id = prefix + 'crid-' + count++;
-      handles = [
-        {
-          name: 'move',
-          xMul: 0,
-          yMul: 0,
-          deltaX: 1,
-          deltaY: 1,
-          deltaW: 0,
-          deltaH: 0,
-          label: 'Crop Mask'
-        },
-        {
-          name: 'nw',
-          xMul: 0,
-          yMul: 0,
-          deltaX: 1,
-          deltaY: 1,
-          deltaW: -1,
-          deltaH: -1,
-          label: 'Top Left Crop Handle'
-        },
-        {
-          name: 'ne',
-          xMul: 1,
-          yMul: 0,
-          deltaX: 0,
-          deltaY: 1,
-          deltaW: 1,
-          deltaH: -1,
-          label: 'Top Right Crop Handle'
-        },
-        {
-          name: 'sw',
-          xMul: 0,
-          yMul: 1,
-          deltaX: 1,
-          deltaY: 0,
-          deltaW: -1,
-          deltaH: 1,
-          label: 'Bottom Left Crop Handle'
-        },
-        {
-          name: 'se',
-          xMul: 1,
-          yMul: 1,
-          deltaX: 0,
-          deltaY: 0,
-          deltaW: 1,
-          deltaH: 1,
-          label: 'Bottom Right Crop Handle'
-        }
-      ];
-      blockers = [
-        'top',
-        'right',
-        'bottom',
-        'left'
-      ];
-      function getAbsoluteRect(outerRect, relativeRect) {
-        return {
-          x: relativeRect.x + outerRect.x,
-          y: relativeRect.y + outerRect.y,
-          w: relativeRect.w,
-          h: relativeRect.h
-        };
-      }
-      function getRelativeRect(outerRect, innerRect) {
-        return {
-          x: innerRect.x - outerRect.x,
-          y: innerRect.y - outerRect.y,
-          w: innerRect.w,
-          h: innerRect.h
-        };
-      }
-      function getInnerRect() {
-        return getRelativeRect(clampRect, currentRect);
-      }
-      function moveRect(handle, startRect, deltaX, deltaY) {
-        var x, y, w, h, rect;
-        x = startRect.x;
-        y = startRect.y;
-        w = startRect.w;
-        h = startRect.h;
-        x += deltaX * handle.deltaX;
-        y += deltaY * handle.deltaY;
-        w += deltaX * handle.deltaW;
-        h += deltaY * handle.deltaH;
-        if (w < 20) {
-          w = 20;
-        }
-        if (h < 20) {
-          h = 20;
-        }
-        rect = currentRect = global$7.clamp({
-          x: x,
-          y: y,
-          w: w,
-          h: h
-        }, clampRect, handle.name === 'move');
-        rect = getRelativeRect(clampRect, rect);
-        instance.fire('updateRect', { rect: rect });
-        setInnerRect(rect);
-      }
-      function render() {
-        function createDragHelper(handle) {
-          var startRect;
-          var DragHelper = global$6.get('DragHelper');
-          return new DragHelper(id, {
-            document: containerElm.ownerDocument,
-            handle: id + '-' + handle.name,
-            start: function () {
-              startRect = currentRect;
-            },
-            drag: function (e) {
-              moveRect(handle, startRect, e.deltaX, e.deltaY);
-            }
-          });
-        }
-        global$8('<div id="' + id + '" class="' + prefix + 'croprect-container"' + ' role="grid" aria-dropeffect="execute">').appendTo(containerElm);
-        global$1.each(blockers, function (blocker) {
-          global$8('#' + id, containerElm).append('<div id="' + id + '-' + blocker + '"class="' + prefix + 'croprect-block" style="display: none" data-mce-bogus="all">');
-        });
-        global$1.each(handles, function (handle) {
-          global$8('#' + id, containerElm).append('<div id="' + id + '-' + handle.name + '" class="' + prefix + 'croprect-handle ' + prefix + 'croprect-handle-' + handle.name + '"' + 'style="display: none" data-mce-bogus="all" role="gridcell" tabindex="-1"' + ' aria-label="' + handle.label + '" aria-grabbed="false">');
-        });
-        dragHelpers = global$1.map(handles, createDragHelper);
-        repaint(currentRect);
-        global$8(containerElm).on('focusin focusout', function (e) {
-          global$8(e.target).attr('aria-grabbed', e.type === 'focus');
-        });
-        global$8(containerElm).on('keydown', function (e) {
-          var activeHandle;
-          global$1.each(handles, function (handle) {
-            if (e.target.id === id + '-' + handle.name) {
-              activeHandle = handle;
-              return false;
-            }
-          });
-          function moveAndBlock(evt, handle, startRect, deltaX, deltaY) {
-            evt.stopPropagation();
-            evt.preventDefault();
-            moveRect(activeHandle, startRect, deltaX, deltaY);
-          }
-          switch (e.keyCode) {
-          case global$a.LEFT:
-            moveAndBlock(e, activeHandle, currentRect, -10, 0);
-            break;
-          case global$a.RIGHT:
-            moveAndBlock(e, activeHandle, currentRect, 10, 0);
-            break;
-          case global$a.UP:
-            moveAndBlock(e, activeHandle, currentRect, 0, -10);
-            break;
-          case global$a.DOWN:
-            moveAndBlock(e, activeHandle, currentRect, 0, 10);
-            break;
-          case global$a.ENTER:
-          case global$a.SPACEBAR:
-            e.preventDefault();
-            action();
-            break;
-          }
-        });
-      }
-      function toggleVisibility(state) {
-        var selectors;
-        selectors = global$1.map(handles, function (handle) {
-          return '#' + id + '-' + handle.name;
-        }).concat(global$1.map(blockers, function (blocker) {
-          return '#' + id + '-' + blocker;
-        })).join(',');
-        if (state) {
-          global$8(selectors, containerElm).show();
-        } else {
-          global$8(selectors, containerElm).hide();
-        }
-      }
-      function repaint(rect) {
-        function updateElementRect(name, rect) {
-          if (rect.h < 0) {
-            rect.h = 0;
-          }
-          if (rect.w < 0) {
-            rect.w = 0;
-          }
-          global$8('#' + id + '-' + name, containerElm).css({
-            left: rect.x,
-            top: rect.y,
-            width: rect.w,
-            height: rect.h
-          });
-        }
-        global$1.each(handles, function (handle) {
-          global$8('#' + id + '-' + handle.name, containerElm).css({
-            left: rect.w * handle.xMul + rect.x,
-            top: rect.h * handle.yMul + rect.y
-          });
-        });
-        updateElementRect('top', {
-          x: viewPortRect.x,
-          y: viewPortRect.y,
-          w: viewPortRect.w,
-          h: rect.y - viewPortRect.y
-        });
-        updateElementRect('right', {
-          x: rect.x + rect.w,
-          y: rect.y,
-          w: viewPortRect.w - rect.x - rect.w + viewPortRect.x,
-          h: rect.h
-        });
-        updateElementRect('bottom', {
-          x: viewPortRect.x,
-          y: rect.y + rect.h,
-          w: viewPortRect.w,
-          h: viewPortRect.h - rect.y - rect.h + viewPortRect.y
-        });
-        updateElementRect('left', {
-          x: viewPortRect.x,
-          y: rect.y,
-          w: rect.x - viewPortRect.x,
-          h: rect.h
-        });
-        updateElementRect('move', rect);
-      }
-      function setRect(rect) {
-        currentRect = rect;
-        repaint(currentRect);
-      }
-      function setViewPortRect(rect) {
-        viewPortRect = rect;
-        repaint(currentRect);
-      }
-      function setInnerRect(rect) {
-        setRect(getAbsoluteRect(clampRect, rect));
-      }
-      function setClampRect(rect) {
-        clampRect = rect;
-        repaint(currentRect);
-      }
-      function destroy() {
-        global$1.each(dragHelpers, function (helper) {
-          helper.destroy();
-        });
-        dragHelpers = [];
-      }
-      render();
-      instance = global$1.extend({
-        toggleVisibility: toggleVisibility,
-        setClampRect: setClampRect,
-        setRect: setRect,
-        getInnerRect: getInnerRect,
-        setInnerRect: setInnerRect,
-        setViewPortRect: setViewPortRect,
-        destroy: destroy
-      }, global$9);
-      return instance;
-    }
-
-    var create$2 = function (settings) {
-      var Control = global$6.get('Control');
-      var ImagePanel = Control.extend({
-        Defaults: { classes: 'imagepanel' },
-        selection: function (rect) {
-          if (arguments.length) {
-            this.state.set('rect', rect);
-            return this;
-          }
-          return this.state.get('rect');
-        },
-        imageSize: function () {
-          var viewRect = this.state.get('viewRect');
-          return {
-            w: viewRect.w,
-            h: viewRect.h
-          };
-        },
-        toggleCropRect: function (state) {
-          this.state.set('cropEnabled', state);
-        },
-        imageSrc: function (url) {
-          var self$$1 = this, img = new Image();
-          img.src = url;
-          LoadImage.loadImage(img).then(function () {
-            var rect, $img;
-            var lastRect = self$$1.state.get('viewRect');
-            $img = self$$1.$el.find('img');
-            if ($img[0]) {
-              $img.replaceWith(img);
-            } else {
-              var bg = document.createElement('div');
-              bg.className = 'mce-imagepanel-bg';
-              self$$1.getEl().appendChild(bg);
-              self$$1.getEl().appendChild(img);
-            }
-            rect = {
-              x: 0,
-              y: 0,
-              w: img.naturalWidth,
-              h: img.naturalHeight
-            };
-            self$$1.state.set('viewRect', rect);
-            self$$1.state.set('rect', global$7.inflate(rect, -20, -20));
-            if (!lastRect || lastRect.w !== rect.w || lastRect.h !== rect.h) {
-              self$$1.zoomFit();
-            }
-            self$$1.repaintImage();
-            self$$1.fire('load');
-          });
-        },
-        zoom: function (value) {
-          if (arguments.length) {
-            this.state.set('zoom', value);
-            return this;
-          }
-          return this.state.get('zoom');
-        },
-        postRender: function () {
-          this.imageSrc(this.settings.imageSrc);
-          return this._super();
-        },
-        zoomFit: function () {
-          var self$$1 = this;
-          var $img, pw, ph, w, h, zoom, padding;
-          padding = 10;
-          $img = self$$1.$el.find('img');
-          pw = self$$1.getEl().clientWidth;
-          ph = self$$1.getEl().clientHeight;
-          w = $img[0].naturalWidth;
-          h = $img[0].naturalHeight;
-          zoom = Math.min((pw - padding) / w, (ph - padding) / h);
-          if (zoom >= 1) {
-            zoom = 1;
-          }
-          self$$1.zoom(zoom);
-        },
-        repaintImage: function () {
-          var x, y, w, h, pw, ph, $img, $bg, zoom, rect, elm;
-          elm = this.getEl();
-          zoom = this.zoom();
-          rect = this.state.get('rect');
-          $img = this.$el.find('img');
-          $bg = this.$el.find('.mce-imagepanel-bg');
-          pw = elm.offsetWidth;
-          ph = elm.offsetHeight;
-          w = $img[0].naturalWidth * zoom;
-          h = $img[0].naturalHeight * zoom;
-          x = Math.max(0, pw / 2 - w / 2);
-          y = Math.max(0, ph / 2 - h / 2);
-          $img.css({
-            left: x,
-            top: y,
-            width: w,
-            height: h
-          });
-          $bg.css({
-            left: x,
-            top: y,
-            width: w,
-            height: h
-          });
-          if (this.cropRect) {
-            this.cropRect.setRect({
-              x: rect.x * zoom + x,
-              y: rect.y * zoom + y,
-              w: rect.w * zoom,
-              h: rect.h * zoom
-            });
-            this.cropRect.setClampRect({
-              x: x,
-              y: y,
-              w: w,
-              h: h
-            });
-            this.cropRect.setViewPortRect({
-              x: 0,
-              y: 0,
-              w: pw,
-              h: ph
-            });
-          }
-        },
-        bindStates: function () {
-          var self$$1 = this;
-          function setupCropRect(rect) {
-            self$$1.cropRect = CropRect(rect, self$$1.state.get('viewRect'), self$$1.state.get('viewRect'), self$$1.getEl(), function () {
-              self$$1.fire('crop');
-            });
-            self$$1.cropRect.on('updateRect', function (e) {
-              var rect = e.rect;
-              var zoom = self$$1.zoom();
-              rect = {
-                x: Math.round(rect.x / zoom),
-                y: Math.round(rect.y / zoom),
-                w: Math.round(rect.w / zoom),
-                h: Math.round(rect.h / zoom)
-              };
-              self$$1.state.set('rect', rect);
-            });
-            self$$1.on('remove', self$$1.cropRect.destroy);
-          }
-          self$$1.state.on('change:cropEnabled', function (e) {
-            self$$1.cropRect.toggleVisibility(e.value);
-            self$$1.repaintImage();
-          });
-          self$$1.state.on('change:zoom', function () {
-            self$$1.repaintImage();
-          });
-          self$$1.state.on('change:rect', function (e) {
-            var rect = e.value;
-            if (!self$$1.cropRect) {
-              setupCropRect(rect);
-            }
-            self$$1.cropRect.setRect(rect);
-          });
-        }
-      });
-      return new ImagePanel(settings);
-    };
-    var ImagePanel = { create: create$2 };
-
-    function createState(blob) {
-      return {
-        blob: blob,
-        url: URL$1.createObjectURL(blob)
-      };
-    }
-    function destroyState(state) {
-      if (state) {
-        URL$1.revokeObjectURL(state.url);
-      }
-    }
-    function destroyStates(states) {
-      global$1.each(states, destroyState);
-    }
-    function open(editor, currentState, resolve, reject) {
-      var win, undoStack = UndoStack(), mainPanel, filtersPanel, tempState, cropPanel, resizePanel, flipRotatePanel, imagePanel, sidePanel, mainViewContainer, invertPanel, brightnessPanel, huePanel, saturatePanel, contrastPanel, grayscalePanel, sepiaPanel, colorizePanel, sharpenPanel, embossPanel, gammaPanel, exposurePanel, panels, width, height, ratioW, ratioH;
-      var reverseIfRtl = function (items) {
-        return editor.rtl ? items.reverse() : items;
-      };
-      function recalcSize(e) {
-        var widthCtrl, heightCtrl, newWidth, newHeight;
-        widthCtrl = win.find('#w')[0];
-        heightCtrl = win.find('#h')[0];
-        newWidth = parseInt(widthCtrl.value(), 10);
-        newHeight = parseInt(heightCtrl.value(), 10);
-        if (win.find('#constrain')[0].checked() && width && height && newWidth && newHeight) {
-          if (e.control.settings.name === 'w') {
-            newHeight = Math.round(newWidth * ratioW);
-            heightCtrl.value(newHeight);
-          } else {
-            newWidth = Math.round(newHeight * ratioH);
-            widthCtrl.value(newWidth);
-          }
-        }
-        width = newWidth;
-        height = newHeight;
-      }
-      function floatToPercent(value) {
-        return Math.round(value * 100) + '%';
-      }
-      function updateButtonUndoStates() {
-        win.find('#undo').disabled(!undoStack.canUndo());
-        win.find('#redo').disabled(!undoStack.canRedo());
-        win.statusbar.find('#save').disabled(!undoStack.canUndo());
-      }
-      function disableUndoRedo() {
-        win.find('#undo').disabled(true);
-        win.find('#redo').disabled(true);
-      }
-      function displayState(state) {
-        if (state) {
-          imagePanel.imageSrc(state.url);
-        }
-      }
-      function switchPanel(targetPanel) {
-        return function () {
-          var hidePanels = global$1.grep(panels, function (panel) {
-            return panel.settings.name !== targetPanel;
-          });
-          global$1.each(hidePanels, function (panel) {
-            panel.hide();
-          });
-          targetPanel.show();
-          targetPanel.focus();
-        };
-      }
-      function addTempState(blob) {
-        tempState = createState(blob);
-        displayState(tempState);
-      }
-      function addBlobState(blob) {
-        currentState = createState(blob);
-        displayState(currentState);
-        destroyStates(undoStack.add(currentState).removed);
-        updateButtonUndoStates();
-      }
-      function crop() {
-        var rect = imagePanel.selection();
-        ResultConversions.blobToImageResult(currentState.blob).then(function (ir) {
-          ImageTransformations.crop(ir, rect.x, rect.y, rect.w, rect.h).then(imageResultToBlob).then(function (blob) {
-            addBlobState(blob);
-            cancel();
-          });
-        });
-      }
-      var tempAction = function (fn) {
-        var args = [].slice.call(arguments, 1);
-        return function () {
-          var state = tempState || currentState;
-          ResultConversions.blobToImageResult(state.blob).then(function (ir) {
-            fn.apply(this, [ir].concat(args)).then(imageResultToBlob).then(addTempState);
-          });
-        };
-      };
-      function action(fn) {
-        var arg = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-          arg[_i - 1] = arguments[_i];
-        }
-        var args = [].slice.call(arguments, 1);
-        return function () {
-          ResultConversions.blobToImageResult(currentState.blob).then(function (ir) {
-            fn.apply(this, [ir].concat(args)).then(imageResultToBlob).then(addBlobState);
-          });
-        };
-      }
-      function cancel() {
-        displayState(currentState);
-        destroyState(tempState);
-        switchPanel(mainPanel)();
-        updateButtonUndoStates();
-      }
-      function waitForTempState(times, applyCall) {
-        if (tempState) {
-          applyCall();
-        } else {
-          setTimeout(function () {
-            if (times-- > 0) {
-              waitForTempState(times, applyCall);
-            } else {
-              editor.windowManager.alert('Error: failed to apply image operation.');
-            }
-          }, 10);
-        }
-      }
-      function applyTempState() {
-        if (tempState) {
-          addBlobState(tempState.blob);
-          cancel();
-        } else {
-          waitForTempState(100, applyTempState);
-        }
-      }
-      function zoomIn() {
-        var zoom = imagePanel.zoom();
-        if (zoom < 2) {
-          zoom += 0.1;
-        }
-        imagePanel.zoom(zoom);
-      }
-      function zoomOut() {
-        var zoom = imagePanel.zoom();
-        if (zoom > 0.1) {
-          zoom -= 0.1;
-        }
-        imagePanel.zoom(zoom);
-      }
-      function undo() {
-        currentState = undoStack.undo();
-        displayState(currentState);
-        updateButtonUndoStates();
-      }
-      function redo() {
-        currentState = undoStack.redo();
-        displayState(currentState);
-        updateButtonUndoStates();
-      }
-      function save() {
-        resolve(currentState.blob);
-        win.close();
-      }
-      function createPanel(items) {
-        return global$6.create('Form', {
-          layout: 'flex',
-          direction: 'row',
-          labelGap: 5,
-          border: '0 0 1 0',
-          align: 'center',
-          pack: 'center',
-          padding: '0 10 0 10',
-          spacing: 5,
-          flex: 0,
-          minHeight: 60,
-          defaults: {
-            classes: 'imagetool',
-            type: 'button'
-          },
-          items: items
-        });
-      }
-      var imageResultToBlob = function (ir) {
-        return ir.toBlob();
-      };
-      function createFilterPanel(title, filter) {
-        return createPanel(reverseIfRtl([
-          {
-            text: 'Back',
-            onclick: cancel
-          },
-          {
-            type: 'spacer',
-            flex: 1
-          },
-          {
-            text: 'Apply',
-            subtype: 'primary',
-            onclick: applyTempState
-          }
-        ])).hide().on('show', function () {
-          disableUndoRedo();
-          ResultConversions.blobToImageResult(currentState.blob).then(function (ir) {
-            return filter(ir);
-          }).then(imageResultToBlob).then(function (blob) {
-            var newTempState = createState(blob);
-            displayState(newTempState);
-            destroyState(tempState);
-            tempState = newTempState;
-          });
-        });
-      }
-      function createVariableFilterPanel(title, filter, value, min, max) {
-        function update(value) {
-          ResultConversions.blobToImageResult(currentState.blob).then(function (ir) {
-            return filter(ir, value);
-          }).then(imageResultToBlob).then(function (blob) {
-            var newTempState = createState(blob);
-            displayState(newTempState);
-            destroyState(tempState);
-            tempState = newTempState;
-          });
-        }
-        return createPanel(reverseIfRtl([
-          {
-            text: 'Back',
-            onclick: cancel
-          },
-          {
-            type: 'spacer',
-            flex: 1
-          },
-          {
-            type: 'slider',
-            flex: 1,
-            ondragend: function (e) {
-              update(e.value);
-            },
-            minValue: editor.rtl ? max : min,
-            maxValue: editor.rtl ? min : max,
-            value: value,
-            previewFilter: floatToPercent
-          },
-          {
-            type: 'spacer',
-            flex: 1
-          },
-          {
-            text: 'Apply',
-            subtype: 'primary',
-            onclick: applyTempState
-          }
-        ])).hide().on('show', function () {
-          this.find('slider').value(value);
-          disableUndoRedo();
-        });
-      }
-      function createRgbFilterPanel(title, filter) {
-        function update() {
-          var r, g, b;
-          r = win.find('#r')[0].value();
-          g = win.find('#g')[0].value();
-          b = win.find('#b')[0].value();
-          ResultConversions.blobToImageResult(currentState.blob).then(function (ir) {
-            return filter(ir, r, g, b);
-          }).then(imageResultToBlob).then(function (blob) {
-            var newTempState = createState(blob);
-            displayState(newTempState);
-            destroyState(tempState);
-            tempState = newTempState;
-          });
-        }
-        var min = editor.rtl ? 2 : 0;
-        var max = editor.rtl ? 0 : 2;
-        return createPanel(reverseIfRtl([
-          {
-            text: 'Back',
-            onclick: cancel
-          },
-          {
-            type: 'spacer',
-            flex: 1
-          },
-          {
-            type: 'slider',
-            label: 'R',
-            name: 'r',
-            minValue: min,
-            value: 1,
-            maxValue: max,
-            ondragend: update,
-            previewFilter: floatToPercent
-          },
-          {
-            type: 'slider',
-            label: 'G',
-            name: 'g',
-            minValue: min,
-            value: 1,
-            maxValue: max,
-            ondragend: update,
-            previewFilter: floatToPercent
-          },
-          {
-            type: 'slider',
-            label: 'B',
-            name: 'b',
-            minValue: min,
-            value: 1,
-            maxValue: max,
-            ondragend: update,
-            previewFilter: floatToPercent
-          },
-          {
-            type: 'spacer',
-            flex: 1
-          },
-          {
-            text: 'Apply',
-            subtype: 'primary',
-            onclick: applyTempState
-          }
-        ])).hide().on('show', function () {
-          win.find('#r,#g,#b').value(1);
-          disableUndoRedo();
-        });
-      }
-      cropPanel = createPanel(reverseIfRtl([
-        {
-          text: 'Back',
-          onclick: cancel
-        },
-        {
-          type: 'spacer',
-          flex: 1
-        },
-        {
-          text: 'Apply',
-          subtype: 'primary',
-          onclick: crop
-        }
-      ])).hide().on('show hide', function (e) {
-        imagePanel.toggleCropRect(e.type === 'show');
-      }).on('show', disableUndoRedo);
-      function toggleConstrain(e) {
-        if (e.control.value() === true) {
-          ratioW = height / width;
-          ratioH = width / height;
-        }
-      }
-      resizePanel = createPanel(reverseIfRtl([
-        {
-          text: 'Back',
-          onclick: cancel
-        },
-        {
-          type: 'spacer',
-          flex: 1
-        },
-        {
-          type: 'textbox',
-          name: 'w',
-          label: 'Width',
-          size: 4,
-          onkeyup: recalcSize
-        },
-        {
-          type: 'textbox',
-          name: 'h',
-          label: 'Height',
-          size: 4,
-          onkeyup: recalcSize
-        },
-        {
-          type: 'checkbox',
-          name: 'constrain',
-          text: 'Constrain proportions',
-          checked: true,
-          onchange: toggleConstrain
-        },
-        {
-          type: 'spacer',
-          flex: 1
-        },
-        {
-          text: 'Apply',
-          subtype: 'primary',
-          onclick: 'submit'
-        }
-      ])).hide().on('submit', function (e) {
-        var width = parseInt(win.find('#w').value(), 10), height = parseInt(win.find('#h').value(), 10);
-        e.preventDefault();
-        action(ImageTransformations.resize, width, height)();
-        cancel();
-      }).on('show', disableUndoRedo);
-      flipRotatePanel = createPanel(reverseIfRtl([
-        {
-          text: 'Back',
-          onclick: cancel
-        },
-        {
-          type: 'spacer',
-          flex: 1
-        },
-        {
-          icon: 'fliph',
-          tooltip: 'Flip horizontally',
-          onclick: tempAction(ImageTransformations.flip, 'h')
-        },
-        {
-          icon: 'flipv',
-          tooltip: 'Flip vertically',
-          onclick: tempAction(ImageTransformations.flip, 'v')
-        },
-        {
-          icon: 'rotateleft',
-          tooltip: 'Rotate counterclockwise',
-          onclick: tempAction(ImageTransformations.rotate, -90)
-        },
-        {
-          icon: 'rotateright',
-          tooltip: 'Rotate clockwise',
-          onclick: tempAction(ImageTransformations.rotate, 90)
-        },
-        {
-          type: 'spacer',
-          flex: 1
-        },
-        {
-          text: 'Apply',
-          subtype: 'primary',
-          onclick: applyTempState
-        }
-      ])).hide().on('show', disableUndoRedo);
-      invertPanel = createFilterPanel('Invert', ImageTransformations.invert);
-      sharpenPanel = createFilterPanel('Sharpen', ImageTransformations.sharpen);
-      embossPanel = createFilterPanel('Emboss', ImageTransformations.emboss);
-      brightnessPanel = createVariableFilterPanel('Brightness', ImageTransformations.brightness, 0, -1, 1);
-      huePanel = createVariableFilterPanel('Hue', ImageTransformations.hue, 180, 0, 360);
-      saturatePanel = createVariableFilterPanel('Saturate', ImageTransformations.saturate, 0, -1, 1);
-      contrastPanel = createVariableFilterPanel('Contrast', ImageTransformations.contrast, 0, -1, 1);
-      grayscalePanel = createVariableFilterPanel('Grayscale', ImageTransformations.grayscale, 0, 0, 1);
-      sepiaPanel = createVariableFilterPanel('Sepia', ImageTransformations.sepia, 0, 0, 1);
-      colorizePanel = createRgbFilterPanel('Colorize', ImageTransformations.colorize);
-      gammaPanel = createVariableFilterPanel('Gamma', ImageTransformations.gamma, 0, -1, 1);
-      exposurePanel = createVariableFilterPanel('Exposure', ImageTransformations.exposure, 1, 0, 2);
-      filtersPanel = createPanel(reverseIfRtl([
-        {
-          text: 'Back',
-          onclick: cancel
-        },
-        {
-          type: 'spacer',
-          flex: 1
-        },
-        {
-          text: 'hue',
-          icon: 'hue',
-          onclick: switchPanel(huePanel)
-        },
-        {
-          text: 'saturate',
-          icon: 'saturate',
-          onclick: switchPanel(saturatePanel)
-        },
-        {
-          text: 'sepia',
-          icon: 'sepia',
-          onclick: switchPanel(sepiaPanel)
-        },
-        {
-          text: 'emboss',
-          icon: 'emboss',
-          onclick: switchPanel(embossPanel)
-        },
-        {
-          text: 'exposure',
-          icon: 'exposure',
-          onclick: switchPanel(exposurePanel)
-        },
-        {
-          type: 'spacer',
-          flex: 1
-        }
-      ])).hide();
-      mainPanel = createPanel(reverseIfRtl([
-        {
-          tooltip: 'Crop',
-          icon: 'crop',
-          onclick: switchPanel(cropPanel)
-        },
-        {
-          tooltip: 'Resize',
-          icon: 'resize2',
-          onclick: switchPanel(resizePanel)
-        },
-        {
-          tooltip: 'Orientation',
-          icon: 'orientation',
-          onclick: switchPanel(flipRotatePanel)
-        },
-        {
-          tooltip: 'Brightness',
-          icon: 'sun',
-          onclick: switchPanel(brightnessPanel)
-        },
-        {
-          tooltip: 'Sharpen',
-          icon: 'sharpen',
-          onclick: switchPanel(sharpenPanel)
-        },
-        {
-          tooltip: 'Contrast',
-          icon: 'contrast',
-          onclick: switchPanel(contrastPanel)
-        },
-        {
-          tooltip: 'Color levels',
-          icon: 'drop',
-          onclick: switchPanel(colorizePanel)
-        },
-        {
-          tooltip: 'Gamma',
-          icon: 'gamma',
-          onclick: switchPanel(gammaPanel)
-        },
-        {
-          tooltip: 'Invert',
-          icon: 'invert',
-          onclick: switchPanel(invertPanel)
-        }
-      ]));
-      imagePanel = ImagePanel.create({
-        flex: 1,
-        imageSrc: currentState.url
-      });
-      sidePanel = global$6.create('Container', {
-        layout: 'flex',
-        direction: 'column',
-        pack: 'start',
-        border: '0 1 0 0',
-        padding: 5,
-        spacing: 5,
-        items: [
-          {
-            type: 'button',
-            icon: 'undo',
-            tooltip: 'Undo',
-            name: 'undo',
-            onclick: undo
-          },
-          {
-            type: 'button',
-            icon: 'redo',
-            tooltip: 'Redo',
-            name: 'redo',
-            onclick: redo
-          },
-          {
-            type: 'button',
-            icon: 'zoomin',
-            tooltip: 'Zoom in',
-            onclick: zoomIn
-          },
-          {
-            type: 'button',
-            icon: 'zoomout',
-            tooltip: 'Zoom out',
-            onclick: zoomOut
-          }
-        ]
-      });
-      mainViewContainer = global$6.create('Container', {
-        type: 'container',
-        layout: 'flex',
-        direction: 'row',
-        align: 'stretch',
-        flex: 1,
-        items: reverseIfRtl([
-          sidePanel,
-          imagePanel
-        ])
-      });
-      panels = [
-        mainPanel,
-        cropPanel,
-        resizePanel,
-        flipRotatePanel,
-        filtersPanel,
-        invertPanel,
-        brightnessPanel,
-        huePanel,
-        saturatePanel,
-        contrastPanel,
-        grayscalePanel,
-        sepiaPanel,
-        colorizePanel,
-        sharpenPanel,
-        embossPanel,
-        gammaPanel,
-        exposurePanel
-      ];
-      win = editor.windowManager.open({
-        layout: 'flex',
-        direction: 'column',
-        align: 'stretch',
-        minWidth: Math.min(global$5.DOM.getViewPort().w, 800),
-        minHeight: Math.min(global$5.DOM.getViewPort().h, 650),
-        title: 'Edit image',
-        items: panels.concat([mainViewContainer]),
-        buttons: reverseIfRtl([
-          {
-            text: 'Save',
-            name: 'save',
-            subtype: 'primary',
-            onclick: save
-          },
-          {
-            text: 'Cancel',
-            onclick: 'close'
-          }
-        ])
-      });
-      win.on('close', function () {
-        reject();
-        destroyStates(undoStack.data);
-        undoStack = null;
-        tempState = null;
-      });
-      undoStack.add(currentState);
-      updateButtonUndoStates();
-      imagePanel.on('load', function () {
-        width = imagePanel.imageSize().w;
-        height = imagePanel.imageSize().h;
-        ratioW = height / width;
-        ratioH = width / height;
-        win.find('#w').value(width);
-        win.find('#h').value(height);
-      });
-      imagePanel.on('crop', crop);
-    }
-    function edit(editor, imageResult) {
-      return new global$3(function (resolve, reject) {
-        return imageResult.toBlob().then(function (blob) {
-          open(editor, createState(blob), resolve, reject);
-        });
-      });
-    }
-    var Dialog = { edit: edit };
 
     function getImageSize(img) {
       var width, height;
@@ -3237,7 +2099,7 @@ var imagetools = (function () {
       return slice.call(x);
     };
 
-    function XMLHttpRequest$1 () {
+    function XMLHttpRequest () {
       var f = Global$1.getOrDie('XMLHttpRequest');
       return new f();
     }
@@ -3255,7 +2117,7 @@ var imagetools = (function () {
     var requestUrlAsBlob = function (url, headers, withCredentials) {
       return new global$3(function (resolve) {
         var xhr;
-        xhr = XMLHttpRequest$1();
+        xhr = XMLHttpRequest();
         xhr.onreadystatechange = function () {
           if (xhr.readyState === 4) {
             resolve({
@@ -3398,12 +2260,462 @@ var imagetools = (function () {
     var getUrl = function (url, apiKey, withCredentials) {
       return apiKey ? requestServiceBlob(url, apiKey) : requestBlob(url, withCredentials);
     };
-    var Proxy = { getUrl: getUrl };
 
-    var count$1 = 0;
-    var isEditableImage = function (editor, img) {
-      var selectorMatched = editor.dom.is(img, 'img:not([data-mce-object],[data-mce-placeholder])');
-      return selectorMatched && (isLocalImage(editor, img) || isCorsImage(editor, img) || editor.settings.imagetools_proxy);
+    var node = function () {
+      var f = Global$1.getOrDie('Node');
+      return f;
+    };
+    var compareDocumentPosition = function (a, b, match) {
+      return (a.compareDocumentPosition(b) & match) !== 0;
+    };
+    var documentPositionPreceding = function (a, b) {
+      return compareDocumentPosition(a, b, node().DOCUMENT_POSITION_PRECEDING);
+    };
+    var documentPositionContainedBy = function (a, b) {
+      return compareDocumentPosition(a, b, node().DOCUMENT_POSITION_CONTAINED_BY);
+    };
+    var Node = {
+      documentPositionPreceding: documentPositionPreceding,
+      documentPositionContainedBy: documentPositionContainedBy
+    };
+
+    var cached = function (f) {
+      var called = false;
+      var r;
+      return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+        if (!called) {
+          called = true;
+          r = f.apply(null, args);
+        }
+        return r;
+      };
+    };
+
+    var firstMatch = function (regexes, s) {
+      for (var i = 0; i < regexes.length; i++) {
+        var x = regexes[i];
+        if (x.test(s))
+          return x;
+      }
+      return undefined;
+    };
+    var find$1 = function (regexes, agent) {
+      var r = firstMatch(regexes, agent);
+      if (!r)
+        return {
+          major: 0,
+          minor: 0
+        };
+      var group = function (i) {
+        return Number(agent.replace(r, '$' + i));
+      };
+      return nu(group(1), group(2));
+    };
+    var detect = function (versionRegexes, agent) {
+      var cleanedAgent = String(agent).toLowerCase();
+      if (versionRegexes.length === 0)
+        return unknown();
+      return find$1(versionRegexes, cleanedAgent);
+    };
+    var unknown = function () {
+      return nu(0, 0);
+    };
+    var nu = function (major, minor) {
+      return {
+        major: major,
+        minor: minor
+      };
+    };
+    var Version = {
+      nu: nu,
+      detect: detect,
+      unknown: unknown
+    };
+
+    var edge = 'Edge';
+    var chrome = 'Chrome';
+    var ie = 'IE';
+    var opera = 'Opera';
+    var firefox = 'Firefox';
+    var safari = 'Safari';
+    var isBrowser = function (name, current) {
+      return function () {
+        return current === name;
+      };
+    };
+    var unknown$1 = function () {
+      return nu$1({
+        current: undefined,
+        version: Version.unknown()
+      });
+    };
+    var nu$1 = function (info) {
+      var current = info.current;
+      var version = info.version;
+      return {
+        current: current,
+        version: version,
+        isEdge: isBrowser(edge, current),
+        isChrome: isBrowser(chrome, current),
+        isIE: isBrowser(ie, current),
+        isOpera: isBrowser(opera, current),
+        isFirefox: isBrowser(firefox, current),
+        isSafari: isBrowser(safari, current)
+      };
+    };
+    var Browser = {
+      unknown: unknown$1,
+      nu: nu$1,
+      edge: constant(edge),
+      chrome: constant(chrome),
+      ie: constant(ie),
+      opera: constant(opera),
+      firefox: constant(firefox),
+      safari: constant(safari)
+    };
+
+    var windows = 'Windows';
+    var ios = 'iOS';
+    var android = 'Android';
+    var linux = 'Linux';
+    var osx = 'OSX';
+    var solaris = 'Solaris';
+    var freebsd = 'FreeBSD';
+    var isOS = function (name, current) {
+      return function () {
+        return current === name;
+      };
+    };
+    var unknown$2 = function () {
+      return nu$2({
+        current: undefined,
+        version: Version.unknown()
+      });
+    };
+    var nu$2 = function (info) {
+      var current = info.current;
+      var version = info.version;
+      return {
+        current: current,
+        version: version,
+        isWindows: isOS(windows, current),
+        isiOS: isOS(ios, current),
+        isAndroid: isOS(android, current),
+        isOSX: isOS(osx, current),
+        isLinux: isOS(linux, current),
+        isSolaris: isOS(solaris, current),
+        isFreeBSD: isOS(freebsd, current)
+      };
+    };
+    var OperatingSystem = {
+      unknown: unknown$2,
+      nu: nu$2,
+      windows: constant(windows),
+      ios: constant(ios),
+      android: constant(android),
+      linux: constant(linux),
+      osx: constant(osx),
+      solaris: constant(solaris),
+      freebsd: constant(freebsd)
+    };
+
+    var DeviceType = function (os, browser, userAgent) {
+      var isiPad = os.isiOS() && /ipad/i.test(userAgent) === true;
+      var isiPhone = os.isiOS() && !isiPad;
+      var isAndroid3 = os.isAndroid() && os.version.major === 3;
+      var isAndroid4 = os.isAndroid() && os.version.major === 4;
+      var isTablet = isiPad || isAndroid3 || isAndroid4 && /mobile/i.test(userAgent) === true;
+      var isTouch = os.isiOS() || os.isAndroid();
+      var isPhone = isTouch && !isTablet;
+      var iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) === false;
+      return {
+        isiPad: constant(isiPad),
+        isiPhone: constant(isiPhone),
+        isTablet: constant(isTablet),
+        isPhone: constant(isPhone),
+        isTouch: constant(isTouch),
+        isAndroid: os.isAndroid,
+        isiOS: os.isiOS,
+        isWebView: constant(iOSwebview)
+      };
+    };
+
+    var detect$1 = function (candidates, userAgent) {
+      var agent = String(userAgent).toLowerCase();
+      return find(candidates, function (candidate) {
+        return candidate.search(agent);
+      });
+    };
+    var detectBrowser = function (browsers, userAgent) {
+      return detect$1(browsers, userAgent).map(function (browser) {
+        var version = Version.detect(browser.versionRegexes, userAgent);
+        return {
+          current: browser.name,
+          version: version
+        };
+      });
+    };
+    var detectOs = function (oses, userAgent) {
+      return detect$1(oses, userAgent).map(function (os) {
+        var version = Version.detect(os.versionRegexes, userAgent);
+        return {
+          current: os.name,
+          version: version
+        };
+      });
+    };
+    var UaString = {
+      detectBrowser: detectBrowser,
+      detectOs: detectOs
+    };
+
+    var contains = function (str, substr) {
+      return str.indexOf(substr) !== -1;
+    };
+
+    var normalVersionRegex = /.*?version\/\ ?([0-9]+)\.([0-9]+).*/;
+    var checkContains = function (target) {
+      return function (uastring) {
+        return contains(uastring, target);
+      };
+    };
+    var browsers = [
+      {
+        name: 'Edge',
+        versionRegexes: [/.*?edge\/ ?([0-9]+)\.([0-9]+)$/],
+        search: function (uastring) {
+          var monstrosity = contains(uastring, 'edge/') && contains(uastring, 'chrome') && contains(uastring, 'safari') && contains(uastring, 'applewebkit');
+          return monstrosity;
+        }
+      },
+      {
+        name: 'Chrome',
+        versionRegexes: [
+          /.*?chrome\/([0-9]+)\.([0-9]+).*/,
+          normalVersionRegex
+        ],
+        search: function (uastring) {
+          return contains(uastring, 'chrome') && !contains(uastring, 'chromeframe');
+        }
+      },
+      {
+        name: 'IE',
+        versionRegexes: [
+          /.*?msie\ ?([0-9]+)\.([0-9]+).*/,
+          /.*?rv:([0-9]+)\.([0-9]+).*/
+        ],
+        search: function (uastring) {
+          return contains(uastring, 'msie') || contains(uastring, 'trident');
+        }
+      },
+      {
+        name: 'Opera',
+        versionRegexes: [
+          normalVersionRegex,
+          /.*?opera\/([0-9]+)\.([0-9]+).*/
+        ],
+        search: checkContains('opera')
+      },
+      {
+        name: 'Firefox',
+        versionRegexes: [/.*?firefox\/\ ?([0-9]+)\.([0-9]+).*/],
+        search: checkContains('firefox')
+      },
+      {
+        name: 'Safari',
+        versionRegexes: [
+          normalVersionRegex,
+          /.*?cpu os ([0-9]+)_([0-9]+).*/
+        ],
+        search: function (uastring) {
+          return (contains(uastring, 'safari') || contains(uastring, 'mobile/')) && contains(uastring, 'applewebkit');
+        }
+      }
+    ];
+    var oses = [
+      {
+        name: 'Windows',
+        search: checkContains('win'),
+        versionRegexes: [/.*?windows\ nt\ ?([0-9]+)\.([0-9]+).*/]
+      },
+      {
+        name: 'iOS',
+        search: function (uastring) {
+          return contains(uastring, 'iphone') || contains(uastring, 'ipad');
+        },
+        versionRegexes: [
+          /.*?version\/\ ?([0-9]+)\.([0-9]+).*/,
+          /.*cpu os ([0-9]+)_([0-9]+).*/,
+          /.*cpu iphone os ([0-9]+)_([0-9]+).*/
+        ]
+      },
+      {
+        name: 'Android',
+        search: checkContains('android'),
+        versionRegexes: [/.*?android\ ?([0-9]+)\.([0-9]+).*/]
+      },
+      {
+        name: 'OSX',
+        search: checkContains('os x'),
+        versionRegexes: [/.*?os\ x\ ?([0-9]+)_([0-9]+).*/]
+      },
+      {
+        name: 'Linux',
+        search: checkContains('linux'),
+        versionRegexes: []
+      },
+      {
+        name: 'Solaris',
+        search: checkContains('sunos'),
+        versionRegexes: []
+      },
+      {
+        name: 'FreeBSD',
+        search: checkContains('freebsd'),
+        versionRegexes: []
+      }
+    ];
+    var PlatformInfo = {
+      browsers: constant(browsers),
+      oses: constant(oses)
+    };
+
+    var detect$2 = function (userAgent) {
+      var browsers = PlatformInfo.browsers();
+      var oses = PlatformInfo.oses();
+      var browser = UaString.detectBrowser(browsers, userAgent).fold(Browser.unknown, Browser.nu);
+      var os = UaString.detectOs(oses, userAgent).fold(OperatingSystem.unknown, OperatingSystem.nu);
+      var deviceType = DeviceType(os, browser, userAgent);
+      return {
+        browser: browser,
+        os: os,
+        deviceType: deviceType
+      };
+    };
+    var PlatformDetection = { detect: detect$2 };
+
+    var detect$3 = cached(function () {
+      var userAgent = domGlobals.navigator.userAgent;
+      return PlatformDetection.detect(userAgent);
+    });
+    var PlatformDetection$1 = { detect: detect$3 };
+
+    var fromHtml = function (html, scope) {
+      var doc = scope || domGlobals.document;
+      var div = doc.createElement('div');
+      div.innerHTML = html;
+      if (!div.hasChildNodes() || div.childNodes.length > 1) {
+        domGlobals.console.error('HTML does not have a single root node', html);
+        throw new Error('HTML must have a single root node');
+      }
+      return fromDom(div.childNodes[0]);
+    };
+    var fromTag = function (tag, scope) {
+      var doc = scope || domGlobals.document;
+      var node = doc.createElement(tag);
+      return fromDom(node);
+    };
+    var fromText = function (text, scope) {
+      var doc = scope || domGlobals.document;
+      var node = doc.createTextNode(text);
+      return fromDom(node);
+    };
+    var fromDom = function (node) {
+      if (node === null || node === undefined) {
+        throw new Error('Node cannot be null or undefined');
+      }
+      return { dom: constant(node) };
+    };
+    var fromPoint = function (docElm, x, y) {
+      var doc = docElm.dom();
+      return Option.from(doc.elementFromPoint(x, y)).map(fromDom);
+    };
+    var Element = {
+      fromHtml: fromHtml,
+      fromTag: fromTag,
+      fromText: fromText,
+      fromDom: fromDom,
+      fromPoint: fromPoint
+    };
+
+    var ATTRIBUTE = domGlobals.Node.ATTRIBUTE_NODE;
+    var CDATA_SECTION = domGlobals.Node.CDATA_SECTION_NODE;
+    var COMMENT = domGlobals.Node.COMMENT_NODE;
+    var DOCUMENT = domGlobals.Node.DOCUMENT_NODE;
+    var DOCUMENT_TYPE = domGlobals.Node.DOCUMENT_TYPE_NODE;
+    var DOCUMENT_FRAGMENT = domGlobals.Node.DOCUMENT_FRAGMENT_NODE;
+    var ELEMENT = domGlobals.Node.ELEMENT_NODE;
+    var TEXT = domGlobals.Node.TEXT_NODE;
+    var PROCESSING_INSTRUCTION = domGlobals.Node.PROCESSING_INSTRUCTION_NODE;
+    var ENTITY_REFERENCE = domGlobals.Node.ENTITY_REFERENCE_NODE;
+    var ENTITY = domGlobals.Node.ENTITY_NODE;
+    var NOTATION = domGlobals.Node.NOTATION_NODE;
+
+    var ELEMENT$1 = ELEMENT;
+    var is = function (element, selector) {
+      var elem = element.dom();
+      if (elem.nodeType !== ELEMENT$1) {
+        return false;
+      } else if (elem.matches !== undefined) {
+        return elem.matches(selector);
+      } else if (elem.msMatchesSelector !== undefined) {
+        return elem.msMatchesSelector(selector);
+      } else if (elem.webkitMatchesSelector !== undefined) {
+        return elem.webkitMatchesSelector(selector);
+      } else if (elem.mozMatchesSelector !== undefined) {
+        return elem.mozMatchesSelector(selector);
+      } else {
+        throw new Error('Browser lacks native selectors');
+      }
+    };
+
+    var regularContains = function (e1, e2) {
+      var d1 = e1.dom();
+      var d2 = e2.dom();
+      return d1 === d2 ? false : d1.contains(d2);
+    };
+    var ieContains = function (e1, e2) {
+      return Node.documentPositionContainedBy(e1.dom(), e2.dom());
+    };
+    var browser = PlatformDetection$1.detect().browser;
+    var contains$1 = browser.isIE() ? ieContains : regularContains;
+
+    var child = function (scope, predicate) {
+      var result = find(scope.dom().childNodes, compose(predicate, Element.fromDom));
+      return result.map(Element.fromDom);
+    };
+
+    var child$1 = function (scope, selector) {
+      return child(scope, function (e) {
+        return is(e, selector);
+      });
+    };
+
+    var count = 0;
+    var getFigureImg = function (elem) {
+      return child$1(Element.fromDom(elem), 'img');
+    };
+    var isFigure = function (editor, elem) {
+      return editor.dom.is(elem, 'figure');
+    };
+    var getEditableImage = function (editor, elem) {
+      var isImage = function (imgNode) {
+        return editor.dom.is(imgNode, 'img:not([data-mce-object],[data-mce-placeholder])');
+      };
+      var isEditable = function (imgNode) {
+        return isImage(imgNode) && (isLocalImage(editor, imgNode) || isCorsImage(editor, imgNode) || editor.settings.imagetools_proxy);
+      };
+      if (isFigure(editor, elem)) {
+        var imgOpt = getFigureImg(elem);
+        return imgOpt.map(function (img) {
+          return isEditable(img.dom()) ? Option.some(img.dom()) : Option.none();
+        });
+      }
+      return isEditable(elem) ? Option.some(elem) : Option.none();
     };
     var displayError = function (editor, error) {
       editor.notificationManager.open({
@@ -3412,7 +2724,12 @@ var imagetools = (function () {
       });
     };
     var getSelectedImage = function (editor) {
-      return editor.selection.getNode();
+      var elem = editor.selection.getNode();
+      if (isFigure(editor, elem)) {
+        return getFigureImg(elem);
+      } else {
+        return Option.some(Element.fromDom(elem));
+      }
     };
     var extractFilename = function (editor, url) {
       var m = url.match(/\/([^\/\?]+)?\.(?:jpeg|jpg|png|gif)(?:\?|$)/i);
@@ -3422,7 +2739,7 @@ var imagetools = (function () {
       return null;
     };
     var createId = function () {
-      return 'imagetools' + count$1++;
+      return 'imagetools' + count++;
     };
     var isLocalImage = function (editor, img) {
       var url = img.src;
@@ -3437,23 +2754,23 @@ var imagetools = (function () {
     var imageToBlob$2 = function (editor, img) {
       var src = img.src, apiKey;
       if (isCorsImage(editor, img)) {
-        return Proxy.getUrl(img.src, null, isCorsWithCredentialsImage(editor, img));
+        return getUrl(img.src, null, isCorsWithCredentialsImage(editor, img));
       }
       if (!isLocalImage(editor, img)) {
         src = getProxyUrl(editor);
         src += (src.indexOf('?') === -1 ? '?' : '&') + 'url=' + encodeURIComponent(img.src);
         apiKey = getApiKey(editor);
-        return Proxy.getUrl(src, apiKey, false);
+        return getUrl(src, apiKey, false);
       }
       return BlobConversions.imageToBlob(img);
     };
-    var findSelectedBlob = function (editor) {
+    var findBlob = function (editor, img) {
       var blobInfo;
-      blobInfo = editor.editorUpload.blobCache.getByUri(getSelectedImage(editor).src);
+      blobInfo = editor.editorUpload.blobCache.getByUri(img.src);
       if (blobInfo) {
         return global$3.resolve(blobInfo.blob());
       }
-      return imageToBlob$2(editor, getSelectedImage(editor));
+      return imageToBlob$2(editor, img);
     };
     var startTimedUpload = function (editor, imageUploadTimerState) {
       var imageUploadTimer = global$2.setEditorTimeout(editor, function () {
@@ -3464,11 +2781,10 @@ var imagetools = (function () {
     var cancelTimedUpload = function (imageUploadTimerState) {
       clearTimeout(imageUploadTimerState.get());
     };
-    var updateSelectedImage = function (editor, ir, uploadImmediately, imageUploadTimerState, size) {
+    var updateSelectedImage = function (editor, ir, uploadImmediately, imageUploadTimerState, selectedImage, size) {
       return ir.toBlob().then(function (blob) {
-        var uri, name, blobCache, blobInfo, selectedImage;
+        var uri, name, blobCache, blobInfo;
         blobCache = editor.editorUpload.blobCache;
-        selectedImage = getSelectedImage(editor);
         uri = selectedImage.src;
         if (shouldReuseFilename(editor)) {
           blobInfo = blobCache.getByUri(uri);
@@ -3512,20 +2828,32 @@ var imagetools = (function () {
     };
     var selectedImageOperation = function (editor, imageUploadTimerState, fn, size) {
       return function () {
-        return editor._scanForImages().then(curry(findSelectedBlob, editor)).then(ResultConversions.blobToImageResult).then(fn).then(function (imageResult) {
-          return updateSelectedImage(editor, imageResult, false, imageUploadTimerState, size);
-        }, function (error) {
-          displayError(editor, error);
+        var imgOpt = getSelectedImage(editor);
+        return imgOpt.fold(function () {
+          displayError(editor, 'Could not find selected image');
+        }, function (img) {
+          return editor._scanForImages().then(function () {
+            return findBlob(editor, img.dom());
+          }).then(ResultConversions.blobToImageResult).then(fn).then(function (imageResult) {
+            return updateSelectedImage(editor, imageResult, false, imageUploadTimerState, img.dom(), size);
+          }, function (error) {
+            displayError(editor, error);
+          });
         });
       };
     };
     var rotate$2 = function (editor, imageUploadTimerState, angle) {
       return function () {
-        var size = ImageSize$1.getImageSize(getSelectedImage(editor));
-        var flippedSize = size ? {
-          w: size.h,
-          h: size.w
-        } : null;
+        var imgOpt = getSelectedImage(editor);
+        var flippedSize = imgOpt.fold(function () {
+          return null;
+        }, function (img) {
+          var size = ImageSize$1.getImageSize(img.dom());
+          return size ? {
+            w: size.h,
+            h: size.w
+          } : null;
+        });
         return selectedImageOperation(editor, imageUploadTimerState, function (imageResult) {
           return ImageTransformations.rotate(imageResult, angle);
         }, flippedSize)();
@@ -3538,41 +2866,119 @@ var imagetools = (function () {
         })();
       };
     };
-    var editImageDialog = function (editor, imageUploadTimerState) {
-      return function () {
-        var img = getSelectedImage(editor), originalSize = ImageSize$1.getNaturalImageSize(img);
-        var handleDialogBlob = function (blob) {
-          return new global$3(function (resolve) {
-            BlobConversions.blobToImage(blob).then(function (newImage) {
-              var newSize = ImageSize$1.getNaturalImageSize(newImage);
-              if (originalSize.w !== newSize.w || originalSize.h !== newSize.h) {
-                if (ImageSize$1.getImageSize(img)) {
-                  ImageSize$1.setImageSize(img, newSize);
-                }
-              }
-              URL$1.revokeObjectURL(newImage.src);
-              resolve(blob);
-            });
-          });
-        };
-        var openDialog = function (editor, imageResult) {
-          return Dialog.edit(editor, imageResult).then(handleDialogBlob).then(ResultConversions.blobToImageResult).then(function (imageResult) {
-            return updateSelectedImage(editor, imageResult, true, imageUploadTimerState);
-          }, function () {
-          });
-        };
-        findSelectedBlob(editor).then(ResultConversions.blobToImageResult).then(curry(openDialog, editor), function (error) {
-          displayError(editor, error);
+    var handleDialogBlob = function (editor, imageUploadTimerState, img, originalSize, blob) {
+      return new global$3(function (resolve) {
+        BlobConversions.blobToImage(blob).then(function (newImage) {
+          var newSize = ImageSize$1.getNaturalImageSize(newImage);
+          if (originalSize.w !== newSize.w || originalSize.h !== newSize.h) {
+            if (ImageSize$1.getImageSize(img)) {
+              ImageSize$1.setImageSize(img, newSize);
+            }
+          }
+          URL.revokeObjectURL(newImage.src);
+          return blob;
+        }).then(ResultConversions.blobToImageResult).then(function (imageResult) {
+          return updateSelectedImage(editor, imageResult, true, imageUploadTimerState, img);
+        }, function () {
         });
-      };
+      });
     };
     var Actions = {
       rotate: rotate$2,
       flip: flip$2,
-      editImageDialog: editImageDialog,
-      isEditableImage: isEditableImage,
-      cancelTimedUpload: cancelTimedUpload
+      getEditableImage: getEditableImage,
+      cancelTimedUpload: cancelTimedUpload,
+      findBlob: findBlob,
+      getSelectedImage: getSelectedImage,
+      handleDialogBlob: handleDialogBlob
     };
+
+    var saveState = constant('save-state');
+    var disable = constant('disable');
+    var enable = constant('enable');
+
+    var createState = function (blob) {
+      return {
+        blob: blob,
+        url: URL.createObjectURL(blob)
+      };
+    };
+    var makeOpen = function (editor, imageUploadTimerState) {
+      return function () {
+        var getLoadedSpec = function (currentState) {
+          return {
+            title: 'Edit Image',
+            size: 'large',
+            body: {
+              type: 'panel',
+              items: [{
+                  type: 'imagetools',
+                  name: 'imagetools',
+                  label: 'Edit Image',
+                  currentState: currentState
+                }]
+            },
+            buttons: [
+              {
+                type: 'cancel',
+                name: 'cancel',
+                text: 'Cancel'
+              },
+              {
+                type: 'submit',
+                name: 'save',
+                text: 'Save',
+                primary: true,
+                disabled: true
+              }
+            ],
+            onSubmit: function (api) {
+              var blob = api.getData().imagetools.blob;
+              originalImgOpt.each(function (originalImg) {
+                originalSizeOpt.each(function (originalSize) {
+                  Actions.handleDialogBlob(editor, imageUploadTimerState, originalImg.dom(), originalSize, blob);
+                });
+              });
+              api.close();
+            },
+            onCancel: function () {
+            },
+            onAction: function (api, details) {
+              switch (details.name) {
+              case saveState():
+                if (details.value) {
+                  api.enable('save');
+                } else {
+                  api.disable('save');
+                }
+                break;
+              case disable():
+                api.disable('save');
+                api.disable('cancel');
+                break;
+              case enable():
+                api.enable('cancel');
+                break;
+              }
+            }
+          };
+        };
+        var originalImgOpt = Actions.getSelectedImage(editor);
+        var originalSizeOpt = originalImgOpt.map(function (origImg) {
+          return ImageSize$1.getNaturalImageSize(origImg.dom());
+        });
+        var imgOpt = Actions.getSelectedImage(editor);
+        imgOpt.each(function (img) {
+          Actions.getEditableImage(editor, img.dom()).each(function (_) {
+            Actions.findBlob(editor, img.dom()).then(function (blob) {
+              var state = createState(blob);
+              editor.windowManager.open(getLoadedSpec(state));
+            });
+          });
+        });
+      };
+    };
+    var Dialog = { makeOpen: makeOpen };
 
     var register = function (editor, imageUploadTimerState) {
       global$1.each({
@@ -3580,7 +2986,7 @@ var imagetools = (function () {
         mceImageRotateRight: Actions.rotate(editor, imageUploadTimerState, 90),
         mceImageFlipVertical: Actions.flip(editor, imageUploadTimerState, 'v'),
         mceImageFlipHorizontal: Actions.flip(editor, imageUploadTimerState, 'h'),
-        mceEditImage: Actions.editImageDialog(editor, imageUploadTimerState)
+        mceEditImage: Dialog.makeOpen(editor, imageUploadTimerState)
       }, function (fn, cmd) {
         editor.addCommand(cmd, fn);
       });
@@ -3595,44 +3001,85 @@ var imagetools = (function () {
           editor.editorUpload.uploadImagesAuto();
           lastSelectedImageState.set(null);
         }
-        if (Actions.isEditableImage(editor, e.element)) {
-          lastSelectedImageState.set(e.element);
-        }
+        Actions.getEditableImage(editor, e.element).each(lastSelectedImageState.set);
       });
     };
     var UploadSelectedImage = { setup: setup };
 
     var register$1 = function (editor) {
-      editor.addButton('rotateleft', {
-        title: 'Rotate counterclockwise',
-        cmd: 'mceImageRotateLeft'
+      var cmd = function (command) {
+        return function () {
+          return editor.execCommand(command);
+        };
+      };
+      editor.ui.registry.addButton('rotateleft', {
+        tooltip: 'Rotate counterclockwise',
+        icon: 'rotate-left',
+        onAction: cmd('mceImageRotateLeft')
       });
-      editor.addButton('rotateright', {
-        title: 'Rotate clockwise',
-        cmd: 'mceImageRotateRight'
+      editor.ui.registry.addButton('rotateright', {
+        tooltip: 'Rotate clockwise',
+        icon: 'rotate-right',
+        onAction: cmd('mceImageRotateRight')
       });
-      editor.addButton('flipv', {
-        title: 'Flip vertically',
-        cmd: 'mceImageFlipVertical'
+      editor.ui.registry.addButton('flipv', {
+        tooltip: 'Flip vertically',
+        icon: 'flip-vertically',
+        onAction: cmd('mceImageFlipVertical')
       });
-      editor.addButton('fliph', {
-        title: 'Flip horizontally',
-        cmd: 'mceImageFlipHorizontal'
+      editor.ui.registry.addButton('fliph', {
+        tooltip: 'Flip horizontally',
+        icon: 'flip-horizontally',
+        onAction: cmd('mceImageFlipHorizontal')
       });
-      editor.addButton('editimage', {
-        title: 'Edit image',
-        cmd: 'mceEditImage'
+      editor.ui.registry.addButton('editimage', {
+        tooltip: 'Edit image',
+        icon: 'edit-image',
+        onAction: cmd('mceEditImage'),
+        onSetup: function (buttonApi) {
+          var setDisabled = function () {
+            var elementOpt = Actions.getSelectedImage(editor);
+            elementOpt.each(function (element) {
+              var disabled = Actions.getEditableImage(editor, element.dom()).isNone();
+              buttonApi.setDisabled(disabled);
+            });
+          };
+          editor.on('NodeChange', setDisabled);
+          return function () {
+            editor.off('NodeChange', setDisabled);
+          };
+        }
       });
-      editor.addButton('imageoptions', {
-        title: 'Image options',
-        icon: 'options',
-        cmd: 'mceImage'
+      editor.ui.registry.addButton('imageoptions', {
+        tooltip: 'Image options',
+        icon: 'image-options',
+        onAction: cmd('mceImage')
+      });
+      editor.ui.registry.addContextMenu('imagetools', {
+        update: function (element) {
+          return Actions.getEditableImage(editor, element).fold(function () {
+            return [];
+          }, function (_) {
+            return [{
+                text: 'Edit image',
+                icon: 'edit-image',
+                onAction: cmd('mceEditImage')
+              }];
+          });
+        }
       });
     };
     var Buttons = { register: register$1 };
 
     var register$2 = function (editor) {
-      editor.addContextToolbar(curry(Actions.isEditableImage, editor), getToolbarItems(editor));
+      editor.ui.registry.addContextToolbar('imagetools', {
+        items: getToolbarItems(editor),
+        predicate: function (elem) {
+          return Actions.getEditableImage(editor, elem).isSome();
+        },
+        position: 'node',
+        scope: 'node'
+      });
     };
     var ContextToolbar = { register: register$2 };
 
@@ -3649,5 +3096,5 @@ var imagetools = (function () {
 
     return Plugin;
 
-}());
+}(window));
 })();

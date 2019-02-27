@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Licensed under the LGPL or a commercial license.
+ * For LGPL see License.txt in the project root for license information.
+ * For commercial licenses see https://www.tiny.cloud/
+ *
+ * Version: 5.0.1 (2019-02-21)
+ */
 (function () {
 var save = (function () {
     'use strict';
@@ -25,7 +33,7 @@ var save = (function () {
 
     var displayErrorMessage = function (editor, message) {
       editor.notificationManager.open({
-        text: editor.translate(message),
+        text: message,
         type: 'error'
       });
     };
@@ -81,27 +89,34 @@ var save = (function () {
     var Commands = { register: register };
 
     var stateToggle = function (editor) {
-      return function (e) {
-        var ctrl = e.control;
-        editor.on('nodeChange dirty', function () {
-          ctrl.disabled(Settings.enableWhenDirty(editor) && !editor.isDirty());
-        });
+      return function (api) {
+        var handler = function () {
+          api.setDisabled(Settings.enableWhenDirty(editor) && !editor.isDirty());
+        };
+        editor.on('nodeChange dirty', handler);
+        return function () {
+          return editor.off('nodeChange dirty', handler);
+        };
       };
     };
     var register$1 = function (editor) {
-      editor.addButton('save', {
+      editor.ui.registry.addButton('save', {
         icon: 'save',
-        text: 'Save',
-        cmd: 'mceSave',
+        tooltip: 'Save',
         disabled: true,
-        onPostRender: stateToggle(editor)
+        onAction: function () {
+          return editor.execCommand('mceSave');
+        },
+        onSetup: stateToggle(editor)
       });
-      editor.addButton('cancel', {
-        text: 'Cancel',
-        icon: false,
-        cmd: 'mceCancel',
+      editor.ui.registry.addButton('cancel', {
+        icon: 'cancel',
+        tooltip: 'Cancel',
         disabled: true,
-        onPostRender: stateToggle(editor)
+        onAction: function () {
+          return editor.execCommand('mceCancel');
+        },
+        onSetup: stateToggle(editor)
       });
       editor.addShortcut('Meta+S', '', 'mceSave');
     };

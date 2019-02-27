@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Licensed under the LGPL or a commercial license.
+ * For LGPL see License.txt in the project root for license information.
+ * For commercial licenses see https://www.tiny.cloud/
+ *
+ * Version: 5.0.1 (2019-02-21)
+ */
 (function () {
 var fullpage = (function () {
     'use strict';
@@ -294,44 +302,98 @@ var fullpage = (function () {
       dataToHtml: dataToHtml
     };
 
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    var shallow = function (old, nu) {
+      return nu;
+    };
+    var baseMerge = function (merger) {
+      return function () {
+        var objects = new Array(arguments.length);
+        for (var i = 0; i < objects.length; i++)
+          objects[i] = arguments[i];
+        if (objects.length === 0)
+          throw new Error('Can\'t merge zero objects');
+        var ret = {};
+        for (var j = 0; j < objects.length; j++) {
+          var curObject = objects[j];
+          for (var key in curObject)
+            if (hasOwnProperty.call(curObject, key)) {
+              ret[key] = merger(ret[key], curObject[key]);
+            }
+        }
+        return ret;
+      };
+    };
+    var merge = baseMerge(shallow);
+
     var open = function (editor, headState) {
       var data = Parser.htmlToData(editor, headState.get());
+      var defaultData = {
+        title: '',
+        keywords: '',
+        description: '',
+        robots: '',
+        author: '',
+        docencoding: ''
+      };
+      var initialData = merge(defaultData, data);
       editor.windowManager.open({
-        title: 'Document properties',
-        data: data,
-        defaults: {
-          type: 'textbox',
-          size: 40
+        title: 'Metadata and Document Properties',
+        size: 'normal',
+        body: {
+          type: 'panel',
+          items: [
+            {
+              name: 'title',
+              type: 'input',
+              label: 'Title'
+            },
+            {
+              name: 'keywords',
+              type: 'input',
+              label: 'Keywords'
+            },
+            {
+              name: 'description',
+              type: 'input',
+              label: 'Description'
+            },
+            {
+              name: 'robots',
+              type: 'input',
+              label: 'Robots'
+            },
+            {
+              name: 'author',
+              type: 'input',
+              label: 'Author'
+            },
+            {
+              name: 'docencoding',
+              type: 'input',
+              label: 'Encoding'
+            }
+          ]
         },
-        body: [
+        buttons: [
           {
-            name: 'title',
-            label: 'Title'
+            type: 'cancel',
+            name: 'cancel',
+            text: 'Cancel'
           },
           {
-            name: 'keywords',
-            label: 'Keywords'
-          },
-          {
-            name: 'description',
-            label: 'Description'
-          },
-          {
-            name: 'robots',
-            label: 'Robots'
-          },
-          {
-            name: 'author',
-            label: 'Author'
-          },
-          {
-            name: 'docencoding',
-            label: 'Encoding'
+            type: 'submit',
+            name: 'save',
+            text: 'Save',
+            primary: true
           }
         ],
-        onSubmit: function (e) {
-          var headHtml = Parser.dataToHtml(editor, global$1.extend(data, e.data), headState.get());
+        initialData: initialData,
+        onSubmit: function (api) {
+          var nuData = api.getData();
+          var headHtml = Parser.dataToHtml(editor, global$1.extend(data, nuData), headState.get());
           headState.set(headHtml);
+          api.close();
         }
       });
     };
@@ -492,14 +554,19 @@ var fullpage = (function () {
     var FilterContent = { setup: setup };
 
     var register$1 = function (editor) {
-      editor.addButton('fullpage', {
-        title: 'Document properties',
-        cmd: 'mceFullPageProperties'
+      editor.ui.registry.addButton('fullpage', {
+        tooltip: 'Metadata and document properties',
+        icon: 'document-properties',
+        onAction: function () {
+          editor.execCommand('mceFullPageProperties');
+        }
       });
-      editor.addMenuItem('fullpage', {
-        text: 'Document properties',
-        cmd: 'mceFullPageProperties',
-        context: 'file'
+      editor.ui.registry.addMenuItem('fullpage', {
+        text: 'Metadata and document properties',
+        icon: 'document-properties',
+        onAction: function () {
+          editor.execCommand('mceFullPageProperties');
+        }
       });
     };
     var Buttons = { register: register$1 };
