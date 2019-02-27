@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Licensed under the LGPL or a commercial license.
+ * For LGPL see License.txt in the project root for license information.
+ * For commercial licenses see https://www.tiny.cloud/
+ *
+ * Version: 5.0.1 (2019-02-21)
+ */
 (function () {
 var toc = (function () {
     'use strict';
@@ -180,11 +188,15 @@ var toc = (function () {
     var FilterContent = { setup: setup };
 
     var toggleState = function (editor) {
-      return function (e) {
-        var ctrl = e.control;
-        editor.on('LoadContent SetContent change', function () {
-          ctrl.disabled(editor.readonly || !Toc.hasHeaders(editor));
-        });
+      return function (api) {
+        var toggleDisabledState = function () {
+          return api.setDisabled(editor.readonly || !Toc.hasHeaders(editor));
+        };
+        toggleDisabledState();
+        editor.on('LoadContent SetContent change', toggleDisabledState);
+        return function () {
+          return editor.on('LoadContent SetContent change', toggleDisabledState);
+        };
       };
     };
     var isToc = function (editor) {
@@ -193,24 +205,35 @@ var toc = (function () {
       };
     };
     var register$1 = function (editor) {
-      editor.addButton('toc', {
-        tooltip: 'Table of Contents',
-        cmd: 'mceInsertToc',
+      editor.ui.registry.addButton('toc', {
         icon: 'toc',
-        onPostRender: toggleState(editor)
+        tooltip: 'Table of contents',
+        onAction: function () {
+          return editor.execCommand('mceInsertToc');
+        },
+        onSetup: toggleState(editor)
       });
-      editor.addButton('tocupdate', {
+      editor.ui.registry.addButton('tocupdate', {
+        icon: 'reload',
         tooltip: 'Update',
-        cmd: 'mceUpdateToc',
-        icon: 'reload'
+        onAction: function () {
+          return editor.execCommand('mceUpdateToc');
+        }
       });
-      editor.addMenuItem('toc', {
-        text: 'Table of Contents',
-        context: 'insert',
-        cmd: 'mceInsertToc',
-        onPostRender: toggleState(editor)
+      editor.ui.registry.addMenuItem('toc', {
+        icon: 'toc',
+        text: 'Table of contents',
+        onAction: function () {
+          return editor.execCommand('mceInsertToc');
+        },
+        onSetup: toggleState(editor)
       });
-      editor.addContextToolbar(isToc(editor), 'tocupdate');
+      editor.ui.registry.addContextToolbar('toc', {
+        items: 'tocupdate',
+        predicate: isToc(editor),
+        scope: 'node',
+        position: 'node'
+      });
     };
     var Buttons = { register: register$1 };
 

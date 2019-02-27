@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Licensed under the LGPL or a commercial license.
+ * For LGPL see License.txt in the project root for license information.
+ * For commercial licenses see https://www.tiny.cloud/
+ *
+ * Version: 5.0.1 (2019-02-21)
+ */
 (function () {
 var searchreplace = (function () {
     'use strict';
@@ -415,144 +423,270 @@ var searchreplace = (function () {
     };
     var Api = { get: get };
 
+    var constant = function (value) {
+      return function () {
+        return value;
+      };
+    };
+    var never = constant(false);
+    var always = constant(true);
+
+    var never$1 = never;
+    var always$1 = always;
+    var none = function () {
+      return NONE;
+    };
+    var NONE = function () {
+      var eq = function (o) {
+        return o.isNone();
+      };
+      var call = function (thunk) {
+        return thunk();
+      };
+      var id = function (n) {
+        return n;
+      };
+      var noop = function () {
+      };
+      var nul = function () {
+        return null;
+      };
+      var undef = function () {
+        return undefined;
+      };
+      var me = {
+        fold: function (n, s) {
+          return n();
+        },
+        is: never$1,
+        isSome: never$1,
+        isNone: always$1,
+        getOr: id,
+        getOrThunk: call,
+        getOrDie: function (msg) {
+          throw new Error(msg || 'error: getOrDie called on none.');
+        },
+        getOrNull: nul,
+        getOrUndefined: undef,
+        or: id,
+        orThunk: call,
+        map: none,
+        ap: none,
+        each: noop,
+        bind: none,
+        flatten: none,
+        exists: never$1,
+        forall: always$1,
+        filter: none,
+        equals: eq,
+        equals_: eq,
+        toArray: function () {
+          return [];
+        },
+        toString: constant('none()')
+      };
+      if (Object.freeze)
+        Object.freeze(me);
+      return me;
+    }();
+
+    var typeOf = function (x) {
+      if (x === null)
+        return 'null';
+      var t = typeof x;
+      if (t === 'object' && Array.prototype.isPrototypeOf(x))
+        return 'array';
+      if (t === 'object' && String.prototype.isPrototypeOf(x))
+        return 'string';
+      return t;
+    };
+    var isType = function (type) {
+      return function (value) {
+        return typeOf(value) === type;
+      };
+    };
+    var isFunction = isType('function');
+
+    var each = function (xs, f) {
+      for (var i = 0, len = xs.length; i < len; i++) {
+        var x = xs[i];
+        f(x, i, xs);
+      }
+    };
+    var slice = Array.prototype.slice;
+    var from = isFunction(Array.from) ? Array.from : function (x) {
+      return slice.call(x);
+    };
+
     var open = function (editor, currentIndexState) {
       var last = {}, selectedText;
       editor.undoManager.add();
       selectedText = global$1.trim(editor.selection.getContent({ format: 'text' }));
-      function updateButtonStates() {
-        win.statusbar.find('#next').disabled(Actions.hasNext(editor, currentIndexState) === false);
-        win.statusbar.find('#prev').disabled(Actions.hasPrev(editor, currentIndexState) === false);
+      function updateButtonStates(api) {
+        var updateNext = Actions.hasNext(editor, currentIndexState) ? api.enable : api.disable;
+        updateNext('next');
+        var updatePrev = Actions.hasPrev(editor, currentIndexState) ? api.enable : api.disable;
+        updatePrev('prev');
       }
-      function notFoundAlert() {
+      var disableAll = function (api, disable) {
+        var buttons = [
+          'replace',
+          'replaceall',
+          'prev',
+          'next'
+        ];
+        var toggle = disable ? api.disable : api.enable;
+        each(buttons, toggle);
+      };
+      function notFoundAlert(api) {
         editor.windowManager.alert('Could not find the specified string.', function () {
-          win.find('#find')[0].focus();
+          api.focus('findtext');
         });
       }
-      var win = editor.windowManager.open({
-        layout: 'flex',
-        pack: 'center',
-        align: 'center',
+      var doSubmit = function (api) {
+        var data = api.getData();
+        if (!data.findtext.length) {
+          Actions.done(editor, currentIndexState, false);
+          disableAll(api, true);
+          updateButtonStates(api);
+          return;
+        }
+        if (last.text === data.findtext && last.caseState === data.matchcase && last.wholeWord === data.wholewords) {
+          if (!Actions.hasNext(editor, currentIndexState)) {
+            notFoundAlert(api);
+            return;
+          }
+          Actions.next(editor, currentIndexState);
+          updateButtonStates(api);
+          return;
+        }
+        var count = Actions.find(editor, currentIndexState, data.findtext, data.matchcase, data.wholewords);
+        if (!count) {
+          notFoundAlert(api);
+        }
+        disableAll(api, count === 0);
+        updateButtonStates(api);
+        last = {
+          text: data.findtext,
+          caseState: data.matchcase,
+          wholeWord: data.wholewords
+        };
+      };
+      var initialData = {
+        findtext: selectedText,
+        replacetext: '',
+        matchcase: false,
+        wholewords: false
+      };
+      editor.windowManager.open({
+        title: 'Find and Replace',
+        size: 'normal',
+        body: {
+          type: 'panel',
+          items: [
+            {
+              type: 'input',
+              name: 'findtext',
+              label: 'Find'
+            },
+            {
+              type: 'input',
+              name: 'replacetext',
+              label: 'Replace with'
+            },
+            {
+              type: 'grid',
+              columns: 2,
+              items: [
+                {
+                  type: 'checkbox',
+                  name: 'matchcase',
+                  label: 'Match case'
+                },
+                {
+                  type: 'checkbox',
+                  name: 'wholewords',
+                  label: 'Find whole words only'
+                }
+              ]
+            }
+          ]
+        },
+        buttons: [
+          {
+            type: 'custom',
+            name: 'find',
+            text: 'Find',
+            align: 'start',
+            primary: true
+          },
+          {
+            type: 'custom',
+            name: 'replace',
+            text: 'Replace',
+            align: 'start',
+            disabled: true
+          },
+          {
+            type: 'custom',
+            name: 'replaceall',
+            text: 'Replace All',
+            align: 'start',
+            disabled: true
+          },
+          {
+            type: 'custom',
+            name: 'prev',
+            text: 'Previous',
+            align: 'end',
+            icon: 'arrow-left',
+            disabled: true
+          },
+          {
+            type: 'custom',
+            name: 'next',
+            text: 'Next',
+            align: 'end',
+            icon: 'arrow-right',
+            disabled: true
+          }
+        ],
+        initialData: initialData,
+        onAction: function (api, details) {
+          var data = api.getData();
+          switch (details.name) {
+          case 'find':
+            doSubmit(api);
+            break;
+          case 'replace':
+            if (!Actions.replace(editor, currentIndexState, data.replacetext)) {
+              disableAll(api, true);
+              currentIndexState.set(-1);
+              last = {};
+            }
+            break;
+          case 'replaceall':
+            Actions.replace(editor, currentIndexState, data.replacetext, true, true);
+            disableAll(api, true);
+            last = {};
+            break;
+          case 'prev':
+            Actions.prev(editor, currentIndexState);
+            updateButtonStates(api);
+            break;
+          case 'next':
+            Actions.next(editor, currentIndexState);
+            updateButtonStates(api);
+            break;
+          default:
+            break;
+          }
+        },
+        onSubmit: doSubmit,
         onClose: function () {
           editor.focus();
           Actions.done(editor, currentIndexState);
           editor.undoManager.add();
-        },
-        onSubmit: function (e) {
-          var count, caseState, text, wholeWord;
-          e.preventDefault();
-          caseState = win.find('#case').checked();
-          wholeWord = win.find('#words').checked();
-          text = win.find('#find').value();
-          if (!text.length) {
-            Actions.done(editor, currentIndexState, false);
-            win.statusbar.items().slice(1).disabled(true);
-            return;
-          }
-          if (last.text === text && last.caseState === caseState && last.wholeWord === wholeWord) {
-            if (!Actions.hasNext(editor, currentIndexState)) {
-              notFoundAlert();
-              return;
-            }
-            Actions.next(editor, currentIndexState);
-            updateButtonStates();
-            return;
-          }
-          count = Actions.find(editor, currentIndexState, text, caseState, wholeWord);
-          if (!count) {
-            notFoundAlert();
-          }
-          win.statusbar.items().slice(1).disabled(count === 0);
-          updateButtonStates();
-          last = {
-            text: text,
-            caseState: caseState,
-            wholeWord: wholeWord
-          };
-        },
-        buttons: [
-          {
-            text: 'Find',
-            subtype: 'primary',
-            onclick: function () {
-              win.submit();
-            }
-          },
-          {
-            text: 'Replace',
-            disabled: true,
-            onclick: function () {
-              if (!Actions.replace(editor, currentIndexState, win.find('#replace').value())) {
-                win.statusbar.items().slice(1).disabled(true);
-                currentIndexState.set(-1);
-                last = {};
-              }
-            }
-          },
-          {
-            text: 'Replace all',
-            disabled: true,
-            onclick: function () {
-              Actions.replace(editor, currentIndexState, win.find('#replace').value(), true, true);
-              win.statusbar.items().slice(1).disabled(true);
-              last = {};
-            }
-          },
-          {
-            type: 'spacer',
-            flex: 1
-          },
-          {
-            text: 'Prev',
-            name: 'prev',
-            disabled: true,
-            onclick: function () {
-              Actions.prev(editor, currentIndexState);
-              updateButtonStates();
-            }
-          },
-          {
-            text: 'Next',
-            name: 'next',
-            disabled: true,
-            onclick: function () {
-              Actions.next(editor, currentIndexState);
-              updateButtonStates();
-            }
-          }
-        ],
-        title: 'Find and replace',
-        items: {
-          type: 'form',
-          padding: 20,
-          labelGap: 30,
-          spacing: 10,
-          items: [
-            {
-              type: 'textbox',
-              name: 'find',
-              size: 40,
-              label: 'Find',
-              value: selectedText
-            },
-            {
-              type: 'textbox',
-              name: 'replace',
-              size: 40,
-              label: 'Replace with'
-            },
-            {
-              type: 'checkbox',
-              name: 'case',
-              text: 'Match case',
-              label: ' '
-            },
-            {
-              type: 'checkbox',
-              name: 'words',
-              text: 'Whole words',
-              label: ' '
-            }
-          ]
         }
       });
     };
@@ -571,16 +705,16 @@ var searchreplace = (function () {
       };
     };
     var register$1 = function (editor, currentIndexState) {
-      editor.addMenuItem('searchreplace', {
-        text: 'Find and replace',
+      editor.ui.registry.addMenuItem('searchreplace', {
+        text: 'Find and replace...',
         shortcut: 'Meta+F',
-        onclick: showDialog(editor, currentIndexState),
-        separator: 'before',
-        context: 'edit'
+        onAction: showDialog(editor, currentIndexState),
+        icon: 'search'
       });
-      editor.addButton('searchreplace', {
+      editor.ui.registry.addButton('searchreplace', {
         tooltip: 'Find and replace',
-        onclick: showDialog(editor, currentIndexState)
+        onAction: showDialog(editor, currentIndexState),
+        icon: 'search'
       });
       editor.shortcuts.add('Meta+F', '', showDialog(editor, currentIndexState));
     };

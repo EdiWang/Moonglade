@@ -1,5 +1,13 @@
+/**
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Licensed under the LGPL or a commercial license.
+ * For LGPL see License.txt in the project root for license information.
+ * For commercial licenses see https://www.tiny.cloud/
+ *
+ * Version: 5.0.1 (2019-02-21)
+ */
 (function () {
-var visualchars = (function () {
+var visualchars = (function (domGlobals) {
     'use strict';
 
     var Cell = function (initial) {
@@ -82,13 +90,13 @@ var visualchars = (function () {
       var eq = function (o) {
         return o.isNone();
       };
-      var call$$1 = function (thunk) {
+      var call = function (thunk) {
         return thunk();
       };
       var id = function (n) {
         return n;
       };
-      var noop$$1 = function () {
+      var noop = function () {
       };
       var nul = function () {
         return null;
@@ -104,17 +112,17 @@ var visualchars = (function () {
         isSome: never$1,
         isNone: always$1,
         getOr: id,
-        getOrThunk: call$$1,
+        getOrThunk: call,
         getOrDie: function (msg) {
           throw new Error(msg || 'error: getOrDie called on none.');
         },
         getOrNull: nul,
         getOrUndefined: undef,
         or: id,
-        orThunk: call$$1,
+        orThunk: call,
         map: none,
         ap: none,
-        each: noop$$1,
+        each: noop,
         bind: none,
         flatten: none,
         exists: never$1,
@@ -240,22 +248,22 @@ var visualchars = (function () {
     };
 
     var fromHtml = function (html, scope) {
-      var doc = scope || document;
+      var doc = scope || domGlobals.document;
       var div = doc.createElement('div');
       div.innerHTML = html;
       if (!div.hasChildNodes() || div.childNodes.length > 1) {
-        console.error('HTML does not have a single root node', html);
+        domGlobals.console.error('HTML does not have a single root node', html);
         throw new Error('HTML must have a single root node');
       }
       return fromDom(div.childNodes[0]);
     };
     var fromTag = function (tag, scope) {
-      var doc = scope || document;
+      var doc = scope || domGlobals.document;
       var node = doc.createElement(tag);
       return fromDom(node);
     };
     var fromText = function (text, scope) {
-      var doc = scope || document;
+      var doc = scope || domGlobals.document;
       var node = doc.createTextNode(text);
       return fromDom(node);
     };
@@ -269,7 +277,7 @@ var visualchars = (function () {
       var doc = docElm.dom();
       return Option.from(doc.elementFromPoint(x, y)).map(fromDom);
     };
-    var Element$$1 = {
+    var Element = {
       fromHtml: fromHtml,
       fromTag: fromTag,
       fromText: fromText,
@@ -277,18 +285,18 @@ var visualchars = (function () {
       fromPoint: fromPoint
     };
 
-    var ATTRIBUTE = Node.ATTRIBUTE_NODE;
-    var CDATA_SECTION = Node.CDATA_SECTION_NODE;
-    var COMMENT = Node.COMMENT_NODE;
-    var DOCUMENT = Node.DOCUMENT_NODE;
-    var DOCUMENT_TYPE = Node.DOCUMENT_TYPE_NODE;
-    var DOCUMENT_FRAGMENT = Node.DOCUMENT_FRAGMENT_NODE;
-    var ELEMENT = Node.ELEMENT_NODE;
-    var TEXT = Node.TEXT_NODE;
-    var PROCESSING_INSTRUCTION = Node.PROCESSING_INSTRUCTION_NODE;
-    var ENTITY_REFERENCE = Node.ENTITY_REFERENCE_NODE;
-    var ENTITY = Node.ENTITY_NODE;
-    var NOTATION = Node.NOTATION_NODE;
+    var ATTRIBUTE = domGlobals.Node.ATTRIBUTE_NODE;
+    var CDATA_SECTION = domGlobals.Node.CDATA_SECTION_NODE;
+    var COMMENT = domGlobals.Node.COMMENT_NODE;
+    var DOCUMENT = domGlobals.Node.DOCUMENT_NODE;
+    var DOCUMENT_TYPE = domGlobals.Node.DOCUMENT_TYPE_NODE;
+    var DOCUMENT_FRAGMENT = domGlobals.Node.DOCUMENT_FRAGMENT_NODE;
+    var ELEMENT = domGlobals.Node.ELEMENT_NODE;
+    var TEXT = domGlobals.Node.TEXT_NODE;
+    var PROCESSING_INSTRUCTION = domGlobals.Node.PROCESSING_INSTRUCTION_NODE;
+    var ENTITY_REFERENCE = domGlobals.Node.ENTITY_REFERENCE_NODE;
+    var ENTITY = domGlobals.Node.ENTITY_NODE;
+    var NOTATION = domGlobals.Node.NOTATION_NODE;
 
     var type = function (element) {
       return element.dom().nodeType;
@@ -314,7 +322,7 @@ var visualchars = (function () {
     var filterDescendants = function (scope, predicate) {
       var result = [];
       var dom = scope.dom();
-      var children = map(dom.childNodes, Element$$1.fromDom);
+      var children = map(dom.childNodes, Element.fromDom);
       each(children, function (x) {
         if (predicate(x)) {
           result = result.concat([x]);
@@ -343,7 +351,7 @@ var visualchars = (function () {
 
     var show = function (editor, rootElm) {
       var node, div;
-      var nodeList = Nodes.filterDescendants(Element$$1.fromDom(rootElm), Nodes.isMatch);
+      var nodeList = Nodes.filterDescendants(Element.fromDom(rootElm), Nodes.isMatch);
       each(nodeList, function (n) {
         var withSpans = Nodes.replaceWithSpans(value(n));
         div = editor.dom.create('div', null, withSpans);
@@ -427,35 +435,40 @@ var visualchars = (function () {
     };
     var Bindings = { setup: setup$1 };
 
-    var toggleActiveState = function (editor) {
-      return function (e) {
-        var ctrl = e.control;
-        editor.on('VisualChars', function (e) {
-          ctrl.active(e.state);
-        });
+    var toggleActiveState = function (editor, enabledStated) {
+      return function (api) {
+        api.setActive(enabledStated.get());
+        var editorEventCallback = function (e) {
+          return api.setActive(e.state);
+        };
+        editor.on('VisualChars', editorEventCallback);
+        return function () {
+          return editor.off('VisualChars', editorEventCallback);
+        };
       };
     };
-    var register$1 = function (editor) {
-      editor.addButton('visualchars', {
-        active: false,
-        title: 'Show invisible characters',
-        cmd: 'mceVisualChars',
-        onPostRender: toggleActiveState(editor)
+    var register$1 = function (editor, toggleState) {
+      editor.ui.registry.addToggleButton('visualchars', {
+        tooltip: 'Show invisible characters',
+        icon: 'paragraph',
+        onAction: function () {
+          return editor.execCommand('mceVisualChars');
+        },
+        onSetup: toggleActiveState(editor, toggleState)
       });
-      editor.addMenuItem('visualchars', {
+      editor.ui.registry.addToggleMenuItem('visualchars', {
         text: 'Show invisible characters',
-        cmd: 'mceVisualChars',
-        onPostRender: toggleActiveState(editor),
-        selectable: true,
-        context: 'view',
-        prependToContext: true
+        onAction: function () {
+          return editor.execCommand('mceVisualChars');
+        },
+        onSetup: toggleActiveState(editor, toggleState)
       });
     };
 
     global.add('visualchars', function (editor) {
       var toggleState = Cell(false);
       Commands.register(editor, toggleState);
-      register$1(editor);
+      register$1(editor, toggleState);
       Keyboard.setup(editor, toggleState);
       Bindings.setup(editor, toggleState);
       return Api.get(toggleState);
@@ -465,5 +478,5 @@ var visualchars = (function () {
 
     return Plugin;
 
-}());
+}(window));
 })();

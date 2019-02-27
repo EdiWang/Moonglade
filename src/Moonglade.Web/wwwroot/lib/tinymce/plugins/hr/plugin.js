@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+ * Licensed under the LGPL or a commercial license.
+ * For LGPL see License.txt in the project root for license information.
+ * For commercial licenses see https://www.tiny.cloud/
+ *
+ * Version: 5.0.1 (2019-02-21)
+ */
 (function () {
 var hr = (function () {
     'use strict';
@@ -12,16 +20,19 @@ var hr = (function () {
     var Commands = { register: register };
 
     var register$1 = function (editor) {
-      editor.addButton('hr', {
-        icon: 'hr',
+      editor.ui.registry.addButton('hr', {
+        icon: 'horizontal-rule',
         tooltip: 'Horizontal line',
-        cmd: 'InsertHorizontalRule'
+        onAction: function () {
+          return editor.execCommand('InsertHorizontalRule');
+        }
       });
-      editor.addMenuItem('hr', {
-        icon: 'hr',
+      editor.ui.registry.addMenuItem('hr', {
+        icon: 'horizontal-rule',
         text: 'Horizontal line',
-        cmd: 'InsertHorizontalRule',
-        context: 'insert'
+        onAction: function () {
+          return editor.execCommand('InsertHorizontalRule');
+        }
       });
     };
     var Buttons = { register: register$1 };
