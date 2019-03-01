@@ -15,7 +15,7 @@
     <Copyright>2019 edi.wang</Copyright>
     <AssemblyVersion>10.0.0.0</AssemblyVersion>
     <FileVersion>10.0.0.0</FileVersion>
-    <Version>10.0.6998.1000</Version>
+    <Version>10.0.0.0</Version>
     <ApplicationInsightsResourceId>/subscriptions/15bf06cf-caa3-4224-b7fb-cad42590472f/resourcegroups/ediwang-netcore/providers/microsoft.insights/components/ediwang-netcore-ai</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/15bf06cf-caa3-4224-b7fb-cad42590472f/resourcegroups/ediwang-netcore/providers/microsoft.insights/components/ediwang-netcore-ai</ApplicationInsightsAnnotationResourceId>
     <UserSecretsId>ad505235-2dfc-40ee-aeb0-c3956517e224</UserSecretsId>
