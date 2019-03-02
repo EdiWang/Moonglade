@@ -18,6 +18,8 @@
 
         public FeedSettings FeedSettings { get; set; }
 
+        public WatermarkSettings WatermarkSettings { get; set; }
+
         public ReaderView ReaderView { get; set; }
 
         private bool _hasInitialized;
@@ -31,6 +33,7 @@
             SiteTitle = string.Empty;
             EmailConfiguration = new EmailConfiguration();
             FeedSettings = new FeedSettings();
+            WatermarkSettings = new WatermarkSettings();
             ReaderView = new ReaderView();
         }
 
@@ -69,6 +72,11 @@
                 FeedSettings.RssGeneratorName = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssGeneratorName)}"];
                 FeedSettings.AuthorName = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.AuthorName)}"];
                 FeedSettings.RssItemCount = int.Parse(cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssItemCount)}"]);
+
+                WatermarkSettings.IsEnabled = bool.Parse(cfgDic[$"{nameof(WatermarkSettings)}.{nameof(WatermarkSettings.IsEnabled)}"]);
+                WatermarkSettings.KeepOriginImage = bool.Parse(cfgDic[$"{nameof(WatermarkSettings)}.{nameof(WatermarkSettings.KeepOriginImage)}"]);
+                WatermarkSettings.FontSize = int.Parse(cfgDic[$"{nameof(WatermarkSettings)}.{nameof(WatermarkSettings.FontSize)}"]);
+                WatermarkSettings.WatermarkText = cfgDic[$"{nameof(WatermarkSettings)}.{nameof(WatermarkSettings.WatermarkText)}"];
 
                 ReaderView.SiteName = cfgDic[$"{nameof(ReaderView)}.{nameof(ReaderView.SiteName)}"];
 

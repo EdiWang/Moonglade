@@ -151,6 +151,30 @@ namespace Moonglade.Configuration
             }
         }
 
+        public Response SaveWatermarkConfiguration(WatermarkSettings watermarkSettings)
+        {
+            try
+            {
+                foreach (var propertyInfo in watermarkSettings.GetType().GetProperties())
+                {
+                    var cfg = Context.BlogConfiguration.FirstOrDefault(k => k.CfgKey == $"{nameof(WatermarkSettings)}.{propertyInfo.Name}");
+                    if (null != cfg)
+                    {
+                        cfg.CfgValue = propertyInfo.GetValue(watermarkSettings, null).ToString();
+                        cfg.LastModifiedTimeUtc = DateTime.UtcNow;
+                    }
+                }
+
+                var rows = Context.SaveChanges();
+                return new Response(rows > 0);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
+            }
+        }
+
         public Response SaveGeneralSettings(BlogConfig blogConfig)
         {
             try

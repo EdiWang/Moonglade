@@ -2,7 +2,6 @@
 {
     public class AppSettings
     {
-        public WatermarkSettings WatermarkSettings { get; set; }
         public CaptchaSettings CaptchaSettings { get; set; }
         public bool EnableImageLazyLoad { get; set; }
         public bool EnablePingBackReceive { get; set; }

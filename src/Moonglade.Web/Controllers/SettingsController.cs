@@ -195,6 +195,44 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
+        #region Watermark Settings
+
+        [Route("watermark-settings")]
+        public IActionResult WatermarkSettings()
+        {
+            var ws = _blogConfig.WatermarkSettings;
+            var vm = new WatermarkSettingsViewModel
+            {
+                IsEnabled = ws.IsEnabled,
+                KeepOriginImage = ws.KeepOriginImage,
+                FontSize = ws.FontSize,
+                WatermarkText = ws.WatermarkText
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Route("watermark-settings")]
+        public IActionResult WatermarkSettings(WatermarkSettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var ws = _blogConfig.WatermarkSettings;
+                ws.IsEnabled = model.IsEnabled;
+                ws.KeepOriginImage = model.KeepOriginImage;
+                ws.FontSize = model.FontSize;
+                ws.WatermarkText = model.WatermarkText;
+
+                var response = _blogConfigurationService.SaveWatermarkConfiguration(ws);
+                _blogConfig.DumpOldValuesWhenNextLoad();
+                return Json(response);
+            }
+            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+        }
+
+        #endregion
+
         #region FriendLinks
 
         [HttpGet("manage-friendlinks")]
