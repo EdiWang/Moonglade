@@ -119,7 +119,7 @@ namespace Moonglade.Web.Controllers
 
                         // Add watermark
                         MemoryStream watermarkedStream = null;
-                        if (AppSettings.WatermarkSettings.IsEnabled && ext != ".gif")
+                        if (_blogConfig.WatermarkSettings.IsEnabled && ext != ".gif")
                         {
                             var watermarker = new ImageWatermarker(stream, ext)
                             {
@@ -130,11 +130,11 @@ namespace Moonglade.Web.Controllers
                             Logger.LogInformation($"Adding watermark onto image {name}");
 
                             watermarkedStream = watermarker.AddWatermark(
-                                                AppSettings.WatermarkSettings.WatermarkText,
+                                                _blogConfig.WatermarkSettings.WatermarkText,
                                                 Color.FromArgb(128, 128, 128, 128),
                                                 WatermarkPosition.BottomRight,
                                                 15,
-                                                AppSettings.WatermarkSettings.FontSize);
+                                                _blogConfig.WatermarkSettings.FontSize);
                         }
 
                         var response = await _imageStorageProvider.InsertAsync(name,
