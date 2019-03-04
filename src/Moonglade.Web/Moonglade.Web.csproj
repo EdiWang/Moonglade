@@ -27,7 +27,6 @@
     <Content Remove="bundleconfig.json" />
     <Content Remove="compilerconfig.json" />
     <Content Remove="web.config" />
-    <None Remove="Moonglade.Web.csproj.vspscc" />
     <None Include="bundleconfig.json" />
   </ItemGroup>
 
