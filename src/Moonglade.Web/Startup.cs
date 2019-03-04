@@ -143,7 +143,9 @@ namespace Moonglade.Web
             PrepareRuntimePathDependencies(app, env);
 
             app.UseSecurityHeaders(new HeaderPolicyCollection()
-                .AddCustomHeader("X-UA-Compatible", "IE=edge")
+                .AddFrameOptionsSameOrigin()
+                .AddXssProtectionEnabled()
+                .AddContentTypeOptionsNoSniff()
             );
 
             if (env.IsDevelopment())
