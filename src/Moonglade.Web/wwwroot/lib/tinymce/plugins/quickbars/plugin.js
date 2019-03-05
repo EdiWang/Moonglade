@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.1 (2019-02-21)
+ * Version: 5.0.2 (2019-03-05)
  */
 (function () {
 var quickbars = (function (domGlobals) {
@@ -812,7 +812,7 @@ var quickbars = (function (domGlobals) {
     var EditorSettings = { getToolbarItemsOr: getToolbarItemsOr(isString) };
 
     var getTextSelectionToolbarItems = function (editor) {
-      return EditorSettings.getToolbarItemsOr(editor, 'quickbars_selection_toolbar', 'bold italic | form:link-form h2 h3 blockquote');
+      return EditorSettings.getToolbarItemsOr(editor, 'quickbars_selection_toolbar', 'bold italic | quicklink h2 h3 blockquote');
     };
     var getInsertToolbarItems = function (editor) {
       return EditorSettings.getToolbarItemsOr(editor, 'quickbars_insert_toolbar', 'quickimage quicktable');

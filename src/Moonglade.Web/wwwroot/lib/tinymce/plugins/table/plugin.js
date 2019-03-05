@@ -4,13 +4,29 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.1 (2019-02-21)
+ * Version: 5.0.2 (2019-03-05)
  */
 (function () {
 var table = (function (domGlobals) {
     'use strict';
 
-    var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
+    var Cell = function (initial) {
+      var value = initial;
+      var get = function () {
+        return value;
+      };
+      var set = function (v) {
+        value = v;
+      };
+      var clone = function () {
+        return Cell(get());
+      };
+      return {
+        get: get,
+        set: set,
+        clone: clone
+      };
+    };
 
     var noop = function () {
       var args = [];
@@ -197,6 +213,8 @@ var table = (function (domGlobals) {
       none: none,
       from: from
     };
+
+    var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
     var typeOf = function (x) {
       if (x === null)
@@ -4380,24 +4398,6 @@ var table = (function (domGlobals) {
       adjustWidthTo: adjustWidthTo
     };
 
-    var Cell = function (initial) {
-      var value = initial;
-      var get = function () {
-        return value;
-      };
-      var set = function (v) {
-        value = v;
-      };
-      var clone = function () {
-        return Cell(get());
-      };
-      return {
-        get: get,
-        set: set,
-        clone: clone
-      };
-    };
-
     var base = function (handleUnsupported, required) {
       return baseWith(handleUnsupported, required, {
         validate: isFunction,
@@ -6274,11 +6274,19 @@ var table = (function (domGlobals) {
     };
     var TableDialog = { open: open$2 };
 
+    var getSelectionStartFromSelector = function (selector) {
+      return function (editor) {
+        return Option.from(editor.dom.getParent(editor.selection.getStart(), selector)).map(Element.fromDom);
+      };
+    };
+    var getSelectionStartCell = getSelectionStartFromSelector('th,td');
+    var getSelectionStartCellOrCaption = getSelectionStartFromSelector('th,td,caption');
+
     var each$3 = global$1.each;
     var registerCommands = function (editor, actions, cellSelection, selections, clipboardRows) {
       var isRoot = getIsRoot(editor);
       var eraseTable = function () {
-        getSelectionStartCell().orThunk(getSelectionStartCaption).each(function (cellOrCaption) {
+        getSelectionStartCellOrCaption(editor).each(function (cellOrCaption) {
           var tableOpt = TableLookup.table(cellOrCaption, isRoot);
           tableOpt.filter(not(isRoot)).each(function (table) {
             var cursor = Element.fromText('');
@@ -6297,13 +6305,6 @@ var table = (function (domGlobals) {
           });
         });
       };
-      var getSelectionStartFromSelector = function (selector) {
-        return function () {
-          return Option.from(editor.dom.getParent(editor.selection.getStart(), selector)).map(Element.fromDom);
-        };
-      };
-      var getSelectionStartCaption = getSelectionStartFromSelector('caption');
-      var getSelectionStartCell = getSelectionStartFromSelector('th,td');
       var getTableFromCell = function (cell) {
         return TableLookup.table(cell, isRoot);
       };
@@ -6321,7 +6322,7 @@ var table = (function (domGlobals) {
         }
       };
       var actOnSelection = function (execute) {
-        getSelectionStartCell().each(function (cell) {
+        getSelectionStartCell(editor).each(function (cell) {
           getTableFromCell(cell).each(function (table) {
             var targets = TableTargets.forMenu(selections, table, cell);
             var beforeSize = getSize(table);
@@ -6336,7 +6337,7 @@ var table = (function (domGlobals) {
         });
       };
       var copyRowSelection = function (execute) {
-        return getSelectionStartCell().map(function (cell) {
+        return getSelectionStartCell(editor).map(function (cell) {
           return getTableFromCell(cell).bind(function (table) {
             var doc = Element.fromDom(editor.getDoc());
             var targets = TableTargets.forMenu(selections, table, cell);
@@ -6350,7 +6351,7 @@ var table = (function (domGlobals) {
           var clonedRows = map(rows, function (row) {
             return deep(row);
           });
-          getSelectionStartCell().each(function (cell) {
+          getSelectionStartCell(editor).each(function (cell) {
             getTableFromCell(cell).each(function (table) {
               var doc = Element.fromDom(editor.getDoc());
               var generators = TableFill.paste(doc);
@@ -8880,7 +8881,77 @@ var table = (function (domGlobals) {
       return { get: get };
     };
 
-    var addButtons = function (editor) {
+    var SelectionTargets = function (editor, selections) {
+      var targets = Cell(Option.none());
+      var changeHandlers = Cell([]);
+      var findTargets = function () {
+        return getSelectionStartCellOrCaption(editor).bind(function (cellOrCaption) {
+          var table = TableLookup.table(cellOrCaption);
+          return table.map(function (table) {
+            if (name(cellOrCaption) === 'caption') {
+              return TableTargets.notCell(cellOrCaption);
+            } else {
+              return TableTargets.forMenu(selections, table, cellOrCaption);
+            }
+          });
+        });
+      };
+      var resetTargets = function () {
+        targets.set(cached(findTargets)());
+        each(changeHandlers.get(), function (handler) {
+          return handler();
+        });
+      };
+      var onSetup = function (api, isDisabled) {
+        var handler = function () {
+          return targets.get().fold(function () {
+            api.setDisabled(true);
+          }, function (targets) {
+            api.setDisabled(isDisabled(targets));
+          });
+        };
+        handler();
+        changeHandlers.set(changeHandlers.get().concat([handler]));
+        return function () {
+          changeHandlers.set(filter(changeHandlers.get(), function (h) {
+            return h !== handler;
+          }));
+        };
+      };
+      var onSetupTable = function (api) {
+        return onSetup(api, function (_) {
+          return false;
+        });
+      };
+      var onSetupCellOrRow = function (api) {
+        return onSetup(api, function (targets) {
+          return name(targets.element()) === 'caption';
+        });
+      };
+      var onSetupMergeable = function (api) {
+        return onSetup(api, function (targets) {
+          return targets.mergable().isNone();
+        });
+      };
+      var onSetupUnmergeable = function (api) {
+        return onSetup(api, function (targets) {
+          return targets.unmergable().isNone();
+        });
+      };
+      editor.on('nodechange', resetTargets);
+      return {
+        onSetupTable: onSetupTable,
+        onSetupCellOrRow: onSetupCellOrRow,
+        onSetupMergeable: onSetupMergeable,
+        onSetupUnmergeable: onSetupUnmergeable,
+        resetTargets: resetTargets,
+        targets: function () {
+          return targets.get();
+        }
+      };
+    };
+
+    var addButtons = function (editor, selectionTargets) {
       editor.ui.registry.addMenuButton('table', {
         tooltip: 'Table',
         icon: 'table',
@@ -8896,82 +8967,98 @@ var table = (function (domGlobals) {
       editor.ui.registry.addButton('tableprops', {
         tooltip: 'Table properties',
         onAction: cmd('mceTableProps'),
-        icon: 'table'
+        icon: 'table',
+        onSetup: selectionTargets.onSetupTable
       });
       editor.ui.registry.addButton('tabledelete', {
         tooltip: 'Delete table',
         onAction: cmd('mceTableDelete'),
-        icon: 'table-delete-table'
+        icon: 'table-delete-table',
+        onSetup: selectionTargets.onSetupTable
       });
       editor.ui.registry.addButton('tablecellprops', {
         tooltip: 'Cell properties',
         onAction: cmd('mceTableCellProps'),
-        icon: 'table-cell-properties'
+        icon: 'table-cell-properties',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tablemergecells', {
         tooltip: 'Merge cells',
         onAction: cmd('mceTableMergeCells'),
-        icon: 'table-merge-cells'
+        icon: 'table-merge-cells',
+        onSetup: selectionTargets.onSetupMergeable
       });
       editor.ui.registry.addButton('tablesplitcells', {
         tooltip: 'Split cell',
         onAction: cmd('mceTableSplitCells'),
-        icon: 'table-split-cells'
+        icon: 'table-split-cells',
+        onSetup: selectionTargets.onSetupUnmergeable
       });
       editor.ui.registry.addButton('tableinsertrowbefore', {
         tooltip: 'Insert row before',
         onAction: cmd('mceTableInsertRowBefore'),
-        icon: 'table-insert-row-above'
+        icon: 'table-insert-row-above',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tableinsertrowafter', {
         tooltip: 'Insert row after',
         onAction: cmd('mceTableInsertRowAfter'),
-        icon: 'table-insert-row-after'
+        icon: 'table-insert-row-after',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tabledeleterow', {
         tooltip: 'Delete row',
         onAction: cmd('mceTableDeleteRow'),
-        icon: 'table-delete-row'
+        icon: 'table-delete-row',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tablerowprops', {
         tooltip: 'Row properties',
         onAction: cmd('mceTableRowProps'),
-        icon: 'table-row-properties'
+        icon: 'table-row-properties',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tableinsertcolbefore', {
         tooltip: 'Insert column before',
         onAction: cmd('mceTableInsertColBefore'),
-        icon: 'table-insert-column-before'
+        icon: 'table-insert-column-before',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tableinsertcolafter', {
         tooltip: 'Insert column after',
         onAction: cmd('mceTableInsertColAfter'),
-        icon: 'table-insert-column-after'
+        icon: 'table-insert-column-after',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tabledeletecol', {
         tooltip: 'Delete column',
         onAction: cmd('mceTableDeleteCol'),
-        icon: 'table-delete-column'
+        icon: 'table-delete-column',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tablecutrow', {
         tooltip: 'Cut row',
         onAction: cmd('mceTableCutRow'),
-        icon: 'temporary-placeholder'
+        icon: 'temporary-placeholder',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tablecopyrow', {
         tooltip: 'Copy row',
         onAction: cmd('mceTableCopyRow'),
-        icon: 'temporary-placeholder'
+        icon: 'temporary-placeholder',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tablepasterowbefore', {
         tooltip: 'Paste row before',
         onAction: cmd('mceTablePasteRowBefore'),
-        icon: 'temporary-placeholder'
+        icon: 'temporary-placeholder',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
       editor.ui.registry.addButton('tablepasterowafter', {
         tooltip: 'Paste row after',
         onAction: cmd('mceTablePasteRowAfter'),
-        icon: 'temporary-placeholder'
+        icon: 'temporary-placeholder',
+        onSetup: selectionTargets.onSetupCellOrRow
       });
     };
     var addToolbars = function (editor) {
@@ -8993,54 +9080,7 @@ var table = (function (domGlobals) {
       addToolbars: addToolbars
     };
 
-    var addMenuItems = function (editor, selections) {
-      var targets = Option.none;
-      var noTargetDisable = function (ctrl) {
-        ctrl.setDisabled(true);
-      };
-      var ctrlEnable = function (ctrl) {
-        ctrl.setDisabled(false);
-      };
-      var setEnabled = function (api) {
-        targets().fold(function () {
-          noTargetDisable(api);
-        }, function (targets) {
-          ctrlEnable(api);
-        });
-        return function () {
-        };
-      };
-      var setEnabledMerge = function (api) {
-        targets().fold(function () {
-          noTargetDisable(api);
-        }, function (targets) {
-          api.setDisabled(targets.mergable().isNone());
-        });
-        return function () {
-        };
-      };
-      var setEnabledUnmerge = function (api) {
-        targets().fold(function () {
-          noTargetDisable(api);
-        }, function (targets) {
-          api.setDisabled(targets.unmergable().isNone());
-        });
-        return function () {
-        };
-      };
-      var resetTargets = function () {
-        targets = cached(function () {
-          var cellOpt = Option.from(editor.dom.getParent(editor.selection.getStart(), 'th,td'));
-          return cellOpt.bind(function (cellDom) {
-            var cell = Element.fromDom(cellDom);
-            var table = TableLookup.table(cell);
-            return table.map(function (table) {
-              return TableTargets.forMenu(selections, table, cell);
-            });
-          });
-        });
-      };
-      editor.on('nodechange', resetTargets);
+    var addMenuItems = function (editor, selectionTargets) {
       var cmd = function (command) {
         return function () {
           return editor.execCommand(command);
@@ -9055,13 +9095,13 @@ var table = (function (domGlobals) {
       };
       var tableProperties = {
         text: 'Table properties',
-        onSetup: setEnabled,
+        onSetup: selectionTargets.onSetupTable,
         onAction: cmd('mceTableProps')
       };
       var deleteTable = {
         text: 'Delete table',
         icon: 'table-delete-table',
-        onSetup: setEnabled,
+        onSetup: selectionTargets.onSetupTable,
         onAction: cmd('mceTableDelete')
       };
       var row = {
@@ -9074,53 +9114,53 @@ var table = (function (domGlobals) {
               text: 'Insert row before',
               icon: 'table-insert-row-above',
               onAction: cmd('mceTableInsertRowBefore'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Insert row after',
               icon: 'table-insert-row-after',
               onAction: cmd('mceTableInsertRowAfter'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Delete row',
               icon: 'table-delete-row',
               onAction: cmd('mceTableDeleteRow'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Row properties',
               icon: 'table-row-properties',
               onAction: cmd('mceTableRowProps'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             { type: 'separator' },
             {
               type: 'menuitem',
               text: 'Cut row',
               onAction: cmd('mceTableCutRow'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Copy row',
               onAction: cmd('mceTableCopyRow'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Paste row before',
               onAction: cmd('mceTablePasteRowBefore'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Paste row after',
               onAction: cmd('mceTablePasteRowAfter'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             }
           ];
         }
@@ -9135,21 +9175,21 @@ var table = (function (domGlobals) {
               text: 'Insert column before',
               icon: 'table-insert-column-before',
               onAction: cmd('mceTableInsertColBefore'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Insert column after',
               icon: 'table-insert-column-after',
               onAction: cmd('mceTableInsertColAfter'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Delete column',
               icon: 'table-delete-column',
               onAction: cmd('mceTableDeleteCol'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             }
           ];
         }
@@ -9164,21 +9204,21 @@ var table = (function (domGlobals) {
               text: 'Cell properties',
               icon: 'table-cell-properties',
               onAction: cmd('mceTableCellProps'),
-              onSetup: setEnabled
+              onSetup: selectionTargets.onSetupCellOrRow
             },
             {
               type: 'menuitem',
               text: 'Merge cells',
               icon: 'table-merge-cells',
               onAction: cmd('mceTableMergeCells'),
-              onSetup: setEnabledMerge
+              onSetup: selectionTargets.onSetupMergeable
             },
             {
               type: 'menuitem',
               text: 'Split cell',
               icon: 'table-split-cells',
               onAction: cmd('mceTableSplitCells'),
-              onSetup: setEnabledUnmerge
+              onSetup: selectionTargets.onSetupUnmergeable
             }
           ];
         }
@@ -9209,11 +9249,15 @@ var table = (function (domGlobals) {
       editor.ui.registry.addNestedMenuItem('cell', cell);
       editor.ui.registry.addContextMenu('table', {
         update: function () {
-          resetTargets();
-          return targets().fold(function () {
+          selectionTargets.resetTargets();
+          return selectionTargets.targets().fold(function () {
             return '';
-          }, function () {
-            return 'cell row column | tableprops deletetable';
+          }, function (targets) {
+            if (name(targets.element()) === 'caption') {
+              return 'tableprops deletetable';
+            } else {
+              return 'cell row column | tableprops deletetable';
+            }
           });
         }
       });
@@ -9252,11 +9296,12 @@ var table = (function (domGlobals) {
       var cellSelection = CellSelection$1(editor, resizeHandler.lazyResize);
       var actions = TableActions(editor, resizeHandler.lazyWire);
       var selections = Selections(editor);
+      var selectionTargets = SelectionTargets(editor, selections);
       var clipboardRows = Cell(Option.none());
       Commands.registerCommands(editor, actions, cellSelection, selections, clipboardRows);
       Clipboard.registerEvents(editor, selections, actions, cellSelection);
-      MenuItems.addMenuItems(editor, selections);
-      Buttons.addButtons(editor);
+      MenuItems.addMenuItems(editor, selectionTargets);
+      Buttons.addButtons(editor, selectionTargets);
       Buttons.addToolbars(editor);
       editor.on('PreInit', function () {
         editor.serializer.addTempAttr(Ephemera.firstSelected());

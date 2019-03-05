@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.1 (2019-02-21)
+ * Version: 5.0.2 (2019-03-05)
  */
 (function () {
 var template = (function () {
@@ -378,6 +378,27 @@ var template = (function () {
 
     var global$3 = tinymce.util.Tools.resolve('tinymce.util.Promise');
 
+    var hasOwnProperty = Object.hasOwnProperty;
+    var get = function (obj, key) {
+      return has(obj, key) ? Option.some(obj[key]) : Option.none();
+    };
+    var has = function (obj, key) {
+      return hasOwnProperty.call(obj, key);
+    };
+
+    var entitiesAttr = {
+      '"': '&quot;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '&': '&amp;',
+      '\'': '&#039;'
+    };
+    var htmlEscape = function (html) {
+      return html.replace(/["'<>&]/g, function (match) {
+        return get(entitiesAttr, match).getOr(match);
+      });
+    };
+
     var getPreviewContent = function (editor, html) {
       if (html.indexOf('<html>') === -1) {
         var contentCssLinks_1 = '';
@@ -445,15 +466,14 @@ var template = (function () {
           }
         });
       };
-      var onChange = function (templates) {
+      var onChange = function (templates, updateDialog) {
         return function (api, change) {
           if (change.name === 'template') {
             var newTemplateTitle = api.getData().template;
             findTemplate(templates, newTemplateTitle).each(function (t) {
               api.block('Loading...');
               getTemplateContent(t).then(function (previewHtml) {
-                var previewContent = getPreviewContent(editor, previewHtml);
-                api.setData({ preview: previewContent });
+                updateDialog(api, t, previewHtml);
                 api.unblock();
               });
             });
@@ -473,7 +493,7 @@ var template = (function () {
       };
       var openDialog = function (templates) {
         var selectBoxItems = createSelectBoxItems(templates);
-        var dialogSpec = function (bodyItems, initialData) {
+        var buildDialogSpec = function (bodyItems, initialData) {
           return {
             title: 'Insert Template',
             size: 'large',
@@ -496,15 +516,10 @@ var template = (function () {
               }
             ],
             onSubmit: onSubmit(templates),
-            onChange: onChange(templates)
+            onChange: onChange(templates, updateDialog)
           };
         };
-        var dialogApi = editor.windowManager.open(dialogSpec([], {
-          template: '',
-          preview: ''
-        }));
-        dialogApi.block('Loading...');
-        getTemplateContent(templates[0]).then(function (previewHtml) {
+        var updateDialog = function (dialogApi, template, previewHtml) {
           var content = getPreviewContent(editor, previewHtml);
           var bodyItems = [
             {
@@ -514,6 +529,10 @@ var template = (function () {
               items: selectBoxItems
             },
             {
+              type: 'htmlpanel',
+              html: '<p aria-live="polite">' + htmlEscape(template.value.description) + '</p>'
+            },
+            {
               label: 'Preview',
               type: 'iframe',
               name: 'preview',
@@ -521,12 +540,20 @@ var template = (function () {
             }
           ];
           var initialData = {
-            template: templates[0].text,
+            template: template.text,
             preview: content
           };
           dialogApi.unblock();
-          dialogApi.redial(dialogSpec(bodyItems, initialData));
+          dialogApi.redial(buildDialogSpec(bodyItems, initialData));
           dialogApi.focus('template');
+        };
+        var dialogApi = editor.windowManager.open(buildDialogSpec([], {
+          template: '',
+          preview: ''
+        }));
+        dialogApi.block('Loading...');
+        getTemplateContent(templates[0]).then(function (previewHtml) {
+          updateDialog(dialogApi, templates[0], previewHtml);
         });
       };
       var optTemplates = createTemplates();
