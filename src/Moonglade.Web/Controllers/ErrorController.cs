@@ -1,14 +1,22 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
-    public class ErrorController : MoongladeController
+    public class ErrorController : Controller
     {
+        protected readonly ILogger<ErrorController> Logger;
+
+        public ErrorController(ILogger<ErrorController> logger)
+        {
+            if (null != logger) Logger = logger;
+        }
+
         [Route("/error")]
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -28,7 +36,7 @@ namespace Moonglade.Web.Controllers
 
                 // Get the exception that occurred
                 var exceptionThatOccurred = exceptionFeature.Error;
-                Logger.LogError($"Shit happens: {routeWhereExceptionOccurred}", exceptionThatOccurred);
+                Logger.LogError($"Shit happens: {routeWhereExceptionOccurred}, client IP: {HttpContext.Connection.RemoteIpAddress}", exceptionThatOccurred);
             }
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }

@@ -150,14 +150,17 @@ namespace Moonglade.Web
 
             if (env.IsDevelopment())
             {
+                _logger.LogWarning("Application is running under DEBUG mode. Application Insights disabled.");
+
                 TelemetryConfiguration.Active.DisableTelemetry = true;
                 TelemetryDebugWriter.IsTracingDisabled = true;
 
-                _logger.LogWarning("Application is running under DEBUG mode.");
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
+                app.UseExceptionHandler("/error");
                 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
             }
 
