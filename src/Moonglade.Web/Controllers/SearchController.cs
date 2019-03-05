@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
         [Route("opensearch")]
         public async Task<IActionResult> OpenSearch()
         {
-            var openSearchDataFile = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opensearch.xml";
+            var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\opensearch.xml";
             if (!System.IO.File.Exists(openSearchDataFile))
             {
                 Logger.LogInformation($"OpenSearch file not found, writing new file on {openSearchDataFile}");
