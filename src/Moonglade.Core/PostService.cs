@@ -186,14 +186,14 @@ namespace Moonglade.Core
             var rst = str.Split(' ');
             if (rst.Length > 1)
             {
-                // keyword: "fuck  some shit"
-                // search for post where Title containing "fuck && some && shit"
+                // keyword: "dot  net rocks"
+                // search for post where Title containing "dot && net && rocks"
                 var result = rst.Aggregate(query, (current, s) => current.Where(p => p.Title.Contains(s)));
                 return result;
             }
             else
             {
-                // keyword: "fucksomeshit"
+                // keyword: "dotnetrocks"
                 var k = rst.First();
                 var result = query.Where(p => p.Title.Contains(k) ||
                                               p.PostTag.Select(pt => pt.Tag).Select(t => t.DisplayName).Contains(k));

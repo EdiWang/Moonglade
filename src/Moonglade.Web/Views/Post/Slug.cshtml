@@ -99,15 +99,15 @@
             </div>
         </div>
 
-        <div class="d-none d-md-block post-publish-info bg-light mb-1">
-            <span>
-                <time class="dateline" datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
-                (UTC +8:00)
+        <div class="d-none d-md-block post-publish-info mb-2">
+            <strong class="text-muted">
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
+                 / UTC +@Settings.Value.TimeZone
                 @if (Model.PostModel.LastModifyOn.HasValue)
                 {
                     <span>(Last Edit @Model.PostModel.LastModifyOn.Value.ToString("yyyy/M/d HH:mm"))</span>
                 }
-            </span>
+            </strong>
             <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits Reads</span>
         </div>
 
@@ -129,7 +129,7 @@
                 </div>
                 @if (Model.PostModel.Categories.Count > 0)
                 {
-                    <ul class="d-flex flex-row list-unstyled ul-cat-list-desktop">
+                    <ul class="d-flex flex-row list-unstyled ul-cat-list-desktop mb-0">
                         @foreach (var item in Model.PostModel.Categories)
                         {
                             <li>
