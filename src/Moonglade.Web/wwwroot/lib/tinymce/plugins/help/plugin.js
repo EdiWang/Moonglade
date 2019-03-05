@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.1 (2019-02-21)
+ * Version: 5.0.2 (2019-03-05)
  */
 (function () {
 var help = (function () {
@@ -683,6 +683,7 @@ var help = (function () {
       };
       var htmlPanel = {
         type: 'htmlpanel',
+        presets: 'document',
         html: [
           installedPlugins(editor),
           availablePlugins()
@@ -708,7 +709,8 @@ var help = (function () {
         html: '<p>' + global$2.translate([
           'You are using {0}',
           changeLogLink
-        ]) + '</p>'
+        ]) + '</p>',
+        presets: 'document'
       };
       return htmlPanel;
     };

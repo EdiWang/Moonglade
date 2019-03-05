@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.1 (2019-02-21)
+ * Version: 5.0.2 (2019-03-05)
  */
 (function () {
 var link = (function (domGlobals) {
@@ -1196,7 +1196,7 @@ var link = (function (domGlobals) {
     var register = function (editor) {
       editor.addCommand('mceLink', function () {
         if (Settings.useQuickLink(editor.settings)) {
-          editor.fire('contexttoolbar-show', { toolbarKey: 'link-form' });
+          editor.fire('contexttoolbar-show', { toolbarKey: 'quicklink' });
         } else {
           Actions.openDialog(editor)();
         }
@@ -1262,10 +1262,11 @@ var link = (function (domGlobals) {
       var collapseSelectionToEnd = function (editor) {
         editor.selection.collapse(false);
       };
-      editor.ui.registry.addContextForm('link-form', {
+      editor.ui.registry.addContextForm('quicklink', {
         launch: {
           type: 'contextformtogglebutton',
           icon: 'link',
+          tooltip: 'Link',
           onSetup: Actions.toggleActiveState(editor)
         },
         label: 'Link',
