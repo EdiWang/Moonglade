@@ -63,7 +63,7 @@
                         <li id="navbar-dropdown-post" class="nav-item @("Category" == currentController ? "dropdown active" : "dropdown")">
                             <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
                                 <i class="fas fa-book"></i>
-                                <strong>Category</strong>
+                                <strong>Categories</strong>
                             </a>
                             <cache expires-after="@TimeSpan.FromMinutes(60)">
                                 @await Component.InvokeAsync("CategoryMenu")

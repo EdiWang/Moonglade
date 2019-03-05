@@ -29,17 +29,17 @@
     padding: 0;
 }
 
-.admin-main .catlist ul li {
-    width: 175px;
-    display: inline-block;
-}
+    .admin-main .catlist ul li {
+        width: 175px;
+        display: inline-block;
+    }
 
-.admin-main .catlist ul li label {
-    display: inline-block;
-    font-weight: normal;
-    padding-left: 6px;
-    vertical-align: middle;
-}
+        .admin-main .catlist ul li label {
+            display: inline-block;
+            font-weight: normal;
+            padding-left: 6px;
+            vertical-align: middle;
+        }
 
 div.mce-fullscreen {
     z-index: 1050;
@@ -236,7 +236,6 @@ div.tagsinput {
 .tilexsm-subtitle {
     font-size: 12px;
 }
-
 .ul-cat-list-desktop a.btn {
     margin-right: 10px;
 }
@@ -302,7 +301,6 @@ div.tagsinput {
 
 .post-publish-info {
     font-size: 0.75rem;
-    padding: 5px;
 }
 
 .post-header-hr {
@@ -921,14 +919,14 @@ div.animbrand a:focus, div.animbrand a:hover {
 .post-date-box {
     font-family: KlavikaMedium-Plain;
     position: absolute;
-    width: 65px;
+    width: 70px;
     border: 1px solid #2b579a;
 }
 
 .post-date-day {
     color: #2b579a;
-    font-size: 38px;
-    height: 48px;
+    font-size: 42px;
+    height: 58px;
     margin: 0;
     padding-right: 7px;
     padding-top: 2px;
@@ -949,7 +947,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 
 .post-summary-box {
     display: block;
-    margin-left: 100px;
+    margin-left: 105px;
 }
 
 .post-summary-text {
@@ -967,13 +965,14 @@ div.animbrand a:focus, div.animbrand a:hover {
         background-color: #2b579a;
         color: #fff;
         display: inline-block;
-        font-size: 12px;
+        font-size: 0.75rem;
         margin-bottom: 10px;
         margin-right: 10px;
         padding: 5px 10px;
     }
 
         .post-summary-tags a:hover {
+            background-color: #3e6db5;
             color: #fff;
         }
 
@@ -1035,6 +1034,7 @@ a {
 
 .navbar {
     box-shadow: 0 0 8px #666;
+    padding: .4rem 1rem
 }
 
 .nav-item {
@@ -1225,3 +1225,8 @@ body {
     margin-right: 10px;
     padding: 5px 10px;
 }
+
+    .toptags-list a:hover {
+        background-color: #3e6db5;
+        color: #fff;
+    }
