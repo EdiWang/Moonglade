@@ -63,7 +63,7 @@
                         <li id="navbar-dropdown-post" class="nav-item @("Category" == currentController ? "dropdown active" : "dropdown")">
                             <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
                                 <i class="fas fa-book"></i>
-                                Category
+                                <strong>Category</strong>
                             </a>
                             <cache expires-after="@TimeSpan.FromMinutes(60)">
                                 @await Component.InvokeAsync("CategoryMenu")
@@ -73,26 +73,26 @@
                         <li class="nav-item @(string.Compare("Tags", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
                             <a asp-controller="Tags" asp-action="Index" class="nav-link">
                                 <i class="fas fa-tags"></i>
-                                Tags
+                                <strong>Tags</strong>
                             </a>
                         </li>
 
                         <li class="nav-item @(string.Compare("Archive", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
                             <a asp-controller="Archive" asp-action="Index" class="nav-link">
                                 <i class="fas fa-archive"></i>
-                                Archive
+                                <strong>Archive</strong>
                             </a>
                         </li>
                         <li class="nav-item @(string.Compare("Apps", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
                             <a asp-controller="Apps" asp-action="Index" class="nav-link">
                                 <i class="fab fa-windows"></i>
-                                Apps
+                                <strong>Apps</strong>
                             </a>
                         </li>
                         <li class="nav-item @(string.Compare("About", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
                             <a asp-controller="About" asp-action="Index" class="nav-link">
                                 <i class="fas fa-star"></i>
-                                About
+                                <strong>About</strong>
                             </a>
                         </li>
                     </ul>
@@ -103,7 +103,7 @@
                                value=""
                                title="Search"
                                aria-label="Search"
-                               placeholder="Keyword"
+                               placeholder="Search"
                                name="term"
                                maxlength="30">
                         <button class="btn btn-outline-light btn-search my-2 my-sm-0 d-none d-md-block" type="submit"><i class="fas fa-search"></i></button>

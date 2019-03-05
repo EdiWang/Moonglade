@@ -5213,15 +5213,14 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 .post-date-box {
-    background: #2b579a;
-    display: inline-block;
     font-family: KlavikaMedium-Plain;
     position: absolute;
     width: 65px;
+    border: 1px solid #2b579a;
 }
 
 .post-date-day {
-    color: #fff;
+    color: #2b579a;
     font-size: 38px;
     height: 48px;
     margin: 0;
@@ -5231,7 +5230,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 .post-date-month {
-    background-color: #3e6db5;
+    background-color: #2b579a;
     color: #fff;
     padding: 1px 10px;
     text-align: right;
@@ -5244,7 +5243,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 
 .post-summary-box {
     display: block;
-    margin-left: 95px;
+    margin-left: 100px;
 }
 
 .post-summary-text {
@@ -5329,8 +5328,7 @@ a {
 }
 
 .navbar {
-    box-shadow: 0 0 4px #666;
-    padding: 0.3rem 1rem;
+    box-shadow: 0 0 8px #666;
 }
 
 .nav-item {
@@ -5487,7 +5485,7 @@ html, body {
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei";
     font-size: 0.9rem;
-    padding-top: 45px;
+    padding-top: 50px;
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
