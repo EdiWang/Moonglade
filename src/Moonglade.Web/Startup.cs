@@ -138,8 +138,21 @@ namespace Moonglade.Web
                                }));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
         {
+            appLifetime.ApplicationStarted.Register(() =>
+            {
+                _logger.LogInformation("Moonglade started.");
+            });
+            appLifetime.ApplicationStopping.Register(() =>
+            {
+                _logger.LogInformation("Moonglade is stopping...");
+            });
+            appLifetime.ApplicationStopped.Register(() =>
+            {
+                _logger.LogInformation("Moonglade stopped.");
+            });
+
             PrepareRuntimePathDependencies(app, env);
 
             app.UseSecurityHeaders(new HeaderPolicyCollection()

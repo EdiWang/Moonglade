@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,13 +19,23 @@ namespace Moonglade.Web.Controllers
     [Route("admin")]
     public class AdminController : MoongladeController
     {
+        IApplicationLifetime applicationLifetime;
+
         public AdminController(MoongladeDbContext context,
             ILogger<AdminController> logger,
             IOptions<AppSettings> settings,
             IConfiguration configuration,
-            IHttpContextAccessor accessor)
+            IHttpContextAccessor accessor, IApplicationLifetime appLifetime)
             : base(context, logger, settings, configuration, accessor)
         {
+            applicationLifetime = appLifetime;
+        }
+
+        [HttpGet("blow-me-up")]
+        public IActionResult BlowMeUp()
+        {
+            applicationLifetime.StopApplication();
+            return new EmptyResult();
         }
 
         [HttpGet("signin")]
