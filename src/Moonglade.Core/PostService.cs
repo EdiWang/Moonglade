@@ -128,14 +128,13 @@ namespace Moonglade.Core
             return list;
         }
 
-        public IEnumerable<Post> GetArchivedPosts(int year, int month = 0)
+        public IQueryable<Post> GetArchivedPosts(int year, int month = 0)
         {
             Logger.LogInformation($"Querying archived posts for {year}/{month}");
 
-            var query =
-                Context.Post.Include(p => p.PostPublish)
-                             .Where(p => p.PostPublish.PubDateUtc.Value.Year == year &&
-                                   (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month)).AsNoTracking();
+            var query = Context.Post.Include(p => p.PostPublish)
+                                    .Where(p => p.PostPublish.PubDateUtc.Value.Year == year &&
+                                          (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month)).AsNoTracking();
 
             return query;
         }

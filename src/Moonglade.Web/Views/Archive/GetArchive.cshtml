@@ -3,7 +3,7 @@
 @using Moonglade.Model.Settings
 
 @inject IOptions<AppSettings> Settings
-@model List<Moonglade.Data.Entities.Post>
+@model List<PostArchiveItemViewModel>
 
 @section head{
     <style>
@@ -57,15 +57,15 @@
                     <tr>
                         <td>
                             <a asp-controller="Post" asp-action="Slug"
-                               asp-route-year="@item.PostPublish.PubDateUtc.Value.Year"
-                               asp-route-month="@item.PostPublish.PubDateUtc.Value.Month"
-                               asp-route-day="@item.PostPublish.PubDateUtc.Value.Day"
+                               asp-route-year="@item.PubDateUtc.Year"
+                               asp-route-month="@item.PubDateUtc.Month"
+                               asp-route-day="@item.PubDateUtc.Day"
                                asp-route-slug="@item.Slug">
                                 @item.Title
                             </a>
                         </td>
                         <td>
-                            @Utils.UtcToZoneTime(item.PostPublish.PubDateUtc.Value, Settings.Value.TimeZone).ToString("yyyy-MM-dd")
+                            @Utils.UtcToZoneTime(item.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd")
                         </td>
                     </tr>
                 }
