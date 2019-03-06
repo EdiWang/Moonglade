@@ -53,15 +53,15 @@ namespace Moonglade.Web.Controllers
             if (null != month)
             {
                 // {year}/{month}
-                ViewBag.CurrentListInfo = $"All Posts of {year}.{month}";
-                ViewBag.TitlePrefix = $"All Posts of {year}.{month}";
+                ViewBag.CurrentListInfo = $"All Posts in {year}.{month}";
+                ViewBag.TitlePrefix = $"All Posts in {year}.{month}";
                 postListQuery = _postService.GetArchivedPosts(year, month.Value);
             }
             else
             {
                 // {year}
-                ViewBag.CurrentListInfo = $"All Posts of {year}";
-                ViewBag.TitlePrefix = $"All Posts of {year}";
+                ViewBag.CurrentListInfo = $"All Posts in {year}";
+                ViewBag.TitlePrefix = $"All Posts in {year}";
                 postListQuery = _postService.GetArchivedPosts(year);
             }
 
