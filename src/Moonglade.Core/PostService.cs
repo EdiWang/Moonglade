@@ -13,20 +13,35 @@ namespace Moonglade.Core
 {
     public class PostService : MoongladeService
     {
+        public enum StatisticType
+        {
+            Hits,
+            Likes
+        }
+
         public PostService(MoongladeDbContext context, ILogger<PostService> logger) : base(context, logger)
         {
         }
 
-        public int CountForPublished => Context.Post.Count(p => p.PostPublish.IsPublished);
+        public int CountForPublic => Context.Post.Count(p => p.PostPublish.IsPublished &&
+                                                               !p.PostPublish.IsDeleted);
 
-        public Response UpdatePostHit(Guid postId)
+        public Response UpdatePostStatistic(Guid postId, StatisticType statisticType)
         {
             try
             {
                 var pp = Context.PostExtension.FirstOrDefault(pe => pe.PostId == postId);
                 if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
-                pp.Hits += 1;
+                if (statisticType == StatisticType.Hits)
+                {
+                    pp.Hits += 1;
+                }
+                if (statisticType == StatisticType.Likes)
+                {
+                    pp.Likes += 1;
+                }
+
                 var rows = Context.SaveChanges();
                 return new Response(rows > 0);
             }
@@ -37,30 +52,57 @@ namespace Moonglade.Core
             }
         }
 
-        public Response Like(Guid postId)
+        public Response<Post> GetPost(Guid id)
         {
             try
             {
-                var pp = Context.PostExtension.FirstOrDefault(pe => pe.PostId == postId);
-                if (null != pp)
-                {
-                    pp.Likes += 1;
-                    Logger.LogInformation($"Increasing Like for post id {postId}");
-                    var rows = Context.SaveChanges();
-                    return new Response(rows > 0);
-                }
-                return new FailedResponse((int)ResponseFailureCode.PostNotFound);
+                var post = Context.Post.Include(p => p.PostPublish)
+                                       .Include(p => p.PostTag)
+                                       .ThenInclude(pt => pt.Tag)
+                                       .Include(p => p.PostCategory)
+                                       .ThenInclude(pc => pc.Category)
+                                       .FirstOrDefault(p => p.Id == id);
+
+                return new SuccessResponse<Post>(post);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error Like({postId})");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                Logger.LogError(e, $"Error {nameof(GetPost)}(id: {id})");
+                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public Post GetSingleSlug(int year, int month, int day, string slug)
+        public Response<Post> GetPost(string url)
         {
-            var post = Context.Post.Include(p => p.PostPublish)
+            try
+            {
+                // https://domain/post/yyyy/MM/dd/slug
+
+                var uri = new Uri(url);
+                if (uri.Segments.Length < 5)
+                {
+                    return null;
+                }
+
+                var yyyy = Convert.ToInt32(uri.Segments[2].Replace("/", string.Empty));
+                var mm = Convert.ToInt32(uri.Segments[3].Replace("/", string.Empty));
+                var dd = Convert.ToInt32(uri.Segments[4].Replace("/", string.Empty));
+                var slug = uri.Segments[5];
+
+                var post = GetPost(yyyy, mm, dd, slug.Trim());
+                return post;
+            }
+            catch (Exception ex)
+            {
+                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
+            }
+        }
+
+        public Response<Post> GetPost(int year, int month, int day, string slug)
+        {
+            try
+            {
+                var post = Context.Post.Include(p => p.PostPublish)
                                    .Include(p => p.PostExtension)
                                    .Include(p => p.Comment)
                                    .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
@@ -72,46 +114,31 @@ namespace Moonglade.Core
                                                    p.PostPublish.IsPublished &&
                                                    !p.PostPublish.IsDeleted);
 
-            return post;
-        }
-
-        public Post GetPostByUrl(string url)
-        {
-            // https://domain/post/yyyy/MM/dd/slug
-
-            var uri = new Uri(url);
-            if (uri.Segments.Length < 5)
-            {
-                return null;
+                return new SuccessResponse<Post>(post);
             }
-
-            var yyyy = Convert.ToInt32(uri.Segments[2].Replace("/", string.Empty));
-            var mm = Convert.ToInt32(uri.Segments[3].Replace("/", string.Empty));
-            var dd = Convert.ToInt32(uri.Segments[4].Replace("/", string.Empty));
-            var slug = uri.Segments[5];
-
-            var post = GetSingleSlug(yyyy, mm, dd, slug.Trim());
-            return post;
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Error {nameof(GetPost)}(year: {year}, month: {month}, day: {day}, slug: {slug})");
+                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
+            }
         }
 
-        public IQueryable<Post> GetPostsAsQueryable()
+        public IQueryable<Post> GetPosts()
         {
             return Context.Post.Include(p => p.PostPublish).Include(p => p.PostExtension);
         }
 
-        public IQueryable<Post> GetPagedPost(int pageSize, int pageIndex, Guid? categoryId = null)
+        public IQueryable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
-                Logger.LogWarning("PageSize settings is less than 1, use 1 in runtime.");
-                pageSize = 1;
+                throw new ArgumentOutOfRangeException(nameof(pageSize), "pageSize can not be less than 1.");
+            }
+            if (pageIndex < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageIndex), "pageIndex can not be less than 1.");
             }
 
-            return GetPagedPosts(pageSize, pageIndex, categoryId);
-        }
-
-        public IQueryable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
-        {
             var startRow = (pageIndex - 1) * pageSize;
             var query = Context.Post.Where(p => !p.PostPublish.IsDeleted &&
                                            p.PostPublish.IsPublished &&
@@ -159,6 +186,8 @@ namespace Moonglade.Core
             }
         }
 
+        #region Search
+
         public Response<IEnumerable<SearchResult>> SearchPost(string keyword)
         {
             var postList = SearchPostByKeyword(keyword);
@@ -200,25 +229,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<Post> GetPost(Guid id)
-        {
-            try
-            {
-                var post = Context.Post.Include(p => p.PostPublish)
-                                       .Include(p => p.PostTag)
-                                       .ThenInclude(pt => pt.Tag)
-                                       .Include(p => p.PostCategory)
-                                       .ThenInclude(pc => pc.Category)
-                                       .FirstOrDefault(p => p.Id == id);
-
-                return new SuccessResponse<Post>(post);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetPost)}(id: {id})");
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
-            }
-        }
+        #endregion
 
         public string GetPostTitle(Guid postId)
         {
@@ -406,7 +417,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error RestoreFromRecycle");
+                Logger.LogError(e, $"Error {nameof(RestoreFromRecycle)}");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }

@@ -21,7 +21,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public IActionResult Manage()
         {
-            var query = _postService.GetPostsAsQueryable()
+            var query = _postService.GetPosts()
                 .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished);
             var grid = QueryToPostGridModel(query);
             return View(grid);
@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/draft")]
         public IActionResult Draft()
         {
-            var query = _postService.GetPostsAsQueryable()
+            var query = _postService.GetPosts()
                 .Where(p => !p.PostPublish.IsDeleted && !p.PostPublish.IsPublished);
             var grid = QueryToPostGridModel(query);
             return View(grid);
@@ -41,7 +41,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/recycle-bin")]
         public IActionResult RecycleBin()
         {
-            var query = _postService.GetPostsAsQueryable().Where(p => p.PostPublish.IsDeleted);
+            var query = _postService.GetPosts().Where(p => p.PostPublish.IsDeleted);
             var grid = QueryToPostGridModel(query);
             return View(grid);
         }

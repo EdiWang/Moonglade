@@ -58,7 +58,7 @@ namespace Moonglade.Web.Controllers
             ViewBag.CategoryDescription = cat.Note;
 
             var postCount = _categoryService.GetPostCountByCategoryId(cat.Id);
-            var postList = _postService.GetPagedPost(pageSize, page, cat.Id);
+            var postList = _postService.GetPagedPosts(pageSize, page, cat.Id);
 
             var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pageSize, postCount);
             return View(postsAsIPagedList);

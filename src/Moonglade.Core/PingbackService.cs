@@ -40,20 +40,25 @@ namespace Moonglade.Core
                 Logger.LogInformation($"Pingback Attempt from {context.Connection.RemoteIpAddress} is valid");
 
                 var pingRequest = await _pingbackReceiver.GetPingRequest();
-                var post = _postService.GetPostByUrl(pingRequest.TargetUrl);
+                var postResponse = _postService.GetPost(pingRequest.TargetUrl);
+                if (postResponse.IsSuccess)
+                {
+                    var post = postResponse.Item;
 
-                _pingbackReceiver.OnPingSuccess += async (sender, args) => await SavePingbackRecord(
-                    args.Domain,
-                    args.PingRequest.SourceUrl,
-                    args.PingRequest.SourceDocumentInfo.Title,
-                    post.Id,
-                    post.Title,
-                    context.Connection.RemoteIpAddress.ToString());
+                    _pingbackReceiver.OnPingSuccess += async (sender, args) => await SavePingbackRecord(
+                        args.Domain,
+                        args.PingRequest.SourceUrl,
+                        args.PingRequest.SourceDocumentInfo.Title,
+                        post.Id,
+                        post.Title,
+                        context.Connection.RemoteIpAddress.ToString());
 
-                return _pingbackReceiver.ProcessReceivedPingback(
-                        pingRequest,
-                        () => null != post, 
-                        () => HasAlreadyBeenPinged(post.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
+                    return _pingbackReceiver.ProcessReceivedPingback(
+                            pingRequest,
+                            () => null != post,
+                            () => HasAlreadyBeenPinged(post.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
+                }
+                return PingbackServiceResponse.GenericError;
             }
             return response;
         }
