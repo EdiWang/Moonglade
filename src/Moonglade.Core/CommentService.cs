@@ -158,7 +158,7 @@ namespace Moonglade.Core
             try
             {
                 // 1. Check comment enabled or not
-                if (!AppSettings.EnableComments)
+                if (!_blogConfig.EnableComments)
                 {
                     return new FailedResponse<Comment>((int)ResponseFailureCode.CommentDisabled);
                 }
@@ -215,7 +215,7 @@ namespace Moonglade.Core
         {
             try
             {
-                if (!AppSettings.EnableComments)
+                if (!_blogConfig.EnableComments)
                 {
                     return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.CommentDisabled);
                 }

@@ -9,7 +9,6 @@
         public int HotTagAmount { get; set; }
         public int PostListPageSize { get; set; }
         public int TimeZone { get; set; }
-        public bool EnableComments { get; set; }
         public int PostSummaryWords { get; set; }
         public bool EnablePingBackSend { get; set; }
         public bool EnableHarmonizor { get; set; }

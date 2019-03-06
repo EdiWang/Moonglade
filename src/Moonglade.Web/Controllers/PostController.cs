@@ -48,7 +48,7 @@ namespace Moonglade.Web.Controllers
         [Route(""), Route("/")]
         public IActionResult Index(int page = 1)
         {
-            var postsAsIPagedList = GetPagedPostsViewList((x, y, z) => _postService.GetPagedPost(x, page), page);
+            var postsAsIPagedList = GetPagedPostsViewList((x, y, z) => _postService.GetPagedPosts(x, page), page);
             return View(postsAsIPagedList);
         }
 
@@ -64,7 +64,10 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            var post = _postService.GetSingleSlug(year, month, day, slug);
+            var rsp = _postService.GetPost(year, month, day, slug);
+            if (!rsp.IsSuccess) return ServerError(rsp.Message);
+
+            var post = rsp.Item;
             if (post == null)
             {
                 Logger.LogWarning($"Post not found for parameter {year}/{month}/{day}/{slug}.");
@@ -130,7 +133,7 @@ namespace Moonglade.Web.Controllers
                 return new EmptyResult();
             }
 
-            var response = _postService.UpdatePostHit(postId);
+            var response = _postService.UpdatePostStatistic(postId, PostService.StatisticType.Hits);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
@@ -153,7 +156,7 @@ namespace Moonglade.Web.Controllers
                 });
             }
 
-            var response = _postService.Like(postId);
+            var response = _postService.UpdatePostStatistic(postId, PostService.StatisticType.Likes);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
@@ -171,7 +174,7 @@ namespace Moonglade.Web.Controllers
         {
             int pagesize = pageSize ?? AppSettings.PostListPageSize;
             var postList = postListFunc(pagesize, page, author);
-            var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pagesize, _postService.CountForPublished);
+            var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pagesize, _postService.CountForPublic);
             return postsAsIPagedList;
         }
 

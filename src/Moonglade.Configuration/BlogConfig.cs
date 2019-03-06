@@ -14,6 +14,8 @@
 
         public string BloggerAvatarBase64 { get; set; }
 
+        public bool EnableComments { get; set; }
+
         public EmailConfiguration EmailConfiguration { get; set; }
 
         public FeedSettings FeedSettings { get; set; }
@@ -31,6 +33,7 @@
             MetaKeyword = string.Empty;
             MetaAuthor = string.Empty;
             SiteTitle = string.Empty;
+            EnableComments = true;
             EmailConfiguration = new EmailConfiguration();
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
@@ -47,6 +50,7 @@
                 MetaAuthor = cfgDic[nameof(MetaAuthor)];
                 SiteTitle = cfgDic[nameof(SiteTitle)];
                 BloggerAvatarBase64 = cfgDic[nameof(BloggerAvatarBase64)];
+                EnableComments = bool.Parse(cfgDic[nameof(EnableComments)]);
 
                 EmailConfiguration.EnableSsl =
                     bool.Parse(cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.EnableSsl)}"]);

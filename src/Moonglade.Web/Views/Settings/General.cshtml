@@ -41,6 +41,16 @@
                         <span asp-validation-for="ReaderViewSiteName" class="text-danger"></span>
                     </div>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="EnableComments" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnableComments ? "checked=\"checked\"" : "") id="EnableComments" name="EnableComments" type="checkbox" value="true">
+                            <label for="EnableComments" class="label-success"></label>
+                            <input name="EnableComments" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
             </div>
 
             <div class="card">

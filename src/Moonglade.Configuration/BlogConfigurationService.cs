@@ -183,13 +183,15 @@ namespace Moonglade.Configuration
                 var r2 = SetConfiguration(nameof(blogConfig.MetaKeyword), blogConfig.MetaKeyword);
                 var r3 = SetConfiguration(nameof(blogConfig.MetaAuthor), blogConfig.MetaAuthor);
                 var r4 = SetConfiguration(nameof(blogConfig.SiteTitle), blogConfig.SiteTitle);
-                var r5 = SetConfiguration("ReaderView.SiteName", blogConfig.ReaderView.SiteName);
+                var r5 = SetConfiguration(nameof(blogConfig.EnableComments), blogConfig.EnableComments.ToString());
+                var r6 = SetConfiguration("ReaderView.SiteName", blogConfig.ReaderView.SiteName);
 
-                var allSuccess = r1.IsSuccess && 
-                                 r2.IsSuccess && 
-                                 r3.IsSuccess && 
-                                 r4.IsSuccess && 
-                                 r5.IsSuccess;
+                var allSuccess = r1.IsSuccess &&
+                                 r2.IsSuccess &&
+                                 r3.IsSuccess &&
+                                 r4.IsSuccess &&
+                                 r5.IsSuccess && 
+                                 r6.IsSuccess;
 
                 return new Response(allSuccess);
             }
