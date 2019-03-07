@@ -16,14 +16,14 @@ namespace Moonglade.Web.Controllers
 {
     public class SubscriptionController : MoongladeController
     {
-        private readonly SyndicationFeedService _syndicationFeedService;
+        private readonly SyndicationService _syndicationFeedService;
 
         public SubscriptionController(MoongladeDbContext context,
             ILogger<SubscriptionController> logger,
             IOptions<AppSettings> settings,
             IConfiguration configuration,
             IHttpContextAccessor accessor,
-            IMemoryCache memoryCache, SyndicationFeedService syndicationFeedService)
+            IMemoryCache memoryCache, SyndicationService syndicationFeedService)
             : base(context, logger, settings, configuration, accessor, memoryCache)
         {
             _syndicationFeedService = syndicationFeedService;

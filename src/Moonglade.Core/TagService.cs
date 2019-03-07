@@ -17,7 +17,7 @@ namespace Moonglade.Core
         {
         }
 
-        public IQueryable<Tag> GetTagsAsQueryable()
+        public IQueryable<Tag> GetTags()
         {
             return Context.Tag;
         }
@@ -38,10 +38,7 @@ namespace Moonglade.Core
                     tag.DisplayName = newName;
                     tag.NormalizedName = Utils.NormalizeTagName(newName);
                     var rows = Context.SaveChanges();
-                    return new Response
-                    {
-                        IsSuccess = rows > 0
-                    };
+                    return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.TagNotFound);
             }
@@ -67,10 +64,7 @@ namespace Moonglade.Core
                 {
                     Context.Remove(tag);
                     int rows = Context.SaveChanges();
-                    return new Response
-                    {
-                        IsSuccess = rows > 0
-                    };
+                    return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.TagNotFound);
             }
@@ -88,13 +82,13 @@ namespace Moonglade.Core
                 if (Context.Tag.Any())
                 {
                     var hotTags = Context.Tag.OrderByDescending(p => p.PostTag.Count)
-                        .Take(top).AsNoTracking()
-                        .Select(t => new TagInfo
-                        {
-                            TagCount = t.PostTag.Count,
-                            TagName = t.DisplayName,
-                            NormalizedTagName = t.NormalizedName
-                        });
+                                             .Take(top).AsNoTracking()
+                                             .Select(t => new TagInfo
+                                             {
+                                                 TagCount = t.PostTag.Count,
+                                                 TagName = t.DisplayName,
+                                                 NormalizedTagName = t.NormalizedName
+                                             });
 
                     var list = await hotTags.ToListAsync();
                     return new SuccessResponse<List<TagInfo>>(list);
@@ -115,17 +109,16 @@ namespace Moonglade.Core
             return tag;
         }
 
-        public List<TagInfo> GetTagCountList()
+        public async Task<List<TagInfo>> GetTagCountListAsync()
         {
-            var queryTag = from tag in Context.Tag.AsNoTracking()
-                           select new TagInfo
-                           {
-                               TagName = tag.DisplayName,
-                               NormalizedTagName = tag.NormalizedName,
-                               TagCount = tag.PostTag.Count
-                           };
+            var queryTag = Context.Tag.AsNoTracking().Select(t => new TagInfo
+            {
+                TagName = t.DisplayName,
+                NormalizedTagName = t.NormalizedName,
+                TagCount = t.PostTag.Count
+            });
 
-            return queryTag.ToList();
+            return await queryTag.ToListAsync();
         }
     }
 }

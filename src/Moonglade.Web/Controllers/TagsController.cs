@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -27,9 +28,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("tags")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _tagService.GetTagCountList();
+            var list = await _tagService.GetTagCountListAsync();
             return View(list);
         }
 

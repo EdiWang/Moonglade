@@ -15,15 +15,15 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class SyndicationFeedService : MoongladeService
+    public class SyndicationService : MoongladeService
     {
         private readonly BlogConfig _blogConfig;
 
         private readonly string _baseUrl;
 
-        public SyndicationFeedService(
+        public SyndicationService(
             MoongladeDbContext context,
-            ILogger<SyndicationFeedService> logger,
+            ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService, 

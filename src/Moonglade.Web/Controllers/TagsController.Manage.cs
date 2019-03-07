@@ -12,7 +12,7 @@ namespace Moonglade.Web.Controllers
         [Route("tags/manage")]
         public IActionResult Manage()
         {
-            var query = _tagService.GetTagsAsQueryable().Select(t => new TagGridModel
+            var query = _tagService.GetTags().Select(t => new TagGridModel
             {
                 Id = t.Id,
                 Name = t.DisplayName

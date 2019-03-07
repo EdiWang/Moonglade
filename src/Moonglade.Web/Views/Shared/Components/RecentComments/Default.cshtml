@@ -1,4 +1,8 @@
-﻿@model List<Moonglade.Data.Entities.Comment>
+﻿@using Microsoft.Extensions.Options
+@using Moonglade.Core
+@using Moonglade.Model.Settings
+@inject IOptions<AppSettings> Settings
+@model List<Moonglade.Data.Entities.Comment>
 
 @if (null != Model && Model.Any())
 {
@@ -6,7 +10,7 @@
         @foreach (var item in Model)
         {
             <div class="list-group-item">
-                <strong data-toggle="tooltip" data-placement="top" title="@item.CreateOnUtc">
+                <strong data-toggle="tooltip" data-placement="top" title="@Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("MM/dd/yyyy HH:mm") / UTC +@Settings.Value.TimeZone">
                     <i class="fas fa-user"></i>
                     @item.Username
                 </strong>
@@ -17,7 +21,7 @@
             <div class="recent-comment-item-footer">
                 @if (null != item.Post.PostPublish.PubDateUtc)
                 {
-                    <a asp-controller="Post" asp-action="Slug" 
+                    <a asp-controller="Post" asp-action="Slug"
                        asp-route-year="@item.Post.PostPublish.PubDateUtc.Value.Year"
                        asp-route-month="@item.Post.PostPublish.PubDateUtc.Value.Month"
                        asp-route-day="@item.Post.PostPublish.PubDateUtc.Value.Day"
