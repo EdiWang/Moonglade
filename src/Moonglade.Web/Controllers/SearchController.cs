@@ -98,9 +98,9 @@ namespace Moonglade.Web.Controllers
             return RedirectToAction("Index", "Post");
         }
 
-        public async Task WriteOpenSearchFileAsync(HttpContext ctx)
+        private async Task WriteOpenSearchFileAsync(HttpContext ctx)
         {
-            var openSearchDataFile = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opensearch.xml";
+            var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\opensearch.xml";
 
             using (var fs = new FileStream(openSearchDataFile, FileMode.Create,
                 FileAccess.Write, FileShare.None, 4096, true))

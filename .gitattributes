@@ -1,3 +1,7 @@
+## Ignore Lib Languages
+src/Moonglade.Web/wwwroot/lib/* linguist-vendored=false
+src/Moonglade.Web/wwwroot/webfonts/ * linguist-vendored=false
+
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################

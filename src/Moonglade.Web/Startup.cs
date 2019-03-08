@@ -122,7 +122,7 @@ namespace Moonglade.Web
             services.AddTransient<PingbackSender>();
             services.AddTransient<PingbackReceiver>();
             services.AddTransient<PingbackService>();
-            services.AddTransient<SyndicationFeedService>();
+            services.AddTransient<SyndicationService>();
             services.AddTransient<TagService>();
             services.AddTransient(enc => new AesEncryptionService(new KeyInfo(_aesKey, _aesIv)));
 

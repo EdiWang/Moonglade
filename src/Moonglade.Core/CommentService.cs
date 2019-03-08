@@ -24,12 +24,14 @@ namespace Moonglade.Core
         public CommentService(MoongladeDbContext context,
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
-            BlogConfig blogConfig, 
+            BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService) : base(context, logger, settings)
         {
             _blogConfig = blogConfig;
             _blogConfig.GetConfiguration(blogConfigurationService);
         }
+
+        public int CountForPublic => Context.Comment.Count(c => c.IsApproved.GetValueOrDefault());
 
         public async Task<Response<List<Comment>>> GetRecentCommentsAsync(int top)
         {
@@ -61,14 +63,9 @@ namespace Moonglade.Core
             return comments;
         }
 
-        public IQueryable<Comment> GetCommentsAsQueryable()
+        public IQueryable<Comment> GetComments()
         {
             return Context.Comment;
-        }
-
-        public int CommentsCount()
-        {
-            return Context.Comment.Count(c => c.IsApproved.GetValueOrDefault());
         }
 
         public IQueryable<Comment> GetPagedComment(int pageSize, int pageIndex)
@@ -108,7 +105,7 @@ namespace Moonglade.Core
                         Context.Comment.Remove(comment);
                     }
                     int rows = Context.SaveChanges();
-                    return new Response { IsSuccess = rows > 0 };
+                    return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.CommentNotFound);
             }
@@ -141,7 +138,7 @@ namespace Moonglade.Core
                     // 2. Delete comment itself
                     Context.Remove(comment);
                     var rows = Context.SaveChanges();
-                    return new Response { IsSuccess = rows > 0 };
+                    return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.CommentNotFound);
             }
@@ -202,7 +199,7 @@ namespace Moonglade.Core
                 Context.Comment.Add(model);
                 int rows = Context.SaveChanges();
 
-                return new Response<Comment> { IsSuccess = rows > 0, Item = model };
+                return new SuccessResponse<Comment>(model);
             }
             catch (Exception e)
             {

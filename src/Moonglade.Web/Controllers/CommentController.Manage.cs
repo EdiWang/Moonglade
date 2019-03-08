@@ -19,7 +19,7 @@ namespace Moonglade.Web.Controllers
             const int pageSize = 20;
             var commentList = _commentService.GetPagedComment(pageSize, page);
             var commentsAsIPagedList =
-                new StaticPagedList<Comment>(commentList, page, pageSize, _commentService.CommentsCount());
+                new StaticPagedList<Comment>(commentList, page, pageSize, _commentService.CountForPublic);
             return View(commentsAsIPagedList);
         }
 
@@ -27,7 +27,7 @@ namespace Moonglade.Web.Controllers
         [Route("pending-approval")]
         public IActionResult PendingApproval()
         {
-            var query = _commentService.GetCommentsAsQueryable()
+            var query = _commentService.GetComments()
                 .Where(c => !c.IsApproved.Value)
                 .Select(p => new CommentGridModel
                 {

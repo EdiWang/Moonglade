@@ -35,7 +35,7 @@ namespace Moonglade.Web.Controllers
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
             IConfiguration configuration,
-            IHttpContextAccessor accessor, 
+            IHttpContextAccessor accessor,
             PostService postService, CategoryService categoryService, PingbackSender pingbackSender, LinkGenerator linkGenerator)
             : base(context, logger, settings, configuration, accessor)
         {
@@ -129,7 +129,6 @@ namespace Moonglade.Web.Controllers
         {
             if (HasCookie(CookieNames.Hit, postId.ToString()))
             {
-                Logger.LogTrace($"User re-visited post {postId}");
                 return new EmptyResult();
             }
 
@@ -137,7 +136,6 @@ namespace Moonglade.Web.Controllers
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
-                Logger.LogTrace($"User hit post: {postId}");
             }
 
             return Json(response);
