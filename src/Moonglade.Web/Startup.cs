@@ -34,14 +34,14 @@ namespace Moonglade.Web
     public class Startup
     {
         private readonly ILogger<Startup> _logger;
-        private readonly IConfigurationSection _appSettingsConfigurationSection;
+        private readonly IConfigurationSection _appSettingsSection;
 
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
             _logger = logger;
 
-            _appSettingsConfigurationSection = Configuration.GetSection(nameof(AppSettings));
+            _appSettingsSection = Configuration.GetSection(nameof(AppSettings));
         }
 
         public IConfiguration Configuration { get; }
@@ -55,7 +55,7 @@ namespace Moonglade.Web
                 options.Cookie.HttpOnly = true;
             });
 
-            services.Configure<AppSettings>(_appSettingsConfigurationSection);
+            services.Configure<AppSettings>(_appSettingsSection);
 
             services.AddAuthentication(sharedOptions =>
                     {
@@ -81,7 +81,7 @@ namespace Moonglade.Web
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-            var _imageStorageProvider = _appSettingsConfigurationSection["ImageStorage:Provider"];
+            var _imageStorageProvider = _appSettingsSection["ImageStorage:Provider"];
             switch (_imageStorageProvider)
             {
                 case nameof(AzureStorageImageProvider):
@@ -168,7 +168,7 @@ namespace Moonglade.Web
                 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
             }
 
-            var _enforceHttps = bool.Parse(_appSettingsConfigurationSection["EnforceHttps"]);
+            var _enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
             if (_enforceHttps)
             {
                 _logger.LogInformation("HTTPS is enforced.");
