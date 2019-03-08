@@ -34,32 +34,14 @@ namespace Moonglade.Web
     public class Startup
     {
         private readonly ILogger<Startup> _logger;
-
-        private readonly string _azStorageConnectionString;
-        private readonly string _azStorageContainerName;
-        private readonly string _aesKey;
-        private readonly string _aesIv;
-        private readonly string _imageStorageProvider;
-        private readonly bool _enforceHttps;
-
-        private readonly IConfigurationSection _appSettingsConfigurationSection;
+        private readonly IConfigurationSection _appSettingsSection;
 
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
             _logger = logger;
 
-            var azureStorageSettings = Configuration.GetSection("AzureStorageSettings");
-            _azStorageConnectionString = azureStorageSettings["ConnectionString"];
-            _azStorageContainerName = azureStorageSettings["ContainerName"];
-
-            var encryptionSettings = Configuration.GetSection("Encryption");
-            _aesKey = encryptionSettings["Key"];
-            _aesIv = encryptionSettings["IV"];
-
-            _appSettingsConfigurationSection = Configuration.GetSection(nameof(AppSettings));
-            _imageStorageProvider = _appSettingsConfigurationSection["ImageStorageProvider"];
-            _enforceHttps = bool.Parse(_appSettingsConfigurationSection["EnforceHttps"]);
+            _appSettingsSection = Configuration.GetSection(nameof(AppSettings));
         }
 
         public IConfiguration Configuration { get; }
@@ -73,7 +55,7 @@ namespace Moonglade.Web
                 options.Cookie.HttpOnly = true;
             });
 
-            services.Configure<AppSettings>(_appSettingsConfigurationSection);
+            services.Configure<AppSettings>(_appSettingsSection);
 
             services.AddAuthentication(sharedOptions =>
                     {
@@ -99,10 +81,14 @@ namespace Moonglade.Web
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+            var _imageStorageProvider = _appSettingsSection["ImageStorage:Provider"];
             switch (_imageStorageProvider)
             {
                 case nameof(AzureStorageImageProvider):
-                    services.AddSingleton(s => new AzureStorageInfo(_azStorageConnectionString, _azStorageContainerName));
+                    var conn = _appSettingsSection["ImageStorage:AzureStorageSettings:ConnectionString"];
+                    var container = _appSettingsSection["ImageStorage:AzureStorageSettings:ContainerName"];
+
+                    services.AddSingleton(s => new AzureStorageInfo(conn, container));
                     services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
                     break;
                 case nameof(FileSystemImageProvider):
@@ -124,7 +110,11 @@ namespace Moonglade.Web
             services.AddTransient<PingbackService>();
             services.AddTransient<SyndicationService>();
             services.AddTransient<TagService>();
-            services.AddTransient(enc => new AesEncryptionService(new KeyInfo(_aesKey, _aesIv)));
+
+            var encryptionSettings = Configuration.GetSection("Encryption");
+            var aesKey = encryptionSettings["Key"];
+            var aesIv = encryptionSettings["IV"];
+            services.AddTransient(enc => new AesEncryptionService(new KeyInfo(aesKey, aesIv)));
 
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()
@@ -177,6 +167,7 @@ namespace Moonglade.Web
                 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
             }
 
+            var _enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
             if (_enforceHttps)
             {
                 _logger.LogInformation("HTTPS is enforced.");
