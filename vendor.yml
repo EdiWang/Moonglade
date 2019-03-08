@@ -1,2 +1,2 @@
-src/Moonglade.Web/wwwroot/lib/* linguist-vendored
-src/Moonglade.Web/wwwroot/webfonts/* linguist-vendored
+- src/Moonglade.Web/wwwroot/lib/
+- src/Moonglade.Web/wwwroot/webfonts/
