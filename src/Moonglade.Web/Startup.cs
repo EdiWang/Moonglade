@@ -85,9 +85,8 @@ namespace Moonglade.Web
             switch (_imageStorageProvider)
             {
                 case nameof(AzureStorageImageProvider):
-                    var azureStorageSettings = Configuration.GetSection("AzureStorageSettings");
-                    var conn = azureStorageSettings["ConnectionString"];
-                    var container = azureStorageSettings["ContainerName"];
+                    var conn = _appSettingsSection["ImageStorage:AzureStorageSettings:ConnectionString"];
+                    var container = _appSettingsSection["ImageStorage:AzureStorageSettings:ContainerName"];
 
                     services.AddSingleton(s => new AzureStorageInfo(conn, container));
                     services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
