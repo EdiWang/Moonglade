@@ -13,17 +13,21 @@ namespace Moonglade.ImageStorage.FileSystem
 
         private readonly ILogger<FileSystemImageProvider> _logger;
 
-        public FileSystemImageProvider(ILogger<FileSystemImageProvider> logger)
+        private readonly string _path;
+
+        public FileSystemImageProvider(ILogger<FileSystemImageProvider> logger, FileSystemImageProviderInfo pvdInfo)
         {
             _logger = logger;
             logger.LogInformation($"Created {nameof(FileSystemImageProvider)}");
+
+            _path = pvdInfo.Path;
         }
 
         public async Task<Response<ImageInfo>> GetAsync(string fileName)
         {
             try
             {
-                var imagePath = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.FileSystemImageStorageFolder}\{fileName}";
+                var imagePath = Path.Combine(_path, fileName);
 
                 if (File.Exists(imagePath))
                 {
@@ -58,7 +62,7 @@ namespace Moonglade.ImageStorage.FileSystem
             try
             {
                 await Task.CompletedTask;
-                var imagePath = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.FileSystemImageStorageFolder}\{fileName}";
+                var imagePath = Path.Combine(_path, fileName);
                 if (File.Exists(imagePath))
                 {
                     File.Delete(imagePath);
@@ -93,8 +97,7 @@ namespace Moonglade.ImageStorage.FileSystem
             {
                 fileName = fileName.ToLower().Replace(" ", "-");
 
-                var path = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.FileSystemImageStorageFolder}";
-                var tp = ResolveConflict(fileName, path);
+                var tp = ResolveConflict(fileName, _path);
 
                 //File.WriteAllBytes(kvp.Key, imageBytes);
 
