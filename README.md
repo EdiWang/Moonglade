@@ -30,13 +30,11 @@ This is the new blog system for https://edi.wang, Moonglade project is the succe
 
 ### Steps
 
-#### Prepare Azure Environment
+#### Prepare Azure AD
 
 - Register an App in **Azure Active Directory**
   - Set Redirection URI to "https://localhost:5001/signin-oidc"
   - Copy "**appId**" to set as **AzureAd:ClientId** in later appsettings file
-- Create an **Azure Storage Account** (optional but enabled by default, for saving blog post images)
-  - To save image to file system, set AppSettings:ImageStorageProvider as "**FileSystemImageProvider**" *WANING: This provider code has not been tested yet*
 
 #### Build Source
 
@@ -46,6 +44,28 @@ This is the new blog system for https://edi.wang, Moonglade project is the succe
 
 3. Build **Moonglade.sln**, startup project is: ".\src\Moonglade.Web\Moonglade.Web.csproj"
 
+#### Configuration
+
+##### Image Storage
+**AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built in options:
+
+1. Azure: You need to create an **Azure Storage Account** with a blob container. 
+```
+"Provider": "AzureStorageImageProvider"
+"AzureStorageSettings": {
+  "ConnectionString": "YOUR CONNECTION STRING",
+  "ContainerName": "YOUR CONTAINER NAME"
+},
+```
+
+2. File System: *WANING: This provider code has only been smoke tested on my own machine*
+```
+"Provider": "FileSystemImageProvider",
+"FileSystemSettings": {
+  "Path": "${basedir}\\UploadedImages"
+}
+```
+
 ## Host on Production
 
 Windows or Linux Servers that supports .NET Core 2.2
@@ -53,7 +73,8 @@ Windows or Linux Servers that supports .NET Core 2.2
 ### Required
 - Microsoft Azure Active Directory
 
-### Optional
+### Recommended
+- Microsoft Azure DNS Zones
 - Microsoft Azure App Service
 - Microsoft Azure SQL Database
 - Microsoft Azure Blob Storage

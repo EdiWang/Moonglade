@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
 using Edi.Net.AesEncryption;
@@ -36,16 +38,20 @@ namespace Moonglade.Web
         private readonly ILogger<Startup> _logger;
         private readonly IConfigurationSection _appSettingsSection;
 
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public IConfiguration Configuration { get; }
+
+        public IHostingEnvironment Environment { get; }
+
+        public Startup(IConfiguration configuration, ILogger<Startup> logger, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
             _logger = logger;
 
             _appSettingsSection = Configuration.GetSection(nameof(AppSettings));
         }
 
-        public IConfiguration Configuration { get; }
-
+        // TODO: the code is like a shit, need refact
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
@@ -92,7 +98,38 @@ namespace Moonglade.Web
                     services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
                     break;
                 case nameof(FileSystemImageProvider):
-                    services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
+                    var path = _appSettingsSection["ImageStorage:FileSystemSettings:Path"];
+                    var basedirStr = "${basedir}"; // Do not use "." because there could be "." in path.
+                    if (path.IndexOf(basedirStr) > 0)
+                    {
+                        _logger.LogError($"Invalid Path settings for {nameof(FileSystemImageProvider)}, settings value: {path}, {basedirStr} can only be at the beginning.");
+                        throw new NotSupportedException($"{basedirStr} can only be at the beginning.");
+                    }
+                    if (path.IndexOf(basedirStr) == 0)
+                    {
+                        // Use relative path
+                        // Warning: Write data under application directory may fuck up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.
+                        path = path.Replace(basedirStr, Environment.ContentRootPath);
+                    }
+
+                    if (Path.IsPathFullyQualified(path))
+                    {
+                        var fullPath = Path.GetFullPath(path);
+                        if (!Directory.Exists(fullPath))
+                        {
+                            Directory.CreateDirectory(fullPath);
+                        }
+
+                        _logger.LogInformation($"Setting {nameof(FileSystemImageProvider)} to use Path: {fullPath}");
+                        services.AddSingleton(s => new FileSystemImageProviderInfo(path));
+                        services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
+                    }
+                    else
+                    {
+                        var msg = $"Error setting path for {nameof(FileSystemImageProvider)}, invalid Path: {path}";
+                        _logger.LogError(msg);
+                        throw new FormatException(msg);
+                    }
                     break;
             }
 

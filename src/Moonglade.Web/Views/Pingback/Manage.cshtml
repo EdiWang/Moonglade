@@ -27,7 +27,7 @@
 
         function deletePingback(pingbackId) {
             $("#span-processing-" + pingbackId).show();
-            ajaxPostWithCSRFToken("pingback/delete", { pingbackId: pingbackId }, function (data) {
+            ajaxPostWithCSRFToken("delete", { pingbackId: pingbackId }, function (data) {
                 $("#pingback-box-" + data).slideUp();
             });
         }
