@@ -2,20 +2,17 @@
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
-This is the new blog system for https://edi.wang, Moonglade project is the successor of project "Nordrassil", which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using **.NET Core**, focus on performance and optimized for cloud-based hosting.
+This is the new blog system for https://edi.wang, Moonglade is the successor of project "Nordrassil", which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using **.NET Core**, optimized for cloud-based hosting.
 
-## Blog Features
-- Post
-- Comment
-- Category
-- Tag
-- Pingback
-- RSS/Atom/OPML
-- Open Search
+## Features
 
-## Technologies Stack
+**Basic:** Post, Comment, Category, Archive, Tag, Friendlink
 
-// TODO: Use picture
+**Misc:** Pingback, RSS/Atom/OPML, Open Search, Reader View
+
+## Technology Stack
+
+![image](https://ediwangstorage.blob.core.windows.net/web-assets/ediwang-azure-arch.png)
 
 ## Build and Run
 
