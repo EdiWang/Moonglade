@@ -83,18 +83,19 @@ namespace Moonglade.Web
             services.AddMemoryCache();
             services.AddHttpContextAccessor();
 
-            var _imageStorageProvider = _appSettingsSection["ImageStorage:Provider"];
+            var imageStorageSection = Configuration.GetSection("ImageStorage");
+            var _imageStorageProvider = imageStorageSection["Provider"];
             switch (_imageStorageProvider)
             {
                 case nameof(AzureStorageImageProvider):
-                    var conn = _appSettingsSection["ImageStorage:AzureStorageSettings:ConnectionString"];
-                    var container = _appSettingsSection["ImageStorage:AzureStorageSettings:ContainerName"];
+                    var conn = imageStorageSection["AzureStorageSettings:ConnectionString"];
+                    var container = imageStorageSection["AzureStorageSettings:ContainerName"];
 
                     services.AddSingleton(s => new AzureStorageInfo(conn, container));
                     services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
                     break;
                 case nameof(FileSystemImageProvider):
-                    var path = _appSettingsSection["ImageStorage:FileSystemSettings:Path"];
+                    var path = imageStorageSection["FileSystemSettings:Path"];
                     try
                     {
                         var fullPath = ResolveImageStoragePath(path);
