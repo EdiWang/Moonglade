@@ -43,7 +43,7 @@ Register an App in **Azure Active Directory**
 ### Configuration
 
 #### Image Storage
-**AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built in options:
+**ImageStorage** controls how blog post images are stored. There are 2 built in options:
 
 1. Azure: You need to create an **Azure Storage Account** with a blob container. 
 ```
