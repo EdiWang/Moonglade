@@ -19,15 +19,19 @@ This is the new blog system for https://edi.wang, Moonglade is the successor of 
 ### Tools
 - [.NET Core 2.2 SDK](http://dot.net)
 - [Visual Studio 2017](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
-- SQL Server 2017+ / Azure SQL Database
+- SQL Server 2017 / Azure SQL Database
 
 ### Prepare Azure AD
 
 This blog is using Azure AD to sign in to admin portal. Local authentication provider is not implmented yet. So yes, basically you have to use Azure currently.
 
 Register an App in **Azure Active Directory**
-- Set Redirection URI to "https://localhost:5001/signin-oidc"
-- Copy "**appId**" to set as **AzureAd:ClientId** in later appsettings file
+- Set Redirection URI to **"https://localhost:5001/signin-oidc"**
+- Copy "**appId**" to set as **AzureAd:ClientId** in appsettings.[env].json file
+
+### Prepare Database
+
+Create a SQL Server 2017 database or Azure SQL Database, execute script located at **".\Database\schema-mssql-140.sql"** 
 
 ### Build Source
 
@@ -35,7 +39,7 @@ Register an App in **Azure Active Directory**
 
 2. Create a SQL Server dabase using "**Database\schema-mssql-140.sql**", and update the connection string "**MoongladeDatabase**" in **appsettings.Development.json**. 
 
-3. Build and run **Moonglade.sln**
+3. Build and run **Moonglade.sln**, startup project is **Moonglade.Web**
 
 ### Configuration
 
@@ -69,6 +73,8 @@ See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) pr
 
 Key | Description
 --- | ---
+CaptchaSettings:ImageWidth | Pixel Width of Captcha Image
+CaptchaSettings.ImageHeight | Pixel Height of Captcha Image
 TimeZone | The blog owner's current time zone (relative to UTC)
 HotTagAmount | How many tags to show on the side bar
 PostListPageSize | How may posts listed per page
