@@ -28,6 +28,8 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Authentication.AzureAd;
 using Moonglade.Web.Filters;
+using Moonglade.Web.Middleware;
+using Moonglade.Web.Middleware.RobotsTxt;
 
 namespace Moonglade.Web
 {
@@ -60,6 +62,7 @@ namespace Moonglade.Web
             });
 
             services.Configure<AppSettings>(_appSettingsSection);
+            services.Configure<RobotsTxtOptions>(Configuration.GetSection("RobotsTxt"));
 
             services.AddAuthentication(sharedOptions =>
                     {
@@ -203,6 +206,16 @@ namespace Moonglade.Web
             app.UseSession();
             app.UseAuthentication();
 
+            // robots.txt
+            app.UseRobotsTxt();
+            //app.UseRobotsTxt(builder =>
+            //builder.AddSection(section =>
+            //        section.SetComment("Allow Googlebot")
+            //               .SetUserAgent("Googlebot")
+            //               .Allow("/"))
+            ////.AddSitemap("https://example.com/sitemap.xml")
+            //);
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -210,6 +223,8 @@ namespace Moonglade.Web
                     template: "{controller=Post}/{action=Index}/{id?}");
             });
         }
+
+        #region Private Helpers
 
         private void PrepareRuntimePathDependencies(IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -334,5 +349,7 @@ namespace Moonglade.Web
             }
             return fullPath;
         }
+
+        #endregion
     }
 }
