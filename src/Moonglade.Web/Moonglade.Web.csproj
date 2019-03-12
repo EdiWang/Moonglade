@@ -68,6 +68,7 @@
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
     <ProjectReference Include="..\Moonglade.Web.Authentication.AzureAd\Moonglade.Web.Authentication.AzureAd.csproj" />
+    <ProjectReference Include="..\Moonglade.Web.Middleware\Moonglade.Web.Middleware.csproj" />
   </ItemGroup>
 
   <ItemGroup>
