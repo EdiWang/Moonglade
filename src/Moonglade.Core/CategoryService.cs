@@ -33,8 +33,7 @@ namespace Moonglade.Core
 
         public int GetPostCountByCategoryId(Guid catId)
         {
-            var count = Context.PostCategory.Count(c => c.CategoryId == catId);
-            return count;
+            return Context.PostCategory.Count(c => c.CategoryId == catId);
         }
 
         public IQueryable<Category> GetCategoriesAsQueryable()

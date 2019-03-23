@@ -70,7 +70,7 @@ namespace Moonglade.Web.Controllers
             var post = rsp.Item;
             if (post == null)
             {
-                Logger.LogWarning($"Post not found for parameter {year}/{month}/{day}/{slug}.");
+                Logger.LogWarning($"Post not found, parameter {year}/{month}/{day}/{slug}.");
                 return NotFound();
             }
 
@@ -119,7 +119,6 @@ namespace Moonglade.Web.Controllers
             #endregion Fetch Post Main Model
 
             ViewBag.TitlePrefix = $"{post.Title}";
-
             return View(viewModel);
         }
 

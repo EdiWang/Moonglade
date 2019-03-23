@@ -98,7 +98,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error GetHotTags.");
+                Logger.LogError(e, $"Error {nameof(GetHotTagsAsync)}");
                 return new FailedResponse<List<TagInfo>>((int)ResponseFailureCode.GeneralException);
             }
         }
