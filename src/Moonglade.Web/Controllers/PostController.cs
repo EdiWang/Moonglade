@@ -92,7 +92,7 @@ namespace Moonglade.Web.Controllers
 
                 Content = HttpUtility.HtmlDecode(post.PostContent),
                 Hits = post.PostExtension.Hits,
-                LikeHits = post.PostExtension.Likes.GetValueOrDefault(),
+                LikeHits = post.PostExtension.Likes,
 
                 Tags = post.PostTag.Select(pt => pt.Tag)
                                    .Select(p => new TagInfo

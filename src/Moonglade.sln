@@ -34,6 +34,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BE685106-CE96-4A43-A161-3425565C6A9D}"
 	ProjectSection(SolutionItems) = preProject
 		Build.ps1 = Build.ps1
+		..\Database\migration.sql = ..\Database\migration.sql
 		..\README.md = ..\README.md
 		..\Database\schema-mssql-140.sql = ..\Database\schema-mssql-140.sql
 	EndProjectSection

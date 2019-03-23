@@ -146,7 +146,7 @@ GO
 CREATE TABLE [dbo].[PostExtension](
 	[PostId] [uniqueidentifier] NOT NULL,
 	[Hits] [int] NOT NULL,
-	[Likes] [int] NULL,
+	[Likes] [int] NOT NULL,
  CONSTRAINT [PK_PostExtension] PRIMARY KEY CLUSTERED 
 (
 	[PostId] ASC
@@ -205,10 +205,7 @@ CREATE TABLE [dbo].[Tag](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
--- ALTER TABLE [dbo].[PostExtension] ADD  CONSTRAINT [DF_PostExtension_Hits]  DEFAULT ((0)) FOR [Hits]
--- GO
--- ALTER TABLE [dbo].[PostPublish] ADD  DEFAULT ((0)) FOR [IsDeleted]
--- GO
+
 ALTER TABLE [dbo].[Comment]  WITH CHECK ADD  CONSTRAINT [FK_Comment_Post] FOREIGN KEY([PostId])
 REFERENCES [dbo].[Post] ([Id])
 ON UPDATE CASCADE

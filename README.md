@@ -43,6 +43,8 @@ Register an App in **Azure Active Directory**
 
 Create a SQL Server 2017+ database or Azure SQL Database, execute script  **"Database\schema-mssql-140.sql"** 
 
+Optional: Execute **"Database\migration.sql"** for schema changes if this file is not empty.
+
 *You may need to grant permission to the database for your machine or service account depends on your server configuration*
 
 ### Build Source
