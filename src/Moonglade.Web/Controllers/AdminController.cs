@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -31,8 +30,8 @@ namespace Moonglade.Web.Controllers
             applicationLifetime = appLifetime;
         }
 
-        [HttpGet("blow-me-up")]
-        public IActionResult BlowMeUp()
+        [HttpGet("shutdown")]
+        public IActionResult Shutdown()
         {
             applicationLifetime.StopApplication();
             return new EmptyResult();
@@ -71,6 +70,7 @@ namespace Moonglade.Web.Controllers
             return View();
         }
 
+        [Route("")]
         public IActionResult Index()
         {
             return View();

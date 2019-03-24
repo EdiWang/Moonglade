@@ -41,6 +41,23 @@ namespace Moonglade.Core
             return Context.Category;
         }
 
+        public Response<Category> GetCategory(string categoryName)
+        {
+            try
+            {
+                var cat = Context.Category.AsNoTracking()
+                                          .FirstOrDefault(p => 
+                                           string.Compare(p.Title, categoryName, StringComparison.OrdinalIgnoreCase) == 0);
+
+                return new SuccessResponse<Category>(cat);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error {nameof(GetCategory)}");
+                return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException);
+            }
+        }
+
         public Response<Category> GetCategory(Guid categoryId)
         {
             try
