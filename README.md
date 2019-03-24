@@ -33,7 +33,7 @@ I am looking into generalize the system in the long term. But there are no speci
 
 ### Prepare Azure AD
 
-This blog is using Azure AD to sign in to admin portal. Local authentication provider is not implmented yet. So yes, basically you have to use Azure currently.
+This blog is using Azure AD to sign in to admin portal. Local authentication provider is not implmented yet. 
 
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://localhost:5001/signin-oidc"**
@@ -58,9 +58,9 @@ Optional: Execute **"Database\migration.sql"** for schema changes if this file i
 ### Configuration
 
 #### Image Storage
-**ImageStorage** controls how blog post images are stored. There are 2 built in options:
+**AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built in options:
 
-1. Azure: You need to create an **Azure Storage Account** with a blob container. 
+1. **Azure Blob:** You need to create an **Azure Storage Account** with a blob container. 
 ```
 "Provider": "AzureStorageImageProvider"
 "AzureStorageSettings": {
@@ -69,19 +69,26 @@ Optional: Execute **"Database\migration.sql"** for schema changes if this file i
 },
 ```
 
-2. File System: *WANING: This provider code has only been smoke tested on my own machine*
+2. **File System:** Set provider to **FileSystemImageProvider**
 ```
 "Provider": "FileSystemImageProvider",
 "FileSystemSettings": {
   "Path": "${basedir}\\UploadedImages"
 }
 ```
+The Path can be relative or absolute. "$\{basedir\}" represents the website's current directory. Storing images files under website directory is not recommended. 
 
 #### Email Password Encryption
 
 **Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
 
 See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
+
+#### Robots.txt
+
+This blog generates robots.txt based on configuration. However, if there are a physical file named "robots.txt" under "wwwroot" directory, it will override the configuration based robots.txt generation.
+
+To customize robots.txt, modify the configuration under **RobotsTxt** section.
 
 #### Others
 
