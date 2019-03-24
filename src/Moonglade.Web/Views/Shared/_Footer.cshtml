@@ -3,12 +3,6 @@
 @using Moonglade.Core
 @using Moonglade.Model.Settings
 @inject IOptions<AppSettings> Settings
-@inject BlogConfigurationService BlogConfigurationService
-@inject BlogConfig BlogConfig
-
-@{
-    BlogConfig.GetConfiguration(BlogConfigurationService);
-}
 
 <footer>
     <div class="container">
@@ -125,12 +119,12 @@
                 <div class="row mb-4">
                     <div class="col-6">
                         <a asp-controller="Subscription" asp-action="rss" class="btn btn-block btn-primary">
-                            Latest @BlogConfig.FeedSettings.RssItemCount Posts (RSS)
+                            Latest Posts (RSS)
                         </a>
                     </div>
                     <div class="col-6">
                         <a asp-controller="Subscription" asp-action="Atom" class="btn btn-block btn-success">
-                            Latest @BlogConfig.FeedSettings.RssItemCount Posts (Atom)
+                            Latest Posts (Atom)
                         </a>
                     </div>
                 </div>
