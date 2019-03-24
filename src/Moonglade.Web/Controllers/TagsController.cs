@@ -51,7 +51,6 @@ namespace Moonglade.Web.Controllers
             var posts = postResponse.Item.ToList();
             if (posts.Any())
             {
-                ViewBag.CurrentTagName = tag.DisplayName;
                 ViewBag.TitlePrefix = tag.DisplayName;
                 return View(posts);
             }

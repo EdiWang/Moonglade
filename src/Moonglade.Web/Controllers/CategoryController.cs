@@ -68,7 +68,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                System.IO.File.Delete($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opml.xml");
+                System.IO.File.Delete($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}");
                 Logger.LogInformation("OPML file is deleted.");
             }
             catch (Exception e)

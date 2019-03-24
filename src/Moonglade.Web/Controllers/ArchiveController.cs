@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +14,7 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
+    [Route("archive")]
     public class ArchiveController : MoongladeController
     {
         private readonly CategoryService _categoryService;
@@ -31,16 +31,16 @@ namespace Moonglade.Web.Controllers
             _categoryService = categoryService;
             _postService = postService;
         }
-
-        [Route("archive")]
+        
+        [Route("")]
         public async Task<IActionResult> Index()
         {
             var response = await _categoryService.GetArchiveListAsync();
             return response.IsSuccess ? View(response.Item) : ServerError();
         }
 
-        [Route("archive/{year:int:length(4)}")]
-        [Route("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
+        [Route("{year:int:length(4)}")]
+        [Route("{year:int:length(4)}/{month:int:range(1,12)}")]
         public async Task<IActionResult> GetArchive(int year, int? month)
         {
             if (year > DateTime.UtcNow.Year)

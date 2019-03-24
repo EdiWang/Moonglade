@@ -6,8 +6,14 @@
 
         public static string DataDirectory = "DataDirectory";
 
-        public const string FileSystemImageStorageFolder = @"PostImages";
+        public static string FileSystemImageStorageFolder = @"PostImages";
 
         public static string AppBaseDirectory = "AppBaseDirectory";
+
+        public static int SmallImagePixelsThreshold = 200 * 200;
+
+        public static string OpenSearchFileName = "opensearch.xml";
+
+        public static string OpmlFileName = "opml.xml";
     }
 }

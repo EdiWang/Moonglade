@@ -24,11 +24,8 @@ namespace Moonglade.Web.Controllers
     public partial class PostController : MoongladeController
     {
         private readonly PostService _postService;
-
         private readonly CategoryService _categoryService;
-
         private readonly PingbackSender _pingbackSender;
-
         private readonly LinkGenerator _linkGenerator;
 
         public PostController(MoongladeDbContext context,
