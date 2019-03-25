@@ -64,16 +64,18 @@ namespace Moonglade.Web.Controllers
             return RedirectToAction(nameof(PostController.Index), "Post");
         }
 
+        [AllowAnonymous]
         [HttpGet("accessdenied")]
         public IActionResult AccessDenied()
         {
+            HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
             return View();
         }
 
         [Route("")]
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Manage", "Post");
         }
 
         // Keep session from expire when writing a very long post
