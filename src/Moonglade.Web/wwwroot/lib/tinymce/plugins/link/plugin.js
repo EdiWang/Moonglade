@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.2 (2019-03-05)
+ * Version: 5.0.3 (2019-03-19)
  */
 (function () {
 var link = (function (domGlobals) {
@@ -678,7 +678,7 @@ var link = (function (domGlobals) {
       };
       var call = function (cb) {
         data.each(function (x) {
-          setTimeout(function () {
+          domGlobals.setTimeout(function () {
             cb(x);
           }, 0);
         });
@@ -707,7 +707,7 @@ var link = (function (domGlobals) {
           args[_i] = arguments[_i];
         }
         var me = this;
-        setTimeout(function () {
+        domGlobals.setTimeout(function () {
           f.apply(me, args);
         }, 0);
       };
@@ -814,7 +814,7 @@ var link = (function (domGlobals) {
       }, function (transform) {
         return Future.nu(function (callback) {
           delayedConfirm(editor, transform.message, function (state) {
-            console.log('state', state);
+            domGlobals.console.log('state', state);
             callback(state ? transform.preprocess(data) : data);
           });
         });
@@ -1262,6 +1262,12 @@ var link = (function (domGlobals) {
       var collapseSelectionToEnd = function (editor) {
         editor.selection.collapse(false);
       };
+      var onSetupLink = function (buttonApi) {
+        var node = editor.selection.getNode();
+        buttonApi.setDisabled(!Utils.getAnchorElement(editor, node));
+        return function () {
+        };
+      };
       editor.ui.registry.addContextForm('quicklink', {
         launch: {
           type: 'contextformtogglebutton',
@@ -1318,16 +1324,22 @@ var link = (function (domGlobals) {
             }
           },
           {
-            type: 'contextformtogglebutton',
+            type: 'contextformbutton',
             icon: 'unlink',
             tooltip: 'Remove link',
-            active: false,
-            onSetup: function () {
-              return function () {
-              };
-            },
+            onSetup: onSetupLink,
             onAction: function (formApi) {
               Utils.unlink(editor);
+              formApi.hide();
+            }
+          },
+          {
+            type: 'contextformbutton',
+            icon: 'new-tab',
+            tooltip: 'Open link',
+            onSetup: onSetupLink,
+            onAction: function (formApi) {
+              Actions.gotoSelectedLink(editor)();
               formApi.hide();
             }
           }

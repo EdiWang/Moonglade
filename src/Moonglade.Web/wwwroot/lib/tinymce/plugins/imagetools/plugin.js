@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.2 (2019-03-05)
+ * Version: 5.0.3 (2019-03-19)
  */
 (function () {
 var imagetools = (function (domGlobals) {
@@ -389,7 +389,7 @@ var imagetools = (function (domGlobals) {
       from: from
     };
 
-    var Global = typeof window !== 'undefined' ? window : Function('return this;')();
+    var Global = typeof domGlobals.window !== 'undefined' ? domGlobals.window : Function('return this;')();
 
     var path = function (parts, scope) {
       var o = scope !== undefined && scope !== null ? scope : Global;
@@ -2779,7 +2779,7 @@ var imagetools = (function (domGlobals) {
       imageUploadTimerState.set(imageUploadTimer);
     };
     var cancelTimedUpload = function (imageUploadTimerState) {
-      clearTimeout(imageUploadTimerState.get());
+      global$2.clearTimeout(imageUploadTimerState.get());
     };
     var updateSelectedImage = function (editor, ir, uploadImmediately, imageUploadTimerState, selectedImage, size) {
       return ir.toBlob().then(function (blob) {

@@ -109,16 +109,25 @@ namespace Moonglade.Core
             return tag;
         }
 
-        public async Task<List<TagInfo>> GetTagCountListAsync()
+        public async Task<Response<List<TagInfo>>> GetTagCountListAsync()
         {
-            var queryTag = Context.Tag.AsNoTracking().Select(t => new TagInfo
+            try
             {
-                TagName = t.DisplayName,
-                NormalizedTagName = t.NormalizedName,
-                TagCount = t.PostTag.Count
-            });
+                var queryTag = Context.Tag.AsNoTracking().Select(t => new TagInfo
+                {
+                    TagName = t.DisplayName,
+                    NormalizedTagName = t.NormalizedName,
+                    TagCount = t.PostTag.Count
+                });
 
-            return await queryTag.ToListAsync();
+                var list = await queryTag.ToListAsync();
+                return new SuccessResponse<List<TagInfo>>(list);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error {nameof(GetTagCountListAsync)}");
+                return new FailedResponse<List<TagInfo>>((int)ResponseFailureCode.GeneralException);
+            }
         }
     }
 }

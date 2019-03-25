@@ -31,8 +31,12 @@ namespace Moonglade.Web.Controllers
         [Route("")]
         public async Task<IActionResult> Index()
         {
-            var list = await _tagService.GetTagCountListAsync();
-            return View(list);
+            var response = await _tagService.GetTagCountListAsync();
+            if (!response.IsSuccess)
+            {
+                return ServerError();
+            }
+            return View(response.Item);
         }
 
         [Route("list/{normalizedName}")]

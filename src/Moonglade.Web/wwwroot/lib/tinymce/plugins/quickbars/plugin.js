@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.2 (2019-03-05)
+ * Version: 5.0.3 (2019-03-19)
  */
 (function () {
 var quickbars = (function (domGlobals) {
@@ -65,7 +65,7 @@ var quickbars = (function (domGlobals) {
       insertBlob: insertBlob
     };
 
-    var Global = typeof window !== 'undefined' ? window : Function('return this;')();
+    var Global = typeof domGlobals.window !== 'undefined' ? domGlobals.window : Function('return this;')();
 
     var path = function (parts, scope) {
       var o = scope !== undefined && scope !== null ? scope : Global;
@@ -804,8 +804,8 @@ var quickbars = (function (domGlobals) {
     };
     var getToolbarItemsOr = function (predicate) {
       return function (editor, name, defaultValue) {
-        var value = name in editor.settings ? editor.settings[name] : defaultValue;
         validDefaultOrDie(defaultValue, predicate);
+        var value = editor.getParam(name, defaultValue);
         return items(value, defaultValue);
       };
     };
@@ -823,25 +823,28 @@ var quickbars = (function (domGlobals) {
     };
 
     var addToEditor = function (editor) {
-      editor.ui.registry.addContextToolbar('quickblock', {
-        predicate: function (node) {
-          var sugarNode = Element.fromDom(node);
-          var textBlockElementsMap = editor.schema.getTextBlockElements();
-          var isRoot = function (elem) {
-            return elem.dom() === editor.getBody();
-          };
-          return closest$1(sugarNode, 'table', isRoot).fold(function () {
-            return closest(sugarNode, function (elem) {
-              return name(elem) in textBlockElementsMap && editor.dom.isEmpty(elem.dom());
-            }, isRoot).isSome();
-          }, function () {
-            return false;
-          });
-        },
-        items: Settings.getInsertToolbarItems(editor),
-        position: 'line',
-        scope: 'editor'
-      });
+      var insertToolbarItems = Settings.getInsertToolbarItems(editor);
+      if (insertToolbarItems.trim().length > 0) {
+        editor.ui.registry.addContextToolbar('quickblock', {
+          predicate: function (node) {
+            var sugarNode = Element.fromDom(node);
+            var textBlockElementsMap = editor.schema.getTextBlockElements();
+            var isRoot = function (elem) {
+              return elem.dom() === editor.getBody();
+            };
+            return closest$1(sugarNode, 'table', isRoot).fold(function () {
+              return closest(sugarNode, function (elem) {
+                return name(elem) in textBlockElementsMap && editor.dom.isEmpty(elem.dom());
+              }, isRoot).isSome();
+            }, function () {
+              return false;
+            });
+          },
+          items: insertToolbarItems,
+          position: 'line',
+          scope: 'editor'
+        });
+      }
     };
     var InsertToolbars = { addToEditor: addToEditor };
 
@@ -853,13 +856,16 @@ var quickbars = (function (domGlobals) {
         items: 'alignleft aligncenter alignright',
         position: 'node'
       });
-      editor.ui.registry.addContextToolbar('textselection', {
-        predicate: function (node) {
-          return !editor.selection.isCollapsed();
-        },
-        items: Settings.getTextSelectionToolbarItems(editor),
-        position: 'selection'
-      });
+      var textToolbarItems = Settings.getTextSelectionToolbarItems(editor);
+      if (textToolbarItems.trim().length > 0) {
+        editor.ui.registry.addContextToolbar('textselection', {
+          predicate: function (node) {
+            return !editor.selection.isCollapsed();
+          },
+          items: textToolbarItems,
+          position: 'selection'
+        });
+      }
     };
     var SelectionToolbars = { addToEditor: addToEditor$1 };
 
