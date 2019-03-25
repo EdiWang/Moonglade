@@ -47,7 +47,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error UpdatePostHit({postId})");
+                Logger.LogError(e, $"Error {nameof(UpdatePostStatistic)}(postId: {postId}, statisticType: {statisticType})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -78,6 +78,7 @@ namespace Moonglade.Core
             {
                 // https://domain/post/yyyy/MM/dd/slug
 
+                // TODO: There must be a nicer way to do this
                 var uri = new Uri(url);
                 if (uri.Segments.Length < 5)
                 {
@@ -132,11 +133,13 @@ namespace Moonglade.Core
         {
             if (pageSize < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), "pageSize can not be less than 1.");
+                throw new ArgumentOutOfRangeException(nameof(pageSize), 
+                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
             }
             if (pageIndex < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(pageIndex), "pageIndex can not be less than 1.");
+                throw new ArgumentOutOfRangeException(nameof(pageIndex), 
+                    $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
             }
 
             var startRow = (pageIndex - 1) * pageSize;
@@ -151,14 +154,11 @@ namespace Moonglade.Core
                                     .Skip(startRow)
                                     .Take(pageSize).AsNoTracking();
 
-            var list = query;
-            return list;
+            return query;
         }
 
         public IQueryable<Post> GetArchivedPosts(int year, int month = 0)
         {
-            Logger.LogInformation($"Querying archived posts for {year}/{month}");
-
             var query = Context.Post.Include(p => p.PostPublish)
                                     .Where(p => p.PostPublish.PubDateUtc.Value.Year == year &&
                                           (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month)).AsNoTracking();
@@ -170,12 +170,10 @@ namespace Moonglade.Core
         {
             try
             {
-                Logger.LogInformation($"Querying tagged posts for {normalizedName}");
-
-                var posts = Context.PostTag //.Include(pt => pt.Post)
-                    .Where(pt => pt.Tag.NormalizedName == normalizedName)
-                    .Select(pt => pt.Post)
-                    .Include(p => p.PostPublish).AsNoTracking();
+                var posts = Context.PostTag
+                                   .Where(pt => pt.Tag.NormalizedName == normalizedName)
+                                   .Select(pt => pt.Post)
+                                   .Include(p => p.PostPublish).AsNoTracking();
 
                 return new SuccessResponse<IEnumerable<Post>>(posts);
             }
@@ -265,7 +263,9 @@ namespace Moonglade.Core
                            p.PostPublish.PubDateUtc.Value.Month == today.Month &&
                            p.PostPublish.PubDateUtc.Value.Day == today.Day))
                 {
-                    postModel.Slug += "-1";
+                    var uid = Guid.NewGuid();
+                    postModel.Slug += $"-{uid.ToString().Substring(0, 8)}";
+                    Logger.LogInformation($"Found conflict for post slug, generated new slug: {postModel.Slug}");
                 }
 
                 // add categories
@@ -328,7 +328,7 @@ namespace Moonglade.Core
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error in CreateNewPost()");
+                Logger.LogError(ex, $"Error in {nameof(CreateNewPost)}");
                 return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -394,12 +394,12 @@ namespace Moonglade.Core
                     });
                 }
 
-                Context.SaveChanges();
-                return new SuccessResponse();
+                int rows = Context.SaveChanges();
+                return new Response(rows > 0);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Eroor Editing Post Id: {postModel.Id}");
+                Logger.LogError(e, $"Error Editing Post, PostId: {postModel.Id}");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -434,19 +434,18 @@ namespace Moonglade.Core
                 if (isRecycle)
                 {
                     post.PostPublish.IsDeleted = true;
-                    rows = Context.SaveChanges();
                 }
                 else
                 {
                     Context.Post.Remove(post);
-                    rows = Context.SaveChanges();
                 }
 
+                rows = Context.SaveChanges();
                 return new Response(rows > 0);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error Delete(postId: {postId}, isRecycle: {isRecycle})");
+                Logger.LogError(e, $"Error {nameof(Delete)}(postId: {postId}, isRecycle: {isRecycle})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }

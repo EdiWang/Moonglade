@@ -72,8 +72,7 @@ namespace Moonglade.Core
         {
             if (pageSize < 1)
             {
-                Logger.LogWarning("PageSize settings is less than 1, using 1 as fallback.");
-                pageSize = 1;
+                throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
             }
 
             var startRow = (pageIndex - 1) * pageSize;
@@ -104,6 +103,7 @@ namespace Moonglade.Core
                         Logger.LogInformation($"Disapprove and delete comment {commentId}");
                         Context.Comment.Remove(comment);
                     }
+
                     int rows = Context.SaveChanges();
                     return new Response(rows > 0);
                 }
@@ -111,7 +111,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error SetApprovalStatus");
+                Logger.LogError(e, $"Error {nameof(SetApprovalStatus)}");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -144,7 +144,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error Delete(commentId: {commentId})");
+                Logger.LogError(e, $"Error {nameof(Delete)}(commentId: {commentId})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -203,7 +203,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error NewComment");
+                Logger.LogError(e, $"Error {nameof(NewComment)}");
                 return new FailedResponse<Comment>((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -264,7 +264,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error NewReply");
+                Logger.LogError(e, $"Error {nameof(NewReply)}");
                 return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.GeneralException);
             }
         }

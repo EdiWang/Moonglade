@@ -1,9 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Moonglade.Web.Middleware.RobotsTxt;
 
 namespace Moonglade.Web.Middleware.RobotsTxt
 {

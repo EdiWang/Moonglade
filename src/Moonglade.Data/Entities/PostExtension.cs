@@ -6,7 +6,7 @@ namespace Moonglade.Data.Entities
     {
         public Guid PostId { get; set; }
         public int Hits { get; set; }
-        public int? Likes { get; set; }
+        public int Likes { get; set; }
 
         public virtual Post Post { get; set; }
     }

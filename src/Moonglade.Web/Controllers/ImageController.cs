@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
+using Moonglade.Model;
 using Moonglade.Data;
 using Moonglade.ImageStorage;
 using Moonglade.Model.Settings;
@@ -55,7 +56,7 @@ namespace Moonglade.Web.Controllers
                 var invalidChars = Path.GetInvalidFileNameChars();
                 if (filename.IndexOfAny(invalidChars) > 0)
                 {
-                    Logger.LogWarning($"Invalid filename attempt '{filename}' is blocked.");
+                    Logger.LogWarning($"Invalid filename attempt '{filename}'.");
                     return BadRequest("invalid filename");
                 }
 
@@ -110,6 +111,7 @@ namespace Moonglade.Web.Controllers
                     var allowedImageFormats = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" };
                     if (!allowedImageFormats.Contains(ext))
                     {
+                        Logger.LogError($"Invalid file extension: {ext}");
                         return BadRequest();
                     }
 
@@ -124,7 +126,7 @@ namespace Moonglade.Web.Controllers
                             var watermarker = new ImageWatermarker(stream, ext)
                             {
                                 SkipWatermarkForSmallImages = true,
-                                SmallImagePixelsThreshold = 200 * 200
+                                SmallImagePixelsThreshold = Constants.SmallImagePixelsThreshold
                             };
 
                             Logger.LogInformation($"Adding watermark onto image {name}");
@@ -142,12 +144,11 @@ namespace Moonglade.Web.Controllers
                                 watermarkedStream.ToArray() :
                                 stream.ToArray());
 
-                        Logger.LogInformation("Image Upload: " + JsonConvert.SerializeObject(response));
+                        Logger.LogInformation("Image Uploaded: " + JsonConvert.SerializeObject(response));
 
                         if (response.IsSuccess)
                         {
-                            string refPath = "/uploads/" + response.Item;
-                            return Json(new { location = refPath });
+                            return Json(new { location = $"/uploads/{response.Item}" });
                         }
                         Logger.LogError(response.Message);
                         return ServerError();

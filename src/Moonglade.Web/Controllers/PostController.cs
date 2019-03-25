@@ -24,11 +24,8 @@ namespace Moonglade.Web.Controllers
     public partial class PostController : MoongladeController
     {
         private readonly PostService _postService;
-
         private readonly CategoryService _categoryService;
-
         private readonly PingbackSender _pingbackSender;
-
         private readonly LinkGenerator _linkGenerator;
 
         public PostController(MoongladeDbContext context,
@@ -70,7 +67,7 @@ namespace Moonglade.Web.Controllers
             var post = rsp.Item;
             if (post == null)
             {
-                Logger.LogWarning($"Post not found for parameter {year}/{month}/{day}/{slug}.");
+                Logger.LogWarning($"Post not found, parameter {year}/{month}/{day}/{slug}.");
                 return NotFound();
             }
 
@@ -92,7 +89,7 @@ namespace Moonglade.Web.Controllers
 
                 Content = HttpUtility.HtmlDecode(post.PostContent),
                 Hits = post.PostExtension.Hits,
-                LikeHits = post.PostExtension.Likes.GetValueOrDefault(),
+                LikeHits = post.PostExtension.Likes,
 
                 Tags = post.PostTag.Select(pt => pt.Tag)
                                    .Select(p => new TagInfo
@@ -119,7 +116,6 @@ namespace Moonglade.Web.Controllers
             #endregion Fetch Post Main Model
 
             ViewBag.TitlePrefix = $"{post.Title}";
-
             return View(viewModel);
         }
 

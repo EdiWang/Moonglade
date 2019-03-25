@@ -48,7 +48,7 @@ namespace Moonglade.Web.Controllers
                 Directory.CreateDirectory(feedDirectoryPath);
             }
 
-            var opmlDataFile = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opml.xml";
+            var opmlDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}";
             if (!System.IO.File.Exists(opmlDataFile))
             {
                 Logger.LogInformation($"OPML file not found, writing new file on {opmlDataFile}");
@@ -75,7 +75,8 @@ namespace Moonglade.Web.Controllers
                     CategoryHtmlUrlTemplate = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/category/list/[catTitle]"
                 };
 
-                await FileSystemOpmlWriter.WriteOpmlFileAsync($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opml.xml", oi);
+                await FileSystemOpmlWriter.WriteOpmlFileAsync(
+                    $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}", oi);
                 Logger.LogInformation("OPML file write completed.");
 
                 if (!System.IO.File.Exists(opmlDataFile))

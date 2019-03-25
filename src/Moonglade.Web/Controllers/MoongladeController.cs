@@ -50,6 +50,10 @@ namespace Moonglade.Web.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        protected string GetUserAgent()
+        {
+            return Request.Headers["User-Agent"];
+        }
 
         protected string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)
         {

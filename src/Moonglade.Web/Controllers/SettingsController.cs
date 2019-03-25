@@ -26,15 +26,15 @@ namespace Moonglade.Web.Controllers
     [Route("admin/settings")]
     public class SettingsController : MoongladeController
     {
+        #region Private Fields
+
         private readonly EmailService _emailService;
-
         private readonly FriendLinkService _friendLinkService;
-
         private readonly BlogConfig _blogConfig;
-
         private readonly BlogConfigurationService _blogConfigurationService;
-
         private readonly AesEncryptionService _encryptionService;
+
+        #endregion
 
         public SettingsController(MoongladeDbContext context,
             ILogger<SettingsController> logger,

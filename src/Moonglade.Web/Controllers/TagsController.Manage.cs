@@ -9,7 +9,7 @@ namespace Moonglade.Web.Controllers
     public partial class TagsController
     {
         [Authorize]
-        [Route("tags/manage")]
+        [Route("manage")]
         public IActionResult Manage()
         {
             var query = _tagService.GetTags().Select(t => new TagGridModel
@@ -24,6 +24,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("update")]
         public IActionResult Update(int tagId, string newTagName)
         {
             Logger.LogInformation($"Updating tag ID {tagId} with new name '{newTagName}'");
@@ -38,6 +39,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("delete")]
         public IActionResult Delete(int tagId)
         {
             var response = _tagService.Delete(tagId);

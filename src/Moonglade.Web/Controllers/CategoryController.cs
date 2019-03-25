@@ -40,16 +40,16 @@ namespace Moonglade.Web.Controllers
             }
 
             var pageSize = AppSettings.PostListPageSize;
-            var catResponse = _categoryService.GetAllCategories();
+            var catResponse = _categoryService.GetCategory(categoryName);
             if (!catResponse.IsSuccess)
             {
-                return ServerError("Unsuccessful response from _categoryService.GetAllCategories().");
+                return ServerError($"Unsuccessful response: {catResponse.Message}");
             }
 
-            var cat = catResponse.Item.Find(p => string.Compare(p.Title, categoryName, StringComparison.OrdinalIgnoreCase) == 0);
+            var cat = catResponse.Item;
             if (null == cat)
             {
-                Logger.LogWarning($"{categoryName} is not found, returning 404.");
+                Logger.LogWarning($"{categoryName} is not found, returning NotFound.");
                 return NotFound();
             }
 
@@ -68,7 +68,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                System.IO.File.Delete($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opml.xml");
+                System.IO.File.Delete($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}");
                 Logger.LogInformation("OPML file is deleted.");
             }
             catch (Exception e)

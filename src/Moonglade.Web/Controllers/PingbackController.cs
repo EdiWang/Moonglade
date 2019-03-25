@@ -24,9 +24,8 @@ namespace Moonglade.Web.Controllers
             ILogger<PingbackController> logger,
             IOptions<AppSettings> settings,
             IConfiguration configuration,
-            IHttpContextAccessor accessor,
-            IMemoryCache memoryCache, PingbackService pingbackService)
-            : base(context, logger, settings, configuration, accessor, memoryCache)
+            PingbackService pingbackService)
+            : base(context, logger, settings, configuration)
         {
             _pingbackService = pingbackService;
         }
@@ -59,6 +58,23 @@ namespace Moonglade.Web.Controllers
             }
         }
 
+        [Authorize]
+        [Route("manage")]
+        public IActionResult Manage()
+        {
+            var data = _pingbackService.GetReceivedPingbacks();
+            return View(data);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("delete")]
+        public IActionResult Delete(Guid pingbackId)
+        {
+            return _pingbackService.DeleteReceivedPingback(pingbackId).IsSuccess ? Json(pingbackId) : Json(null);
+        }
+
         private ContentResult XmlContent(int code, string message)
         {
             return Content(BuildErrorResponseBody(code, message), "text/xml");
@@ -86,23 +102,6 @@ namespace Moonglade.Web.Controllers
             sb.Append("</methodResponse>");
 
             return sb.ToString();
-        }
-
-        [Authorize]
-        [Route("manage")]
-        public IActionResult Manage()
-        {
-            var data = _pingbackService.GetReceivedPingbacks();
-            return View(data);
-        }
-
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("delete")]
-        public IActionResult Delete(Guid pingbackId)
-        {
-            return _pingbackService.DeleteReceivedPingback(pingbackId).IsSuccess ? Json(pingbackId) : Json(null);
         }
     }
 }

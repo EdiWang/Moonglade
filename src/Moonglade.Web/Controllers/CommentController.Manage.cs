@@ -73,8 +73,7 @@ namespace Moonglade.Web.Controllers
         public IActionResult ReplyComment(Guid commentId, string replyContent)
         {
             var response = _commentService.NewReply(commentId, replyContent,
-                HttpContext.Connection.RemoteIpAddress.ToString(),
-                Request.Headers["User-Agent"].ToString());
+                HttpContext.Connection.RemoteIpAddress.ToString(), GetUserAgent());
 
             if (!response.IsSuccess) return Json(false);
             if (_blogConfig.EmailConfiguration.SendEmailOnCommentReply)

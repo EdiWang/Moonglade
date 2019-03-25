@@ -11,6 +11,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
+    [Route("tags")]
     public partial class TagsController : MoongladeController
     {
         private readonly TagService _tagService;
@@ -27,14 +28,14 @@ namespace Moonglade.Web.Controllers
             _postService = postService;
         }
 
-        [Route("tags")]
+        [Route("")]
         public async Task<IActionResult> Index()
         {
             var list = await _tagService.GetTagCountListAsync();
             return View(list);
         }
 
-        [Route("tags/list/{normalizedName}")]
+        [Route("list/{normalizedName}")]
         public IActionResult List(string normalizedName)
         {
             ViewBag.ErrorMessage = string.Empty;
@@ -50,11 +51,17 @@ namespace Moonglade.Web.Controllers
             var posts = postResponse.Item.ToList();
             if (posts.Any())
             {
-                ViewBag.CurrentTagName = tag.DisplayName;
                 ViewBag.TitlePrefix = tag.DisplayName;
                 return View(posts);
             }
             return NotFound();
+        }
+
+        [Route("get-all-tag-names")]
+        public IActionResult GetAllTagNames()
+        {
+            var tagNames = _tagService.GetTags().Select(t => t.DisplayName).ToList();
+            return Json(tagNames);
         }
     }
 }

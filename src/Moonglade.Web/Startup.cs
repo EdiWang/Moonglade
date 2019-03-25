@@ -284,8 +284,8 @@ namespace Moonglade.Web
 
         private void CleanDataCache()
         {
-            var openSearchDataFile = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opensearch.xml";
-            var opmlDataFile = $"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\\opml.xml";
+            var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpenSearchFileName}";
+            var opmlDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}";
 
             DeleteDataFile(openSearchDataFile);
             DeleteDataFile(opmlDataFile);
@@ -323,15 +323,15 @@ namespace Moonglade.Web
             if (path.IndexOf(basedirStr) == 0)
             {
                 // Use relative path
-                // Warning: Write data under application directory may fuck up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.
+                // Warning: Write data under application directory may blow up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.
                 path = path.Replace(basedirStr, Environment.ContentRootPath);
             }
 
             // IsPathFullyQualified can't check if path is valid, e.g.:
-            // Path: C:\Documents<>|fuck
+            // Path: C:\Documents<>|foo
             //   Rooted: True
             //   Fully qualified: True
-            //   Full path: C:\Documents<>|fuck
+            //   Full path: C:\Documents<>|foo
             var invalidChars = Path.GetInvalidPathChars();
             if (path.IndexOfAny(invalidChars) >= 0)
             {

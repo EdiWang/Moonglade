@@ -22,17 +22,16 @@ namespace Moonglade.Web.Controllers
     [Route("comment")]
     public partial class CommentController : MoongladeController
     {
+        #region Private Fields
+
         private readonly CommentService _commentService;
-
         private readonly EmailService _emailService;
-
         private readonly PostService _postService;
-
         private readonly ISessionBasedCaptcha _captcha;
-
         private readonly BlogConfig _blogConfig;
-
         private readonly LinkGenerator _linkGenerator;
+
+        #endregion
 
         public CommentController(MoongladeDbContext context,
             ILogger<CommentController> logger,
@@ -45,7 +44,8 @@ namespace Moonglade.Web.Controllers
             PostService postService,
             ISessionBasedCaptcha captcha,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService, LinkGenerator linkGenerator)
+            BlogConfigurationService blogConfigurationService, 
+            LinkGenerator linkGenerator)
             : base(context, logger, settings, configuration, accessor, memoryCache)
         {
             _blogConfig = blogConfig;
@@ -81,7 +81,7 @@ namespace Moonglade.Web.Controllers
                     var response = _commentService.NewComment(commentPostModel.Username, commentPostModel.Content,
                                                               commentPostModel.PostId, commentPostModel.Email,
                                                               HttpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                                                              Request.Headers["User-Agent"]);
+                                                              GetUserAgent());
 
                     if (response.IsSuccess)
                     {

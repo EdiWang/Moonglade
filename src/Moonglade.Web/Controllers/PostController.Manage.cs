@@ -77,6 +77,7 @@ namespace Moonglade.Web.Controllers
                         Title = model.Title.Trim(),
                         PostPublish = new PostPublish
                         {
+                            IsDeleted = false,
                             IsPublished = model.IsPublished,
                             PubDateUtc = model.IsPublished ? DateTime.UtcNow : (DateTime?)null,
                             ExposedToSiteMap = model.ExposedToSiteMap,

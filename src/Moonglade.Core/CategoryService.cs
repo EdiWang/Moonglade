@@ -33,13 +33,29 @@ namespace Moonglade.Core
 
         public int GetPostCountByCategoryId(Guid catId)
         {
-            var count = Context.PostCategory.Count(c => c.CategoryId == catId);
-            return count;
+            return Context.PostCategory.Count(c => c.CategoryId == catId);
         }
 
         public IQueryable<Category> GetCategoriesAsQueryable()
         {
             return Context.Category;
+        }
+
+        public Response<Category> GetCategory(string categoryName)
+        {
+            try
+            {
+                var cat = Context.Category.AsNoTracking()
+                                          .FirstOrDefault(p => 
+                                           string.Compare(p.Title, categoryName, StringComparison.OrdinalIgnoreCase) == 0);
+
+                return new SuccessResponse<Category>(cat);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error {nameof(GetCategory)}");
+                return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException);
+            }
         }
 
         public Response<Category> GetCategory(Guid categoryId)
