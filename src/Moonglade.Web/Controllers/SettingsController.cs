@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
@@ -151,6 +152,21 @@ namespace Moonglade.Web.Controllers
         {
             var response = await _emailService.TestSendTestMailAsync();
             return Json(response);
+        }
+
+        [HttpGet("generate-new-aes-keys")]
+        public IActionResult GenerateNewAesKeys()
+        {
+            var aesAlg = Aes.Create();
+            var key = aesAlg.Key;
+            var iv = aesAlg.IV;
+            var resp = new
+            {
+                Key = key,
+                Iv = iv,
+                GenTimeUtc = DateTime.UtcNow
+            };
+            return Json(resp);
         }
 
         #endregion

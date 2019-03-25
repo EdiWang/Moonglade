@@ -82,6 +82,8 @@ The Path can be relative or absolute. "$\{basedir\}" represents the website's cu
 
 **Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
 
+To generate a new pair of IV and Key, access URL "/admin/settings/generate-new-aes-keys".
+
 See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
 
 #### Robots.txt
