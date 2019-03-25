@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.2 (2019-03-05)
+ * Version: 5.0.3 (2019-03-19)
  */
 (function () {
 var image = (function (domGlobals) {
@@ -258,7 +258,7 @@ var image = (function (domGlobals) {
       };
       var call = function (cb) {
         data.each(function (x) {
-          setTimeout(function () {
+          domGlobals.setTimeout(function () {
             cb(x);
           }, 0);
         });
@@ -287,7 +287,7 @@ var image = (function (domGlobals) {
           args[_i] = arguments[_i];
         }
         var me = this;
-        setTimeout(function () {
+        domGlobals.setTimeout(function () {
           f.apply(me, args);
         }, 0);
       };
@@ -488,13 +488,13 @@ var image = (function (domGlobals) {
       var withTimeout = function (timeout, errorThunk) {
         return wrap(Future.nu(function (callback) {
           var timedOut = false;
-          var timer = window.setTimeout(function () {
+          var timer = domGlobals.setTimeout(function () {
             timedOut = true;
             callback(Result.error(errorThunk()));
           }, timeout);
           delegate.get(function (result) {
             if (!timedOut) {
-              window.clearTimeout(timer);
+              domGlobals.clearTimeout(timer);
               callback(result);
             }
           });
@@ -574,7 +574,7 @@ var image = (function (domGlobals) {
     var deepMerge = baseMerge(deep);
     var merge = baseMerge(shallow);
 
-    var Global = typeof window !== 'undefined' ? window : Function('return this;')();
+    var Global = typeof domGlobals.window !== 'undefined' ? domGlobals.window : Function('return this;')();
 
     var path = function (parts, scope) {
       var o = scope !== undefined && scope !== null ? scope : Global;

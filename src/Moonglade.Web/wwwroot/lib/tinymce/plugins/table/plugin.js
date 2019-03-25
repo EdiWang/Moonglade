@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.2 (2019-03-05)
+ * Version: 5.0.3 (2019-03-19)
  */
 (function () {
 var table = (function (domGlobals) {
@@ -284,6 +284,29 @@ var table = (function (domGlobals) {
       }
       return r;
     };
+    var groupBy = function (xs, f) {
+      if (xs.length === 0) {
+        return [];
+      } else {
+        var wasType = f(xs[0]);
+        var r = [];
+        var group = [];
+        for (var i = 0, len = xs.length; i < len; i++) {
+          var x = xs[i];
+          var type = f(x);
+          if (type !== wasType) {
+            r.push(group);
+            group = [];
+          }
+          wasType = type;
+          group.push(x);
+        }
+        if (group.length !== 0) {
+          r.push(group);
+        }
+        return r;
+      }
+    };
     var foldr = function (xs, f, acc) {
       eachr(xs, function (x) {
         acc = f(acc, x);
@@ -351,6 +374,11 @@ var table = (function (domGlobals) {
       r.reverse();
       return r;
     };
+    var sort = function (xs, comparator) {
+      var copy = slice.call(xs, 0);
+      copy.sort(comparator);
+      return copy;
+    };
     var last = function (xs) {
       return xs.length === 0 ? Option.none() : Option.some(xs[xs.length - 1]);
     };
@@ -385,7 +413,7 @@ var table = (function (domGlobals) {
       return r;
     };
     var get = function (obj, key) {
-      return has(obj, key) ? Option.some(obj[key]) : Option.none();
+      return has(obj, key) ? Option.from(obj[key]) : Option.none();
     };
     var has = function (obj, key) {
       return hasOwnProperty.call(obj, key);
@@ -412,14 +440,14 @@ var table = (function (domGlobals) {
       };
     };
 
-    var sort = function (arr) {
+    var sort$1 = function (arr) {
       return arr.slice(0).sort();
     };
     var reqMessage = function (required, keys) {
-      throw new Error('All required keys (' + sort(required).join(', ') + ') were not specified. Specified keys were: ' + sort(keys).join(', ') + '.');
+      throw new Error('All required keys (' + sort$1(required).join(', ') + ') were not specified. Specified keys were: ' + sort$1(keys).join(', ') + '.');
     };
     var unsuppMessage = function (unsupported) {
-      throw new Error('Unsupported keys for object: ' + sort(unsupported).join(', '));
+      throw new Error('Unsupported keys for object: ' + sort$1(unsupported).join(', '));
     };
     var validateStrArr = function (label, array) {
       if (!isArray(array))
@@ -430,10 +458,10 @@ var table = (function (domGlobals) {
       });
     };
     var invalidTypeMessage = function (incorrect, type) {
-      throw new Error('All values need to be of type: ' + type + '. Keys (' + sort(incorrect).join(', ') + ') were not.');
+      throw new Error('All values need to be of type: ' + type + '. Keys (' + sort$1(incorrect).join(', ') + ') were not.');
     };
     var checkDupes = function (everything) {
-      var sorted = sort(everything);
+      var sorted = sort$1(everything);
       var dupe = find(sorted, function (s, i) {
         return i < sorted.length - 1 && s === sorted[i + 1];
       });
@@ -689,7 +717,7 @@ var table = (function (domGlobals) {
       }
     };
 
-    var Global = typeof window !== 'undefined' ? window : Function('return this;')();
+    var Global = typeof domGlobals.window !== 'undefined' ? domGlobals.window : Function('return this;')();
 
     var path = function (parts, scope) {
       var o = scope !== undefined && scope !== null ? scope : Global;
@@ -2443,7 +2471,7 @@ var table = (function (domGlobals) {
             },
             match: match,
             log: function (label) {
-              console.log(label, {
+              domGlobals.console.log(label, {
                 constructors: constructors,
                 constructor: key,
                 params: args
@@ -3979,6 +4007,10 @@ var table = (function (domGlobals) {
       deleteColumnsAt: deleteColumnsAt
     };
 
+    var get$8 = function (element) {
+      return element.dom().textContent;
+    };
+
     var replaceIn = function (grid, targets, comparator, substitution) {
       var isTarget = function (cell) {
         return exists(targets, function (target) {
@@ -4012,9 +4044,73 @@ var table = (function (domGlobals) {
       });
       return replaceIn(grid, targets, comparator, substitution);
     };
+    var sortTableRows = function (grid, index, comparator, ascending) {
+      var grouped = groupBy(grid, function (row) {
+        return name(GridRow.getCell(row, index).element());
+      });
+      var sortGroup = function (group) {
+        var texted = map(group, function (row) {
+          var cell = GridRow.getCell(row, index);
+          var text = get$8(cell.element());
+          return {
+            row: row,
+            text: text
+          };
+        });
+        var sorted = sort(texted, function (rowA, rowB) {
+          var compared = comparator(rowA.text, rowB.text);
+          return ascending ? compared : compared * -1;
+        });
+        return map(sorted, function (sortedRow) {
+          return sortedRow.row;
+        });
+      };
+      return bind(grouped, function (group) {
+        return name(GridRow.getCell(group[0], index).element()) === 'th' ? group : sortGroup(group);
+      });
+    };
+    var sortTableColumns = function (grid, index, comparator, ascending) {
+      var targetRow = grid[index].cells();
+      var targetReferences = map(targetRow, function (cell) {
+        return get$8(cell.element());
+      });
+      var zip = function (row) {
+        var zippedCells = map(row.cells(), function (cell, i) {
+          return {
+            cell: cell,
+            reference: targetRow[i],
+            referenceText: targetReferences[i]
+          };
+        });
+        return {
+          zippedCells: zippedCells,
+          section: row.section()
+        };
+      };
+      var unzip = function (row) {
+        var grouped = groupBy(row.zippedCells, function (zippedCell) {
+          return name(zippedCell.reference.element());
+        });
+        var sorted = bind(grouped, function (group) {
+          return name(group[0].reference.element()) === 'th' ? group : sort(group, function (cellA, cellB) {
+            var compared = comparator(cellA.referenceText, cellB.referenceText);
+            return ascending ? compared : compared * -1;
+          });
+        });
+        var unzippedCells = map(sorted, function (sortedCell) {
+          return sortedCell.cell;
+        });
+        return Structs.rowcells(unzippedCells, row.section);
+      };
+      var zippedGrid = map(grid, zip);
+      var unzipped = map(zippedGrid, unzip);
+      return unzipped;
+    };
     var TransformOperations = {
       replaceColumn: replaceColumn,
-      replaceRow: replaceRow
+      replaceRow: replaceRow,
+      sortTableRows: sortTableRows,
+      sortTableColumns: sortTableColumns
     };
 
     var none$1 = function () {
@@ -4880,7 +4976,7 @@ var table = (function (domGlobals) {
       }, grid);
       return outcome(newGrid, Option.from(unmergable[0]));
     };
-    var pasteCells = function (grid, pasteDetails, comparator, genWrappers) {
+    var pasteCells = function (grid, pasteDetails, comparator, _genWrappers) {
       var gridify = function (table, generators) {
         var list = DetailsList.fromTable(table);
         var wh = Warehouse.generate(list);
@@ -4901,7 +4997,7 @@ var table = (function (domGlobals) {
       var wh = Warehouse.generate(pasteDetails);
       return Transitions.toGrid(wh, generators, true);
     };
-    var pasteRowsBefore = function (grid, pasteDetails, comparator, genWrappers) {
+    var pasteRowsBefore = function (grid, pasteDetails, comparator, _genWrappers) {
       var example = grid[pasteDetails.cells[0].row()];
       var index = pasteDetails.cells[0].row();
       var gridB = gridifyRows(pasteDetails.clipboard(), pasteDetails.generators(), example);
@@ -4909,13 +5005,30 @@ var table = (function (domGlobals) {
       var cursor = elementFromGrid(mergedGrid, pasteDetails.cells[0].row(), pasteDetails.cells[0].column());
       return outcome(mergedGrid, cursor);
     };
-    var pasteRowsAfter = function (grid, pasteDetails, comparator, genWrappers) {
+    var pasteRowsAfter = function (grid, pasteDetails, comparator, _genWrappers) {
       var example = grid[pasteDetails.cells[0].row()];
       var index = pasteDetails.cells[pasteDetails.cells.length - 1].row() + pasteDetails.cells[pasteDetails.cells.length - 1].rowspan();
       var gridB = gridifyRows(pasteDetails.clipboard(), pasteDetails.generators(), example);
       var mergedGrid = TableMerge.insert(index, grid, gridB, pasteDetails.generators(), comparator);
       var cursor = elementFromGrid(mergedGrid, pasteDetails.cells[0].row(), pasteDetails.cells[0].column());
       return outcome(mergedGrid, cursor);
+    };
+    var sortRows = function (grid, detail, sortComparator, ascending) {
+      var newGrid = TransformOperations.sortTableRows(grid, detail.column(), sortComparator, ascending);
+      return bundle(newGrid, detail.row(), detail.column());
+    };
+    var sortColumns = function (grid, detail, sortComparator, ascending) {
+      var newGrid = TransformOperations.sortTableColumns(grid, detail.row(), sortComparator, ascending);
+      return bundle(newGrid, detail.row(), detail.column());
+    };
+    var runSort = function (sortF) {
+      return function (wire, table, target, generators, direction, sortComparator, ascending) {
+        var operation = function (grid, detail, _comparator, _generators) {
+          return sortF(grid, detail, sortComparator, ascending);
+        };
+        var wrappedOperation = RunOperation.run(operation, RunOperation.onCell, noop, noop, Generators.modification);
+        return wrappedOperation(wire, table, target, generators, direction);
+      };
     };
     var resize = Adjustments.adjustWidthTo;
     var TableOperations = {
@@ -4939,7 +5052,9 @@ var table = (function (domGlobals) {
       unmergeCells: RunOperation.run(unmergeCells, RunOperation.onUnmergable, resize, noop, Generators.merging),
       pasteCells: RunOperation.run(pasteCells, RunOperation.onPaste, resize, noop, Generators.modification),
       pasteRowsBefore: RunOperation.run(pasteRowsBefore, RunOperation.onPasteRows, noop, noop, Generators.modification),
-      pasteRowsAfter: RunOperation.run(pasteRowsAfter, RunOperation.onPasteRows, noop, noop, Generators.modification)
+      pasteRowsAfter: RunOperation.run(pasteRowsAfter, RunOperation.onPasteRows, noop, noop, Generators.modification),
+      sortRows: runSort(sortRows),
+      sortColumns: runSort(sortColumns)
     };
 
     var getBody$1 = function (editor) {
@@ -5979,14 +6094,14 @@ var table = (function (domGlobals) {
       return table;
     };
 
-    var get$8 = function (element) {
+    var get$9 = function (element) {
       return element.dom().innerHTML;
     };
     var getOuter$2 = function (element) {
       var container = Element.fromTag('div');
       var clone = Element.fromDom(element.dom().cloneNode(true));
       append(container, clone);
-      return get$8(container);
+      return get$9(container);
     };
 
     var placeCaretInCell = function (editor, cell) {
@@ -6705,7 +6820,7 @@ var table = (function (domGlobals) {
       var timer = null;
       var cancel = function () {
         if (timer !== null) {
-          clearTimeout(timer);
+          domGlobals.clearTimeout(timer);
           timer = null;
         }
       };
@@ -6715,8 +6830,8 @@ var table = (function (domGlobals) {
           args[_i] = arguments[_i];
         }
         if (timer !== null)
-          clearTimeout(timer);
-        timer = setTimeout(function () {
+          domGlobals.clearTimeout(timer);
+        timer = domGlobals.setTimeout(function () {
           fn.apply(null, args);
           timer = null;
         }, rate);
@@ -6992,7 +7107,7 @@ var table = (function (domGlobals) {
       append(body(), container);
       return container;
     };
-    var get$9 = function (editor, container) {
+    var get$a = function (editor, container) {
       return editor.inline ? ResizeWire.body(getBody$1(editor), createContainer()) : ResizeWire.only(Element.fromDom(editor.getDoc()));
     };
     var remove$6 = function (editor, wire) {
@@ -7001,7 +7116,7 @@ var table = (function (domGlobals) {
       }
     };
     var TableWire = {
-      get: get$9,
+      get: get$a,
       remove: remove$6
     };
 
@@ -7640,7 +7755,7 @@ var table = (function (domGlobals) {
         return sel.rangeCount > 0;
       }).bind(doGetExact);
     };
-    var get$a = function (win) {
+    var get$b = function (win) {
       return getExact(win).map(function (range) {
         return exact(range.start(), range.soffset(), range.finish(), range.foffset());
       });
@@ -7768,7 +7883,7 @@ var table = (function (domGlobals) {
     };
 
     var isSafari = PlatformDetection$1.detect().browser.isSafari();
-    var get$b = function (_DOC) {
+    var get$c = function (_DOC) {
       var doc = _DOC !== undefined ? _DOC.dom() : domGlobals.document;
       var x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
       var y = doc.body.scrollTop || doc.documentElement.scrollTop;
@@ -7794,7 +7909,7 @@ var table = (function (domGlobals) {
         });
       };
       var getSelection = function () {
-        return get$a(win).map(function (exactAdt) {
+        return get$b(win).map(function (exactAdt) {
           return Util$1.convertToRange(win, exactAdt);
         });
       };
@@ -7826,7 +7941,7 @@ var table = (function (domGlobals) {
         return win.innerHeight;
       };
       var getScrollY = function () {
-        var pos = get$b(Element.fromDom(win.document));
+        var pos = get$c(Element.fromDom(win.document));
         return pos.top();
       };
       var scrollBy = function (x, y) {

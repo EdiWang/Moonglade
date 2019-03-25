@@ -4,10 +4,10 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.2 (2019-03-05)
+ * Version: 5.0.3 (2019-03-19)
  */
 (function () {
-var emoticons = (function () {
+var emoticons = (function (domGlobals) {
     'use strict';
 
     var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
@@ -281,7 +281,7 @@ var emoticons = (function () {
       var timer = null;
       var cancel = function () {
         if (timer !== null) {
-          clearTimeout(timer);
+          domGlobals.clearTimeout(timer);
           timer = null;
         }
       };
@@ -291,8 +291,8 @@ var emoticons = (function () {
           args[_i] = arguments[_i];
         }
         if (timer !== null)
-          clearTimeout(timer);
-        timer = setTimeout(function () {
+          domGlobals.clearTimeout(timer);
+        timer = domGlobals.setTimeout(function () {
           fn.apply(null, args);
           timer = null;
         }, rate);
@@ -303,7 +303,7 @@ var emoticons = (function () {
       };
     };
 
-    var Global = typeof window !== 'undefined' ? window : Function('return this;')();
+    var Global = typeof domGlobals.window !== 'undefined' ? domGlobals.window : Function('return this;')();
 
     var keys = Object.keys;
     var hasOwnProperty = Object.hasOwnProperty;
@@ -465,6 +465,8 @@ var emoticons = (function () {
 
     var global$2 = tinymce.util.Tools.resolve('tinymce.util.Promise');
 
+    var global$3 = tinymce.util.Tools.resolve('tinymce.util.Delay');
+
     var getEmoticonDatabaseUrl = function (editor, pluginUrl) {
       return editor.getParam('emoticons_database_url', pluginUrl + '/js/emojis' + editor.suffix + '.js');
     };
@@ -533,7 +535,7 @@ var emoticons = (function () {
       editor.on('init', function () {
         global$1.ScriptLoader.loadScript(databaseUrl, function () {
           extractGlobal(databaseUrl).fold(function (err) {
-            console.log(err);
+            domGlobals.console.log(err);
             categories.set(Option.some({}));
             all.set(Option.some([]));
           }, function (emojis) {
@@ -563,15 +565,15 @@ var emoticons = (function () {
         } else {
           return new global$2(function (resolve, reject) {
             var numRetries = 3;
-            var interval = setInterval(function () {
+            var interval = global$3.setInterval(function () {
               if (hasLoaded()) {
-                clearInterval(interval);
+                global$3.clearInterval(interval);
                 resolve(true);
               } else {
                 numRetries--;
                 if (numRetries < 0) {
-                  console.log('Could not load emojis from url: ' + databaseUrl);
-                  clearInterval(interval);
+                  domGlobals.console.log('Could not load emojis from url: ' + databaseUrl);
+                  global$3.clearInterval(interval);
                   reject(false);
                 }
               }
@@ -723,5 +725,5 @@ var emoticons = (function () {
 
     return Plugin;
 
-}());
+}(window));
 })();
