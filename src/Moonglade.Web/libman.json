@@ -41,10 +41,6 @@
       ]
     },
     {
-      "library": "jquery-tagsinput@1.3.6",
-      "destination": "wwwroot/lib/jquery-tagsinput/"
-    },
-    {
       "library": "twitter-bootstrap@4.3.1",
       "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
@@ -71,6 +67,22 @@
     {
       "library": "jquery.AreYouSure@1.9.0",
       "destination": "wwwroot/lib/jquery.AreYouSure/"
+    },
+    {
+      "library": "typeahead.js@0.11.1",
+      "destination": "wwwroot/lib/typeahead.js/",
+      "files": [
+        "typeahead.bundle.min.js"
+      ]
+    },
+    {
+      "library": "bootstrap-tagsinput@0.8.0",
+      "destination": "wwwroot/lib/bootstrap-tagsinput/",
+      "files": [
+        "bootstrap-tagsinput.min.js",
+        "bootstrap-tagsinput-typeahead.css",
+        "bootstrap-tagsinput.css"
+      ]
     }
   ]
 }
