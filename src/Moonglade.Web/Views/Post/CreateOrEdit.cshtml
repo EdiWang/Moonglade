@@ -7,8 +7,28 @@
 @model PostEditModel
 @inject IOptions<AppSettings> Settings
 
+@section head{
+    <link href="~/css/bootstrap-tagsinput-bundle.min.css" rel="stylesheet" />
+    <style>
+        .bootstrap-tagsinput {
+            border-radius: 0;
+            display: inherit;
+            box-shadow: inherit;
+        }
+
+        .bootstrap-tagsinput .tag {
+            background: #2a579a;
+            padding: 2px 5px;
+        }
+
+        .bootstrap-tagsinput .tag [data-role="remove"]:hover {
+            box-shadow: inherit;
+        }
+    </style>
+}
 @section scripts{
-    <script src="~/lib/jquery-tagsinput/jquery.tagsinput.min.js"></script>
+    <script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
+    <script src="~/lib/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
     <script src="~/lib/tinymce/tinymce.min.js"></script>
     <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
 
@@ -110,20 +130,20 @@
                 <div class="card-body">
                     @if (null != Model.CategoryList && Model.CategoryList.Count > 0)
                     {
-                        <div class="catlist">
-                            <ul>
-                                @foreach (var item in Model.CategoryList)
+                    <div class="catlist">
+                        <ul>
+                            @foreach (var item in Model.CategoryList)
                                 {
-                                    <li>
-                                        <div class="custom-control custom-checkbox">
-                                            <input id="cat-@item.Value" name="SelectedCategoryIds" class="custom-control-input" type="checkbox" value="@item.Value"
-                                                   @(item.IsChecked ? "checked=\"checked\"" : null)>
-                                            <label for="cat-@item.Value" class="custom-control-label" >@item.DisplayText</label>
-                                        </div>
-                                    </li>
+                            <li>
+                                <div class="custom-control custom-checkbox">
+                                    <input id="cat-@item.Value" name="SelectedCategoryIds" class="custom-control-input" type="checkbox" value="@item.Value"
+                                           @(item.IsChecked ? "checked=\"checked\"" : null)>
+                                    <label for="cat-@item.Value" class="custom-control-label">@item.DisplayText</label>
+                                </div>
+                            </li>
                                 }
-                            </ul>
-                        </div>
+                        </ul>
+                    </div>
                     }
                 </div>
             </div>

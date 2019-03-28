@@ -40,5 +40,12 @@
       "wwwroot/css/src/errorpages.css",
       "wwwroot/css/src/normalize.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/bootstrap-tagsinput-bundle.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap-tagsinput/bootstrap-tagsinput.css",
+      "wwwroot/lib/bootstrap-tagsinput/bootstrap-tagsinput-typeahead.css"
+    ]
   }
 ]

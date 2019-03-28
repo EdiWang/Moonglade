@@ -50,10 +50,27 @@ var postEditor = {
             $("#Slug").val(slugify($(this).val()));
         });
 
-        $("#Tags").tagsInput({
-            width: 'auto',
-            height: 'auto',
-            defaultText: 'Add Tags'
+        var tagnames = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: {
+                url: '/tags/get-all-tag-names',
+                filter: function (list) {
+                    return $.map(list, function (tagname) {
+                        return { name: tagname };
+                    });
+                }
+            }
+        });
+
+        tagnames.initialize();
+        $('#Tags').tagsinput({
+            typeaheadjs: {
+                name: 'tagnames',
+                displayKey: 'name',
+                valueKey: 'name',
+                source: tagnames.ttAdapter()
+            }
         });
 
         $("#btn-submit").click(function (e) {
@@ -98,13 +115,13 @@ $("#a-send-test-mail").click(function () {
     $(this).attr("disabled", "disabled");
 
     $.post("/admin/settings/send-test-email",
-            function (data) {
-                if (data.isSuccess) {
-                    window.toastr.success("Email is sent.");
-                } else {
-                    window.toastr.error(data.responseFailureCode);
-                }
-            })
+        function (data) {
+            if (data.isSuccess) {
+                window.toastr.success("Email is sent.");
+            } else {
+                window.toastr.error(data.responseFailureCode);
+            }
+        })
         .done(function () {
             $("#a-send-test-mail").text("Send Test Email");
             $("#a-send-test-mail").removeClass("disabled");
