@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -65,7 +64,6 @@ namespace Moonglade.Web.Controllers
                 MetaAuthor = _blogConfig.MetaAuthor,
                 MetaKeyword = _blogConfig.MetaKeyword,
                 SiteTitle = _blogConfig.SiteTitle,
-                ReaderViewSiteName = _blogConfig.ReaderView.SiteName,
                 EnableComments = _blogConfig.EnableComments
             };
             return View(vm);
@@ -81,7 +79,6 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.MetaAuthor = model.MetaAuthor;
                 _blogConfig.MetaKeyword = model.MetaKeyword;
                 _blogConfig.SiteTitle = model.SiteTitle;
-                _blogConfig.ReaderView.SiteName = model.ReaderViewSiteName;
                 _blogConfig.EnableComments = model.EnableComments;
 
                 var response = _blogConfigurationService.SaveGeneralSettings(_blogConfig);

@@ -16,6 +16,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Model", "Moonglade.Model\Moonglade.Model.csproj", "{51AC6A29-09F3-47D5-9491-2150156FF5F3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{41072B8B-1052-4CC6-930F-83A5F8EA7482}"
+	ProjectSection(SolutionItems) = preProject
+		..\Database\init-configuration.sql = ..\Database\init-configuration.sql
+		..\Database\migration.sql = ..\Database\migration.sql
+		..\Database\schema-mssql-140.sql = ..\Database\schema-mssql-140.sql
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{EB748511-FF41-48F3-BC98-0A8BC4408D0E}"
 EndProject
@@ -34,11 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitattributes = ..\.gitattributes
 		..\.gitignore = ..\.gitignore
 		Build.ps1 = Build.ps1
-		..\Database\init-configuration.sql = ..\Database\init-configuration.sql
 		..\LICENSE = ..\LICENSE
-		..\Database\migration.sql = ..\Database\migration.sql
 		..\README.md = ..\README.md
-		..\Database\schema-mssql-140.sql = ..\Database\schema-mssql-140.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.Middleware", "Moonglade.Web.Middleware\Moonglade.Web.Middleware.csproj", "{7F80DBB1-4A32-491E-87E2-6A9FB89463B8}"

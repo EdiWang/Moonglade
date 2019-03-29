@@ -6,6 +6,7 @@ using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Model;
+using Newtonsoft.Json;
 
 namespace Moonglade.Configuration
 {
@@ -129,50 +130,12 @@ namespace Moonglade.Configuration
 
         public Response SaveFeedConfiguration(FeedSettings feedSettings)
         {
-            try
-            {
-                foreach (var propertyInfo in feedSettings.GetType().GetProperties())
-                {
-                    var cfg = Context.BlogConfiguration.FirstOrDefault(k => k.CfgKey == $"{nameof(FeedSettings)}.{propertyInfo.Name}");
-                    if (null != cfg)
-                    {
-                        cfg.CfgValue = propertyInfo.GetValue(feedSettings, null).ToString();
-                        cfg.LastModifiedTimeUtc = DateTime.UtcNow;
-                    }
-                }
-
-                var rows = Context.SaveChanges();
-                return new Response(rows > 0);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
-            }
+            return SaveObjectConfiguration(feedSettings);
         }
 
         public Response SaveWatermarkConfiguration(WatermarkSettings watermarkSettings)
         {
-            try
-            {
-                foreach (var propertyInfo in watermarkSettings.GetType().GetProperties())
-                {
-                    var cfg = Context.BlogConfiguration.FirstOrDefault(k => k.CfgKey == $"{nameof(WatermarkSettings)}.{propertyInfo.Name}");
-                    if (null != cfg)
-                    {
-                        cfg.CfgValue = propertyInfo.GetValue(watermarkSettings, null).ToString();
-                        cfg.LastModifiedTimeUtc = DateTime.UtcNow;
-                    }
-                }
-
-                var rows = Context.SaveChanges();
-                return new Response(rows > 0);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
-            }
+            return SaveObjectConfiguration(watermarkSettings);
         }
 
         public Response SaveGeneralSettings(BlogConfig blogConfig)
@@ -184,14 +147,12 @@ namespace Moonglade.Configuration
                 var r3 = SetConfiguration(nameof(blogConfig.MetaAuthor), blogConfig.MetaAuthor);
                 var r4 = SetConfiguration(nameof(blogConfig.SiteTitle), blogConfig.SiteTitle);
                 var r5 = SetConfiguration(nameof(blogConfig.EnableComments), blogConfig.EnableComments.ToString());
-                var r6 = SetConfiguration("ReaderView.SiteName", blogConfig.ReaderView.SiteName);
 
                 var allSuccess = r1.IsSuccess &&
                                  r2.IsSuccess &&
                                  r3.IsSuccess &&
                                  r4.IsSuccess &&
-                                 r5.IsSuccess && 
-                                 r6.IsSuccess;
+                                 r5.IsSuccess;
 
                 return new Response(allSuccess);
             }
@@ -207,6 +168,21 @@ namespace Moonglade.Configuration
             try
             {
                 var r = SetConfiguration("BloggerAvatarBase64", bloggerAvatarBase64);
+                return new Response(r.IsSuccess);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
+            }
+        }
+
+        private Response SaveObjectConfiguration<T>(T obj) where T : class
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(obj);
+                var r = SetConfiguration(typeof(T).Name, json);
                 return new Response(r.IsSuccess);
             }
             catch (Exception e)
