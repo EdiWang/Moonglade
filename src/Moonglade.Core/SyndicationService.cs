@@ -68,7 +68,7 @@ namespace Moonglade.Core
         public async Task RefreshFeedFileForPostAsync(bool isAtom)
         {
             Logger.LogInformation("Start refreshing feed for posts.");
-            List<SimpleFeedItem> itemCollection = GetPostsAsFeedItems();
+            var itemCollection = GetPostsAsFeedItems();
 
             var rw = new SyndicationFeedGenerator
             {

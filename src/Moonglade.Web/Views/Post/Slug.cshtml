@@ -92,9 +92,9 @@
             <div class="post-publish-info bg-light">
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
                 (UTC +8:00)
-                @if (Model.PostModel.LastModifyOn.HasValue)
+                @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Last Edit @Model.PostModel.LastModifyOn.Value.ToString("yyyy/M/d HH:mm"))</span>
+                    <span>(Last Edit @Model.PostModel.LastModifyOnUtc.Value.ToString("yyyy/M/d HH:mm"))</span>
                 }
             </div>
         </div>
@@ -103,9 +103,9 @@
             <strong class="text-muted">
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
                  / UTC +@Settings.Value.TimeZone
-                @if (Model.PostModel.LastModifyOn.HasValue)
+                @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Last Edit @Model.PostModel.LastModifyOn.Value.ToString("yyyy/M/d HH:mm"))</span>
+                    <span>(Last Edit @Model.PostModel.LastModifyOnUtc.Value.ToString("yyyy/M/d HH:mm"))</span>
                 }
             </strong>
             <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits Reads</span>

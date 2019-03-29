@@ -18,7 +18,7 @@ namespace Moonglade.Web.Controllers
     [Route("admin")]
     public class AdminController : MoongladeController
     {
-        IApplicationLifetime applicationLifetime;
+        readonly IApplicationLifetime _applicationLifetime;
 
         public AdminController(MoongladeDbContext context,
             ILogger<AdminController> logger,
@@ -27,13 +27,14 @@ namespace Moonglade.Web.Controllers
             IHttpContextAccessor accessor, IApplicationLifetime appLifetime)
             : base(context, logger, settings, configuration, accessor)
         {
-            applicationLifetime = appLifetime;
+            _applicationLifetime = appLifetime;
         }
 
         [HttpGet("shutdown")]
         public IActionResult Shutdown()
         {
-            applicationLifetime.StopApplication();
+            Logger.LogWarning("Shutdown is requested.");
+            _applicationLifetime.StopApplication();
             return new EmptyResult();
         }
 

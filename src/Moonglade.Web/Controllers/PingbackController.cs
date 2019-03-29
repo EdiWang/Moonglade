@@ -3,9 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Edi.Blog.Pingback;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -80,7 +78,7 @@ namespace Moonglade.Web.Controllers
             return Content(BuildErrorResponseBody(code, message), "text/xml");
         }
 
-        private string BuildErrorResponseBody(int code, string message)
+        private static string BuildErrorResponseBody(int code, string message)
         {
             var sb = new StringBuilder();
             sb.Append("<?xml version=\"1.0\"?>");

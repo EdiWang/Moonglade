@@ -33,7 +33,6 @@ namespace Moonglade.Web.Controllers
         private readonly FriendLinkService _friendLinkService;
         private readonly BlogConfig _blogConfig;
         private readonly BlogConfigurationService _blogConfigurationService;
-        private readonly AesEncryptionService _encryptionService;
 
         #endregion
 
@@ -46,13 +45,11 @@ namespace Moonglade.Web.Controllers
             EmailService emailService,
             FriendLinkService friendLinkService,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService,
-            AesEncryptionService encryptionService)
+            BlogConfigurationService blogConfigurationService)
             : base(context, logger, settings, configuration, accessor, memoryCache)
         {
             _blogConfig = blogConfig;
             _blogConfigurationService = blogConfigurationService;
-            _encryptionService = encryptionService;
             _blogConfig.GetConfiguration(blogConfigurationService);
 
             _emailService = emailService;
@@ -158,8 +155,8 @@ namespace Moonglade.Web.Controllers
         public IActionResult GenerateNewAesKeys()
         {
             var aesAlg = Aes.Create();
-            var key = aesAlg.Key;
-            var iv = aesAlg.IV;
+            var key = aesAlg?.Key;
+            var iv = aesAlg?.IV;
             var resp = new
             {
                 Key = key,
