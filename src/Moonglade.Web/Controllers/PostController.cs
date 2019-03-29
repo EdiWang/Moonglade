@@ -89,7 +89,7 @@ namespace Moonglade.Web.Controllers
 
                 Content = HttpUtility.HtmlDecode(post.PostContent),
                 Hits = post.PostExtension.Hits,
-                LikeHits = post.PostExtension.Likes,
+                Likes = post.PostExtension.Likes,
 
                 Tags = post.PostTag.Select(pt => pt.Tag)
                                    .Select(p => new TagInfo
@@ -100,7 +100,7 @@ namespace Moonglade.Web.Controllers
                 PostId = post.Id.ToString(),
                 CommentEnabled = post.CommentEnabled ?? false,
                 IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
-                LastModifyOn = post.PostPublish.LastModifiedUtc,
+                LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
                 CommentCount = post.Comment.Count(c => null != c.IsApproved && c.IsApproved.Value)
             };
 
