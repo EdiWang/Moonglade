@@ -16,15 +16,17 @@ This is the new blog system for https://edi.wang, Moonglade is the successor of 
 
 ## Project Current Status
 
-This is **NOT** a general purpose blog system like WordPress or other CMS. Currently it contains code and pages "hard coded" for https://edi.wang.
+This is **NOT a general purpose blog system** like WordPress or other CMS. Currently it contains content "hard coded" for https://edi.wang.
 
 To make it yours, you will need to change a certain amount of code.
 
 I am looking into generalize the system in the long term. But there are no specific plans and scopes for the currently. You are welcomed to raise PR to move out the "edi.wang" specific code.
 
-这不是一个通用博客系统，目前代码里还有和 https://edi.wang 网站相关的页面，因此如果你想使用这套代码自建博客，需要一定量的修改。
+这**不是一个通用博客系统**，目前代码里还有和 https://edi.wang 网站相关的页面，因此如果你想使用这套代码自建博客，需要一定量的修改。
 
 ## Build and Run
+
+Current code is not so setup-friendly, it is very complicated comparing to other blog or CMS systems, I am consider improving the setup steps.
 
 ### Tools
 - [.NET Core 2.2 SDK](http://dot.net)
@@ -41,9 +43,11 @@ Register an App in **Azure Active Directory**
 
 ### Setup Database
 
-Create a SQL Server 2017+ database or Azure SQL Database, execute script  **"Database\schema-mssql-140.sql"** 
+1. Create a SQL Server 2017+ database or Azure SQL Database, execute script  **"Database\1.schema-mssql-140.sql"** 
 
-Optional: Execute **"Database\migration.sql"** for schema changes if this file is not empty.
+2. Execute **"Database\2.init-configuration.sql"** 
+
+3. Execute **"Database\3.migration.sql"** (if not empty)
 
 *You may need to grant permission to the database for your machine or service account depends on your server configuration*
 
@@ -56,6 +60,16 @@ Optional: Execute **"Database\migration.sql"** for schema changes if this file i
 3. Build and run **Moonglade.sln**, startup project is **Moonglade.Web**
 
 ### Configuration
+
+#### Email Password Encryption
+
+**Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
+
+**IMPORTANT: This must be set first before first run of the application!**
+
+*In runtime, to generate a new pair of IV and Key, access URL "/admin/settings/generate-new-aes-keys".*
+
+See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
 
 #### Image Storage
 **AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built in options:
@@ -77,14 +91,6 @@ Optional: Execute **"Database\migration.sql"** for schema changes if this file i
 }
 ```
 The Path can be relative or absolute. "$\{basedir\}" represents the website's current directory. Storing images files under website directory is not recommended. 
-
-#### Email Password Encryption
-
-**Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
-
-To generate a new pair of IV and Key, access URL "/admin/settings/generate-new-aes-keys".
-
-See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
 
 #### Robots.txt
 
