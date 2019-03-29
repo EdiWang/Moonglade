@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Configuration
+﻿using Newtonsoft.Json;
+
+namespace Moonglade.Configuration
 {
     // TODO: Research if this can change to IConfigurationSource
     // in order to use built in ASP.NET Core configurations mechanism
@@ -22,8 +24,6 @@
 
         public WatermarkSettings WatermarkSettings { get; set; }
 
-        public ReaderView ReaderView { get; set; }
-
         private bool _hasInitialized;
 
         public BlogConfig()
@@ -37,7 +37,6 @@
             EmailConfiguration = new EmailConfiguration();
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
-            ReaderView = new ReaderView();
         }
 
         public void GetConfiguration(BlogConfigurationService blogConfigurationService)
@@ -70,21 +69,12 @@
                 EmailConfiguration.EmailDisplayName = cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.EmailDisplayName)}"];
                 EmailConfiguration.BannedMailDomain = cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.BannedMailDomain)}"];
 
-                FeedSettings.RssTitle = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssTitle)}"];
-                FeedSettings.RssDescription = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssDescription)}"];
-                FeedSettings.RssCopyright = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssCopyright)}"];
-                FeedSettings.RssGeneratorName = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssGeneratorName)}"];
-                FeedSettings.AuthorName = cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.AuthorName)}"];
-                FeedSettings.RssItemCount = int.Parse(cfgDic[$"{nameof(FeedSettings)}.{nameof(FeedSettings.RssItemCount)}"]);
-
-                WatermarkSettings.IsEnabled = bool.Parse(cfgDic[$"{nameof(WatermarkSettings)}.{nameof(WatermarkSettings.IsEnabled)}"]);
-                WatermarkSettings.KeepOriginImage = bool.Parse(cfgDic[$"{nameof(WatermarkSettings)}.{nameof(WatermarkSettings.KeepOriginImage)}"]);
-                WatermarkSettings.FontSize = int.Parse(cfgDic[$"{nameof(WatermarkSettings)}.{nameof(WatermarkSettings.FontSize)}"]);
-                WatermarkSettings.WatermarkText = cfgDic[$"{nameof(WatermarkSettings)}.{nameof(WatermarkSettings.WatermarkText)}"];
-
-                ReaderView.SiteName = cfgDic[$"{nameof(ReaderView)}.{nameof(ReaderView.SiteName)}"];
+                FeedSettings = JsonConvert.DeserializeObject<FeedSettings>(cfgDic[nameof(FeedSettings)]);
+                WatermarkSettings = JsonConvert.DeserializeObject<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)]);
 
                 _hasInitialized = true;
+
+                // var tempJson = JsonConvert.SerializeObject(EmailConfiguration);
             }
         }
 

@@ -22,10 +22,6 @@ namespace Moonglade.Web.Models
         public string SiteTitle { get; set; }
 
         [Required]
-        [Display(Name = "Reader View Site Name")]
-        public string ReaderViewSiteName { get; set; }
-
-        [Required]
         [Display(Name = "Enable Comments")]
         public bool EnableComments { get; set; }
     }
