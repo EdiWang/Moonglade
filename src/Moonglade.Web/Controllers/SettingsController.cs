@@ -130,7 +130,7 @@ namespace Moonglade.Web.Controllers
                 ec.SmtpUserName = model.SmtpUserName;
                 if (!string.IsNullOrWhiteSpace(model.SmtpPassword))
                 {
-                    ec.SmtpPassword = _blogConfigurationService.EncryptPassword(model.SmtpPassword);
+                    ec.SmtpPassword = model.SmtpPassword;
                 }
 
                 var response = _blogConfigurationService.SaveEmailConfiguration(ec);

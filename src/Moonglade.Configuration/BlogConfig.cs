@@ -2,8 +2,6 @@
 
 namespace Moonglade.Configuration
 {
-    // TODO: Research if this can change to IConfigurationSource
-    // in order to use built in ASP.NET Core configurations mechanism
     public class BlogConfig
     {
         public string DisharmonyWords { get; set; }
@@ -51,30 +49,14 @@ namespace Moonglade.Configuration
                 BloggerAvatarBase64 = cfgDic[nameof(BloggerAvatarBase64)];
                 EnableComments = bool.Parse(cfgDic[nameof(EnableComments)]);
 
-                EmailConfiguration.EnableSsl =
-                    bool.Parse(cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.EnableSsl)}"]);
-                EmailConfiguration.EnableEmailSending =
-                    bool.Parse(cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.EnableEmailSending)}"]);
-                EmailConfiguration.SendEmailOnCommentReply =
-                    bool.Parse(cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.SendEmailOnCommentReply)}"]);
-                EmailConfiguration.SendEmailOnNewComment =
-                    bool.Parse(cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.SendEmailOnNewComment)}"]);
-                EmailConfiguration.AdminEmail = cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.AdminEmail)}"];
-                EmailConfiguration.SmtpServer = cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.SmtpServer)}"];
-                EmailConfiguration.SmtpUserName = cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.SmtpUserName)}"];
+                EmailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(cfgDic[nameof(EmailConfiguration)]);
                 EmailConfiguration.SmtpPassword =
-                    blogConfigurationService.DecryptPassword(
-                        cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.SmtpPassword)}"]);
-                EmailConfiguration.SmtpServerPort = int.Parse(cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.SmtpServerPort)}"]);
-                EmailConfiguration.EmailDisplayName = cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.EmailDisplayName)}"];
-                EmailConfiguration.BannedMailDomain = cfgDic[$"{nameof(EmailConfiguration)}.{nameof(EmailConfiguration.BannedMailDomain)}"];
+                    blogConfigurationService.DecryptPassword(EmailConfiguration.SmtpPassword);
 
                 FeedSettings = JsonConvert.DeserializeObject<FeedSettings>(cfgDic[nameof(FeedSettings)]);
                 WatermarkSettings = JsonConvert.DeserializeObject<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)]);
 
                 _hasInitialized = true;
-
-                // var tempJson = JsonConvert.SerializeObject(EmailConfiguration);
             }
         }
 

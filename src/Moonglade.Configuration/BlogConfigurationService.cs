@@ -106,26 +106,8 @@ namespace Moonglade.Configuration
 
         public Response SaveEmailConfiguration(EmailConfiguration emailConfiguration)
         {
-            try
-            {
-                foreach (var propertyInfo in emailConfiguration.GetType().GetProperties())
-                {
-                    var cfg = Context.BlogConfiguration.FirstOrDefault(k => k.CfgKey == $"{nameof(EmailConfiguration)}.{propertyInfo.Name}");
-                    if (null != cfg)
-                    {
-                        cfg.CfgValue = propertyInfo.GetValue(emailConfiguration, null).ToString();
-                        cfg.LastModifiedTimeUtc = DateTime.UtcNow;
-                    }
-                }
-
-                var rows = Context.SaveChanges();
-                return new Response(rows > 0);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
-            }
+            emailConfiguration.SmtpPassword = EncryptPassword(emailConfiguration.SmtpPassword);
+            return SaveObjectConfiguration(emailConfiguration);
         }
 
         public Response SaveFeedConfiguration(FeedSettings feedSettings)
