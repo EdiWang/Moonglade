@@ -32,6 +32,9 @@
 
   <ItemGroup>
     <Content Include="mailConfiguration.xml" CopyToOutputDirectory="Always" />
+    <Content Update="nlog.debug.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="nlog.config" CopyToOutputDirectory="Always" />
     <Content Include="urlrewrite.xml" CopyToOutputDirectory="Always" />
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />

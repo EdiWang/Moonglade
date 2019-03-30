@@ -11,7 +11,9 @@ namespace Moonglade.Web
     {
         public static void Main(string[] args)
         {
-            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var isProd = environment == EnvironmentName.Production;
+            var logger = NLogBuilder.ConfigureNLog(isProd ? "nlog.config" : "nlog.debug.config").GetCurrentClassLogger();
             try
             {
                 logger.Info($"Moonglade Version {Utils.AppVersion}\n" +
