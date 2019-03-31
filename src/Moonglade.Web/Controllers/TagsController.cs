@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
@@ -20,9 +18,9 @@ namespace Moonglade.Web.Controllers
         public TagsController(MoongladeDbContext context,
             ILogger<TagsController> logger,
             IOptions<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor, TagService tagService, PostService postService)
-            : base(context, logger, settings, configuration, accessor)
+            TagService tagService, 
+            PostService postService)
+            : base(context, logger, settings)
         {
             _tagService = tagService;
             _postService = postService;

@@ -1,7 +1,5 @@
 ﻿using System;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
@@ -23,9 +21,9 @@ namespace Moonglade.Web.Controllers
         public CategoryController(MoongladeDbContext context,
             ILogger<CategoryController> logger,
             IOptions<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor, CategoryService categoryService, PostService postService)
-            : base(context, logger, settings, configuration, accessor)
+            CategoryService categoryService, 
+            PostService postService)
+            : base(context, logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;

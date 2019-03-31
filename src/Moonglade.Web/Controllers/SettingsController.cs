@@ -8,8 +8,6 @@ using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
@@ -38,14 +36,11 @@ namespace Moonglade.Web.Controllers
         public SettingsController(MoongladeDbContext context,
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor,
-            IMemoryCache memoryCache,
             EmailService emailService,
             FriendLinkService friendLinkService,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(context, logger, settings, configuration, accessor, memoryCache)
+            : base(context, logger, settings)
         {
             _blogConfig = blogConfig;
             _blogConfigurationService = blogConfigurationService;

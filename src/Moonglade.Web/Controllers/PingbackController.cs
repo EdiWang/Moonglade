@@ -21,9 +21,8 @@ namespace Moonglade.Web.Controllers
         public PingbackController(MoongladeDbContext context,
             ILogger<PingbackController> logger,
             IOptions<AppSettings> settings,
-            IConfiguration configuration,
             PingbackService pingbackService)
-            : base(context, logger, settings, configuration)
+            : base(context, logger, settings)
         {
             _pingbackService = pingbackService;
         }
