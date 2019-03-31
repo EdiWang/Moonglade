@@ -2,11 +2,9 @@
 using System.Net;
 using System.Threading.Tasks;
 using Edi.Captcha;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
@@ -36,17 +34,15 @@ namespace Moonglade.Web.Controllers
         public CommentController(MoongladeDbContext context,
             ILogger<CommentController> logger,
             IOptions<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor,
             IMemoryCache memoryCache,
-            CommentService commentService, 
-            EmailService emailService, 
+            CommentService commentService,
+            EmailService emailService,
             PostService postService,
             ISessionBasedCaptcha captcha,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService, 
+            BlogConfigurationService blogConfigurationService,
             LinkGenerator linkGenerator)
-            : base(context, logger, settings, configuration, accessor, memoryCache)
+            : base(context, logger, settings, memoryCache: memoryCache)
         {
             _blogConfig = blogConfig;
             _linkGenerator = linkGenerator;
@@ -80,7 +76,7 @@ namespace Moonglade.Web.Controllers
                     var commentPostModel = model.NewCommentModel;
                     var response = _commentService.NewComment(commentPostModel.Username, commentPostModel.Content,
                                                               commentPostModel.PostId, commentPostModel.Email,
-                                                              HttpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
+                                                              HttpContext.Connection.RemoteIpAddress.ToString(),
                                                               GetUserAgent());
 
                     if (response.IsSuccess)

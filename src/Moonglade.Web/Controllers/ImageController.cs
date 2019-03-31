@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
@@ -32,14 +31,12 @@ namespace Moonglade.Web.Controllers
         public ImageController(MoongladeDbContext context,
             ILogger<ImageController> logger,
             IOptions<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor,
             IMemoryCache memoryCache,
             IAsyncImageStorageProvider imageStorageProvider,
             ISessionBasedCaptcha captcha,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(context, logger, settings, configuration, accessor, memoryCache)
+            : base(context, logger, settings, memoryCache: memoryCache)
         {
             _blogConfig = blogConfig;
             _blogConfig.GetConfiguration(blogConfigurationService);

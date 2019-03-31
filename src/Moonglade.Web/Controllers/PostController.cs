@@ -7,7 +7,6 @@ using Edi.Blog.Pingback.MvcExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
@@ -31,10 +30,12 @@ namespace Moonglade.Web.Controllers
         public PostController(MoongladeDbContext context,
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
-            IConfiguration configuration,
             IHttpContextAccessor accessor,
-            PostService postService, CategoryService categoryService, PingbackSender pingbackSender, LinkGenerator linkGenerator)
-            : base(context, logger, settings, configuration, accessor)
+            PostService postService, 
+            CategoryService categoryService, 
+            PingbackSender pingbackSender, 
+            LinkGenerator linkGenerator)
+            : base(context, logger, settings, accessor: accessor)
         {
             _postService = postService;
             _categoryService = categoryService;

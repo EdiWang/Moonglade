@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
@@ -21,10 +18,8 @@ namespace Moonglade.Web.Controllers
         public SubscriptionController(MoongladeDbContext context,
             ILogger<SubscriptionController> logger,
             IOptions<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor,
-            IMemoryCache memoryCache, SyndicationService syndicationFeedService)
-            : base(context, logger, settings, configuration, accessor, memoryCache)
+            SyndicationService syndicationFeedService)
+            : base(context, logger, settings)
         {
             _syndicationFeedService = syndicationFeedService;
         }

@@ -6,11 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Data;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
@@ -18,16 +15,20 @@ namespace Moonglade.Web.Controllers
     [Route("admin")]
     public class AdminController : MoongladeController
     {
-        readonly IApplicationLifetime _applicationLifetime;
+        private readonly IApplicationLifetime _applicationLifetime;
 
         public AdminController(MoongladeDbContext context,
             ILogger<AdminController> logger,
-            IOptions<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor, IApplicationLifetime appLifetime)
-            : base(context, logger, settings, configuration, accessor)
+            IApplicationLifetime appLifetime)
+            : base(context, logger)
         {
             _applicationLifetime = appLifetime;
+        }
+
+        [Route("")]
+        public IActionResult Index()
+        {
+            return RedirectToAction("Manage", "Post");
         }
 
         [HttpGet("shutdown")]
@@ -71,12 +72,6 @@ namespace Moonglade.Web.Controllers
         {
             HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
             return View();
-        }
-
-        [Route("")]
-        public IActionResult Index()
-        {
-            return RedirectToAction("Manage", "Post");
         }
 
         // Keep session from expire when writing a very long post

@@ -3,13 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
@@ -22,11 +19,9 @@ namespace Moonglade.Web.Controllers
 
         public ArchiveController(MoongladeDbContext context,
             ILogger<PostController> logger,
-            IOptions<AppSettings> settings,
-            IConfiguration configuration,
             CategoryService categoryService, 
             PostService postService)
-            : base(context, logger, settings, configuration)
+            : base(context, logger)
         {
             _categoryService = categoryService;
             _postService = postService;

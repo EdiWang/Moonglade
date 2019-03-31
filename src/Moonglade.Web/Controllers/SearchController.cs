@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
@@ -28,13 +26,10 @@ namespace Moonglade.Web.Controllers
         public SearchController(MoongladeDbContext context,
             ILogger<OpmlController> logger,
             IOptions<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor, 
-            IMemoryCache memoryCache, 
             PostService postService, 
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(context, logger, settings, configuration, accessor, memoryCache)
+            : base(context, logger, settings)
         {
             _postService = postService;
             _blogConfig = blogConfig;

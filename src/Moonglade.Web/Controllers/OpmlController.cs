@@ -4,17 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Edi.Blog.OpmlFileWriter;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
@@ -26,14 +21,10 @@ namespace Moonglade.Web.Controllers
 
         public OpmlController(MoongladeDbContext context,
             ILogger<OpmlController> logger,
-            IOptions<AppSettings> settings,
-            IConfiguration configuration,
-            IHttpContextAccessor accessor,
-            IMemoryCache memoryCache,
             CategoryService categoryService,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(context, logger, settings, configuration, accessor, memoryCache)
+            : base(context, logger)
         {
             _categoryService = categoryService;
             _blogConfig = blogConfig;
