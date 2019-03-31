@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,28 +14,16 @@ namespace Moonglade.Web.Controllers
     [Route("admin")]
     public class AdminController : MoongladeController
     {
-        private readonly IApplicationLifetime _applicationLifetime;
-
         public AdminController(MoongladeDbContext context,
-            ILogger<AdminController> logger,
-            IApplicationLifetime appLifetime)
+            ILogger<AdminController> logger)
             : base(context, logger)
         {
-            _applicationLifetime = appLifetime;
         }
 
         [Route("")]
         public IActionResult Index()
         {
             return RedirectToAction("Manage", "Post");
-        }
-
-        [HttpGet("shutdown")]
-        public IActionResult Shutdown()
-        {
-            Logger.LogWarning("Shutdown is requested.");
-            _applicationLifetime.StopApplication();
-            return new EmptyResult();
         }
 
         [HttpGet("signin")]

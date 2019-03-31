@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -30,18 +31,22 @@ namespace Moonglade.Web.Controllers
         private readonly FriendLinkService _friendLinkService;
         private readonly BlogConfig _blogConfig;
         private readonly BlogConfigurationService _blogConfigurationService;
+        private readonly IApplicationLifetime _applicationLifetime;
 
         #endregion
 
         public SettingsController(MoongladeDbContext context,
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
+            IApplicationLifetime appLifetime,
             EmailService emailService,
             FriendLinkService friendLinkService,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
             : base(context, logger, settings)
         {
+            _applicationLifetime = appLifetime;
+
             _blogConfig = blogConfig;
             _blogConfigurationService = blogConfigurationService;
             _blogConfig.GetConfiguration(blogConfigurationService);
@@ -388,6 +393,24 @@ namespace Moonglade.Web.Controllers
                 Logger.LogError(e, "Error uploading avatar image.");
                 return ServerError();
             }
+        }
+
+        #endregion
+
+        #region Advanced Settings
+
+        public IActionResult AdvancedSettings()
+        {
+            return View();
+        }
+
+        [HttpPost("shutdown")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Shutdown()
+        {
+            Logger.LogWarning("Shutdown is requested.");
+            _applicationLifetime.StopApplication();
+            return new EmptyResult();
         }
 
         #endregion
