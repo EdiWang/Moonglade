@@ -51,7 +51,6 @@ namespace Moonglade.Web
             _appSettingsSection = Configuration.GetSection(nameof(AppSettings));
         }
 
-        // TODO: the code is like a shit, need refact
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
@@ -87,8 +86,8 @@ namespace Moonglade.Web
             services.AddHttpContextAccessor();
 
             var imageStorageSection = Configuration.GetSection("ImageStorage");
-            var _imageStorageProvider = imageStorageSection["Provider"];
-            switch (_imageStorageProvider)
+            var imageStorageProvider = imageStorageSection["Provider"];
+            switch (imageStorageProvider)
             {
                 case nameof(AzureStorageImageProvider):
                     var conn = imageStorageSection["AzureStorageSettings:ConnectionString"];
@@ -114,7 +113,7 @@ namespace Moonglade.Web
                     }
                     break;
                 default:
-                    var msg = $"Provider {_imageStorageProvider} is not supported.";
+                    var msg = $"Provider {imageStorageProvider} is not supported.";
                     _logger.LogError(msg);
                     throw new NotSupportedException(msg);
             }
@@ -191,8 +190,8 @@ namespace Moonglade.Web
                 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
             }
 
-            var _enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
-            if (_enforceHttps)
+            var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
+            if (enforceHttps)
             {
                 _logger.LogInformation("HTTPS is enforced.");
                 app.UseHttpsRedirection();
@@ -315,12 +314,12 @@ namespace Moonglade.Web
             }
 
             var basedirStr = "${basedir}"; // Do not use "." because there could be "." in path.
-            if (path.IndexOf(basedirStr) > 0)
+            if (path.IndexOf(basedirStr, StringComparison.Ordinal) > 0)
             {
                 _logger.LogError($"Invalid Path settings for {nameof(FileSystemImageProvider)}, settings value: {path}, {basedirStr} can only be at the beginning.");
                 throw new NotSupportedException($"{basedirStr} can only be at the beginning.");
             }
-            if (path.IndexOf(basedirStr) == 0)
+            if (path.IndexOf(basedirStr, StringComparison.Ordinal) == 0)
             {
                 // Use relative path
                 // Warning: Write data under application directory may blow up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.

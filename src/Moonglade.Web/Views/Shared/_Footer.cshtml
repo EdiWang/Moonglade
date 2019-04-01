@@ -1,5 +1,4 @@
 ﻿@using Microsoft.Extensions.Options
-@using Moonglade.Configuration
 @using Moonglade.Core
 @using Moonglade.Model.Settings
 @inject IOptions<AppSettings> Settings
@@ -10,11 +9,11 @@
             <div class="col-md-3 col-sm-3">
                 <h4 class="d-none d-sm-block">Copyright</h4>
                 <div>&copy; 2009 - @DateTime.UtcNow.Year edi.wang</div>
-                <small>Designed and Developed by Edi Wang</small>
-                <br />
+                <div class="mb-2">Designed and Developed by Edi Wang</div>
                 <small>
-                    Version @Utils.AppVersion
+                    Moonglade @Utils.AppVersion
                 </small>
+                <a href="https://github.com/EdiWang/Moonglade" target="_blank"><i class="fab fa-github"></i></a>
                 <br />
                 <small class="d-none d-sm-inline-block">
                     Powered by <a href="http://dot.net" target="_blank">.NET Core</a> and <a href="https://azure.microsoft.com/en-us/" target="_blank">Microsoft Azure</a>
