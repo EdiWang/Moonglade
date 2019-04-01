@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+@Html.AntiForgeryToken()
+
+@section scripts{
+<script>
+    $(function () {
+        $(".btn-restart").click(function () {
+            tryRestartWebsite();
+        });
+    });
+
+    function tryRestartWebsite() {
+        var nonce = Math.floor((Math.random() * 128) + 1);
+        ajaxPostWithCSRFToken("settings/shutdown", { nonce }, function () { });
+        $(".btn-restart").text("Wait...");
+        $(".btn-restart").addClass("disabled");
+        $(".btn-restart").attr("disabled", "disabled");
+        startTimer(30, $(".btn-restart"));
+        setTimeout(function () {
+            location.href = "/admin/settings";
+        }, 30000);
+    }
+
+    function startTimer(duration, display) {
+        var timer = duration, minutes, seconds;
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.text(minutes + ":" + seconds);
+
+            if (--timer < 0) {
+                timer = duration;
+            }
+        }, 1000);
+    }
+</script>
+}
+
+<partial name="_SettingsHeader" />
+
+<h5>Restart Website</h5>
+<hr />
+
+<div class="alert alert-warning">Try to shutdown and restart the website, this will terminate all current requests.</div>
+
+<a class="btn btn-danger btn-restart" href="#">Restart</a>

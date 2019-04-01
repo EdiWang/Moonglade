@@ -1,9 +1,9 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://localhost",
+      "applicationUrl": "https://localhost",
       "sslPort": 0
     },
     "iisExpress": {
@@ -12,7 +12,7 @@
     }
   },
   "profiles": {
-    "IIS Express": {
+    "IIS": {
       "commandName": "IIS",
       "launchBrowser": true,
       "environmentVariables": {

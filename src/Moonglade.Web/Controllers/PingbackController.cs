@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Edi.Blog.Pingback;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
