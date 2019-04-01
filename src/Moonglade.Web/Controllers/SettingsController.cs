@@ -406,7 +406,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("shutdown")]
         [ValidateAntiForgeryToken]
-        public IActionResult Shutdown()
+        public IActionResult Shutdown(int nonce)
         {
             Logger.LogWarning("Shutdown is requested.");
             _applicationLifetime.StopApplication();

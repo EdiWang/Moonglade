@@ -9,21 +9,6 @@ function slugify(text) {
         .replace(/ +/g, '-');
 }
 
-var aiMetricReader = {
-    getMetricsNumber: function (url, funcSuccess) {
-        $.ajax({
-            url: url,
-            datatype: 'json',
-            success: function (data) {
-                funcSuccess(data);
-            },
-            error: function (e) {
-                toastr.error(e);
-            }
-        });
-    }
-};
-
 var postEditor = {
     loadRichEditor: function (textareaSelector) {
         if (window.tinyMCE !== undefined) {
