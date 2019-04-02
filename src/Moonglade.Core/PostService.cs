@@ -429,8 +429,6 @@ namespace Moonglade.Core
                 var post = Context.Post.Find(postId);
                 if (null == post) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
-                int rows;
-
                 if (isRecycle)
                 {
                     post.PostPublish.IsDeleted = true;
@@ -440,7 +438,7 @@ namespace Moonglade.Core
                     Context.Post.Remove(post);
                 }
 
-                rows = Context.SaveChanges();
+                var rows = Context.SaveChanges();
                 return new Response(rows > 0);
             }
             catch (Exception e)

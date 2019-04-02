@@ -199,7 +199,7 @@ namespace Moonglade.Core
                 Context.Comment.Add(model);
                 int rows = Context.SaveChanges();
 
-                return new SuccessResponse<Comment>(model);
+                return new Response<Comment>(model) { IsSuccess = rows > 0 };
             }
             catch (Exception e)
             {
