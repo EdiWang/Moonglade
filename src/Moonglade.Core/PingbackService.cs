@@ -58,6 +58,8 @@ namespace Moonglade.Core
                             () => null != post,
                             () => HasAlreadyBeenPinged(post.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
                 }
+
+                Logger.LogError(postResponse.Exception, postResponse.Message);
                 return PingbackServiceResponse.GenericError;
             }
             return response;
