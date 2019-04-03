@@ -108,13 +108,13 @@ namespace Moonglade.Web
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError(e, $"Error setting path for {nameof(FileSystemImageProvider)}, raw path: {path}");
+                        _logger.LogCritical(e, $"Error setting path for {nameof(FileSystemImageProvider)}, raw path: {path}");
                         throw;
                     }
                     break;
                 default:
                     var msg = $"Provider {imageStorageProvider} is not supported.";
-                    _logger.LogError(msg);
+                    _logger.LogCritical(msg);
                     throw new NotSupportedException(msg);
             }
 
