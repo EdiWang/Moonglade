@@ -126,7 +126,7 @@ namespace Moonglade.Core
 
         public IQueryable<Post> GetPosts()
         {
-            return Context.Post.Include(p => p.PostPublish).Include(p => p.PostExtension);
+            return Context.Post;
         }
 
         public IQueryable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
