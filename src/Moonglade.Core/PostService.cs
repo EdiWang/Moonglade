@@ -394,8 +394,8 @@ namespace Moonglade.Core
                     });
                 }
 
-                int rows = Context.SaveChanges();
-                return new Response(rows > 0);
+                Context.SaveChanges();
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
