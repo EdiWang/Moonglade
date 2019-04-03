@@ -77,20 +77,19 @@ namespace Moonglade.Core
             try
             {
                 // https://domain/post/yyyy/MM/dd/slug
-
-                // TODO: There must be a nicer way to do this
-                var uri = new Uri(url);
-                if (uri.Segments.Length < 5)
+                var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
+                var match = blogSlugRegex.Match(url);
+                if (!match.Success)
                 {
                     return null;
                 }
 
-                var yyyy = Convert.ToInt32(uri.Segments[2].Replace("/", string.Empty));
-                var mm = Convert.ToInt32(uri.Segments[3].Replace("/", string.Empty));
-                var dd = Convert.ToInt32(uri.Segments[4].Replace("/", string.Empty));
-                var slug = uri.Segments[5];
+                var year = int.Parse(match.Groups["yyyy"].Value);
+                var month = int.Parse(match.Groups["MM"].Value);
+                var day = int.Parse(match.Groups["dd"].Value);
+                var slug = match.Groups["slug"].Value;
 
-                var post = GetPost(yyyy, mm, dd, slug.Trim());
+                var post = GetPost(year, month, day, slug.Trim());
                 return post;
             }
             catch (Exception ex)
@@ -133,12 +132,12 @@ namespace Moonglade.Core
         {
             if (pageSize < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), 
+                throw new ArgumentOutOfRangeException(nameof(pageSize),
                     $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
             }
             if (pageIndex < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(pageIndex), 
+                throw new ArgumentOutOfRangeException(nameof(pageIndex),
                     $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
             }
 
