@@ -29,8 +29,8 @@ namespace Moonglade.Data.Infrastructure
 
         public IReadOnlyList<T> Get(ISpecification<T> spec, bool asNoTracking = true)
         {
-            return asNoTracking ? 
-                ApplySpecification(spec).AsNoTracking().ToList() : 
+            return asNoTracking ?
+                ApplySpecification(spec).AsNoTracking().ToList() :
                 ApplySpecification(spec).ToList();
         }
 
@@ -109,7 +109,7 @@ namespace Moonglade.Data.Infrastructure
 
         private IQueryable<T> ApplySpecification(ISpecification<T> spec)
         {
-            throw new NotImplementedException();
+            return SpecificationEvaluator<T>.GetQuery(DbContext.Set<T>().AsQueryable(), spec);
         }
     }
 }
