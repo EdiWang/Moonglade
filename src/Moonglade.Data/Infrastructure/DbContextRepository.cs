@@ -21,6 +21,11 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.Set<T>().Find(key);
         }
 
+        public T Get(Expression<Func<T, bool>> condition)
+        {
+            return DbContext.Set<T>().FirstOrDefault(condition);
+        }
+
         public IReadOnlyList<T> Get(bool asNoTracking = true)
         {
             return asNoTracking ?
@@ -33,6 +38,13 @@ namespace Moonglade.Data.Infrastructure
             return asNoTracking ?
                 ApplySpecification(spec).AsNoTracking().ToList() :
                 ApplySpecification(spec).ToList();
+        }
+
+        public IReadOnlyList<TResult> Select<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+        {
+            return asNoTracking ?
+                DbContext.Set<T>().AsNoTracking().Select(selector).ToList() :
+                DbContext.Set<T>().Select(selector).ToList();
         }
 
         public T Add(T entity)
@@ -66,6 +78,12 @@ namespace Moonglade.Data.Infrastructure
             return -1;
         }
 
+        public int Delete(IEnumerable<T> entities)
+        {
+            DbContext.Set<T>().RemoveRange(entities);
+            return DbContext.SaveChanges();
+        }
+
         public int Count(ISpecification<T> spec)
         {
             return ApplySpecification(spec).Count();
@@ -79,6 +97,11 @@ namespace Moonglade.Data.Infrastructure
         public virtual Task<T> GetAsync(object key)
         {
             return DbContext.Set<T>().FindAsync(key);
+        }
+
+        public Task<T> GetAsync(Expression<Func<T, bool>> condition)
+        {
+            return DbContext.Set<T>().FirstOrDefaultAsync(condition);
         }
 
         public async Task<IReadOnlyList<T>> GetAsync(bool asNoTracking = true)
@@ -99,6 +122,15 @@ namespace Moonglade.Data.Infrastructure
             return await ApplySpecification(spec).ToListAsync();
         }
 
+        public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+        {
+            if (asNoTracking)
+            {
+                return await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync();
+            }
+            return await DbContext.Set<T>().Select(selector).ToListAsync();
+        }
+
         public async Task<T> AddAsync(T entity)
         {
             DbContext.Set<T>().Add(entity);
@@ -117,6 +149,12 @@ namespace Moonglade.Data.Infrastructure
         {
             DbContext.Set<T>().Remove(entity);
             await DbContext.SaveChangesAsync();
+        }
+
+        public Task DeleteAsync(IEnumerable<T> entities)
+        {
+            DbContext.Set<T>().RemoveRange(entities);
+            return DbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(object key)

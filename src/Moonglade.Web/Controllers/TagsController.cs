@@ -58,7 +58,7 @@ namespace Moonglade.Web.Controllers
         [Route("get-all-tag-names")]
         public IActionResult GetAllTagNames()
         {
-            var tagNames = _tagService.GetTags().Select(t => t.DisplayName).ToList();
+            var tagNames = _tagService.GetAllTagNames();
             return Json(tagNames);
         }
     }
