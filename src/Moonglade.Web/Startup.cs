@@ -86,41 +86,9 @@ namespace Moonglade.Web
             services.AddMemoryCache();
             services.AddHttpContextAccessor();
 
-            var imageStorageSection = Configuration.GetSection("ImageStorage");
-            var imageStorageProvider = imageStorageSection["Provider"];
-            switch (imageStorageProvider)
-            {
-                case nameof(AzureStorageImageProvider):
-                    var conn = imageStorageSection["AzureStorageSettings:ConnectionString"];
-                    var container = imageStorageSection["AzureStorageSettings:ContainerName"];
-
-                    services.AddSingleton(s => new AzureStorageInfo(conn, container));
-                    services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
-                    break;
-                case nameof(FileSystemImageProvider):
-                    var path = imageStorageSection["FileSystemSettings:Path"];
-                    try
-                    {
-                        var fullPath = ResolveImageStoragePath(path);
-
-                        _logger.LogInformation($"Setting {nameof(FileSystemImageProvider)} to use Path: {fullPath}");
-                        services.AddSingleton(s => new FileSystemImageProviderInfo(path));
-                        services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogCritical(e, $"Error setting path for {nameof(FileSystemImageProvider)}, raw path: {path}");
-                        throw;
-                    }
-                    break;
-                default:
-                    var msg = $"Provider {imageStorageProvider} is not supported.";
-                    _logger.LogCritical(msg);
-                    throw new NotSupportedException(msg);
-            }
+            AddImageStorage(services);
 
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
-
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<BlogConfig>();
             services.AddScoped<DeleteSubscriptionCache>();
@@ -227,6 +195,43 @@ namespace Moonglade.Web
         }
 
         #region Private Helpers
+
+        private void AddImageStorage(IServiceCollection services)
+        {
+            var imageStorageSection = Configuration.GetSection("ImageStorage");
+            var imageStorageProvider = imageStorageSection["Provider"];
+            switch (imageStorageProvider)
+            {
+                case nameof(AzureStorageImageProvider):
+                    var conn = imageStorageSection["AzureStorageSettings:ConnectionString"];
+                    var container = imageStorageSection["AzureStorageSettings:ContainerName"];
+
+                    services.AddSingleton(s => new AzureStorageInfo(conn, container));
+                    services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
+                    break;
+                case nameof(FileSystemImageProvider):
+                    var path = imageStorageSection["FileSystemSettings:Path"];
+                    try
+                    {
+                        var fullPath = ResolveImageStoragePath(path);
+
+                        _logger.LogInformation($"Setting {nameof(FileSystemImageProvider)} to use Path: {fullPath}");
+                        services.AddSingleton(s => new FileSystemImageProviderInfo(path));
+                        services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogCritical(e, $"Error setting path for {nameof(FileSystemImageProvider)}, raw path: {path}");
+                        throw;
+                    }
+
+                    break;
+                default:
+                    var msg = $"Provider {imageStorageProvider} is not supported.";
+                    _logger.LogCritical(msg);
+                    throw new NotSupportedException(msg);
+            }
+        }
 
         private void PrepareRuntimePathDependencies(IApplicationBuilder app, IHostingEnvironment env)
         {
