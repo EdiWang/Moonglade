@@ -13,7 +13,7 @@ namespace Moonglade.Core
 
         protected readonly AppSettings AppSettings;
 
-        public MoongladeService(MoongladeDbContext context, ILogger<MoongladeService> logger = null,
+        public MoongladeService(MoongladeDbContext context = null, ILogger<MoongladeService> logger = null,
             IOptions<AppSettings> settings = null)
         {
             if (null != context) Context = context;

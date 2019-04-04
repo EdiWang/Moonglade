@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data;
+using Moonglade.Data.Infrastructure;
 using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
@@ -117,6 +118,8 @@ namespace Moonglade.Web
                     _logger.LogCritical(msg);
                     throw new NotSupportedException(msg);
             }
+
+            services.AddScoped(typeof(IAsyncRepository<>), typeof(DbContextRepository<>));
 
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<BlogConfig>();

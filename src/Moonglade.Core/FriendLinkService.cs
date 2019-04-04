@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -14,40 +13,44 @@ namespace Moonglade.Core
 {
     public class FriendLinkService : MoongladeService
     {
-        public FriendLinkService(MoongladeDbContext context,
-            ILogger<FriendLinkService> logger, IOptions<AppSettings> settings) : base(context, logger, settings)
+        private readonly IAsyncRepository<FriendLink> _friendlinkRepository;
+
+        public FriendLinkService(ILogger<FriendLinkService> logger,
+            IOptions<AppSettings> settings,
+            IAsyncRepository<FriendLink> friendlinkRepository) : base(logger: logger, settings: settings)
         {
+            _friendlinkRepository = friendlinkRepository;
         }
 
-        public Response<FriendLink> GetFriendLink(Guid id)
+        public async Task<Response<FriendLink>> GetFriendLinkAsync(Guid id)
         {
             try
             {
-                var item = Context.FriendLink.Find(id);
+                var item = await _friendlinkRepository.GetAsync(id);
                 return new SuccessResponse<FriendLink>(item);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetFriendLink)}");
+                Logger.LogError(e, $"Error {nameof(GetFriendLinkAsync)}");
                 return new FailedResponse<FriendLink>((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public async Task<Response<List<FriendLink>>> GetAllFriendLinksAsync()
+        public async Task<Response<IReadOnlyList<FriendLink>>> GetAllFriendLinksAsync()
         {
             try
             {
-                var item = await Context.FriendLink.AsNoTracking().ToListAsync();
-                return new SuccessResponse<List<FriendLink>>(item);
+                var item = await _friendlinkRepository.GetAsync();
+                return new SuccessResponse<IReadOnlyList<FriendLink>>(item);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetAllFriendLinksAsync)}");
-                return new FailedResponse<List<FriendLink>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<FriendLink>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public Response AddFriendLink(string title, string linkUrl)
+        public async Task<Response> AddFriendLinkAsync(string title, string linkUrl)
         {
             try
             {
@@ -73,38 +76,36 @@ namespace Moonglade.Core
                     Title = title
                 };
 
-                Context.FriendLink.Add(fdLink);
-                var rows = Context.SaveChanges();
-                return new Response(rows > 0);
+                await _friendlinkRepository.AddAsync(fdLink);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(AddFriendLink)}");
+                Logger.LogError(e, $"Error {nameof(AddFriendLinkAsync)}");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public Response DeleteFriendLink(Guid id)
+        public async Task<Response> DeleteFriendLinkAsync(Guid id)
         {
             try
             {
-                var fdlink = Context.FriendLink.Find(id);
+                var fdlink = await _friendlinkRepository.GetAsync(id);
                 if (null != fdlink)
                 {
-                    Context.FriendLink.Remove(fdlink);
-                    var rows = Context.SaveChanges();
-                    return new Response(rows > 0);
+                    await _friendlinkRepository.DeleteAsync(fdlink);
+                    return new SuccessResponse();
                 }
                 return new FailedResponse((int)ResponseFailureCode.FriendLinkNotFound);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(DeleteFriendLink)}");
+                Logger.LogError(e, $"Error {nameof(DeleteFriendLinkAsync)}");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public Response UpdateFriendLink(Guid id, string newTitle, string newLinkUrl)
+        public async Task<Response> UpdateFriendLinkAsync(Guid id, string newTitle, string newLinkUrl)
         {
             try
             {
@@ -123,20 +124,20 @@ namespace Moonglade.Core
                     return new FailedResponse((int)ResponseFailureCode.InvalidParameter, $"{nameof(newLinkUrl)} is not a valid url.");
                 }
 
-                var fdlink = Context.FriendLink.Find(id);
+                var fdlink = await _friendlinkRepository.GetAsync(id);
                 if (null != fdlink)
                 {
                     fdlink.Title = newTitle;
                     fdlink.LinkUrl = newLinkUrl;
 
-                    var rows = Context.SaveChanges();
-                    return new Response(rows > 0);
+                    var rows = _friendlinkRepository.UpdateAsync(fdlink);
+                    return new SuccessResponse();
                 }
                 return new FailedResponse((int)ResponseFailureCode.FriendLinkNotFound);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(UpdateFriendLink)}");
+                Logger.LogError(e, $"Error {nameof(UpdateFriendLinkAsync)}");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }

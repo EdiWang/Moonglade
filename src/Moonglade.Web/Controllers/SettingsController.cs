@@ -268,13 +268,13 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("create-friendlink")]
-        public IActionResult CreateFriendLink(FriendLinkEditViewModel viewModel)
+        public async Task<IActionResult> CreateFriendLink(FriendLinkEditViewModel viewModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var response = _friendLinkService.AddFriendLink(viewModel.Title, viewModel.LinkUrl);
+                    var response = await _friendLinkService.AddFriendLinkAsync(viewModel.Title, viewModel.LinkUrl);
                     if (response.IsSuccess)
                     {
                         return RedirectToAction(nameof(ManageFriendLinks));
@@ -291,11 +291,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("edit-friendlink")]
-        public IActionResult EditFriendLink(Guid id)
+        public async Task<IActionResult> EditFriendLink(Guid id)
         {
             try
             {
-                var response = _friendLinkService.GetFriendLink(id);
+                var response = await _friendLinkService.GetFriendLinkAsync(id);
                 if (response.IsSuccess)
                 {
                     return View("CreateOrEditFriendLink", new FriendLinkEditViewModel
@@ -316,11 +316,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("edit-friendlink")]
-        public IActionResult EditFriendLink(FriendLinkEditViewModel viewModel)
+        public async Task<IActionResult> EditFriendLink(FriendLinkEditViewModel viewModel)
         {
             try
             {
-                var response = _friendLinkService.UpdateFriendLink(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
+                var response = await _friendLinkService.UpdateFriendLinkAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
                 if (response.IsSuccess)
                 {
                     return RedirectToAction(nameof(ManageFriendLinks));
@@ -336,15 +336,10 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("delete-friendlink")]
-        public IActionResult DeleteFriendLink(Guid id)
+        public async Task<IActionResult> DeleteFriendLink(Guid id)
         {
-            var response = _friendLinkService.DeleteFriendLink(id);
-            if (response.IsSuccess)
-            {
-                return RedirectToAction(nameof(ManageFriendLinks));
-            }
-
-            return ServerError();
+            var response = await _friendLinkService.DeleteFriendLinkAsync(id);
+            return response.IsSuccess ? RedirectToAction(nameof(ManageFriendLinks)) : ServerError();
         }
 
         #endregion
