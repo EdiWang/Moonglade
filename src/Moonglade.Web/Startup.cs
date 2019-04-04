@@ -119,7 +119,7 @@ namespace Moonglade.Web
                     throw new NotSupportedException(msg);
             }
 
-            services.AddScoped(typeof(IAsyncRepository<>), typeof(DbContextRepository<>));
+            services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
 
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<BlogConfig>();

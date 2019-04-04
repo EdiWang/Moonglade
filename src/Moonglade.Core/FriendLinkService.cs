@@ -13,11 +13,11 @@ namespace Moonglade.Core
 {
     public class FriendLinkService : MoongladeService
     {
-        private readonly IAsyncRepository<FriendLink> _friendlinkRepository;
+        private readonly IRepository<FriendLink> _friendlinkRepository;
 
         public FriendLinkService(ILogger<FriendLinkService> logger,
             IOptions<AppSettings> settings,
-            IAsyncRepository<FriendLink> friendlinkRepository) : base(logger: logger, settings: settings)
+            IRepository<FriendLink> friendlinkRepository) : base(logger: logger, settings: settings)
         {
             _friendlinkRepository = friendlinkRepository;
         }
@@ -90,13 +90,8 @@ namespace Moonglade.Core
         {
             try
             {
-                var fdlink = await _friendlinkRepository.GetAsync(id);
-                if (null != fdlink)
-                {
-                    await _friendlinkRepository.DeleteAsync(fdlink);
-                    return new SuccessResponse();
-                }
-                return new FailedResponse((int)ResponseFailureCode.FriendLinkNotFound);
+                await _friendlinkRepository.DeleteAsync(id);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {

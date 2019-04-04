@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Moonglade.Data.Infrastructure
 {
-    public class DbContextRepository<T> : IRepository<T>, IAsyncRepository<T> where T : class
+    public class DbContextRepository<T> : IRepository<T> where T : class
     {
         protected readonly MoongladeDbContext DbContext;
 
@@ -52,6 +52,17 @@ namespace Moonglade.Data.Infrastructure
         {
             DbContext.Set<T>().Remove(entity);
             return DbContext.SaveChanges();
+        }
+
+        public int Delete(object key)
+        {
+            var entity = Get(key);
+            if (null != entity)
+            {
+                return Delete(entity);
+            }
+
+            return -1;
         }
 
         public int Count(ISpecification<T> spec)
@@ -100,6 +111,15 @@ namespace Moonglade.Data.Infrastructure
         {
             DbContext.Set<T>().Remove(entity);
             await DbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(object key)
+        {
+            var entity = await GetAsync(key);
+            if (null != entity)
+            {
+                await DeleteAsync(entity);
+            }
         }
 
         public Task<int> CountAsync(ISpecification<T> spec)

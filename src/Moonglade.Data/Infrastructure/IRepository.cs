@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Moonglade.Data.Infrastructure
 {
@@ -18,6 +19,24 @@ namespace Moonglade.Data.Infrastructure
 
         int Delete(T entity);
 
+        int Delete(object key);
+
         int Count(ISpecification<T> spec);
+
+        Task<T> GetAsync(object key);
+
+        Task<IReadOnlyList<T>> GetAsync(bool asNoTracking = true);
+
+        Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec, bool asNoTracking = true);
+
+        Task<T> AddAsync(T entity);
+
+        Task UpdateAsync(T entity);
+
+        Task DeleteAsync(T entity);
+
+        Task DeleteAsync(object key);
+
+        Task<int> CountAsync(ISpecification<T> spec);
     }
 }
