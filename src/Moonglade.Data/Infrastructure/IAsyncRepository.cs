@@ -7,9 +7,9 @@ namespace Moonglade.Data.Infrastructure
     {
         Task<T> GetAsync(object key);
 
-        Task<IReadOnlyList<T>> GetAsync();
+        Task<IReadOnlyList<T>> GetAsync(bool asNoTracking = true);
 
-        Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec);
+        Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec, bool asNoTracking = true);
 
         Task<T> AddAsync(T entity);
 

@@ -8,9 +8,9 @@ namespace Moonglade.Data.Infrastructure
     {
         T Get(object key);
 
-        IReadOnlyList<T> Get();
+        IReadOnlyList<T> Get(bool asNoTracking = true);
 
-        IReadOnlyList<T> Get(ISpecification<T> spec);
+        IReadOnlyList<T> Get(ISpecification<T> spec, bool asNoTracking = true);
 
         T Add(T entity);
 
