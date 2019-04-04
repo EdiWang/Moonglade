@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +24,8 @@ namespace Moonglade.Data.Infrastructure
         int Delete(object key);
 
         int Count(ISpecification<T> spec);
+
+        bool Any(Expression<Func<T, bool>> condition);
 
         Task<T> GetAsync(object key);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,6 +69,11 @@ namespace Moonglade.Data.Infrastructure
         public int Count(ISpecification<T> spec)
         {
             return ApplySpecification(spec).Count();
+        }
+
+        public bool Any(Expression<Func<T, bool>> condition)
+        {
+            return DbContext.Set<T>().Any(condition);
         }
 
         public virtual Task<T> GetAsync(object key)

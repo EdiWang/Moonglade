@@ -56,9 +56,9 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("manage")]
-        public IActionResult Manage()
+        public async Task<IActionResult> Manage()
         {
-            var data = _pingbackService.GetReceivedPingbacks();
+            var data = await _pingbackService.GetReceivedPingbacksAsync();
             return View(data);
         }
 
