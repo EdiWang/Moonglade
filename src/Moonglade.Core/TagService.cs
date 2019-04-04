@@ -18,21 +18,21 @@ namespace Moonglade.Core
         private readonly IRepository<Tag> _tagRepository;
         private readonly IRepository<PostTag> _postTagRepository;
 
-        public TagService(MoongladeDbContext context, ILogger<TagService> logger, 
+        public TagService(MoongladeDbContext context, ILogger<TagService> logger,
             IRepository<Tag> tagRepository, IRepository<PostTag> postTagRepository) : base(context, logger)
         {
             _tagRepository = tagRepository;
             _postTagRepository = postTagRepository;
         }
 
-        public IQueryable<Tag> GetTags()
+        public Task<IReadOnlyList<Tag>> GetAllTagsAsync()
         {
-            return Context.Tag;
+            return _tagRepository.GetAsync();
         }
 
         public IReadOnlyList<string> GetAllTagNames()
         {
-            return Context.Tag.Select(t => t.DisplayName).ToList();
+            return _tagRepository.Select(t => t.DisplayName);
         }
 
         public Response UpdateTag(int tagId, string newName)
@@ -66,8 +66,7 @@ namespace Moonglade.Core
                 _postTagRepository.Delete(postTags);
 
                 // 2. Delte Tag itslef
-                var tag = Context.Tag.Find(tagId);
-                int rows = _tagRepository.Delete(tag);
+                int rows = _tagRepository.Delete(tagId);
                 return new Response(rows > 0);
             }
             catch (Exception e)
