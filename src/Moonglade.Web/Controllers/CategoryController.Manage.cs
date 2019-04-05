@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,20 +14,18 @@ namespace Moonglade.Web.Controllers
     {
         [Authorize]
         [Route("manage")]
-        public IActionResult Manage()
+        public async Task<IActionResult> Manage()
         {
             try
             {
-                var query = _categoryService.GetCategoriesAsQueryable().Select(c => new CategoryEditViewModel
+                var allCats = await _categoryService.GetAllCategoriesAsync();
+                if (!allCats.IsSuccess)
                 {
-                    Id = c.Id,
-                    DisplayName = c.DisplayName,
-                    Name = c.Title,
-                    Note = c.Note
-                });
-
-                var grid = query.ToList();
-                return View(grid);
+                    ViewBag.HasError = true;
+                    ViewBag.ErrorMessage = allCats.Message;
+                    return View(new List<Category>());
+                }
+                return View(allCats.Item);
             }
             catch (Exception e)
             {
@@ -35,7 +33,7 @@ namespace Moonglade.Web.Controllers
 
                 ViewBag.HasError = true;
                 ViewBag.ErrorMessage = e.Message;
-                return View(new List<CategoryEditViewModel>());
+                return View(new List<Category>());
             }
         }
 

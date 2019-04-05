@@ -48,9 +48,9 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("manage/create")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var view = GetCreatePostModel();
+            var view = await GetCreatePostModelAsync();
             return View("CreateOrEdit", view);
         }
 
@@ -132,7 +132,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("manage/edit")]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             var postResponse = _postService.GetPost(id);
             if (!postResponse.IsSuccess)
@@ -166,10 +166,10 @@ namespace Moonglade.Web.Controllers
                 tagStr = tagStr.TrimEnd(',');
                 editViewModel.Tags = tagStr;
 
-                var catResponse = _categoryService.GetAllCategories();
+                var catResponse = await _categoryService.GetAllCategoriesAsync();
                 if (!catResponse.IsSuccess)
                 {
-                    return ServerError("Unsuccessful response from _categoryService.GetAllCategories().");
+                    return ServerError("Unsuccessful response from _categoryService.GetAllCategoriesAsync().");
                 }
 
                 var catList = catResponse.Item;
@@ -289,7 +289,7 @@ namespace Moonglade.Web.Controllers
 
         #region Helper Methods
 
-        private PostEditModel GetCreatePostModel()
+        private async Task<PostEditModel> GetCreatePostModelAsync()
         {
             var view = new PostEditModel
             {
@@ -300,10 +300,11 @@ namespace Moonglade.Web.Controllers
                 FeedIncluded = true
             };
 
-            var catList = _categoryService.GetCategoriesAsQueryable();
-            if (null != catList && catList.Any())
+            var catList = await _categoryService.GetAllCategoriesAsync();
+            if (null != catList.Item && catList.Item.Any())
             {
-                var cbCatList = catList.Select(p => new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false)).ToList();
+                var cbCatList = catList.Item.Select(p => 
+                    new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false)).ToList();
                 view.CategoryList = cbCatList;
             }
 

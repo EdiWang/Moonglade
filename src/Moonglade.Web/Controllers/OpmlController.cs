@@ -44,10 +44,10 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogInformation($"OPML file not found, writing new file on {opmlDataFile}");
 
-                var catResponse = _categoryService.GetAllCategories();
+                var catResponse = await _categoryService.GetAllCategoriesAsync();
                 if (!catResponse.IsSuccess)
                 {
-                    return ServerError("Unsuccessful response from _categoryService.GetAllCategories().");
+                    return ServerError("Unsuccessful response from _categoryService.GetAllCategoriesAsync().");
                 }
 
                 var catInfos = catResponse.Item.Select(c => new OpmlCategoryInfo

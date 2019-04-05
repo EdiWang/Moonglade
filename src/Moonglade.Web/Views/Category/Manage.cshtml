@@ -2,7 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@model List<CategoryEditViewModel>
+@model IReadOnlyList<Moonglade.Data.Entities.Category>
 
 <h3>
     Categories
@@ -48,7 +48,7 @@ else
                         </strong>
                     </td>
                     <td>
-                        @cat.Name
+                        @cat.Title
                     </td>
                     <td class="text-muted">
                         @cat.Note

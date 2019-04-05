@@ -33,6 +33,8 @@ namespace Moonglade.Data.Infrastructure
 
         int Count(ISpecification<T> spec);
 
+        int Count(Expression<Func<T, bool>> condition);
+
         bool Any(Expression<Func<T, bool>> condition);
 
         Task<T> GetAsync(object key);
