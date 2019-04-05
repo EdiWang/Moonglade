@@ -21,6 +21,11 @@ namespace Moonglade.Data.Infrastructure
 
         IReadOnlyList<TResult> Select<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true);
 
+        IReadOnlyList<TResult> Select<TGroup, TResult>(
+            Expression<Func<T, TGroup>> groupExpression,
+            Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
+            bool asNoTracking = true);
+
         T Add(T entity);
 
         int Update(T entity);
@@ -46,6 +51,11 @@ namespace Moonglade.Data.Infrastructure
         Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec, bool asNoTracking = true);
 
         Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true);
+
+        Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
+            Expression<Func<T, TGroup>> groupExpression,
+            Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
+            bool asNoTracking = true);
 
         Task<T> AddAsync(T entity);
 

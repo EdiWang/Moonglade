@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +46,16 @@ namespace Moonglade.Data.Infrastructure
             return asNoTracking ?
                 DbContext.Set<T>().AsNoTracking().Select(selector).ToList() :
                 DbContext.Set<T>().Select(selector).ToList();
+        }
+
+        public IReadOnlyList<TResult> Select<TGroup, TResult>(
+            Expression<Func<T, TGroup>> groupExpression,
+            Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
+            bool asNoTracking = true)
+        {
+            return asNoTracking ?
+                DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToList() :
+                DbContext.Set<T>().GroupBy(groupExpression).Select(selector).ToList();
         }
 
         public IReadOnlyList<TResult> Select<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
@@ -141,6 +152,18 @@ namespace Moonglade.Data.Infrastructure
                 return await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync();
             }
             return await DbContext.Set<T>().Select(selector).ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
+            Expression<Func<T, TGroup>> groupExpression,
+            Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
+            bool asNoTracking = true)
+        {
+            if (asNoTracking)
+            {
+                return await DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
+            }
+            return await DbContext.Set<T>().GroupBy(groupExpression).Select(selector).ToListAsync();
         }
 
         public async Task<T> AddAsync(T entity)

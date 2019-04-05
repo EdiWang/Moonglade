@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
@@ -20,11 +18,10 @@ namespace Moonglade.Core
 
         private readonly IRepository<PostCategory> _postCategoryRepository;
 
-        public CategoryService(MoongladeDbContext context,
-            ILogger<CategoryService> logger,
+        public CategoryService(ILogger<CategoryService> logger,
             IRepository<Category> categoryRepository,
             IRepository<PostCategory> postCategoryRepository,
-            IRepository<Post> postRepository) : base(context, logger)
+            IRepository<Post> postRepository) : base(logger: logger)
         {
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
@@ -106,38 +103,33 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task<Response<List<ArchiveItem>>> GetArchiveListAsync()
+        public async Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
         {
             try
             {
                 if (!_postRepository.Any(p =>
                     p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
                 {
-                    return new SuccessResponse<List<ArchiveItem>>();
+                    return new SuccessResponse<IReadOnlyList<ArchiveItem>>();
                 }
 
-                // TODO: Refact Context to Repository
-                var query = from post in Context.Post
-                            group post by new
-                            {
-                                year = post.PostPublish.PubDateUtc.Value.Year,
-                                month = post.PostPublish.PubDateUtc.Value.Month
-                            }
-                            into monthList
-                            select new ArchiveItem
-                            {
-                                Year = monthList.Key.year,
-                                Month = monthList.Key.month,
-                                Count = monthList.Select(p => p.Id).Count()
-                            };
+                var list = await _postRepository.SelectAsync(post => new
+                {
+                    year = post.PostPublish.PubDateUtc.Value.Year,
+                    month = post.PostPublish.PubDateUtc.Value.Month
+                }, monthList => new ArchiveItem
+                {
+                    Year = monthList.Key.year,
+                    Month = monthList.Key.month,
+                    Count = monthList.Select(p => p.Id).Count()
+                });
 
-                var list = await query.ToListAsync();
-                return new SuccessResponse<List<ArchiveItem>>(list);
+                return new SuccessResponse<IReadOnlyList<ArchiveItem>>(list);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetArchiveListAsync)}");
-                return new FailedResponse<List<ArchiveItem>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<ArchiveItem>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
