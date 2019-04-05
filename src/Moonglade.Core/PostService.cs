@@ -256,7 +256,7 @@ namespace Moonglade.Core
                 // cannot write "p.PubDateUTC.Date == DateTime.Now.Date"
                 // it will blow up "The specified type member 'Date' is not supported in LINQ to Entities"
                 var today = DateTime.UtcNow.Date;
-                if (null != Context.Post.FirstOrDefault(p =>
+                if (Context.Post.Any(p =>
                            p.Slug == postModel.Slug &&
                            p.PostPublish.PubDateUtc.Value.Year == today.Year &&
                            p.PostPublish.PubDateUtc.Value.Month == today.Month &&
