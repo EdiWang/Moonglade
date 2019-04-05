@@ -19,7 +19,7 @@ namespace Moonglade.Web.Controllers
             const int pageSize = 20;
             var commentList = _commentService.GetPagedComment(pageSize, page);
             var commentsAsIPagedList =
-                new StaticPagedList<Comment>(commentList, page, pageSize, _commentService.CountForPublic);
+                new StaticPagedList<Comment>(commentList, page, pageSize, _commentService.CountForApproved);
             return View(commentsAsIPagedList);
         }
 

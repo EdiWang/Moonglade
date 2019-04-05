@@ -12,6 +12,8 @@ using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -21,17 +23,25 @@ namespace Moonglade.Core
     {
         private readonly BlogConfig _blogConfig;
 
+        private readonly IRepository<Comment> _commentRepository;
+
+        private readonly IRepository<CommentReply> _commentReplyRepository;
+
         public CommentService(MoongladeDbContext context,
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService) : base(context, logger, settings)
+            BlogConfigurationService blogConfigurationService,
+            IRepository<Comment> commentRepository,
+            IRepository<CommentReply> commentReplyRepository) : base(context, logger, settings)
         {
             _blogConfig = blogConfig;
+            _commentRepository = commentRepository;
+            _commentReplyRepository = commentReplyRepository;
             _blogConfig.GetConfiguration(blogConfigurationService);
         }
 
-        public int CountForPublic => Context.Comment.Count(c => c.IsApproved.GetValueOrDefault());
+        public int CountForApproved => _commentRepository.Count(c => c.IsApproved.GetValueOrDefault());
 
         public async Task<Response<List<Comment>>> GetRecentCommentsAsync(int top)
         {
@@ -54,13 +64,9 @@ namespace Moonglade.Core
             }
         }
 
-        public List<Comment> GetApprovedCommentsOfPost(Guid postId)
+        public IReadOnlyList<Comment> GetApprovedCommentsOfPost(Guid postId)
         {
-            var comments = Context.Comment.Include(c => c.CommentReply)
-                                          .Where(c => c.PostId == postId &&
-                                                      c.IsApproved != null &&
-                                                      c.IsApproved.Value).ToList();
-            return comments;
+            return _commentRepository.Get(new CommentOfPostSpec(postId));
         }
 
         public IQueryable<Comment> GetComments()
@@ -90,21 +96,22 @@ namespace Moonglade.Core
         {
             try
             {
-                var comment = Context.Comment.Find(commentId);
+                var comment = _commentRepository.Get(commentId);
                 if (null != comment)
                 {
+                    int rows;
                     if (isApproved)
                     {
                         Logger.LogInformation($"Approve comment {commentId}");
                         comment.IsApproved = true;
+                        rows = _commentRepository.Update(comment);
                     }
                     else
                     {
                         Logger.LogInformation($"Disapprove and delete comment {commentId}");
-                        Context.Comment.Remove(comment);
+                        rows = _commentRepository.Delete(comment);
                     }
 
-                    int rows = Context.SaveChanges();
                     return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.CommentNotFound);
@@ -120,24 +127,18 @@ namespace Moonglade.Core
         {
             try
             {
-                var comment = Context.Comment.Find(commentId);
+                var comment = _commentRepository.Get(commentId);
                 if (null != comment)
                 {
                     // 1. Delete all replies
-                    var cReplies = Context.CommentReply.Where(cr => cr.CommentId == commentId);
+                    var cReplies = _commentReplyRepository.Get(new CommentReplySpec(commentId));
                     if (cReplies.Any())
                     {
-                        foreach (var commentReply in cReplies)
-                        {
-                            Context.Remove(commentReply);
-                        }
-
-                        Context.SaveChanges();
+                        _commentReplyRepository.Delete(cReplies);
                     }
 
                     // 2. Delete comment itself
-                    Context.Remove(comment);
-                    var rows = Context.SaveChanges();
+                    var rows = _commentRepository.Delete(comment);
                     return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.CommentNotFound);
@@ -196,10 +197,8 @@ namespace Moonglade.Core
                     UserAgent = userAgent
                 };
 
-                Context.Comment.Add(model);
-                int rows = Context.SaveChanges();
-
-                return new Response<Comment>(model) { IsSuccess = rows > 0 };
+                _commentRepository.Add(model);
+                return new SuccessResponse<Comment>(model);
             }
             catch (Exception e)
             {
