@@ -47,6 +47,13 @@ namespace Moonglade.Data.Infrastructure
                 DbContext.Set<T>().Select(selector).ToList();
         }
 
+        public IReadOnlyList<TResult> Select<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+        {
+            return asNoTracking ?
+                ApplySpecification(spec).AsNoTracking().Select(selector).ToList() :
+                ApplySpecification(spec).Select(selector).ToList();
+        }
+
         public T Add(T entity)
         {
             DbContext.Set<T>().Add(entity);

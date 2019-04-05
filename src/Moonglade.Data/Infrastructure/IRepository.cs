@@ -19,6 +19,8 @@ namespace Moonglade.Data.Infrastructure
 
         IReadOnlyList<TResult> Select<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true);
 
+        IReadOnlyList<TResult> Select<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true);
+
         T Add(T entity);
 
         int Update(T entity);
