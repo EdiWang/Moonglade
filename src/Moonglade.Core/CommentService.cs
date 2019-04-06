@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Edi.WordFilter;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -27,13 +25,13 @@ namespace Moonglade.Core
 
         private readonly IRepository<CommentReply> _commentReplyRepository;
 
-        public CommentService(MoongladeDbContext context,
+        public CommentService(
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             IRepository<Comment> commentRepository,
-            IRepository<CommentReply> commentReplyRepository) : base(context, logger, settings)
+            IRepository<CommentReply> commentReplyRepository) : base(logger: logger, settings: settings)
         {
             _blogConfig = blogConfig;
             _commentRepository = commentRepository;
@@ -64,9 +62,18 @@ namespace Moonglade.Core
             return _commentRepository.Get(new CommentOfPostSpec(postId));
         }
 
-        public IQueryable<Comment> GetComments()
+        public IReadOnlyList<CommentGridModel> GetPendingApprovalComments()
         {
-            return Context.Comment;
+            return _commentRepository.Select(new PendingApprovalCommentSepc(), p => new CommentGridModel
+            {
+                Id = p.Id,
+                Username = p.Username,
+                Email = p.Email,
+                IpAddress = p.IPAddress,
+                CommentContent = p.CommentContent,
+                PostTitle = p.Post.Title,
+                PubDateUtc = p.CreateOnUtc
+            });
         }
 
         public IReadOnlyList<Comment> GetPagedComment(int pageSize, int pageIndex)
@@ -205,9 +212,7 @@ namespace Moonglade.Core
                     return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.CommentDisabled);
                 }
 
-                var cmt = Context.Comment
-                                  .Include(c => c.Post)
-                                  .ThenInclude(p => p.PostPublish).FirstOrDefault(c => c.Id == commentId);
+                var cmt = _commentRepository.Get(commentId);
 
                 if (null == cmt)
                 {
@@ -224,31 +229,26 @@ namespace Moonglade.Core
                     ReplyTimeUtc = DateTime.UtcNow,
                     CommentId = commentId
                 };
-                Context.CommentReply.Add(model);
-                int rows = Context.SaveChanges();
 
-                if (rows > 0)
+                _commentReplyRepository.Add(model);
+
+                var summary = new CommentReplySummary
                 {
-                    var summary = new CommentReplySummary
-                    {
-                        CommentContent = cmt.CommentContent,
-                        CommentId = commentId,
-                        Email = cmt.Email,
-                        Id = model.Id,
-                        IpAddress = model.IpAddress,
-                        PostId = cmt.PostId,
-                        PubDateUTC = cmt.Post.PostPublish.PubDateUtc,
-                        ReplyContent = model.ReplyContent,
-                        ReplyTimeUtc = model.ReplyTimeUtc,
-                        Slug = cmt.Post.Slug,
-                        Title = cmt.Post.Title,
-                        UserAgent = model.UserAgent
-                    };
+                    CommentContent = cmt.CommentContent,
+                    CommentId = commentId,
+                    Email = cmt.Email,
+                    Id = model.Id,
+                    IpAddress = model.IpAddress,
+                    PostId = cmt.PostId,
+                    PubDateUTC = cmt.Post.PostPublish.PubDateUtc,
+                    ReplyContent = model.ReplyContent,
+                    ReplyTimeUtc = model.ReplyTimeUtc,
+                    Slug = cmt.Post.Slug,
+                    Title = cmt.Post.Title,
+                    UserAgent = model.UserAgent
+                };
 
-                    return new SuccessResponse<CommentReplySummary>(summary);
-                }
-
-                return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.DataOperationFailed);
+                return new SuccessResponse<CommentReplySummary>(summary);
             }
             catch (Exception e)
             {
