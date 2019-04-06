@@ -18,12 +18,12 @@ namespace Moonglade.Web.Controllers
 
         private readonly CategoryService _categoryService;
 
-        public CategoryController(MoongladeDbContext context,
+        public CategoryController(
             ILogger<CategoryController> logger,
             IOptions<AppSettings> settings,
-            CategoryService categoryService, 
+            CategoryService categoryService,
             PostService postService)
-            : base(context, logger, settings)
+            : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;

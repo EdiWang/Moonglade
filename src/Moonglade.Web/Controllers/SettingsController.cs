@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
@@ -35,7 +34,7 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        public SettingsController(MoongladeDbContext context,
+        public SettingsController(
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
             IApplicationLifetime appLifetime,
@@ -43,7 +42,7 @@ namespace Moonglade.Web.Controllers
             FriendLinkService friendLinkService,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(context, logger, settings)
+            : base(logger, settings)
         {
             _applicationLifetime = appLifetime;
 

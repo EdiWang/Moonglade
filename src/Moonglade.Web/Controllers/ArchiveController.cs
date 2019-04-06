@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
-using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Moonglade.Model;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
@@ -19,11 +14,11 @@ namespace Moonglade.Web.Controllers
         private readonly CategoryService _categoryService;
         private readonly PostService _postService;
 
-        public ArchiveController(MoongladeDbContext context,
+        public ArchiveController(
             ILogger<PostController> logger,
             CategoryService categoryService,
             PostService postService)
-            : base(context, logger)
+            : base(logger)
         {
             _categoryService = categoryService;
             _postService = postService;

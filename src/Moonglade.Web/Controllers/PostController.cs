@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
@@ -27,15 +26,15 @@ namespace Moonglade.Web.Controllers
         private readonly PingbackSender _pingbackSender;
         private readonly LinkGenerator _linkGenerator;
 
-        public PostController(MoongladeDbContext context,
+        public PostController(
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
             IHttpContextAccessor accessor,
-            PostService postService, 
-            CategoryService categoryService, 
-            PingbackSender pingbackSender, 
+            PostService postService,
+            CategoryService categoryService,
+            PingbackSender pingbackSender,
             LinkGenerator linkGenerator)
-            : base(context, logger, settings, accessor: accessor)
+            : base(logger, settings, accessor: accessor)
         {
             _postService = postService;
             _categoryService = categoryService;
