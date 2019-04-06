@@ -2,7 +2,7 @@
 @using Moonglade.Core
 @using Moonglade.Model.Settings
 @inject IOptions<AppSettings> Settings
-@model List<Moonglade.Data.Entities.Comment>
+@model IReadOnlyList<Moonglade.Data.Entities.Comment>
 
 @if (null != Model && Model.Any())
 {

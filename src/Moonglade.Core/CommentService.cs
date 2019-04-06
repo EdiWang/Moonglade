@@ -43,24 +43,19 @@ namespace Moonglade.Core
 
         public int CountForApproved => _commentRepository.Count(c => c.IsApproved.GetValueOrDefault());
 
-        public async Task<Response<List<Comment>>> GetRecentCommentsAsync(int top)
+        public async Task<Response<IReadOnlyList<Comment>>> GetRecentCommentsAsync(int top)
         {
             try
             {
-                var recentComments = Context.Comment.Include(c => c.Post)
-                                            .ThenInclude(p => p.PostPublish)
-                                            .Where(c => c.IsApproved.Value)
-                                            .OrderByDescending(c => c.CreateOnUtc)
-                                            .Take(top)
-                                            .AsNoTracking();
+                var spec = new RecentCommentSpec(top);
+                var list = await _commentRepository.GetAsync(spec);
 
-                var list = await recentComments.ToListAsync();
-                return new SuccessResponse<List<Comment>>(list);
+                return new SuccessResponse<IReadOnlyList<Comment>>(list);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetRecentCommentsAsync)}");
-                return new FailedResponse<List<Comment>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<Comment>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
@@ -74,22 +69,16 @@ namespace Moonglade.Core
             return Context.Comment;
         }
 
-        public IQueryable<Comment> GetPagedComment(int pageSize, int pageIndex)
+        public IReadOnlyList<Comment> GetPagedComment(int pageSize, int pageIndex)
         {
             if (pageSize < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
             }
 
-            var startRow = (pageIndex - 1) * pageSize;
-            var query = Context.Comment.Include(c => c.Post)
-                                        .Include(c => c.CommentReply)
-                                        .Where(c => c.IsApproved.Value)
-                                        .OrderByDescending(p => p.CreateOnUtc)
-                                        .Skip(startRow)
-                                        .Take(pageSize);//.AsNoTracking();
-
-            return query;
+            var spec = new PagedCommentSepc(pageSize, pageIndex);
+            var comments = _commentRepository.Get(spec, false);
+            return comments;
         }
 
         public Response SetApprovalStatus(Guid commentId, bool isApproved)
