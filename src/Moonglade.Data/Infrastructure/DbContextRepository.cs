@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -152,6 +151,15 @@ namespace Moonglade.Data.Infrastructure
                 return await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync();
             }
             return await DbContext.Set<T>().Select(selector).ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+        {
+            if (asNoTracking)
+            {
+                return await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync();
+            }
+            return await ApplySpecification(spec).Select(selector).ToListAsync();
         }
 
         public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(

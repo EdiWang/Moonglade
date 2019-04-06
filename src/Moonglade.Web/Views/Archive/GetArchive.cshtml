@@ -3,7 +3,7 @@
 @using Moonglade.Model.Settings
 
 @inject IOptions<AppSettings> Settings
-@model List<PostArchiveItemViewModel>
+@model IReadOnlyList<Moonglade.Model.PostArchiveItemModel>
 
 @{
     ViewBag.TitlePrefix = $"All Posts in {ViewBag.ArchiveInfo}";

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Moonglade.Web.Models
+namespace Moonglade.Model
 {
-    public class PostArchiveItemViewModel
+    public class PostArchiveItemModel
     {
         public string Title { get; set; }
 

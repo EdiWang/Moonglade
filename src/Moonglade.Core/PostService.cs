@@ -2,35 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 
 namespace Moonglade.Core
 {
     public class PostService : MoongladeService
     {
+        private readonly IRepository<Post> _postRepository;
+
+        private readonly IRepository<PostExtension> _postExtensionRepository;
+
         public enum StatisticType
         {
             Hits,
             Likes
         }
 
-        public PostService(MoongladeDbContext context, ILogger<PostService> logger) : base(context, logger)
+        public PostService(MoongladeDbContext context,
+            ILogger<PostService> logger,
+            IRepository<Post> postRepository,
+            IRepository<PostExtension> postExtensionRepository) : base(context, logger)
         {
+            _postRepository = postRepository;
+            _postExtensionRepository = postExtensionRepository;
         }
 
-        public int CountForPublic => Context.Post.Count(p => p.PostPublish.IsPublished &&
-                                                               !p.PostPublish.IsDeleted);
+        public int CountForPublic => _postRepository.Count(p => p.PostPublish.IsPublished &&
+                                                          !p.PostPublish.IsDeleted);
 
         public Response UpdatePostStatistic(Guid postId, StatisticType statisticType)
         {
             try
             {
-                var pp = Context.PostExtension.FirstOrDefault(pe => pe.PostId == postId);
+                var pp = _postExtensionRepository.Get(postId);
                 if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
                 if (statisticType == StatisticType.Hits)
@@ -42,7 +54,7 @@ namespace Moonglade.Core
                     pp.Likes += 1;
                 }
 
-                var rows = Context.SaveChanges();
+                int rows = _postExtensionRepository.Update(pp);
                 return new Response(rows > 0);
             }
             catch (Exception e)
@@ -156,13 +168,16 @@ namespace Moonglade.Core
             return query;
         }
 
-        public IQueryable<Post> GetArchivedPosts(int year, int month = 0)
+        public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPosts(int year, int month = 0)
         {
-            var query = Context.Post.Include(p => p.PostPublish)
-                                    .Where(p => p.PostPublish.PubDateUtc.Value.Year == year &&
-                                          (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month)).AsNoTracking();
-
-            return query;
+            var spec = new ArchivedPostSpec(year, month);
+            var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItemModel
+            {
+                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                Slug = p.Slug,
+                Title = p.Title
+            });
+            return list;
         }
 
         public Response<IEnumerable<Post>> GetPostsByTag(string normalizedName)
