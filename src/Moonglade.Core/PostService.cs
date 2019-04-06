@@ -20,6 +20,10 @@ namespace Moonglade.Core
 
         private readonly IRepository<PostExtension> _postExtensionRepository;
 
+        private readonly IRepository<PostPublish> _postPublishRepository;
+
+        private readonly IRepository<Tag> _tagRepository;
+
         public enum StatisticType
         {
             Hits,
@@ -29,10 +33,14 @@ namespace Moonglade.Core
         public PostService(MoongladeDbContext context,
             ILogger<PostService> logger,
             IRepository<Post> postRepository,
-            IRepository<PostExtension> postExtensionRepository) : base(context, logger)
+            IRepository<PostExtension> postExtensionRepository,
+            IRepository<Tag> tagRepository, 
+            IRepository<PostPublish> postPublishRepository) : base(context, logger)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
+            _tagRepository = tagRepository;
+            _postPublishRepository = postPublishRepository;
         }
 
         public int CountForPublic => _postRepository.Count(p => p.PostPublish.IsPublished &&
@@ -245,8 +253,7 @@ namespace Moonglade.Core
 
         public string GetPostTitle(Guid postId)
         {
-            var query = Context.Post.Where(p => p.Id == postId).Select(p => p.Title).FirstOrDefault();
-            return query;
+            return _postRepository.SelectFirstOrDefault(new PostSpec(postId), p => p.Title);
         }
 
         public Response<Post> CreateNewPost(Post postModel, List<string> tags, List<Guid> categoryIds)
@@ -305,7 +312,7 @@ namespace Moonglade.Core
                     var tagsList = new List<Tag>();
                     foreach (var item in tags)
                     {
-                        var tag = Context.Tag.FirstOrDefault(q => q.DisplayName == item);
+                        var tag = _tagRepository.Get(q => q.DisplayName == item);
                         if (null == tag)
                         {
                             // for new tags
@@ -316,8 +323,7 @@ namespace Moonglade.Core
                             };
 
                             tagsList.Add(newTag);
-                            Context.Tag.Add(newTag);
-                            Context.SaveChanges();
+                            _tagRepository.Add(newTag);
                         }
                         else
                         {
@@ -422,11 +428,11 @@ namespace Moonglade.Core
         {
             try
             {
-                var post = Context.Post.Find(postId);
-                if (null == post) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
+                var pp = _postPublishRepository.Get(postId);
+                if (null == pp) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
-                post.PostPublish.IsDeleted = false;
-                var rows = Context.SaveChanges();
+                pp.IsDeleted = false;
+                var rows = _postPublishRepository.Update(pp);
                 return new Response(rows > 0);
             }
             catch (Exception e)
@@ -440,19 +446,20 @@ namespace Moonglade.Core
         {
             try
             {
-                var post = Context.Post.Find(postId);
+                var post = _postRepository.Get(postId);
                 if (null == post) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
+                int rows;
                 if (isRecycle)
                 {
                     post.PostPublish.IsDeleted = true;
+                    rows = _postRepository.Update(post);
                 }
                 else
                 {
-                    Context.Post.Remove(post);
+                    rows = _postRepository.Delete(post);
                 }
 
-                var rows = Context.SaveChanges();
                 return new Response(rows > 0);
             }
             catch (Exception e)

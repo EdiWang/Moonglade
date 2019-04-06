@@ -14,7 +14,7 @@ namespace Moonglade.Data.Spec
 
         //}
 
-        public PostSpec(Guid? categoryId, int? top = null) : 
+        public PostSpec(Guid? categoryId, int? top = null) :
             base(p => !p.PostPublish.IsDeleted &&
                          p.PostPublish.IsPublished &&
                          p.PostPublish.IsFeedIncluded &&
@@ -27,6 +27,11 @@ namespace Moonglade.Data.Spec
             {
                 ApplyPaging(0, top.Value);
             }
+        }
+
+        public PostSpec(Guid postId) : base(p => p.Id == postId)
+        {
+
         }
     }
 }

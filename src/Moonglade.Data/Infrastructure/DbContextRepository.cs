@@ -47,6 +47,13 @@ namespace Moonglade.Data.Infrastructure
                 DbContext.Set<T>().Select(selector).ToList();
         }
 
+        public TResult SelectFirstOrDefault<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+        {
+            return asNoTracking ?
+                ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefault() :
+                ApplySpecification(spec).Select(selector).FirstOrDefault();
+        }
+
         public IReadOnlyList<TResult> Select<TGroup, TResult>(
             Expression<Func<T, TGroup>> groupExpression,
             Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
