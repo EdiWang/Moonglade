@@ -187,45 +187,38 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var postResponse = _postService.GetPost(model.PostId);
-                if (!postResponse.IsSuccess)
-                {
-                    return ServerError();
-                }
-
-                var post = postResponse.Item;
-                if (null == post) return NotFound();
-
-                post.CommentEnabled = model.EnableComment;
-                post.PostContent = HttpUtility.HtmlEncode(model.HtmlContent);
-                post.ContentAbstract = Utils.GetPostAbstract(model.HtmlContent, AppSettings.PostSummaryWords);
-                post.PostPublish.IsPublished = model.IsPublished;
-                post.Slug = model.Slug;
-                post.Title = model.Title;
-                post.PostPublish.ExposedToSiteMap = model.ExposedToSiteMap;
-                post.PostPublish.LastModifiedUtc = DateTime.UtcNow;
-                post.PostPublish.IsFeedIncluded = model.FeedIncluded;
-                post.PostPublish.ContentLanguageCode = model.ContentLanguageCode;
-
                 var tagList = string.IsNullOrWhiteSpace(model.Tags)
                     ? new List<string>()
                     : model.Tags.Split(',').ToList();
 
-                var catIds = model.SelectedCategoryIds.ToList();
+                var request = new CreateEditPostRequest
+                {
+                    PostId = model.PostId,
+                    Title = model.Title.Trim(),
+                    Slug = model.Slug.Trim(),
+                    HtmlContent = model.HtmlContent,
+                    EnableComment = model.EnableComment,
+                    ExposedToSiteMap = model.ExposedToSiteMap,
+                    IsFeedIncluded = model.FeedIncluded,
+                    ContentLanguageCode = model.ContentLanguageCode,
+                    IsPublished = model.IsPublished,
+                    Tags = tagList,
+                    CategoryIds = model.SelectedCategoryIds.ToList()
+                };
 
-                var response = _postService.EditPost(post, tagList, catIds);
+                var response = _postService.EditPost(request);
                 if (response.IsSuccess)
                 {
                     if (model.IsPublished)
                     {
-                        Logger.LogInformation($"Trying to Ping URL for post: {post.Id}");
+                        Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
 
-                        var pubDate = post.PostPublish.PubDateUtc.GetValueOrDefault();
-                        var link = GetPostUrl(_linkGenerator, pubDate, post.Slug);
+                        var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
+                        var link = GetPostUrl(_linkGenerator, pubDate, response.Item.Slug);
 
                         if (AppSettings.EnablePingBackSend)
                         {
-                            Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, post.PostContent); });
+                            Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
                         }
                     }
 

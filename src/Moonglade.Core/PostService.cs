@@ -362,14 +362,26 @@ namespace Moonglade.Core
             }
         }
 
-        public Response EditPost(Post postModel, List<string> tags, List<Guid> categoryIds)
+        public Response<Post> EditPost(CreateEditPostRequest request)
         {
             try
             {
-                if (!postModel.PostPublish.LastModifiedUtc.HasValue)
+                var postModel = _postRepository.Get(request.PostId);
+                if (null == postModel)
                 {
-                    postModel.PostPublish.LastModifiedUtc = DateTime.UtcNow;
+                    return new FailedResponse<Post>((int)ResponseFailureCode.PostNotFound);
                 }
+
+                postModel.CommentEnabled = request.EnableComment;
+                postModel.PostContent = HttpUtility.HtmlEncode(request.HtmlContent);
+                postModel.ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords);
+                postModel.PostPublish.IsPublished = request.IsPublished;
+                postModel.Slug = request.Slug;
+                postModel.Title = request.Title;
+                postModel.PostPublish.ExposedToSiteMap = request.ExposedToSiteMap;
+                postModel.PostPublish.LastModifiedUtc = DateTime.UtcNow;
+                postModel.PostPublish.IsFeedIncluded = request.IsFeedIncluded;
+                postModel.PostPublish.ContentLanguageCode = request.ContentLanguageCode;
 
                 ++postModel.PostPublish.Revision;
 
@@ -380,7 +392,7 @@ namespace Moonglade.Core
                 }
 
                 // 1. Add new tags to tag lib
-                foreach (var item in tags.Where(item => !Context.Tag.Any(p => p.DisplayName == item)))
+                foreach (var item in request.Tags.Where(item => !Context.Tag.Any(p => p.DisplayName == item)))
                 {
                     _tagRepository.Add(new Tag
                     {
@@ -391,9 +403,9 @@ namespace Moonglade.Core
 
                 // 2. update tags
                 postModel.PostTag.Clear();
-                if (tags.Any())
+                if (request.Tags.Any())
                 {
-                    tags.ForEach(t =>
+                    request.Tags.ForEach(t =>
                     {
                         var tag = _tagRepository.Get(_ => _.DisplayName == t);
                         if (tag != null) postModel.PostTag.Add(new PostTag
@@ -406,9 +418,9 @@ namespace Moonglade.Core
 
                 // 3. update categories
                 postModel.PostCategory.Clear();
-                if (null != categoryIds && categoryIds.Count > 0)
+                if (null != request.CategoryIds && request.CategoryIds.Count > 0)
                 {
-                    categoryIds.ForEach(cid =>
+                    request.CategoryIds.ForEach(cid =>
                     {
                         if (_categoryRepository.Any(c => c.Id == cid))
                         {
@@ -422,12 +434,12 @@ namespace Moonglade.Core
                 }
 
                 _postRepository.Update(postModel);
-                return new SuccessResponse();
+                return new SuccessResponse<Post>(postModel);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error Editing Post, PostId: {postModel.Id}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                Logger.LogError(e, $"Error Editing Post, PostId: {request.PostId}");
+                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
             }
         }
 
