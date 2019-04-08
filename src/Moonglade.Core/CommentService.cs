@@ -59,7 +59,7 @@ namespace Moonglade.Core
 
         public IReadOnlyList<Comment> GetApprovedCommentsOfPost(Guid postId)
         {
-            return _commentRepository.Get(new CommentOfPostSpec(postId));
+            return _commentRepository.Get(new CommentOfPostSpec(postId), false);
         }
 
         public IReadOnlyList<CommentGridModel> GetPendingApprovalComments()
