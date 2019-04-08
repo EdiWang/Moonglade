@@ -32,7 +32,7 @@ namespace Moonglade.Core
             BlogConfigurationService blogConfigurationService,
             IHttpContextAccessor httpContextAccessor,
             IRepository<Category> categoryRepository,
-            IRepository<Post> postRepository) : base(logger: logger, settings: settings)
+            IRepository<Post> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _categoryRepository = categoryRepository;
@@ -49,7 +49,7 @@ namespace Moonglade.Core
             var cat = await _categoryRepository.GetAsync(c => c.Title == categoryName);
             if (null != cat)
             {
-                var itemCollection = GetPostsAsFeedItems(cat.Id);
+                var itemCollection = await GetPostsAsFeedItemsAsync(cat.Id);
 
                 var rw = new SyndicationFeedGenerator
                 {
@@ -75,7 +75,7 @@ namespace Moonglade.Core
         public async Task RefreshFeedFileForPostAsync(bool isAtom)
         {
             Logger.LogInformation("Start refreshing feed for posts.");
-            var itemCollection = GetPostsAsFeedItems();
+            var itemCollection = await GetPostsAsFeedItemsAsync();
 
             var rw = new SyndicationFeedGenerator
             {
@@ -103,9 +103,9 @@ namespace Moonglade.Core
             Logger.LogInformation("Finished writing feed for posts.");
         }
 
-        private IReadOnlyList<SimpleFeedItem> GetPostsAsFeedItems(Guid? categoryId = null)
+        private Task<IReadOnlyList<SimpleFeedItem>> GetPostsAsFeedItemsAsync(Guid? categoryId = null)
         {
-            Logger.LogInformation($"{nameof(GetPostsAsFeedItems)} - {nameof(categoryId)}: {categoryId}");
+            Logger.LogInformation($"{nameof(GetPostsAsFeedItemsAsync)} - {nameof(categoryId)}: {categoryId}");
 
             int? top = null;
             if (_blogConfig.FeedSettings.RssItemCount != 0)
@@ -114,7 +114,7 @@ namespace Moonglade.Core
             }
 
             var postSpec = new PostSpec(categoryId, top);
-            var items = _postRepository.Select(postSpec, p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
+            return _postRepository.SelectAsync(postSpec, p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
             {
                 Id = p.Id.ToString(),
                 Title = p.Title,
@@ -125,8 +125,6 @@ namespace Moonglade.Core
                 AuthorEmail = _blogConfig.EmailConfiguration.AdminEmail,
                 Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToList()
             } : null);
-
-            return items;
         }
 
         private string GetPostLink(DateTime pubDateUtc, string slug)

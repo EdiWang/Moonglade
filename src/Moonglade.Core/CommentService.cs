@@ -31,7 +31,7 @@ namespace Moonglade.Core
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             IRepository<Comment> commentRepository,
-            IRepository<CommentReply> commentReplyRepository) : base(logger: logger, settings: settings)
+            IRepository<CommentReply> commentReplyRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _commentRepository = commentRepository;

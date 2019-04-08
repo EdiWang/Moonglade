@@ -6,7 +6,6 @@ using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Web.Filters;
@@ -20,25 +19,25 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("manage")]
-        public IActionResult Manage()
+        public async Task<IActionResult> Manage()
         {
-            var list = _postService.GetPostMetaList(false, true);
+            var list = await _postService.GetPostMetaListAsync();
             return View(list);
         }
 
         [Authorize]
         [Route("manage/draft")]
-        public IActionResult Draft()
+        public async Task<IActionResult> Draft()
         {
-            var list = _postService.GetPostMetaList(false, false);
+            var list = await _postService.GetPostMetaListAsync(false, false);
             return View(list);
         }
 
         [Authorize]
         [Route("manage/recycle-bin")]
-        public IActionResult RecycleBin()
+        public async Task<IActionResult> RecycleBin()
         {
-            var list = _postService.GetPostMetaList(true);
+            var list = await _postService.GetPostMetaListAsync(true);
             return View(list);
         }
 
@@ -254,7 +253,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/delete-from-recycle")]
         public IActionResult DeleteFromRecycleBin(Guid postId)
         {
-            var response = _postService.Delete(postId, false);
+            var response = _postService.Delete(postId);
             if (response.IsSuccess)
             {
                 return Json(postId);

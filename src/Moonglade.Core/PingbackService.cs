@@ -26,7 +26,7 @@ namespace Moonglade.Core
             EmailService emailService,
             PostService postService,
             PingbackReceiver pingbackReceiver,
-            IRepository<PingbackHistory> pingbackRepository) : base(logger: logger)
+            IRepository<PingbackHistory> pingbackRepository) : base(logger)
         {
             _emailService = emailService;
             _postService = postService;

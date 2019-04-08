@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;

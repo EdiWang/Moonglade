@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -30,7 +31,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("list/{categoryName}")]
-        public IActionResult List(string categoryName, int page = 1)
+        public async Task<IActionResult> List(string categoryName, int page = 1)
         {
             if (string.IsNullOrWhiteSpace(categoryName))
             {
@@ -56,7 +57,7 @@ namespace Moonglade.Web.Controllers
             ViewBag.CategoryDescription = cat.Note;
 
             var postCount = _categoryService.GetPostCountByCategoryId(cat.Id);
-            var postList = _postService.GetPagedPosts(pageSize, page, cat.Id);
+            var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
             var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pageSize, postCount);
             return View(postsAsIPagedList);

@@ -40,7 +40,7 @@ namespace Moonglade.Core
             IRepository<PostExtension> postExtensionRepository,
             IRepository<Tag> tagRepository,
             IRepository<PostPublish> postPublishRepository,
-            IRepository<Category> categoryRepository) : base(logger: logger, settings: settings)
+            IRepository<Category> categoryRepository) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -49,8 +49,7 @@ namespace Moonglade.Core
             _categoryRepository = categoryRepository;
         }
 
-        public int CountForPublic => _postRepository.Count(p => p.PostPublish.IsPublished &&
-                                                          !p.PostPublish.IsDeleted);
+        public int CountForPublic => _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
 
         public Response UpdatePostStatistic(Guid postId, StatisticType statisticType)
         {
@@ -145,10 +144,10 @@ namespace Moonglade.Core
             }
         }
 
-        public IReadOnlyList<PostMetaData> GetPostMetaList(bool isDeleted = false, bool? isPublished = true)
+        public Task<IReadOnlyList<PostMetaData>> GetPostMetaListAsync(bool isDeleted = false, bool? isPublished = true)
         {
             var spec = null != isPublished ? new GetPostMetaListSpec(isDeleted, isPublished.Value) : new GetPostMetaListSpec();
-            var posts = _postRepository.Select(spec, p => new PostMetaData
+            return _postRepository.SelectAsync(spec, p => new PostMetaData
             {
                 Id = p.Id,
                 Title = p.Title,
@@ -159,10 +158,9 @@ namespace Moonglade.Core
                 CreateOnUtc = p.CreateOnUtc.Value,
                 Hits = p.PostExtension.Hits
             });
-            return posts;
         }
 
-        public IReadOnlyList<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
+        public Task<IReadOnlyList<Post>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -176,8 +174,7 @@ namespace Moonglade.Core
             }
 
             var spec = new GetPostSpec(pageSize, pageIndex, categoryId);
-            var posts = _postRepository.Get(spec);
-            return posts;
+            return _postRepository.GetAsync(spec);
         }
 
         public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPosts(int year, int month = 0)
