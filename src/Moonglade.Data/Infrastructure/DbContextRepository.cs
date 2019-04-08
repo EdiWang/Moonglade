@@ -40,6 +40,13 @@ namespace Moonglade.Data.Infrastructure
                 ApplySpecification(spec).ToList();
         }
 
+        public T GetFirstOrDefault(ISpecification<T> spec, bool asNoTracking = true)
+        {
+            return asNoTracking ?
+                ApplySpecification(spec).AsNoTracking().FirstOrDefault() :
+                ApplySpecification(spec).FirstOrDefault();
+        }
+
         public IReadOnlyList<TResult> Select<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true)
         {
             return asNoTracking ?

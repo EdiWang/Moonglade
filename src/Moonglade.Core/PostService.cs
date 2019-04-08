@@ -138,17 +138,10 @@ namespace Moonglade.Core
         {
             try
             {
+                
                 var date = new DateTime(year, month, day);
-
-                var post = Context.Post.Include(p => p.PostPublish)
-                                   .Include(p => p.PostExtension)
-                                   .Include(p => p.Comment)
-                                   .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
-                                   .Include(p => p.PostCategory).ThenInclude(pc => pc.Category)
-                                   .FirstOrDefault(p => p.Slug == slug &&
-                                                        p.PostPublish.IsPublished &&
-                                                        p.PostPublish.PubDateUtc.Value.Date == date &&
-                                                       !p.PostPublish.IsDeleted);
+                var spec = new GetPostSpec(date, slug);
+                var post = _postRepository.GetFirstOrDefault(spec);
 
                 return new SuccessResponse<Post>(post);
             }

@@ -17,6 +17,8 @@ namespace Moonglade.Data.Infrastructure
 
         IReadOnlyList<T> Get(ISpecification<T> spec, bool asNoTracking = true);
 
+        T GetFirstOrDefault(ISpecification<T> spec, bool asNoTracking = true);
+
         IReadOnlyList<TResult> Select<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true);
 
         IReadOnlyList<TResult> Select<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true);
