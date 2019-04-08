@@ -86,14 +86,9 @@ namespace Moonglade.Core
                 };
 
                 _pingbackRepository.Add(rpb);
-                var rows = Context.SaveChanges();
 
-                if (rows > 0)
-                {
-                    await NotifyAdminForReceivedPing(pid);
-                    return new SuccessResponse();
-                }
-                return new FailedResponse((int)ResponseFailureCode.DataOperationFailed);
+                await NotifyAdminForReceivedPing(pid);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {

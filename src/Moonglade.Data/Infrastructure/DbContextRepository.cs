@@ -130,9 +130,9 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.Set<T>().Count(condition);
         }
 
-        public bool Any(Expression<Func<T, bool>> condition)
+        public bool Any(Expression<Func<T, bool>> condition = null)
         {
-            return DbContext.Set<T>().Any(condition);
+            return null != condition ? DbContext.Set<T>().Any(condition) : DbContext.Set<T>().Any();
         }
 
         public virtual Task<T> GetAsync(object key)

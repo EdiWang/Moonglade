@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -18,8 +17,10 @@ namespace Moonglade.Core
         private readonly IRepository<Tag> _tagRepository;
         private readonly IRepository<PostTag> _postTagRepository;
 
-        public TagService(MoongladeDbContext context, ILogger<TagService> logger,
-            IRepository<Tag> tagRepository, IRepository<PostTag> postTagRepository) : base(context, logger)
+        public TagService(
+            ILogger<TagService> logger,
+            IRepository<Tag> tagRepository,
+            IRepository<PostTag> postTagRepository) : base(logger)
         {
             _tagRepository = tagRepository;
             _postTagRepository = postTagRepository;
@@ -76,32 +77,29 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task<Response<List<TagInfo>>> GetHotTagsAsync(int top)
+        public async Task<Response<IReadOnlyList<TagInfo>>> GetHotTagsAsync(int top)
         {
             try
             {
-                if (Context.Tag.Any())
+                if (_tagRepository.Any())
                 {
-                    // TODO: Refact this Context to Repository
-                    var hotTags = Context.Tag.OrderByDescending(p => p.PostTag.Count)
-                                             .Take(top).AsNoTracking()
-                                             .Select(t => new TagInfo
-                                             {
-                                                 TagCount = t.PostTag.Count,
-                                                 TagName = t.DisplayName,
-                                                 NormalizedTagName = t.NormalizedName
-                                             });
+                    var spec = new TagSpec(top);
+                    var hotTags = await _tagRepository.SelectAsync(spec, t => new TagInfo
+                    {
+                        TagCount = t.PostTag.Count,
+                        TagName = t.DisplayName,
+                        NormalizedTagName = t.NormalizedName
+                    });
 
-                    var list = await hotTags.ToListAsync();
-                    return new SuccessResponse<List<TagInfo>>(list);
+                    return new SuccessResponse<IReadOnlyList<TagInfo>>(hotTags);
                 }
 
-                return new SuccessResponse<List<TagInfo>>(new List<TagInfo>());
+                return new SuccessResponse<IReadOnlyList<TagInfo>>(new List<TagInfo>());
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetHotTagsAsync)}");
-                return new FailedResponse<List<TagInfo>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException);
             }
         }
 

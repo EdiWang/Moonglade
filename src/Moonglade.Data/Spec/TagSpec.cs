@@ -7,10 +7,12 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec
 {
-    public class TagSpec : BaseSpecification<Tag>
+    public sealed class TagSpec : BaseSpecification<Tag>
     {
-        public TagSpec(Expression<Func<Tag, bool>> criteria) : base(criteria)
+        public TagSpec(int top) : base(t => true)
         {
+            ApplyPaging(0,top);
+            ApplyOrderByDescending(p => p.PostTag.Count);
         }
     }
 }

@@ -15,7 +15,8 @@ namespace Moonglade.Core
     {
         private readonly IRepository<FriendLink> _friendlinkRepository;
 
-        public FriendLinkService(ILogger<FriendLinkService> logger,
+        public FriendLinkService(
+            ILogger<FriendLinkService> logger,
             IOptions<AppSettings> settings,
             IRepository<FriendLink> friendlinkRepository) : base(logger: logger, settings: settings)
         {
