@@ -26,6 +26,11 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.Set<T>().FirstOrDefault(condition);
         }
 
+        public IQueryable<T> GetAsQueryable()
+        {
+            return DbContext.Set<T>();
+        }
+
         public IReadOnlyList<T> Get(bool asNoTracking = true)
         {
             return asNoTracking ?

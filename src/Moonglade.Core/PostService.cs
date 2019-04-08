@@ -8,7 +8,6 @@ using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -27,8 +26,6 @@ namespace Moonglade.Core
 
         private readonly IRepository<Tag> _tagRepository;
 
-        private readonly IRepository<PostTag> _postTagRepository;
-
         private readonly IRepository<Category> _categoryRepository;
 
         public enum StatisticType
@@ -37,22 +34,19 @@ namespace Moonglade.Core
             Likes
         }
 
-        public PostService(MoongladeDbContext context,
-            ILogger<PostService> logger,
+        public PostService(ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<Post> postRepository,
             IRepository<PostExtension> postExtensionRepository,
             IRepository<Tag> tagRepository,
             IRepository<PostPublish> postPublishRepository,
-            IRepository<Category> categoryRepository,
-            IRepository<PostTag> postTagRepository) : base(context, logger, settings)
+            IRepository<Category> categoryRepository) : base(logger: logger, settings: settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
             _tagRepository = tagRepository;
             _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
-            _postTagRepository = postTagRepository;
         }
 
         public int CountForPublic => _postRepository.Count(p => p.PostPublish.IsPublished &&
@@ -88,13 +82,8 @@ namespace Moonglade.Core
         {
             try
             {
-                var post = Context.Post.Include(p => p.PostPublish)
-                                       .Include(p => p.PostTag)
-                                       .ThenInclude(pt => pt.Tag)
-                                       .Include(p => p.PostCategory)
-                                       .ThenInclude(pc => pc.Category)
-                                       .FirstOrDefault(p => p.Id == id);
-
+                var spec = new GetPostSpec(id);
+                var post = _postRepository.GetFirstOrDefault(spec);
                 return new SuccessResponse<Post>(post);
             }
             catch (Exception e)
@@ -173,7 +162,7 @@ namespace Moonglade.Core
             return posts;
         }
 
-        public IQueryable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
+        public IReadOnlyList<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -186,19 +175,9 @@ namespace Moonglade.Core
                     $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
             }
 
-            var startRow = (pageIndex - 1) * pageSize;
-            var query = Context.Post.Where(p => !p.PostPublish.IsDeleted &&
-                                           p.PostPublish.IsPublished &&
-                                           (categoryId == null || p.PostCategory.Select(c => c.CategoryId).Contains(categoryId.Value)))
-                                    .Include(p => p.PostPublish)
-                                    .Include(p => p.PostExtension)
-                                    .Include(p => p.PostTag)
-                                       .ThenInclude(pt => pt.Tag)
-                                    .OrderByDescending(p => p.PostPublish.PubDateUtc)
-                                    .Skip(startRow)
-                                    .Take(pageSize).AsNoTracking();
-
-            return query;
+            var spec = new GetPostSpec(pageSize, pageIndex, categoryId);
+            var posts = _postRepository.Get(spec);
+            return posts;
         }
 
         public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPosts(int year, int month = 0)
@@ -217,15 +196,11 @@ namespace Moonglade.Core
         {
             try
             {
-                //var posts = Context.PostTag
-                //                   .Where(pt => pt.Tag.NormalizedName == normalizedName)
-                //                   .Select(pt => pt.Post)
-                //                   .Include(p => p.PostPublish).ToList();
-
-                var posts = Context.Tag.Where(t => t.NormalizedName == normalizedName)
-                                       .SelectMany(p => p.PostTag)
-                                       .Select(p => p.Post)
-                                       .Include(p => p.PostPublish).ToList();
+                var posts = _tagRepository.GetAsQueryable()
+                                          .Where(t => t.NormalizedName == normalizedName)
+                                          .SelectMany(p => p.PostTag)
+                                          .Select(p => p.Post)
+                                          .Include(p => p.PostPublish).ToList();
 
                 return new SuccessResponse<IReadOnlyList<Post>>(posts);
             }
@@ -255,10 +230,11 @@ namespace Moonglade.Core
 
         private IEnumerable<Post> SearchPostByKeyword(string keyword)
         {
-            var query = Context.Post.Include(p => p.PostPublish)
-                                    .Include(p => p.PostTag)
-                                    .ThenInclude(pt => pt.Tag)
-                                    .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished).AsNoTracking();
+            var query = _postRepository.GetAsQueryable()
+                                       .Include(p => p.PostPublish)
+                                       .Include(p => p.PostTag)
+                                       .ThenInclude(pt => pt.Tag)
+                                       .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished).AsNoTracking();
 
             var str = Regex.Replace(keyword, @"\s+", " ");
             var rst = str.Split(' ');
@@ -414,7 +390,7 @@ namespace Moonglade.Core
                 }
 
                 // 1. Add new tags to tag lib
-                foreach (var item in request.Tags.Where(item => !Context.Tag.Any(p => p.DisplayName == item)))
+                foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
                 {
                     _tagRepository.Add(new Tag
                     {
