@@ -3,7 +3,7 @@
 @using Moonglade.Model.Settings
 
 @inject IOptions<AppSettings> Settings
-@model List<Moonglade.Data.Entities.Post>
+@model IReadOnlyList<Moonglade.Data.Entities.Post>
 
 @section head{
     <style>

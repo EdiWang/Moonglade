@@ -7,8 +7,8 @@ using Edi.TemplateEmail.NetStd;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -16,16 +16,21 @@ namespace Moonglade.Core
 {
     public class EmailService : MoongladeService
     {
+        private readonly IRepository<Post> _postRepository;
+
         private EmailHelper EmailHelper { get; }
 
         private readonly BlogConfig _blogConfig;
 
-        public EmailService(MoongladeDbContext context,
-            ILogger<EmailService> logger, IOptions<AppSettings> settings,
+        public EmailService(
+            ILogger<EmailService> logger, 
+            IOptions<AppSettings> settings,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService) : base(context, logger, settings)
+            BlogConfigurationService blogConfigurationService,
+            IRepository<Post> postRepository) : base(logger: logger, settings: settings)
         {
             _blogConfig = blogConfig;
+            _postRepository = postRepository;
             _blogConfig.GetConfiguration(blogConfigurationService);
 
             var configSource = $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\mailConfiguration.xml";
@@ -137,7 +142,7 @@ namespace Moonglade.Core
 
         public async Task SendPingNotification(PingbackHistory receivedPingback)
         {
-            var post = Context.Post.Find(receivedPingback.TargetPostId);
+            var post = _postRepository.Get(receivedPingback.TargetPostId);
             if (null != post)
             {
                 Logger.LogInformation($"Sending BeingPinged mail for post id {receivedPingback.TargetPostId}");

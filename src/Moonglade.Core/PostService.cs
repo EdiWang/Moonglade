@@ -2,35 +2,61 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
+using Microsoft.Extensions.Options;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
+using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
     public class PostService : MoongladeService
     {
+        private readonly IRepository<Post> _postRepository;
+
+        private readonly IRepository<PostExtension> _postExtensionRepository;
+
+        private readonly IRepository<PostPublish> _postPublishRepository;
+
+        private readonly IRepository<Tag> _tagRepository;
+
+        private readonly IRepository<Category> _categoryRepository;
+
         public enum StatisticType
         {
             Hits,
             Likes
         }
 
-        public PostService(MoongladeDbContext context, ILogger<PostService> logger) : base(context, logger)
+        public PostService(ILogger<PostService> logger,
+            IOptions<AppSettings> settings,
+            IRepository<Post> postRepository,
+            IRepository<PostExtension> postExtensionRepository,
+            IRepository<Tag> tagRepository,
+            IRepository<PostPublish> postPublishRepository,
+            IRepository<Category> categoryRepository) : base(logger: logger, settings: settings)
         {
+            _postRepository = postRepository;
+            _postExtensionRepository = postExtensionRepository;
+            _tagRepository = tagRepository;
+            _postPublishRepository = postPublishRepository;
+            _categoryRepository = categoryRepository;
         }
 
-        public int CountForPublic => Context.Post.Count(p => p.PostPublish.IsPublished &&
-                                                               !p.PostPublish.IsDeleted);
+        public int CountForPublic => _postRepository.Count(p => p.PostPublish.IsPublished &&
+                                                          !p.PostPublish.IsDeleted);
 
         public Response UpdatePostStatistic(Guid postId, StatisticType statisticType)
         {
             try
             {
-                var pp = Context.PostExtension.FirstOrDefault(pe => pe.PostId == postId);
+                var pp = _postExtensionRepository.Get(postId);
                 if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
                 if (statisticType == StatisticType.Hits)
@@ -42,7 +68,7 @@ namespace Moonglade.Core
                     pp.Likes += 1;
                 }
 
-                var rows = Context.SaveChanges();
+                int rows = _postExtensionRepository.Update(pp);
                 return new Response(rows > 0);
             }
             catch (Exception e)
@@ -56,13 +82,8 @@ namespace Moonglade.Core
         {
             try
             {
-                var post = Context.Post.Include(p => p.PostPublish)
-                                       .Include(p => p.PostTag)
-                                       .ThenInclude(pt => pt.Tag)
-                                       .Include(p => p.PostCategory)
-                                       .ThenInclude(pc => pc.Category)
-                                       .FirstOrDefault(p => p.Id == id);
-
+                var spec = new GetPostSpec(id);
+                var post = _postRepository.GetFirstOrDefault(spec);
                 return new SuccessResponse<Post>(post);
             }
             catch (Exception e)
@@ -72,7 +93,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<Post> GetPost(string url)
+        public Response<(Guid Id, string Title)> GetPostIdTitle(string url)
         {
             try
             {
@@ -89,12 +110,20 @@ namespace Moonglade.Core
                 var day = int.Parse(match.Groups["dd"].Value);
                 var slug = match.Groups["slug"].Value;
 
-                var post = GetPost(year, month, day, slug.Trim());
-                return post;
+                var date = new DateTime(year, month, day);
+
+                var post = _postRepository.Get(p => p.Slug == slug &&
+                                               p.PostPublish.PubDateUtc.GetValueOrDefault().Date == date.Date &&
+                                               p.PostPublish.IsPublished &&
+                                               !p.PostPublish.IsDeleted);
+
+                return null == post ?
+                    new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound) :
+                    new Response<(Guid, string)>((post.Id, post.Title));
             }
             catch (Exception ex)
             {
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
+                return new FailedResponse<(Guid, string)>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
             }
         }
 
@@ -102,17 +131,10 @@ namespace Moonglade.Core
         {
             try
             {
-                var post = Context.Post.Include(p => p.PostPublish)
-                                   .Include(p => p.PostExtension)
-                                   .Include(p => p.Comment)
-                                   .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
-                                   .Include(p => p.PostCategory).ThenInclude(pc => pc.Category)
-                                   .FirstOrDefault(p => p.Slug == slug &&
-                                                   p.PostPublish.PubDateUtc.Value.Year == year &&
-                                                   p.PostPublish.PubDateUtc.Value.Month == month &&
-                                                   p.PostPublish.PubDateUtc.Value.Day == day &&
-                                                   p.PostPublish.IsPublished &&
-                                                   !p.PostPublish.IsDeleted);
+
+                var date = new DateTime(year, month, day);
+                var spec = new GetPostSpec(date, slug);
+                var post = _postRepository.GetFirstOrDefault(spec);
 
                 return new SuccessResponse<Post>(post);
             }
@@ -123,12 +145,24 @@ namespace Moonglade.Core
             }
         }
 
-        public IQueryable<Post> GetPosts()
+        public IReadOnlyList<PostMetaData> GetPostMetaList(bool isDeleted = false, bool? isPublished = true)
         {
-            return Context.Post;
+            var spec = null != isPublished ? new GetPostMetaListSpec(isDeleted, isPublished.Value) : new GetPostMetaListSpec();
+            var posts = _postRepository.Select(spec, p => new PostMetaData
+            {
+                Id = p.Id,
+                Title = p.Title,
+                PubDateUtc = p.PostPublish.PubDateUtc,
+                IsPublished = p.PostPublish.IsPublished,
+                IsDeleted = p.PostPublish.IsDeleted,
+                Revision = p.PostPublish.Revision,
+                CreateOnUtc = p.CreateOnUtc.Value,
+                Hits = p.PostExtension.Hits
+            });
+            return posts;
         }
 
-        public IQueryable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
+        public IReadOnlyList<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -141,45 +175,39 @@ namespace Moonglade.Core
                     $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
             }
 
-            var startRow = (pageIndex - 1) * pageSize;
-            var query = Context.Post.Where(p => !p.PostPublish.IsDeleted &&
-                                           p.PostPublish.IsPublished &&
-                                           (categoryId == null || p.PostCategory.Select(c => c.CategoryId).Contains(categoryId.Value)))
-                                    .Include(p => p.PostPublish)
-                                    .Include(p => p.PostExtension)
-                                    .Include(p => p.PostTag)
-                                       .ThenInclude(pt => pt.Tag)
-                                    .OrderByDescending(p => p.PostPublish.PubDateUtc)
-                                    .Skip(startRow)
-                                    .Take(pageSize).AsNoTracking();
-
-            return query;
+            var spec = new GetPostSpec(pageSize, pageIndex, categoryId);
+            var posts = _postRepository.Get(spec);
+            return posts;
         }
 
-        public IQueryable<Post> GetArchivedPosts(int year, int month = 0)
+        public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPosts(int year, int month = 0)
         {
-            var query = Context.Post.Include(p => p.PostPublish)
-                                    .Where(p => p.PostPublish.PubDateUtc.Value.Year == year &&
-                                          (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month)).AsNoTracking();
-
-            return query;
+            var spec = new ArchivedPostSpec(year, month);
+            var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItemModel
+            {
+                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                Slug = p.Slug,
+                Title = p.Title
+            });
+            return list;
         }
 
-        public Response<IEnumerable<Post>> GetPostsByTag(string normalizedName)
+        public Response<IReadOnlyList<Post>> GetPostsByTag(string normalizedName)
         {
             try
             {
-                var posts = Context.PostTag
-                                   .Where(pt => pt.Tag.NormalizedName == normalizedName)
-                                   .Select(pt => pt.Post)
-                                   .Include(p => p.PostPublish).AsNoTracking();
+                var posts = _tagRepository.GetAsQueryable()
+                                          .Where(t => t.NormalizedName == normalizedName)
+                                          .SelectMany(p => p.PostTag)
+                                          .Select(p => p.Post)
+                                          .Include(p => p.PostPublish).ToList();
 
-                return new SuccessResponse<IEnumerable<Post>>(posts);
+                return new SuccessResponse<IReadOnlyList<Post>>(posts);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetPostsByTag)}(normalizedName: {normalizedName})");
-                return new FailedResponse<IEnumerable<Post>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<Post>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
@@ -202,10 +230,11 @@ namespace Moonglade.Core
 
         private IEnumerable<Post> SearchPostByKeyword(string keyword)
         {
-            var query = Context.Post.Include(p => p.PostPublish)
-                                    .Include(p => p.PostTag)
-                                    .ThenInclude(pt => pt.Tag)
-                                    .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished).AsNoTracking();
+            var query = _postRepository.GetAsQueryable()
+                                       .Include(p => p.PostPublish)
+                                       .Include(p => p.PostTag)
+                                       .ThenInclude(pt => pt.Tag)
+                                       .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished).AsNoTracking();
 
             var str = Regex.Replace(keyword, @"\s+", " ");
             var rst = str.Split(' ');
@@ -230,37 +259,41 @@ namespace Moonglade.Core
 
         public string GetPostTitle(Guid postId)
         {
-            var query = Context.Post.Where(p => p.Id == postId).Select(p => p.Title).FirstOrDefault();
-            return query;
+            return _postRepository.SelectFirstOrDefault(new PostSpec(postId), p => p.Title);
         }
 
-        public Response<Post> CreateNewPost(Post postModel, List<string> tags, List<Guid> categoryIds)
+        public Response<Post> CreateNewPost(CreateEditPostRequest request)
         {
             try
             {
-                // check required fields
-                if (string.IsNullOrWhiteSpace(postModel.Title))
+                var postModel = new Post
                 {
-                    throw new ArgumentNullException(nameof(postModel.Title));
-                }
-                if (string.IsNullOrWhiteSpace(postModel.PostContent))
-                {
-                    throw new ArgumentNullException(nameof(postModel.PostContent));
-                }
+                    CommentEnabled = request.EnableComment,
+                    Id = request.PostId,
+                    PostContent = HttpUtility.HtmlEncode(request.HtmlContent),
+                    ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords),
+                    CreateOnUtc = DateTime.UtcNow,
+                    Slug = request.Slug.Trim(),
+                    Title = request.Title.Trim(),
+                    PostPublish = new PostPublish
+                    {
+                        IsDeleted = false,
+                        IsPublished = request.IsPublished,
+                        PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
+                        ExposedToSiteMap = request.ExposedToSiteMap,
+                        IsFeedIncluded = request.IsFeedIncluded,
+                        Revision = 0,
+                        ContentLanguageCode = request.ContentLanguageCode
+                    }
+                };
 
                 // add default values if fields are not assigned
                 ApplyDefaultValuesOnPost(postModel);
 
                 // check if exist same slug under the same day
-                // linq to sql fix:
-                // cannot write "p.PubDateUTC.Date == DateTime.Now.Date"
-                // it will blow up "The specified type member 'Date' is not supported in LINQ to Entities"
-                var today = DateTime.UtcNow.Date;
-                if (null != Context.Post.FirstOrDefault(p =>
-                           p.Slug == postModel.Slug &&
-                           p.PostPublish.PubDateUtc.Value.Year == today.Year &&
-                           p.PostPublish.PubDateUtc.Value.Month == today.Month &&
-                           p.PostPublish.PubDateUtc.Value.Day == today.Day))
+                if (_postRepository.Any(p =>
+                    p.Slug == postModel.Slug &&
+                    p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date))
                 {
                     var uid = Guid.NewGuid();
                     postModel.Slug += $"-{uid.ToString().Substring(0, 8)}";
@@ -268,16 +301,15 @@ namespace Moonglade.Core
                 }
 
                 // add categories
-                if (null != categoryIds && categoryIds.Count > 0)
+                if (null != request.CategoryIds && request.CategoryIds.Count > 0)
                 {
-                    categoryIds.ForEach(cid =>
+                    request.CategoryIds.ForEach(cid =>
                     {
-                        var cat = Context.Category.Find(cid);
-                        if (null != cat)
+                        if (_categoryRepository.Any(c => c.Id == cid))
                         {
                             postModel.PostCategory.Add(new PostCategory
                             {
-                                CategoryId = cat.Id,
+                                CategoryId = cid,
                                 PostId = postModel.Id
                             });
                         }
@@ -285,12 +317,12 @@ namespace Moonglade.Core
                 }
 
                 // add tags
-                if (null != tags && tags.Count > 0)
+                if (null != request.Tags && request.Tags.Count > 0)
                 {
                     var tagsList = new List<Tag>();
-                    foreach (var item in tags)
+                    foreach (var item in request.Tags)
                     {
-                        var tag = Context.Tag.FirstOrDefault(q => q.DisplayName == item);
+                        var tag = _tagRepository.Get(q => q.DisplayName == item);
                         if (null == tag)
                         {
                             // for new tags
@@ -301,8 +333,7 @@ namespace Moonglade.Core
                             };
 
                             tagsList.Add(newTag);
-                            Context.Tag.Add(newTag);
-                            Context.SaveChanges();
+                            _tagRepository.Add(newTag);
                         }
                         else
                         {
@@ -318,10 +349,7 @@ namespace Moonglade.Core
                     }));
                 }
 
-                Context.Post.Add(postModel);
-                var rows = Context.SaveChanges();
-                if (rows <= 0) return new FailedResponse<Post>((int)ResponseFailureCode.DataOperationFailed);
-
+                _postRepository.Add(postModel);
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
                 return new SuccessResponse<Post>(postModel);
             }
@@ -332,14 +360,26 @@ namespace Moonglade.Core
             }
         }
 
-        public Response EditPost(Post postModel, List<string> tags, List<Guid> categoryIds)
+        public Response<Post> EditPost(CreateEditPostRequest request)
         {
             try
             {
-                if (!postModel.PostPublish.LastModifiedUtc.HasValue)
+                var postModel = _postRepository.Get(request.PostId);
+                if (null == postModel)
                 {
-                    postModel.PostPublish.LastModifiedUtc = DateTime.UtcNow;
+                    return new FailedResponse<Post>((int)ResponseFailureCode.PostNotFound);
                 }
+
+                postModel.CommentEnabled = request.EnableComment;
+                postModel.PostContent = HttpUtility.HtmlEncode(request.HtmlContent);
+                postModel.ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords);
+                postModel.PostPublish.IsPublished = request.IsPublished;
+                postModel.Slug = request.Slug;
+                postModel.Title = request.Title;
+                postModel.PostPublish.ExposedToSiteMap = request.ExposedToSiteMap;
+                postModel.PostPublish.LastModifiedUtc = DateTime.UtcNow;
+                postModel.PostPublish.IsFeedIncluded = request.IsFeedIncluded;
+                postModel.PostPublish.ContentLanguageCode = request.ContentLanguageCode;
 
                 ++postModel.PostPublish.Revision;
 
@@ -350,23 +390,22 @@ namespace Moonglade.Core
                 }
 
                 // 1. Add new tags to tag lib
-                foreach (var item in tags.Where(item => !Context.Tag.Any(p => p.DisplayName == item)))
+                foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
                 {
-                    Context.Tag.Add(new Tag
+                    _tagRepository.Add(new Tag
                     {
                         DisplayName = item,
                         NormalizedName = Utils.NormalizeTagName(item)
                     });
                 }
-                Context.SaveChanges();
 
                 // 2. update tags
                 postModel.PostTag.Clear();
-                if (tags.Any())
+                if (request.Tags.Any())
                 {
-                    tags.ForEach(t =>
+                    request.Tags.ForEach(t =>
                     {
-                        var tag = Context.Tag.FirstOrDefault(_ => _.DisplayName == t);
+                        var tag = _tagRepository.Get(_ => _.DisplayName == t);
                         if (tag != null) postModel.PostTag.Add(new PostTag
                         {
                             PostId = postModel.Id,
@@ -377,29 +416,28 @@ namespace Moonglade.Core
 
                 // 3. update categories
                 postModel.PostCategory.Clear();
-                if (null != categoryIds && categoryIds.Count > 0)
+                if (null != request.CategoryIds && request.CategoryIds.Count > 0)
                 {
-                    categoryIds.ForEach(cid =>
+                    request.CategoryIds.ForEach(cid =>
                     {
-                        var cat = Context.Category.Find(cid);
-                        if (null != cat)
+                        if (_categoryRepository.Any(c => c.Id == cid))
                         {
                             postModel.PostCategory.Add(new PostCategory
                             {
                                 PostId = postModel.Id,
-                                CategoryId = cat.Id
+                                CategoryId = cid
                             });
                         }
                     });
                 }
 
-                Context.SaveChanges();
-                return new SuccessResponse();
+                _postRepository.Update(postModel);
+                return new SuccessResponse<Post>(postModel);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error Editing Post, PostId: {postModel.Id}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                Logger.LogError(e, $"Error Editing Post, PostId: {request.PostId}");
+                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
             }
         }
 
@@ -407,11 +445,11 @@ namespace Moonglade.Core
         {
             try
             {
-                var post = Context.Post.Find(postId);
-                if (null == post) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
+                var pp = _postPublishRepository.Get(postId);
+                if (null == pp) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
-                post.PostPublish.IsDeleted = false;
-                var rows = Context.SaveChanges();
+                pp.IsDeleted = false;
+                var rows = _postPublishRepository.Update(pp);
                 return new Response(rows > 0);
             }
             catch (Exception e)
@@ -425,19 +463,20 @@ namespace Moonglade.Core
         {
             try
             {
-                var post = Context.Post.Find(postId);
+                var post = _postRepository.Get(postId);
                 if (null == post) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
+                int rows;
                 if (isRecycle)
                 {
                     post.PostPublish.IsDeleted = true;
+                    rows = _postRepository.Update(post);
                 }
                 else
                 {
-                    Context.Post.Remove(post);
+                    rows = _postRepository.Delete(post);
                 }
 
-                var rows = Context.SaveChanges();
                 return new Response(rows > 0);
             }
             catch (Exception e)

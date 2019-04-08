@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
-using Moonglade.Data;
-using Moonglade.Data.Entities;
-using Moonglade.Web.Models;
+using Moonglade.Model;
 
 namespace Moonglade.Web.Controllers
 {
@@ -17,16 +14,16 @@ namespace Moonglade.Web.Controllers
         private readonly CategoryService _categoryService;
         private readonly PostService _postService;
 
-        public ArchiveController(MoongladeDbContext context,
+        public ArchiveController(
             ILogger<PostController> logger,
-            CategoryService categoryService, 
+            CategoryService categoryService,
             PostService postService)
-            : base(context, logger)
+            : base(logger)
         {
             _categoryService = categoryService;
             _postService = postService;
         }
-        
+
         [Route("")]
         public async Task<IActionResult> Index()
         {
@@ -43,28 +40,20 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            IQueryable<Post> postListQuery;
+            IReadOnlyList<PostArchiveItemModel> model;
+
             if (null != month)
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
-                postListQuery = _postService.GetArchivedPosts(year, month.Value);
+                model = await _postService.GetArchivedPosts(year, month.Value);
             }
             else
             {
                 // {year}
                 ViewBag.ArchiveInfo = $"{year}";
-                postListQuery = _postService.GetArchivedPosts(year);
+                model = await _postService.GetArchivedPosts(year);
             }
-
-            var model = await postListQuery.OrderByDescending(p => p.PostPublish.PubDateUtc)
-                                           .Select(p => new PostArchiveItemViewModel
-                                           {
-                                               PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                                               Slug = p.Slug,
-                                               Title = p.Title
-                                           })
-                                           .ToListAsync();
 
             return View(model);
         }

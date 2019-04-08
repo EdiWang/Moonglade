@@ -3,51 +3,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
 
 namespace Moonglade.Core
 {
     public class CategoryService : MoongladeService
     {
-        public CategoryService(MoongladeDbContext context, ILogger<CategoryService> logger) : base(context, logger)
+        private readonly IRepository<Post> _postRepository;
+
+        private readonly IRepository<Category> _categoryRepository;
+
+        private readonly IRepository<PostCategory> _postCategoryRepository;
+
+        public CategoryService(ILogger<CategoryService> logger,
+            IRepository<Category> categoryRepository,
+            IRepository<PostCategory> postCategoryRepository,
+            IRepository<Post> postRepository) : base(logger: logger)
         {
+            _categoryRepository = categoryRepository;
+            _postCategoryRepository = postCategoryRepository;
+            _postRepository = postRepository;
         }
 
-        public Response<List<Category>> GetAllCategories()
+        public async Task<Response<IReadOnlyList<Category>>> GetAllCategoriesAsync()
         {
             try
             {
-                var item = Context.Category.AsNoTracking().ToList();
-                return new SuccessResponse<List<Category>>(item);
+                var item = await _categoryRepository.GetAsync();
+                return new SuccessResponse<IReadOnlyList<Category>>(item);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetAllCategories)}");
-                return new FailedResponse<List<Category>>((int)ResponseFailureCode.GeneralException);
+                Logger.LogError(e, $"Error {nameof(GetAllCategoriesAsync)}");
+                return new FailedResponse<IReadOnlyList<Category>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
         public int GetPostCountByCategoryId(Guid catId)
         {
-            return Context.PostCategory.Count(c => c.CategoryId == catId);
-        }
-
-        public IQueryable<Category> GetCategoriesAsQueryable()
-        {
-            return Context.Category;
+            return _postCategoryRepository.Count(c => c.CategoryId == catId);
         }
 
         public Response<Category> GetCategory(string categoryName)
         {
             try
             {
-                var cat = Context.Category.AsNoTracking()
-                                          .FirstOrDefault(p => 
-                                           string.Compare(p.Title, categoryName, StringComparison.OrdinalIgnoreCase) == 0);
+                var cat = _categoryRepository.Get(p =>
+                    string.Compare(p.Title, categoryName, StringComparison.OrdinalIgnoreCase) == 0);
 
                 return new SuccessResponse<Category>(cat);
             }
@@ -62,7 +67,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var cat = Context.Category.Find(categoryId);
+                var cat = _categoryRepository.Get(categoryId);
                 if (null != cat)
                 {
                     return new SuccessResponse<Category>(cat);
@@ -77,58 +82,54 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task<Response<List<CategoryInfo>>> GetCategoryListAsync()
+        public async Task<Response<IReadOnlyList<CategoryInfo>>> GetCategoryListAsync()
         {
             try
             {
-                var query = Context.Category.Select(c => new CategoryInfo
+                var list = await _categoryRepository.SelectAsync(c => new CategoryInfo
                 {
                     Id = c.Id,
                     DisplayName = c.DisplayName,
                     Name = c.Title,
                     Note = c.Note
-                }).AsNoTracking();
+                });
 
-                var list = await query.ToListAsync();
-                return new SuccessResponse<List<CategoryInfo>>(list);
+                return new SuccessResponse<IReadOnlyList<CategoryInfo>>(list);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetCategoryListAsync)}");
-                return new FailedResponse<List<CategoryInfo>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<CategoryInfo>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public async Task<Response<List<ArchiveItem>>> GetArchiveListAsync()
+        public async Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
         {
             try
             {
-                if (!Context.Post.Any())
+                if (!_postRepository.Any(p =>
+                    p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
                 {
-                    return new SuccessResponse<List<ArchiveItem>>();
+                    return new SuccessResponse<IReadOnlyList<ArchiveItem>>();
                 }
 
-                var query = from post in Context.Post
-                            group post by new
-                            {
-                                year = post.PostPublish.PubDateUtc.Value.Year,
-                                month = post.PostPublish.PubDateUtc.Value.Month
-                            }
-                            into monthList
-                            select new ArchiveItem
-                            {
-                                Year = monthList.Key.year,
-                                Month = monthList.Key.month,
-                                Count = monthList.Select(p => p.Id).Count()
-                            };
+                var list = await _postRepository.SelectAsync(post => new
+                {
+                    year = post.PostPublish.PubDateUtc.Value.Year,
+                    month = post.PostPublish.PubDateUtc.Value.Month
+                }, monthList => new ArchiveItem
+                {
+                    Year = monthList.Key.year,
+                    Month = monthList.Key.month,
+                    Count = monthList.Select(p => p.Id).Count()
+                });
 
-                var list = await query.ToListAsync();
-                return new SuccessResponse<List<ArchiveItem>>(list);
+                return new SuccessResponse<IReadOnlyList<ArchiveItem>>(list);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetArchiveListAsync)}");
-                return new FailedResponse<List<ArchiveItem>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<ArchiveItem>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
@@ -136,16 +137,15 @@ namespace Moonglade.Core
         {
             try
             {
-                var cat = Context.Category.FirstOrDefault(c => c.Title == category.Title);
-                if (null != cat)
+                var exists = _categoryRepository.Any(c => c.Title == category.Title);
+                if (exists)
                 {
                     return new Response { Message = $"Category titled {category.Title} already exists." };
                 }
 
                 Logger.LogInformation("Adding new category to database.");
-                Context.Category.Add(category);
-                var rows = Context.SaveChanges();
-                return new Response(rows > 0);
+                _categoryRepository.Add(category);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
@@ -158,21 +158,19 @@ namespace Moonglade.Core
         {
             try
             {
-                var cat = Context.Category.Find(id);
-                if (null == cat)
+                var exists = _categoryRepository.Any(c => c.Id == id);
+                if (!exists)
                 {
                     return new Response { Message = $"Category ID {id} not exists." };
                 }
 
                 Logger.LogInformation($"Removing Post-Category associations for category id: {id}");
-                var pcs = Context.PostCategory.Where(pc => pc.CategoryId == id);
-                Context.PostCategory.RemoveRange(pcs);
-                Context.SaveChanges();
+                var pcs = _postCategoryRepository.Get(pc => pc.CategoryId == id);
+                _postCategoryRepository.Delete(pcs);
 
                 Logger.LogInformation($"Removing category {id}");
-                Context.Category.Remove(cat);
-                int rows = Context.SaveChanges();
-                return new Response(rows > 0);
+                _categoryRepository.Delete(id);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
@@ -189,7 +187,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var cat = Context.Category.Find(category.Id);
+                var cat = _categoryRepository.Get(category.Id);
                 if (null == cat)
                 {
                     return new Response { Message = $"Category id {category.Id} not found." };
@@ -199,7 +197,7 @@ namespace Moonglade.Core
                 cat.DisplayName = category.DisplayName;
                 cat.Note = category.Note;
 
-                int rows = Context.SaveChanges();
+                int rows = _categoryRepository.Update(cat);
                 return new Response(rows > 0);
             }
             catch (Exception e)

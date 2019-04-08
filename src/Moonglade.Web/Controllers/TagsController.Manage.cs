@@ -1,8 +1,7 @@
-﻿using System.Linq;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moonglade.Model;
 
 namespace Moonglade.Web.Controllers
 {
@@ -10,16 +9,10 @@ namespace Moonglade.Web.Controllers
     {
         [Authorize]
         [Route("manage")]
-        public IActionResult Manage()
+        public async Task<IActionResult> Manage()
         {
-            var query = _tagService.GetTags().Select(t => new TagGridModel
-            {
-                Id = t.Id,
-                Name = t.DisplayName
-            });
-
-            var grid = query.ToList();
-            return View(grid);
+            var tags = await _tagService.GetAllTagsAsync();
+            return View(tags);
         }
 
         [Authorize]
@@ -31,7 +24,7 @@ namespace Moonglade.Web.Controllers
             var response = _tagService.UpdateTag(tagId, newTagName);
             if (response.IsSuccess)
             {
-                return Json(new {tagId, newTagName});
+                return Json(new { tagId, newTagName });
             }
 
             return ServerError();

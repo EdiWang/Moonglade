@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Moonglade.Web.Models
+namespace Moonglade.Model
 {
-    public class PostManageViewModel
+    public class PostMetaData
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

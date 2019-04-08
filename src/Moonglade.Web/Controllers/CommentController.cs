@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
@@ -31,7 +30,7 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        public CommentController(MoongladeDbContext context,
+        public CommentController(
             ILogger<CommentController> logger,
             IOptions<AppSettings> settings,
             IMemoryCache memoryCache,
@@ -42,7 +41,7 @@ namespace Moonglade.Web.Controllers
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             LinkGenerator linkGenerator)
-            : base(context, logger, settings, memoryCache: memoryCache)
+            : base(logger, settings, memoryCache: memoryCache)
         {
             _blogConfig = blogConfig;
             _linkGenerator = linkGenerator;

@@ -27,11 +27,11 @@ namespace Moonglade.Web.ViewComponents
         {
             try
             {
-                var query = _categoryService.GetCategoriesAsQueryable()
-                                            .Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Title));
+                var cats = await _categoryService.GetAllCategoriesAsync();
+                var items = cats.Item.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Title)).ToList();
                 var viewModel = new SubscriptionViewModel
                 {
-                    Cats = await query.ToListAsync()
+                    Cats = items
                 };
 
                 return View(viewModel);

@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Model;
-using Moonglade.Data;
 using Moonglade.ImageStorage;
 using Moonglade.Model.Settings;
 using Newtonsoft.Json;
@@ -28,7 +27,7 @@ namespace Moonglade.Web.Controllers
 
         private readonly BlogConfig _blogConfig;
 
-        public ImageController(MoongladeDbContext context,
+        public ImageController(
             ILogger<ImageController> logger,
             IOptions<AppSettings> settings,
             IMemoryCache memoryCache,
@@ -36,7 +35,7 @@ namespace Moonglade.Web.Controllers
             ISessionBasedCaptcha captcha,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(context, logger, settings, memoryCache: memoryCache)
+            : base(logger, settings, memoryCache: memoryCache)
         {
             _blogConfig = blogConfig;
             _blogConfig.GetConfiguration(blogConfigurationService);

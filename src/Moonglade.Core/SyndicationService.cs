@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Edi.SyndicationFeedGenerator;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -21,15 +21,22 @@ namespace Moonglade.Core
 
         private readonly string _baseUrl;
 
+        private readonly IRepository<Category> _categoryRepository;
+
+        private readonly IRepository<Post> _postRepository;
+
         public SyndicationService(
-            MoongladeDbContext context,
             ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService, 
-            IHttpContextAccessor httpContextAccessor) : base(context, logger, settings)
+            BlogConfigurationService blogConfigurationService,
+            IHttpContextAccessor httpContextAccessor,
+            IRepository<Category> categoryRepository,
+            IRepository<Post> postRepository) : base(logger: logger, settings: settings)
         {
             _blogConfig = blogConfig;
+            _categoryRepository = categoryRepository;
+            _postRepository = postRepository;
             _blogConfig.GetConfiguration(blogConfigurationService);
 
             var acc = httpContextAccessor;
@@ -39,7 +46,7 @@ namespace Moonglade.Core
         public async Task RefreshRssFilesForCategoryAsync(string categoryName)
         {
             Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
-            var cat = Context.Category.FirstOrDefault(c => c.Title == categoryName);
+            var cat = await _categoryRepository.GetAsync(c => c.Title == categoryName);
             if (null != cat)
             {
                 var itemCollection = GetPostsAsFeedItems(cat.Id);
@@ -96,7 +103,7 @@ namespace Moonglade.Core
             Logger.LogInformation("Finished writing feed for posts.");
         }
 
-        private List<SimpleFeedItem> GetPostsAsFeedItems(Guid? categoryId = null)
+        private IReadOnlyList<SimpleFeedItem> GetPostsAsFeedItems(Guid? categoryId = null)
         {
             Logger.LogInformation($"{nameof(GetPostsAsFeedItems)} - {nameof(categoryId)}: {categoryId}");
 
@@ -106,9 +113,8 @@ namespace Moonglade.Core
                 top = _blogConfig.FeedSettings.RssItemCount;
             }
 
-            var query = GetSubscribedPosts(categoryId, top);
-
-            var items = query.Select(p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
+            var postSpec = new PostSpec(categoryId, top);
+            var items = _postRepository.Select(postSpec, p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
             {
                 Id = p.Id.ToString(),
                 Title = p.Title,
@@ -120,23 +126,12 @@ namespace Moonglade.Core
                 Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToList()
             } : null);
 
-            return items.ToList();
+            return items;
         }
 
         private string GetPostLink(DateTime pubDateUtc, string slug)
         {
             return $"{_baseUrl}/post/{pubDateUtc.Year}/{pubDateUtc.Month}/{pubDateUtc.Day}/{slug}";
-        }
-
-        private IQueryable<Post> GetSubscribedPosts(Guid? categoryId, int? top = null)
-        {
-            var query = Context.Post.Where(p => !p.PostPublish.IsDeleted &&
-                                         p.PostPublish.IsPublished &&
-                                         p.PostPublish.IsFeedIncluded &&
-                                         (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)))
-                                    .OrderByDescending(p => p.PostPublish.PubDateUtc).AsNoTracking();
-
-            return top.HasValue ? query.Take(top.Value) : query;
         }
     }
 }

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Edi.Blog.Pingback;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
 
 namespace Moonglade.Core
@@ -21,15 +19,19 @@ namespace Moonglade.Core
 
         private readonly PingbackReceiver _pingbackReceiver;
 
-        public PingbackService(MoongladeDbContext context,
+        private readonly IRepository<PingbackHistory> _pingbackRepository;
+
+        public PingbackService(
             ILogger<PingbackService> logger,
             EmailService emailService,
             PostService postService,
-            PingbackReceiver pingbackReceiver) : base(context, logger)
+            PingbackReceiver pingbackReceiver,
+            IRepository<PingbackHistory> pingbackRepository) : base(logger: logger)
         {
             _emailService = emailService;
             _postService = postService;
             _pingbackReceiver = pingbackReceiver;
+            _pingbackRepository = pingbackRepository;
         }
 
         public async Task<PingbackServiceResponse> ProcessReceivedPingback(HttpContext context)
@@ -40,7 +42,7 @@ namespace Moonglade.Core
                 Logger.LogInformation($"Pingback Attempt from {context.Connection.RemoteIpAddress} is valid");
 
                 var pingRequest = await _pingbackReceiver.GetPingRequest();
-                var postResponse = _postService.GetPost(pingRequest.TargetUrl);
+                var postResponse = _postService.GetPostIdTitle(pingRequest.TargetUrl);
                 if (postResponse.IsSuccess)
                 {
                     var post = postResponse.Item;
@@ -55,7 +57,7 @@ namespace Moonglade.Core
 
                     return _pingbackReceiver.ProcessReceivedPingback(
                             pingRequest,
-                            () => null != post,
+                            () => true,
                             () => HasAlreadyBeenPinged(post.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
                 }
 
@@ -83,15 +85,10 @@ namespace Moonglade.Core
                     Direction = "INBOUND"
                 };
 
-                Context.PingbackHistory.Add(rpb);
-                var rows = Context.SaveChanges();
+                _pingbackRepository.Add(rpb);
 
-                if (rows > 0)
-                {
-                    await NotifyAdminForReceivedPing(pid);
-                    return new SuccessResponse();
-                }
-                return new FailedResponse((int)ResponseFailureCode.DataOperationFailed);
+                await NotifyAdminForReceivedPing(pid);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
@@ -100,14 +97,14 @@ namespace Moonglade.Core
             }
         }
 
-        public List<PingbackHistory> GetReceivedPingbacks()
+        public Task<IReadOnlyList<PingbackHistory>> GetReceivedPingbacksAsync()
         {
-            return Context.PingbackHistory.AsNoTracking().ToList();
+            return _pingbackRepository.GetAsync();
         }
 
         private async Task NotifyAdminForReceivedPing(Guid pingbackId)
         {
-            var pingback = Context.PingbackHistory.Find(pingbackId);
+            var pingback = _pingbackRepository.Get(pingbackId);
             await _emailService.SendPingNotification(pingback);
         }
 
@@ -115,17 +112,14 @@ namespace Moonglade.Core
         {
             try
             {
-                var pingback = Context.PingbackHistory.Find(pingbackId);
-                if (null != pingback)
+                Logger.LogInformation($"Deleting pingback {pingbackId}.");
+                int rows = _pingbackRepository.Delete(pingbackId);
+                if (rows == -1)
                 {
-                    Logger.LogInformation($"Deleting pingback {pingbackId}.");
-                    Context.PingbackHistory.Remove(pingback);
-                    int rows = Context.SaveChanges();
-                    return new Response { IsSuccess = rows > 0 };
+                    Logger.LogWarning($"Pingback id {pingbackId} not found, skip delete operation.");
+                    return new FailedResponse((int)ResponseFailureCode.PingbackRecordNotFound);
                 }
-
-                Logger.LogWarning($"Pingback id {pingbackId} not found, skip delete operation.");
-                return new FailedResponse((int)ResponseFailureCode.PingbackRecordNotFound);
+                return new Response { IsSuccess = rows > 0 };
             }
             catch (Exception e)
             {
@@ -136,7 +130,7 @@ namespace Moonglade.Core
 
         private bool HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp)
         {
-            var any = Context.PingbackHistory.Any(p => p.TargetPostId == postId &&
+            var any = _pingbackRepository.Any(p => p.TargetPostId == postId &&
                                                        p.SourceUrl == sourceUrl &&
                                                        p.SourceIp == sourceIp);
             return any;

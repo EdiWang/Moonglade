@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -23,13 +22,13 @@ namespace Moonglade.Web.Controllers
 
         private readonly PostService _postService;
 
-        public SearchController(MoongladeDbContext context,
+        public SearchController(
             ILogger<OpmlController> logger,
             IOptions<AppSettings> settings,
-            PostService postService, 
+            PostService postService,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(context, logger, settings)
+            : base(logger, settings)
         {
             _postService = postService;
             _blogConfig = blogConfig;
@@ -68,7 +67,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!string.IsNullOrWhiteSpace(term))
             {
-                return RedirectToAction(nameof(SearchGet), new {term});
+                return RedirectToAction(nameof(SearchGet), new { term });
             }
             return RedirectToAction("Index", "Post");
         }

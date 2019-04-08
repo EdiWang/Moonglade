@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Edi.WordFilter;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -21,90 +21,93 @@ namespace Moonglade.Core
     {
         private readonly BlogConfig _blogConfig;
 
-        public CommentService(MoongladeDbContext context,
+        private readonly IRepository<Comment> _commentRepository;
+
+        private readonly IRepository<CommentReply> _commentReplyRepository;
+
+        public CommentService(
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             BlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService) : base(context, logger, settings)
+            BlogConfigurationService blogConfigurationService,
+            IRepository<Comment> commentRepository,
+            IRepository<CommentReply> commentReplyRepository) : base(logger: logger, settings: settings)
         {
             _blogConfig = blogConfig;
+            _commentRepository = commentRepository;
+            _commentReplyRepository = commentReplyRepository;
             _blogConfig.GetConfiguration(blogConfigurationService);
         }
 
-        public int CountForPublic => Context.Comment.Count(c => c.IsApproved.GetValueOrDefault());
+        public int CountForApproved => _commentRepository.Count(c => c.IsApproved.GetValueOrDefault());
 
-        public async Task<Response<List<Comment>>> GetRecentCommentsAsync(int top)
+        public async Task<Response<IReadOnlyList<Comment>>> GetRecentCommentsAsync(int top)
         {
             try
             {
-                var recentComments = Context.Comment.Include(c => c.Post)
-                                            .ThenInclude(p => p.PostPublish)
-                                            .Where(c => c.IsApproved.Value)
-                                            .OrderByDescending(c => c.CreateOnUtc)
-                                            .Take(top)
-                                            .AsNoTracking();
+                var spec = new RecentCommentSpec(top);
+                var list = await _commentRepository.GetAsync(spec);
 
-                var list = await recentComments.ToListAsync();
-                return new SuccessResponse<List<Comment>>(list);
+                return new SuccessResponse<IReadOnlyList<Comment>>(list);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetRecentCommentsAsync)}");
-                return new FailedResponse<List<Comment>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<Comment>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public List<Comment> GetApprovedCommentsOfPost(Guid postId)
+        public IReadOnlyList<Comment> GetApprovedCommentsOfPost(Guid postId)
         {
-            var comments = Context.Comment.Include(c => c.CommentReply)
-                                          .Where(c => c.PostId == postId &&
-                                                      c.IsApproved != null &&
-                                                      c.IsApproved.Value).ToList();
-            return comments;
+            return _commentRepository.Get(new CommentOfPostSpec(postId), false);
         }
 
-        public IQueryable<Comment> GetComments()
+        public IReadOnlyList<CommentGridModel> GetPendingApprovalComments()
         {
-            return Context.Comment;
+            return _commentRepository.Select(new PendingApprovalCommentSepc(), p => new CommentGridModel
+            {
+                Id = p.Id,
+                Username = p.Username,
+                Email = p.Email,
+                IpAddress = p.IPAddress,
+                CommentContent = p.CommentContent,
+                PostTitle = p.Post.Title,
+                PubDateUtc = p.CreateOnUtc
+            });
         }
 
-        public IQueryable<Comment> GetPagedComment(int pageSize, int pageIndex)
+        public IReadOnlyList<Comment> GetPagedComment(int pageSize, int pageIndex)
         {
             if (pageSize < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
             }
 
-            var startRow = (pageIndex - 1) * pageSize;
-            var query = Context.Comment.Include(c => c.Post)
-                                        .Include(c => c.CommentReply)
-                                        .Where(c => c.IsApproved.Value)
-                                        .OrderByDescending(p => p.CreateOnUtc)
-                                        .Skip(startRow)
-                                        .Take(pageSize);//.AsNoTracking();
-
-            return query;
+            var spec = new PagedCommentSepc(pageSize, pageIndex);
+            var comments = _commentRepository.Get(spec, false);
+            return comments;
         }
 
         public Response SetApprovalStatus(Guid commentId, bool isApproved)
         {
             try
             {
-                var comment = Context.Comment.Find(commentId);
+                var comment = _commentRepository.Get(commentId);
                 if (null != comment)
                 {
+                    int rows;
                     if (isApproved)
                     {
                         Logger.LogInformation($"Approve comment {commentId}");
                         comment.IsApproved = true;
+                        rows = _commentRepository.Update(comment);
                     }
                     else
                     {
                         Logger.LogInformation($"Disapprove and delete comment {commentId}");
-                        Context.Comment.Remove(comment);
+                        rows = _commentRepository.Delete(comment);
                     }
 
-                    int rows = Context.SaveChanges();
                     return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.CommentNotFound);
@@ -120,24 +123,18 @@ namespace Moonglade.Core
         {
             try
             {
-                var comment = Context.Comment.Find(commentId);
+                var comment = _commentRepository.Get(commentId);
                 if (null != comment)
                 {
                     // 1. Delete all replies
-                    var cReplies = Context.CommentReply.Where(cr => cr.CommentId == commentId);
+                    var cReplies = _commentReplyRepository.Get(new CommentReplySpec(commentId));
                     if (cReplies.Any())
                     {
-                        foreach (var commentReply in cReplies)
-                        {
-                            Context.Remove(commentReply);
-                        }
-
-                        Context.SaveChanges();
+                        _commentReplyRepository.Delete(cReplies);
                     }
 
                     // 2. Delete comment itself
-                    Context.Remove(comment);
-                    var rows = Context.SaveChanges();
+                    var rows = _commentRepository.Delete(comment);
                     return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.CommentNotFound);
@@ -196,10 +193,8 @@ namespace Moonglade.Core
                     UserAgent = userAgent
                 };
 
-                Context.Comment.Add(model);
-                int rows = Context.SaveChanges();
-
-                return new Response<Comment>(model) { IsSuccess = rows > 0 };
+                _commentRepository.Add(model);
+                return new SuccessResponse<Comment>(model);
             }
             catch (Exception e)
             {
@@ -217,9 +212,7 @@ namespace Moonglade.Core
                     return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.CommentDisabled);
                 }
 
-                var cmt = Context.Comment
-                                  .Include(c => c.Post)
-                                  .ThenInclude(p => p.PostPublish).FirstOrDefault(c => c.Id == commentId);
+                var cmt = _commentRepository.Get(commentId);
 
                 if (null == cmt)
                 {
@@ -236,31 +229,26 @@ namespace Moonglade.Core
                     ReplyTimeUtc = DateTime.UtcNow,
                     CommentId = commentId
                 };
-                Context.CommentReply.Add(model);
-                int rows = Context.SaveChanges();
 
-                if (rows > 0)
+                _commentReplyRepository.Add(model);
+
+                var summary = new CommentReplySummary
                 {
-                    var summary = new CommentReplySummary
-                    {
-                        CommentContent = cmt.CommentContent,
-                        CommentId = commentId,
-                        Email = cmt.Email,
-                        Id = model.Id,
-                        IpAddress = model.IpAddress,
-                        PostId = cmt.PostId,
-                        PubDateUTC = cmt.Post.PostPublish.PubDateUtc,
-                        ReplyContent = model.ReplyContent,
-                        ReplyTimeUtc = model.ReplyTimeUtc,
-                        Slug = cmt.Post.Slug,
-                        Title = cmt.Post.Title,
-                        UserAgent = model.UserAgent
-                    };
+                    CommentContent = cmt.CommentContent,
+                    CommentId = commentId,
+                    Email = cmt.Email,
+                    Id = model.Id,
+                    IpAddress = model.IpAddress,
+                    PostId = cmt.PostId,
+                    PubDateUTC = cmt.Post.PostPublish.PubDateUtc,
+                    ReplyContent = model.ReplyContent,
+                    ReplyTimeUtc = model.ReplyTimeUtc,
+                    Slug = cmt.Post.Slug,
+                    Title = cmt.Post.Title,
+                    UserAgent = model.UserAgent
+                };
 
-                    return new SuccessResponse<CommentReplySummary>(summary);
-                }
-
-                return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.DataOperationFailed);
+                return new SuccessResponse<CommentReplySummary>(summary);
             }
             catch (Exception e)
             {

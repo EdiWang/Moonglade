@@ -2,8 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@using Moonglade.Model
-@model List<TagGridModel>
+@model IReadOnlyList<Moonglade.Data.Entities.Tag>
 
 @{
     ViewBag.Title = "Manage Tags";
@@ -46,13 +45,13 @@
 <hr />
 
 <ul class="list-unstyled ul-tag-mgr">
-    @foreach (var tag in Model.OrderBy(model => model.Name))
+    @foreach (var tag in Model.OrderBy(model => model.DisplayName))
     {
         <li id="li-tag-@tag.Id">
-            <span class="span-tagcontent-editable" contenteditable="true" data-tagid="@tag.Id">@tag.Name</span>
+            <span class="span-tagcontent-editable" contenteditable="true" data-tagid="@tag.Id">@tag.DisplayName</span>
             <a class="btn-delete" data-tagid="@tag.Id">
                 <i class="fas fa-times"></i>
-                <span class="d-none">@tag.Name</span>
+                <span class="d-none">@tag.DisplayName</span>
             </a>
         </li>
     }

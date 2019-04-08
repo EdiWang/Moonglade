@@ -5,26 +5,35 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 
 namespace Moonglade.Core
 {
     public class TagService : MoongladeService
     {
-        public TagService(MoongladeDbContext context, ILogger<TagService> logger) : base(context, logger)
+        private readonly IRepository<Tag> _tagRepository;
+        private readonly IRepository<PostTag> _postTagRepository;
+
+        public TagService(
+            ILogger<TagService> logger,
+            IRepository<Tag> tagRepository,
+            IRepository<PostTag> postTagRepository) : base(logger)
         {
+            _tagRepository = tagRepository;
+            _postTagRepository = postTagRepository;
         }
 
-        public IQueryable<Tag> GetTags()
+        public Task<IReadOnlyList<Tag>> GetAllTagsAsync()
         {
-            return Context.Tag;
+            return _tagRepository.GetAsync();
         }
 
-        public Tag GetTag(int tagId)
+        public IReadOnlyList<string> GetAllTagNames()
         {
-            return Context.Tag.Find(tagId);
+            return _tagRepository.Select(t => t.DisplayName);
         }
 
         public Response UpdateTag(int tagId, string newName)
@@ -32,12 +41,12 @@ namespace Moonglade.Core
             try
             {
                 Logger.LogInformation($"Updating tag {tagId} with new name {newName}");
-                var tag = GetTag(tagId);
+                var tag = _tagRepository.Get(tagId);
                 if (null != tag)
                 {
                     tag.DisplayName = newName;
                     tag.NormalizedName = Utils.NormalizeTagName(newName);
-                    var rows = Context.SaveChanges();
+                    var rows = _tagRepository.Update(tag);
                     return new Response(rows > 0);
                 }
                 return new FailedResponse((int)ResponseFailureCode.TagNotFound);
@@ -54,19 +63,12 @@ namespace Moonglade.Core
             try
             {
                 // 1. Delete Post-Tag Association
-                var postTags = Context.PostTag.Where(pt => pt.TagId == tagId);
-                Context.RemoveRange(postTags);
-                Context.SaveChanges();
+                var postTags = _postTagRepository.Get(new PostTagSpec(tagId));
+                _postTagRepository.Delete(postTags);
 
                 // 2. Delte Tag itslef
-                var tag = Context.Tag.Find(tagId);
-                if (null != tag)
-                {
-                    Context.Remove(tag);
-                    int rows = Context.SaveChanges();
-                    return new Response(rows > 0);
-                }
-                return new FailedResponse((int)ResponseFailureCode.TagNotFound);
+                int rows = _tagRepository.Delete(tagId);
+                return new Response(rows > 0);
             }
             catch (Exception e)
             {
@@ -75,58 +77,55 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task<Response<List<TagInfo>>> GetHotTagsAsync(int top)
+        public async Task<Response<IReadOnlyList<TagInfo>>> GetHotTagsAsync(int top)
         {
             try
             {
-                if (Context.Tag.Any())
+                if (_tagRepository.Any())
                 {
-                    var hotTags = Context.Tag.OrderByDescending(p => p.PostTag.Count)
-                                             .Take(top).AsNoTracking()
-                                             .Select(t => new TagInfo
-                                             {
-                                                 TagCount = t.PostTag.Count,
-                                                 TagName = t.DisplayName,
-                                                 NormalizedTagName = t.NormalizedName
-                                             });
+                    var spec = new TagSpec(top);
+                    var hotTags = await _tagRepository.SelectAsync(spec, t => new TagInfo
+                    {
+                        TagCount = t.PostTag.Count,
+                        TagName = t.DisplayName,
+                        NormalizedTagName = t.NormalizedName
+                    });
 
-                    var list = await hotTags.ToListAsync();
-                    return new SuccessResponse<List<TagInfo>>(list);
+                    return new SuccessResponse<IReadOnlyList<TagInfo>>(hotTags);
                 }
 
-                return new SuccessResponse<List<TagInfo>>(new List<TagInfo>());
+                return new SuccessResponse<IReadOnlyList<TagInfo>>(new List<TagInfo>());
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetHotTagsAsync)}");
-                return new FailedResponse<List<TagInfo>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
         public Tag GetTag(string normalizedName)
         {
-            var tag = Context.Tag.FirstOrDefault(t => t.NormalizedName == normalizedName);
+            var tag = _tagRepository.Get(t => t.NormalizedName == normalizedName);
             return tag;
         }
 
-        public async Task<Response<List<TagInfo>>> GetTagCountListAsync()
+        public async Task<Response<IReadOnlyList<TagInfo>>> GetTagCountListAsync()
         {
             try
             {
-                var queryTag = Context.Tag.AsNoTracking().Select(t => new TagInfo
+                var list = await _tagRepository.SelectAsync(t => new TagInfo
                 {
                     TagName = t.DisplayName,
                     NormalizedTagName = t.NormalizedName,
                     TagCount = t.PostTag.Count
                 });
 
-                var list = await queryTag.ToListAsync();
-                return new SuccessResponse<List<TagInfo>>(list);
+                return new SuccessResponse<IReadOnlyList<TagInfo>>(list);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetTagCountListAsync)}");
-                return new FailedResponse<List<TagInfo>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException);
             }
         }
     }

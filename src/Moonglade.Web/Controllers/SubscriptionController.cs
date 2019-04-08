@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -15,11 +14,11 @@ namespace Moonglade.Web.Controllers
     {
         private readonly SyndicationService _syndicationFeedService;
 
-        public SubscriptionController(MoongladeDbContext context,
+        public SubscriptionController(
             ILogger<SubscriptionController> logger,
             IOptions<AppSettings> settings,
             SyndicationService syndicationFeedService)
-            : base(context, logger, settings)
+            : base(logger, settings)
         {
             _syndicationFeedService = syndicationFeedService;
         }
@@ -27,7 +26,7 @@ namespace Moonglade.Web.Controllers
         [Route("rss/{categoryName?}")]
         public async Task<IActionResult> Rss(string categoryName = null)
         {
-            var rssDataFile = string.IsNullOrWhiteSpace(categoryName) ? 
+            var rssDataFile = string.IsNullOrWhiteSpace(categoryName) ?
                 $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\posts.xml" :
                 $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\posts-category-{categoryName}.xml";
 

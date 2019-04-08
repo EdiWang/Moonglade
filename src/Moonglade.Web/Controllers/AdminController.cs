@@ -14,9 +14,8 @@ namespace Moonglade.Web.Controllers
     [Route("admin")]
     public class AdminController : MoongladeController
     {
-        public AdminController(MoongladeDbContext context,
-            ILogger<AdminController> logger)
-            : base(context, logger)
+        public AdminController(ILogger<AdminController> logger)
+            : base(logger)
         {
         }
 

@@ -2,7 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@model List<PostManageViewModel>
+@model IReadOnlyList<Moonglade.Model.PostMetaData>
 @section scripts{
     <script>
         $(function () {
@@ -16,13 +16,9 @@
 
         function deletePost(postid) {
             $("#span-processing-" + postid).show();
-            $.post("delete",
-                {
-                    postid: postid
-                },
-                function (data) {
-                    $("#tr-" + data).hide();
-                });
+            ajaxPostWithCSRFToken("delete", { postid: postid }, function (data) {
+                $("#tr-" + data).hide();
+            });
         }
     </script>
 }
@@ -31,6 +27,7 @@
 
 @if (Model.Any())
 {
+    @Html.AntiForgeryToken()
     <table class="table table-bordered">
         <thead>
             <tr>

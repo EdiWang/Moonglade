@@ -19,20 +19,17 @@ namespace Moonglade.Web.Controllers
 
         protected readonly ILogger<ControllerBase> Logger;
 
-        protected readonly MoongladeDbContext Context;
-
         protected IMemoryCache Cache;
 
         protected AppSettings AppSettings { get; set; }
 
-        public MoongladeController(MoongladeDbContext context = null,
+        public MoongladeController(
             ILogger<ControllerBase> logger = null,
             IOptions<AppSettings> settings = null,
             IConfiguration configuration = null,
             IHttpContextAccessor accessor = null,
             IMemoryCache memoryCache = null)
         {
-            if (null != context) Context = context;
             if (null != logger) Logger = logger;
             if (null != settings) AppSettings = settings.Value;
             if (null != configuration) Configuration = configuration;

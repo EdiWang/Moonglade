@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
@@ -17,11 +16,11 @@ namespace Moonglade.Web.Controllers
     {
         private readonly PingbackService _pingbackService;
 
-        public PingbackController(MoongladeDbContext context,
+        public PingbackController(
             ILogger<PingbackController> logger,
             IOptions<AppSettings> settings,
             PingbackService pingbackService)
-            : base(context, logger, settings)
+            : base(logger, settings)
         {
             _pingbackService = pingbackService;
         }
@@ -56,9 +55,9 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("manage")]
-        public IActionResult Manage()
+        public async Task<IActionResult> Manage()
         {
-            var data = _pingbackService.GetReceivedPingbacks();
+            var data = await _pingbackService.GetReceivedPingbacksAsync();
             return View(data);
         }
 

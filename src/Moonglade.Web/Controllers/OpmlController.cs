@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
-using Moonglade.Data;
 using Moonglade.Model;
 
 namespace Moonglade.Web.Controllers
@@ -19,12 +18,12 @@ namespace Moonglade.Web.Controllers
         private readonly CategoryService _categoryService;
         private readonly BlogConfig _blogConfig;
 
-        public OpmlController(MoongladeDbContext context,
+        public OpmlController(
             ILogger<OpmlController> logger,
             CategoryService categoryService,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(context, logger)
+            : base(logger)
         {
             _categoryService = categoryService;
             _blogConfig = blogConfig;
@@ -44,10 +43,10 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogInformation($"OPML file not found, writing new file on {opmlDataFile}");
 
-                var catResponse = _categoryService.GetAllCategories();
+                var catResponse = await _categoryService.GetAllCategoriesAsync();
                 if (!catResponse.IsSuccess)
                 {
-                    return ServerError("Unsuccessful response from _categoryService.GetAllCategories().");
+                    return ServerError("Unsuccessful response from _categoryService.GetAllCategoriesAsync().");
                 }
 
                 var catInfos = catResponse.Item.Select(c => new OpmlCategoryInfo
