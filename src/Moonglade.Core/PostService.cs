@@ -151,9 +151,22 @@ namespace Moonglade.Core
             }
         }
 
-        public IQueryable<Post> GetPosts()
+        public IReadOnlyList<PostMetaData> GetPostMetaList(bool isDeleted = false, bool? isPublished = true)
         {
-            return Context.Post;
+            GetPostMetaListSpec spec = null;
+            spec = null != isPublished ? new GetPostMetaListSpec(isDeleted, isPublished.Value) : new GetPostMetaListSpec();
+            var posts = _postRepository.Select(spec, p => new PostMetaData
+            {
+                Id = p.Id,
+                Title = p.Title,
+                PubDateUtc = p.PostPublish.PubDateUtc,
+                IsPublished = p.PostPublish.IsPublished,
+                IsDeleted = p.PostPublish.IsDeleted,
+                Revision = p.PostPublish.Revision,
+                CreateOnUtc = p.CreateOnUtc.Value,
+                Hits = p.PostExtension.Hits
+            });
+            return posts;
         }
 
         public IQueryable<Post> GetPagedPosts(int pageSize, int pageIndex, Guid? categoryId = null)

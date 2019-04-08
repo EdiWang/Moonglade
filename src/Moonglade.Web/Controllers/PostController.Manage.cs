@@ -22,29 +22,24 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public IActionResult Manage()
         {
-            var query = _postService.GetPosts()
-                .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished);
-            var grid = QueryToPostGridModel(query);
-            return View(grid);
+            var list = _postService.GetPostMetaList(false, true);
+            return View(list);
         }
 
         [Authorize]
         [Route("manage/draft")]
         public IActionResult Draft()
         {
-            var query = _postService.GetPosts()
-                .Where(p => !p.PostPublish.IsDeleted && !p.PostPublish.IsPublished);
-            var grid = QueryToPostGridModel(query);
-            return View(grid);
+            var list = _postService.GetPostMetaList(false, false);
+            return View(list);
         }
 
         [Authorize]
         [Route("manage/recycle-bin")]
         public IActionResult RecycleBin()
         {
-            var query = _postService.GetPosts().Where(p => p.PostPublish.IsDeleted);
-            var grid = QueryToPostGridModel(query);
-            return View(grid);
+            var list = _postService.GetPostMetaList(true);
+            return View(list);
         }
 
         [Authorize]
