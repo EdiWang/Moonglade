@@ -83,7 +83,7 @@ namespace Moonglade.Web.Controllers
                             ExposedToSiteMap = model.ExposedToSiteMap,
                             IsFeedIncluded = model.FeedIncluded,
                             Revision = 0,
-                            PublisherIp = HttpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            PublisherIp = HttpContext.Connection.RemoteIpAddress.ToString(),
                             ContentLanguageCode = model.ContentLanguageCode
                         }
                     };

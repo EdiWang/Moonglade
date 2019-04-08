@@ -24,6 +24,8 @@ namespace Moonglade.Core
 
         private readonly IRepository<Tag> _tagRepository;
 
+        private readonly IRepository<Category> _categoryRepository;
+
         public enum StatisticType
         {
             Hits,
@@ -34,13 +36,15 @@ namespace Moonglade.Core
             ILogger<PostService> logger,
             IRepository<Post> postRepository,
             IRepository<PostExtension> postExtensionRepository,
-            IRepository<Tag> tagRepository, 
-            IRepository<PostPublish> postPublishRepository) : base(context, logger)
+            IRepository<Tag> tagRepository,
+            IRepository<PostPublish> postPublishRepository,
+            IRepository<Category> categoryRepository) : base(context, logger)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
             _tagRepository = tagRepository;
             _postPublishRepository = postPublishRepository;
+            _categoryRepository = categoryRepository;
         }
 
         public int CountForPublic => _postRepository.Count(p => p.PostPublish.IsPublished &&
@@ -274,15 +278,9 @@ namespace Moonglade.Core
                 ApplyDefaultValuesOnPost(postModel);
 
                 // check if exist same slug under the same day
-                // linq to sql fix:
-                // cannot write "p.PubDateUTC.Date == DateTime.Now.Date"
-                // it will blow up "The specified type member 'Date' is not supported in LINQ to Entities"
                 var today = DateTime.UtcNow.Date;
-                if (Context.Post.Any(p =>
-                           p.Slug == postModel.Slug &&
-                           p.PostPublish.PubDateUtc.Value.Year == today.Year &&
-                           p.PostPublish.PubDateUtc.Value.Month == today.Month &&
-                           p.PostPublish.PubDateUtc.Value.Day == today.Day))
+                if (_postRepository.Any(p => p.Slug == postModel.Slug && 
+                             p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.Now.Date))
                 {
                     var uid = Guid.NewGuid();
                     postModel.Slug += $"-{uid.ToString().Substring(0, 8)}";
@@ -294,7 +292,7 @@ namespace Moonglade.Core
                 {
                     categoryIds.ForEach(cid =>
                     {
-                        var cat = Context.Category.Find(cid);
+                        var cat = _postRepository.Get(cid);
                         if (null != cat)
                         {
                             postModel.PostCategory.Add(new PostCategory
@@ -339,10 +337,7 @@ namespace Moonglade.Core
                     }));
                 }
 
-                Context.Post.Add(postModel);
-                var rows = Context.SaveChanges();
-                if (rows <= 0) return new FailedResponse<Post>((int)ResponseFailureCode.DataOperationFailed);
-
+                _postRepository.Add(postModel);
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
                 return new SuccessResponse<Post>(postModel);
             }
