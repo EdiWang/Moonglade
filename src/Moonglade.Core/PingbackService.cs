@@ -42,7 +42,7 @@ namespace Moonglade.Core
                 Logger.LogInformation($"Pingback Attempt from {context.Connection.RemoteIpAddress} is valid");
 
                 var pingRequest = await _pingbackReceiver.GetPingRequest();
-                var postResponse = _postService.GetPost(pingRequest.TargetUrl);
+                var postResponse = _postService.GetPostIdTitle(pingRequest.TargetUrl);
                 if (postResponse.IsSuccess)
                 {
                     var post = postResponse.Item;
@@ -57,7 +57,7 @@ namespace Moonglade.Core
 
                     return _pingbackReceiver.ProcessReceivedPingback(
                             pingRequest,
-                            () => null != post,
+                            () => true,
                             () => HasAlreadyBeenPinged(post.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
                 }
 

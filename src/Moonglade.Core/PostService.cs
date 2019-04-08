@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -100,7 +101,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<Post> GetPost(string url)
+        public Response<(Guid Id, string Title)> GetPostIdTitle(string url)
         {
             try
             {
@@ -117,12 +118,20 @@ namespace Moonglade.Core
                 var day = int.Parse(match.Groups["dd"].Value);
                 var slug = match.Groups["slug"].Value;
 
-                var post = GetPost(year, month, day, slug.Trim());
-                return post;
+                var date = new DateTime(year, month, day);
+
+                var post = _postRepository.Get(p => p.Slug == slug &&
+                                               p.PostPublish.PubDateUtc.GetValueOrDefault().Date == date.Date &&
+                                               p.PostPublish.IsPublished &&
+                                               !p.PostPublish.IsDeleted);
+
+                return null == post ? 
+                    new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound) : 
+                    new Response<(Guid, string)>((post.Id, post.Title));
             }
             catch (Exception ex)
             {
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
+                return new FailedResponse<(Guid, string)>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
             }
         }
 
