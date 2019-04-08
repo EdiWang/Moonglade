@@ -9,7 +9,7 @@ namespace Moonglade.Data.Spec
 {
     public class PendingApprovalCommentSepc : BaseSpecification<Comment>
     {
-        public PendingApprovalCommentSepc() : base(c => !c.IsApproved.Value)
+        public PendingApprovalCommentSepc() : base(c => !c.IsApproved)
         {
         }
     }

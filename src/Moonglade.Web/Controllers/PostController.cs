@@ -101,10 +101,10 @@ namespace Moonglade.Web.Controllers
                                        TagName = p.DisplayName
                                    }).ToList(),
                 PostId = post.Id.ToString(),
-                CommentEnabled = post.CommentEnabled ?? false,
+                CommentEnabled = post.CommentEnabled,
                 IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
                 LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
-                CommentCount = post.Comment.Count(c => null != c.IsApproved && c.IsApproved.Value)
+                CommentCount = post.Comment.Count(c => c.IsApproved)
             };
 
             if (AppSettings.EnableImageLazyLoad)

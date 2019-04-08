@@ -39,7 +39,7 @@ namespace Moonglade.Core
             _blogConfig.GetConfiguration(blogConfigurationService);
         }
 
-        public int CountForApproved => _commentRepository.Count(c => c.IsApproved.GetValueOrDefault());
+        public int CountForApproved => _commentRepository.Count(c => c.IsApproved);
 
         public async Task<Response<IReadOnlyList<Comment>>> GetRecentCommentsAsync(int top)
         {

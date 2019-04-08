@@ -17,7 +17,7 @@ namespace Moonglade.Data.Entities
         public DateTime CreateOnUtc { get; set; }
         public string CommentContent { get; set; }
         public Guid PostId { get; set; }
-        public bool? IsApproved { get; set; }
+        public bool IsApproved { get; set; }
         public string UserAgent { get; set; }
 
         public virtual Post Post { get; set; }

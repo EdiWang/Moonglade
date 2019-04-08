@@ -134,7 +134,7 @@ namespace Moonglade.Web.Controllers
                     HtmlContent = HttpUtility.HtmlDecode(post.PostContent),
                     Slug = post.Slug,
                     Title = post.Title,
-                    EnableComment = post.CommentEnabled.GetValueOrDefault(),
+                    EnableComment = post.CommentEnabled,
                     ExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
                     FeedIncluded = post.PostPublish.IsFeedIncluded,
                     ContentLanguageCode = post.PostPublish.ContentLanguageCode
