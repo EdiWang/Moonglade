@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
+using Moonglade.Model;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
@@ -66,50 +67,39 @@ namespace Moonglade.Web.Controllers
                 {
                     var id = model.PostId == Guid.Empty ? Guid.NewGuid() : model.PostId;
 
-                    var post = new Post
-                    {
-                        CommentEnabled = model.EnableComment,
-                        Id = id,
-                        PostContent = HttpUtility.HtmlEncode(model.HtmlContent),
-                        ContentAbstract = Utils.GetPostAbstract(model.HtmlContent, AppSettings.PostSummaryWords),
-                        CreateOnUtc = DateTime.UtcNow,
-                        Slug = model.Slug.Trim(),
-                        Title = model.Title.Trim(),
-                        PostPublish = new PostPublish
-                        {
-                            IsDeleted = false,
-                            IsPublished = model.IsPublished,
-                            PubDateUtc = model.IsPublished ? DateTime.UtcNow : (DateTime?)null,
-                            ExposedToSiteMap = model.ExposedToSiteMap,
-                            IsFeedIncluded = model.FeedIncluded,
-                            Revision = 0,
-                            PublisherIp = HttpContext.Connection.RemoteIpAddress.ToString(),
-                            ContentLanguageCode = model.ContentLanguageCode
-                        }
-                    };
-
                     // get tags
                     List<string> tagList = string.IsNullOrWhiteSpace(model.Tags)
                         ? new List<string>()
                         : model.Tags.Split(',').ToList();
 
-                    // get category Ids
-                    List<Guid> catIds = model.SelectedCategoryIds.ToList();
+                    var request = new CreateEditPostRequest
+                    {
+                        PostId = id,
+                        Title = model.Title.Trim(),
+                        Slug = model.Slug.Trim(),
+                        HtmlContent = model.HtmlContent,
+                        EnableComment = model.EnableComment,
+                        ExposedToSiteMap = model.ExposedToSiteMap,
+                        IsFeedIncluded = model.FeedIncluded,
+                        ContentLanguageCode = model.ContentLanguageCode,
+                        IsPublished = model.IsPublished,
+                        Tags = tagList,
+                        CategoryIds = model.SelectedCategoryIds.ToList()
+                    };
 
-                    var response = _postService.CreateNewPost(post, tagList, catIds);
+                    var response = _postService.CreateNewPost(request);
                     if (response.IsSuccess)
                     {
-                        if (model.IsPublished)
+                        if (!model.IsPublished) return RedirectToAction(nameof(Manage));
+
+                        Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
+
+                        var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
+                        var link = GetPostUrl(_linkGenerator, pubDate, response.Item.Slug);
+
+                        if (AppSettings.EnablePingBackSend)
                         {
-                            Logger.LogInformation($"Trying to Ping URL for post: {post.Id}");
-
-                            var pubDate = post.PostPublish.PubDateUtc.GetValueOrDefault();
-                            var link = GetPostUrl(_linkGenerator, pubDate, post.Slug);
-
-                            if (AppSettings.EnablePingBackSend)
-                            {
-                                Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, post.PostContent); });
-                            }
+                            Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
                         }
 
                         return RedirectToAction(nameof(Manage));
@@ -303,7 +293,7 @@ namespace Moonglade.Web.Controllers
             var catList = await _categoryService.GetAllCategoriesAsync();
             if (null != catList.Item && catList.Item.Any())
             {
-                var cbCatList = catList.Item.Select(p => 
+                var cbCatList = catList.Item.Select(p =>
                     new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false)).ToList();
                 view.CategoryList = cbCatList;
             }

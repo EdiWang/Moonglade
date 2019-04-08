@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
+using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
@@ -34,11 +37,12 @@ namespace Moonglade.Core
 
         public PostService(MoongladeDbContext context,
             ILogger<PostService> logger,
+            IOptions<AppSettings> settings,
             IRepository<Post> postRepository,
             IRepository<PostExtension> postExtensionRepository,
             IRepository<Tag> tagRepository,
             IRepository<PostPublish> postPublishRepository,
-            IRepository<Category> categoryRepository) : base(context, logger)
+            IRepository<Category> categoryRepository) : base(context, logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -260,26 +264,37 @@ namespace Moonglade.Core
             return _postRepository.SelectFirstOrDefault(new PostSpec(postId), p => p.Title);
         }
 
-        public Response<Post> CreateNewPost(Post postModel, List<string> tags, List<Guid> categoryIds)
+        public Response<Post> CreateNewPost(CreateEditPostRequest request)
         {
             try
             {
-                // check required fields
-                if (string.IsNullOrWhiteSpace(postModel.Title))
+                var postModel = new Post
                 {
-                    throw new ArgumentNullException(nameof(postModel.Title));
-                }
-                if (string.IsNullOrWhiteSpace(postModel.PostContent))
-                {
-                    throw new ArgumentNullException(nameof(postModel.PostContent));
-                }
+                    CommentEnabled = request.EnableComment,
+                    Id = request.PostId,
+                    PostContent = HttpUtility.HtmlEncode(request.HtmlContent),
+                    ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords),
+                    CreateOnUtc = DateTime.UtcNow,
+                    Slug = request.Slug.Trim(),
+                    Title = request.Title.Trim(),
+                    PostPublish = new PostPublish
+                    {
+                        IsDeleted = false,
+                        IsPublished = request.IsPublished,
+                        PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
+                        ExposedToSiteMap = request.ExposedToSiteMap,
+                        IsFeedIncluded = request.IsFeedIncluded,
+                        Revision = 0,
+                        ContentLanguageCode = request.ContentLanguageCode
+                    }
+                };
 
                 // add default values if fields are not assigned
                 ApplyDefaultValuesOnPost(postModel);
 
                 // check if exist same slug under the same day
                 var today = DateTime.UtcNow.Date;
-                if (_postRepository.Any(p => p.Slug == postModel.Slug && 
+                if (_postRepository.Any(p => p.Slug == postModel.Slug &&
                              p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.Now.Date))
                 {
                     var uid = Guid.NewGuid();
@@ -288,16 +303,15 @@ namespace Moonglade.Core
                 }
 
                 // add categories
-                if (null != categoryIds && categoryIds.Count > 0)
+                if (null != request.CategoryIds && request.CategoryIds.Count > 0)
                 {
-                    categoryIds.ForEach(cid =>
+                    request.CategoryIds.ForEach(cid =>
                     {
-                        var cat = _postRepository.Get(cid);
-                        if (null != cat)
+                        if (_categoryRepository.Any(c => c.Id == cid))
                         {
                             postModel.PostCategory.Add(new PostCategory
                             {
-                                CategoryId = cat.Id,
+                                CategoryId = cid,
                                 PostId = postModel.Id
                             });
                         }
@@ -305,10 +319,10 @@ namespace Moonglade.Core
                 }
 
                 // add tags
-                if (null != tags && tags.Count > 0)
+                if (null != request.Tags && request.Tags.Count > 0)
                 {
                     var tagsList = new List<Tag>();
-                    foreach (var item in tags)
+                    foreach (var item in request.Tags)
                     {
                         var tag = _tagRepository.Get(q => q.DisplayName == item);
                         if (null == tag)
