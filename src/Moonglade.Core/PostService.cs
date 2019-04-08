@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -139,17 +138,17 @@ namespace Moonglade.Core
         {
             try
             {
+                var date = new DateTime(year, month, day);
+
                 var post = Context.Post.Include(p => p.PostPublish)
                                    .Include(p => p.PostExtension)
                                    .Include(p => p.Comment)
                                    .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
                                    .Include(p => p.PostCategory).ThenInclude(pc => pc.Category)
                                    .FirstOrDefault(p => p.Slug == slug &&
-                                                   p.PostPublish.PubDateUtc.Value.Year == year &&
-                                                   p.PostPublish.PubDateUtc.Value.Month == month &&
-                                                   p.PostPublish.PubDateUtc.Value.Day == day &&
-                                                   p.PostPublish.IsPublished &&
-                                                   !p.PostPublish.IsDeleted);
+                                                        p.PostPublish.IsPublished &&
+                                                        p.PostPublish.PubDateUtc.Value.Date == date &&
+                                                       !p.PostPublish.IsDeleted);
 
                 return new SuccessResponse<Post>(post);
             }
@@ -162,8 +161,7 @@ namespace Moonglade.Core
 
         public IReadOnlyList<PostMetaData> GetPostMetaList(bool isDeleted = false, bool? isPublished = true)
         {
-            GetPostMetaListSpec spec = null;
-            spec = null != isPublished ? new GetPostMetaListSpec(isDeleted, isPublished.Value) : new GetPostMetaListSpec();
+            var spec = null != isPublished ? new GetPostMetaListSpec(isDeleted, isPublished.Value) : new GetPostMetaListSpec();
             var posts = _postRepository.Select(spec, p => new PostMetaData
             {
                 Id = p.Id,
@@ -315,9 +313,9 @@ namespace Moonglade.Core
                 ApplyDefaultValuesOnPost(postModel);
 
                 // check if exist same slug under the same day
-                var today = DateTime.UtcNow.Date;
-                if (_postRepository.Any(p => p.Slug == postModel.Slug &&
-                             p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.Now.Date))
+                if (_postRepository.Any(p => 
+                    p.Slug == postModel.Slug &&
+                    p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date))
                 {
                     var uid = Guid.NewGuid();
                     postModel.Slug += $"-{uid.ToString().Substring(0, 8)}";
