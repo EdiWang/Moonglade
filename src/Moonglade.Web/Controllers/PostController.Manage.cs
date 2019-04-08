@@ -294,9 +294,9 @@ namespace Moonglade.Web.Controllers
             return view;
         }
 
-        private static List<PostManageViewModel> QueryToPostGridModel(IQueryable<Post> query)
+        private static List<PostMetaData> QueryToPostGridModel(IQueryable<Post> query)
         {
-            var result = query.Select(p => new PostManageViewModel
+            var result = query.Select(p => new PostMetaData
             {
                 Id = p.Id,
                 Title = p.Title,
