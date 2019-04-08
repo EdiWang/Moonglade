@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
@@ -17,7 +18,7 @@ namespace Moonglade.Data.Spec
                                                    c.IsApproved != null &&
                                                    c.IsApproved.Value)
         {
-            AddInclude(c => c.CommentReply);
+            AddInclude(comments => comments.Include(c => c.CommentReply));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
@@ -13,10 +14,11 @@ namespace Moonglade.Data.Spec
         {
         }
 
-        public RecentCommentSpec(int top): base(c => c.IsApproved.Value)
+        public RecentCommentSpec(int top) : base(c => c.IsApproved.Value)
         {
-            AddInclude(c => c.Post);
-            AddInclude(c => c.Post.PostPublish); // May be... AddThenInclude()?
+            AddInclude(comment => comment
+                .Include(c => c.Post)
+                .ThenInclude(p => p.PostPublish));
             ApplyOrderByDescending(c => c.CreateOnUtc);
             ApplyPaging(0, top);
         }

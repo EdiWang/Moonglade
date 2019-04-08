@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Moonglade.Data.Infrastructure
 {
     public interface ISpecification<T>
     {
         Expression<Func<T, bool>> Criteria { get; }
-        List<Expression<Func<T, object>>> Includes { get; }
-        List<string> IncludeStrings { get; }
+        Func<IQueryable<T>, IIncludableQueryable<T, object>> Include { get; }
         Expression<Func<T, object>> OrderBy { get; }
         Expression<Func<T, object>> OrderByDescending { get; }
 

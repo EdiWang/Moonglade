@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
@@ -12,8 +13,9 @@ namespace Moonglade.Data.Spec
         {
             var startRow = (pageIndex - 1) * pageSize;
 
-            AddInclude(c => c.Post);
-            AddInclude(c => c.CommentReply);
+            AddInclude(comment => comment
+                .Include(c => c.Post)
+                .Include(c => c.CommentReply));
             ApplyOrderByDescending(p => p.CreateOnUtc);
             ApplyPaging(startRow, pageSize);
         }

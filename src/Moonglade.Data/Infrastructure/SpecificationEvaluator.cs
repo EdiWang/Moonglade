@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 namespace Moonglade.Data.Infrastructure
 {
@@ -15,13 +14,15 @@ namespace Moonglade.Data.Infrastructure
                 query = query.Where(specification.Criteria);
             }
 
-            // Includes all expression-based includes
-            query = specification.Includes.Aggregate(query,
-                (current, include) => current.Include(include));
+            //// Includes all expression-based includes
+            //query = specification.Includes.Aggregate(query,
+            //    (current, include) => current.Include(include));
 
-            // Include any string-based include statements
-            query = specification.IncludeStrings.Aggregate(query,
-                (current, include) => current.Include(include));
+            //// Include any string-based include statements
+            //query = specification.IncludeStrings.Aggregate(query,
+            //    (current, include) => current.Include(include));
+
+            query = specification.Include(query);
 
             // Apply ordering if expressions are set
             if (specification.OrderBy != null)
