@@ -382,13 +382,12 @@ namespace Moonglade.Core
                 // 1. Add new tags to tag lib
                 foreach (var item in tags.Where(item => !Context.Tag.Any(p => p.DisplayName == item)))
                 {
-                    Context.Tag.Add(new Tag
+                    _tagRepository.Add(new Tag
                     {
                         DisplayName = item,
                         NormalizedName = Utils.NormalizeTagName(item)
                     });
                 }
-                Context.SaveChanges();
 
                 // 2. update tags
                 postModel.PostTag.Clear();
@@ -396,7 +395,7 @@ namespace Moonglade.Core
                 {
                     tags.ForEach(t =>
                     {
-                        var tag = Context.Tag.FirstOrDefault(_ => _.DisplayName == t);
+                        var tag = _tagRepository.Get(_ => _.DisplayName == t);
                         if (tag != null) postModel.PostTag.Add(new PostTag
                         {
                             PostId = postModel.Id,
@@ -411,19 +410,18 @@ namespace Moonglade.Core
                 {
                     categoryIds.ForEach(cid =>
                     {
-                        var cat = Context.Category.Find(cid);
-                        if (null != cat)
+                        if (_categoryRepository.Any(c => c.Id == cid))
                         {
                             postModel.PostCategory.Add(new PostCategory
                             {
                                 PostId = postModel.Id,
-                                CategoryId = cat.Id
+                                CategoryId = cid
                             });
                         }
                     });
                 }
 
-                Context.SaveChanges();
+                _postRepository.Update(postModel);
                 return new SuccessResponse();
             }
             catch (Exception e)
