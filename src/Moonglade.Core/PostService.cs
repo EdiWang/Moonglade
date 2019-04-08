@@ -27,6 +27,8 @@ namespace Moonglade.Core
 
         private readonly IRepository<Tag> _tagRepository;
 
+        private readonly IRepository<PostTag> _postTagRepository;
+
         private readonly IRepository<Category> _categoryRepository;
 
         public enum StatisticType
@@ -42,13 +44,15 @@ namespace Moonglade.Core
             IRepository<PostExtension> postExtensionRepository,
             IRepository<Tag> tagRepository,
             IRepository<PostPublish> postPublishRepository,
-            IRepository<Category> categoryRepository) : base(context, logger, settings)
+            IRepository<Category> categoryRepository,
+            IRepository<PostTag> postTagRepository) : base(context, logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
             _tagRepository = tagRepository;
             _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
+            _postTagRepository = postTagRepository;
         }
 
         public int CountForPublic => _postRepository.Count(p => p.PostPublish.IsPublished &&
@@ -124,8 +128,8 @@ namespace Moonglade.Core
                                                p.PostPublish.IsPublished &&
                                                !p.PostPublish.IsDeleted);
 
-                return null == post ? 
-                    new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound) : 
+                return null == post ?
+                    new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound) :
                     new Response<(Guid, string)>((post.Id, post.Title));
             }
             catch (Exception ex)
@@ -138,7 +142,7 @@ namespace Moonglade.Core
         {
             try
             {
-                
+
                 var date = new DateTime(year, month, day);
                 var spec = new GetPostSpec(date, slug);
                 var post = _postRepository.GetFirstOrDefault(spec);
@@ -209,21 +213,26 @@ namespace Moonglade.Core
             return list;
         }
 
-        public Response<IEnumerable<Post>> GetPostsByTag(string normalizedName)
+        public Response<IReadOnlyList<Post>> GetPostsByTag(string normalizedName)
         {
             try
             {
-                var posts = Context.PostTag
-                                   .Where(pt => pt.Tag.NormalizedName == normalizedName)
-                                   .Select(pt => pt.Post)
-                                   .Include(p => p.PostPublish).AsNoTracking();
+                //var posts = Context.PostTag
+                //                   .Where(pt => pt.Tag.NormalizedName == normalizedName)
+                //                   .Select(pt => pt.Post)
+                //                   .Include(p => p.PostPublish).ToList();
 
-                return new SuccessResponse<IEnumerable<Post>>(posts);
+                var posts = Context.Tag.Where(t => t.NormalizedName == normalizedName)
+                                       .SelectMany(p => p.PostTag)
+                                       .Select(p => p.Post)
+                                       .Include(p => p.PostPublish).ToList();
+
+                return new SuccessResponse<IReadOnlyList<Post>>(posts);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetPostsByTag)}(normalizedName: {normalizedName})");
-                return new FailedResponse<IEnumerable<Post>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<Post>>((int)ResponseFailureCode.GeneralException);
             }
         }
 
@@ -306,7 +315,7 @@ namespace Moonglade.Core
                 ApplyDefaultValuesOnPost(postModel);
 
                 // check if exist same slug under the same day
-                if (_postRepository.Any(p => 
+                if (_postRepository.Any(p =>
                     p.Slug == postModel.Slug &&
                     p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date))
                 {

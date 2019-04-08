@@ -22,7 +22,10 @@ namespace Moonglade.Data.Infrastructure
             //query = specification.IncludeStrings.Aggregate(query,
             //    (current, include) => current.Include(include));
 
-            query = specification.Include(query);
+            if (null != specification.Include)
+            {
+                query = specification.Include(query);
+            }
 
             // Apply ordering if expressions are set
             if (specification.OrderBy != null)

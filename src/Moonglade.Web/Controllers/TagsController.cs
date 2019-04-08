@@ -45,7 +45,7 @@ namespace Moonglade.Web.Controllers
                 return ServerError();
             }
 
-            var posts = postResponse.Item.ToList();
+            var posts = postResponse.Item;
             if (posts.Any())
             {
                 ViewBag.TitlePrefix = tag.DisplayName;
