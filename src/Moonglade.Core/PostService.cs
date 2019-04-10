@@ -133,7 +133,7 @@ namespace Moonglade.Core
 
                 var date = new DateTime(year, month, day);
                 var spec = new GetPostSpec(date, slug);
-                var post = _postRepository.GetFirstOrDefault(spec);
+                var post = _postRepository.GetFirstOrDefault(spec, false);
 
                 return new SuccessResponse<Post>(post);
             }
