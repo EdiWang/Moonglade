@@ -2,9 +2,9 @@
 using System.IO;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Moonglade.Model;
 
 namespace Moonglade.ImageStorage.AzureBlob
