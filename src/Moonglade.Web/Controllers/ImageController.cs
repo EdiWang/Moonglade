@@ -162,10 +162,9 @@ namespace Moonglade.Web.Controllers
         [Route("get-captcha-image")]
         public IActionResult GetCaptchaImage()
         {
-            var s = _captcha.GenerateCaptchaImageFileStream(
+            var s = _captcha.GenerateCaptchaImageFileStream(HttpContext.Session,
                 AppSettings.CaptchaSettings.ImageWidth,
-                AppSettings.CaptchaSettings.ImageHeight,
-                HttpContext.Session);
+                AppSettings.CaptchaSettings.ImageHeight);
             return s;
         }
 
