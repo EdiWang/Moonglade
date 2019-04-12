@@ -74,7 +74,7 @@
 }
 else
 {
-    foreach (var item in Model.Where(c => c.IsApproved.Value))
+    foreach (var item in Model.Where(c => c.IsApproved))
     {
         <div id="panel-comment-@item.Id" class="card mb-4">
             <div class="card-header">

@@ -42,7 +42,7 @@ CREATE TABLE [dbo].[Comment](
 	[CreateOnUtc] [datetime] NOT NULL,
 	[CommentContent] [nvarchar](max) NOT NULL,
 	[PostId] [uniqueidentifier] NOT NULL,
-	[IsApproved] [bit] NULL,
+	[IsApproved] [bit] NOT NULL,
 	[UserAgent] [nvarchar](512) NULL,
  CONSTRAINT [PK_Comment] PRIMARY KEY CLUSTERED 
 (
@@ -114,7 +114,7 @@ CREATE TABLE [dbo].[Post](
 	[Title] [nvarchar](128) NULL,
 	[Slug] [nvarchar](128) NULL,
 	[PostContent] [nvarchar](max) NULL,
-	[CommentEnabled] [bit] NULL,
+	[CommentEnabled] [bit] NOT NULL,
 	[CreateOnUtc] [datetime] NULL,
 	[ContentAbstract] [nvarchar](1024) NULL,
  CONSTRAINT [PK_Post] PRIMARY KEY CLUSTERED 

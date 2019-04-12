@@ -50,7 +50,7 @@
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.6.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.9.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />

@@ -15,8 +15,7 @@ namespace Moonglade.Data.Spec
         //}
 
         public CommentOfPostSpec(Guid postId) :base(c => c.PostId == postId &&
-                                                   c.IsApproved != null &&
-                                                   c.IsApproved.Value)
+                                                   c.IsApproved)
         {
             AddInclude(comments => comments.Include(c => c.CommentReply));
         }

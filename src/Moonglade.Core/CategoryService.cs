@@ -21,7 +21,7 @@ namespace Moonglade.Core
         public CategoryService(ILogger<CategoryService> logger,
             IRepository<Category> categoryRepository,
             IRepository<PostCategory> postCategoryRepository,
-            IRepository<Post> postRepository) : base(logger: logger)
+            IRepository<Post> postRepository) : base(logger)
         {
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;

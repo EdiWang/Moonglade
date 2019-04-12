@@ -31,7 +31,7 @@ namespace Moonglade.Core
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             IRepository<Comment> commentRepository,
-            IRepository<CommentReply> commentReplyRepository) : base(logger: logger, settings: settings)
+            IRepository<CommentReply> commentReplyRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _commentRepository = commentRepository;
@@ -39,7 +39,7 @@ namespace Moonglade.Core
             _blogConfig.GetConfiguration(blogConfigurationService);
         }
 
-        public int CountForApproved => _commentRepository.Count(c => c.IsApproved.GetValueOrDefault());
+        public int CountForApproved => _commentRepository.Count(c => c.IsApproved);
 
         public async Task<Response<IReadOnlyList<Comment>>> GetRecentCommentsAsync(int top)
         {

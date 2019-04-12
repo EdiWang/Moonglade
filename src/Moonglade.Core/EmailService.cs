@@ -27,7 +27,7 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
-            IRepository<Post> postRepository) : base(logger: logger, settings: settings)
+            IRepository<Post> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _postRepository = postRepository;

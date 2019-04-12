@@ -14,7 +14,7 @@ namespace Moonglade.Data.Spec
         {
         }
 
-        public RecentCommentSpec(int top) : base(c => c.IsApproved.Value)
+        public RecentCommentSpec(int top) : base(c => c.IsApproved)
         {
             AddInclude(comment => comment
                 .Include(c => c.Post)

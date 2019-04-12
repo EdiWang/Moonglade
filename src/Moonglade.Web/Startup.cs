@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
@@ -36,6 +37,8 @@ namespace Moonglade.Web
 {
     public class Startup
     {
+        private IServiceCollection _services;
+
         private readonly ILogger<Startup> _logger;
         private readonly IConfigurationSection _appSettingsSection;
 
@@ -120,8 +123,11 @@ namespace Moonglade.Web
                                        maxRetryDelay: TimeSpan.FromSeconds(30),
                                        errorNumbersToAdd: null);
                                }));
+
+            _services = services;
         }
 
+        // ReSharper disable once UnusedMember.Global
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
         {
             appLifetime.ApplicationStarted.Register(() =>
@@ -151,6 +157,7 @@ namespace Moonglade.Web
 
                 TelemetryConfiguration.Active.DisableTelemetry = true;
                 TelemetryDebugWriter.IsTracingDisabled = true;
+                ListAllRegisteredServices(app);
 
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
@@ -357,6 +364,27 @@ namespace Moonglade.Web
             return fullPath;
         }
 
+        private void ListAllRegisteredServices(IApplicationBuilder app)
+        {
+            app.Map("/allservices", builder => builder.Run(async context =>
+            {
+                var sb = new StringBuilder();
+                sb.Append("<table border='1'><thead>");
+                sb.Append("<tr><th>Type</th><th>Lifetime</th><th>Instance</th></tr>");
+                sb.Append("</thead><tbody>");
+                foreach (var svc in _services)
+                {
+                    sb.Append("<tr>");
+                    sb.Append($"<td>{svc.ServiceType.FullName}</td>");
+                    sb.Append($"<td>{svc.Lifetime}</td>");
+                    sb.Append($"<td>{svc.ImplementationType?.FullName}</td>");
+                    sb.Append("</tr>");
+                }
+                sb.Append("</tbody></table>");
+                context.Response.ContentType = "text/html";
+                await context.Response.WriteAsync(sb.ToString());
+            }));
+        }
         #endregion
     }
 }

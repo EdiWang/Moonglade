@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using Edi.Blog.Pingback;
 using Edi.Blog.Pingback.MvcExtensions;
@@ -43,9 +44,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route(""), Route("/")]
-        public IActionResult Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var postsAsIPagedList = GetPagedPostsViewList((x, y, z) => _postService.GetPagedPosts(x, page), page);
+            int pagesize = AppSettings.PostListPageSize;
+            var postList = await _postService.GetPagedPostsAsync(pagesize, page);
+            var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pagesize, _postService.CountForPublic);
             return View(postsAsIPagedList);
         }
 
@@ -98,10 +101,10 @@ namespace Moonglade.Web.Controllers
                                        TagName = p.DisplayName
                                    }).ToList(),
                 PostId = post.Id.ToString(),
-                CommentEnabled = post.CommentEnabled ?? false,
+                CommentEnabled = post.CommentEnabled,
                 IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
                 LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
-                CommentCount = post.Comment.Count(c => null != c.IsApproved && c.IsApproved.Value)
+                CommentCount = post.Comment.Count(c => c.IsApproved)
             };
 
             if (AppSettings.EnableImageLazyLoad)
@@ -161,16 +164,6 @@ namespace Moonglade.Web.Controllers
         }
 
         #region Helper Methods
-
-        private StaticPagedList<Post> GetPagedPostsViewList(
-        Func<int, int, string, IEnumerable<Post>> postListFunc,
-        int page, int? pageSize = null, string author = null)
-        {
-            int pagesize = pageSize ?? AppSettings.PostListPageSize;
-            var postList = postListFunc(pagesize, page, author);
-            var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pagesize, _postService.CountForPublic);
-            return postsAsIPagedList;
-        }
 
         private bool HasCookie(CookieNames cookieName, string id)
         {

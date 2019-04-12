@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
@@ -9,7 +6,7 @@ namespace Moonglade.Data.Spec
 {
     public sealed class PagedCommentSepc : BaseSpecification<Comment>
     {
-        public PagedCommentSepc(int pageSize, int pageIndex) : base(c => c.IsApproved.Value)
+        public PagedCommentSepc(int pageSize, int pageIndex) : base(c => c.IsApproved)
         {
             var startRow = (pageIndex - 1) * pageSize;
 
