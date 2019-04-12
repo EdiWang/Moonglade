@@ -103,7 +103,7 @@ namespace Moonglade.Core
             var pipeline = new TemplatePipeline().Map("Username", comment.Username)
                                                  .Map("Email", comment.Email)
                                                  .Map("IPAddress", comment.IPAddress)
-                                                 .Map("PubDateUtc", comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
+                                                 .Map("CreateOnUtc", comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
                                                  .Map("Title", postTitle)
                                                  .Map("CommentContent", comment.CommentContent);
 
