@@ -52,7 +52,51 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="ediwang-navbar-content">
-                    <div class="ml-auto">
+                    <ul class="navbar-nav d-md-none">
+                        <li class="nav-item">
+                            <a asp-controller="Post" asp-action="Manage" class="nav-link">
+                                <i class="far fa-fw fa-file"></i>
+                                Posts
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Category" asp-action="Manage" class="nav-link">
+                                <i class="fas fa-fw fa-folder"></i>
+                                Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Tags" asp-action="Manage" class="nav-link">
+                                <i class="fas fa-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Comment" asp-action="Manage" class="nav-link">
+                                <i class="far fa-fw fa-comments"></i>
+                                Comments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Pingback" asp-action="Manage" class="nav-link">
+                                <i class="fas fa-fw fa-globe"></i>
+                                Pingbacks
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Settings" asp-action="General" class="nav-link">
+                                <i class="fas fa-fw fa-cog"></i>
+                                Settings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Admin" asp-action="SignOut" class="nav-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="ml-auto d-none d-sm-block">
                         <span class="navbar-text mr-3">@User.Identity.Name</span>
                         <a asp-controller="Admin" asp-action="SignOut" class="btn btn-sm btn-danger">
                             <i class="fas fa-sign-out-alt"></i>
@@ -68,7 +112,7 @@
         <div class="admin-main container-fluid mt-4 mb-5">
             <div class="row">
                 <div class="col-md-3 col-lg-2">
-                    <aside class="admin-aside">
+                    <aside class="admin-aside d-none d-sm-block">
                         <div class="card mb-4">
                             <div class="card-header">
                                 Quick Actions
