@@ -82,9 +82,9 @@ else
                     <i class="fas fa-user"></i>
                     @item.Username
                 </strong>
-                <span class="text-muted">@item.IPAddress</span>
-                <a href="mailto:@item.Email">@item.Email</a>
-                <span class="text-muted pull-right">@Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span>
+                <span class="text-muted d-none d-sm-inline">@item.IPAddress</span>
+                <a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>
+                <span class="text-muted float-right">@Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span>
             </div>
             <div class="card-body">
                 <p>

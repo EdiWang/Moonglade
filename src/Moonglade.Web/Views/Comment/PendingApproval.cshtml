@@ -58,17 +58,18 @@
                     <i class="fa fa-user"></i>
                     @comment.Username
                 </strong>
-                <span class="text-muted">@comment.IpAddress</span>
-                <a href="mailto:@comment.Email">@comment.Email</a>
+                <span class="text-muted d-none d-sm-inline">@comment.IpAddress</span>
+                <a href="mailto:@comment.Email" class="d-none d-sm-inline">@comment.Email</a>
                 <span class="text-muted float-right">@Utils.UtcToZoneTime(comment.PubDateUtc.Value, Settings.Value.TimeZone).ToString("MM/dd/yyyy HH:mm")</span>
             </div>
             <div class="card-body">
                 <p>
                     @comment.CommentContent
                 </p>
-                <div>
-                    - @comment.PostTitle
-                </div>
+                <strong>
+                    <i class="fas fa-bookmark"></i>
+                    @comment.PostTitle
+                </strong>
 
                 <div class="float-right">
                     <span id="span-processing-@comment.Id" style="display: none;">Processing...</span>
