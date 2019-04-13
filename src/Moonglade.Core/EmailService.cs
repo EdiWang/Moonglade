@@ -4,6 +4,7 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Edi.TemplateEmail.NetStd;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
@@ -18,6 +19,8 @@ namespace Moonglade.Core
     {
         private readonly IRepository<Post> _postRepository;
 
+        private readonly IHostingEnvironment _env;
+
         private EmailHelper EmailHelper { get; }
 
         private readonly BlogConfig _blogConfig;
@@ -25,10 +28,12 @@ namespace Moonglade.Core
         public EmailService(
             ILogger<EmailService> logger,
             IOptions<AppSettings> settings,
+            IHostingEnvironment env,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             IRepository<Post> postRepository) : base(logger, settings)
         {
+            _env = env;
             _blogConfig = blogConfig;
             _postRepository = postRepository;
             _blogConfig.GetConfiguration(blogConfigurationService);
@@ -75,7 +80,7 @@ namespace Moonglade.Core
                                                      .Map(nameof(EmailHelper.Settings.SmtpUserName), EmailHelper.Settings.SmtpUserName)
                                                      .Map(nameof(EmailHelper.Settings.EmailDisplayName), EmailHelper.Settings.EmailDisplayName)
                                                      .Map(nameof(EmailHelper.Settings.EnableSsl), EmailHelper.Settings.EnableSsl);
-                if (_blogConfig.EmailConfiguration.EnableEmailSending)
+                if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
                     await EmailHelper.ApplyTemplate(MailMesageType.TestMail, pipeline)
                                      .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
@@ -107,7 +112,7 @@ namespace Moonglade.Core
                                                  .Map("Title", postTitle)
                                                  .Map(nameof(comment.CommentContent), comment.CommentContent);
 
-            if (_blogConfig.EmailConfiguration.EnableEmailSending)
+            if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
             {
                 await EmailHelper.ApplyTemplate(MailMesageType.NewCommentNotification, pipeline)
                                  .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
@@ -132,7 +137,7 @@ namespace Moonglade.Core
                                                      .Map("PostTitle", model.Title)
                                                      .Map(nameof(model.CommentContent), model.CommentContent);
 
-                if (_blogConfig.EmailConfiguration.EnableEmailSending)
+                if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
                     await EmailHelper.ApplyTemplate(MailMesageType.AdminReplyNotification, pipeline)
                                      .SendMailAsync(model.Email);
@@ -156,7 +161,7 @@ namespace Moonglade.Core
                                                      .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl)
                                                      .Map(nameof(receivedPingback.Direction), receivedPingback.Direction);
 
-                if (_blogConfig.EmailConfiguration.EnableEmailSending)
+                if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
                     await EmailHelper.ApplyTemplate(MailMesageType.BeingPinged, pipeline)
                         .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
@@ -167,5 +172,8 @@ namespace Moonglade.Core
                 Logger.LogWarning($"Post id {receivedPingback.TargetPostId} not found, skipping sending ping notification email.");
             }
         }
+
+        private bool BlockEmailSending =>
+             _env.IsDevelopment() && AppSettings.DisableEmailSendingInDevelopment;
     }
 }
