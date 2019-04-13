@@ -51,7 +51,7 @@ namespace Moonglade.Core
 
         public int CountForPublic => _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
 
-        public Response UpdatePostStatistic(Guid postId, StatisticType statisticType)
+        public async Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticType statisticType)
         {
             try
             {
@@ -67,12 +67,12 @@ namespace Moonglade.Core
                     pp.Likes += 1;
                 }
 
-                int rows = _postExtensionRepository.Update(pp);
-                return new Response(rows > 0);
+                await _postExtensionRepository.UpdateAsync(pp);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(UpdatePostStatistic)}(postId: {postId}, statisticType: {statisticType})");
+                Logger.LogError(e, $"Error {nameof(UpdatePostStatisticAsync)}(postId: {postId}, statisticType: {statisticType})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -210,22 +210,22 @@ namespace Moonglade.Core
 
         #region Search
 
-        public Response<IEnumerable<SearchResult>> SearchPost(string keyword)
+        public async Task<Response<IReadOnlyList<SearchResult>>> SearchPostAsync(string keyword)
         {
             var postList = SearchPostByKeyword(keyword);
 
-            var resultList = postList.Select(p => p.PostPublish.PubDateUtc != null ? new SearchResult
+            var resultList = await postList.Select(p => p.PostPublish.PubDateUtc != null ? new SearchResult
             {
                 Slug = p.Slug,
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
                 Summary = p.ContentAbstract,
                 Title = p.Title
-            } : null);
+            } : null).ToListAsync();
 
-            return new SuccessResponse<IEnumerable<SearchResult>>(resultList);
+            return new SuccessResponse<IReadOnlyList<SearchResult>>(resultList);
         }
 
-        private IEnumerable<Post> SearchPostByKeyword(string keyword)
+        private IQueryable<Post> SearchPostByKeyword(string keyword)
         {
             var query = _postRepository.GetAsQueryable()
                                        .Include(p => p.PostPublish)

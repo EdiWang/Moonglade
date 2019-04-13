@@ -124,14 +124,14 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("hit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Hit([FromForm] Guid postId)
+        public async Task<IActionResult> Hit([FromForm] Guid postId)
         {
             if (HasCookie(CookieNames.Hit, postId.ToString()))
             {
                 return new EmptyResult();
             }
 
-            var response = _postService.UpdatePostStatistic(postId, PostService.StatisticType.Hits);
+            var response = await _postService.UpdatePostStatisticAsync(postId, PostService.StatisticType.Hits);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
@@ -142,7 +142,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("like")]
         [ValidateAntiForgeryToken]
-        public IActionResult Like([FromForm] Guid postId)
+        public async Task<IActionResult> Like([FromForm] Guid postId)
         {
             if (HasCookie(CookieNames.Liked, postId.ToString()))
             {
@@ -153,7 +153,7 @@ namespace Moonglade.Web.Controllers
                 });
             }
 
-            var response = _postService.UpdatePostStatistic(postId, PostService.StatisticType.Likes);
+            var response = await _postService.UpdatePostStatisticAsync(postId, PostService.StatisticType.Likes);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
