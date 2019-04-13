@@ -4,7 +4,7 @@
 
 This is the new blog system for https://edi.wang, Moonglade is the successor of project "Nordrassil", which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using **.NET Core**, optimized for cloud-based hosting.
 
-![image](https://ediwangstorage.blob.core.windows.net/web-assets/ediwang-azure-arch.png)
+![image](https://ediwangstorage.blob.core.windows.net/web-assets/ediwang-azure-arch.png?date=20190413)
 
 ## Features
 
@@ -37,15 +37,36 @@ This blog is using Azure AD to sign in to admin portal. Local authentication pro
 
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://localhost:5001/signin-oidc"**
+- Add Redirection URI for your other domain names if needed.
 - Copy "**appId**" to set as **AzureAd:ClientId** in appsettings.[env].json file
+
+Example Reply URL Configuration
+```
+"replyUrlsWithType": [
+{
+	"url": "https://localhost/signin-oidc",
+	"type": "Web"
+},
+{
+	"url": "https://ediwang-web-staging.azurewebsites.net/signinoidc",
+	"type": "Web"
+},
+{
+	"url": "https://localhost:5001/signin-oidc",
+	"type": "Web"
+},
+{
+	"url": "https://edi.wang/signin-oidc",
+	"type": "Web"
+}
+],
+```
 
 ### Setup Database
 
 1. Create a SQL Server 2017+ database or Azure SQL Database, execute script  **"Database\1.schema-mssql-140.sql"** 
 
 2. Execute **"Database\2.init-configuration.sql"** 
-
-3. Execute **"Database\3.migration.sql"** (if not empty)
 
 *You may need to grant permission to the database for your machine or service account depends on your server configuration*
 
@@ -115,6 +136,7 @@ EnableHarmonizor | Filter bad words (in order to live in China)
 EnableReward | Show WeChat reward button and QR Code image
 RecentCommentsListSize | How many comments to show on side bar
 EnforceHttps | Force website use HTTPS
+DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
 
 ## Host on Server
 
@@ -130,6 +152,8 @@ You can host Moonglade on public internet.
 #### SSL
 
 To use https, set **EnforceHttps: true** in AppSettings.
+
+To get a free SSL certificate, visit https://freessl.cn/
 
 #### Email Notification
 

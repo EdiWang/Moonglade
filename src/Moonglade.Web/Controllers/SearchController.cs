@@ -73,7 +73,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("search/{term}")]
-        public IActionResult SearchGet(string term)
+        public async Task<IActionResult> SearchGet(string term)
         {
             if (!string.IsNullOrWhiteSpace(term))
             {
@@ -81,13 +81,11 @@ namespace Moonglade.Web.Controllers
 
                 ViewBag.TitlePrefix = term;
 
-                var resultList = new List<SearchResult>();
-                var response = _postService.SearchPost(term);
+                var response = await _postService.SearchPostAsync(term);
                 if (response.IsSuccess)
                 {
-                    resultList = response.Item.ToList();
+                    return View("Index", response.Item);
                 }
-                return View("Index", resultList);
             }
             return RedirectToAction("Index", "Post");
         }
