@@ -23,7 +23,7 @@ namespace Moonglade.Core
         private readonly BlogConfig _blogConfig;
 
         public EmailService(
-            ILogger<EmailService> logger, 
+            ILogger<EmailService> logger,
             IOptions<AppSettings> settings,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
@@ -69,12 +69,12 @@ namespace Moonglade.Core
             {
                 Logger.LogInformation("Sending test mail");
 
-                var pipeline = new TemplatePipeline().Map("MachineName", Environment.MachineName)
-                                                     .Map("SmtpServer", EmailHelper.Settings.SmtpServer)
-                                                     .Map("SmtpServerPort", EmailHelper.Settings.SmtpServerPort)
-                                                     .Map("SmtpUserName", EmailHelper.Settings.SmtpUserName)
-                                                     .Map("EmailDisplayName", EmailHelper.Settings.EmailDisplayName)
-                                                     .Map("EnableSsl", EmailHelper.Settings.EnableSsl);
+                var pipeline = new TemplatePipeline().Map(nameof(Environment.MachineName), Environment.MachineName)
+                                                     .Map(nameof(EmailHelper.Settings.SmtpServer), EmailHelper.Settings.SmtpServer)
+                                                     .Map(nameof(EmailHelper.Settings.SmtpServerPort), EmailHelper.Settings.SmtpServerPort)
+                                                     .Map(nameof(EmailHelper.Settings.SmtpUserName), EmailHelper.Settings.SmtpUserName)
+                                                     .Map(nameof(EmailHelper.Settings.EmailDisplayName), EmailHelper.Settings.EmailDisplayName)
+                                                     .Map(nameof(EmailHelper.Settings.EnableSsl), EmailHelper.Settings.EnableSsl);
                 if (_blogConfig.EmailConfiguration.EnableEmailSending)
                 {
                     await EmailHelper.ApplyTemplate(MailMesageType.TestMail, pipeline)
@@ -100,12 +100,12 @@ namespace Moonglade.Core
         {
             Logger.LogInformation("Sending NewCommentNotification mail");
 
-            var pipeline = new TemplatePipeline().Map("Username", comment.Username)
-                                                 .Map("Email", comment.Email)
-                                                 .Map("IPAddress", comment.IPAddress)
-                                                 .Map("CreateOnUtc", comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
+            var pipeline = new TemplatePipeline().Map(nameof(comment.Username), comment.Username)
+                                                 .Map(nameof(comment.Email), comment.Email)
+                                                 .Map(nameof(comment.IPAddress), comment.IPAddress)
+                                                 .Map(nameof(comment.CreateOnUtc), comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
                                                  .Map("Title", postTitle)
-                                                 .Map("CommentContent", comment.CommentContent);
+                                                 .Map(nameof(comment.CommentContent), comment.CommentContent);
 
             if (_blogConfig.EmailConfiguration.EnableEmailSending)
             {
@@ -127,10 +127,10 @@ namespace Moonglade.Core
 
                 var pipeline = new TemplatePipeline().Map("ReplyTime",
                                                          Utils.UtcToZoneTime(model.ReplyTimeUtc.GetValueOrDefault(), AppSettings.TimeZone))
-                                                     .Map("ReplyContent", model.ReplyContent)
+                                                     .Map(nameof(model.ReplyContent), model.ReplyContent)
                                                      .Map("RouteLink", postLink)
                                                      .Map("PostTitle", model.Title)
-                                                     .Map("CommentContent", model.CommentContent);
+                                                     .Map(nameof(model.CommentContent), model.CommentContent);
 
                 if (_blogConfig.EmailConfiguration.EnableEmailSending)
                 {
@@ -151,10 +151,10 @@ namespace Moonglade.Core
                 var pipeline = new TemplatePipeline().Map("Title", postTitle)
                                                      .Map("PingTime", receivedPingback.PingTimeUtc)
                                                      .Map("SourceDomain", receivedPingback.Domain)
-                                                     .Map("SourceIp", receivedPingback.SourceIp)
-                                                     .Map("SourceTitle", receivedPingback.SourceTitle)
-                                                     .Map("SourceUrl", receivedPingback.SourceUrl)
-                                                     .Map("Direction", receivedPingback.Direction);
+                                                     .Map(nameof(receivedPingback.SourceIp), receivedPingback.SourceIp)
+                                                     .Map(nameof(receivedPingback.SourceTitle), receivedPingback.SourceTitle)
+                                                     .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl)
+                                                     .Map(nameof(receivedPingback.Direction), receivedPingback.Direction);
 
                 if (_blogConfig.EmailConfiguration.EnableEmailSending)
                 {
