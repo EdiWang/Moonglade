@@ -15,5 +15,6 @@
         public bool EnableReward { get; set; }
         public int RecentCommentsListSize { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
+        public bool DisableEmailSendingInDevelopment { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace Moonglade.Model
         public string IpAddress { get; set; }
         public string CommentContent { get; set; }
         public string PostTitle { get; set; }
-        public DateTime? PubDateUtc { get; set; }
+        public DateTime? CreateOnUtc { get; set; }
     }
 }

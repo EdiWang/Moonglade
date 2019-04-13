@@ -72,7 +72,7 @@ namespace Moonglade.Core
                 IpAddress = p.IPAddress,
                 CommentContent = p.CommentContent,
                 PostTitle = p.Post.Title,
-                PubDateUtc = p.CreateOnUtc
+                CreateOnUtc = p.CreateOnUtc
             });
         }
 

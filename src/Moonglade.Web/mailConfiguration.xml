@@ -5,7 +5,7 @@
     <MessageSubject>[edi.wang] Test Email on {MachineName.Value}</MessageSubject>
     <MessageBody>
       <![CDATA[
-EdiBlog email settings is successfully configured on machine {MachineName.Value}<br />
+Moonglade email settings is successfully configured on machine {MachineName.Value}<br />
 Smtp Server: {SmtpServer.Value}<br />
 Smtp Port: {SmtpServerPort.Value}<br />
 Smtp Username: {SmtpUserName.Value}<br />
@@ -15,19 +15,22 @@ Enable SSL: {EnableSsl.Value}<br />
     </MessageBody>
   </MailMessage>
   <MailMessage MessageType="NewCommentNotification" IsHtml="true">
-    <MessageSubject>[edi.wang] {Username.Value} commentted {Title.Value}</MessageSubject>
+    <MessageSubject>[edi.wang] New comment for [{Title.Value}]</MessageSubject>
     <MessageBody>
       <![CDATA[
-{Username.Value} commentted on {Title.Value} <br />
-{CommentContent.Value} <br /> <br />
-Time (UTC): {PubDateUtc.Value} <br />
+<strong>{Username.Value}</strong> commentted [{Title.Value}]: <br />
+<p>
+{CommentContent.Value}
+</p>
+<br />
+Time (UTC): {CreateOnUtc.Value} <br />
 Email: {Email.Value} <br />
 IP: {IPAddress.Value}
       ]]>
     </MessageBody>
   </MailMessage>
   <MailMessage MessageType="AdminReplyNotification" IsHtml="true">
-    <MessageSubject>[edi.wang] Edi Wang Replied Your Comment</MessageSubject>
+    <MessageSubject>[edi.wang] New reply for your comment</MessageSubject>
     <MessageBody>
       <![CDATA[
 Your comment "{CommentContent.Value}" on <i><a href="{RouteLink.Value}" target="_blank">{PostTitle.Value}</a></i> 
@@ -39,7 +42,7 @@ has been replied:
     </MessageBody>
   </MailMessage>
   <MailMessage MessageType="BeingPinged" IsHtml="true">
-    <MessageSubject>[edi.wang] Post {Title.Value} Was Referenced</MessageSubject>
+    <MessageSubject>[edi.wang] [{Title.Value}] Was Referenced</MessageSubject>
     <MessageBody>
       <![CDATA[
 Source Domain: {SourceDomain.Value} <br />

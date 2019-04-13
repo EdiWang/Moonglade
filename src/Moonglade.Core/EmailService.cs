@@ -4,6 +4,7 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Edi.TemplateEmail.NetStd;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
@@ -18,17 +19,21 @@ namespace Moonglade.Core
     {
         private readonly IRepository<Post> _postRepository;
 
+        private readonly IHostingEnvironment _env;
+
         private EmailHelper EmailHelper { get; }
 
         private readonly BlogConfig _blogConfig;
 
         public EmailService(
-            ILogger<EmailService> logger, 
+            ILogger<EmailService> logger,
             IOptions<AppSettings> settings,
+            IHostingEnvironment env,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             IRepository<Post> postRepository) : base(logger, settings)
         {
+            _env = env;
             _blogConfig = blogConfig;
             _postRepository = postRepository;
             _blogConfig.GetConfiguration(blogConfigurationService);
@@ -69,13 +74,13 @@ namespace Moonglade.Core
             {
                 Logger.LogInformation("Sending test mail");
 
-                var pipeline = new TemplatePipeline().Map("MachineName", Environment.MachineName)
-                                                     .Map("SmtpServer", EmailHelper.Settings.SmtpServer)
-                                                     .Map("SmtpServerPort", EmailHelper.Settings.SmtpServerPort)
-                                                     .Map("SmtpUserName", EmailHelper.Settings.SmtpUserName)
-                                                     .Map("EmailDisplayName", EmailHelper.Settings.EmailDisplayName)
-                                                     .Map("EnableSsl", EmailHelper.Settings.EnableSsl);
-                if (_blogConfig.EmailConfiguration.EnableEmailSending)
+                var pipeline = new TemplatePipeline().Map(nameof(Environment.MachineName), Environment.MachineName)
+                                                     .Map(nameof(EmailHelper.Settings.SmtpServer), EmailHelper.Settings.SmtpServer)
+                                                     .Map(nameof(EmailHelper.Settings.SmtpServerPort), EmailHelper.Settings.SmtpServerPort)
+                                                     .Map(nameof(EmailHelper.Settings.SmtpUserName), EmailHelper.Settings.SmtpUserName)
+                                                     .Map(nameof(EmailHelper.Settings.EmailDisplayName), EmailHelper.Settings.EmailDisplayName)
+                                                     .Map(nameof(EmailHelper.Settings.EnableSsl), EmailHelper.Settings.EnableSsl);
+                if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
                     await EmailHelper.ApplyTemplate(MailMesageType.TestMail, pipeline)
                                      .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
@@ -100,14 +105,14 @@ namespace Moonglade.Core
         {
             Logger.LogInformation("Sending NewCommentNotification mail");
 
-            var pipeline = new TemplatePipeline().Map("Username", comment.Username)
-                                                 .Map("Email", comment.Email)
-                                                 .Map("IPAddress", comment.IPAddress)
-                                                 .Map("PubDateUtc", comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
+            var pipeline = new TemplatePipeline().Map(nameof(comment.Username), comment.Username)
+                                                 .Map(nameof(comment.Email), comment.Email)
+                                                 .Map(nameof(comment.IPAddress), comment.IPAddress)
+                                                 .Map(nameof(comment.CreateOnUtc), comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
                                                  .Map("Title", postTitle)
-                                                 .Map("CommentContent", comment.CommentContent);
+                                                 .Map(nameof(comment.CommentContent), comment.CommentContent);
 
-            if (_blogConfig.EmailConfiguration.EnableEmailSending)
+            if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
             {
                 await EmailHelper.ApplyTemplate(MailMesageType.NewCommentNotification, pipeline)
                                  .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
@@ -127,12 +132,12 @@ namespace Moonglade.Core
 
                 var pipeline = new TemplatePipeline().Map("ReplyTime",
                                                          Utils.UtcToZoneTime(model.ReplyTimeUtc.GetValueOrDefault(), AppSettings.TimeZone))
-                                                     .Map("ReplyContent", model.ReplyContent)
+                                                     .Map(nameof(model.ReplyContent), model.ReplyContent)
                                                      .Map("RouteLink", postLink)
                                                      .Map("PostTitle", model.Title)
-                                                     .Map("CommentContent", model.CommentContent);
+                                                     .Map(nameof(model.CommentContent), model.CommentContent);
 
-                if (_blogConfig.EmailConfiguration.EnableEmailSending)
+                if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
                     await EmailHelper.ApplyTemplate(MailMesageType.AdminReplyNotification, pipeline)
                                      .SendMailAsync(model.Email);
@@ -151,12 +156,12 @@ namespace Moonglade.Core
                 var pipeline = new TemplatePipeline().Map("Title", postTitle)
                                                      .Map("PingTime", receivedPingback.PingTimeUtc)
                                                      .Map("SourceDomain", receivedPingback.Domain)
-                                                     .Map("SourceIp", receivedPingback.SourceIp)
-                                                     .Map("SourceTitle", receivedPingback.SourceTitle)
-                                                     .Map("SourceUrl", receivedPingback.SourceUrl)
-                                                     .Map("Direction", receivedPingback.Direction);
+                                                     .Map(nameof(receivedPingback.SourceIp), receivedPingback.SourceIp)
+                                                     .Map(nameof(receivedPingback.SourceTitle), receivedPingback.SourceTitle)
+                                                     .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl)
+                                                     .Map(nameof(receivedPingback.Direction), receivedPingback.Direction);
 
-                if (_blogConfig.EmailConfiguration.EnableEmailSending)
+                if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
                     await EmailHelper.ApplyTemplate(MailMesageType.BeingPinged, pipeline)
                         .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
@@ -167,5 +172,8 @@ namespace Moonglade.Core
                 Logger.LogWarning($"Post id {receivedPingback.TargetPostId} not found, skipping sending ping notification email.");
             }
         }
+
+        private bool BlockEmailSending =>
+             _env.IsDevelopment() && AppSettings.DisableEmailSendingInDevelopment;
     }
 }
