@@ -67,12 +67,28 @@ namespace Moonglade.Web
             services.Configure<AppSettings>(_appSettingsSection);
             services.Configure<RobotsTxtOptions>(Configuration.GetSection("RobotsTxt"));
 
-            services.AddAuthentication(sharedOptions =>
-                    {
-                        sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                    })
-                    .AddAzureAD(options => Configuration.Bind("AzureAd", options)).AddCookie();
+            var authenticationSection = Configuration.GetSection("Authentication");
+            var authenticationProvider = authenticationSection["Provider"];
+            switch (authenticationProvider)
+            {
+                case "AzureAd":
+                    services.AddAuthentication(sharedOptions =>
+                        {
+                            sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                            sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                        })
+                        .AddAzureAD(options => Configuration.Bind("Authentication:AzureAd", options)).AddCookie();
+                    break;
+                case "Local":
+                    // TODO
+                    // When some day I'm in a good mood, I will consider writing local authentication provider
+                    // for now, just stick with Azure, have a cloud day guys!
+                    throw new NotImplementedException();
+                default:
+                    var msg = $"Provider {authenticationProvider} is not supported.";
+                    _logger.LogCritical(msg);
+                    throw new NotSupportedException(msg);
+            }
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                     .AddJsonOptions(
