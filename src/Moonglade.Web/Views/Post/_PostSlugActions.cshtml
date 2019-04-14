@@ -5,20 +5,20 @@
 <hr />
 <div class="post-slug-actions clearfix mb-4">
     <div class="float-right">
-        <button class="btn icon-btn btn-success btn-ratings">
+        <button class="btn btn-round btn-outline-success btn-ratings">
             <i class="fas fa-thumbs-up"></i>
             Like (<span class="likehits-num">@Model.PostModel.Likes</span>)
         </button>
 
         @if (Settings.Value.EnableReward)
         {
-            <button class="btn icon-btn btn-success" data-toggle="modal" data-target="#wechat-pay-window">
+            <button class="btn btn-round btn-outline-success" data-toggle="modal" data-target="#wechat-pay-window">
                 <i class="fab fa-weixin"></i>
                 Reward
             </button>
         }
 
-        <button class="btn icon-btn btn-primary" data-toggle="modal" data-target="#qrcode-window">
+        <button class="btn btn-round btn-outline-secondary" data-toggle="modal" data-target="#qrcode-window">
             <i class="fas fa-qrcode"></i>
             QR Code
         </button>

@@ -4300,6 +4300,16 @@ readers do not read off random characters that represent icons */
     src: local('KlavikaMedium-Plain'), url('/webfonts/KlavikaMedium-Plain.eot?#iefix') format('embedded-opentype'), url('/webfonts/KlavikaMedium-Plain.woff2') format('woff2'), url('/webfonts/KlavikaMedium-Plain.woff') format('woff'), url('/webfonts/KlavikaMedium-Plain.ttf') format('truetype'), url('/webfonts/KlavikaMedium-Plain.svg#KlavikaMedium-Plain') format('svg');
 }
 
+.btn-outline-footer {
+    color: #96a8c3;
+    border-color: #96a8c3;
+}
+
+    .btn-outline-footer:hover {
+        color: #fff;
+        border-color: #fff;
+    }
+
 .admin-main {
     overflow: hidden;
 }
@@ -4541,7 +4551,7 @@ div.mce-fullscreen {
     padding: 0 !important;
 }
 
-.icon-btn {
+.btn-round {
     border-radius: 50px !important;
 }
 
@@ -4952,6 +4962,7 @@ label {
     padding-top: 5px;
     text-align: center;
     width: 55px;
+    border-radius: 55px;
 }
 
 .ul-archive-item li {
@@ -5228,7 +5239,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 
 .blog-info-desktop-lg {
     background: #fafafa;
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px;
     color: #fff;
     overflow: hidden;
     position: relative;
