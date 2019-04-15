@@ -12,7 +12,6 @@
         public int PostSummaryWords { get; set; }
         public bool EnablePingBackSend { get; set; }
         public bool EnableHarmonizor { get; set; }
-        public bool EnableReward { get; set; }
         public int RecentCommentsListSize { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
         public bool DisableEmailSendingInDevelopment { get; set; }
