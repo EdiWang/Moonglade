@@ -70,16 +70,13 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="qrmodalLabel">QR Code</h5>
+                <h6 class="modal-title" id="qrmodalLabel">QR Code</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body text-center">
                 <div class="site-qrcode m-auto"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -89,16 +86,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="qrmodalLabel-wechat">Official WeChat</h5>
+                <h6 class="modal-title" id="qrmodalLabel-wechat">Official WeChat</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body text-center">
                 <img src="~/images/qrcode_for_gh_b1c55ef44af1_430.jpg" class="m-auto img-fluid" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -108,7 +102,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="subscriptionmodalLabel">RSS / Atom Feed</h5>
+                <h6 class="modal-title" id="subscriptionmodalLabel">RSS / Atom Feed</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -126,19 +120,14 @@
                         </a>
                     </div>
                 </div>
-                <div class="card bg-light">
-                    <div class="card-header">RSS for Categories</div>
-                    <div class="card-body">
-                        <div class="row">
-                            <cache expires-after="@TimeSpan.FromMinutes(60)">
-                                @await Component.InvokeAsync("RssCatList")
-                            </cache>
-                        </div>
-                    </div>
+                <div class="row">
+                    <cache expires-after="@TimeSpan.FromMinutes(60)">
+                        @await Component.InvokeAsync("RssCatList")
+                    </cache>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
