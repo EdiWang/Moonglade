@@ -28,7 +28,7 @@ Current code is not so setup-friendly, it is very complicated comparing to other
 
 ### Tools
 - [.NET Core 2.2 SDK](http://dot.net)
-- [Visual Studio 2017](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
+- [Visual Studio 2019](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
 - SQL Server 2017 / Azure SQL Database
 
 ### Prepare Azure AD
@@ -87,6 +87,8 @@ Example Reply URL Configuration
 **IMPORTANT: This must be set first before first run of the application!**
 
 *In runtime, to generate a new pair of IV and Key, access URL "/admin/settings/generate-new-aes-keys".*
+
+However, there is no runtime until you setup the site, and there is no tools to generate the key for the setup until you have runtime. So basically this is a big Ken in this readme. Currently you have to write code yourself to generate these keys.
 
 See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
 
