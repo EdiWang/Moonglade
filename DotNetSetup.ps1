@@ -21,7 +21,7 @@ if (-not($testchoco)) {
 else {
     Write-Host ".NET Core SDK is already installed, checking new version..."
 
-    if (!$testdotnet.StartsWith("2.2")) {
+    if ($testdotnet.StartsWith("2.2")) {
         # Only update 2.2 SDK
         choco update dotnetcore-sdk -y
     }
