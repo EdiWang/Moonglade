@@ -78,11 +78,18 @@ namespace Moonglade.Web
                             sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                         })
                         .AddAzureAD(options => Configuration.Bind("Authentication:AzureAd", options)).AddCookie();
+                    _logger.LogInformation("Authentication is configured using Azure Active Directory.");
                     break;
                 case "Local":
-                    // TODO
-                    // When some day I'm in a good mood, I will consider writing local authentication provider
-                    // for now, just stick with Azure, have a cloud day guys!
+                    services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                            .AddCookie(options =>
+                            {
+                                // TODO
+                                // When some day I'm in a good mood, I will consider writing local authentication provider
+                                // for now, just stick with Azure, have a cloud day guys!
+                            });
+
+                    _logger.LogInformation("Authentication is configured using Local Account.");
                     throw new NotImplementedException();
                 default:
                     var msg = $"Provider {authenticationProvider} is not supported.";
