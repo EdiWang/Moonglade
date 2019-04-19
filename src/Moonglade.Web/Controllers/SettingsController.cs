@@ -147,6 +147,7 @@ namespace Moonglade.Web.Controllers
             return Json(response);
         }
 
+        [AllowAnonymous]
         [HttpGet("generate-new-aes-keys")]
         public IActionResult GenerateNewAesKeys()
         {
