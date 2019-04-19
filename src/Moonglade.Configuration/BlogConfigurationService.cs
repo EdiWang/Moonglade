@@ -4,7 +4,8 @@ using System.Linq;
 using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
 using Newtonsoft.Json;
 
@@ -12,18 +13,19 @@ namespace Moonglade.Configuration
 {
     public class BlogConfigurationService
     {
-        protected MoongladeDbContext Context;
-
         protected readonly ILogger<BlogConfigurationService> Logger;
 
         private readonly AesEncryptionService _encryptionService;
 
-        public BlogConfigurationService(MoongladeDbContext context,
+        private readonly IRepository<BlogConfiguration> _blogConfigurationRepository;
+
+        public BlogConfigurationService(
             ILogger<BlogConfigurationService> logger,
-            AesEncryptionService encryptionService)
+            AesEncryptionService encryptionService, 
+            IRepository<BlogConfiguration> blogConfiguration)
         {
             _encryptionService = encryptionService;
-            if (null != context) Context = context;
+            _blogConfigurationRepository = blogConfiguration;
             if (null != logger) Logger = logger;
         }
 
@@ -43,7 +45,7 @@ namespace Moonglade.Configuration
         {
             try
             {
-                var cfg = Context.BlogConfiguration.FirstOrDefault(k => k.CfgKey == key.ToString());
+                var cfg = _blogConfigurationRepository.Get(k => k.CfgKey == key.ToString());
                 if (null != cfg)
                 {
                     return !string.IsNullOrEmpty(cfg.CfgValue) ?
@@ -52,12 +54,12 @@ namespace Moonglade.Configuration
                 }
 
                 Logger.LogWarning($"BlogConfigurationKey {key} not found in database, returning default value.");
-                return default(T);
+                return default;
             }
             catch (Exception e)
             {
                 Logger.LogError(e, e.Message);
-                return default(T);
+                return default;
             }
         }
 
@@ -65,7 +67,7 @@ namespace Moonglade.Configuration
         {
             try
             {
-                var data = Context.BlogConfiguration.ToDictionary(c => c.CfgKey, c => c.CfgValue);
+                var data = _blogConfigurationRepository.Get().ToDictionary(c => c.CfgKey, c => c.CfgValue);
                 return data;
             }
             catch (Exception e)
@@ -84,12 +86,12 @@ namespace Moonglade.Configuration
                     return new FailedResponse((int)ResponseFailureCode.InvalidParameter, "value can not be empty.");
                 }
 
-                var cfg = Context.BlogConfiguration.FirstOrDefault(k => k.CfgKey == key.ToString());
+                var cfg = _blogConfigurationRepository.Get(k => k.CfgKey == key.ToString());
                 if (null != cfg)
                 {
                     cfg.CfgValue = value;
                     cfg.LastModifiedTimeUtc = DateTime.UtcNow;
-                    var rows = Context.SaveChanges();
+                    int rows = _blogConfigurationRepository.Update(cfg);
                     return new Response(rows > 0);
                 }
 

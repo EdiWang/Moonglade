@@ -3,8 +3,9 @@
 @using Moonglade.Configuration
 @using Moonglade.Model.Settings
 @{
-    var currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
+    string currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
     string currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
+    string currentPage = ViewContext.RouteData?.Values["page"]?.ToString();
 }
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject IOptions<AppSettings> Settings
@@ -83,14 +84,14 @@
                                 <strong>Archive</strong>
                             </a>
                         </li>
-                        <li class="nav-item @(string.Compare("Apps", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
-                            <a asp-controller="Apps" asp-action="Index" class="nav-link">
+                        <li class="nav-item @(string.Compare("/apps", currentPage, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a asp-page="/apps" class="nav-link">
                                 <i class="fab fa-windows"></i>
                                 <strong>Apps</strong>
                             </a>
                         </li>
-                        <li class="nav-item @(string.Compare("About", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
-                            <a asp-controller="About" asp-action="Index" class="nav-link">
+                        <li class="nav-item @(string.Compare("/about", currentPage, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a asp-page="/about" class="nav-link">
                                 <i class="fas fa-star"></i>
                                 <strong>About</strong>
                             </a>
@@ -124,7 +125,7 @@
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
-                            <a asp-controller="About" asp-action="Index">
+                            <a asp-page="/about">
                                 <img src="~/images/avatar.jpg"
                                      alt="Edi Wang"
                                      class="rounded-circle blogger-head-pic" />
