@@ -86,9 +86,9 @@ Example Reply URL Configuration
 
 **IMPORTANT: This must be set first before first run of the application!**
 
-*In runtime, to generate a new pair of IV and Key, access URL "/admin/settings/generate-new-aes-keys".*
+To get a random generated key, visit https://edi.wang/admin/settings/generate-new-aes-keys
 
-However, there is no runtime until you setup the site, and there is no tools to generate the key for the setup until you have runtime. So basically this is a big Ken in this readme. Currently you have to write code yourself to generate these keys.
+I will not track or preserve your keys. If you trust me, use that url, if not, write code to generate keys for yourself.
 
 See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
 
