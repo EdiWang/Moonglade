@@ -12,7 +12,7 @@ else {
 }
 
 $testdotnet = powershell dotnet --version
-if (-not($testchoco)) {
+if (-not($testdotnet)) {
     Write-Host ""
     Write-Host "Installing .NET Core SDK..." -ForegroundColor Green
     Write-Host "------------------------------------" -ForegroundColor Green
