@@ -5,7 +5,7 @@ if (-not($testchoco)) {
     Write-Host ""
     Write-Host "Installing Chocolate for Windows..." -ForegroundColor Green
     Write-Host "------------------------------------" -ForegroundColor Green
-    Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 else {
     Write-Host "Choco is already installed, skip installation."
@@ -26,3 +26,5 @@ else {
         choco update dotnetcore-sdk -y
     }
 }
+
+Read-Host -Prompt "Setup is done, press [ENTER] to quit."
