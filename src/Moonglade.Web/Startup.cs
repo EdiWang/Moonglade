@@ -248,6 +248,55 @@ namespace Moonglade.Web
                     }));
             }
 
+            void InitBlogConfiguration(DbContext moongladeDbContext)
+            {
+                // oh, I wish C# could simplify this syntax...
+                var defaultConfigData = new List<KeyValuePair<string, string>>
+                {
+                    // Looks like I have to check in dirty words into source control, haha
+                    new KeyValuePair<string, string>(nameof(BlogConfig.DisharmonyWords), "fuck|shit"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.MetaKeyword), "Moonglade"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.MetaAuthor), "Admin"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.SiteTitle), "Moonglade"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.EnableComments), "True"),
+
+                    // Below code is too SB, may be I could init config from an external file in the future...
+                    new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings),
+                        @"{""RssItemCount"":20,""RssCopyright"":""(c) {year} Moonglade"",""RssDescription"":""Latest posts from Moonglade"",""RssGeneratorName"":""Moonglade"",""RssTitle"":""Moonglade"",""AuthorName"":""Admin""}"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings),
+                        @"{""IsEnabled"":true,""KeepOriginImage"":false,""FontSize"":20,""WatermarkText"":""Moonglade""}"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration),
+                        @"{""EnableEmailSending"":true,""EnableSsl"":true,""SendEmailOnCommentReply"":true,""SendEmailOnNewComment"":true,""SmtpServerPort"":587,""AdminEmail"":"""",""EmailDisplayName"":""Moonglade"",""SmtpPassword"":"""",""SmtpServer"":"""",""SmtpUserName"":"""",""BannedMailDomain"":""""}")
+                };
+
+                var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
+                moongladeDbContext.AddRange(cfgObjs);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("BlogConfiguration Initialized");
+            }
+
+            void InitCategories(DbContext moongladeDbContext)
+            {
+                var cat = new Category
+                {
+                    Id = Guid.NewGuid(),
+                    DisplayName = "Default",
+                    Note = "Default Category",
+                    Title = "default"
+                };
+                moongladeDbContext.Add(cat);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("Default Categories Initialized");
+            }
+
+            void InitFriendLinks(DbContext moongladeDbContext)
+            {
+                // TODO
+            }
+
             try
             {
                 using (var serviceScope = serviceProvider.CreateScope())
@@ -258,29 +307,9 @@ namespace Moonglade.Web
 
                     if (isFirstRun)
                     {
-                        // oh, I wish C# could simplify this syntax...
-                        var defaultConfigData = new List<KeyValuePair<string, string>>
-                        {
-                            // Looks like I have to check in dirty words into source control, haha
-                            new KeyValuePair<string, string>(nameof(BlogConfig.DisharmonyWords), "fuck|shit"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.MetaKeyword), "Moonglade"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.MetaAuthor), "Admin"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.SiteTitle), "Moonglade"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.EnableComments), "True"),
-
-                            // Below code is too SB, may be I could init config from an external file in the future...
-                            new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings),
-                                @"{""RssItemCount"":20,""RssCopyright"":""(c) {year} Moonglade"",""RssDescription"":""Latest posts from Moonglade"",""RssGeneratorName"":""Moonglade"",""RssTitle"":""Moonglade"",""AuthorName"":""Admin""}"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings), @"{""IsEnabled"":true,""KeepOriginImage"":false,""FontSize"":20,""WatermarkText"":""Moonglade""}"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration), @"{""EnableEmailSending"":true,""EnableSsl"":true,""SendEmailOnCommentReply"":true,""SendEmailOnNewComment"":true,""SmtpServerPort"":587,""AdminEmail"":"""",""EmailDisplayName"":""Moonglade"",""SmtpPassword"":"""",""SmtpServer"":"""",""SmtpUserName"":"""",""BannedMailDomain"":""""}")
-                        };
-
-                        var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
-                        db.AddRange(cfgObjs);
-                        db.SaveChanges();
-
-                        _logger.LogInformation("BlogConfiguration Initialized!");
+                        InitBlogConfiguration(db);
+                        InitCategories(db);
+                        InitFriendLinks(db);
                     }
                 }
             }
