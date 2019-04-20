@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
 using Edi.Net.AesEncryption;
@@ -248,6 +249,121 @@ namespace Moonglade.Web
                     }));
             }
 
+            void InitBlogConfiguration(DbContext moongladeDbContext)
+            {
+                // oh, I wish C# could simplify this syntax...
+                var defaultConfigData = new List<KeyValuePair<string, string>>
+                {
+                    // Looks like I have to check in dirty words into source control, haha
+                    new KeyValuePair<string, string>(nameof(BlogConfig.DisharmonyWords), "fuck|shit"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.MetaKeyword), "Moonglade"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.MetaAuthor), "Admin"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.SiteTitle), "Moonglade"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.EnableComments), "True"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings), Constants.WatermarkSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration), Constants.EmailConfigurationDefaultValue)
+                };
+
+                var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
+                moongladeDbContext.AddRange(cfgObjs);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("BlogConfiguration Initialized");
+            }
+
+            Guid catId;
+            void InitCategories(DbContext moongladeDbContext)
+            {
+                var cat = new Category
+                {
+                    Id = Guid.NewGuid(),
+                    DisplayName = "Default",
+                    Note = "Default Category",
+                    Title = "default"
+                };
+                moongladeDbContext.Add(cat);
+                moongladeDbContext.SaveChanges();
+                catId = cat.Id;
+
+                _logger.LogInformation("Default Categories Initialized");
+            }
+
+            void InitFriendLinks(DbContext moongladeDbContext)
+            {
+                var friendLink = new FriendLink
+                {
+                    Id = Guid.NewGuid(),
+                    LinkUrl = "https://edi.wang",
+                    Title = "Edi.Wang"
+                };
+                moongladeDbContext.Add(friendLink);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("Default Friend Links Initialized");
+            }
+
+            List<Tag> tags;
+            void InitDefaultTags(DbContext moongladeDbContext)
+            {
+                tags = new List<Tag>
+                {
+                    new Tag{ DisplayName = "Moonglade", NormalizedName = "moonglade" },
+                    new Tag{ DisplayName = ".NET Core", NormalizedName = "dot-net-core" }
+                };
+                moongladeDbContext.AddRange(tags);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("Default Tags Initialized");
+            }
+
+            void InitFirstPost(DbContext moongladeDbContext)
+            {
+                var id = Guid.NewGuid();
+                var post = new Post
+                {
+                    Id = id,
+                    CommentEnabled = true,
+                    Title = "Welcome to Moonglade",
+                    Slug = "welcome-to-moonglade",
+                    PostContent = HttpUtility.HtmlEncode($"<p>{Constants.PostContentInitValue}</p>"),
+                    ContentAbstract = Constants.PostContentInitValue,
+                    CreateOnUtc = DateTime.UtcNow,
+                    PostExtension = new PostExtension
+                    {
+                        Hits = 1024,
+                        Likes = 512,
+                        PostId = id
+                    },
+                    PostPublish = new PostPublish
+                    {
+                        PostId = id,
+                        ContentLanguageCode = "en-us",
+                        ExposedToSiteMap = true,
+                        IsFeedIncluded = true,
+                        IsPublished = true,
+                        IsDeleted = false,
+                        PubDateUtc = DateTime.UtcNow,
+                        PublisherIp = "127.0.0.1"
+                    },
+                    PostCategory = new List<PostCategory>
+                    {
+                        new PostCategory{ CategoryId = catId, PostId = id }
+                    },
+                    PostTag = new List<PostTag>
+                    {
+                        new PostTag{ TagId = tags[0].Id, PostId = id },
+                        new PostTag{ TagId = tags[1].Id, PostId = id }
+                    }
+                };
+
+                moongladeDbContext.Add(post);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("First Post Created");
+            }
+
             try
             {
                 using (var serviceScope = serviceProvider.CreateScope())
@@ -258,35 +374,18 @@ namespace Moonglade.Web
 
                     if (isFirstRun)
                     {
-                        // oh, I wish C# could simplify this syntax...
-                        var defaultConfigData = new List<KeyValuePair<string, string>>
-                        {
-                            // Looks like I have to check in dirty words into source control, haha
-                            new KeyValuePair<string, string>(nameof(BlogConfig.DisharmonyWords), "fuck|shit"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.MetaKeyword), "Moonglade"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.MetaAuthor), "Admin"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.SiteTitle), "Moonglade"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.EnableComments), "True"),
-
-                            // Below code is too SB, may be I could init config from an external file in the future...
-                            new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings),
-                                @"{""RssItemCount"":20,""RssCopyright"":""(c) {year} Moonglade"",""RssDescription"":""Latest posts from Moonglade"",""RssGeneratorName"":""Moonglade"",""RssTitle"":""Moonglade"",""AuthorName"":""Admin""}"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings), @"{""IsEnabled"":true,""KeepOriginImage"":false,""FontSize"":20,""WatermarkText"":""Moonglade""}"),
-                            new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration), @"{""EnableEmailSending"":true,""EnableSsl"":true,""SendEmailOnCommentReply"":true,""SendEmailOnNewComment"":true,""SmtpServerPort"":587,""AdminEmail"":"""",""EmailDisplayName"":""Moonglade"",""SmtpPassword"":"""",""SmtpServer"":"""",""SmtpUserName"":"""",""BannedMailDomain"":""""}")
-                        };
-
-                        var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
-                        db.AddRange(cfgObjs);
-                        db.SaveChanges();
-
-                        _logger.LogInformation("BlogConfiguration Initialized!");
+                        InitBlogConfiguration(db);
+                        InitCategories(db);
+                        InitFriendLinks(db);
+                        InitDefaultTags(db);
+                        InitFirstPost(db);
                     }
                 }
             }
             catch (Exception e)
             {
                 _logger.LogCritical("Something ugly blown up when trying to initialize blog configuration, what a day!", e);
+                throw;
             }
         }
 
