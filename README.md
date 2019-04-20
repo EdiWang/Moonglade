@@ -20,18 +20,17 @@ To make it yours, you will need to change a certain amount of code.
 
 I am looking into generalize the system in the long term. But there are no specific plans and scopes for the currently. You are welcomed to raise PR to move out the "edi.wang" specific code.
 
-这**不是一个通用博客系统**，目前代码里还有和 https://edi.wang 网站相关的页面，因此如果你想使用这套代码自建博客，需要一定量的修改。
-
 ## Build and Run
 
 Current code is not so setup-friendly, it is very complicated comparing to other blog or CMS systems, I am consider improving the setup steps.
 
-### Tools
+### Tools and Dependencies
 - [.NET Core 2.2 SDK](http://dot.net)
 - [Visual Studio 2019](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
 - SQL Server 2017 / Azure SQL Database
+- Microsoft Azure Active Directory
 
-### Prepare Azure AD
+### Setup Azure AD
 
 This blog is using Azure AD to sign in to admin portal. Local authentication provider is not implmented yet. 
 
@@ -44,22 +43,13 @@ Example Reply URL Configuration
 ```
 "replyUrlsWithType": [
 {
-	"url": "https://localhost/signin-oidc",
-	"type": "Web"
+    "url": "https://localhost:5001/signin-oidc",
+    "type": "Web"
 },
 {
-	"url": "https://ediwang-web-staging.azurewebsites.net/signinoidc",
-	"type": "Web"
-},
-{
-	"url": "https://localhost:5001/signin-oidc",
-	"type": "Web"
-},
-{
-	"url": "https://edi.wang/signin-oidc",
-	"type": "Web"
-}
-],
+    "url": "https://edi.wang/signin-oidc",
+    "type": "Web"
+}]
 ```
 
 ### Setup Database
@@ -84,9 +74,9 @@ Example Reply URL Configuration
 
 **Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
 
-To get a random generated key, visit https://edi.wang/admin/settings/generate-new-aes-keys
+*The blog will try to generate a pair of Key and IV on first run, and write values into appsettings.**[Current Environment]**.json only. This means the application directory **must NOT be read only**. You'll have to set keys manully if you must use a read only deployment.*
 
-*I will not track or preserve your keys. If you trust me, use that url, if not, write code to generate keys for yourself.**
+To get a random generated key, access URL "/admin/settings/generate-new-aes-keys".
 
 See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
 
@@ -148,10 +138,6 @@ You can host Moonglade on public internet.
 - A Microsoft Azure subscription, for setup Azure AD Authentication
 
 ### Web Server Configuration
-
-#### SSL
-
-To use https, set **EnforceHttps: true** in AppSettings.
 
 #### Email Notification
 
