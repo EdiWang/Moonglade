@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
 using Edi.Net.AesEncryption;
@@ -15,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -22,6 +25,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data;
+using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.AzureBlob;
@@ -32,6 +36,7 @@ using Moonglade.Web.Authentication.AzureAd;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Middleware.RobotsTxt;
+using Enumerable = System.Linq.Enumerable;
 
 namespace Moonglade.Web
 {
@@ -222,9 +227,68 @@ namespace Moonglade.Web
                     name: "default",
                     template: "{controller=Post}/{action=Index}/{id?}");
             });
+
+            TryInitializeData(app.ApplicationServices);
         }
 
         #region Private Helpers
+
+        // DO NOT use async! DO NOT use async! DO NOT use async! Important thing say 3 times!
+        private void TryInitializeData(IServiceProvider serviceProvider)
+        {
+            IEnumerable<BlogConfiguration> GetBlogConfigurationObjects(IEnumerable<KeyValuePair<string, string>> configData)
+            {
+                return Enumerable.ToList(
+                    Enumerable.Select(configData, (t, i) => new BlogConfiguration
+                    {
+                        Id = i,
+                        CfgKey = t.Key,
+                        CfgValue = t.Value,
+                        LastModifiedTimeUtc = DateTime.UtcNow
+                    }));
+            }
+
+            try
+            {
+                using (var serviceScope = serviceProvider.CreateScope())
+                {
+                    var scopeServiceProvider = serviceScope.ServiceProvider;
+                    var db = scopeServiceProvider.GetService<MoongladeDbContext>();
+                    var isFirstRun = !db.BlogConfiguration.Any();
+
+                    if (isFirstRun)
+                    {
+                        // oh, I wish C# could simplify this syntax...
+                        var defaultConfigData = new List<KeyValuePair<string, string>>
+                        {
+                            // Looks like I have to check in dirty words into source control, haha
+                            new KeyValuePair<string, string>(nameof(BlogConfig.DisharmonyWords), "fuck|shit"),
+                            new KeyValuePair<string, string>(nameof(BlogConfig.MetaKeyword), "Moonglade"),
+                            new KeyValuePair<string, string>(nameof(BlogConfig.MetaAuthor), "Admin"),
+                            new KeyValuePair<string, string>(nameof(BlogConfig.SiteTitle), "Moonglade"),
+                            new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
+                            new KeyValuePair<string, string>(nameof(BlogConfig.EnableComments), "True"),
+
+                            // Below code is too SB, may be I could init config from an external file in the future...
+                            new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings),
+                                @"{""RssItemCount"":20,""RssCopyright"":""(c) {year} Moonglade"",""RssDescription"":""Latest posts from Moonglade"",""RssGeneratorName"":""Moonglade"",""RssTitle"":""Moonglade"",""AuthorName"":""Admin""}"),
+                            new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings), @"{""IsEnabled"":true,""KeepOriginImage"":false,""FontSize"":20,""WatermarkText"":""Moonglade""}"),
+                            new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration), @"{""EnableEmailSending"":true,""EnableSsl"":true,""SendEmailOnCommentReply"":true,""SendEmailOnNewComment"":true,""SmtpServerPort"":587,""AdminEmail"":"""",""EmailDisplayName"":""Moonglade"",""SmtpPassword"":"""",""SmtpServer"":"""",""SmtpUserName"":"""",""BannedMailDomain"":""""}")
+                        };
+
+                        var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
+                        db.AddRange(cfgObjs);
+                        db.SaveChanges();
+
+                        _logger.LogInformation("BlogConfiguration Initialized!");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical("Something ugly blown up when trying to initialize blog configuration, what a day!", e);
+            }
+        }
 
         private void AddImageStorage(IServiceCollection services)
         {
