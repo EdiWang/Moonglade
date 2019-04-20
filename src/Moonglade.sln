@@ -16,11 +16,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Model", "Moonglade.Model\Moonglade.Model.csproj", "{51AC6A29-09F3-47D5-9491-2150156FF5F3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{41072B8B-1052-4CC6-930F-83A5F8EA7482}"
-	ProjectSection(SolutionItems) = preProject
-		..\Database\1.schema-mssql-140.sql = ..\Database\1.schema-mssql-140.sql
-		..\Database\2.init-configuration.sql = ..\Database\2.init-configuration.sql
-		..\Database\3.migration.sql = ..\Database\3.migration.sql
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{EB748511-FF41-48F3-BC98-0A8BC4408D0E}"
 EndProject

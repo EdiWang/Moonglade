@@ -64,9 +64,9 @@ Example Reply URL Configuration
 
 ### Setup Database
 
-1. Create a SQL Server 2017+ database or Azure SQL Database, execute script  **"Database\1.schema-mssql-140.sql"** 
+1. Create a SQL Server 2017+ database or Azure SQL Database
 
-2. Execute **"Database\2.init-configuration.sql"** 
+2. Execute script  **"Database\schema-mssql-140.sql"** 
 
 *You may need to grant permission to the database for your machine or service account depends on your server configuration*
 
@@ -84,11 +84,9 @@ Example Reply URL Configuration
 
 **Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
 
-**IMPORTANT: This must be set first before first run of the application!**
-
 To get a random generated key, visit https://edi.wang/admin/settings/generate-new-aes-keys
 
-I will not track or preserve your keys. If you trust me, use that url, if not, write code to generate keys for yourself.
+*I will not track or preserve your keys. If you trust me, use that url, if not, write code to generate keys for yourself.**
 
 See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
 
@@ -154,8 +152,6 @@ You can host Moonglade on public internet.
 #### SSL
 
 To use https, set **EnforceHttps: true** in AppSettings.
-
-To get a free SSL certificate, visit https://freessl.cn/
 
 #### Email Notification
 

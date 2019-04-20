@@ -50,8 +50,11 @@ namespace Moonglade.Configuration
                 EnableComments = bool.Parse(cfgDic[nameof(EnableComments)]);
 
                 EmailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(cfgDic[nameof(EmailConfiguration)]);
-                EmailConfiguration.SmtpPassword =
-                    blogConfigurationService.DecryptPassword(EmailConfiguration.SmtpPassword);
+                if (!string.IsNullOrWhiteSpace(EmailConfiguration.SmtpPassword))
+                {
+                    EmailConfiguration.SmtpPassword =
+                        blogConfigurationService.DecryptPassword(EmailConfiguration.SmtpPassword);
+                }
 
                 FeedSettings = JsonConvert.DeserializeObject<FeedSettings>(cfgDic[nameof(FeedSettings)]);
                 WatermarkSettings = JsonConvert.DeserializeObject<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)]);
