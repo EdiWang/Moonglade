@@ -261,14 +261,9 @@ namespace Moonglade.Web
                     new KeyValuePair<string, string>(nameof(BlogConfig.SiteTitle), "Moonglade"),
                     new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
                     new KeyValuePair<string, string>(nameof(BlogConfig.EnableComments), "True"),
-
-                    // Below code is too SB, may be I could init config from an external file in the future...
-                    new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings),
-                        @"{""RssItemCount"":20,""RssCopyright"":""(c) {year} Moonglade"",""RssDescription"":""Latest posts from Moonglade"",""RssGeneratorName"":""Moonglade"",""RssTitle"":""Moonglade"",""AuthorName"":""Admin""}"),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings),
-                        @"{""IsEnabled"":true,""KeepOriginImage"":false,""FontSize"":20,""WatermarkText"":""Moonglade""}"),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration),
-                        @"{""EnableEmailSending"":true,""EnableSsl"":true,""SendEmailOnCommentReply"":true,""SendEmailOnNewComment"":true,""SmtpServerPort"":587,""AdminEmail"":"""",""EmailDisplayName"":""Moonglade"",""SmtpPassword"":"""",""SmtpServer"":"""",""SmtpUserName"":"""",""BannedMailDomain"":""""}")
+                    new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings), Constants.WatermarkSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration), Constants.EmailConfigurationDefaultValue)
                 };
 
                 var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
@@ -325,9 +320,6 @@ namespace Moonglade.Web
 
             void InitFirstPost(DbContext moongladeDbContext)
             {
-                var rawPostContent =
-                    "Moonglade is the successor of project Nordrassil, which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using .NET Core, optimized for cloud-based hosting.";
-
                 var id = Guid.NewGuid();
                 var post = new Post
                 {
@@ -335,8 +327,8 @@ namespace Moonglade.Web
                     CommentEnabled = true,
                     Title = "Welcome to Moonglade",
                     Slug = "welcome-to-moonglade",
-                    PostContent = HttpUtility.HtmlEncode($"<p>{rawPostContent}</p>"),
-                    ContentAbstract = rawPostContent,
+                    PostContent = HttpUtility.HtmlEncode($"<p>{Constants.PostContentInitValue}</p>"),
+                    ContentAbstract = Constants.PostContentInitValue,
                     CreateOnUtc = DateTime.UtcNow,
                     PostExtension = new PostExtension
                     {
@@ -393,6 +385,7 @@ namespace Moonglade.Web
             catch (Exception e)
             {
                 _logger.LogCritical("Something ugly blown up when trying to initialize blog configuration, what a day!", e);
+                throw;
             }
         }
 
