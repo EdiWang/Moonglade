@@ -278,7 +278,7 @@ namespace Moonglade.Web
                 _logger.LogInformation("BlogConfiguration Initialized");
             }
 
-            var catId = Guid.Empty;
+            Guid catId;
             void InitCategories(DbContext moongladeDbContext)
             {
                 var cat = new Category
@@ -309,9 +309,10 @@ namespace Moonglade.Web
                 _logger.LogInformation("Default Friend Links Initialized");
             }
 
+            List<Tag> tags;
             void InitDefaultTags(DbContext moongladeDbContext)
             {
-                var tags = new List<Tag>
+                tags = new List<Tag>
                 {
                     new Tag{ DisplayName = "Moonglade", NormalizedName = "moonglade" },
                     new Tag{ DisplayName = ".NET Core", NormalizedName = "dot-net-core" }
@@ -360,8 +361,8 @@ namespace Moonglade.Web
                     },
                     PostTag = new List<PostTag>
                     {
-                        new PostTag{ TagId = 1, PostId = id },
-                        new PostTag{ TagId = 2, PostId = id }
+                        new PostTag{ TagId = tags[0].Id, PostId = id },
+                        new PostTag{ TagId = tags[1].Id, PostId = id }
                     }
                 };
 
