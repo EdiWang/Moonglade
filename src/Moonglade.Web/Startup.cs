@@ -107,7 +107,7 @@ namespace Moonglade.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                     .AddJsonOptions(
                         options =>
-                            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     );
 
             services.AddAntiforgery(options =>
@@ -268,7 +268,7 @@ namespace Moonglade.Web
                     }
                     else
                     {
-                        throw new FileNotFoundException($"Failed to initialize Key and IV for password encryption. Settings file is not found.", appSettingsFilePath);
+                        throw new FileNotFoundException("Failed to initialize Key and IV for password encryption. Settings file is not found.", appSettingsFilePath);
                     }
                 }
                 catch (Exception e)
