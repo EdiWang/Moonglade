@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
 using Edi.Net.AesEncryption;
@@ -277,6 +278,7 @@ namespace Moonglade.Web
                 _logger.LogInformation("BlogConfiguration Initialized");
             }
 
+            var catId = Guid.Empty;
             void InitCategories(DbContext moongladeDbContext)
             {
                 var cat = new Category
@@ -288,13 +290,85 @@ namespace Moonglade.Web
                 };
                 moongladeDbContext.Add(cat);
                 moongladeDbContext.SaveChanges();
+                catId = cat.Id;
 
                 _logger.LogInformation("Default Categories Initialized");
             }
 
             void InitFriendLinks(DbContext moongladeDbContext)
             {
-                // TODO
+                var friendLink = new FriendLink
+                {
+                    Id = Guid.NewGuid(),
+                    LinkUrl = "https://edi.wang",
+                    Title = "Edi.Wang"
+                };
+                moongladeDbContext.Add(friendLink);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("Default Friend Links Initialized");
+            }
+
+            void InitDefaultTags(DbContext moongladeDbContext)
+            {
+                var tags = new List<Tag>
+                {
+                    new Tag{ DisplayName = "Moonglade", NormalizedName = "moonglade" },
+                    new Tag{ DisplayName = ".NET Core", NormalizedName = "dot-net-core" }
+                };
+                moongladeDbContext.AddRange(tags);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("Default Friend Links Initialized");
+            }
+
+            void InitFirstPost(DbContext moongladeDbContext)
+            {
+                var rawPostContent =
+                    "Moonglade is the successor of project Nordrassil, which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using .NET Core, optimized for cloud-based hosting.";
+
+                var id = Guid.NewGuid();
+                var post = new Post
+                {
+                    Id = id,
+                    CommentEnabled = true,
+                    Title = "Welcome to Moonglade",
+                    Slug = "welcome-to-moonglade",
+                    PostContent = HttpUtility.HtmlEncode($"<p>{rawPostContent}</p>"),
+                    ContentAbstract = rawPostContent,
+                    CreateOnUtc = DateTime.UtcNow,
+                    PostExtension = new PostExtension
+                    {
+                        Hits = 1024,
+                        Likes = 512,
+                        PostId = id
+                    },
+                    PostPublish = new PostPublish
+                    {
+                        PostId = id,
+                        ContentLanguageCode = "en-us",
+                        ExposedToSiteMap = true,
+                        IsFeedIncluded = true,
+                        IsPublished = true,
+                        IsDeleted = false,
+                        PubDateUtc = DateTime.UtcNow,
+                        PublisherIp = "127.0.0.1"
+                    },
+                    PostCategory = new List<PostCategory>
+                    {
+                        new PostCategory{ CategoryId = catId, PostId = id }
+                    },
+                    PostTag = new List<PostTag>
+                    {
+                        new PostTag{ TagId = 1, PostId = id },
+                        new PostTag{ TagId = 2, PostId = id }
+                    }
+                };
+
+                moongladeDbContext.Add(post);
+                moongladeDbContext.SaveChanges();
+
+                _logger.LogInformation("First Post Created");
             }
 
             try
@@ -310,6 +384,8 @@ namespace Moonglade.Web
                         InitBlogConfiguration(db);
                         InitCategories(db);
                         InitFriendLinks(db);
+                        InitDefaultTags(db);
+                        InitFirstPost(db);
                     }
                 }
             }

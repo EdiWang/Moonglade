@@ -12,6 +12,7 @@ else {
 }
 
 $testdotnet = powershell dotnet --version
+# this detection doesn't work :(
 if (-not($testdotnet)) {
     Write-Host ""
     Write-Host "Installing .NET Core SDK..." -ForegroundColor Green
