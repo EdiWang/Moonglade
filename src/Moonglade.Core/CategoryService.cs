@@ -51,9 +51,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var cat = _categoryRepository.Get(p =>
-                    string.Compare(p.Title, categoryName, StringComparison.OrdinalIgnoreCase) == 0);
-
+                var cat = _categoryRepository.Get(p => p.Title == categoryName);
                 return new SuccessResponse<Category>(cat);
             }
             catch (Exception e)
