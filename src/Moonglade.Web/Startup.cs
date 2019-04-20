@@ -320,7 +320,7 @@ namespace Moonglade.Web
                 moongladeDbContext.AddRange(tags);
                 moongladeDbContext.SaveChanges();
 
-                _logger.LogInformation("Default Friend Links Initialized");
+                _logger.LogInformation("Default Tags Initialized");
             }
 
             void InitFirstPost(DbContext moongladeDbContext)
