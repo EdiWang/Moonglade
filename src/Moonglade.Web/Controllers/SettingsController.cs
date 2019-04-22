@@ -61,11 +61,13 @@ namespace Moonglade.Web.Controllers
         {
             var vm = new GeneralSettingsViewModel
             {
+                LogoText = _blogConfig.GeneralSettings.LogoText,
+                MetaKeyword = _blogConfig.GeneralSettings.MetaKeyword,
+                SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
+                Copyright = _blogConfig.GeneralSettings.Copyright,
                 DisharmonyWords = _blogConfig.DisharmonyWords,
-                MetaAuthor = _blogConfig.MetaAuthor,
-                MetaKeyword = _blogConfig.MetaKeyword,
-                SiteTitle = _blogConfig.SiteTitle,
-                EnableComments = _blogConfig.EnableComments
+                EnableComments = _blogConfig.EnableComments,
+                BloggerName = _blogConfig.BloggerName
             };
             return View(vm);
         }
@@ -76,13 +78,17 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _blogConfig.DisharmonyWords = model.DisharmonyWords;
-                _blogConfig.MetaAuthor = model.MetaAuthor;
-                _blogConfig.MetaKeyword = model.MetaKeyword;
-                _blogConfig.SiteTitle = model.SiteTitle;
-                _blogConfig.EnableComments = model.EnableComments;
+                _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
+                _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
+                _blogConfig.GeneralSettings.Copyright = model.Copyright;
+                _blogConfig.GeneralSettings.LogoText = model.LogoText;
+                _blogConfigurationService.SaveGeneralConfiguration(_blogConfig.GeneralSettings);
 
+                _blogConfig.DisharmonyWords = model.DisharmonyWords;
+                _blogConfig.EnableComments = model.EnableComments;
+                _blogConfig.BloggerName = model.BloggerName;
                 var response = _blogConfigurationService.SaveGeneralSettings(_blogConfig);
+
                 _blogConfig.DumpOldValuesWhenNextLoad();
                 return Json(response);
             }

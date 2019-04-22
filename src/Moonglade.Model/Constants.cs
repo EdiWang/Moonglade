@@ -16,6 +16,8 @@
 
         public static string OpmlFileName = "opml.xml";
 
+        public static string GeneralSettingsDefaultValue = @"{""SiteTitle"":""Moonglade"",""LogoText"":""moonglade"",""MetaKeyword"":""moonglade"",""Copyright"":""&copy; 2019""}";
+
         public static string EmailConfigurationDefaultValue =
             @"{""EnableEmailSending"":true,""EnableSsl"":true,""SendEmailOnCommentReply"":true,""SendEmailOnNewComment"":true,""SmtpServerPort"":587,""AdminEmail"":"""",""EmailDisplayName"":""Moonglade"",""SmtpPassword"":"""",""SmtpServer"":"""",""SmtpUserName"":"""",""BannedMailDomain"":""""}";
 

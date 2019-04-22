@@ -106,6 +106,11 @@ namespace Moonglade.Configuration
             }
         }
 
+        public Response SaveGeneralConfiguration(GeneralSettings generalSettings)
+        {
+            return SaveObjectConfiguration(generalSettings);
+        }
+
         public Response SaveEmailConfiguration(EmailConfiguration emailConfiguration)
         {
             emailConfiguration.SmtpPassword = EncryptPassword(emailConfiguration.SmtpPassword);
@@ -127,16 +132,12 @@ namespace Moonglade.Configuration
             try
             {
                 var r1 = SetConfiguration(nameof(blogConfig.DisharmonyWords), blogConfig.DisharmonyWords);
-                var r2 = SetConfiguration(nameof(blogConfig.MetaKeyword), blogConfig.MetaKeyword);
-                var r3 = SetConfiguration(nameof(blogConfig.MetaAuthor), blogConfig.MetaAuthor);
-                var r4 = SetConfiguration(nameof(blogConfig.SiteTitle), blogConfig.SiteTitle);
-                var r5 = SetConfiguration(nameof(blogConfig.EnableComments), blogConfig.EnableComments.ToString());
+                var r6 = SetConfiguration(nameof(blogConfig.EnableComments), blogConfig.EnableComments.ToString());
+                var r7 = SetConfiguration(nameof(blogConfig.BloggerName), blogConfig.BloggerName);
 
                 var allSuccess = r1.IsSuccess &&
-                                 r2.IsSuccess &&
-                                 r3.IsSuccess &&
-                                 r4.IsSuccess &&
-                                 r5.IsSuccess;
+                                 r6.IsSuccess &&
+                                 r7.IsSuccess;
 
                 return new Response(allSuccess);
             }
@@ -151,7 +152,7 @@ namespace Moonglade.Configuration
         {
             try
             {
-                var r = SetConfiguration("BloggerAvatarBase64", bloggerAvatarBase64);
+                var r = SetConfiguration(nameof(BlogConfig.BloggerAvatarBase64), bloggerAvatarBase64);
                 return new Response(r.IsSuccess);
             }
             catch (Exception e)

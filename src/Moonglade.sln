@@ -17,6 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Model", "Moonglad
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{41072B8B-1052-4CC6-930F-83A5F8EA7482}"
 	ProjectSection(SolutionItems) = preProject
+		..\Database\migration.sql = ..\Database\migration.sql
 		..\Database\schema-mssql-140.sql = ..\Database\schema-mssql-140.sql
 	EndProjectSection
 EndProject

@@ -1,14 +1,22 @@
 ﻿@using Microsoft.Extensions.Options
+@using Moonglade.Configuration
 @using Moonglade.Core
 @using Moonglade.Model.Settings
 @inject IOptions<AppSettings> Settings
+@inject BlogConfigurationService BlogConfigurationService
+@inject BlogConfig BlogConfig
 
+@{
+    BlogConfig.GetConfiguration(BlogConfigurationService);
+}
 <footer>
     <div class="container">
         <div class="row">
             <div class="col-md-3 col-sm-3">
                 <h4 class="d-none d-sm-block">Copyright</h4>
-                <div>&copy; 2009 - @DateTime.UtcNow.Year edi.wang</div>
+                <div>
+                    @Html.Raw(BlogConfig.GeneralSettings.Copyright)
+                </div>
                 <div class="mb-2">Designed and Developed by Edi Wang</div>
                 <small>
                     Moonglade @Utils.AppVersion

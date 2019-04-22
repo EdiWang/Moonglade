@@ -1,4 +1,12 @@
-﻿<aside class="col-xl-3 d-none d-xl-block">
+﻿@using Moonglade.Configuration
+@inject BlogConfigurationService BlogConfigurationService
+@inject BlogConfig BlogConfig
+
+@{
+    BlogConfig.GetConfiguration(BlogConfigurationService);
+}
+
+<aside class="col-xl-3 d-none d-xl-block">
     <section class="blog-info-desktop-lg d-none d-xl-block mb-4">
         <div class="card-bkimg-container">
             <img class="card-bkimg" alt="" src="@Url.Action("GetBloggerAvatar", "Image")" />
@@ -6,13 +14,12 @@
         <div class="blog-info-photo-text text-center">
             <a asp-page="/about">
                 <img src="@Url.Action("GetBloggerAvatar", "Image")"
-                     alt="Edi Wang"
-                     class="media-object rounded-circle center-block blogger-head-pic" />
+                     alt="@BlogConfig.BloggerName"
+                     class="rounded-circle blogger-head-pic" />
             </a>
-            <div class="bor"></div>
             <div>
                 <h3 class="mt-3">
-                    Edi Wang
+                    @BlogConfig.BloggerName
                 </h3>
                 <p>
                     .NET and Windows Developer <br />

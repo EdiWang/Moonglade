@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
 
                 var oi = new OpmlInfo
                 {
-                    SiteTitle = $"{_blogConfig.SiteTitle} - OPML",
+                    SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
                     CategoryInfo = catInfos,
                     HtmlUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/post",
                     XmlUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/rss",
