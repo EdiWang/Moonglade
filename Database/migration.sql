@@ -1,1 +1,1 @@
--- 
+INSERT BlogConfiguration VALUES(5,'BloggerName','Edi Wang', GETDATE())

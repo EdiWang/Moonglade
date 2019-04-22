@@ -65,7 +65,8 @@ namespace Moonglade.Web.Controllers
                 MetaAuthor = _blogConfig.MetaAuthor,
                 MetaKeyword = _blogConfig.MetaKeyword,
                 SiteTitle = _blogConfig.SiteTitle,
-                EnableComments = _blogConfig.EnableComments
+                EnableComments = _blogConfig.EnableComments,
+                BloggerName = _blogConfig.BloggerName
             };
             return View(vm);
         }
@@ -81,6 +82,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.MetaKeyword = model.MetaKeyword;
                 _blogConfig.SiteTitle = model.SiteTitle;
                 _blogConfig.EnableComments = model.EnableComments;
+                _blogConfig.BloggerName = model.BloggerName;
 
                 var response = _blogConfigurationService.SaveGeneralSettings(_blogConfig);
                 _blogConfig.DumpOldValuesWhenNextLoad();

@@ -24,5 +24,9 @@ namespace Moonglade.Web.Models
         [Required]
         [Display(Name = "Enable Comments")]
         public bool EnableComments { get; set; }
+
+        [Required]
+        [Display(Name = "Blogger Name")]
+        public string BloggerName { get; set; }
     }
 }

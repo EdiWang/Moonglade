@@ -14,6 +14,8 @@ namespace Moonglade.Configuration
 
         public string BloggerAvatarBase64 { get; set; }
 
+        public string BloggerName { get; set; }
+
         public bool EnableComments { get; set; }
 
         public EmailConfiguration EmailConfiguration { get; set; }
@@ -47,6 +49,7 @@ namespace Moonglade.Configuration
                 MetaAuthor = cfgDic[nameof(MetaAuthor)];
                 SiteTitle = cfgDic[nameof(SiteTitle)];
                 BloggerAvatarBase64 = cfgDic[nameof(BloggerAvatarBase64)];
+                BloggerName = cfgDic[nameof(BloggerName)];
                 EnableComments = bool.Parse(cfgDic[nameof(EnableComments)]);
 
                 EmailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(cfgDic[nameof(EmailConfiguration)]);

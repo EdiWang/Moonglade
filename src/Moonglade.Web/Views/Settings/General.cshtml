@@ -52,10 +52,21 @@
                 <div class="card-header">Owner Information</div>
                 <div class="card-body">
                     <div class="form-group">
-                        <div class="mb-2">
-                            <img src="~/get-blogger-avatar" class="img-thumbnail img-fluid blogadmin-avatar" />
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <img src="~/get-blogger-avatar" class="img-thumbnail img-fluid blogadmin-avatar"/>
+                                </div>
+                                <a class="btn btn-sm btn-primary" href="#" data-toggle="modal" data-target="#avatarmodal">Change Avatar</a>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label asp-for="BloggerName" class="control-label"></label>
+                                    <input asp-for="BloggerName" class="form-control" />
+                                    <span asp-validation-for="BloggerName" class="text-danger"></span>
+                                </div>
+                            </div>
                         </div>
-                        <a class="btn btn-sm btn-primary" href="#" data-toggle="modal" data-target="#avatarmodal">Change Avatar</a>
                     </div>
                 </div>
             </div>

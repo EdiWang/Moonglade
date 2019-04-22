@@ -300,6 +300,7 @@ namespace Moonglade.Web
                     new KeyValuePair<string, string>(nameof(BlogConfig.MetaAuthor), "Admin"),
                     new KeyValuePair<string, string>(nameof(BlogConfig.SiteTitle), "Moonglade"),
                     new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.BloggerName), "Admin"),
                     new KeyValuePair<string, string>(nameof(BlogConfig.EnableComments), "True"),
                     new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
                     new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings), Constants.WatermarkSettingsDefaultValue),
