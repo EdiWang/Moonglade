@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
@@ -37,6 +37,7 @@ using Moonglade.Web.Authentication.AzureAd;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Middleware.RobotsTxt;
+using Newtonsoft.Json;
 using Enumerable = System.Linq.Enumerable;
 
 namespace Moonglade.Web
@@ -106,7 +107,7 @@ namespace Moonglade.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                     .AddJsonOptions(
                         options =>
-                            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     );
 
             services.AddAntiforgery(options =>
@@ -237,6 +238,45 @@ namespace Moonglade.Web
         // DO NOT use async! DO NOT use async! DO NOT use async! Important thing say 3 times!
         private void TryInitializeData(IServiceProvider serviceProvider)
         {
+            // Caveat: This will require non-readonly for the application directory
+            void SetInitialEncryptionKey()
+            {
+                try
+                {
+                    var aesAlg = Aes.Create();
+                    var key = Convert.ToBase64String(aesAlg?.Key);
+                    var iv = Convert.ToBase64String(aesAlg?.IV);
+
+                    var appSettingsFilePath = Path.Combine(Environment.ContentRootPath,
+                        Environment.EnvironmentName != EnvironmentName.Production ?
+                            $"appsettings.{Environment.EnvironmentName}.json" :
+                            "appsettings.json");
+
+
+                    if (File.Exists(appSettingsFilePath))
+                    {
+                        var json = File.ReadAllText(appSettingsFilePath);
+                        var jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+                        var encryptionNode = jsonObj["Encryption"];
+                        if (null != encryptionNode)
+                        {
+                            encryptionNode["Key"] = key;
+                            encryptionNode["IV"] = iv;
+                            var newJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+                            File.WriteAllText(appSettingsFilePath, newJson);
+                        }
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException("Failed to initialize Key and IV for password encryption. Settings file is not found.", appSettingsFilePath);
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Unable to set initial Key and IV, please do it manually.", e);
+                }
+            }
+
             IEnumerable<BlogConfiguration> GetBlogConfigurationObjects(IEnumerable<KeyValuePair<string, string>> configData)
             {
                 return Enumerable.ToList(
@@ -374,6 +414,7 @@ namespace Moonglade.Web
 
                     if (isFirstRun)
                     {
+                        SetInitialEncryptionKey();
                         InitBlogConfiguration(db);
                         InitCategories(db);
                         InitFriendLinks(db);

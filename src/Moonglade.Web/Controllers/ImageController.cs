@@ -168,18 +168,21 @@ namespace Moonglade.Web.Controllers
             return s;
         }
 
-        // TODO: drop cache when avatar updated
-        // [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 3600)]
-        [Route("get-blogger-avatar")]
+        [Route("get-avatar")]
         public IActionResult GetBloggerAvatar()
         {
             if (!string.IsNullOrWhiteSpace(_blogConfig.BloggerAvatarBase64))
             {
-                var avatarBytes = Convert.FromBase64String(_blogConfig.BloggerAvatarBase64);
-                return File(avatarBytes, "image/png");
+                var avatarEntry = Cache.GetOrCreate("avatar", entry =>
+                {
+                    Logger.LogTrace("Avatar not on cache, getting new avatar image...");
+                    var avatarBytes = Convert.FromBase64String(_blogConfig.BloggerAvatarBase64);
+                    return avatarBytes;
+                });
+                return File(avatarEntry, "image/png");
             }
 
-            return File(@"images\avatar-placeholder.png", "image/png");
+            return PhysicalFile($@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png", "image/png");
         }
     }
 }

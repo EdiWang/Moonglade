@@ -120,13 +120,13 @@
         {
             <section class="blogger-intro-mobile d-block d-sm-none">
                 <div class="card-bkimg-container">
-                    <img class="card-bkimg" alt="" src="~/images/avatar.jpg" />
+                    <img class="card-bkimg" alt="" src="@Url.Action("GetBloggerAvatar", "Image")" />
                 </div>
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
                             <a asp-page="/about">
-                                <img src="~/images/avatar.jpg"
+                                <img src="@Url.Action("GetBloggerAvatar", "Image")"
                                      alt="Edi Wang"
                                      class="rounded-circle blogger-head-pic" />
                             </a>

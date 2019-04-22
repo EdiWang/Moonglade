@@ -1,11 +1,11 @@
 ﻿<aside class="col-xl-3 d-none d-xl-block">
     <section class="blog-info-desktop-lg d-none d-xl-block mb-4">
         <div class="card-bkimg-container">
-            <img class="card-bkimg" alt="" src="~/images/avatar.jpg" />
+            <img class="card-bkimg" alt="" src="@Url.Action("GetBloggerAvatar", "Image")" />
         </div>
         <div class="blog-info-photo-text text-center">
             <a asp-page="/about">
-                <img src="~/images/avatar.jpg"
+                <img src="@Url.Action("GetBloggerAvatar", "Image")"
                      alt="Edi Wang"
                      class="media-object rounded-circle center-block blogger-head-pic" />
             </a>

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
@@ -37,12 +38,13 @@ namespace Moonglade.Web.Controllers
         public SettingsController(
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
+            IMemoryCache memoryCache,
             IApplicationLifetime appLifetime,
             EmailService emailService,
             FriendLinkService friendLinkService,
             BlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
-            : base(logger, settings)
+            : base(logger, settings, memoryCache: memoryCache)
         {
             _applicationLifetime = appLifetime;
 
@@ -378,6 +380,7 @@ namespace Moonglade.Web.Controllers
                         _blogConfig.BloggerAvatarBase64 = imageBase64String;
                         var response = _blogConfigurationService.SaveBloggerAvatar(imageBase64String);
                         _blogConfig.DumpOldValuesWhenNextLoad();
+                        Cache.Remove("avatar");
                         return Json(response);
                     }
                 }
