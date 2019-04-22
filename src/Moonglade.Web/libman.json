@@ -29,7 +29,6 @@
       "library": "jquery-validate@1.19.0",
       "destination": "wwwroot/lib/jquery-validate",
       "files": [
-        "additional-methods.min.js",
         "jquery.validate.min.js"
       ]
     },
