@@ -49,10 +49,9 @@ namespace Moonglade.Web.Controllers
                 }
             }
 
-            string rssContent = await System.IO.File.ReadAllTextAsync(rssDataFile, Encoding.UTF8);
-            if (rssContent.Length > 0)
+            if (System.IO.File.Exists(rssDataFile))
             {
-                return Content(rssContent, "text/xml");
+                return PhysicalFile(rssDataFile, "text/xml");
             }
 
             return NotFound();
@@ -74,10 +73,9 @@ namespace Moonglade.Web.Controllers
                 }
             }
 
-            string atomContent = await System.IO.File.ReadAllTextAsync(atomDataFile, Encoding.UTF8);
-            if (atomContent.Length > 0)
+            if (System.IO.File.Exists(atomDataFile))
             {
-                return Content(atomContent, "text/xml");
+                return PhysicalFile(atomDataFile, "text/xml");
             }
 
             return NotFound();

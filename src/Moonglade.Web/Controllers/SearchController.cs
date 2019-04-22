@@ -51,10 +51,9 @@ namespace Moonglade.Web.Controllers
                 }
             }
 
-            string openSearchContent = await System.IO.File.ReadAllTextAsync(openSearchDataFile, Encoding.UTF8);
-            if (openSearchContent.Length > 0)
+            if (System.IO.File.Exists(openSearchDataFile))
             {
-                return Content(openSearchContent, "text/xml");
+                return PhysicalFile(openSearchDataFile, "text/xml");
             }
 
             return NotFound();

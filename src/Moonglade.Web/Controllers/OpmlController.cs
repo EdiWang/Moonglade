@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Edi.Blog.OpmlFileWriter;
 using Microsoft.AspNetCore.Mvc;
@@ -76,10 +75,9 @@ namespace Moonglade.Web.Controllers
                 }
             }
 
-            string opmlContent = await System.IO.File.ReadAllTextAsync(opmlDataFile, Encoding.UTF8);
-            if (opmlContent.Length > 0)
+            if (System.IO.File.Exists(opmlDataFile))
             {
-                return Content(opmlContent, "text/xml");
+                return PhysicalFile(opmlDataFile, "text/xml");
             }
 
             return NotFound();
