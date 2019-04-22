@@ -14,8 +14,12 @@ namespace Moonglade.Web.Models
         public string MetaKeyword { get; set; }
 
         [Required]
-        [Display(Name = "Meta Author")]
-        public string MetaAuthor { get; set; }
+        [Display(Name = "Logo Text")]
+        public string LogoText { get; set; }
+
+        [Required]
+        [Display(Name = "Copyright (HTML)")]
+        public string Copyright { get; set; }
 
         [Required]
         [Display(Name = "Website Title")]

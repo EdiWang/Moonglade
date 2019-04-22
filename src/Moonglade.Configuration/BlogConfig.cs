@@ -6,17 +6,13 @@ namespace Moonglade.Configuration
     {
         public string DisharmonyWords { get; set; }
 
-        public string MetaKeyword { get; set; }
-
-        public string MetaAuthor { get; set; }
-
-        public string SiteTitle { get; set; }
-
         public string BloggerAvatarBase64 { get; set; }
 
         public string BloggerName { get; set; }
 
         public bool EnableComments { get; set; }
+
+        public GeneralSettings GeneralSettings { get; set; }
 
         public EmailConfiguration EmailConfiguration { get; set; }
 
@@ -30,10 +26,8 @@ namespace Moonglade.Configuration
         {
             // Set default values in case of blow up
             DisharmonyWords = string.Empty;
-            MetaKeyword = string.Empty;
-            MetaAuthor = string.Empty;
-            SiteTitle = string.Empty;
             EnableComments = true;
+            GeneralSettings = new GeneralSettings();
             EmailConfiguration = new EmailConfiguration();
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
@@ -45,12 +39,11 @@ namespace Moonglade.Configuration
             {
                 var cfgDic = blogConfigurationService.GetAllConfigurations();
                 DisharmonyWords = cfgDic[nameof(DisharmonyWords)];
-                MetaKeyword = cfgDic[nameof(MetaKeyword)];
-                MetaAuthor = cfgDic[nameof(MetaAuthor)];
-                SiteTitle = cfgDic[nameof(SiteTitle)];
                 BloggerAvatarBase64 = cfgDic[nameof(BloggerAvatarBase64)];
                 BloggerName = cfgDic[nameof(BloggerName)];
                 EnableComments = bool.Parse(cfgDic[nameof(EnableComments)]);
+
+                GeneralSettings = JsonConvert.DeserializeObject<GeneralSettings>(cfgDic[nameof(GeneralSettings)]);
 
                 EmailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(cfgDic[nameof(EmailConfiguration)]);
                 if (!string.IsNullOrWhiteSpace(EmailConfiguration.SmtpPassword))

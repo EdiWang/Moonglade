@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Moonglade.Configuration
+{
+    public class GeneralSettings
+    {
+        public string SiteTitle { get; set; }
+
+        public string LogoText { get; set; }
+
+        public string MetaKeyword { get; set; }
+
+        public string Copyright { get; set; }
+    }
+}
