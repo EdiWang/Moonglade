@@ -23,7 +23,7 @@ namespace Moonglade.Web.Controllers
     {
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
-        private readonly PingbackSender _pingbackSender;
+        private readonly IPingbackSender _pingbackSender;
         private readonly LinkGenerator _linkGenerator;
 
         public PostController(
@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings,
             PostService postService,
             CategoryService categoryService,
-            PingbackSender pingbackSender,
+            IPingbackSender pingbackSender,
             LinkGenerator linkGenerator)
             : base(logger, settings)
         {

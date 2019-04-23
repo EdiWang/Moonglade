@@ -132,8 +132,8 @@ namespace Moonglade.Web
             services.AddTransient<EmailService>();
             services.AddTransient<FriendLinkService>();
             services.AddTransient<PostService>();
-            services.AddTransient<PingbackSender>();
-            services.AddTransient<PingbackReceiver>();
+            services.AddTransient<IPingbackSender, PingbackSender>();
+            services.AddTransient<IPingbackReceiver, PingbackReceiver>();
             services.AddTransient<PingbackService>();
             services.AddTransient<SyndicationService>();
             services.AddTransient<TagService>();
