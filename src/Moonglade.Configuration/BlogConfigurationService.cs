@@ -15,13 +15,13 @@ namespace Moonglade.Configuration
     {
         protected readonly ILogger<BlogConfigurationService> Logger;
 
-        private readonly AesEncryptionService _encryptionService;
+        private readonly IAesEncryptionService _encryptionService;
 
         private readonly IRepository<BlogConfiguration> _blogConfigurationRepository;
 
         public BlogConfigurationService(
             ILogger<BlogConfigurationService> logger,
-            AesEncryptionService encryptionService, 
+            IAesEncryptionService encryptionService, 
             IRepository<BlogConfiguration> blogConfiguration)
         {
             _encryptionService = encryptionService;

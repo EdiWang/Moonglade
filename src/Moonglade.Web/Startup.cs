@@ -141,7 +141,7 @@ namespace Moonglade.Web
             var encryptionSettings = Configuration.GetSection("Encryption");
             var aesKey = encryptionSettings["Key"];
             var aesIv = encryptionSettings["IV"];
-            services.AddTransient(enc => new AesEncryptionService(new KeyInfo(aesKey, aesIv)));
+            services.AddTransient<IAesEncryptionService>(enc => new AesEncryptionService(new KeyInfo(aesKey, aesIv)));
 
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()
