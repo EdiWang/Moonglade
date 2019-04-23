@@ -65,8 +65,8 @@ namespace Moonglade.Web.Controllers
                 MetaKeyword = _blogConfig.GeneralSettings.MetaKeyword,
                 SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
                 Copyright = _blogConfig.GeneralSettings.Copyright,
-                DisharmonyWords = _blogConfig.DisharmonyWords,
-                EnableComments = _blogConfig.EnableComments,
+                DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
+                EnableComments = _blogConfig.ContentSettings.EnableComments,
                 BloggerName = _blogConfig.BloggerName
             };
             return View(vm);
@@ -82,10 +82,12 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
                 _blogConfig.GeneralSettings.Copyright = model.Copyright;
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
-                _blogConfigurationService.SaveGeneralConfiguration(_blogConfig.GeneralSettings);
+                _blogConfigurationService.SaveObjectConfiguration(_blogConfig.GeneralSettings);
 
-                _blogConfig.DisharmonyWords = model.DisharmonyWords;
-                _blogConfig.EnableComments = model.EnableComments;
+                _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
+                _blogConfig.ContentSettings.EnableComments = model.EnableComments;
+                _blogConfigurationService.SaveObjectConfiguration(_blogConfig.ContentSettings);
+                
                 _blogConfig.BloggerName = model.BloggerName;
                 var response = _blogConfigurationService.SaveGeneralSettings(_blogConfig);
 
@@ -206,7 +208,7 @@ namespace Moonglade.Web.Controllers
                 fs.RssItemCount = model.RssItemCount;
                 fs.RssTitle = model.RssTitle;
 
-                var response = _blogConfigurationService.SaveFeedConfiguration(fs);
+                var response = _blogConfigurationService.SaveObjectConfiguration(fs);
                 _blogConfig.DumpOldValuesWhenNextLoad();
                 return Json(response);
             }
@@ -244,7 +246,7 @@ namespace Moonglade.Web.Controllers
                 ws.FontSize = model.FontSize;
                 ws.WatermarkText = model.WatermarkText;
 
-                var response = _blogConfigurationService.SaveWatermarkConfiguration(ws);
+                var response = _blogConfigurationService.SaveObjectConfiguration(ws);
                 _blogConfig.DumpOldValuesWhenNextLoad();
                 return Json(response);
             }

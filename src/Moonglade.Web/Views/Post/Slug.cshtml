@@ -172,7 +172,7 @@
 </article>
 
 <div class="hidden-print">
-    @if (BlogConfig.EnableComments)
+    @if (BlogConfig.ContentSettings.EnableComments)
     {
         if (Model.PostModel.CommentEnabled)
         {
@@ -261,7 +261,7 @@
     @if (Model.PostModel.CommentCount > 0)
     {
         <section id="comments-list">
-            <cache expires-after="@TimeSpan.FromMinutes(20)" vary-by-route="slug">
+            <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-route="slug">
                 @await Component.InvokeAsync("PostCommentList", new { postId = @Model.PostModel.PostId })
             </cache>
         </section>

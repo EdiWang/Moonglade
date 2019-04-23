@@ -106,38 +106,18 @@ namespace Moonglade.Configuration
             }
         }
 
-        public Response SaveGeneralConfiguration(GeneralSettings generalSettings)
-        {
-            return SaveObjectConfiguration(generalSettings);
-        }
-
         public Response SaveEmailConfiguration(EmailConfiguration emailConfiguration)
         {
             emailConfiguration.SmtpPassword = EncryptPassword(emailConfiguration.SmtpPassword);
             return SaveObjectConfiguration(emailConfiguration);
         }
 
-        public Response SaveFeedConfiguration(FeedSettings feedSettings)
-        {
-            return SaveObjectConfiguration(feedSettings);
-        }
-
-        public Response SaveWatermarkConfiguration(WatermarkSettings watermarkSettings)
-        {
-            return SaveObjectConfiguration(watermarkSettings);
-        }
-
         public Response SaveGeneralSettings(BlogConfig blogConfig)
         {
             try
             {
-                var r1 = SetConfiguration(nameof(blogConfig.DisharmonyWords), blogConfig.DisharmonyWords);
-                var r6 = SetConfiguration(nameof(blogConfig.EnableComments), blogConfig.EnableComments.ToString());
-                var r7 = SetConfiguration(nameof(blogConfig.BloggerName), blogConfig.BloggerName);
-
-                var allSuccess = r1.IsSuccess &&
-                                 r6.IsSuccess &&
-                                 r7.IsSuccess;
+                var r = SetConfiguration(nameof(blogConfig.BloggerName), blogConfig.BloggerName);
+                var allSuccess = r.IsSuccess;
 
                 return new Response(allSuccess);
             }
@@ -162,7 +142,7 @@ namespace Moonglade.Configuration
             }
         }
 
-        private Response SaveObjectConfiguration<T>(T obj) where T : class
+        public Response SaveObjectConfiguration<T>(T obj) where T : class
         {
             try
             {
