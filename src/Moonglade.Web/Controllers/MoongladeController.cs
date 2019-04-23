@@ -6,15 +6,12 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Data;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
     public class MoongladeController : Controller
     {
-        protected IHttpContextAccessor HttpContextAccessor;
-
         protected IConfiguration Configuration;
 
         protected readonly ILogger<ControllerBase> Logger;
@@ -27,13 +24,11 @@ namespace Moonglade.Web.Controllers
             ILogger<ControllerBase> logger = null,
             IOptions<AppSettings> settings = null,
             IConfiguration configuration = null,
-            IHttpContextAccessor accessor = null,
             IMemoryCache memoryCache = null)
         {
             if (null != logger) Logger = logger;
             if (null != settings) AppSettings = settings.Value;
             if (null != configuration) Configuration = configuration;
-            if (null != accessor) HttpContextAccessor = accessor;
             if (null != memoryCache) Cache = memoryCache;
         }
 

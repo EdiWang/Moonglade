@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -30,12 +29,11 @@ namespace Moonglade.Web.Controllers
         public PostController(
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
-            IHttpContextAccessor accessor,
             PostService postService,
             CategoryService categoryService,
             PingbackSender pingbackSender,
             LinkGenerator linkGenerator)
-            : base(logger, settings, accessor: accessor)
+            : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
@@ -167,7 +165,7 @@ namespace Moonglade.Web.Controllers
 
         private bool HasCookie(CookieNames cookieName, string id)
         {
-            var viewCookie = HttpContextAccessor.HttpContext.Request.Cookies[cookieName.ToString()];
+            var viewCookie = HttpContext.Request.Cookies[cookieName.ToString()];
             if (viewCookie != null)
             {
                 return viewCookie == id;
