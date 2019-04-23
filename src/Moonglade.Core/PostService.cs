@@ -28,12 +28,6 @@ namespace Moonglade.Core
 
         private readonly IRepository<Category> _categoryRepository;
 
-        public enum StatisticType
-        {
-            Hits,
-            Likes
-        }
-
         public PostService(ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<Post> postRepository,
@@ -126,14 +120,13 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<Post> GetPost(int year, int month, int day, string slug)
+        public async Task<Response<Post>> GetPostAsync(int year, int month, int day, string slug)
         {
             try
             {
-
                 var date = new DateTime(year, month, day);
                 var spec = new GetPostSpec(date, slug);
-                var post = _postRepository.GetFirstOrDefault(spec, false);
+                var post = await _postRepository.GetFirstOrDefaultAsync(spec, false);
 
                 return new SuccessResponse<Post>(post);
             }
@@ -177,8 +170,18 @@ namespace Moonglade.Core
             return _postRepository.GetAsync(spec);
         }
 
-        public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPosts(int year, int month = 0)
+        public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPostsAsync(int year, int month = 0)
         {
+            if (year < DateTime.MinValue.Year || year > DateTime.UtcNow.Year)
+            {
+                throw new ArgumentOutOfRangeException(nameof(year));
+            }
+
+            if (month > 12 || month < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(month));
+            }
+
             var spec = new ArchivedPostSpec(year, month);
             var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItemModel
             {
@@ -193,6 +196,11 @@ namespace Moonglade.Core
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(normalizedName))
+                {
+                    throw new ArgumentNullException(nameof(normalizedName));
+                }
+
                 var posts = _tagRepository.GetAsQueryable()
                                           .Where(t => t.NormalizedName == normalizedName)
                                           .SelectMany(p => p.PostTag)
@@ -212,17 +220,30 @@ namespace Moonglade.Core
 
         public async Task<Response<IReadOnlyList<SearchResult>>> SearchPostAsync(string keyword)
         {
-            var postList = SearchPostByKeyword(keyword);
-
-            var resultList = await postList.Select(p => p.PostPublish.PubDateUtc != null ? new SearchResult
+            try
             {
-                Slug = p.Slug,
-                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                Summary = p.ContentAbstract,
-                Title = p.Title
-            } : null).ToListAsync();
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    throw new ArgumentNullException(keyword);
+                }
 
-            return new SuccessResponse<IReadOnlyList<SearchResult>>(resultList);
+                var postList = SearchPostByKeyword(keyword);
+
+                var resultList = await postList.Select(p => p.PostPublish.PubDateUtc != null ? new SearchResult
+                {
+                    Slug = p.Slug,
+                    PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                    Summary = p.ContentAbstract,
+                    Title = p.Title
+                } : null).ToListAsync();
+
+                return new SuccessResponse<IReadOnlyList<SearchResult>>(resultList);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error {nameof(SearchPostAsync)}(keyword: {keyword})");
+                return new FailedResponse<IReadOnlyList<SearchResult>>((int)ResponseFailureCode.GeneralException, e.Message, e);
+            }
         }
 
         private IQueryable<Post> SearchPostByKeyword(string keyword)
@@ -261,6 +282,27 @@ namespace Moonglade.Core
 
         public Response<Post> CreateNewPost(CreateEditPostRequest request)
         {
+            void ApplyDefaultValuesOnPost(Post postModel)
+            {
+                if (postModel.Id == Guid.Empty)
+                {
+                    postModel.Id = Guid.NewGuid();
+                }
+                if (string.IsNullOrWhiteSpace(postModel.Slug))
+                {
+                    postModel.Slug = postModel.Id.ToString();
+                }
+
+                if (null == postModel.PostExtension)
+                {
+                    postModel.PostExtension = new PostExtension
+                    {
+                        Hits = 0,
+                        Likes = 0
+                    };
+                }
+            }
+
             try
             {
                 var postModel = new Post
@@ -270,7 +312,7 @@ namespace Moonglade.Core
                     PostContent = HttpUtility.HtmlEncode(request.HtmlContent),
                     ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords),
                     CreateOnUtc = DateTime.UtcNow,
-                    Slug = request.Slug.Trim(),
+                    Slug = request.Slug.ToLower().Trim(),
                     Title = request.Title.Trim(),
                     PostPublish = new PostPublish
                     {
@@ -293,14 +335,14 @@ namespace Moonglade.Core
                     p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date))
                 {
                     var uid = Guid.NewGuid();
-                    postModel.Slug += $"-{uid.ToString().Substring(0, 8)}";
+                    postModel.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
                     Logger.LogInformation($"Found conflict for post slug, generated new slug: {postModel.Slug}");
                 }
 
                 // add categories
                 if (null != request.CategoryIds && request.CategoryIds.Count > 0)
                 {
-                    request.CategoryIds.ForEach(cid =>
+                    foreach (var cid in request.CategoryIds)
                     {
                         if (_categoryRepository.Any(c => c.Id == cid))
                         {
@@ -310,7 +352,7 @@ namespace Moonglade.Core
                                 PostId = postModel.Id
                             });
                         }
-                    });
+                    }
                 }
 
                 // add tags
@@ -400,7 +442,7 @@ namespace Moonglade.Core
                 postModel.PostTag.Clear();
                 if (request.Tags.Any())
                 {
-                    request.Tags.ForEach(t =>
+                    foreach (var t in request.Tags)
                     {
                         var tag = _tagRepository.Get(_ => _.DisplayName == t);
                         if (tag != null) postModel.PostTag.Add(new PostTag
@@ -408,14 +450,14 @@ namespace Moonglade.Core
                             PostId = postModel.Id,
                             TagId = tag.Id
                         });
-                    });
+                    }
                 }
 
                 // 3. update categories
                 postModel.PostCategory.Clear();
                 if (null != request.CategoryIds && request.CategoryIds.Count > 0)
                 {
-                    request.CategoryIds.ForEach(cid =>
+                    foreach (var cid in request.CategoryIds)
                     {
                         if (_categoryRepository.Any(c => c.Id == cid))
                         {
@@ -425,7 +467,7 @@ namespace Moonglade.Core
                                 CategoryId = cid
                             });
                         }
-                    });
+                    }
                 }
 
                 _postRepository.Update(postModel);
@@ -433,7 +475,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error Editing Post, PostId: {request.PostId}");
+                Logger.LogError(e, $"Error {nameof(EditPost)}, PostId: {request.PostId}");
                 return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -451,7 +493,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(RestoreFromRecycle)}");
+                Logger.LogError(e, $"Error {nameof(RestoreFromRecycle)}(postId: {postId})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
@@ -480,27 +522,6 @@ namespace Moonglade.Core
             {
                 Logger.LogError(e, $"Error {nameof(Delete)}(postId: {postId}, isRecycle: {isRecycle})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
-            }
-        }
-
-        private static void ApplyDefaultValuesOnPost(Post postModel)
-        {
-            if (postModel.Id == Guid.Empty)
-            {
-                postModel.Id = Guid.NewGuid();
-            }
-            if (string.IsNullOrWhiteSpace(postModel.Slug))
-            {
-                postModel.Slug = postModel.Id.ToString();
-            }
-
-            if (null == postModel.PostExtension)
-            {
-                postModel.PostExtension = new PostExtension
-                {
-                    Hits = 0,
-                    Likes = 0
-                };
             }
         }
     }

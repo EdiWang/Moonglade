@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Moonglade.Model
 {
@@ -16,8 +15,8 @@ namespace Moonglade.Model
         public bool IsFeedIncluded { get; set; }
         public string ContentLanguageCode { get; set; }
 
-        public List<string> Tags { get; set; }
-        public List<Guid> CategoryIds { get; set; }
+        public IList<string> Tags { get; set; }
+        public IList<Guid> CategoryIds { get; set; }
 
         public CreateEditPostRequest()
         {

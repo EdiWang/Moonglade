@@ -163,6 +163,13 @@ namespace Moonglade.Data.Infrastructure
             return await ApplySpecification(spec).ToListAsync();
         }
 
+        public Task<T> GetFirstOrDefaultAsync(ISpecification<T> spec, bool asNoTracking = true)
+        {
+            return asNoTracking ? 
+                ApplySpecification(spec).AsNoTracking().FirstOrDefaultAsync() : 
+                ApplySpecification(spec).FirstOrDefaultAsync();
+        }
+
         public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true)
         {
             if (asNoTracking)

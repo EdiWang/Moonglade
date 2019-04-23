@@ -81,8 +81,9 @@ namespace Moonglade.Web.Controllers
                 var response = await _postService.SearchPostAsync(term);
                 if (response.IsSuccess)
                 {
-                    return View("Index", response.Item);
+                    ViewBag.IsServerError = true;
                 }
+                return View("Index", response.Item);
             }
             return RedirectToAction("Index", "Post");
         }

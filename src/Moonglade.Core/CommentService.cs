@@ -240,7 +240,7 @@ namespace Moonglade.Core
                     Id = model.Id,
                     IpAddress = model.IpAddress,
                     PostId = cmt.PostId,
-                    PubDateUTC = cmt.Post.PostPublish.PubDateUtc,
+                    PubDateUtc = cmt.Post.PostPublish.PubDateUtc,
                     ReplyContent = model.ReplyContent,
                     ReplyTimeUtc = model.ReplyTimeUtc,
                     Slug = cmt.Post.Slug,

@@ -243,9 +243,7 @@ namespace Moonglade.Web
             {
                 try
                 {
-                    var aesAlg = Aes.Create();
-                    var key = Convert.ToBase64String(aesAlg?.Key);
-                    var iv = Convert.ToBase64String(aesAlg?.IV);
+                    var ki = new KeyInfo();
 
                     var appSettingsFilePath = Path.Combine(Environment.ContentRootPath,
                         Environment.EnvironmentName != EnvironmentName.Production ?
@@ -259,8 +257,8 @@ namespace Moonglade.Web
                         var encryptionNode = jsonObj["Encryption"];
                         if (null != encryptionNode)
                         {
-                            encryptionNode["Key"] = key;
-                            encryptionNode["IV"] = iv;
+                            encryptionNode["Key"] = ki.KeyString;
+                            encryptionNode["IV"] = ki.IVString;
                             var newJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
                             File.WriteAllText(appSettingsFilePath, newJson);
                         }

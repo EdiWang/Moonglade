@@ -50,13 +50,13 @@ namespace Moonglade.Web.Controllers
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
-                model = await _postService.GetArchivedPosts(year, month.Value);
+                model = await _postService.GetArchivedPostsAsync(year, month.Value);
             }
             else
             {
                 // {year}
                 ViewBag.ArchiveInfo = $"{year}";
-                model = await _postService.GetArchivedPosts(year);
+                model = await _postService.GetArchivedPostsAsync(year);
             }
 
             return View(model);
