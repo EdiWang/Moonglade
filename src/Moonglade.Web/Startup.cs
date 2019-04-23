@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -38,7 +39,6 @@ using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Middleware.RobotsTxt;
 using Newtonsoft.Json;
-using Enumerable = System.Linq.Enumerable;
 
 namespace Moonglade.Web
 {
@@ -252,7 +252,6 @@ namespace Moonglade.Web
                             $"appsettings.{Environment.EnvironmentName}.json" :
                             "appsettings.json");
 
-
                     if (File.Exists(appSettingsFilePath))
                     {
                         var json = File.ReadAllText(appSettingsFilePath);
@@ -279,14 +278,13 @@ namespace Moonglade.Web
 
             IEnumerable<BlogConfiguration> GetBlogConfigurationObjects(IEnumerable<KeyValuePair<string, string>> configData)
             {
-                return Enumerable.ToList(
-                    Enumerable.Select(configData, (t, i) => new BlogConfiguration
-                    {
-                        Id = i,
-                        CfgKey = t.Key,
-                        CfgValue = t.Value,
-                        LastModifiedTimeUtc = DateTime.UtcNow
-                    }));
+                return configData.Select((t, i) => new BlogConfiguration
+                {
+                    Id = i,
+                    CfgKey = t.Key,
+                    CfgValue = t.Value,
+                    LastModifiedTimeUtc = DateTime.UtcNow
+                }).ToList();
             }
 
             void InitBlogConfiguration(DbContext moongladeDbContext)
@@ -408,7 +406,7 @@ namespace Moonglade.Web
                 {
                     var scopeServiceProvider = serviceScope.ServiceProvider;
                     var db = scopeServiceProvider.GetService<MoongladeDbContext>();
-                    var isFirstRun = !db.BlogConfiguration.Any();
+                    var isFirstRun = !EnumerableExtensions.Any(db.BlogConfiguration);
 
                     if (isFirstRun)
                     {
