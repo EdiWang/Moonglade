@@ -152,7 +152,7 @@ namespace Moonglade.Core
             try
             {
                 // 1. Check comment enabled or not
-                if (!_blogConfig.EnableComments)
+                if (!_blogConfig.ContentSettings.EnableComments)
                 {
                     return new FailedResponse<Comment>((int)ResponseFailureCode.CommentDisabled);
                 }
@@ -174,7 +174,7 @@ namespace Moonglade.Core
                 // 4. Harmonize banned keywords
                 if (AppSettings.EnableHarmonizor)
                 {
-                    var dw = _blogConfig.DisharmonyWords;
+                    var dw = _blogConfig.ContentSettings.DisharmonyWords;
                     var maskWordFilter = new MaskWordFilter(new StringWordSource(dw));
                     username = maskWordFilter.FilterContent(username);
                     commentContent = maskWordFilter.FilterContent(commentContent);
@@ -207,7 +207,7 @@ namespace Moonglade.Core
         {
             try
             {
-                if (!_blogConfig.EnableComments)
+                if (!_blogConfig.ContentSettings.EnableComments)
                 {
                     return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.CommentDisabled);
                 }

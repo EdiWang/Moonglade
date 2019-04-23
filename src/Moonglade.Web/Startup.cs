@@ -295,11 +295,10 @@ namespace Moonglade.Web
                 var defaultConfigData = new List<KeyValuePair<string, string>>
                 {
                     // Looks like I have to check in dirty words into source control, haha
-                    new KeyValuePair<string, string>(nameof(BlogConfig.DisharmonyWords), "fuck|shit"),
                     new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
                     new KeyValuePair<string, string>(nameof(BlogConfig.BloggerName), "Admin"),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.EnableComments), "True"),
                     new KeyValuePair<string, string>(nameof(BlogConfig.GeneralSettings), Constants.GeneralSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.ContentSettings), Constants.ContentSettingsDefaultValue),
                     new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
                     new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings), Constants.WatermarkSettingsDefaultValue),
                     new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration), Constants.EmailConfigurationDefaultValue)
