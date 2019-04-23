@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -38,7 +39,6 @@ using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Middleware.RobotsTxt;
 using Newtonsoft.Json;
-using Enumerable = System.Linq.Enumerable;
 
 namespace Moonglade.Web
 {
@@ -141,7 +141,7 @@ namespace Moonglade.Web
             var encryptionSettings = Configuration.GetSection("Encryption");
             var aesKey = encryptionSettings["Key"];
             var aesIv = encryptionSettings["IV"];
-            services.AddTransient(enc => new AesEncryptionService(new KeyInfo(aesKey, aesIv)));
+            services.AddTransient<IAesEncryptionService>(enc => new AesEncryptionService(new KeyInfo(aesKey, aesIv)));
 
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()
@@ -243,15 +243,12 @@ namespace Moonglade.Web
             {
                 try
                 {
-                    var aesAlg = Aes.Create();
-                    var key = Convert.ToBase64String(aesAlg?.Key);
-                    var iv = Convert.ToBase64String(aesAlg?.IV);
+                    var ki = new KeyInfo();
 
                     var appSettingsFilePath = Path.Combine(Environment.ContentRootPath,
                         Environment.EnvironmentName != EnvironmentName.Production ?
                             $"appsettings.{Environment.EnvironmentName}.json" :
                             "appsettings.json");
-
 
                     if (File.Exists(appSettingsFilePath))
                     {
@@ -260,8 +257,8 @@ namespace Moonglade.Web
                         var encryptionNode = jsonObj["Encryption"];
                         if (null != encryptionNode)
                         {
-                            encryptionNode["Key"] = key;
-                            encryptionNode["IV"] = iv;
+                            encryptionNode["Key"] = ki.KeyString;
+                            encryptionNode["IV"] = ki.IVString;
                             var newJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
                             File.WriteAllText(appSettingsFilePath, newJson);
                         }
@@ -279,14 +276,13 @@ namespace Moonglade.Web
 
             IEnumerable<BlogConfiguration> GetBlogConfigurationObjects(IEnumerable<KeyValuePair<string, string>> configData)
             {
-                return Enumerable.ToList(
-                    Enumerable.Select(configData, (t, i) => new BlogConfiguration
-                    {
-                        Id = i,
-                        CfgKey = t.Key,
-                        CfgValue = t.Value,
-                        LastModifiedTimeUtc = DateTime.UtcNow
-                    }));
+                return configData.Select((t, i) => new BlogConfiguration
+                {
+                    Id = i,
+                    CfgKey = t.Key,
+                    CfgValue = t.Value,
+                    LastModifiedTimeUtc = DateTime.UtcNow
+                }).ToList();
             }
 
             void InitBlogConfiguration(DbContext moongladeDbContext)
@@ -408,7 +404,7 @@ namespace Moonglade.Web
                 {
                     var scopeServiceProvider = serviceScope.ServiceProvider;
                     var db = scopeServiceProvider.GetService<MoongladeDbContext>();
-                    var isFirstRun = !db.BlogConfiguration.Any();
+                    var isFirstRun = !EnumerableExtensions.Any(db.BlogConfiguration);
 
                     if (isFirstRun)
                     {

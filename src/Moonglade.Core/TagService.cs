@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;

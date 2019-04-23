@@ -60,7 +60,7 @@
                 </strong>
                 <span class="text-muted d-none d-sm-inline">@comment.IpAddress</span>
                 <a href="mailto:@comment.Email" class="d-none d-sm-inline">@comment.Email</a>
-                <span class="text-muted float-right">@Utils.UtcToZoneTime(comment.CreateOnUtc.Value, Settings.Value.TimeZone).ToString("MM/dd/yyyy HH:mm")</span>
+                <span class="text-muted float-right">@Utils.UtcToZoneTime(comment.CreateOnUtc, Settings.Value.TimeZone).ToString("MM/dd/yyyy HH:mm")</span>
             </div>
             <div class="card-body">
                 <p>

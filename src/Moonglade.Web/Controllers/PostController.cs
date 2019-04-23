@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -30,12 +29,11 @@ namespace Moonglade.Web.Controllers
         public PostController(
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
-            IHttpContextAccessor accessor,
             PostService postService,
             CategoryService categoryService,
             PingbackSender pingbackSender,
             LinkGenerator linkGenerator)
-            : base(logger, settings, accessor: accessor)
+            : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
@@ -54,7 +52,7 @@ namespace Moonglade.Web.Controllers
 
         [Route("{year:int:min(2008):max(2108):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug}")]
         [AddPingbackHeader("pingback")]
-        public IActionResult Slug(int year, int month, int day, string slug)
+        public async Task<IActionResult> Slug(int year, int month, int day, string slug)
         {
             ViewBag.ErrorMessage = string.Empty;
 
@@ -64,7 +62,7 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            var rsp = _postService.GetPost(year, month, day, slug);
+            var rsp = await _postService.GetPostAsync(year, month, day, slug);
             if (!rsp.IsSuccess) return ServerError(rsp.Message);
 
             var post = rsp.Item;
@@ -131,7 +129,7 @@ namespace Moonglade.Web.Controllers
                 return new EmptyResult();
             }
 
-            var response = await _postService.UpdatePostStatisticAsync(postId, PostService.StatisticType.Hits);
+            var response = await _postService.UpdatePostStatisticAsync(postId, StatisticType.Hits);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
@@ -153,11 +151,10 @@ namespace Moonglade.Web.Controllers
                 });
             }
 
-            var response = await _postService.UpdatePostStatisticAsync(postId, PostService.StatisticType.Likes);
+            var response = await _postService.UpdatePostStatisticAsync(postId, StatisticType.Likes);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
-                Logger.LogInformation($"User from {HttpContext.Connection.RemoteIpAddress} liked post: {postId}");
             }
 
             return Json(response);
@@ -167,7 +164,7 @@ namespace Moonglade.Web.Controllers
 
         private bool HasCookie(CookieNames cookieName, string id)
         {
-            var viewCookie = HttpContextAccessor.HttpContext.Request.Cookies[cookieName.ToString()];
+            var viewCookie = HttpContext.Request.Cookies[cookieName.ToString()];
             if (viewCookie != null)
             {
                 return viewCookie == id;

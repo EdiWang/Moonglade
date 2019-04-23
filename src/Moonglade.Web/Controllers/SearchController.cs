@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -83,8 +81,9 @@ namespace Moonglade.Web.Controllers
                 var response = await _postService.SearchPostAsync(term);
                 if (response.IsSuccess)
                 {
-                    return View("Index", response.Item);
+                    ViewBag.IsServerError = true;
                 }
+                return View("Index", response.Item);
             }
             return RedirectToAction("Index", "Post");
         }

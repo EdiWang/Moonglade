@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Edi.Net.AesEncryption" Version="1.0.0" />
+    <PackageReference Include="Edi.Net.AesEncryption" Version="1.1.0" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="2.2.0" />

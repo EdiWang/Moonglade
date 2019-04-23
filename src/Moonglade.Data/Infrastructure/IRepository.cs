@@ -55,6 +55,8 @@ namespace Moonglade.Data.Infrastructure
 
         Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec, bool asNoTracking = true);
 
+        Task<T> GetFirstOrDefaultAsync(ISpecification<T> spec, bool asNoTracking = true);
+
         Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true);
 
         Task<IReadOnlyList<TResult>> SelectAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true);

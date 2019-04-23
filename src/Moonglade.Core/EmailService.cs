@@ -21,7 +21,7 @@ namespace Moonglade.Core
 
         private readonly IHostingEnvironment _env;
 
-        private EmailHelper EmailHelper { get; }
+        private IEmailHelper EmailHelper { get; }
 
         private readonly BlogConfig _blogConfig;
 
@@ -126,7 +126,7 @@ namespace Moonglade.Core
                 return;
             }
 
-            if (model.PubDateUTC != null)
+            if (model.PubDateUtc != null)
             {
                 Logger.LogInformation("Sending AdminReplyNotification mail");
 

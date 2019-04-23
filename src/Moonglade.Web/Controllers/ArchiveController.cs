@@ -28,7 +28,11 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var response = await _categoryService.GetArchiveListAsync();
-            return response.IsSuccess ? View(response.Item) : ServerError();
+            if (!response.IsSuccess)
+            {
+                ViewBag.IsServerError = true;
+            }
+            return View(response.Item);
         }
 
         [Route("{year:int:length(4)}")]
@@ -46,13 +50,13 @@ namespace Moonglade.Web.Controllers
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
-                model = await _postService.GetArchivedPosts(year, month.Value);
+                model = await _postService.GetArchivedPostsAsync(year, month.Value);
             }
             else
             {
                 // {year}
                 ViewBag.ArchiveInfo = $"{year}";
-                model = await _postService.GetArchivedPosts(year);
+                model = await _postService.GetArchivedPostsAsync(year);
             }
 
             return View(model);

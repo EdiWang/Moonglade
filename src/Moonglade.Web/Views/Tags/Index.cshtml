@@ -6,69 +6,76 @@
 @model IReadOnlyList<Moonglade.Model.TagInfo>
 
 @functions {
-private static int Weight(double weightPercent)
-{
-    int weight;
-    if (weightPercent >= 99)
+    private static int Weight(double weightPercent)
     {
-        weight = 1;
-    }
-    else if (weightPercent >= 70)
-    {
-        weight = 2;
-    }
-    else if (weightPercent >= 40)
-    {
-        weight = 3;
-    }
-    else if (weightPercent >= 20)
-    {
-        weight = 4;
-    }
-    else if (weightPercent >= 3)
-    {
-        weight = 5;
-    }
-    else
-    {
-        weight = 0;
-    }
-    return weight;
-}
-}
-
-<h3>
-    All Tags <small>(@Model.Count())</small>
-</h3>
-<hr />
-
-@if (Model.Any())
-{
-    var tagMax = Model.Select(p => p.TagCount).Max();
-
-    <ul class="list-unstyled tagCloud">
-        @foreach (var tag in Model.OrderBy(t => t.TagName))
+        int weight;
+        if (weightPercent >= 99)
         {
-            double weightPercent = (Convert.ToInt32(tag.TagCount) * 1.0 / Convert.ToInt32(tagMax)) * 100;
-            var weight = Weight(weightPercent);
-
-            if (weight >= 0)
-            {
-                <li>
-                    <a asp-controller="Tags"
-                       asp-action="List"
-                       asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedTagName.ToLower())"
-                       class="weight@(weight)" title="@(tag.TagCount)">
-                        @tag.TagName.Replace("-", " ")
-                    </a>
-                </li>
-            }
+            weight = 1;
         }
-    </ul>
+        else if (weightPercent >= 70)
+        {
+            weight = 2;
+        }
+        else if (weightPercent >= 40)
+        {
+            weight = 3;
+        }
+        else if (weightPercent >= 20)
+        {
+            weight = 4;
+        }
+        else if (weightPercent >= 3)
+        {
+            weight = 5;
+        }
+        else
+        {
+            weight = 0;
+        }
+        return weight;
+    }
+}
+
+@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
+{
+    <partial name="_ServerErrorMessage" />
 }
 else
 {
-    <div class="alert alert-info">
-        No Tags
-    </div>
+    <h3>
+        All Tags <small>(@Model.Count())</small>
+    </h3>
+    <hr />
+
+    if (Model.Any())
+    {
+        var tagMax = Model.Select(p => p.TagCount).Max();
+
+        <ul class="list-unstyled tagCloud">
+            @foreach (var tag in Model.OrderBy(t => t.TagName))
+            {
+                double weightPercent = (Convert.ToInt32(tag.TagCount) * 1.0 / Convert.ToInt32(tagMax)) * 100;
+                var weight = Weight(weightPercent);
+
+                if (weight >= 0)
+                {
+                    <li>
+                        <a asp-controller="Tags"
+                           asp-action="List"
+                           asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedTagName.ToLower())"
+                           class="weight@(weight)" title="@(tag.TagCount)">
+                            @tag.TagName.Replace("-", " ")
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No Tags
+        </div>
+    }
 }
