@@ -356,7 +356,7 @@ namespace Moonglade.Web.Controllers
 
         #region User Avatar
 
-        // TODO: Use ValidateAntiForgeryToken to prevent attackers from replace blog user's avatar to a shit image
+        // TODO: Use ValidateAntiForgeryToken to prevent attackers from replace blog user's avatar with a shit image
         // [ValidateAntiForgeryToken]
         [HttpPost]
         [Route("set-blogger-avatar")]
