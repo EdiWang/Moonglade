@@ -4,6 +4,132 @@
 
 @model GeneralSettingsViewModel
 
+@section scripts{
+<script src="~/js/bs-custom-file-input.min.js"></script>
+<script>
+    var avatarDataURL;
+
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+        $("#btn-upload-avatar").click(function () {
+            uploadAvatar();
+        });
+    });
+
+    function enableUploadButton() {
+        $("#btn-upload-avatar").removeClass("disabled");
+        $("#btn-upload-avatar").removeAttr("disabled");
+    }
+
+    function disableUploadButton() {
+        $(btnSaveSettings).addClass("disabled");
+        $(btnSaveSettings).attr("disabled", "disabled");
+    }
+
+    function uploadAvatar() {
+        if (avatarDataURL) {
+            disableUploadButton();
+            console.info("Uploading avatar");
+            console.info(avatarDataURL);
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/settings/set-blogger-avatar',
+                data: { base64avatar: avatarDataURL.replace(/^data:image\/(png|jpeg|jpg);base64,/, "") },
+                success: function (data) {
+                    console.info(data);
+                },
+                error: function (xhr, status, err) {
+                    console.error(err);
+                    toastr.error('Upload avatar failed.');
+                }
+            });
+
+            // for testing
+            window.setTimeout(function () {
+                enableUploadButton();
+            }, 1000);
+        } else {
+            toastr.error('Please select an avatar image');
+        }
+    }
+
+    function resizeImage(file) {
+        var reader = new FileReader();
+        reader.onloadend = function () {
+
+            var tempImg = new Image();
+            tempImg.src = reader.result;
+            tempImg.onload = function () {
+
+                var maxWidth = 300;
+                var maxHeight = 300;
+                var tempW = tempImg.width;
+                var tempH = tempImg.height;
+                if (tempW > tempH) {
+                    if (tempW > maxWidth) {
+                        tempH *= maxWidth / tempW;
+                        tempW = maxWidth;
+                    }
+                } else {
+                    if (tempH > maxHeight) {
+                        tempW *= maxHeight / tempH;
+                        tempH = maxHeight;
+                    }
+                }
+
+                var canvas = document.createElement('canvas');
+                canvas.width = tempW;
+                canvas.height = tempH;
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(this, 0, 0, tempW, tempH);
+                avatarDataURL = canvas.toDataURL("image/jpeg");
+
+                var div = $('#avatarDropTarget');
+                div.html('<img class="img-fluid" src="' + avatarDataURL + '" />');
+                enableUploadButton();
+            }
+
+        }
+        reader.readAsDataURL(file);
+    }
+
+    function fileSelect(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            var file;
+            if (evt.dataTransfer) {
+                file = evt.dataTransfer.files[0];
+                $(".custom-file-label").text(file.name);
+            } else {
+                file = evt.target.files[0];
+            }
+
+            if (!file.type.match('image.*')) {
+                toastr.error('Please select an image file.');
+            }
+
+            resizeImage(file);
+        } else {
+            toastr.error('The File APIs are not fully supported in this browser.');
+        }
+    }
+    document.getElementById('avatarImageFile').addEventListener('change', fileSelect, false);
+
+    function dragOver(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        evt.dataTransfer.dropEffect = 'copy';
+    }
+
+    var dropTarget = document.getElementById('avatarDropTarget');
+    dropTarget.addEventListener('dragover', dragOver, false);
+    dropTarget.addEventListener('drop', fileSelect, false);
+</script>
+}
+
 <partial name="_SettingsHeader" />
 
 <form id="form-settings" asp-controller="Settings" asp-action="General"
@@ -45,7 +171,7 @@
                     <li class="list-group-item">
                         <label asp-for="EnableComments" class="control-label"></label>
                         <div class="material-switch float-right">
-                            <input @(Model.EnableComments ? "checked=\"checked\"" : "") id="EnableComments" name="EnableComments" type="checkbox" value="true">
+                            <input @(Model.EnableComments ? "checked=\" checked\"" : "" ) id="EnableComments" name="EnableComments" type="checkbox" value="true">
                             <label for="EnableComments" class="label-success"></label>
                             <input name="EnableComments" type="hidden" value="false">
                         </div>
@@ -60,7 +186,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-2">
-                                    <img src="@Url.Action("GetBloggerAvatar", "Image")" class="img-thumbnail img-fluid blogadmin-avatar"/>
+                                    <img src="@Url.Action(" GetBloggerAvatar", "Image" )" class="img-thumbnail img-fluid blogadmin-avatar" />
                                 </div>
                                 <a class="btn btn-sm btn-primary" href="#" data-toggle="modal" data-target="#avatarmodal">Change Avatar</a>
                             </div>
@@ -106,18 +232,22 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" asp-controller="Settings" asp-action="SetBloggerAvatar">
-                    <div class="form-group">
-                        <p>Upload .PNG or .JPG avatar file</p>
-                        <input type="file" name="avatarimage" />
+
+                <div class="form-group">
+                    <div id="avatarDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
+                        Drag and drop image file here
                     </div>
-                    <div class="form-group">
-                        <input type="submit" value="Upload" />
+
+                    <div class="input-group mt-2">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="avatarImageFile" name="avatarImageFile">
+                            <label class="custom-file-label" for="avatarImageFile" aria-describedby="avatarImageFileAddon">.png or .jpg file</label>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-success disabled" id="btn-upload-avatar" disabled="disabled">Upload</button>
             </div>
         </div>
     </div>

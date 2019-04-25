@@ -17,7 +17,7 @@ namespace Moonglade.Core
 
         private readonly PostService _postService;
 
-        private readonly PingbackReceiver _pingbackReceiver;
+        private readonly IPingbackReceiver _pingbackReceiver;
 
         private readonly IRepository<PingbackHistory> _pingbackRepository;
 
@@ -25,7 +25,7 @@ namespace Moonglade.Core
             ILogger<PingbackService> logger,
             EmailService emailService,
             PostService postService,
-            PingbackReceiver pingbackReceiver,
+            IPingbackReceiver pingbackReceiver,
             IRepository<PingbackHistory> pingbackRepository) : base(logger)
         {
             _emailService = emailService;
