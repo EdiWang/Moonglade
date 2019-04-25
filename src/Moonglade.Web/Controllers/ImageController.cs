@@ -171,18 +171,29 @@ namespace Moonglade.Web.Controllers
         [Route("get-avatar")]
         public IActionResult GetBloggerAvatar()
         {
+            var fallbackImageFile =
+                $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png";
+
             if (!string.IsNullOrWhiteSpace(_blogConfig.BloggerAvatarBase64))
             {
-                var avatarEntry = Cache.GetOrCreate("avatar", entry =>
+                try
                 {
-                    Logger.LogTrace("Avatar not on cache, getting new avatar image...");
-                    var avatarBytes = Convert.FromBase64String(_blogConfig.BloggerAvatarBase64);
-                    return avatarBytes;
-                });
-                return File(avatarEntry, "image/png");
+                    var avatarEntry = Cache.GetOrCreate("avatar", entry =>
+                    {
+                        Logger.LogTrace("Avatar not on cache, getting new avatar image...");
+                        var avatarBytes = Convert.FromBase64String(_blogConfig.BloggerAvatarBase64);
+                        return avatarBytes;
+                    });
+                    return File(avatarEntry, "image/png");
+                }
+                catch (FormatException e)
+                {
+                    Logger.LogError($"Error {nameof(GetBloggerAvatar)}(), Invalid Base64 string", e);
+                    return PhysicalFile(fallbackImageFile, "image/png");
+                }
             }
 
-            return PhysicalFile($@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png", "image/png");
+            return PhysicalFile(fallbackImageFile, "image/png");
         }
     }
 }

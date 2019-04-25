@@ -87,7 +87,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
                 _blogConfig.ContentSettings.EnableComments = model.EnableComments;
                 _blogConfigurationService.SaveObjectConfiguration(_blogConfig.ContentSettings);
-                
+
                 _blogConfig.BloggerName = model.BloggerName;
                 var response = _blogConfigurationService.SaveGeneralSettings(_blogConfig);
 
@@ -356,43 +356,26 @@ namespace Moonglade.Web.Controllers
 
         #region User Avatar
 
+        // TODO: Use ValidateAntiForgeryToken to prevent attackers from replace blog user's avatar to a shit image
+        // [ValidateAntiForgeryToken]
         [HttpPost]
         [Route("set-blogger-avatar")]
-        public async Task<IActionResult> SetBloggerAvatar(IFormFile avatarimage)
+        public IActionResult SetBloggerAvatar(string base64avatar)
         {
             try
             {
-                if (null == avatarimage)
+                if (string.IsNullOrWhiteSpace(base64avatar))
                 {
-                    Logger.LogError("file is null.");
                     return BadRequest();
                 }
 
-                if (avatarimage.Length > 0)
-                {
-                    var name = Path.GetFileName(avatarimage.FileName);
-                    if (name == null) return BadRequest();
+                // TODO: Check if base64avatar is a valid base64 image to prevent user upload shit and may hack the system.
 
-                    var ext = Path.GetExtension(name).ToLower();
-                    var allowedImageFormats = new[] { ".png", ".jpg" };
-                    if (!allowedImageFormats.Contains(ext))
-                    {
-                        return BadRequest();
-                    }
-
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await avatarimage.CopyToAsync(memoryStream);
-                        var imageBytes = memoryStream.ToArray();
-                        var imageBase64String = Convert.ToBase64String(imageBytes);
-                        _blogConfig.BloggerAvatarBase64 = imageBase64String;
-                        var response = _blogConfigurationService.SaveBloggerAvatar(imageBase64String);
-                        _blogConfig.DumpOldValuesWhenNextLoad();
-                        Cache.Remove("avatar");
-                        return Json(response);
-                    }
-                }
-                return BadRequest();
+                _blogConfig.BloggerAvatarBase64 = base64avatar;
+                var response = _blogConfigurationService.SaveBloggerAvatar(base64avatar);
+                _blogConfig.DumpOldValuesWhenNextLoad();
+                Cache.Remove("avatar");
+                return Json(response);
             }
             catch (Exception e)
             {
