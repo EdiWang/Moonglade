@@ -31,11 +31,13 @@
             disableUploadButton();
             console.info("Uploading avatar");
             console.info(avatarDataURL);
+            var rawData = { base64avatar: avatarDataURL.replace(/^data:image\/(png|jpeg|jpg);base64,/, "") };
 
             $.ajax({
                 type: 'POST',
+                headers: { csrfFieldName: $("input[name=" + csrfFieldName + "]").val() },
                 url: '/admin/settings/set-blogger-avatar',
-                data: { base64avatar: avatarDataURL.replace(/^data:image\/(png|jpeg|jpg);base64,/, "") },
+                data: makeCSRFExtendedData(rawData),
                 success: function (data) {
                     console.info(data);
                 },
@@ -171,7 +173,7 @@
                     <li class="list-group-item">
                         <label asp-for="EnableComments" class="control-label"></label>
                         <div class="material-switch float-right">
-                            <input @(Model.EnableComments ? "checked=\" checked\"" : "" ) id="EnableComments" name="EnableComments" type="checkbox" value="true">
+                            <input @(Model.EnableComments ? "checked=\"checked\"" : string.Empty) id="EnableComments" name="EnableComments" type="checkbox" value="true">
                             <label for="EnableComments" class="label-success"></label>
                             <input name="EnableComments" type="hidden" value="false">
                         </div>
@@ -186,7 +188,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-2">
-                                    <img src="@Url.Action(" GetBloggerAvatar", "Image" )" class="img-thumbnail img-fluid blogadmin-avatar" />
+                                    <img src="@Url.Action("GetBloggerAvatar", "Image" )" class="img-thumbnail img-fluid blogadmin-avatar" />
                                 </div>
                                 <a class="btn btn-sm btn-primary" href="#" data-toggle="modal" data-target="#avatarmodal">Change Avatar</a>
                             </div>

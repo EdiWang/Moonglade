@@ -356,8 +356,7 @@ namespace Moonglade.Web.Controllers
 
         #region User Avatar
 
-        // TODO: Use ValidateAntiForgeryToken to prevent attackers from replace blog user's avatar with a shit image
-        // [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         [Route("set-blogger-avatar")]
         public IActionResult SetBloggerAvatar(string base64avatar)
