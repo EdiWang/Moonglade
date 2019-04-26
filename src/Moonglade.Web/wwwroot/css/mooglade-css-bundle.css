@@ -4314,11 +4314,6 @@ readers do not read off random characters that represent icons */
     overflow: hidden;
 }
 
-.blogadmin-avatar {
-    height: 144px;
-    width: 144px;
-}
-
 .admin-main .validation-summary-errors ul {
     margin-bottom: 0;
 }
@@ -4409,6 +4404,13 @@ div.mce-fullscreen {
     color: #90111A !important;
 }
 
+.h-200px {
+    height: 200px !important;
+}
+
+.h-300px {
+    height: 300px !important;
+}
 
 .title-box {
     position: relative;

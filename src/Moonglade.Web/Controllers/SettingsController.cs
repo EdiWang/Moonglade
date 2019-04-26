@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
@@ -356,23 +358,38 @@ namespace Moonglade.Web.Controllers
 
         #region User Avatar
 
-        // TODO: Use ValidateAntiForgeryToken to prevent attackers from replace blog user's avatar with a shit image
-        // [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         [Route("set-blogger-avatar")]
-        public IActionResult SetBloggerAvatar(string base64avatar)
+        public IActionResult SetBloggerAvatar(string base64Avatar)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(base64avatar))
+                base64Avatar = base64Avatar.Trim();
+                if (!Utils.TryParseBase64(base64Avatar, out var base64Chars))
                 {
                     return BadRequest();
                 }
 
-                // TODO: Check if base64avatar is a valid base64 image to prevent user upload shit and may hack the system.
+                try
+                {
+                    using (var bmp = new Bitmap(new MemoryStream(base64Chars)))
+                    {
+                        if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
+                        {
+                            // Normal uploaded avatar should be a 300x300 pixel image
+                            return BadRequest();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError("Invalid base64Avatar Image", e);
+                    return BadRequest();
+                }
 
-                _blogConfig.BloggerAvatarBase64 = base64avatar;
-                var response = _blogConfigurationService.SaveBloggerAvatar(base64avatar);
+                _blogConfig.BloggerAvatarBase64 = base64Avatar;
+                var response = _blogConfigurationService.SaveBloggerAvatar(base64Avatar);
                 _blogConfig.DumpOldValuesWhenNextLoad();
                 Cache.Remove("avatar");
                 return Json(response);
