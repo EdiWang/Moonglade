@@ -36,6 +36,28 @@ namespace Moonglade.Core
             return sSource.Substring(iLength > sSource.Length ? 0 : sSource.Length - iLength);
         }
 
+        public static bool TryParseBase64(string input, out byte[] base64Array)
+        {
+            base64Array = null;
+
+            if (string.IsNullOrWhiteSpace(input) ||
+                input.Length % 4 != 0 ||
+                !Regex.IsMatch(input, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+            {
+                return false;
+            }
+
+            try
+            {
+                base64Array = Convert.FromBase64String(input);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
         private static readonly Tuple<string, string>[] TagNormalizeSourceTable =
         {
             Tuple.Create(".", "dot"),
