@@ -22,15 +22,13 @@
     }
 
     function disableUploadButton() {
-        $(btnSaveSettings).addClass("disabled");
-        $(btnSaveSettings).attr("disabled", "disabled");
+        $("#btn-upload-avatar").addClass("disabled");
+        $("#btn-upload-avatar").attr("disabled", "disabled");
     }
 
     function uploadAvatar() {
         if (avatarDataURL) {
             disableUploadButton();
-            console.info("Uploading avatar");
-            console.info(avatarDataURL);
             var rawData = { base64avatar: avatarDataURL.replace(/^data:image\/(png|jpeg|jpg);base64,/, "") };
 
             $.ajax({
@@ -40,17 +38,17 @@
                 data: makeCSRFExtendedData(rawData),
                 success: function (data) {
                     console.info(data);
+                    $("#avatarmodal").modal('hide');
+                    toastr.success('Avatar updated');
+                    d = new Date();
+                    $(".blogadmin-avatar").attr("src", "/get-avatar?" + d.getTime());
                 },
                 error: function (xhr, status, err) {
                     console.error(err);
                     toastr.error('Upload avatar failed.');
+                    enableUploadButton();
                 }
             });
-
-            // for testing
-            window.setTimeout(function () {
-                enableUploadButton();
-            }, 1000);
         } else {
             toastr.error('Please select an avatar image');
         }
@@ -169,30 +167,19 @@
                         <span asp-validation-for="Copyright" class="text-danger"></span>
                     </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <label asp-for="EnableComments" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.EnableComments ? "checked=\"checked\"" : string.Empty) id="EnableComments" name="EnableComments" type="checkbox" value="true">
-                            <label for="EnableComments" class="label-success"></label>
-                            <input name="EnableComments" type="hidden" value="false">
-                        </div>
-                    </li>
-                </ul>
             </div>
-
             <div class="card">
                 <div class="card-header">Owner Information</div>
                 <div class="card-body">
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3 col-sm-4">
                                 <div class="mb-2">
                                     <img src="@Url.Action("GetBloggerAvatar", "Image" )" class="img-thumbnail img-fluid blogadmin-avatar" />
                                 </div>
-                                <a class="btn btn-sm btn-primary" href="#" data-toggle="modal" data-target="#avatarmodal">Change Avatar</a>
+                                <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#avatarmodal">Change Avatar</a>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-9 col-sm-8">
                                 <div class="form-group">
                                     <label asp-for="BloggerName" class="control-label"></label>
                                     <input asp-for="BloggerName" class="form-control" />
@@ -207,10 +194,20 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Comments</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="EnableComments" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnableComments ? "checked=\"checked\"" : string.Empty) id="EnableComments" name="EnableComments" type="checkbox" value="true">
+                            <label for="EnableComments" class="label-success"></label>
+                            <input name="EnableComments" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
                 <div class="card-body">
                     <div class="form-group">
                         <label asp-for="DisharmonyWords" class="control-label"></label>
-                        <textarea asp-for="DisharmonyWords" class="form-control"></textarea>
+                        <textarea asp-for="DisharmonyWords" class="form-control h-300px"></textarea>
                         <span asp-validation-for="DisharmonyWords" class="text-danger"></span>
                     </div>
                 </div>
