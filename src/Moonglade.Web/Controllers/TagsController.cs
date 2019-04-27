@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -31,6 +32,7 @@ namespace Moonglade.Web.Controllers
             var response = await _tagService.GetTagCountListAsync();
             if (!response.IsSuccess)
             {
+                HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 ViewBag.IsServerError = true;
             }
             return View(response.Item);
