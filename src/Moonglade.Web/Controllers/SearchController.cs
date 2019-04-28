@@ -79,8 +79,9 @@ namespace Moonglade.Web.Controllers
                 ViewBag.TitlePrefix = term;
 
                 var response = await _postService.SearchPostAsync(term);
-                if (response.IsSuccess)
+                if (!response.IsSuccess)
                 {
+                    HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     ViewBag.IsServerError = true;
                 }
                 return View("Index", response.Item);
