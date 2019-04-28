@@ -127,13 +127,13 @@
                         <div class="col-3">
                             <a asp-page="/about">
                                 <img src="@Url.Action("GetBloggerAvatar", "Image")"
-                                     alt="@BlogConfig.BloggerName"
+                                     alt="@BlogConfig.BlogOwnerSettings.Name"
                                      class="rounded-circle blogger-head-pic" />
                             </a>
                         </div>
                         <div class="col-9">
                             <h4 class="text-center">
-                                .NET Developer, Microsoft MVP
+                                @BlogConfig.BlogOwnerSettings.ShortDescription
                             </h4>
                         </div>
                     </div>

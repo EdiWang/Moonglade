@@ -4,9 +4,7 @@ namespace Moonglade.Configuration
 {
     public class BlogConfig
     {
-        public string BloggerAvatarBase64 { get; set; }
-
-        public string BloggerName { get; set; }
+        public BlogOwnerSettings BlogOwnerSettings { get; set; }
 
         public GeneralSettings GeneralSettings { get; set; }
 
@@ -22,6 +20,7 @@ namespace Moonglade.Configuration
 
         public BlogConfig()
         {
+            BlogOwnerSettings = new BlogOwnerSettings();
             ContentSettings = new ContentSettings
             {
                 DisharmonyWords = string.Empty,
@@ -38,9 +37,8 @@ namespace Moonglade.Configuration
             if (!_hasInitialized)
             {
                 var cfgDic = blogConfigurationService.GetAllConfigurations();
-                BloggerAvatarBase64 = cfgDic[nameof(BloggerAvatarBase64)];
-                BloggerName = cfgDic[nameof(BloggerName)];
 
+                BlogOwnerSettings = JsonConvert.DeserializeObject<BlogOwnerSettings>(cfgDic[nameof(BlogOwnerSettings)]);
                 GeneralSettings = JsonConvert.DeserializeObject<GeneralSettings>(cfgDic[nameof(GeneralSettings)]);
                 ContentSettings = JsonConvert.DeserializeObject<ContentSettings>(cfgDic[nameof(ContentSettings)]);
 

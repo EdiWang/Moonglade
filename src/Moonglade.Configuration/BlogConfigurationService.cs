@@ -112,36 +112,6 @@ namespace Moonglade.Configuration
             return SaveObjectConfiguration(emailConfiguration);
         }
 
-        public Response SaveGeneralSettings(BlogConfig blogConfig)
-        {
-            try
-            {
-                var r = SetConfiguration(nameof(blogConfig.BloggerName), blogConfig.BloggerName);
-                var allSuccess = r.IsSuccess;
-
-                return new Response(allSuccess);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
-            }
-        }
-
-        public Response SaveBloggerAvatar(string bloggerAvatarBase64)
-        {
-            try
-            {
-                var r = SetConfiguration(nameof(BlogConfig.BloggerAvatarBase64), bloggerAvatarBase64);
-                return new Response(r.IsSuccess);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
-            }
-        }
-
         public Response SaveObjectConfiguration<T>(T obj) where T : class
         {
             try

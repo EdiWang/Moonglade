@@ -174,14 +174,14 @@ namespace Moonglade.Web.Controllers
             var fallbackImageFile =
                 $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png";
 
-            if (!string.IsNullOrWhiteSpace(_blogConfig.BloggerAvatarBase64))
+            if (!string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
             {
                 try
                 {
                     var avatarEntry = Cache.GetOrCreate("avatar", entry =>
                     {
                         Logger.LogTrace("Avatar not on cache, getting new avatar image...");
-                        var avatarBytes = Convert.FromBase64String(_blogConfig.BloggerAvatarBase64);
+                        var avatarBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);
                         return avatarBytes;
                     });
                     return File(avatarEntry, "image/png");
