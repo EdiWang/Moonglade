@@ -69,7 +69,9 @@ namespace Moonglade.Web.Controllers
                 Copyright = _blogConfig.GeneralSettings.Copyright,
                 DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
                 EnableComments = _blogConfig.ContentSettings.EnableComments,
-                BloggerName = _blogConfig.BloggerName
+                BloggerName = _blogConfig.BlogOwnerSettings.Name,
+                BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
+                BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription
             };
             return View(vm);
         }
@@ -90,8 +92,10 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.EnableComments = model.EnableComments;
                 _blogConfigurationService.SaveObjectConfiguration(_blogConfig.ContentSettings);
 
-                _blogConfig.BloggerName = model.BloggerName;
-                var response = _blogConfigurationService.SaveGeneralSettings(_blogConfig);
+                _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
+                _blogConfig.BlogOwnerSettings.Description = model.BloggerDescription;
+                _blogConfig.BlogOwnerSettings.ShortDescription = model.BloggerShortDescription;
+                var response = _blogConfigurationService.SaveObjectConfiguration(_blogConfig.BlogOwnerSettings);
 
                 _blogConfig.DumpOldValuesWhenNextLoad();
                 return Json(response);
@@ -388,8 +392,8 @@ namespace Moonglade.Web.Controllers
                     return BadRequest();
                 }
 
-                _blogConfig.BloggerAvatarBase64 = base64Avatar;
-                var response = _blogConfigurationService.SaveBloggerAvatar(base64Avatar);
+                _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
+                var response = _blogConfigurationService.SaveObjectConfiguration(_blogConfig.BlogOwnerSettings);
                 _blogConfig.DumpOldValuesWhenNextLoad();
                 Cache.Remove("avatar");
                 return Json(response);

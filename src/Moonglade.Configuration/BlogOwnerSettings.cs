@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Moonglade.Configuration
+{
+    public class BlogOwnerSettings
+    {
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string ShortDescription { get; set; }
+
+        public string AvatarBase64 { get; set; }
+    }
+}

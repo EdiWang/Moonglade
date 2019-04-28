@@ -32,5 +32,13 @@ namespace Moonglade.Web.Models
         [Required]
         [Display(Name = "Blogger Name")]
         public string BloggerName { get; set; }
+
+        [Required]
+        [Display(Name = "Blogger Description (HTML)")]
+        public string BloggerDescription { get; set; }
+
+        [Required]
+        [Display(Name = "Blogger Short Description")]
+        public string BloggerShortDescription { get; set; }
     }
 }

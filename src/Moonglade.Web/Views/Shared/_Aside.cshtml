@@ -14,16 +14,15 @@
         <div class="blog-info-photo-text text-center">
             <a asp-page="/about">
                 <img src="@Url.Action("GetBloggerAvatar", "Image")"
-                     alt="@BlogConfig.BloggerName"
+                     alt="@BlogConfig.BlogOwnerSettings.Name"
                      class="rounded-circle blogger-head-pic" />
             </a>
             <div>
                 <h3 class="mt-3">
-                    @BlogConfig.BloggerName
+                    @BlogConfig.BlogOwnerSettings.Name
                 </h3>
                 <p>
-                    .NET and Windows Developer <br />
-                    Microsoft MVP
+                    @Html.Raw(BlogConfig.BlogOwnerSettings.Description)
                 </p>
             </div>
         </div>

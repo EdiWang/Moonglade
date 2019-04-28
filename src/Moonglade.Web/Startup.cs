@@ -290,9 +290,7 @@ namespace Moonglade.Web
                 // oh, I wish C# could simplify this syntax...
                 var defaultConfigData = new List<KeyValuePair<string, string>>
                 {
-                    // Looks like I have to check in dirty words into source control, haha
-                    new KeyValuePair<string, string>(nameof(BlogConfig.BloggerAvatarBase64), string.Empty),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.BloggerName), "Admin"),
+                    new KeyValuePair<string, string>(nameof(BlogConfig.BlogOwnerSettings),  Constants.BlogOwnerSettingsDefaultValue),
                     new KeyValuePair<string, string>(nameof(BlogConfig.GeneralSettings), Constants.GeneralSettingsDefaultValue),
                     new KeyValuePair<string, string>(nameof(BlogConfig.ContentSettings), Constants.ContentSettingsDefaultValue),
                     new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
