@@ -39,13 +39,13 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("list/{normalizedName}")]
-        public IActionResult List(string normalizedName)
+        public async Task<IActionResult> List(string normalizedName)
         {
             ViewBag.ErrorMessage = string.Empty;
 
             var tag = _tagService.GetTag(normalizedName);
 
-            var postResponse = _postService.GetPostsByTag(normalizedName.ToLower());
+            var postResponse = await _postService.GetPostsByTagAsync(normalizedName.ToLower());
             if (!postResponse.IsSuccess)
             {
                 return ServerError();
