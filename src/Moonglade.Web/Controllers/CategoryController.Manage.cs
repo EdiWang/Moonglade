@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
+using Moonglade.Model;
 using Moonglade.Web.Models;
 using Newtonsoft.Json;
 
@@ -29,7 +30,7 @@ namespace Moonglade.Web.Controllers
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error.");
+                Logger.LogError(e, $"Error {nameof(Manage)}()");
 
                 ViewBag.HasError = true;
                 ViewBag.ErrorMessage = e.Message;
@@ -91,9 +92,9 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("edit")]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var r = _categoryService.GetCategory(id);
+            var r = await _categoryService.GetCategoryAsync(id);
             if (r.IsSuccess && null != r.Item)
             {
                 var model = new CategoryEditViewModel
@@ -154,9 +155,9 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("delete")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var r = _categoryService.GetCategory(id);
+            var r = await _categoryService.GetCategoryAsync(id);
             if (r.IsSuccess && null != r.Item)
             {
                 var model = new CategoryEditViewModel
@@ -197,6 +198,20 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogError(e, "Error Delete Category.");
                 return Content(e.Message);
+            }
+        }
+
+        private void DeleteOpmlFile()
+        {
+            try
+            {
+                System.IO.File.Delete($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}");
+                Logger.LogInformation("OPML file is deleted.");
+            }
+            catch (Exception e)
+            {
+                // Log the error and do not block the application
+                Logger.LogError(e, "Error Delete OPML File.");
             }
         }
     }

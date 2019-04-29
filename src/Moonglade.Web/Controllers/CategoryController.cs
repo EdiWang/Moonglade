@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
             }
 
             var pageSize = AppSettings.PostListPageSize;
-            var catResponse = _categoryService.GetCategory(categoryName);
+            var catResponse = await _categoryService.GetCategoryAsync(categoryName);
             if (!catResponse.IsSuccess)
             {
                 return ServerError($"Unsuccessful response: {catResponse.Message}");
@@ -60,20 +60,6 @@ namespace Moonglade.Web.Controllers
 
             var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pageSize, postCount);
             return View(postsAsIPagedList);
-        }
-
-        private void DeleteOpmlFile()
-        {
-            try
-            {
-                System.IO.File.Delete($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}");
-                Logger.LogInformation("OPML file is deleted.");
-            }
-            catch (Exception e)
-            {
-                // Log the error and do not block the application
-                Logger.LogError(e, "Error Delete OPML File.");
-            }
         }
     }
 }

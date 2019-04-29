@@ -47,25 +47,25 @@ namespace Moonglade.Core
             return _postCategoryRepository.Count(c => c.CategoryId == catId);
         }
 
-        public Response<Category> GetCategory(string categoryName)
+        public async Task<Response<Category>> GetCategoryAsync(string categoryName)
         {
             try
             {
-                var cat = _categoryRepository.Get(p => p.Title == categoryName);
+                var cat = await _categoryRepository.GetAsync(p => p.Title == categoryName);
                 return new SuccessResponse<Category>(cat);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetCategory)}");
+                Logger.LogError(e, $"Error {nameof(GetCategoryAsync)}");
                 return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public Response<Category> GetCategory(Guid categoryId)
+        public async Task<Response<Category>> GetCategoryAsync(Guid categoryId)
         {
             try
             {
-                var cat = _categoryRepository.Get(categoryId);
+                var cat = await _categoryRepository.GetAsync(categoryId);
                 if (null != cat)
                 {
                     return new SuccessResponse<Category>(cat);
@@ -75,7 +75,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetCategory)}");
+                Logger.LogError(e, $"Error {nameof(GetCategoryAsync)}");
                 return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException);
             }
         }

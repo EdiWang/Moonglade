@@ -76,7 +76,7 @@ namespace Moonglade.Core
             });
         }
 
-        public IReadOnlyList<Comment> GetPagedComment(int pageSize, int pageIndex)
+        public async Task<IReadOnlyList<Comment>> GetPagedCommentAsync(int pageSize, int pageIndex)
         {
             if (pageSize < 1)
             {
@@ -84,7 +84,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PagedCommentSepc(pageSize, pageIndex);
-            var comments = _commentRepository.Get(spec, false);
+            var comments = await _commentRepository.GetAsync(spec, false);
             return comments;
         }
 

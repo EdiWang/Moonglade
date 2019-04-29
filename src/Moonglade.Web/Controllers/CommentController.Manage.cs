@@ -12,10 +12,10 @@ namespace Moonglade.Web.Controllers
     {
         [Authorize]
         [Route("manage")]
-        public IActionResult Manage(int page = 1)
+        public async Task<IActionResult> Manage(int page = 1)
         {
             const int pageSize = 20;
-            var commentList = _commentService.GetPagedComment(pageSize, page);
+            var commentList = await _commentService.GetPagedCommentAsync(pageSize, page);
             var commentsAsIPagedList =
                 new StaticPagedList<Comment>(commentList, page, pageSize, _commentService.CountForApproved);
             return View(commentsAsIPagedList);
