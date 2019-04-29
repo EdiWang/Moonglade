@@ -18,7 +18,8 @@ namespace Moonglade.Web.Models
         public string LogoText { get; set; }
 
         [Required]
-        [Display(Name = "Copyright (HTML)")]
+        [RegularExpression(@"[a-zA-Z0-9\s.\-\[\]]+", ErrorMessage = "Only letters, numbers, - and [] are allowed.")]
+        [Display(Name = "Copyright")]
         public string Copyright { get; set; }
 
         [Required]
