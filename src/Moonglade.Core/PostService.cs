@@ -172,12 +172,12 @@ namespace Moonglade.Core
 
         public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPostsAsync(int year, int month = 0)
         {
-            if (year < DateTime.MinValue.Year || year > DateTime.UtcNow.Year)
+            if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
                 throw new ArgumentOutOfRangeException(nameof(year));
             }
 
-            if (month > 12 || month < 1)
+            if (month > 12 || month < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(month));
             }
