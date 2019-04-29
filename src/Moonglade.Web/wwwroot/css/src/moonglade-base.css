@@ -20,27 +20,27 @@
     overflow: hidden;
 }
 
-.admin-main .validation-summary-errors ul {
-    margin-bottom: 0;
-}
-
-.admin-main .catlist ul {
-    margin: 0;
-    list-style-type: none;
-    padding: 0;
-}
-
-    .admin-main .catlist ul li {
-        width: 175px;
-        display: inline-block;
+    .admin-main .validation-summary-errors ul {
+        margin-bottom: 0;
     }
 
-        .admin-main .catlist ul li label {
+    .admin-main .catlist ul {
+        margin: 0;
+        list-style-type: none;
+        padding: 0;
+    }
+
+        .admin-main .catlist ul li {
+            width: 175px;
             display: inline-block;
-            font-weight: normal;
-            padding-left: 6px;
-            vertical-align: middle;
         }
+
+            .admin-main .catlist ul li label {
+                display: inline-block;
+                font-weight: normal;
+                padding-left: 6px;
+                vertical-align: middle;
+            }
 
 div.mce-fullscreen {
     z-index: 1050;
@@ -108,6 +108,20 @@ div.mce-fullscreen {
 .not_valid {
     background: #FBD8DB !important;
     color: #90111A !important;
+}
+
+@media (min-width: 576px) {
+    .card-columns.card-columns-categories {
+        column-count: 4;
+    }
+}
+
+.h-30px {
+    height: 30px !important;
+}
+
+.h-100px {
+    height: 100px !important;
 }
 
 .h-200px {
@@ -204,6 +218,7 @@ div.mce-fullscreen {
 .tilexsm-subtitle {
     font-size: 12px;
 }
+
 .ul-cat-list-desktop a.btn {
     margin-right: 10px;
 }

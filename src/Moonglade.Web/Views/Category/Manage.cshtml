@@ -15,50 +15,34 @@
 
 @if (null != ViewBag.HasError && ViewBag.HasError)
 {
-    <div class="alert alert-danger">
-        @ViewBag.ErrorMessage
-    </div>
+<div class="alert alert-danger">
+    @ViewBag.ErrorMessage
+</div>
 }
 else
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>
-                    Title
-                </th>
-                <th>
-                    Route Name
-                </th>
-                <th>
-                    Description
-                </th>
-                <th class="table-item-w20">
-                    Action
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var cat in Model.OrderBy(m => m.DisplayName))
-            {
-                <tr>
-                    <td>
-                        <strong>
-                            @cat.DisplayName
-                        </strong>
-                    </td>
-                    <td>
-                        @cat.Title
-                    </td>
-                    <td class="text-muted">
-                        @cat.Note
-                    </td>
-                    <td>
-                        <a asp-controller="Category" asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <a asp-controller="Category" asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="card-columns card-columns-categories">
+    @foreach (var cat in Model.OrderBy(m => m.DisplayName))
+    {
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6 class="card-title">
+                <a asp-controller="Category" asp-action="List" asp-route-categoryName="@cat.Title" target="_blank">
+                    @cat.DisplayName
+                </a>
+            </h6>
+
+            <p class="mt-2 h-30px">
+                @cat.Note
+            </p>
+
+            <small class="text-muted">@cat.Title</small>
+        </div>
+        <div class="card-footer">
+            <a asp-controller="Category" asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-primary">Edit</a>
+            <a asp-controller="Category" asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+    </div>
+    }
+</div>
 }

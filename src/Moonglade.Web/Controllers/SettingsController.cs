@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -66,7 +63,7 @@ namespace Moonglade.Web.Controllers
                 LogoText = _blogConfig.GeneralSettings.LogoText,
                 MetaKeyword = _blogConfig.GeneralSettings.MetaKeyword,
                 SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
-                Copyright = _blogConfig.GeneralSettings.Copyright,
+                Copyright = _blogConfig.GeneralSettings.Copyright.Replace("&copy;", "[c]"),
                 DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
                 EnableComments = _blogConfig.ContentSettings.EnableComments,
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
@@ -84,7 +81,7 @@ namespace Moonglade.Web.Controllers
             {
                 _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
                 _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
-                _blogConfig.GeneralSettings.Copyright = model.Copyright;
+                _blogConfig.GeneralSettings.Copyright = model.Copyright.Replace("[c]", "&copy;");
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfigurationService.SaveObjectConfiguration(_blogConfig.GeneralSettings);
 
