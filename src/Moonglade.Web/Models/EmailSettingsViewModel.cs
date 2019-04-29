@@ -17,6 +17,7 @@ namespace Moonglade.Web.Models
         public bool SendEmailOnNewComment { get; set; }
 
         [Display(Name = "Smtp Server Port")]
+        [Range(1, 65535, ErrorMessage = "Port can only range from 1-65535")]
         public int SmtpServerPort { get; set; }
 
         [Required]
@@ -30,6 +31,9 @@ namespace Moonglade.Web.Models
 
         [Required]
         [Display(Name = "Smtp Server")]
+        [RegularExpression(
+            @"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$",
+            ErrorMessage = "Invalid IP or Host Name")]
         public string SmtpServer { get; set; }
 
         [Required]
