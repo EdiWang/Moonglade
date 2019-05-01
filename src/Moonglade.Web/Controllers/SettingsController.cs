@@ -415,9 +415,9 @@ namespace Moonglade.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Shutdown(int nonce)
         {
-            Logger.LogWarning("Shutdown is requested.");
+            Logger.LogWarning($"Shutdown is requested. Nonce value: {nonce}");
             _applicationLifetime.StopApplication();
-            return new EmptyResult();
+            return Ok();
         }
 
         #endregion

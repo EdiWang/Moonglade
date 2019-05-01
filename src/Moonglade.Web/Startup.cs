@@ -425,17 +425,27 @@ namespace Moonglade.Web
         private void AddImageStorage(IServiceCollection services)
         {
             var imageStorageSection = Configuration.GetSection("ImageStorage");
-            var imageStorageProvider = imageStorageSection["Provider"];
+            if (null == imageStorageSection["Provider"])
+            {
+                throw new ArgumentNullException("Provider", "Provider can not be null.");
+            }
+
+            var imageStorageProvider = imageStorageSection["Provider"].ToLower();
+            if (string.IsNullOrWhiteSpace(imageStorageProvider))
+            {
+                throw new ArgumentNullException("Provider", "Provider can not be empty.");
+            }
+
             switch (imageStorageProvider)
             {
-                case nameof(AzureStorageImageProvider):
+                case "azurestorage":
                     var conn = imageStorageSection["AzureStorageSettings:ConnectionString"];
                     var container = imageStorageSection["AzureStorageSettings:ContainerName"];
 
                     services.AddSingleton(s => new AzureStorageInfo(conn, container));
                     services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
                     break;
-                case nameof(FileSystemImageProvider):
+                case "filesystem":
                     var path = imageStorageSection["FileSystemSettings:Path"];
                     try
                     {
