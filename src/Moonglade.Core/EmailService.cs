@@ -49,7 +49,7 @@ namespace Moonglade.Core
                 var emailSettings = new EmailSettings(
                     _blogConfig.EmailConfiguration.SmtpServer,
                     _blogConfig.EmailConfiguration.SmtpUserName,
-                    _blogConfig.EmailConfiguration.SmtpPassword,
+                    _blogConfig.EmailConfiguration.SmtpClearPassword,
                     _blogConfig.EmailConfiguration.SmtpServerPort)
                 {
                     EnableSsl = _blogConfig.EmailConfiguration.EnableSsl,
