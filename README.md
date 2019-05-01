@@ -2,7 +2,7 @@
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
-This is the new blog system for https://edi.wang, Moonglade is the successor of project "Nordrassil", which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using **.NET Core**, optimized for cloud-based hosting.
+Moonglade is the new blog system for https://edi.wang, It is a complete rewrite of the old system using [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
 
 ![image](https://ediwangstorage.blob.core.windows.net/web-assets/ediwang-azure-arch.png?date=20190413)
 
@@ -14,25 +14,21 @@ This is the new blog system for https://edi.wang, Moonglade is the successor of 
 
 ## Caveats
 
-This is **NOT a general purpose blog system** like WordPress or other CMS. Currently it contains content "hard coded" for https://edi.wang.
+This is **NOT a general purpose blog system** like WordPress or other CMS. Currently it contains content "hard coded" for https://edi.wang. To make it yours, you will need to change a certain amount of code.
 
-To make it yours, you will need to change a certain amount of code.
-
-I am looking into generalize the system in the long term. But there are no specific plans and scopes for the currently. You are welcomed to raise PR to move out the "edi.wang" specific code.
+*I am generalizing the system piece by piece. But there are no specific plans and scopes currently.*
 
 ## Build and Run
-
-Current code is not so setup-friendly, it is very complicated comparing to other blog or CMS systems, I am consider improving the setup steps.
 
 ### Tools and Dependencies
 - [.NET Core 2.2 SDK](http://dot.net)
 - [Visual Studio 2019](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
-- SQL Server 2017 / Azure SQL Database
-- Microsoft Azure Active Directory
+- [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) or [SQL Server 2017](https://www.microsoft.com/en-us/sql-server/sql-server-2017)
+- [Microsoft Azure Subscription](https://azure.microsoft.com/)
 
-### Setup Azure AD
+### Setup Azure Active Directory
 
-This blog is using Azure AD to sign in to admin portal. Local authentication provider is not implmented yet. 
+This blog is using [Azure AD](https://azure.microsoft.com/en-us/services/active-directory/) to sign in to admin portal. Local authentication provider is pretending to be implmented. 
 
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://localhost:5001/signin-oidc"**
@@ -54,7 +50,7 @@ Example Reply URL Configuration
 
 ### Setup Database
 
-1. Create a SQL Server 2017+ database or Azure SQL Database
+1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database 
 
 2. Execute script  **"Database\schema-mssql-140.sql"** 
 
@@ -70,6 +66,8 @@ Example Reply URL Configuration
 
 ### Configuration
 
+Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
+
 #### Email Password Encryption
 
 **Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
@@ -78,23 +76,24 @@ Example Reply URL Configuration
 
 To get a random generated key, access URL "/admin/settings/generate-new-aes-keys".
 
-See [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) project for more information.
-
 #### Image Storage
 **AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built in options:
 
-1. **Azure Blob:** You need to create an **Azure Storage Account** with a blob container. 
+**Preferred: Azure Blob Storage**
+
+You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with container level permission. 
 ```
-"Provider": "AzureStorageImageProvider"
+"Provider": "azurestorage"
 "AzureStorageSettings": {
   "ConnectionString": "YOUR CONNECTION STRING",
   "ContainerName": "YOUR CONTAINER NAME"
 },
 ```
 
-2. **File System:** Set provider to **FileSystemImageProvider**
+**Alternative: File System**
+
 ```
-"Provider": "FileSystemImageProvider",
+"Provider": "filesystem",
 "FileSystemSettings": {
   "Path": "${basedir}\\UploadedImages"
 }
@@ -128,23 +127,22 @@ RecentCommentsListSize | How many comments to show on side bar
 EnforceHttps | Force website use HTTPS
 DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
 
-## Host on Server
-
-You can host Moonglade on public internet.
-
-### Server Requirments
-
-- Windows or Linux Servers that supports .NET Core 2.2
-- A Microsoft Azure subscription, for setup Azure AD Authentication
-
-### Web Server Configuration
-
-#### Email Notification
-
-To enable email notifications such as new comments, pingback requests, set up in the blog admin portal.
-
 ### Optional Recommendations
-- Microsoft Azure DNS Zones
-- Microsoft Azure App Service
-- Microsoft Azure SQL Database
-- Microsoft Azure Blob Storage
+- [Microsoft Azure DNS Zones](https://azure.microsoft.com/en-us/services/dns/)
+- [Microsoft Azure App Service](https://azure.microsoft.com/en-us/services/app-service/)
+- [Microsoft Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/)
+- [Microsoft Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)
+
+### Related Projects
+
+Below open source projects are reusable components (NuGet packages) used in my blog, and they can be used in other websites as well. 
+
+- [Edi.Blog.Pingback](https://github.com/EdiWang/Edi.Blog.Pingback)
+- [Edi.Blog.OpmlFileWriter](https://github.com/EdiWang/Edi.Blog.OpmlFileWriter)
+- [Edi.Captcha.AspNetCore](https://github.com/EdiWang/Edi.Captcha.AspNetCore)
+- [Edi.ImageWatermark](https://github.com/EdiWang/Edi.ImageWatermark)
+- [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption)
+- [Edi.Practice.RequestResponseModel](https://github.com/EdiWang/Edi.Practice.RequestResponseModel)
+- [Edi.SyndicationFeedGenerator](https://github.com/EdiWang/Edi.SyndicationFeedGenerator)
+- [Edi.TemplateEmail](https://github.com/EdiWang/Edi.TemplateEmail)
+- [Edi.WordFilter](https://github.com/EdiWang/Edi.WordFilter)
