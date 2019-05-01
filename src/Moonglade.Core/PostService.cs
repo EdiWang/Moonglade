@@ -192,7 +192,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public Response<IReadOnlyList<Post>> GetPostsByTag(string normalizedName)
+        public async Task<Response<IReadOnlyList<Post>>> GetPostsByTagAsync(string normalizedName)
         {
             try
             {
@@ -201,17 +201,17 @@ namespace Moonglade.Core
                     throw new ArgumentNullException(nameof(normalizedName));
                 }
 
-                var posts = _tagRepository.GetAsQueryable()
-                                          .Where(t => t.NormalizedName == normalizedName)
-                                          .SelectMany(p => p.PostTag)
-                                          .Select(p => p.Post)
-                                          .Include(p => p.PostPublish).ToList();
+                var posts = await _tagRepository.GetAsQueryable()
+                                                .Where(t => t.NormalizedName == normalizedName)
+                                                .SelectMany(p => p.PostTag)
+                                                .Select(p => p.Post)
+                                                .Include(p => p.PostPublish).ToListAsync();
 
                 return new SuccessResponse<IReadOnlyList<Post>>(posts);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(GetPostsByTag)}(normalizedName: {normalizedName})");
+                Logger.LogError(e, $"Error {nameof(GetPostsByTagAsync)}(normalizedName: {normalizedName})");
                 return new FailedResponse<IReadOnlyList<Post>>((int)ResponseFailureCode.GeneralException);
             }
         }

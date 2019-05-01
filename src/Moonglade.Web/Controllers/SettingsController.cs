@@ -17,6 +17,7 @@ using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
+using Newtonsoft.Json;
 
 namespace Moonglade.Web.Controllers
 {
@@ -49,7 +50,7 @@ namespace Moonglade.Web.Controllers
 
             _blogConfig = blogConfig;
             _blogConfigurationService = blogConfigurationService;
-            _blogConfig.GetConfiguration(blogConfigurationService);
+            _blogConfig.Initialize(blogConfigurationService);
 
             _emailService = emailService;
             _friendLinkService = friendLinkService;
@@ -83,18 +84,18 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
                 _blogConfig.GeneralSettings.Copyright = model.Copyright.Replace("[c]", "&copy;");
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
-                _blogConfigurationService.SaveObjectConfiguration(_blogConfig.GeneralSettings);
+                _blogConfigurationService.SaveConfiguration(_blogConfig.GeneralSettings);
 
                 _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
                 _blogConfig.ContentSettings.EnableComments = model.EnableComments;
-                _blogConfigurationService.SaveObjectConfiguration(_blogConfig.ContentSettings);
+                _blogConfigurationService.SaveConfiguration(_blogConfig.ContentSettings);
 
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
                 _blogConfig.BlogOwnerSettings.Description = model.BloggerDescription;
                 _blogConfig.BlogOwnerSettings.ShortDescription = model.BloggerShortDescription;
-                var response = _blogConfigurationService.SaveObjectConfiguration(_blogConfig.BlogOwnerSettings);
+                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
 
-                _blogConfig.DumpOldValuesWhenNextLoad();
+                _blogConfig.RequireRefresh();
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -117,8 +118,7 @@ namespace Moonglade.Web.Controllers
                 SendEmailOnNewComment = ec.SendEmailOnNewComment,
                 SmtpServer = ec.SmtpServer,
                 SmtpServerPort = ec.SmtpServerPort,
-                SmtpUserName = ec.SmtpUserName,
-                // SmtpPassword = ec.SmtpPassword
+                SmtpUserName = ec.SmtpUserName
             };
             return View(vm);
         }
@@ -140,13 +140,13 @@ namespace Moonglade.Web.Controllers
                 ec.SmtpServer = model.SmtpServer;
                 ec.SmtpServerPort = model.SmtpServerPort;
                 ec.SmtpUserName = model.SmtpUserName;
-                if (!string.IsNullOrWhiteSpace(model.SmtpPassword))
+                if (!string.IsNullOrWhiteSpace(model.SmtpClearPassword))
                 {
-                    ec.SmtpPassword = model.SmtpPassword;
+                    ec.SmtpPassword = _blogConfigurationService.EncryptPassword(model.SmtpClearPassword);
                 }
 
-                var response = _blogConfigurationService.SaveEmailConfiguration(ec);
-                _blogConfig.DumpOldValuesWhenNextLoad();
+                var response = _blogConfigurationService.SaveConfiguration(ec);
+                _blogConfig.RequireRefresh();
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -173,7 +173,7 @@ namespace Moonglade.Web.Controllers
                 Iv = iv,
                 GenTimeUtc = DateTime.UtcNow
             };
-            return Json(resp);
+            return Json(resp, new JsonSerializerSettings { Formatting = Formatting.Indented });
         }
 
         #endregion
@@ -211,8 +211,8 @@ namespace Moonglade.Web.Controllers
                 fs.RssItemCount = model.RssItemCount;
                 fs.RssTitle = model.RssTitle;
 
-                var response = _blogConfigurationService.SaveObjectConfiguration(fs);
-                _blogConfig.DumpOldValuesWhenNextLoad();
+                var response = _blogConfigurationService.SaveConfiguration(fs);
+                _blogConfig.RequireRefresh();
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -249,8 +249,8 @@ namespace Moonglade.Web.Controllers
                 ws.FontSize = model.FontSize;
                 ws.WatermarkText = model.WatermarkText;
 
-                var response = _blogConfigurationService.SaveObjectConfiguration(ws);
-                _blogConfig.DumpOldValuesWhenNextLoad();
+                var response = _blogConfigurationService.SaveConfiguration(ws);
+                _blogConfig.RequireRefresh();
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -390,8 +390,8 @@ namespace Moonglade.Web.Controllers
                 }
 
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
-                var response = _blogConfigurationService.SaveObjectConfiguration(_blogConfig.BlogOwnerSettings);
-                _blogConfig.DumpOldValuesWhenNextLoad();
+                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
+                _blogConfig.RequireRefresh();
                 Cache.Remove("avatar");
                 return Json(response);
             }
@@ -415,9 +415,9 @@ namespace Moonglade.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Shutdown(int nonce)
         {
-            Logger.LogWarning("Shutdown is requested.");
+            Logger.LogWarning($"Shutdown is requested. Nonce value: {nonce}");
             _applicationLifetime.StopApplication();
-            return new EmptyResult();
+            return Ok();
         }
 
         #endregion

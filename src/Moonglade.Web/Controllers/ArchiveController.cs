@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
@@ -31,8 +30,7 @@ namespace Moonglade.Web.Controllers
             var response = await _categoryService.GetArchiveListAsync();
             if (!response.IsSuccess)
             {
-                HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                ViewBag.IsServerError = true;
+                SetFriendlyErrorMessage();
             }
             return View(response.Item);
         }

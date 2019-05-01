@@ -30,9 +30,9 @@ namespace Moonglade.Core
             return _tagRepository.GetAsync();
         }
 
-        public IReadOnlyList<string> GetAllTagNames()
+        public Task<IReadOnlyList<string>> GetAllTagNamesAsync()
         {
-            return _tagRepository.Select(t => t.DisplayName);
+            return _tagRepository.SelectAsync(t => t.DisplayName);
         }
 
         public Response UpdateTag(int tagId, string newName)

@@ -42,6 +42,12 @@ namespace Moonglade.Web.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        protected void SetFriendlyErrorMessage()
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            ViewBag.IsServerError = true;
+        }
+
         protected string GetUserAgent()
         {
             return Request.Headers["User-Agent"];

@@ -141,9 +141,10 @@ else
     }
 }
 
-@Html.PagedListPager(Model, page => Url.Action(ViewBag.ActionName as string, new { page }), new PagedListRenderOptions
+@Html.PagedListPager(Model, page => $"?page={page}", new PagedListRenderOptions
 {
     LiElementClasses = new [] { "page-item" },
     PageClasses = new[] { "page-link" },
+    UlElementClasses = new [] { "pagination justify-content-end" },
     DisplayEllipsesWhenNotShowingAllPageNumbers = false
 })

@@ -45,7 +45,7 @@ namespace Moonglade.Web.Controllers
         {
             _blogConfig = blogConfig;
             _linkGenerator = linkGenerator;
-            _blogConfig.GetConfiguration(blogConfigurationService);
+            _blogConfig.Initialize(blogConfigurationService);
 
             _commentService = commentService;
             _emailService = emailService;

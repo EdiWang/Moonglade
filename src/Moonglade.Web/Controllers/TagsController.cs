@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -32,20 +31,19 @@ namespace Moonglade.Web.Controllers
             var response = await _tagService.GetTagCountListAsync();
             if (!response.IsSuccess)
             {
-                HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                ViewBag.IsServerError = true;
+                SetFriendlyErrorMessage();
             }
             return View(response.Item);
         }
 
         [Route("list/{normalizedName}")]
-        public IActionResult List(string normalizedName)
+        public async Task<IActionResult> List(string normalizedName)
         {
             ViewBag.ErrorMessage = string.Empty;
 
             var tag = _tagService.GetTag(normalizedName);
 
-            var postResponse = _postService.GetPostsByTag(normalizedName.ToLower());
+            var postResponse = await _postService.GetPostsByTagAsync(normalizedName.ToLower());
             if (!postResponse.IsSuccess)
             {
                 return ServerError();
@@ -61,9 +59,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("get-all-tag-names")]
-        public IActionResult GetAllTagNames()
+        public async Task<IActionResult> GetAllTagNames()
         {
-            var tagNames = _tagService.GetAllTagNames();
+            var tagNames = await _tagService.GetAllTagNamesAsync();
             return Json(tagNames);
         }
     }
