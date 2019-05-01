@@ -26,7 +26,7 @@ namespace Moonglade.Web.Controllers
         {
             _categoryService = categoryService;
             _blogConfig = blogConfig;
-            _blogConfig.GetConfiguration(blogConfigurationService);
+            _blogConfig.Initialize(blogConfigurationService);
         }
 
         public async Task<IActionResult> Index()

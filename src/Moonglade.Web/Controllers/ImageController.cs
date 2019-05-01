@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
             : base(logger, settings, memoryCache: memoryCache)
         {
             _blogConfig = blogConfig;
-            _blogConfig.GetConfiguration(blogConfigurationService);
+            _blogConfig.Initialize(blogConfigurationService);
 
             _imageStorageProvider = imageStorageProvider;
             _captcha = captcha;

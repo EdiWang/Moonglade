@@ -30,7 +30,7 @@ namespace Moonglade.Web.Controllers
         {
             _postService = postService;
             _blogConfig = blogConfig;
-            _blogConfig.GetConfiguration(blogConfigurationService);
+            _blogConfig.Initialize(blogConfigurationService);
         }
 
         [Route("opensearch")]
@@ -81,8 +81,7 @@ namespace Moonglade.Web.Controllers
                 var response = await _postService.SearchPostAsync(term);
                 if (!response.IsSuccess)
                 {
-                    HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    ViewBag.IsServerError = true;
+                    SetFriendlyErrorMessage();
                 }
                 return View("Index", response.Item);
             }

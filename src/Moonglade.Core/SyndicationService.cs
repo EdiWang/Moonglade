@@ -37,7 +37,7 @@ namespace Moonglade.Core
             _blogConfig = blogConfig;
             _categoryRepository = categoryRepository;
             _postRepository = postRepository;
-            _blogConfig.GetConfiguration(blogConfigurationService);
+            _blogConfig.Initialize(blogConfigurationService);
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";

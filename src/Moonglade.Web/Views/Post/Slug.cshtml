@@ -10,7 +10,7 @@
 @inject BlogConfig BlogConfig
 
 @{
-    BlogConfig.GetConfiguration(BlogConfigurationService);
+    BlogConfig.Initialize(BlogConfigurationService);
     ViewBag.ShowBloggerIntroInXS = true;
 }
 

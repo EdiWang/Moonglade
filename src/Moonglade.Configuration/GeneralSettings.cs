@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Moonglade.Configuration
 {
-    public class GeneralSettings
+    public class GeneralSettings : MoongladeSettings
     {
         public string SiteTitle { get; set; }
 

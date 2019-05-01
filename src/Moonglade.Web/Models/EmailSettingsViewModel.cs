@@ -45,7 +45,7 @@ namespace Moonglade.Web.Models
 
         [Display(Name = "Smtp Password")]
         [DataType(DataType.Password)]
-        public string SmtpPassword { get; set; }
+        public string SmtpClearPassword { get; set; }
 
         public EmailSettingsViewModel()
         {

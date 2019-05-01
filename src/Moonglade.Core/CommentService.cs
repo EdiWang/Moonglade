@@ -36,7 +36,7 @@ namespace Moonglade.Core
             _blogConfig = blogConfig;
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
-            _blogConfig.GetConfiguration(blogConfigurationService);
+            _blogConfig.Initialize(blogConfigurationService);
         }
 
         public int CountForApproved => _commentRepository.Count(c => c.IsApproved);

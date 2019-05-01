@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Moonglade.Configuration
 {
-    public class BlogOwnerSettings
+    public class BlogOwnerSettings : MoongladeSettings
     {
         public string Name { get; set; }
 
@@ -13,5 +13,10 @@ namespace Moonglade.Configuration
         public string ShortDescription { get; set; }
 
         public string AvatarBase64 { get; set; }
+
+        public BlogOwnerSettings()
+        {
+            AvatarBase64 = string.Empty;
+        }
     }
 }

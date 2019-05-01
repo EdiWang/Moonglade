@@ -21,7 +21,7 @@ namespace Moonglade.Configuration
 
         public BlogConfigurationService(
             ILogger<BlogConfigurationService> logger,
-            IAesEncryptionService encryptionService, 
+            IAesEncryptionService encryptionService,
             IRepository<BlogConfiguration> blogConfiguration)
         {
             _encryptionService = encryptionService;
@@ -41,39 +41,18 @@ namespace Moonglade.Configuration
             return str;
         }
 
-        public T GetConfiguration<T>(Func<string, T> parseFunc, Func<T> defaultTValueFunc, string key)
-        {
-            try
-            {
-                var cfg = _blogConfigurationRepository.Get(k => k.CfgKey == key.ToString());
-                if (null != cfg)
-                {
-                    return !string.IsNullOrEmpty(cfg.CfgValue) ?
-                        parseFunc(cfg.CfgValue) :
-                        defaultTValueFunc();
-                }
-
-                Logger.LogWarning($"BlogConfigurationKey {key} not found in database, returning default value.");
-                return default;
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                return default;
-            }
-        }
-
         public IDictionary<string, string> GetAllConfigurations()
         {
             try
             {
-                var data = _blogConfigurationRepository.Get().ToDictionary(c => c.CfgKey, c => c.CfgValue);
-                return data;
+                var data = _blogConfigurationRepository.Get();
+                var dic = data.ToDictionary(c => c.CfgKey, c => c.CfgValue);
+                return dic;
             }
             catch (Exception e)
             {
-                Logger.LogError(e, e.Message);
-                return new Dictionary<string, string>();
+                Logger.LogCritical(e, $"Error {nameof(GetAllConfigurations)}");
+                throw;
             }
         }
 
@@ -95,7 +74,7 @@ namespace Moonglade.Configuration
                     return new Response(rows > 0);
                 }
 
-                var msg = $"BlogConfigurationKey {key} not found in database, can not set value.";
+                var msg = $@"{nameof(BlogConfiguration.CfgKey)} ""{key}"" is not found, can not set value.";
                 Logger.LogError(msg);
                 return new FailedResponse((int)ResponseFailureCode.GeneralException, msg);
             }
@@ -106,17 +85,11 @@ namespace Moonglade.Configuration
             }
         }
 
-        public Response SaveEmailConfiguration(EmailConfiguration emailConfiguration)
-        {
-            emailConfiguration.SmtpPassword = EncryptPassword(emailConfiguration.SmtpPassword);
-            return SaveObjectConfiguration(emailConfiguration);
-        }
-
-        public Response SaveObjectConfiguration<T>(T obj) where T : class
+        public Response SaveConfiguration<T>(T moongladeSettings) where T : MoongladeSettings
         {
             try
             {
-                var json = JsonConvert.SerializeObject(obj);
+                var json = moongladeSettings.GetJson();
                 var r = SetConfiguration(typeof(T).Name, json);
                 return new Response(r.IsSuccess);
             }

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -32,8 +31,7 @@ namespace Moonglade.Web.Controllers
             var response = await _tagService.GetTagCountListAsync();
             if (!response.IsSuccess)
             {
-                HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                ViewBag.IsServerError = true;
+                SetFriendlyErrorMessage();
             }
             return View(response.Item);
         }
@@ -61,9 +59,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("get-all-tag-names")]
-        public IActionResult GetAllTagNames()
+        public async Task<IActionResult> GetAllTagNames()
         {
-            var tagNames = _tagService.GetAllTagNames();
+            var tagNames = await _tagService.GetAllTagNamesAsync();
             return Json(tagNames);
         }
     }

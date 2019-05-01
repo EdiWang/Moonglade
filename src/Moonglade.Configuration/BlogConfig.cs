@@ -21,18 +21,14 @@ namespace Moonglade.Configuration
         public BlogConfig()
         {
             BlogOwnerSettings = new BlogOwnerSettings();
-            ContentSettings = new ContentSettings
-            {
-                DisharmonyWords = string.Empty,
-                EnableComments = true
-            };
+            ContentSettings = new ContentSettings();
             GeneralSettings = new GeneralSettings();
             EmailConfiguration = new EmailConfiguration();
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
         }
 
-        public void GetConfiguration(BlogConfigurationService blogConfigurationService)
+        public void Initialize(BlogConfigurationService blogConfigurationService)
         {
             if (!_hasInitialized)
             {
@@ -45,7 +41,7 @@ namespace Moonglade.Configuration
                 EmailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(cfgDic[nameof(EmailConfiguration)]);
                 if (!string.IsNullOrWhiteSpace(EmailConfiguration.SmtpPassword))
                 {
-                    EmailConfiguration.SmtpPassword =
+                    EmailConfiguration.SmtpClearPassword =
                         blogConfigurationService.DecryptPassword(EmailConfiguration.SmtpPassword);
                 }
 
@@ -56,7 +52,7 @@ namespace Moonglade.Configuration
             }
         }
 
-        public void DumpOldValuesWhenNextLoad()
+        public void RequireRefresh()
         {
             _hasInitialized = false;
         }

@@ -36,7 +36,7 @@ namespace Moonglade.Core
             _env = env;
             _blogConfig = blogConfig;
             _postRepository = postRepository;
-            _blogConfig.GetConfiguration(blogConfigurationService);
+            _blogConfig.Initialize(blogConfigurationService);
 
             var configSource = $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\mailConfiguration.xml";
             if (!File.Exists(configSource))
