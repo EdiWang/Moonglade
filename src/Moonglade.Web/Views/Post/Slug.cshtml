@@ -7,7 +7,7 @@
 @inject IOptions<AppSettings> Settings
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject BlogConfigurationService BlogConfigurationService
-@inject BlogConfig BlogConfig
+@inject IBlogConfig BlogConfig
 
 @{
     BlogConfig.Initialize(BlogConfigurationService);

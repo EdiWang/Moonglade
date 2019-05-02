@@ -29,7 +29,7 @@ namespace Moonglade.Web.Controllers
 
         private readonly EmailService _emailService;
         private readonly FriendLinkService _friendLinkService;
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
         private readonly BlogConfigurationService _blogConfigurationService;
         private readonly IApplicationLifetime _applicationLifetime;
 
@@ -42,7 +42,7 @@ namespace Moonglade.Web.Controllers
             IApplicationLifetime appLifetime,
             EmailService emailService,
             FriendLinkService friendLinkService,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
             : base(logger, settings, memoryCache: memoryCache)
         {

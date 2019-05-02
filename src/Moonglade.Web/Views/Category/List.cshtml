@@ -2,7 +2,7 @@
 
 @model X.PagedList.StaticPagedList<Moonglade.Data.Entities.Post>
 @inject BlogConfigurationService BlogConfigurationService
-@inject BlogConfig BlogConfig
+@inject IBlogConfig BlogConfig
 
 @{
     BlogConfig.Initialize(BlogConfigurationService);

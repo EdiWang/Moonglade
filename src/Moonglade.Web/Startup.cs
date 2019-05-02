@@ -123,7 +123,7 @@ namespace Moonglade.Web
 
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSingleton<BlogConfig>();
+            services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddTransient<ISessionBasedCaptcha, BasicLetterCaptcha>();
             services.AddTransient<BlogConfigurationService>();
@@ -290,12 +290,12 @@ namespace Moonglade.Web
                 // oh, I wish C# could simplify this syntax...
                 var defaultConfigData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>(nameof(BlogConfig.BlogOwnerSettings),  Constants.BlogOwnerSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.GeneralSettings), Constants.GeneralSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.ContentSettings), Constants.ContentSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.WatermarkSettings), Constants.WatermarkSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(BlogConfig.EmailConfiguration), Constants.EmailConfigurationDefaultValue)
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.BlogOwnerSettings),  Constants.BlogOwnerSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.GeneralSettings), Constants.GeneralSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.ContentSettings), Constants.ContentSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.WatermarkSettings), Constants.WatermarkSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.EmailConfiguration), Constants.EmailConfigurationDefaultValue)
                 };
 
                 var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);

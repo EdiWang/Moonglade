@@ -25,7 +25,7 @@ namespace Moonglade.Web.Controllers
         private readonly EmailService _emailService;
         private readonly PostService _postService;
         private readonly ISessionBasedCaptcha _captcha;
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
         private readonly LinkGenerator _linkGenerator;
 
         #endregion
@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
             EmailService emailService,
             PostService postService,
             ISessionBasedCaptcha captcha,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             LinkGenerator linkGenerator)
             : base(logger, settings, memoryCache: memoryCache)
