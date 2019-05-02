@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var codesample = (function (domGlobals) {
@@ -1045,7 +1045,7 @@ var codesample = (function (domGlobals) {
             $(elm).find('br').each(function (idx, elm) {
               elm.parentNode.replaceChild(editor.getDoc().createTextNode('\n'), elm);
             });
-            elm.contentEditable = false;
+            elm.contentEditable = 'false';
             elm.innerHTML = editor.dom.encode(elm.textContent);
             Prism.highlightElement(elm);
             elm.className = $.trim(elm.className);
@@ -1071,9 +1071,9 @@ var codesample = (function (domGlobals) {
         var nodeChangeHandler = function () {
           api.setActive(isCodeSampleSelection(editor));
         };
-        editor.on('nodeChange', nodeChangeHandler);
+        editor.on('NodeChange', nodeChangeHandler);
         return function () {
-          return editor.off('nodeChange', nodeChangeHandler);
+          return editor.off('NodeChange', nodeChangeHandler);
         };
       }
     });

@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var link = (function (domGlobals) {
@@ -413,9 +413,9 @@ var link = (function (domGlobals) {
         linkImageFigure(editor, selectedElm, linkAttrs);
       } else {
         text.fold(function () {
-          return editor.execCommand('mceInsertLink', false, linkAttrs);
+          editor.execCommand('mceInsertLink', false, linkAttrs);
         }, function (text) {
-          return editor.insertContent(editor.dom.createHTML('a', linkAttrs, editor.dom.encode(text)));
+          editor.insertContent(editor.dom.createHTML('a', linkAttrs, editor.dom.encode(text)));
         });
       }
     };
@@ -930,8 +930,7 @@ var link = (function (domGlobals) {
       var onlyText = Utils.isOnlyTextSelected(selection.getContent());
       var text = onlyText ? Option.some(Utils.getAnchorText(selection, anchor)) : Option.none();
       var url = anchor ? Option.some(dom.getAttrib(anchor, 'href')) : Option.none();
-      var defaultTarget = Settings.hasDefaultLinkTarget(settings) ? Option.some(Settings.getDefaultLinkTarget(settings)) : Option.none();
-      var target = anchor ? Option.from(dom.getAttrib(anchor, 'target')) : defaultTarget;
+      var target = anchor ? Option.from(dom.getAttrib(anchor, 'target')) : Option.none();
       var rel = nonEmptyAttr(dom, anchor, 'rel');
       var linkClass = nonEmptyAttr(dom, anchor, 'class');
       var title = nonEmptyAttr(dom, anchor, 'title');
@@ -1000,7 +999,7 @@ var link = (function (domGlobals) {
       var anchorNode = Utils.getAnchorElement(editor);
       return DialogInfo.collect(editor, settings, anchorNode);
     };
-    var getInitialData = function (info) {
+    var getInitialData = function (info, defaultTarget) {
       return {
         url: {
           value: info.anchor.url.getOr(''),
@@ -1020,11 +1019,11 @@ var link = (function (domGlobals) {
         anchor: info.anchor.url.getOr(''),
         link: info.anchor.url.getOr(''),
         rel: info.anchor.rel.getOr(''),
-        target: info.anchor.target.getOr(''),
+        target: info.anchor.target.or(defaultTarget).getOr(''),
         linkClass: info.anchor.linkClass.getOr('')
       };
     };
-    var makeDialog = function (settings, onSubmit) {
+    var makeDialog = function (settings, onSubmit, editorSettings) {
       var urlInput = [{
           name: 'url',
           type: 'urlinput',
@@ -1043,7 +1042,8 @@ var link = (function (domGlobals) {
           type: 'input',
           label: 'Title'
         }] : [];
-      var initialData = getInitialData(settings);
+      var defaultTarget = Settings.hasDefaultLinkTarget(editorSettings) ? Option.some(Settings.getDefaultLinkTarget(editorSettings)) : Option.none();
+      var initialData = getInitialData(settings, defaultTarget);
       var dialogDelta = DialogChanges.init(initialData, settings);
       var catalogs = settings.catalogs;
       var body = {
@@ -1092,7 +1092,7 @@ var link = (function (domGlobals) {
       var data = collectData(editor);
       data.map(function (info) {
         var onSubmit = handleSubmit(editor, info, Settings.assumeExternalTargets(editor.settings));
-        return makeDialog(info, onSubmit);
+        return makeDialog(info, onSubmit, editor.settings);
       }).get(function (spec) {
         editor.windowManager.open(spec);
       });
@@ -1166,9 +1166,9 @@ var link = (function (domGlobals) {
         var nodeChangeHandler = function (e) {
           return api.setActive(!editor.readonly && !!Utils.getAnchorElement(editor, e.element));
         };
-        editor.on('nodechange', nodeChangeHandler);
+        editor.on('NodeChange', nodeChangeHandler);
         return function () {
-          return editor.off('nodechange', nodeChangeHandler);
+          return editor.off('NodeChange', nodeChangeHandler);
         };
       };
     };
@@ -1178,9 +1178,9 @@ var link = (function (domGlobals) {
         var nodeChangeHandler = function (e) {
           return api.setDisabled(!Utils.hasLinks(e.parents));
         };
-        editor.on('nodechange', nodeChangeHandler);
+        editor.on('NodeChange', nodeChangeHandler);
         return function () {
-          return editor.off('nodechange', nodeChangeHandler);
+          return editor.off('NodeChange', nodeChangeHandler);
         };
       };
     };

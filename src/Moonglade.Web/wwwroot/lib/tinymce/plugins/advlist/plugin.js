@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var advlist = (function () {
@@ -238,8 +238,7 @@ var advlist = (function () {
               type: 'choiceitem',
               value: itemValue,
               icon: 'list-' + iconStyle + '-' + iconName,
-              text: displayText,
-              ariaLabel: displayText
+              text: displayText
             };
           });
           callback(items);
@@ -260,9 +259,9 @@ var advlist = (function () {
           var nodeChangeHandler = function (e) {
             api.setActive(isWithinList(editor, e, nodeName));
           };
-          editor.on('nodeChange', nodeChangeHandler);
+          editor.on('NodeChange', nodeChangeHandler);
           return function () {
-            return editor.off('nodeChange', nodeChangeHandler);
+            return editor.off('NodeChange', nodeChangeHandler);
           };
         }
       });
@@ -276,9 +275,9 @@ var advlist = (function () {
           var nodeChangeHandler = function (e) {
             api.setActive(isWithinList(editor, e, nodeName));
           };
-          editor.on('nodeChange', nodeChangeHandler);
+          editor.on('NodeChange', nodeChangeHandler);
           return function () {
-            return editor.off('nodeChange', nodeChangeHandler);
+            return editor.off('NodeChange', nodeChangeHandler);
           };
         },
         onAction: function () {

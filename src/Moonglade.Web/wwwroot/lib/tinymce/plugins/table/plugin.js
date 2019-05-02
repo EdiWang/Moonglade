@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var table = (function (domGlobals) {
@@ -34,6 +34,15 @@ var table = (function (domGlobals) {
         args[_i] = arguments[_i];
       }
     };
+    var noarg = function (f) {
+      return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+        return f();
+      };
+    };
     var compose = function (fa, fb) {
       return function () {
         var args = [];
@@ -50,6 +59,9 @@ var table = (function (domGlobals) {
     };
     var identity = function (x) {
       return x;
+    };
+    var tripleEquals = function (a, b) {
+      return a === b;
     };
     function curry(fn) {
       var initialArgs = [];
@@ -82,8 +94,27 @@ var table = (function (domGlobals) {
     var apply = function (f) {
       return f();
     };
+    var call = function (f) {
+      f();
+    };
     var never = constant(false);
     var always = constant(true);
+
+    var Fun = /*#__PURE__*/Object.freeze({
+        noop: noop,
+        noarg: noarg,
+        compose: compose,
+        constant: constant,
+        identity: identity,
+        tripleEquals: tripleEquals,
+        curry: curry,
+        not: not,
+        die: die,
+        apply: apply,
+        call: call,
+        never: never,
+        always: always
+    });
 
     var never$1 = never;
     var always$1 = always;
@@ -247,11 +278,30 @@ var table = (function (domGlobals) {
       };
       return pIndexOf === undefined ? slowIndex : fastIndex;
     }();
+    var indexOf = function (xs, x) {
+      var r = rawIndexOf(xs, x);
+      return r === -1 ? Option.none() : Option.some(r);
+    };
     var contains = function (xs, x) {
       return rawIndexOf(xs, x) > -1;
     };
     var exists = function (xs, pred) {
       return findIndex(xs, pred).isSome();
+    };
+    var range = function (num, f) {
+      var r = [];
+      for (var i = 0; i < num; i++) {
+        r.push(f(i));
+      }
+      return r;
+    };
+    var chunk = function (array, size) {
+      var r = [];
+      for (var i = 0; i < array.length; i += size) {
+        var s = array.slice(i, i + size);
+        r.push(s);
+      }
+      return r;
     };
     var map = function (xs, f) {
       var len = xs.length;
@@ -273,6 +323,19 @@ var table = (function (domGlobals) {
         var x = xs[i];
         f(x, i, xs);
       }
+    };
+    var partition = function (xs, pred) {
+      var pass = [];
+      var fail = [];
+      for (var i = 0, len = xs.length; i < len; i++) {
+        var x = xs[i];
+        var arr = pred(x, i, xs) ? pass : fail;
+        arr.push(x);
+      }
+      return {
+        pass: pass,
+        fail: fail
+      };
     };
     var filter = function (xs, pred) {
       var r = [];
@@ -368,16 +431,40 @@ var table = (function (domGlobals) {
       }
       return true;
     };
+    var equal = function (a1, a2) {
+      return a1.length === a2.length && forall(a1, function (x, i) {
+        return x === a2[i];
+      });
+    };
     var slice = Array.prototype.slice;
     var reverse = function (xs) {
       var r = slice.call(xs, 0);
       r.reverse();
       return r;
     };
+    var difference = function (a1, a2) {
+      return filter(a1, function (x) {
+        return !contains(a2, x);
+      });
+    };
+    var mapToObject = function (xs, f) {
+      var r = {};
+      for (var i = 0, len = xs.length; i < len; i++) {
+        var x = xs[i];
+        r[String(x)] = f(x, i);
+      }
+      return r;
+    };
+    var pure = function (x) {
+      return [x];
+    };
     var sort = function (xs, comparator) {
       var copy = slice.call(xs, 0);
       copy.sort(comparator);
       return copy;
+    };
+    var head = function (xs) {
+      return xs.length === 0 ? Option.none() : Option.some(xs[0]);
     };
     var last = function (xs) {
       return xs.length === 0 ? Option.none() : Option.some(xs[xs.length - 1]);
@@ -385,6 +472,36 @@ var table = (function (domGlobals) {
     var from$1 = isFunction(Array.from) ? Array.from : function (x) {
       return slice.call(x);
     };
+
+    var Arr = /*#__PURE__*/Object.freeze({
+        indexOf: indexOf,
+        contains: contains,
+        exists: exists,
+        range: range,
+        chunk: chunk,
+        map: map,
+        each: each,
+        eachr: eachr,
+        partition: partition,
+        filter: filter,
+        groupBy: groupBy,
+        foldr: foldr,
+        foldl: foldl,
+        find: find,
+        findIndex: findIndex,
+        flatten: flatten,
+        bind: bind,
+        forall: forall,
+        equal: equal,
+        reverse: reverse,
+        difference: difference,
+        mapToObject: mapToObject,
+        pure: pure,
+        sort: sort,
+        head: head,
+        last: last,
+        from: from$1
+    });
 
     var keys = Object.keys;
     var hasOwnProperty = Object.hasOwnProperty;
@@ -520,6 +637,9 @@ var table = (function (domGlobals) {
     var type = function (element) {
       return element.dom().nodeType;
     };
+    var value = function (element) {
+      return element.dom().nodeValue;
+    };
     var isType$1 = function (t) {
       return function (element) {
         return type(element) === t;
@@ -531,6 +651,16 @@ var table = (function (domGlobals) {
     var isElement = isType$1(ELEMENT);
     var isText = isType$1(TEXT);
     var isDocument = isType$1(DOCUMENT);
+
+    var Node = /*#__PURE__*/Object.freeze({
+        name: name,
+        type: type,
+        value: value,
+        isElement: isElement,
+        isText: isText,
+        isDocument: isDocument,
+        isComment: isComment
+    });
 
     var rawSet = function (dom, key, value) {
       if (isString(value) || isBoolean(value) || isNumber(value)) {
@@ -685,6 +815,16 @@ var table = (function (domGlobals) {
         internalSet(dom, k, v);
       });
     };
+    var setOptions = function (element, css) {
+      var dom = element.dom();
+      each$1(css, function (v, k) {
+        v.fold(function () {
+          internalRemove(dom, k);
+        }, function (value) {
+          internalSet(dom, k, value);
+        });
+      });
+    };
     var get$2 = function (element, property) {
       var dom = element.dom();
       var styles = domGlobals.window.getComputedStyle(dom);
@@ -702,12 +842,36 @@ var table = (function (domGlobals) {
         return r.length > 0;
       });
     };
+    var getAllRaw = function (element) {
+      var css = {};
+      var dom = element.dom();
+      if (isSupported(dom)) {
+        for (var i = 0; i < dom.style.length; i++) {
+          var ruleName = dom.style.item(i);
+          css[ruleName] = dom.style[ruleName];
+        }
+      }
+      return css;
+    };
+    var isValidValue = function (tag, property, value) {
+      var element = Element.fromTag(tag);
+      set$1(element, property, value);
+      var style = getRaw(element, property);
+      return style.isSome();
+    };
     var remove$1 = function (element, property) {
       var dom = element.dom();
       internalRemove(dom, property);
       if (has$1(element, 'style') && trim(get$1(element, 'style')) === '') {
         remove(element, 'style');
       }
+    };
+    var preserve = function (element, f) {
+      var oldStyles = get$1(element, 'style');
+      var result = f(element);
+      var restore = oldStyles === undefined ? remove : set;
+      restore(element, 'style', oldStyles);
+      return result;
     };
     var copy = function (source, target) {
       var sourceDom = source.dom();
@@ -716,6 +880,39 @@ var table = (function (domGlobals) {
         targetDom.style.cssText = sourceDom.style.cssText;
       }
     };
+    var reflow = function (e) {
+      return e.dom().offsetWidth;
+    };
+    var transferOne = function (source, destination, style) {
+      getRaw(source, style).each(function (value) {
+        if (getRaw(destination, style).isNone()) {
+          set$1(destination, style, value);
+        }
+      });
+    };
+    var transfer = function (source, destination, styles) {
+      if (!isElement(source) || !isElement(destination)) {
+        return;
+      }
+      each(styles, function (style) {
+        transferOne(source, destination, style);
+      });
+    };
+
+    var Css = /*#__PURE__*/Object.freeze({
+        copy: copy,
+        set: set$1,
+        preserve: preserve,
+        setAll: setAll$1,
+        setOptions: setOptions,
+        remove: remove$1,
+        get: get$2,
+        getRaw: getRaw,
+        getAllRaw: getAllRaw,
+        isValidValue: isValidValue,
+        reflow: reflow,
+        transfer: transfer
+    });
 
     var Global = typeof domGlobals.window !== 'undefined' ? domGlobals.window : Function('return this;')();
 
@@ -754,7 +951,7 @@ var table = (function (domGlobals) {
     var documentPositionContainedBy = function (a, b) {
       return compareDocumentPosition(a, b, node().DOCUMENT_POSITION_CONTAINED_BY);
     };
-    var Node = {
+    var Node$1 = {
       documentPositionPreceding: documentPositionPreceding,
       documentPositionContainedBy: documentPositionContainedBy
     };
@@ -1103,7 +1300,7 @@ var table = (function (domGlobals) {
       return d1 === d2 ? false : d1.contains(d2);
     };
     var ieContains = function (e1, e2) {
-      return Node.documentPositionContainedBy(e1.dom(), e2.dom());
+      return Node$1.documentPositionContainedBy(e1.dom(), e2.dom());
     };
     var browser = PlatformDetection$1.detect().browser;
     var contains$2 = browser.isIE() ? ieContains : regularContains;
@@ -1312,6 +1509,15 @@ var table = (function (domGlobals) {
       };
       return ClosestOrAncestor(is, ancestor, scope, predicate, isRoot);
     };
+    var sibling = function (scope, predicate) {
+      var element = scope.dom();
+      if (!element.parentNode) {
+        return Option.none();
+      }
+      return child$1(Element.fromDom(element.parentNode), function (x) {
+        return !eq(scope, x) && predicate(x);
+      });
+    };
     var child$1 = function (scope, predicate) {
       var result = find(scope.dom().childNodes, compose(predicate, Element.fromDom));
       return result.map(Element.fromDom);
@@ -1332,10 +1538,18 @@ var table = (function (domGlobals) {
       return descend(scope.dom());
     };
 
+    var first = function (selector) {
+      return one(selector);
+    };
     var ancestor$1 = function (scope, selector, isRoot) {
       return ancestor(scope, function (e) {
         return is(e, selector);
       }, isRoot);
+    };
+    var sibling$1 = function (scope, selector) {
+      return sibling(scope, function (e) {
+        return is(e, selector);
+      });
     };
     var child$2 = function (scope, selector) {
       return child$1(scope, function (e) {
@@ -1348,6 +1562,15 @@ var table = (function (domGlobals) {
     var closest$1 = function (scope, selector, isRoot) {
       return ClosestOrAncestor(is, ancestor$1, scope, selector, isRoot);
     };
+
+    var SelectorFind = /*#__PURE__*/Object.freeze({
+        first: first,
+        ancestor: ancestor$1,
+        sibling: sibling$1,
+        child: child$2,
+        descendant: descendant$1,
+        closest: closest$1
+    });
 
     var firstLayer = function (scope, selector) {
       return filterFirstLayer(scope, selector, constant(true));
@@ -1683,7 +1906,7 @@ var table = (function (domGlobals) {
       return hasCursorPosition || contains(elementsWithCursorPosition, name(elem));
     };
 
-    var first = function (element) {
+    var first$1 = function (element) {
       return descendant(element, isCursorPosition);
     };
     var last$1 = function (element) {
@@ -1754,8 +1977,8 @@ var table = (function (domGlobals) {
       };
     };
     var cloneFormats = function (oldCell, newCell, formats) {
-      var first$1 = first(oldCell);
-      return first$1.map(function (firstText) {
+      var first = first$1(oldCell);
+      return first.map(function (firstText) {
         var formatSelector = formats.join(',');
         var parents = ancestors$1(firstText, formatSelector, function (element) {
           return eq(element, oldCell);
@@ -3168,6 +3391,21 @@ var table = (function (domGlobals) {
     var remove$4 = function (element, clazz) {
       return remove$3(element, 'class', clazz);
     };
+    var toggle = function (element, clazz) {
+      if (contains(get$7(element), clazz)) {
+        return remove$4(element, clazz);
+      } else {
+        return add$1(element, clazz);
+      }
+    };
+
+    var ClassList = /*#__PURE__*/Object.freeze({
+        get: get$7,
+        add: add$1,
+        remove: remove$4,
+        toggle: toggle,
+        supports: supports
+    });
 
     var add$2 = function (element, clazz) {
       if (supports(element)) {
@@ -3202,7 +3440,7 @@ var table = (function (domGlobals) {
       }
       return r;
     };
-    var range = function (start, end) {
+    var range$1 = function (start, end) {
       var r = [];
       for (var i = start; i < end; i++) {
         r.push(i);
@@ -3265,7 +3503,7 @@ var table = (function (domGlobals) {
     };
     var Util = {
       repeat: repeat,
-      range: range,
+      range: range$1,
       unique: unique,
       deduce: deduce
     };
@@ -3686,21 +3924,21 @@ var table = (function (domGlobals) {
       onUnmergable: onUnmergable
     };
 
-    var value = function (o) {
+    var value$1 = function (o) {
       var is = function (v) {
         return o === v;
       };
       var or = function (opt) {
-        return value(o);
+        return value$1(o);
       };
       var orThunk = function (f) {
-        return value(o);
+        return value$1(o);
       };
       var map = function (f) {
-        return value(f(o));
+        return value$1(f(o));
       };
       var mapError = function (f) {
-        return value(o);
+        return value$1(o);
       };
       var each = function (f) {
         f(o);
@@ -3784,7 +4022,7 @@ var table = (function (domGlobals) {
       };
     };
     var Result = {
-      value: value,
+      value: value$1,
       error: error
     };
 
@@ -4007,10 +4245,6 @@ var table = (function (domGlobals) {
       deleteColumnsAt: deleteColumnsAt
     };
 
-    var get$8 = function (element) {
-      return element.dom().textContent;
-    };
-
     var replaceIn = function (grid, targets, comparator, substitution) {
       var isTarget = function (cell) {
         return exists(targets, function (target) {
@@ -4044,73 +4278,9 @@ var table = (function (domGlobals) {
       });
       return replaceIn(grid, targets, comparator, substitution);
     };
-    var sortTableRows = function (grid, index, comparator, ascending) {
-      var grouped = groupBy(grid, function (row) {
-        return name(GridRow.getCell(row, index).element());
-      });
-      var sortGroup = function (group) {
-        var texted = map(group, function (row) {
-          var cell = GridRow.getCell(row, index);
-          var text = get$8(cell.element());
-          return {
-            row: row,
-            text: text
-          };
-        });
-        var sorted = sort(texted, function (rowA, rowB) {
-          var compared = comparator(rowA.text, rowB.text);
-          return ascending ? compared : compared * -1;
-        });
-        return map(sorted, function (sortedRow) {
-          return sortedRow.row;
-        });
-      };
-      return bind(grouped, function (group) {
-        return name(GridRow.getCell(group[0], index).element()) === 'th' ? group : sortGroup(group);
-      });
-    };
-    var sortTableColumns = function (grid, index, comparator, ascending) {
-      var targetRow = grid[index].cells();
-      var targetReferences = map(targetRow, function (cell) {
-        return get$8(cell.element());
-      });
-      var zip = function (row) {
-        var zippedCells = map(row.cells(), function (cell, i) {
-          return {
-            cell: cell,
-            reference: targetRow[i],
-            referenceText: targetReferences[i]
-          };
-        });
-        return {
-          zippedCells: zippedCells,
-          section: row.section()
-        };
-      };
-      var unzip = function (row) {
-        var grouped = groupBy(row.zippedCells, function (zippedCell) {
-          return name(zippedCell.reference.element());
-        });
-        var sorted = bind(grouped, function (group) {
-          return name(group[0].reference.element()) === 'th' ? group : sort(group, function (cellA, cellB) {
-            var compared = comparator(cellA.referenceText, cellB.referenceText);
-            return ascending ? compared : compared * -1;
-          });
-        });
-        var unzippedCells = map(sorted, function (sortedCell) {
-          return sortedCell.cell;
-        });
-        return Structs.rowcells(unzippedCells, row.section);
-      };
-      var zippedGrid = map(grid, zip);
-      var unzipped = map(zippedGrid, unzip);
-      return unzipped;
-    };
     var TransformOperations = {
       replaceColumn: replaceColumn,
-      replaceRow: replaceRow,
-      sortTableRows: sortTableRows,
-      sortTableColumns: sortTableColumns
+      replaceRow: replaceRow
     };
 
     var none$1 = function () {
@@ -4528,9 +4698,22 @@ var table = (function (domGlobals) {
       if (unsupported.length > 0)
         unsuppMessage(unsupported);
     };
+    var allowExtra = noop;
     var exactly = function (required) {
       return base(handleExact, required);
     };
+    var ensure = function (required) {
+      return base(allowExtra, required);
+    };
+    var ensureWith = function (required, condition) {
+      return baseWith(allowExtra, required, condition);
+    };
+
+    var Contracts = /*#__PURE__*/Object.freeze({
+        exactly: exactly,
+        ensure: ensure,
+        ensureWith: ensureWith
+    });
 
     var elementToData = function (element) {
       var colspan = has$1(element, 'colspan') ? parseInt(get$1(element, 'colspan'), 10) : 1;
@@ -4976,7 +5159,7 @@ var table = (function (domGlobals) {
       }, grid);
       return outcome(newGrid, Option.from(unmergable[0]));
     };
-    var pasteCells = function (grid, pasteDetails, comparator, _genWrappers) {
+    var pasteCells = function (grid, pasteDetails, comparator, genWrappers) {
       var gridify = function (table, generators) {
         var list = DetailsList.fromTable(table);
         var wh = Warehouse.generate(list);
@@ -4997,7 +5180,7 @@ var table = (function (domGlobals) {
       var wh = Warehouse.generate(pasteDetails);
       return Transitions.toGrid(wh, generators, true);
     };
-    var pasteRowsBefore = function (grid, pasteDetails, comparator, _genWrappers) {
+    var pasteRowsBefore = function (grid, pasteDetails, comparator, genWrappers) {
       var example = grid[pasteDetails.cells[0].row()];
       var index = pasteDetails.cells[0].row();
       var gridB = gridifyRows(pasteDetails.clipboard(), pasteDetails.generators(), example);
@@ -5005,30 +5188,13 @@ var table = (function (domGlobals) {
       var cursor = elementFromGrid(mergedGrid, pasteDetails.cells[0].row(), pasteDetails.cells[0].column());
       return outcome(mergedGrid, cursor);
     };
-    var pasteRowsAfter = function (grid, pasteDetails, comparator, _genWrappers) {
+    var pasteRowsAfter = function (grid, pasteDetails, comparator, genWrappers) {
       var example = grid[pasteDetails.cells[0].row()];
       var index = pasteDetails.cells[pasteDetails.cells.length - 1].row() + pasteDetails.cells[pasteDetails.cells.length - 1].rowspan();
       var gridB = gridifyRows(pasteDetails.clipboard(), pasteDetails.generators(), example);
       var mergedGrid = TableMerge.insert(index, grid, gridB, pasteDetails.generators(), comparator);
       var cursor = elementFromGrid(mergedGrid, pasteDetails.cells[0].row(), pasteDetails.cells[0].column());
       return outcome(mergedGrid, cursor);
-    };
-    var sortRows = function (grid, detail, sortComparator, ascending) {
-      var newGrid = TransformOperations.sortTableRows(grid, detail.column(), sortComparator, ascending);
-      return bundle(newGrid, detail.row(), detail.column());
-    };
-    var sortColumns = function (grid, detail, sortComparator, ascending) {
-      var newGrid = TransformOperations.sortTableColumns(grid, detail.row(), sortComparator, ascending);
-      return bundle(newGrid, detail.row(), detail.column());
-    };
-    var runSort = function (sortF) {
-      return function (wire, table, target, generators, direction, sortComparator, ascending) {
-        var operation = function (grid, detail, _comparator, _generators) {
-          return sortF(grid, detail, sortComparator, ascending);
-        };
-        var wrappedOperation = RunOperation.run(operation, RunOperation.onCell, noop, noop, Generators.modification);
-        return wrappedOperation(wire, table, target, generators, direction);
-      };
     };
     var resize = Adjustments.adjustWidthTo;
     var TableOperations = {
@@ -5052,9 +5218,7 @@ var table = (function (domGlobals) {
       unmergeCells: RunOperation.run(unmergeCells, RunOperation.onUnmergable, resize, noop, Generators.merging),
       pasteCells: RunOperation.run(pasteCells, RunOperation.onPaste, resize, noop, Generators.modification),
       pasteRowsBefore: RunOperation.run(pasteRowsBefore, RunOperation.onPasteRows, noop, noop, Generators.modification),
-      pasteRowsAfter: RunOperation.run(pasteRowsAfter, RunOperation.onPasteRows, noop, noop, Generators.modification),
-      sortRows: runSort(sortRows),
-      sortColumns: runSort(sortColumns)
+      pasteRowsAfter: RunOperation.run(pasteRowsAfter, RunOperation.onPasteRows, noop, noop, Generators.modification)
     };
 
     var getBody$1 = function (editor) {
@@ -5163,7 +5327,7 @@ var table = (function (domGlobals) {
     };
     var hasObjectResizing = function (editor) {
       var objectResizing = editor.getParam('object_resizing', true);
-      return objectResizing === 'table' || objectResizing;
+      return isString(objectResizing) ? objectResizing === 'table' : objectResizing;
     };
 
     var fireNewRow = function (editor, row) {
@@ -6094,14 +6258,14 @@ var table = (function (domGlobals) {
       return table;
     };
 
-    var get$9 = function (element) {
+    var get$8 = function (element) {
       return element.dom().innerHTML;
     };
     var getOuter$2 = function (element) {
       var container = Element.fromTag('div');
       var clone = Element.fromDom(element.dom().cloneNode(true));
       append(container, clone);
-      return get$9(container);
+      return get$8(container);
     };
 
     var placeCaretInCell = function (editor, cell) {
@@ -6147,7 +6311,11 @@ var table = (function (domGlobals) {
 
     var styleTDTH = function (dom, elm, name, value) {
       if (elm.tagName === 'TD' || elm.tagName === 'TH') {
-        dom.setStyle(elm, name, value);
+        if (isString(name)) {
+          dom.setStyle(elm, name, value);
+        } else {
+          dom.setStyle(elm, name);
+        }
       } else {
         if (elm.children) {
           for (var i = 0; i < elm.children.length; i++) {
@@ -6532,8 +6700,8 @@ var table = (function (domGlobals) {
         mceTableRowProps: curry(RowDialog.open, editor),
         mceTableCellProps: curry(CellDialog.open, editor)
       }, function (func, name) {
-        editor.addCommand(name, function (ui, val) {
-          func(val);
+        editor.addCommand(name, function () {
+          func();
         });
       });
     };
@@ -7107,7 +7275,7 @@ var table = (function (domGlobals) {
       append(body(), container);
       return container;
     };
-    var get$a = function (editor, container) {
+    var get$9 = function (editor, container) {
       return editor.inline ? ResizeWire.body(getBody$1(editor), createContainer()) : ResizeWire.only(Element.fromDom(editor.getDoc()));
     };
     var remove$6 = function (editor, wire) {
@@ -7116,7 +7284,7 @@ var table = (function (domGlobals) {
       }
     };
     var TableWire = {
-      get: get$a,
+      get: get$9,
       remove: remove$6
     };
 
@@ -7222,7 +7390,7 @@ var table = (function (domGlobals) {
         return n(current);
       });
     };
-    var first$1 = function (current) {
+    var first$2 = function (current) {
       return folder$1(function (n, f, m, l) {
         return f(current);
       });
@@ -7239,7 +7407,7 @@ var table = (function (domGlobals) {
     };
     var CellLocation = {
       none: none$2,
-      first: first$1,
+      first: first$2,
       middle: middle$1,
       last: last$3
     };
@@ -7323,7 +7491,7 @@ var table = (function (domGlobals) {
         ]
       }
     ]);
-    var range$1 = Immutable('start', 'soffset', 'finish', 'foffset');
+    var range$2 = Immutable('start', 'soffset', 'finish', 'foffset');
     var getStart$1 = function (selection) {
       return selection.match({
         domRange: function (rng) {
@@ -7341,7 +7509,6 @@ var table = (function (domGlobals) {
       var start = getStart$1(selection);
       return defaultView(start);
     };
-    var domRange = type$2.domRange;
     var relative = type$2.relative;
     var exact = type$2.exact;
 
@@ -7499,8 +7666,6 @@ var table = (function (domGlobals) {
         }
       });
     };
-    var ltr$2 = adt$1.ltr;
-    var rtl$2 = adt$1.rtl;
 
     var searchForPoint = function (rectForOffset, x, y, maxX, length) {
       if (length === 0) {
@@ -7553,6 +7718,10 @@ var table = (function (domGlobals) {
       });
     };
 
+    var TextPoint = /*#__PURE__*/Object.freeze({
+        locate: locate
+    });
+
     var searchInChildren = function (doc, node, x, y) {
       var r = doc.dom().createRange();
       var nodes = children(node);
@@ -7590,7 +7759,7 @@ var table = (function (domGlobals) {
       cursorRange.selectNode(node.dom());
       var rect = cursorRange.getBoundingClientRect();
       var collapseDirection = getCollapseDirection(rect, x);
-      var f = collapseDirection === COLLAPSE_TO_LEFT ? first : last$1;
+      var f = collapseDirection === COLLAPSE_TO_LEFT ? first$1 : last$1;
       return f(node).map(function (target) {
         return createCollapsedNode(doc, target, collapseDirection);
       });
@@ -7639,7 +7808,7 @@ var table = (function (domGlobals) {
     var fromPoint$1 = function (win, x, y) {
       var doc = Element.fromDom(win.document);
       return availableSearch(doc, x, y).map(function (rng) {
-        return range$1(Element.fromDom(rng.startContainer), rng.startOffset, Element.fromDom(rng.endContainer), rng.endOffset);
+        return range$2(Element.fromDom(rng.startContainer), rng.startOffset, Element.fromDom(rng.endContainer), rng.endOffset);
       });
     };
 
@@ -7736,7 +7905,7 @@ var table = (function (domGlobals) {
       if (selection.rangeCount > 0) {
         var firstRng = selection.getRangeAt(0);
         var lastRng = selection.getRangeAt(selection.rangeCount - 1);
-        return Option.some(range$1(Element.fromDom(firstRng.startContainer), firstRng.startOffset, Element.fromDom(lastRng.endContainer), lastRng.endOffset));
+        return Option.some(range$2(Element.fromDom(firstRng.startContainer), firstRng.startOffset, Element.fromDom(lastRng.endContainer), lastRng.endOffset));
       } else {
         return Option.none();
       }
@@ -7744,7 +7913,7 @@ var table = (function (domGlobals) {
     var doGetExact = function (selection) {
       var anchor = Element.fromDom(selection.anchorNode);
       var focus = Element.fromDom(selection.focusNode);
-      return after$3(anchor, selection.anchorOffset, focus, selection.focusOffset) ? Option.some(range$1(anchor, selection.anchorOffset, focus, selection.focusOffset)) : readRange(selection);
+      return after$3(anchor, selection.anchorOffset, focus, selection.focusOffset) ? Option.some(range$2(anchor, selection.anchorOffset, focus, selection.focusOffset)) : readRange(selection);
     };
     var setToElement = function (win, element) {
       var rng = selectNodeContents(win, element);
@@ -7755,7 +7924,7 @@ var table = (function (domGlobals) {
         return sel.rangeCount > 0;
       }).bind(doGetExact);
     };
-    var get$b = function (win) {
+    var get$a = function (win) {
       return getExact(win).map(function (range) {
         return exact(range.start(), range.soffset(), range.finish(), range.foffset());
       });
@@ -7794,7 +7963,7 @@ var table = (function (domGlobals) {
     };
     var go = function (editor, isRoot, cell, actions, lazyWire) {
       return cell.fold(Option.none, Option.none, function (current, next) {
-        return first(next).map(function (cell) {
+        return first$1(next).map(function (cell) {
           return getCellFirstCursorPosition(editor, cell);
         });
       }, function (current) {
@@ -7883,7 +8052,7 @@ var table = (function (domGlobals) {
     };
 
     var isSafari = PlatformDetection$1.detect().browser.isSafari();
-    var get$c = function (_DOC) {
+    var get$b = function (_DOC) {
       var doc = _DOC !== undefined ? _DOC.dom() : domGlobals.document;
       var x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
       var y = doc.body.scrollTop || doc.documentElement.scrollTop;
@@ -7909,7 +8078,7 @@ var table = (function (domGlobals) {
         });
       };
       var getSelection = function () {
-        return get$b(win).map(function (exactAdt) {
+        return get$a(win).map(function (exactAdt) {
           return Util$1.convertToRange(win, exactAdt);
         });
       };
@@ -7941,7 +8110,7 @@ var table = (function (domGlobals) {
         return win.innerHeight;
       };
       var getScrollY = function () {
-        var pos = get$c(Element.fromDom(win.document));
+        var pos = get$b(Element.fromDom(win.document));
         return pos.top();
       };
       var scrollBy = function (x, y) {
@@ -8217,6 +8386,11 @@ var table = (function (domGlobals) {
       return hone(universe, item, predicate, sidestep, Walkers.right(), isRoot);
     };
 
+    var Seeker = /*#__PURE__*/Object.freeze({
+        left: left$2,
+        right: right$2
+    });
+
     var isLeaf = function (universe) {
       return function (element) {
         return universe.property().children(element).length === 0;
@@ -8395,7 +8569,7 @@ var table = (function (domGlobals) {
 
     var point = Immutable('element', 'offset');
     var delta = Immutable('element', 'deltaOffset');
-    var range$2 = Immutable('element', 'start', 'finish');
+    var range$3 = Immutable('element', 'start', 'finish');
     var points = Immutable('begin', 'end');
     var text = Immutable('element', 'text');
 
@@ -8404,12 +8578,12 @@ var table = (function (domGlobals) {
     var indexInParent = function (element) {
       return parent(element).bind(function (parent) {
         var children$1 = children(parent);
-        return indexOf(children$1, element).map(function (index) {
+        return indexOf$1(children$1, element).map(function (index) {
           return inParent(parent, children$1, element, index);
         });
       });
     };
-    var indexOf = function (elements, element) {
+    var indexOf$1 = function (elements, element) {
       return findIndex(elements, curry(eq, element));
     };
 
@@ -8592,7 +8766,7 @@ var table = (function (domGlobals) {
           var rows = descendants$1(table, 'tr');
           if (eq(startRow, rows[rows.length - 1])) {
             return seekRight$1(table, function (element) {
-              return first(element).isSome();
+              return first$1(element).isSome();
             }, isRoot).map(function (first) {
               return Responses.response(Option.some(Util$1.makeSitus(first, 0, first, 0)), true);
             });
@@ -8961,7 +9135,7 @@ var table = (function (domGlobals) {
         editor.on('mouseup', mouseUp);
         editor.on('keyup', keyup);
         editor.on('keydown', keydown);
-        editor.on('nodechange', syncSelection);
+        editor.on('NodeChange', syncSelection);
         handlers = Option.some(handlerStruct({
           mousedown: mouseDown,
           mouseover: mouseOver,
@@ -9053,7 +9227,7 @@ var table = (function (domGlobals) {
           return targets.unmergable().isNone();
         });
       };
-      editor.on('nodechange', resetTargets);
+      editor.on('NodeChange', resetTargets);
       return {
         onSetupTable: onSetupTable,
         onSetupCellOrRow: onSetupCellOrRow,

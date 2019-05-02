@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var save = (function () {
@@ -69,9 +69,7 @@ var save = (function () {
         editor.execCallback('save_oncancelcallback', editor);
         return;
       }
-      editor.setContent(h);
-      editor.undoManager.clear();
-      editor.nodeChanged();
+      editor.resetContent(h);
     };
     var Actions = {
       save: save,
@@ -93,9 +91,9 @@ var save = (function () {
         var handler = function () {
           api.setDisabled(Settings.enableWhenDirty(editor) && !editor.isDirty());
         };
-        editor.on('nodeChange dirty', handler);
+        editor.on('NodeChange dirty', handler);
         return function () {
-          return editor.off('nodeChange dirty', handler);
+          return editor.off('NodeChange dirty', handler);
         };
       };
     };
