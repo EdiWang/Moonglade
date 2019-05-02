@@ -94,25 +94,29 @@ var postEditor = {
     }
 };
 
-$("#a-send-test-mail").click(function () {
-    $(this).text("Sending...");
-    $(this).addClass("disabled");
-    $(this).attr("disabled", "disabled");
+var sendTestEmail = function () {
+    $("#a-send-test-mail").text("Sending...");
+    $("#a-send-test-mail").addClass("disabled");
+    $("#a-send-test-mail").attr("disabled", "disabled");
 
     $.post("/admin/settings/send-test-email",
         function (data) {
             if (data.isSuccess) {
                 window.toastr.success("Email is sent.");
             } else {
-                window.toastr.error(data.responseFailureCode);
+                window.toastr.error(data.message);
             }
         })
-        .done(function () {
+        .fail(function (xhr, status, error) {
+	        var responseJson = $.parseJSON(xhr.responseText);
+            window.toastr.error(responseJson.message);
+        })
+        .always(function () {
             $("#a-send-test-mail").text("Send Test Email");
             $("#a-send-test-mail").removeClass("disabled");
             $("#a-send-test-mail").removeAttr("disabled");
         });
-});
+};
 
 var btnSaveSettings = "#btn-save-settings";
 var onUpdateSettingsBegin = function () {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -157,6 +158,10 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> SendTestEmail()
         {
             var response = await _emailService.TestSendTestMailAsync();
+            if (!response.IsSuccess)
+            {
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
+            }
             return Json(response);
         }
 

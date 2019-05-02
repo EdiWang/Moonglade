@@ -88,7 +88,7 @@ namespace Moonglade.Core
                     return new SuccessResponse();
                 }
 
-                return new FailedResponse((int)ResponseFailureCode.EmailSendingDisabled);
+                return new FailedResponse((int)ResponseFailureCode.EmailSendingDisabled, "Email sending is disabled.");
             }
             catch (Exception e)
             {
