@@ -95,19 +95,15 @@ namespace Moonglade.ImageStorage.FileSystem
         {
             try
             {
-                fileName = fileName.ToLower().Replace(" ", "-");
+                var fullPath = Path.Combine(_path, fileName);
 
-                var tp = ResolveConflict(fileName, _path);
-
-                //File.WriteAllBytes(kvp.Key, imageBytes);
-
-                using (var sourceStream = new FileStream(tp.Item1, FileMode.Create, FileAccess.Write, FileShare.None,
+                using (var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
                     4096, true))
                 {
                     await sourceStream.WriteAsync(imageBytes, 0, imageBytes.Length);
                 }
 
-                return new SuccessResponse<string>(tp.Item2);
+                return new SuccessResponse<string>(fileName);
             }
             catch (Exception e)
             {
@@ -118,21 +114,6 @@ namespace Moonglade.ImageStorage.FileSystem
                     Message = e.Message
                 };
             }
-        }
-
-        private static Tuple<string, string> ResolveConflict(string fileName, string path)
-        {
-            var fullPath = Path.Combine(path, fileName);
-            var tempFileName = fileName;
-
-            if (File.Exists(fullPath))
-            {
-                tempFileName = fileName.Insert(
-                    fileName.LastIndexOf('.'), $"_{DateTime.UtcNow:yyyyMMddHHmmss}");
-                fullPath = Path.Combine(path, tempFileName);
-            }
-
-            return new Tuple<string, string>(fullPath, tempFileName);
         }
     }
 }

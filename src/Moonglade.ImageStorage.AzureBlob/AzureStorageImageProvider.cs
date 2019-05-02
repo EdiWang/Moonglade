@@ -45,19 +45,17 @@ namespace Moonglade.ImageStorage.AzureBlob
                     throw new ArgumentNullException(nameof(fileName));
                 }
 
-                var ext = Path.GetExtension(fileName);
-                var newFileName = $"img-{Guid.NewGuid()}{ext}";
-                _logger.LogInformation($"Uploading {newFileName} to Azure Blob Storage.");
+                _logger.LogInformation($"Uploading {fileName} to Azure Blob Storage.");
 
-                var blockBlob = _container.GetBlockBlobReference(newFileName);
+                var blockBlob = _container.GetBlockBlobReference(fileName);
                 using (var fileStream = new MemoryStream(imageBytes))
                 {
                     await blockBlob.UploadFromStreamAsync(fileStream);
                 }
 
-                _logger.LogInformation($"Uploaded image file {newFileName} to Azure Blob Storage! Yeah, the best cloud!");
+                _logger.LogInformation($"Uploaded image file {fileName} to Azure Blob Storage! Yeah, the best cloud!");
 
-                return new SuccessResponse<string>(newFileName);
+                return new SuccessResponse<string>(fileName);
             }
             catch (Exception e)
             {
