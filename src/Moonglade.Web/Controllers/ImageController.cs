@@ -111,6 +111,11 @@ namespace Moonglade.Web.Controllers
                         return BadRequest();
                     }
 
+                    var uid = Guid.NewGuid();
+                    IFileNameGenerator gen = new GuidFileNameGenerator(uid);
+                    var primaryFileName = gen.GetFileName(name);
+                    var secondaryFieName = gen.GetFileName(name, "origin");
+
                     using (var stream = new MemoryStream())
                     {
                         await file.CopyToAsync(stream);
@@ -125,7 +130,7 @@ namespace Moonglade.Web.Controllers
                                 SmallImagePixelsThreshold = Constants.SmallImagePixelsThreshold
                             };
 
-                            Logger.LogInformation($"Adding watermark onto image {name}");
+                            Logger.LogInformation($"Adding watermark onto image {primaryFileName}");
 
                             watermarkedStream = watermarker.AddWatermark(
                                                 _blogConfig.WatermarkSettings.WatermarkText,
@@ -135,10 +140,16 @@ namespace Moonglade.Web.Controllers
                                                 _blogConfig.WatermarkSettings.FontSize);
                         }
 
-                        var response = await _imageStorageProvider.InsertAsync(name,
+                        var response = await _imageStorageProvider.InsertAsync(primaryFileName,
                             watermarkedStream != null ?
                                 watermarkedStream.ToArray() :
                                 stream.ToArray());
+
+                        if (_blogConfig.WatermarkSettings.KeepOriginImage)
+                        {
+                            var arr = stream.ToArray();
+                            _ = Task.Run(async () => await _imageStorageProvider.InsertAsync(secondaryFieName, arr));
+                        }
 
                         Logger.LogInformation("Image Uploaded: " + JsonConvert.SerializeObject(response));
 
