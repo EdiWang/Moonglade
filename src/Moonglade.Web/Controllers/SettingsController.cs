@@ -397,7 +397,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
                 var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
-                Cache.Remove("avatar");
+                Cache.Remove(StaticCacheKeys.Avatar);
                 return Json(response);
             }
             catch (Exception e)
