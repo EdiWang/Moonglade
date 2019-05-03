@@ -509,7 +509,9 @@ namespace Moonglade.Web
                 {
                     using (var sr = File.OpenText(urlRewriteConfigPath))
                     {
-                        var options = new RewriteOptions().AddIISUrlRewrite(sr);
+                        var options = new RewriteOptions()
+                            .AddRedirect("(.*)/$", "$1")
+                            .AddIISUrlRewrite(sr);
                         app.UseRewriter(options);
                     }
                 }
