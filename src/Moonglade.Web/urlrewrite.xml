@@ -21,5 +21,9 @@
       <match url="subscription/rss" />
       <action type="Redirect" url="/rss" redirectType="Permanent" />
     </rule>
+    <rule name="Migrate Subscription ATOM" stopProcessing="true">
+      <match url="subscription/atom" />
+      <action type="Redirect" url="/atom" redirectType="Permanent" />
+    </rule>
   </rules>
 </rewrite>
