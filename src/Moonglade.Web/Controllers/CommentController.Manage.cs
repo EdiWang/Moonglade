@@ -80,7 +80,12 @@ namespace Moonglade.Web.Controllers
             var response = _commentService.NewReply(commentId, replyContent,
                 HttpContext.Connection.RemoteIpAddress.ToString(), GetUserAgent());
 
-            if (!response.IsSuccess) return Json(false);
+            if (!response.IsSuccess)
+            {
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
+                return Json(response);
+            }
+
             if (_blogConfig.EmailConfiguration.SendEmailOnCommentReply)
             {
                 var postLink = GetPostUrl(_linkGenerator, response.Item.PubDateUtc.GetValueOrDefault(), response.Item.Slug);
