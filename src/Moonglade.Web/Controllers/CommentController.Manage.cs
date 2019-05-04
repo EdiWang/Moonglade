@@ -31,25 +31,44 @@ namespace Moonglade.Web.Controllers
 
         [Authorize, HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("set-approval-status")]
-        public IActionResult SetApprovalStatus(Guid commentId, bool isApproved)
+        [Route("approve-comments")]
+        public async Task<IActionResult> ApproveComments(Guid[] commentIds)
         {
-            var response = _commentService.SetApprovalStatus(commentId, isApproved);
-            if (response.IsSuccess)
+            var response = await _commentService.ApproveComments(commentIds);
+            if (!response.IsSuccess)
             {
-                return Json(commentId);
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            return Json(response);
+        }
+
+        // TODO: Obsolete this action
+        [Authorize, HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("set-approval-status")]
+        public async Task<IActionResult> SetApprovalStatus(Guid commentId, bool isApproved)
+        {
+            if (isApproved)
+            {
+                var response = await _commentService.ApproveComments(new[] { commentId });
+                if (response.IsSuccess)
+                {
+                    return Json(commentId);
+                }
+
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
+                return Json(response.ResponseCode);
             }
 
-            Response.StatusCode = StatusCodes.Status500InternalServerError;
-            return Json(response.ResponseCode);
+            return await Delete(commentId);
         }
 
         [HttpPost, Authorize]
         [ValidateAntiForgeryToken]
         [Route("delete")]
-        public IActionResult Delete(Guid commentId)
+        public async Task<IActionResult> Delete(Guid commentId)
         {
-            var response = _commentService.Delete(commentId);
+            var response = await _commentService.DeleteComments(new[] { commentId });
             return response.IsSuccess ? Json(commentId) : Json(false);
         }
 
