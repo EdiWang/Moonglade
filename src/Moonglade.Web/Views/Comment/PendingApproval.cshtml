@@ -63,9 +63,7 @@
                 <span class="text-muted float-right">@Utils.UtcToZoneTime(comment.CreateOnUtc, Settings.Value.TimeZone).ToString("MM/dd/yyyy HH:mm")</span>
             </div>
             <div class="card-body">
-                <p>
-                    @comment.CommentContent
-                </p>
+                @Html.Raw(Utils.MdContentToHtml(comment.CommentContent))
                 <strong>
                     <i class="fas fa-bookmark"></i>
                     @comment.PostTitle

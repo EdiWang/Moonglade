@@ -87,9 +87,7 @@ else
                 <span class="text-muted float-right">@Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span>
             </div>
             <div class="card-body">
-                <p>
-                    @item.CommentContent
-                </p>
+                @Html.Raw(Utils.MdContentToHtml(item.CommentContent))
 
                 <div>
                     <strong>
@@ -143,8 +141,8 @@ else
 
 @Html.PagedListPager(Model, page => $"?page={page}", new PagedListRenderOptions
 {
-    LiElementClasses = new [] { "page-item" },
+    LiElementClasses = new[] { "page-item" },
     PageClasses = new[] { "page-link" },
-    UlElementClasses = new [] { "pagination justify-content-end" },
+    UlElementClasses = new[] { "pagination justify-content-end" },
     DisplayEllipsesWhenNotShowingAllPageNumbers = false
 })
