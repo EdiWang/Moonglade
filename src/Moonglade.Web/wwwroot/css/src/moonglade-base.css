@@ -6,6 +6,21 @@
     src: local('KlavikaMedium-Plain'), url('/webfonts/KlavikaMedium-Plain.eot?#iefix') format('embedded-opentype'), url('/webfonts/KlavikaMedium-Plain.woff2') format('woff2'), url('/webfonts/KlavikaMedium-Plain.woff') format('woff'), url('/webfonts/KlavikaMedium-Plain.ttf') format('truetype'), url('/webfonts/KlavikaMedium-Plain.svg#KlavikaMedium-Plain') format('svg');
 }
 
+.comment-md-content .editor-toolbar {
+    border-left: 0 none !important;
+    border-right: 0 none !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.CodeMirror {
+    border-bottom: 1px solid #ddd !important;
+    border-left: 0 none !important;
+    border-right: 0 none !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
 .btn-outline-footer {
     color: #96a8c3;
     border-color: #96a8c3;

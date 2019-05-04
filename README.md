@@ -127,6 +127,10 @@ RecentCommentsListSize | How many comments to show on side bar
 EnforceHttps | Force website use HTTPS
 DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
 
+### URL Rewrite
+
+The only built-in rule is removing trailing slash in URLs. For other rules, you can customize by editing "\src\Moonglade.Web\urlrewrite.xml" according to [IIS URL Rewrite Module configuration](https://www.iis.net/downloads/microsoft/url-rewrite)
+
 ### Optional Recommendations
 - [Microsoft Azure DNS Zones](https://azure.microsoft.com/en-us/services/dns/)
 - [Microsoft Azure App Service](https://azure.microsoft.com/en-us/services/app-service/)

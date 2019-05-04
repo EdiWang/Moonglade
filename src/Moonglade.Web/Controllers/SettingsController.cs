@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -29,7 +30,7 @@ namespace Moonglade.Web.Controllers
 
         private readonly EmailService _emailService;
         private readonly FriendLinkService _friendLinkService;
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
         private readonly BlogConfigurationService _blogConfigurationService;
         private readonly IApplicationLifetime _applicationLifetime;
 
@@ -42,7 +43,7 @@ namespace Moonglade.Web.Controllers
             IApplicationLifetime appLifetime,
             EmailService emailService,
             FriendLinkService friendLinkService,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
             : base(logger, settings, memoryCache: memoryCache)
         {
@@ -157,6 +158,10 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> SendTestEmail()
         {
             var response = await _emailService.TestSendTestMailAsync();
+            if (!response.IsSuccess)
+            {
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
+            }
             return Json(response);
         }
 
@@ -392,7 +397,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
                 var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
-                Cache.Remove("avatar");
+                Cache.Remove(StaticCacheKeys.Avatar);
                 return Json(response);
             }
             catch (Exception e)

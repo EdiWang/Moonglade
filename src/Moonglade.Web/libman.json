@@ -10,7 +10,7 @@
       ]
     },
     {
-      "library": "tinymce@5.0.3",
+      "library": "tinymce@5.0.4",
       "destination": "wwwroot/lib/tinymce",
       "files": []
     },
@@ -82,6 +82,10 @@
         "bootstrap-tagsinput-typeahead.css",
         "bootstrap-tagsinput.css"
       ]
+    },
+    {
+      "library": "simplemde@1.11.2",
+      "destination": "wwwroot/lib/simplemde/"
     }
   ]
 }

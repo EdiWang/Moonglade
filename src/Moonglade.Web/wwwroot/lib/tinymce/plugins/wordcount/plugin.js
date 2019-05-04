@@ -4,15 +4,13 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var wordcount = (function () {
     'use strict';
 
     var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
-
-    var global$1 = tinymce.util.Tools.resolve('tinymce.dom.TreeWalker');
 
     var __assign = function () {
       __assign = Object.assign || function __assign(t) {
@@ -331,6 +329,8 @@ var wordcount = (function () {
 
     var getWords$1 = getWords;
 
+    var global$1 = tinymce.util.Tools.resolve('tinymce.dom.TreeWalker');
+
     var getText = function (node, schema) {
       var blockElements = schema.getBlockElements();
       var shortEndedElements = schema.getShortEndedElements();
@@ -391,7 +391,7 @@ var wordcount = (function () {
       editor.on('init', function () {
         updateCount(editor);
         global$2.setEditorTimeout(editor, function () {
-          editor.on('setcontent beforeaddundo undo redo keyup', debouncedUpdate);
+          editor.on('SetContent BeforeAddUndo Undo Redo keyup', debouncedUpdate);
         }, 0);
       });
     };

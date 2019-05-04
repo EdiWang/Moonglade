@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var media = (function () {
@@ -314,7 +314,6 @@ var media = (function () {
       global$2({
         validate: false,
         allow_conditional_comments: true,
-        special: 'script,noscript',
         start: function (name, attrs) {
           if (!data.source1 && name === 'param') {
             data.source1 = attrs.map.movie;
@@ -436,7 +435,6 @@ var media = (function () {
       global$2({
         validate: false,
         allow_conditional_comments: true,
-        special: 'script,noscript',
         comment: function (text) {
           writer.comment(text);
         },
@@ -704,7 +702,7 @@ var media = (function () {
         data.width = data.width || 300;
         data.height = data.height || 150;
         global$1.each(data, function (value, key) {
-          data[key] = editor.dom.encode(value);
+          data[key] = editor.dom.encode('' + value);
         });
         if (data.type === 'iframe') {
           return getIframeHtml(data);
@@ -1024,7 +1022,6 @@ var media = (function () {
       global$2({
         validate: false,
         allow_conditional_comments: false,
-        special: 'script,noscript',
         comment: function (text) {
           writer.comment(text);
         },
@@ -1252,7 +1249,7 @@ var media = (function () {
           }
         });
       });
-      editor.on('setContent', function () {
+      editor.on('SetContent', function () {
         editor.$('span.mce-preview-object').each(function (index, elm) {
           var $elm = editor.$(elm);
           if ($elm.find('span.mce-shim', elm).length === 0) {
@@ -1288,7 +1285,7 @@ var media = (function () {
           e.preventDefault();
         }
       });
-      editor.on('objectResized', function (e) {
+      editor.on('ObjectResized', function (e) {
         var target = e.target;
         var html;
         if (target.getAttribute('data-mce-object')) {

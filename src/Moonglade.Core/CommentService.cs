@@ -19,7 +19,7 @@ namespace Moonglade.Core
 {
     public class CommentService : MoongladeService
     {
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
 
         private readonly IRepository<Comment> _commentRepository;
 
@@ -28,7 +28,7 @@ namespace Moonglade.Core
         public CommentService(
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             IRepository<Comment> commentRepository,
             IRepository<CommentReply> commentReplyRepository) : base(logger, settings)

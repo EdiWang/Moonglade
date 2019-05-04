@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var autoresize = (function () {
@@ -136,7 +136,7 @@ var autoresize = (function () {
           'min-height': 0
         });
       });
-      editor.on('nodechange setcontent keyup FullscreenStateChanged', function (e) {
+      editor.on('NodeChange SetContent keyup FullscreenStateChanged', function (e) {
         resize(editor, oldSize);
       });
       if (Settings.shouldAutoResizeOnInit(editor)) {

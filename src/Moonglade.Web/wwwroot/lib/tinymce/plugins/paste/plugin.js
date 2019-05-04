@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var paste = (function (domGlobals) {
@@ -1350,7 +1350,7 @@ var paste = (function (domGlobals) {
         if (!editor.settings.paste_data_images && isPasteInsert(args)) {
           var i = nodes.length;
           while (i--) {
-            src = nodes[i].attributes.map.src;
+            src = nodes[i].attr('src');
             if (!src) {
               continue;
             }
@@ -1481,7 +1481,7 @@ var paste = (function (domGlobals) {
 
     var Clipboard = function (editor, pasteFormat) {
       var pasteBin = PasteBin(editor);
-      editor.on('preInit', function () {
+      editor.on('PreInit', function () {
         return registerEventsAndFilters(editor, pasteBin, pasteFormat);
       });
       return {

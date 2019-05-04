@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class BlogConfig
+    public class BlogConfig : IBlogConfig
     {
         public BlogOwnerSettings BlogOwnerSettings { get; set; }
 

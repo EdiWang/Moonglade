@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var fullpage = (function (domGlobals) {
@@ -290,7 +290,6 @@ var fullpage = (function (domGlobals) {
       html = global$4({
         validate: false,
         indent: true,
-        apply_source_formatting: true,
         indent_before: 'head,html,body,meta,title,script,link,style',
         indent_after: 'head,html,body,meta,title,script,link,style'
       }).serialize(headerFragment);

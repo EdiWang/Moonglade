@@ -16,7 +16,7 @@ namespace Moonglade.Web.Controllers
 {
     public class SearchController : MoongladeController
     {
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
 
         private readonly PostService _postService;
 
@@ -24,7 +24,7 @@ namespace Moonglade.Web.Controllers
             ILogger<OpmlController> logger,
             IOptions<AppSettings> settings,
             PostService postService,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
             : base(logger, settings)
         {

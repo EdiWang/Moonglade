@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var spellchecker = (function (domGlobals) {
@@ -408,14 +408,14 @@ var spellchecker = (function (domGlobals) {
           content_type: 'application/x-www-form-urlencoded',
           data: postData,
           success: function (result) {
-            result = JSON.parse(result);
-            if (!result) {
+            var parseResult = JSON.parse(result);
+            if (!parseResult) {
               var message = editor.translate('Server response wasn\'t proper JSON.');
               errorCallback(message);
-            } else if (result.error) {
-              errorCallback(result.error);
+            } else if (parseResult.error) {
+              errorCallback(parseResult.error);
             } else {
-              doneCallback(result);
+              doneCallback(parseResult);
             }
           },
           error: function () {

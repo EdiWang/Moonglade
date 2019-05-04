@@ -25,7 +25,7 @@ namespace Moonglade.Web.Controllers
 
         private readonly IAsyncImageStorageProvider _imageStorageProvider;
 
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
 
         public ImageController(
             ILogger<ImageController> logger,
@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
             IMemoryCache memoryCache,
             IAsyncImageStorageProvider imageStorageProvider,
             ISessionBasedCaptcha captcha,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
             : base(logger, settings, memoryCache: memoryCache)
         {
@@ -189,7 +189,7 @@ namespace Moonglade.Web.Controllers
             {
                 try
                 {
-                    var avatarEntry = Cache.GetOrCreate("avatar", entry =>
+                    var avatarEntry = Cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
                     {
                         Logger.LogTrace("Avatar not on cache, getting new avatar image...");
                         var avatarBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);

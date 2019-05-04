@@ -42,5 +42,38 @@ namespace Moonglade.Tests
             Assert.IsTrue(tag1 == "dotnet-core");
             Assert.IsTrue(tag2 == "csharp");
         }
+
+        [Test]
+        public void TryParseBase64Success()
+        {
+            bool ok = Utils.TryParseBase64("xDgItVa0ujLKxGsoMV1+MmxBrpo997mXbeXngqIx13o=", out var base64);
+            Assert.IsTrue(ok);
+            Assert.IsNotNull(base64);
+        }
+
+        [Test]
+        public void TryParseBase64Fail()
+        {
+            bool ok = Utils.TryParseBase64("Learn Java and work 996!", out var base64);
+            Assert.IsFalse(ok);
+            Assert.IsNull(base64);
+        }
+
+        [Test]
+        public void TestReplaceImgSrc()
+        {
+            var html = @"<p>Work 996 and have some fu bao!</p><img src=""icu.jpg"" /><video src=""java996.mp4""></video>";
+            var result = Utils.ReplaceImgSrc(html);
+            Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img data-src=""icu.jpg"" /><video src=""java996.mp4""></video>");
+        }
+
+        [Test]
+        public void TestMdContentToHtml()
+        {
+            string md = "A quick brown **fox** jumped over the lazy dog.";
+            string result = Utils.MdContentToHtml(md);
+
+            Assert.IsTrue(result == "<p>A quick brown <strong>fox</strong> jumped over the lazy dog.</p>\n");
+        }
     }
 }

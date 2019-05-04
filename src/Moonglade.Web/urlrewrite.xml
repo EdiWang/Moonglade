@@ -17,17 +17,13 @@
       </conditions>
       <action type="Rewrite" url="/images/no_hotlinking.png"/>
     </rule>
-    <rule name="RemoveTrailingSlashRule" stopProcessing="true">
-      <match url="(.*)/$"/>
-      <conditions>
-        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true"/>
-        <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true"/>
-      </conditions>
-      <action type="Redirect" url="{R:1}"/>
-    </rule>
     <rule name="Migrate Subscription RSS" stopProcessing="true">
       <match url="subscription/rss" />
       <action type="Redirect" url="/rss" redirectType="Permanent" />
+    </rule>
+    <rule name="Migrate Subscription ATOM" stopProcessing="true">
+      <match url="subscription/atom" />
+      <action type="Redirect" url="/atom" redirectType="Permanent" />
     </rule>
   </rules>
 </rewrite>

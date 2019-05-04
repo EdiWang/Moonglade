@@ -23,13 +23,13 @@ namespace Moonglade.Core
 
         private IEmailHelper EmailHelper { get; }
 
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
 
         public EmailService(
             ILogger<EmailService> logger,
             IOptions<AppSettings> settings,
             IHostingEnvironment env,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             IRepository<Post> postRepository) : base(logger, settings)
         {
@@ -88,7 +88,7 @@ namespace Moonglade.Core
                     return new SuccessResponse();
                 }
 
-                return new FailedResponse((int)ResponseFailureCode.EmailSendingDisabled);
+                return new FailedResponse((int)ResponseFailureCode.EmailSendingDisabled, "Email sending is disabled.");
             }
             catch (Exception e)
             {

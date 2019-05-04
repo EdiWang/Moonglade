@@ -17,7 +17,7 @@ namespace Moonglade.Core
 {
     public class SyndicationService : MoongladeService
     {
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
 
         private readonly string _baseUrl;
 
@@ -28,7 +28,7 @@ namespace Moonglade.Core
         public SyndicationService(
             ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService,
             IHttpContextAccessor httpContextAccessor,
             IRepository<Category> categoryRepository,

@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.3 (2019-03-19)
+ * Version: 5.0.4 (2019-04-23)
  */
 (function () {
 var help = (function () {
@@ -620,6 +620,26 @@ var help = (function () {
       {
         key: 'mediaembed',
         name: 'Enhanced Media Embed*'
+      },
+      {
+        key: 'checklist',
+        name: 'Checklist*'
+      },
+      {
+        key: 'casechange',
+        name: 'Case Change*'
+      },
+      {
+        key: 'permanentpen',
+        name: 'Permanent Pen*'
+      },
+      {
+        key: 'pageembed',
+        name: 'Page Embed*'
+      },
+      {
+        key: 'tinycomments',
+        name: 'Tiny Comments*'
       }
     ];
     var PluginUrls = { urls: urls };
@@ -629,6 +649,8 @@ var help = (function () {
         var premiumPlugins = [
           'Accessibility Checker',
           'Advanced Code Editor',
+          'Case Change',
+          'Checklist',
           'Tiny Comments',
           'Tiny Drive',
           'Enhanced Media Embed',
@@ -636,6 +658,8 @@ var help = (function () {
           'Link Checker',
           'Mentions',
           'MoxieManager',
+          'Page Embed',
+          'Permanent Pen',
           'PowerPaste',
           'Spell Checker Pro'
         ];

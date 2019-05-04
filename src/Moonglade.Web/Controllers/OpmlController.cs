@@ -15,12 +15,12 @@ namespace Moonglade.Web.Controllers
     public class OpmlController : MoongladeController
     {
         private readonly CategoryService _categoryService;
-        private readonly BlogConfig _blogConfig;
+        private readonly IBlogConfig _blogConfig;
 
         public OpmlController(
             ILogger<OpmlController> logger,
             CategoryService categoryService,
-            BlogConfig blogConfig,
+            IBlogConfig blogConfig,
             BlogConfigurationService blogConfigurationService)
             : base(logger)
         {
