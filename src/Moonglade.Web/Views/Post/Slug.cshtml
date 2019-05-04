@@ -102,7 +102,7 @@
         <div class="d-none d-md-block post-publish-info mb-2">
             <strong class="text-muted">
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
-                 / UTC +@Settings.Value.TimeZone
+                / UTC +@Settings.Value.TimeZone
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
                     <span>(Last Edit @Model.PostModel.LastModifyOnUtc.Value.ToString("yyyy/M/d HH:mm"))</span>
@@ -261,9 +261,7 @@
     @if (Model.PostModel.CommentCount > 0)
     {
         <section id="comments-list">
-            <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-route="slug">
-                @await Component.InvokeAsync("PostCommentList", new { postId = @Model.PostModel.PostId })
-            </cache>
+            @await Component.InvokeAsync("PostCommentList", new { postId = @Model.PostModel.PostId })
         </section>
     }
 </div>

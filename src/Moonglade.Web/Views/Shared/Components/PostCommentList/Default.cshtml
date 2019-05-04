@@ -39,11 +39,11 @@
                         <span class="text-muted float-right"> @Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</span>
                     </div>
                     <div class="card-body">
-                        @item.CommentContent
+                        @Html.Raw(Utils.MdContentToHtml(item.CommentContent))
                         <div>
                             @foreach (var reply in item.CommentReply.OrderByDescending(t => t.ReplyTimeUtc))
                             {
-                                <hr />
+                                <hr/>
                                 <div class="reply-container">
                                     <div>
                                         <strong>

@@ -66,5 +66,14 @@ namespace Moonglade.Tests
             var result = Utils.ReplaceImgSrc(html);
             Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img data-src=""icu.jpg"" /><video src=""java996.mp4""></video>");
         }
+
+        [Test]
+        public void TestMdContentToHtml()
+        {
+            string md = "A quick brown **fox** jumped over the lazy dog.";
+            string result = Utils.MdContentToHtml(md);
+
+            Assert.IsTrue(result == "<p>A quick brown <strong>fox</strong> jumped over the lazy dog.</p>\n");
+        }
     }
 }

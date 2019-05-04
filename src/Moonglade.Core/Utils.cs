@@ -4,12 +4,13 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using Markdig;
 
 namespace Moonglade.Core
 {
     public static class Utils
     {
-        public static string AppVersion => 
+        public static string AppVersion =>
             Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
         public static DateTime UtcToZoneTime(DateTime utcTime, int timeZone)
@@ -100,6 +101,13 @@ namespace Moonglade.Core
             var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
             var newStr = imgSrcRegex.Replace(rawHtmlContent, match => match.Value.Replace("src", "data-src"));
             return newStr;
+        }
+
+        public static string MdContentToHtml(string markdown)
+        {
+            var pipeline = new MarkdownPipelineBuilder().DisableHtml().Build();
+            var result = Markdown.ToHtml(markdown, pipeline);
+            return result;
         }
     }
 }
