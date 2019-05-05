@@ -46,7 +46,7 @@ namespace Moonglade.Web.Controllers
         {
             int pagesize = AppSettings.PostListPageSize;
             var postList = await _postService.GetPagedPostsAsync(pagesize, page);
-            var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pagesize, _postService.CountForPublic);
+            var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pagesize, _postService.CountForPublic);
             return View(postsAsIPagedList);
         }
 

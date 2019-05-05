@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
+using Moonglade.Model;
 using Moonglade.Model.Settings;
 using X.PagedList;
 
@@ -56,7 +57,7 @@ namespace Moonglade.Web.Controllers
             var postCount = _categoryService.GetPostCountByCategoryId(cat.Id);
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
-            var postsAsIPagedList = new StaticPagedList<Post>(postList, page, pageSize, postCount);
+            var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pageSize, postCount);
             return View(postsAsIPagedList);
         }
     }

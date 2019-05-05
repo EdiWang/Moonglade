@@ -153,7 +153,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<Post>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null)
+        public Task<IReadOnlyList<PostListItem>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -167,7 +167,18 @@ namespace Moonglade.Core
             }
 
             var spec = new GetPostSpec(pageSize, pageIndex, categoryId);
-            return _postRepository.GetAsync(spec, false);
+            return _postRepository.SelectAsync(spec, p => new PostListItem
+            {
+                Title = p.Title,
+                Slug = p.Slug,
+                ContentAbstract = p.ContentAbstract,
+                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                Tags = p.PostTag.Select(pt => new TagInfo
+                {
+                    NormalizedTagName = pt.Tag.NormalizedName,
+                    TagName = pt.Tag.DisplayName
+                }).ToList()
+            });
         }
 
         public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPostsAsync(int year, int month = 0)
