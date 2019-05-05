@@ -5,7 +5,7 @@
 @using X.PagedList.Mvc.Common
 @using X.PagedList.Mvc.Core
 
-@model X.PagedList.StaticPagedList<Moonglade.Data.Entities.Post>
+@model X.PagedList.StaticPagedList<Moonglade.Model.PostListItem>
 @inject IOptions<AppSettings> Settings
 
 @if (Model.Count == 0)
@@ -19,56 +19,53 @@ else
 {
     foreach (var item in Model)
     {
-        if (null != item.PostPublish.PubDateUtc)
-        {
-            <article class="article-post-summary">
-                <div class="post-date-box d-none d-md-block">
-                    <h1 class="post-date-day">@item.PostPublish.PubDateUtc.Value.Day.ToString("00")</h1>
-                    <div class="post-date-month">
-                        @Utils.UtcToZoneTime(item.PostPublish.PubDateUtc.Value, Settings.Value.TimeZone).ToString("MMM", new CultureInfo("en-US")).ToUpper()
-                    </div>
+        <article class="article-post-summary">
+            <div class="post-date-box d-none d-md-block">
+                <h1 class="post-date-day">@item.PubDateUtc.Day.ToString("00")</h1>
+                <div class="post-date-month">
+                    @Utils.UtcToZoneTime(item.PubDateUtc, Settings.Value.TimeZone).ToString("MMM", new CultureInfo("en-US")).ToUpper()
                 </div>
-                <div class="post-summary-box">
-                    <time datetime="@item.PostPublish.PubDateUtc.Value.ToUniversalTime().ToString("u")" class="none d-none">
-                        @item.PostPublish.PubDateUtc.Value.ToUniversalTime()
-                    </time>
+            </div>
+            <div class="post-summary-box">
+                <time datetime="@item.PubDateUtc.ToString("u")" class="none d-none">
+                    @item.PubDateUtc
+                </time>
 
-                    <h4 class="post-summary-title">
-                        <a asp-controller="Post" asp-action="Slug"
-                           asp-route-year="@item.PostPublish.PubDateUtc.Value.Year"
-                           asp-route-month="@item.PostPublish.PubDateUtc.Value.Month"
-                           asp-route-day="@item.PostPublish.PubDateUtc.Value.Day"
-                           asp-route-slug="@item.Slug"
-                           title="@item.PostExtension.Hits Reads">
-                            @item.Title
+                <h4 class="post-summary-title">
+                    <a asp-controller="Post" asp-action="Slug"
+                       asp-route-year="@item.PubDateUtc.Year"
+                       asp-route-month="@item.PubDateUtc.Month"
+                       asp-route-day="@item.PubDateUtc.Day"
+                       asp-route-slug="@item.Slug">
+                        @item.Title
+                    </a>
+                </h4>
+
+                <p class="post-summary-text">@(item.ContentAbstract)...</p>
+
+                <div class="post-summary-tags">
+                    @foreach (var tag in item.Tags)
+                    {
+                        <a asp-controller="Tags"
+                           asp-action="List"
+                           asp-route-normalizedName="@tag.NormalizedTagName"
+                           class="post-summary-tag">
+                            @tag.TagName
                         </a>
-                    </h4>
-
-                    <p class="post-summary-text">@(item.ContentAbstract)...</p>
-
-                    <div class="post-summary-tags">
-                        @foreach (var tag in item.PostTag.Select(pt => pt.Tag))
-                        {
-                            <a asp-controller="Tags"
-                               asp-action="List"
-                               asp-route-normalizedName="@tag.NormalizedName"
-                               class="post-summary-tag">
-                                @tag.DisplayName
-                            </a>
-                        }
-                    </div>
+                    }
                 </div>
-            </article>
-            <div class="mb-4 d-none d-md-block"></div>
-            <hr class="d-none d-md-block" />
-        }
+            </div>
+        </article>
+        <div class="mb-4 d-none d-md-block"></div>
+        <hr class="d-none d-md-block" />
+
     }
 
     @Html.PagedListPager(Model, page => $"?page={page}", new PagedListRenderOptions
     {
-        LiElementClasses  = new [] { "page-item" },
-        PageClasses= new [] { "page-link" },
-        UlElementClasses = new [] { "pagination justify-content-end" },
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+        UlElementClasses = new[] { "pagination justify-content-end" },
         MaximumPageNumbersToDisplay = 5,
         DisplayEllipsesWhenNotShowingAllPageNumbers = false
     })

@@ -16,7 +16,7 @@ Moonglade is the new blog system for https://edi.wang, It is a complete rewrite 
 
 This is **NOT a general purpose blog system** like WordPress or other CMS. Currently it contains content "hard coded" for https://edi.wang. To make it yours, you will need to change a certain amount of code.
 
-*I am generalizing the system piece by piece. But there are no specific plans and scopes currently.*
+> I am generalizing the system piece by piece. But there are no specific plans and scopes currently.
 
 ## Build and Run
 
@@ -31,58 +31,51 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 This blog is using [Azure AD](https://azure.microsoft.com/en-us/services/active-directory/) to sign in to admin portal. Local authentication provider is pretending to be implmented. 
 
 Register an App in **Azure Active Directory**
-- Set Redirection URI to **"https://localhost:5001/signin-oidc"**
-- Add Redirection URI for your other domain names if needed.
-- Copy "**appId**" to set as **AzureAd:ClientId** in appsettings.[env].json file
+- Set Redirection URI to **"https://yourdomain/signin-oidc"**
+  - For local debugging, set URL to https://localhost:5001/signin-oidc
+- Copy "**appId**" to set as **AzureAd:ClientId** in **appsettings.[env].json** file
 
-Example Reply URL Configuration
-```
-"replyUrlsWithType": [
-{
-    "url": "https://localhost:5001/signin-oidc",
-    "type": "Web"
-},
-{
-    "url": "https://edi.wang/signin-oidc",
-    "type": "Web"
-}]
+```json
+"Authentication": {
+  "Provider": "AzureAd",
+  "AzureAd": {
+    "Domain": "{YOUR-VALUE}",
+    "TenantId": "{YOUR-VALUE}",
+    "ClientId": "{YOUR-VALUE}",
+  }
+}
 ```
 
 ### Setup Database
 
-1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database 
-
-2. Execute script  **"Database\schema-mssql-140.sql"** 
-
-*You may need to grant permission to the database for your machine or service account depends on your server configuration*
-
-### Build Source
-
-1. Create a "**appsettings.Development.json**" under "**src\Moonglade.Web**", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
+1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database and run **"Database\schema-mssql-140.sql"** 
 
 2. Update the connection string "**MoongladeDatabase**" in **appsettings.[env].json** according to your database configuration.
 
-3. Build and run **Moonglade.sln**, startup project is **Moonglade.Web**
+Example:
+```json
+"ConnectionStrings": {
+  "MoongladeDatabase": "Server=(local);Database=moonglade-dev;Trusted_Connection=True;"
+}
+```
+
+### Build Source
+
+1. Create an "**appsettings.Development.json**" under "**src\Moonglade.Web**", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
+
+2. Build and run **Moonglade.sln**
 
 ### Configuration
 
-Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
-
-#### Email Password Encryption
-
-**Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
-
-*The blog will try to generate a pair of Key and IV on first run, and write values into appsettings.**[Current Environment]**.json only. This means the application directory **must NOT be read only**. You'll have to set keys manully if you must use a read only deployment.*
-
-To get a random generated key, access URL "/admin/settings/generate-new-aes-keys".
+> Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
 #### Image Storage
-**AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built in options:
+**AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built-in options:
 
-**Preferred: Azure Blob Storage**
+**Preferred: [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/)**
 
-You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with container level permission. 
-```
+You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with **container level permission**. 
+```json
 "Provider": "azurestorage"
 "AzureStorageSettings": {
   "ConnectionString": "YOUR CONNECTION STRING",
@@ -92,13 +85,21 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 
 **Alternative: File System**
 
-```
+```json
 "Provider": "filesystem",
 "FileSystemSettings": {
   "Path": "${basedir}\\UploadedImages"
 }
 ```
-The Path can be relative or absolute. "$\{basedir\}" represents the website's current directory. Storing images files under website directory is not recommended. 
+The **Path** can be relative or absolute. **"$\{basedir\}"** represents the website's current directory. Storing images files under website directory is NOT recommended. 
+
+#### Email Password Encryption
+
+**Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
+
+*The blog will try to generate a pair of Key and IV on first run, and write values into appsettings.**[Current Environment]**.json only. This means the application directory **must NOT be read only**. You'll have to set keys manully if you must use a read only deployment.*
+
+To get a random generated key, access URL "/admin/settings/generate-new-aes-keys".
 
 #### Robots.txt
 
@@ -130,6 +131,12 @@ DisableEmailSendingInDevelopment | When debugging locally, do not send email for
 ### URL Rewrite
 
 The only built-in rule is removing trailing slash in URLs. For other rules, you can customize by editing "\src\Moonglade.Web\urlrewrite.xml" according to [IIS URL Rewrite Module configuration](https://www.iis.net/downloads/microsoft/url-rewrite)
+
+### FAQ
+
+- How and why is this blog coupled with Microsoft Azure?
+  - Azure AD Authentication is the ONLY piece currently coupled with 
+Azure, once local authentication provider is implemented, this blog system will decouple with Azure. For other part of the blog system, like Image Storage, you don't have to use Azure already. But the entire system works best on Azure.
 
 ### Optional Recommendations
 - [Microsoft Azure DNS Zones](https://azure.microsoft.com/en-us/services/dns/)

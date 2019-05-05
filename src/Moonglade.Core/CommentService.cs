@@ -88,60 +88,54 @@ namespace Moonglade.Core
             return comments;
         }
 
-        public Response SetApprovalStatus(Guid commentId, bool isApproved)
+        public async Task<Response> ApproveComments(Guid[] commentIds)
         {
             try
             {
-                var comment = _commentRepository.Get(commentId);
-                if (null != comment)
+                if (null == commentIds || !commentIds.Any())
                 {
-                    int rows;
-                    if (isApproved)
-                    {
-                        Logger.LogInformation($"Approve comment {commentId}");
-                        comment.IsApproved = true;
-                        rows = _commentRepository.Update(comment);
-                    }
-                    else
-                    {
-                        Logger.LogInformation($"Disapprove and delete comment {commentId}");
-                        rows = _commentRepository.Delete(comment);
-                    }
-
-                    return new Response(rows > 0);
+                    throw new ArgumentNullException(nameof(commentIds));
                 }
-                return new FailedResponse((int)ResponseFailureCode.CommentNotFound);
+
+                var spec = new CommentInIdSpec(commentIds);
+                var comments = await _commentRepository.GetAsync(spec);
+                foreach (var cmt in comments)
+                {
+                    cmt.IsApproved = true;
+                    await _commentRepository.UpdateAsync(cmt);
+                }
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(SetApprovalStatus)}");
+                Logger.LogError(e, $"Error {nameof(ApproveComments)}");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
 
-        public Response Delete(Guid commentId)
+        public async Task<Response> DeleteComments(Guid[] commentIds)
         {
             try
             {
-                var comment = _commentRepository.Get(commentId);
-                if (null != comment)
+                var spec = new CommentInIdSpec(commentIds);
+                var comments = await _commentRepository.GetAsync(spec);
+                foreach (var cmt in comments)
                 {
                     // 1. Delete all replies
-                    var cReplies = _commentReplyRepository.Get(new CommentReplySpec(commentId));
+                    var cReplies = await _commentReplyRepository.GetAsync(new CommentReplySpec(cmt.Id));
                     if (cReplies.Any())
                     {
                         _commentReplyRepository.Delete(cReplies);
                     }
 
                     // 2. Delete comment itself
-                    var rows = _commentRepository.Delete(comment);
-                    return new Response(rows > 0);
+                    _commentRepository.Delete(cmt);
                 }
-                return new FailedResponse((int)ResponseFailureCode.CommentNotFound);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(Delete)}(commentId: {commentId})");
+                Logger.LogError(e, $"Error {nameof(DeleteComments)}()");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException);
             }
         }
