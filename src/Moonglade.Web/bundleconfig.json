@@ -2,7 +2,7 @@
   {
     "outputFileName": "wwwroot/css/tinymce-editor-bs-bundle.css",
     "inputFiles": [
-      "wwwroot/lib/twitter-bootstrap/css/bootstrap.css",
+      "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
       "wwwroot/css/src/tinymce-editor-content.css"
     ]
   },
@@ -12,8 +12,7 @@
       "wwwroot/lib/jquery/jquery.min.js",
       "wwwroot/lib/jquery-validate/jquery.validate.min.js",
       "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
-      "wwwroot/lib/popper.js/umd/popper.min.js",
-      "wwwroot/lib/twitter-bootstrap/js/bootstrap.min.js",
+      "wwwroot/lib/twitter-bootstrap/js/bootstrap.bundle.min.js",
       "wwwroot/lib/jquery-qrcode/jquery.qrcode.min.js",
       "wwwroot/lib/toastr.js/toastr.min.js",
       "wwwroot/js/app/moonglade-base.js",
