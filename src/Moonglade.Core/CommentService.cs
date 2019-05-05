@@ -53,7 +53,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetRecentCommentsAsync)}");
-                return new FailedResponse<IReadOnlyList<Comment>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<Comment>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 

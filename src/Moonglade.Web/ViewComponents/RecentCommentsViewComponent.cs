@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Data.Entities;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
@@ -27,8 +25,9 @@ namespace Moonglade.Web.ViewComponents
             {
                 return View(response.Item);
             }
-            // should not block website
-            return View(new List<Comment>());
+
+            ViewBag.ComponentErrorMessage = response.Message;
+            return View("~/Views/Shared/ComponentError.cshtml");
         }
     }
 }
