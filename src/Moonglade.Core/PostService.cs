@@ -167,7 +167,7 @@ namespace Moonglade.Core
             }
 
             var spec = new GetPostSpec(pageSize, pageIndex, categoryId);
-            return _postRepository.GetAsync(spec);
+            return _postRepository.GetAsync(spec, false);
         }
 
         public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPostsAsync(int year, int month = 0)
