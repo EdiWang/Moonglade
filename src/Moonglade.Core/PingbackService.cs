@@ -93,7 +93,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(SavePingbackRecord)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -124,7 +124,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError($"Error ${nameof(DeleteReceivedPingback)}(pingbackId: {pingbackId})", e);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 

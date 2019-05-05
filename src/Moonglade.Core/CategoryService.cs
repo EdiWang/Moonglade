@@ -38,7 +38,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetAllCategoriesAsync)}");
-                return new FailedResponse<IReadOnlyList<Category>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<Category>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetCategoryAsync)}");
-                return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetCategoryAsync)}");
-                return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetCategoryListAsync)}");
-                return new FailedResponse<IReadOnlyList<CategoryInfo>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<CategoryInfo>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -127,7 +127,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetArchiveListAsync)}");
-                return new FailedResponse<IReadOnlyList<ArchiveItem>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<ArchiveItem>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -148,7 +148,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(CreateCategory)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 

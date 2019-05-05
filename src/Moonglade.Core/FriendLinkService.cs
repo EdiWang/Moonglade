@@ -33,7 +33,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetFriendLinkAsync)}");
-                return new FailedResponse<FriendLink>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<FriendLink>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetAllFriendLinksAsync)}");
-                return new FailedResponse<IReadOnlyList<FriendLink>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<FriendLink>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(AddFriendLinkAsync)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(DeleteFriendLinkAsync)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -134,7 +134,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(UpdateFriendLinkAsync)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
     }

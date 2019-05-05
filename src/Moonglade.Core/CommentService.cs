@@ -109,7 +109,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(ApproveComments)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(DeleteComments)}()");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -193,7 +193,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(NewComment)}");
-                return new FailedResponse<Comment>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<Comment>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -247,7 +247,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(NewReply)}");
-                return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
     }
