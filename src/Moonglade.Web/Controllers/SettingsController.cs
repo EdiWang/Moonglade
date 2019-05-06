@@ -66,6 +66,7 @@ namespace Moonglade.Web.Controllers
                 MetaKeyword = _blogConfig.GeneralSettings.MetaKeyword,
                 SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
                 Copyright = _blogConfig.GeneralSettings.Copyright.Replace("&copy;", "[c]"),
+                SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
                 DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
                 EnableComments = _blogConfig.ContentSettings.EnableComments,
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
@@ -85,6 +86,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
                 _blogConfig.GeneralSettings.Copyright = model.Copyright.Replace("[c]", "&copy;");
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
+                _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
                 _blogConfigurationService.SaveConfiguration(_blogConfig.GeneralSettings);
 
                 _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;

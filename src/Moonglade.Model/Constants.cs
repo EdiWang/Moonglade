@@ -16,7 +16,7 @@
 
         public static string BlogOwnerSettingsDefaultValue = @"{""Name"":""Admin"",""Description"":""Moonglade Admin"",""ShortDescription"":""Moonglade Admin"",""AvatarBase64"":""""}";
 
-        public static string GeneralSettingsDefaultValue = @"{""SiteTitle"":""Moonglade"",""LogoText"":""moonglade"",""MetaKeyword"":""moonglade"",""Copyright"":""&copy; 2019""}";
+        public static string GeneralSettingsDefaultValue = @"{""SiteTitle"":""Moonglade"",""LogoText"":""moonglade"",""MetaKeyword"":""moonglade"",""Copyright"":""&copy; 2019"",""SideBarCustomizedHtmlPitch"":""""}";
 
         public static string ContentSettingsDefaultValue = @"{""EnableComments"":true,""DisharmonyWords"":""fuck|shit""}";
 

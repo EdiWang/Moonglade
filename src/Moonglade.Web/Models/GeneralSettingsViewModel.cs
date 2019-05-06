@@ -41,5 +41,8 @@ namespace Moonglade.Web.Models
         [Required]
         [Display(Name = "Blogger Short Description")]
         public string BloggerShortDescription { get; set; }
+
+        [Display(Name = "Side Bar Customized Html Pitch")]
+        public string SideBarCustomizedHtmlPitch { get; set; }
     }
 }

@@ -33,9 +33,10 @@
         </div>
     </section>
 
-    <section class="mvp-link mb-4">
-        <img src="https://ediwangstorage.blob.core.windows.net/web-assets/mvp-logo.svg" class="img-fluid" />
-    </section>
+    @if(!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch))
+    {
+        @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
+    }
 
     <section class="top-tags mb-4">
         <div class="card">
