@@ -51,8 +51,8 @@ namespace Moonglade.Web.Controllers
             return View();
         }
 
-        [HttpPost]
-        [Route("signin")]
+        [HttpPost("signin")]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(SignInViewModel model)
         {
