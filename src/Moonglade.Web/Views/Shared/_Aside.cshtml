@@ -47,4 +47,13 @@
             </div>
         </div>
     </section>
+
+    <section class="cat-list mb-4">
+        <div class="card">
+            <div class="card-header">All Categories</div>
+            <cache expires-after="@TimeSpan.FromMinutes(60)">
+                @await Component.InvokeAsync("CategoryList")
+            </cache>
+        </div>
+    </section>
 </aside>
