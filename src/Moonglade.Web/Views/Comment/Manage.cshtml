@@ -2,7 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@model X.PagedList.StaticPagedList<Moonglade.Data.Entities.Comment>
+@model X.PagedList.StaticPagedList<Moonglade.Model.CommentListItem>
 @using Microsoft.Extensions.Options
 @using Moonglade.Core
 @using Moonglade.Model.Settings
@@ -17,32 +17,26 @@
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
-                $("#span-processing-" + cid).show();
+                $(`#span-processing-${cid}`).show();
                 ajaxPostWithCSRFToken("delete", { commentId: cid }, function (data) {
-                    $("#panel-comment-" + data).slideUp();
+                    $(`#panel-comment-${data}`).slideUp();
                 });
             });
 
             $(".btn-reply").click(function () {
                 var cid = $(this).data("commentid");
-                $("#panel-comment-" + cid + " .reply-ui").show();
+                $(`#panel-comment-${cid} .reply-ui`).show();
             });
 
             $(".btn-reply-post").click(function () {
                 var cid = $(this).data("commentid");
-                var replyContent = $("#replycontent-" + cid).val();
+                var replyContent = $(`#replycontent-${cid}`).val();
 
                 ajaxPostWithCSRFToken("reply", { commentId: cid, replyContent: replyContent }, function (data) {
-                    $("#panel-comment-" + data.commentId + " .reply-ui").slideUp();
-                    $("#panel-comment-" + data.commentId + " .reply-list").prepend(
-                        '<hr />' +
-                        '<div class="reply-container">' +
-                        '<div>' +
-                        '<strong>Edi Wang</strong>' +
-                        '<span class="pull-right text-muted">' + data.replyTimeUtc + '</span>' +
-                        '</div>' +
-                        '<p>' + data.replyContent + '</p>' +
-                        '</div>');
+                    $(`#panel-comment-${data.commentId} .reply-ui`).slideUp();
+                    $(`#panel-comment-${data.commentId} .reply-list`).prepend(
+                        `<hr /><div class="reply-container"><div><strong>Edi Wang</strong><span class="pull-right text-muted">${data.replyTimeUtc
+                        }</span></div><p>${data.replyContent}</p></div>`);
                 });
             });
         });
@@ -74,7 +68,7 @@
 }
 else
 {
-    foreach (var item in Model.Where(c => c.IsApproved))
+    foreach (var item in Model)
     {
         <div id="panel-comment-@item.Id" class="card mb-4">
             <div class="card-header">
@@ -82,7 +76,7 @@ else
                     <i class="fas fa-user"></i>
                     @item.Username
                 </strong>
-                <span class="text-muted d-none d-sm-inline">@item.IPAddress</span>
+                <span class="text-muted d-none d-sm-inline">@item.IpAddress</span>
                 <a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>
                 <span class="text-muted float-right">@Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span>
             </div>
@@ -92,7 +86,7 @@ else
                 <div>
                     <strong>
                         <i class="fas fa-bookmark"></i>
-                        @item.Post.Title
+                        @item.PostTitle
                     </strong>
 
                     <div class="float-right">
@@ -120,13 +114,13 @@ else
                 </div>
 
                 <div class="reply-list">
-                    @foreach (var reply in item.CommentReply.OrderByDescending(t => t.ReplyTimeUtc))
+                    @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
                     {
                         <hr />
                         <div class="reply-container">
                             <div>
                                 <strong>Edi Wang</strong>
-                                <span class="float-right text-muted">@Utils.UtcToZoneTime(reply.ReplyTimeUtc.GetValueOrDefault(), Settings.Value.TimeZone)</span>
+                                <span class="float-right text-muted">@Utils.UtcToZoneTime(reply.ReplyTimeUtc, Settings.Value.TimeZone)</span>
                             </div>
                             <p>
                                 @reply.ReplyContent

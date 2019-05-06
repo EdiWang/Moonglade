@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Moonglade.Model
 {
-    public class CommentGridModel
+    public class CommentListItem
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
@@ -11,5 +12,13 @@ namespace Moonglade.Model
         public string CommentContent { get; set; }
         public string PostTitle { get; set; }
         public DateTime CreateOnUtc { get; set; }
+        public IReadOnlyList<CommentReplyItem> CommentReplies { get; set; }
+    }
+
+    public class CommentReplyItem
+    {
+        public DateTime ReplyTimeUtc { get; set; }
+
+        public string ReplyContent { get; set; }
     }
 }

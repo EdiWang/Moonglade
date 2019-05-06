@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Data.Entities;
+using Moonglade.Model;
 using X.PagedList;
 
 namespace Moonglade.Web.Controllers
@@ -17,7 +17,7 @@ namespace Moonglade.Web.Controllers
             const int pageSize = 20;
             var commentList = await _commentService.GetPagedCommentAsync(pageSize, page);
             var commentsAsIPagedList =
-                new StaticPagedList<Comment>(commentList, page, pageSize, _commentService.CountForApproved);
+                new StaticPagedList<CommentListItem>(commentList, page, pageSize, _commentService.CountForApproved);
             return View(commentsAsIPagedList);
         }
 

@@ -46,9 +46,9 @@ namespace Moonglade.Core
             return _commentRepository.Get(new CommentOfPostSpec(postId), false);
         }
 
-        public IReadOnlyList<CommentGridModel> GetPendingApprovalComments()
+        public IReadOnlyList<PendingApprovalComment> GetPendingApprovalComments()
         {
-            return _commentRepository.Select(new PendingApprovalCommentSepc(), p => new CommentGridModel
+            return _commentRepository.Select(new PendingApprovalCommentSepc(), p => new PendingApprovalComment
             {
                 Id = p.Id,
                 Username = p.Username,
@@ -60,7 +60,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<IReadOnlyList<Comment>> GetPagedCommentAsync(int pageSize, int pageIndex)
+        public async Task<IReadOnlyList<CommentListItem>> GetPagedCommentAsync(int pageSize, int pageIndex)
         {
             if (pageSize < 1)
             {
@@ -68,7 +68,21 @@ namespace Moonglade.Core
             }
 
             var spec = new PagedCommentSepc(pageSize, pageIndex);
-            var comments = await _commentRepository.GetAsync(spec, false);
+            var comments = await _commentRepository.SelectAsync(spec, p => new CommentListItem
+            {
+                Id = p.Id,
+                CommentContent = p.CommentContent,
+                CreateOnUtc = p.CreateOnUtc,
+                Email = p.Email,
+                IpAddress = p.IPAddress,
+                Username = p.Username,
+                PostTitle = p.Post.Title,
+                CommentReplies = p.CommentReply.Select(cr => new CommentReplyItem
+                {
+                    ReplyContent = cr.ReplyContent,
+                    ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
+                }).ToList()
+            });
             return comments;
         }
 
