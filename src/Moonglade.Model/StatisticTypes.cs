@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Model
 {
-    public enum StatisticType
+    public enum StatisticTypes
     {
         Hits,
         Likes

@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class PostArchiveItemModel
+    public class PostArchiveItem
     {
         public string Title { get; set; }
 

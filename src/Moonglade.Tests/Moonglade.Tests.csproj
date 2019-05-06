@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
   </ItemGroup>
