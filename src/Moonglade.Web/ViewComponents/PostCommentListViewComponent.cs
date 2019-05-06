@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,7 +19,7 @@ namespace Moonglade.Web.ViewComponents
             _commentService = commentService;
         }
 
-        public IViewComponentResult Invoke(string postId)
+        public async Task<IViewComponentResult> InvokeAsync(string postId)
         {
             try
             {
@@ -28,7 +29,7 @@ namespace Moonglade.Web.ViewComponents
                     return View("Error");
                 }
 
-                var comments = _commentService.GetApprovedCommentsOfPost(id);
+                var comments = await _commentService.GetApprovedCommentsOfPostAsync(id);
                 return View(comments);
             }
             catch (Exception e)

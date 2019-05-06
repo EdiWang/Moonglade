@@ -2,7 +2,7 @@
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
-Moonglade is the new blog system for https://edi.wang, It is a complete rewrite of the old system using [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
+Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
 
 ![image](https://ediwangstorage.blob.core.windows.net/web-assets/ediwang-azure-arch.png?date=20190413)
 
@@ -25,26 +25,6 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 - [Visual Studio 2019](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
 - [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) or [SQL Server 2017](https://www.microsoft.com/en-us/sql-server/sql-server-2017)
 - [Microsoft Azure Subscription](https://azure.microsoft.com/)
-
-### Setup Azure Active Directory
-
-This blog is using [Azure AD](https://azure.microsoft.com/en-us/services/active-directory/) to sign in to admin portal. Local authentication provider is pretending to be implmented. 
-
-Register an App in **Azure Active Directory**
-- Set Redirection URI to **"https://yourdomain/signin-oidc"**
-  - For local debugging, set URL to https://localhost:5001/signin-oidc
-- Copy "**appId**" to set as **AzureAd:ClientId** in **appsettings.[env].json** file
-
-```json
-"Authentication": {
-  "Provider": "AzureAd",
-  "AzureAd": {
-    "Domain": "{YOUR-VALUE}",
-    "TenantId": "{YOUR-VALUE}",
-    "ClientId": "{YOUR-VALUE}",
-  }
-}
-```
 
 ### Setup Database
 
@@ -69,10 +49,48 @@ Example:
 
 > Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
+#### Authentication
+
+Configure how to sign in to admin portal.
+
+##### Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))
+
+Register an App in **Azure Active Directory**
+- Set Redirection URI to **"https://yourdomain/signin-oidc"**
+  - For local debugging, set URL to https://localhost:5001/signin-oidc
+- Copy "**appId**" to set as **AzureAd:ClientId** in **appsettings.[env].json** file
+
+```json
+"Authentication": {
+  "Provider": "aad",
+  "AzureAd": {
+    "Domain": "{YOUR-VALUE}",
+    "TenantId": "{YOUR-VALUE}",
+    "ClientId": "{YOUR-VALUE}",
+  }
+}
+```
+
+##### Alternative: Local Account
+
+Set **Authentication:Provider** to **"Local"** and assign a pair of username and password. 
+
+*Currently password is not encrypted, use it at your own risk.*
+
+```json
+"Authentication": {
+  "Provider": "local",
+  "Local": {
+    "Username": "{YOUR-VALUE}",
+    "Password": "{YOUR-VALUE}",
+  }
+}
+```
+
 #### Image Storage
 **AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built-in options:
 
-**Preferred: [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/)**
+**Preferred: [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)**
 
 You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with **container level permission**. 
 ```json
@@ -133,9 +151,13 @@ The only built-in rule is removing trailing slash in URLs. For other rules, you 
 
 ### FAQ
 
-- How and why is this blog coupled with Microsoft Azure?
-  - Azure AD Authentication is the ONLY piece currently coupled with 
-Azure, once local authentication provider is implemented, this blog system will decouple with Azure. For other part of the blog system, like Image Storage, you don't have to use Azure already. But the entire system works best on Azure.
+**Does this blog support upgrade from a lower version?**
+
+It depends on whether the database schema is updated. If the schema is same for a higer version, then the system can be deployed and override old files without problem. If schema changes, you will need to execute **migration.sql** along with the deployment.
+
+**Does this blog coupled with Microsoft Azure?**
+
+No, the system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
 
 ### Optional Recommendations
 - [Microsoft Azure DNS Zones](https://azure.microsoft.com/en-us/services/dns/)

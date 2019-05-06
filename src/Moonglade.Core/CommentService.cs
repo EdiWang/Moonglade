@@ -41,9 +41,19 @@ namespace Moonglade.Core
 
         public int CountForApproved => _commentRepository.Count(c => c.IsApproved);
 
-        public IReadOnlyList<Comment> GetApprovedCommentsOfPost(Guid postId)
+        public Task<IReadOnlyList<PostCommentListItem>> GetApprovedCommentsOfPostAsync(Guid postId)
         {
-            return _commentRepository.Get(new CommentOfPostSpec(postId), false);
+            return _commentRepository.SelectAsync(new CommentOfPostSpec(postId), c => new PostCommentListItem
+            {
+                CommentContent = c.CommentContent,
+                CreateOnUtc = c.CreateOnUtc,
+                Username = c.Username,
+                CommentReplies = c.CommentReply.Select(cr => new CommentReplyItem
+                {
+                    ReplyContent = cr.ReplyContent,
+                    ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
+                }).ToList()
+            });
         }
 
         public IReadOnlyList<PendingApprovalComment> GetPendingApprovalComments()

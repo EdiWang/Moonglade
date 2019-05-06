@@ -1,0 +1,62 @@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using Moonglade.Configuration
+@using Moonglade.Core
+@model SignInViewModel
+@{
+    Layout = null;
+}
+@inject IBlogConfigurationService BlogConfigurationService
+@inject IBlogConfig BlogConfig
+
+@{
+    BlogConfig.Initialize(BlogConfigurationService);
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        Admin Sign In
+    </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <partial name="_Favicons" />
+    <link href="~/css/mooglade-css-bundle.min.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/js/app/app-js-bundle.min.js" asp-append-version="true"></script>
+    <environment exclude="Development">
+        @Html.Raw(JavaScriptSnippet.FullScript)
+    </environment>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-md-4">
+                <div class="card">
+                    <h6 class="card-header">Sign In</h6>
+                    <div class="card-body">
+                        <form method="post">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Username" class="control-label"></label>
+                                <input asp-for="Username" class="form-control" />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Password" class="control-label"></label>
+                                <input asp-for="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <input type="submit" value="Sign In" class="btn btn-success float-right" />
+                        </form>
+                    </div>
+                </div>
+                <p class="text-muted mt-4 small text-center">
+                    @Html.Raw(BlogConfig.GeneralSettings.Copyright) <br />
+                    Moonglade @Utils.AppVersion
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
