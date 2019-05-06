@@ -26,26 +26,6 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 - [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) or [SQL Server 2017](https://www.microsoft.com/en-us/sql-server/sql-server-2017)
 - [Microsoft Azure Subscription](https://azure.microsoft.com/)
 
-### Setup Azure Active Directory
-
-This blog is using [Azure AD](https://azure.microsoft.com/en-us/services/active-directory/) to sign in to admin portal. Local authentication provider is arriving soon. 
-
-Register an App in **Azure Active Directory**
-- Set Redirection URI to **"https://yourdomain/signin-oidc"**
-  - For local debugging, set URL to https://localhost:5001/signin-oidc
-- Copy "**appId**" to set as **AzureAd:ClientId** in **appsettings.[env].json** file
-
-```json
-"Authentication": {
-  "Provider": "AzureAd",
-  "AzureAd": {
-    "Domain": "{YOUR-VALUE}",
-    "TenantId": "{YOUR-VALUE}",
-    "ClientId": "{YOUR-VALUE}",
-  }
-}
-```
-
 ### Setup Database
 
 1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database and run **"Database\schema-mssql-140.sql"** 
@@ -69,10 +49,52 @@ Example:
 
 > Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
+#### Authentication
+
+Configure how to sign in to admin portal.
+
+##### Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))
+
+This is the most wonderful SSO solution!
+
+Register an App in **Azure Active Directory**
+- Set Redirection URI to **"https://yourdomain/signin-oidc"**
+  - For local debugging, set URL to https://localhost:5001/signin-oidc
+- Copy "**appId**" to set as **AzureAd:ClientId** in **appsettings.[env].json** file
+
+```json
+"Authentication": {
+  "Provider": "aad",
+  "AzureAd": {
+    "Domain": "{YOUR-VALUE}",
+    "TenantId": "{YOUR-VALUE}",
+    "ClientId": "{YOUR-VALUE}",
+  }
+}
+```
+
+##### Alternative: Local Account
+
+> Currently under construction. Local authentication provider is arriving soon. 
+
+Set **Authentication:Provider** to **"Local"** and assign a pair of username and password. 
+
+*Currently password is not encrypted, use it at your own risk.*
+
+```json
+"Authentication": {
+  "Provider": "local",
+  "Local": {
+    "Username": "{YOUR-VALUE}",
+    "Password": "{YOUR-VALUE}",
+  }
+}
+```
+
 #### Image Storage
 **AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built-in options:
 
-**Preferred: [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/)**
+**Preferred: [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)**
 
 You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with **container level permission**. 
 ```json

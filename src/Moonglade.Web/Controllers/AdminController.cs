@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Model;
+using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
@@ -68,24 +69,29 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // TODO: Perform Auth logic
-
-                    var claims = new List<Claim>
+                    if (AppDomain.CurrentDomain.GetData("LocalAccountInfo") is LocalAccountInfo accountInfo && 
+                        (model.Username == accountInfo.Username && model.Password == accountInfo.Password))
                     {
-                        new Claim("name", model.Username),
-                        new Claim("role", "Administrator")
-                    };
-                    var ci = new ClaimsIdentity(claims, "Password", "name", "role");
-                    var p = new ClaimsPrincipal(ci);
-                    await HttpContext.SignInAsync(Constants.CookieAuthSchemeName, p);
-                    Logger.LogInformation($@"Authentication success for local account ""{model.Username}""");
+                        var claims = new List<Claim>
+                        {
+                            new Claim("name", model.Username),
+                            new Claim("role", "Administrator")
+                        };
+                        var ci = new ClaimsIdentity(claims, "Password", "name", "role");
+                        var p = new ClaimsPrincipal(ci);
+                        await HttpContext.SignInAsync(Constants.CookieAuthSchemeName, p);
+                        Logger.LogInformation($@"Authentication success for local account ""{model.Username}""");
 
-                    return RedirectToAction("Index");
+                        return RedirectToAction("Index");
+                    }
+                    ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
+                    return View(model);
                 }
 
                 Logger.LogWarning($@"Authentication failed for local account ""{model.Username}""");
 
-                ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                ModelState.AddModelError(string.Empty, "Bad Request.");
                 return View(model);
             }
             catch (Exception e)

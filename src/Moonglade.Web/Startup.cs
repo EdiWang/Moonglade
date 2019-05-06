@@ -75,12 +75,12 @@ namespace Moonglade.Web
             services.Configure<AppSettings>(_appSettingsSection);
             services.Configure<RobotsTxtOptions>(Configuration.GetSection("RobotsTxt"));
 
-            var authenticationSection = Configuration.GetSection("Authentication");
-            var authenticationProvider = authenticationSection["Provider"];
-            AppDomain.CurrentDomain.SetData("AuthenticationProvider", authenticationProvider);
-            switch (authenticationProvider)
+            var authentication = new Model.Settings.Authentication();
+            Configuration.Bind(nameof(Authentication), authentication);
+            AppDomain.CurrentDomain.SetData("AuthenticationProvider", authentication.Provider);
+            switch (authentication.Provider.ToLower())
             {
-                case "AzureAd":
+                case "aad":
                     services.AddAuthentication(sharedOptions =>
                         {
                             sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -89,7 +89,9 @@ namespace Moonglade.Web
                         .AddAzureAD(options => Configuration.Bind("Authentication:AzureAd", options)).AddCookie();
                     _logger.LogInformation("Authentication is configured using Azure Active Directory.");
                     break;
-                case "Local":
+                case "local":
+                    AppDomain.CurrentDomain.SetData("LocalAccountInfo", authentication.Local);
+
                     services.AddAuthentication(Constants.CookieAuthSchemeName)
                             .AddCookie(Constants.CookieAuthSchemeName, options =>
                             {
@@ -100,9 +102,9 @@ namespace Moonglade.Web
                     services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
                     _logger.LogInformation("Authentication is configured using Local Account.");
-                    throw new NotImplementedException();
+                    break;
                 default:
-                    var msg = $"Provider {authenticationProvider} is not supported.";
+                    var msg = $"Provider {authentication.Provider} is not supported.";
                     _logger.LogCritical(msg);
                     throw new NotSupportedException(msg);
             }
@@ -141,10 +143,9 @@ namespace Moonglade.Web
             services.AddTransient<SyndicationService>();
             services.AddTransient<TagService>();
 
-            var encryptionSettings = Configuration.GetSection("Encryption");
-            var aesKey = encryptionSettings["Key"];
-            var aesIv = encryptionSettings["IV"];
-            services.AddTransient<IAesEncryptionService>(enc => new AesEncryptionService(new KeyInfo(aesKey, aesIv)));
+            var encryption = new Encryption();
+            Configuration.Bind(nameof(Encryption), encryption);
+            services.AddTransient<IAesEncryptionService>(enc => new AesEncryptionService(new KeyInfo(encryption.Key, encryption.IV)));
 
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()
@@ -427,13 +428,15 @@ namespace Moonglade.Web
 
         private void AddImageStorage(IServiceCollection services)
         {
-            var imageStorageSection = Configuration.GetSection("ImageStorage");
-            if (null == imageStorageSection["Provider"])
+            var imageStorage = new Model.Settings.ImageStorage();
+            Configuration.Bind(nameof(ImageStorage), imageStorage);
+
+            if (null == imageStorage.Provider)
             {
                 throw new ArgumentNullException("Provider", "Provider can not be null.");
             }
 
-            var imageStorageProvider = imageStorageSection["Provider"].ToLower();
+            var imageStorageProvider = imageStorage.Provider.ToLower();
             if (string.IsNullOrWhiteSpace(imageStorageProvider))
             {
                 throw new ArgumentNullException("Provider", "Provider can not be empty.");
@@ -442,14 +445,14 @@ namespace Moonglade.Web
             switch (imageStorageProvider)
             {
                 case "azurestorage":
-                    var conn = imageStorageSection["AzureStorageSettings:ConnectionString"];
-                    var container = imageStorageSection["AzureStorageSettings:ContainerName"];
+                    var conn = imageStorage.AzureStorageSettings.ConnectionString;
+                    var container = imageStorage.AzureStorageSettings.ContainerName;
 
                     services.AddSingleton(s => new AzureStorageInfo(conn, container));
                     services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
                     break;
                 case "filesystem":
-                    var path = imageStorageSection["FileSystemSettings:Path"];
+                    var path = imageStorage.FileSystemSettings.Path;
                     try
                     {
                         var fullPath = ResolveImageStoragePath(path);
