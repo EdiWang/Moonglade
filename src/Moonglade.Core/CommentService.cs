@@ -41,22 +41,6 @@ namespace Moonglade.Core
 
         public int CountForApproved => _commentRepository.Count(c => c.IsApproved);
 
-        public async Task<Response<IReadOnlyList<Comment>>> GetRecentCommentsAsync(int top)
-        {
-            try
-            {
-                var spec = new RecentCommentSpec(top);
-                var list = await _commentRepository.GetAsync(spec);
-
-                return new SuccessResponse<IReadOnlyList<Comment>>(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetRecentCommentsAsync)}");
-                return new FailedResponse<IReadOnlyList<Comment>>((int)ResponseFailureCode.GeneralException);
-            }
-        }
-
         public IReadOnlyList<Comment> GetApprovedCommentsOfPost(Guid postId)
         {
             return _commentRepository.Get(new CommentOfPostSpec(postId), false);
@@ -109,7 +93,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(ApproveComments)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -136,7 +120,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(DeleteComments)}()");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -193,7 +177,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(NewComment)}");
-                return new FailedResponse<Comment>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<Comment>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -247,7 +231,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(NewReply)}");
-                return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
     }

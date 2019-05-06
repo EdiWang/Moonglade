@@ -47,13 +47,4 @@
             </div>
         </div>
     </section>
-
-    <section class="recent-comments">
-        <div class="card">
-            <div class="card-header">Recent Comments</div>
-            <cache expires-after="@TimeSpan.FromMinutes(10)">
-                @await Component.InvokeAsync("RecentComments")
-            </cache>
-        </div>
-    </section>
 </aside>

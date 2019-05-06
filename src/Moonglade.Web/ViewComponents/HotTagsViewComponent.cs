@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
@@ -23,7 +21,13 @@ namespace Moonglade.Web.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var response = await _tagService.GetHotTagsAsync(AppSettings.HotTagAmount);
-            return View(response.IsSuccess ? response.Item : new List<TagInfo>());
+            if (response.IsSuccess)
+            {
+                return View(response.Item);
+            }
+
+            ViewBag.ComponentErrorMessage = response.Message;
+            return View("~/Views/Shared/ComponentError.cshtml");
         }
     }
 }

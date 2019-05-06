@@ -67,7 +67,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(UpdatePostStatisticAsync)}(postId: {postId}, statisticType: {statisticType})");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -82,7 +82,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetPost)}(id: {id})");
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -223,7 +223,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetPostsByTagAsync)}(normalizedName: {normalizedName})");
-                return new FailedResponse<IReadOnlyList<Post>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<Post>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -403,10 +403,10 @@ namespace Moonglade.Core
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
                 return new SuccessResponse<Post>(postModel);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logger.LogError(ex, $"Error in {nameof(CreateNewPost)}");
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
+                Logger.LogError(e, $"Error in {nameof(CreateNewPost)}");
+                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -487,7 +487,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(EditPost)}, PostId: {request.PostId}");
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -532,7 +532,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(Delete)}(postId: {postId}, isRecycle: {isRecycle})");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
     }

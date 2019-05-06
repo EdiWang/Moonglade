@@ -3,7 +3,7 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "jquery@3.4.0",
+      "library": "jquery@3.4.1",
       "destination": "wwwroot/lib/jquery",
       "files": [
         "jquery.min.js"
@@ -43,8 +43,7 @@
       "library": "twitter-bootstrap@4.3.1",
       "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
-        "js/bootstrap.min.js",
-        "css/bootstrap.css",
+        "js/bootstrap.bundle.min.js",
         "css/bootstrap.min.css"
       ]
     },
@@ -54,13 +53,6 @@
       "files": [
         "toastr.min.js",
         "toastr.min.css"
-      ]
-    },
-    {
-      "library": "popper.js@1.15.0",
-      "destination": "wwwroot/lib/popper.js/",
-      "files": [
-        "umd/popper.min.js"
       ]
     },
     {

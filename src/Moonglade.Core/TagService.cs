@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
@@ -53,7 +52,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, "Error Updating Tag.");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -72,7 +71,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, "Error Deleting Tag.");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -98,7 +97,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetHotTagsAsync)}");
-                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -124,7 +123,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetTagCountListAsync)}");
-                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException);
+                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
     }
