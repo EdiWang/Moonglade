@@ -9,6 +9,7 @@ using Edi.Captcha;
 using Edi.Net.AesEncryption;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +35,7 @@ using Moonglade.ImageStorage.FileSystem;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Authentication.AzureAd;
+using Moonglade.Web.Authentication.LocalAccount;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Middleware.RobotsTxt;
@@ -75,6 +77,7 @@ namespace Moonglade.Web
 
             var authenticationSection = Configuration.GetSection("Authentication");
             var authenticationProvider = authenticationSection["Provider"];
+            AppDomain.CurrentDomain.SetData("AuthenticationProvider", authenticationProvider);
             switch (authenticationProvider)
             {
                 case "AzureAd":
@@ -87,13 +90,14 @@ namespace Moonglade.Web
                     _logger.LogInformation("Authentication is configured using Azure Active Directory.");
                     break;
                 case "Local":
-                    services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                            .AddCookie(options =>
+                    services.AddAuthentication(Constants.CookieAuthSchemeName)
+                            .AddCookie(Constants.CookieAuthSchemeName, options =>
                             {
-                                // TODO
-                                // When some day I'm in a good mood, I will consider writing local authentication provider
-                                // for now, just stick with Azure, have a cloud day guys!
+                                options.AccessDeniedPath = "/admin/accessdenied";
+                                options.LoginPath = "/admin/signin";
+                                options.LogoutPath = "/admin/signout";
                             });
+                    services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
                     _logger.LogInformation("Authentication is configured using Local Account.");
                     throw new NotImplementedException();
