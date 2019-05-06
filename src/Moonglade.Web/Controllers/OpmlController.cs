@@ -21,7 +21,7 @@ namespace Moonglade.Web.Controllers
             ILogger<OpmlController> logger,
             CategoryService categoryService,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService)
+            IBlogConfigurationService blogConfigurationService)
             : base(logger)
         {
             _categoryService = categoryService;

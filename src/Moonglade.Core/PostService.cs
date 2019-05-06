@@ -45,18 +45,18 @@ namespace Moonglade.Core
 
         public int CountForPublic => _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
 
-        public async Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticType statisticType)
+        public async Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticTypes statisticTypes)
         {
             try
             {
                 var pp = _postExtensionRepository.Get(postId);
                 if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
-                if (statisticType == StatisticType.Hits)
+                if (statisticTypes == StatisticTypes.Hits)
                 {
                     pp.Hits += 1;
                 }
-                if (statisticType == StatisticType.Likes)
+                if (statisticTypes == StatisticTypes.Likes)
                 {
                     pp.Likes += 1;
                 }
@@ -66,7 +66,7 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error {nameof(UpdatePostStatisticAsync)}(postId: {postId}, statisticType: {statisticType})");
+                Logger.LogError(e, $"Error {nameof(UpdatePostStatisticAsync)}(postId: {postId}, statisticTypes: {statisticTypes})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
@@ -181,7 +181,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<IReadOnlyList<PostArchiveItemModel>> GetArchivedPostsAsync(int year, int month = 0)
+        public async Task<IReadOnlyList<PostArchiveItem>> GetArchivedPostsAsync(int year, int month = 0)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
@@ -194,7 +194,7 @@ namespace Moonglade.Core
             }
 
             var spec = new ArchivedPostSpec(year, month);
-            var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItemModel
+            var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItem
             {
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
                 Slug = p.Slug,

@@ -29,7 +29,7 @@ namespace Moonglade.Core
             ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService,
+            IBlogConfigurationService blogConfigurationService,
             IHttpContextAccessor httpContextAccessor,
             IRepository<Category> categoryRepository,
             IRepository<Post> postRepository) : base(logger, settings)

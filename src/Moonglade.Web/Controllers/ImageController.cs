@@ -34,7 +34,7 @@ namespace Moonglade.Web.Controllers
             IAsyncImageStorageProvider imageStorageProvider,
             ISessionBasedCaptcha captcha,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService)
+            IBlogConfigurationService blogConfigurationService)
             : base(logger, settings, memoryCache: memoryCache)
         {
             _blogConfig = blogConfig;

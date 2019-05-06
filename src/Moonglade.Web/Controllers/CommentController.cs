@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
             PostService postService,
             ISessionBasedCaptcha captcha,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService,
+            IBlogConfigurationService blogConfigurationService,
             LinkGenerator linkGenerator)
             : base(logger, settings, memoryCache: memoryCache)
         {

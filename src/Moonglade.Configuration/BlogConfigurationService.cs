@@ -7,11 +7,10 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
-using Newtonsoft.Json;
 
 namespace Moonglade.Configuration
 {
-    public class BlogConfigurationService
+    public class BlogConfigurationService : IBlogConfigurationService
     {
         protected readonly ILogger<BlogConfigurationService> Logger;
 

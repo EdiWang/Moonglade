@@ -1,5 +1,5 @@
 ﻿@using Moonglade.Configuration
-@inject BlogConfigurationService BlogConfigurationService
+@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
 
 @{
@@ -33,9 +33,10 @@
         </div>
     </section>
 
-    <section class="mvp-link mb-4">
-        <img src="https://ediwangstorage.blob.core.windows.net/web-assets/mvp-logo.svg" class="img-fluid" />
-    </section>
+    @if(!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch))
+    {
+        @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
+    }
 
     <section class="top-tags mb-4">
         <div class="card">
@@ -45,6 +46,15 @@
                     @await Component.InvokeAsync("HotTags")
                 </cache>
             </div>
+        </div>
+    </section>
+
+    <section class="cat-list mb-4">
+        <div class="card">
+            <div class="card-header">All Categories</div>
+            <cache expires-after="@TimeSpan.FromMinutes(60)">
+                @await Component.InvokeAsync("CategoryList")
+            </cache>
         </div>
     </section>
 </aside>

@@ -25,7 +25,7 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings,
             PostService postService,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService)
+            IBlogConfigurationService blogConfigurationService)
             : base(logger, settings)
         {
             _postService = postService;

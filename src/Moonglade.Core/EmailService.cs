@@ -7,6 +7,7 @@ using Edi.TemplateEmail.NetStd;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MimeKit;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -30,7 +31,7 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             IHostingEnvironment env,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService,
+            IBlogConfigurationService blogConfigurationService,
             IRepository<Post> postRepository) : base(logger, settings)
         {
             _env = env;
@@ -60,7 +61,7 @@ namespace Moonglade.Core
                 EmailHelper = new EmailHelper(configSource, emailSettings);
                 EmailHelper.EmailSent += (sender, eventArgs) =>
                 {
-                    if (sender is MailMessage msg)
+                    if (sender is MimeMessage msg)
                     {
                         Logger.LogInformation($"Email {msg.Subject} is sent, Success: {eventArgs.IsSuccess}");
                     }
@@ -82,7 +83,7 @@ namespace Moonglade.Core
                                                      .Map(nameof(EmailHelper.Settings.EnableSsl), EmailHelper.Settings.EnableSsl);
                 if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
-                    await EmailHelper.ApplyTemplate(MailMesageType.TestMail, pipeline)
+                    await EmailHelper.ApplyTemplate(MailMesageTypes.TestMail.ToString(), pipeline)
                                      .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
 
                     return new SuccessResponse();
@@ -114,7 +115,7 @@ namespace Moonglade.Core
 
             if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
             {
-                await EmailHelper.ApplyTemplate(MailMesageType.NewCommentNotification, pipeline)
+                await EmailHelper.ApplyTemplate(MailMesageTypes.NewCommentNotification.ToString(), pipeline)
                                  .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
             }
         }
@@ -139,7 +140,7 @@ namespace Moonglade.Core
 
                 if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
-                    await EmailHelper.ApplyTemplate(MailMesageType.AdminReplyNotification, pipeline)
+                    await EmailHelper.ApplyTemplate(MailMesageTypes.AdminReplyNotification.ToString(), pipeline)
                                      .SendMailAsync(model.Email);
                 }
             }
@@ -163,7 +164,7 @@ namespace Moonglade.Core
 
                 if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
                 {
-                    await EmailHelper.ApplyTemplate(MailMesageType.BeingPinged, pipeline)
+                    await EmailHelper.ApplyTemplate(MailMesageTypes.BeingPinged.ToString(), pipeline)
                         .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
                 }
             }

@@ -129,7 +129,7 @@ namespace Moonglade.Web.Controllers
                 return new EmptyResult();
             }
 
-            var response = await _postService.UpdatePostStatisticAsync(postId, StatisticType.Hits);
+            var response = await _postService.UpdatePostStatisticAsync(postId, StatisticTypes.Hits);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
@@ -151,7 +151,7 @@ namespace Moonglade.Web.Controllers
                 });
             }
 
-            var response = await _postService.UpdatePostStatisticAsync(postId, StatisticType.Likes);
+            var response = await _postService.UpdatePostStatisticAsync(postId, StatisticTypes.Likes);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Liked, postId.ToString());

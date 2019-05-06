@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            IReadOnlyList<PostArchiveItemModel> model;
+            IReadOnlyList<PostArchiveItem> model;
 
             if (null != month)
             {

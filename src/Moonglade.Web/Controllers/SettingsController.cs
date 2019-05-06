@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
         private readonly EmailService _emailService;
         private readonly FriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
-        private readonly BlogConfigurationService _blogConfigurationService;
+        private readonly IBlogConfigurationService _blogConfigurationService;
         private readonly IApplicationLifetime _applicationLifetime;
 
         #endregion
@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
             EmailService emailService,
             FriendLinkService friendLinkService,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService)
+            IBlogConfigurationService blogConfigurationService)
             : base(logger, settings, memoryCache: memoryCache)
         {
             _applicationLifetime = appLifetime;
@@ -66,6 +66,7 @@ namespace Moonglade.Web.Controllers
                 MetaKeyword = _blogConfig.GeneralSettings.MetaKeyword,
                 SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
                 Copyright = _blogConfig.GeneralSettings.Copyright.Replace("&copy;", "[c]"),
+                SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
                 DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
                 EnableComments = _blogConfig.ContentSettings.EnableComments,
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
@@ -85,6 +86,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
                 _blogConfig.GeneralSettings.Copyright = model.Copyright.Replace("[c]", "&copy;");
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
+                _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
                 _blogConfigurationService.SaveConfiguration(_blogConfig.GeneralSettings);
 
                 _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;

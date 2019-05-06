@@ -8,7 +8,7 @@
         EmailConfiguration EmailConfiguration { get; set; }
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
-        void Initialize(BlogConfigurationService blogConfigurationService);
+        void Initialize(IBlogConfigurationService blogConfigurationService);
         void RequireRefresh();
     }
 }
