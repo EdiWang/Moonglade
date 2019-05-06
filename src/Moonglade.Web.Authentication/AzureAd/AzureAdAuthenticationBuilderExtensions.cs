@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Authentication.AzureAd
 {
@@ -12,10 +13,7 @@ namespace Moonglade.Web.Authentication.AzureAd
 
     public static class AzureAdAuthenticationBuilderExtensions
     {        
-        public static AuthenticationBuilder AddAzureAD(this AuthenticationBuilder builder)
-            => builder.AddAzureAD(_ => { });
-
-        public static AuthenticationBuilder AddAzureAD(this AuthenticationBuilder builder, Action<AzureAdOptions> configureOptions)
+        public static AuthenticationBuilder AddAzureAD(this AuthenticationBuilder builder, Action<AzureAdInfo> configureOptions)
         {
             builder.Services.Configure(configureOptions);
             builder.Services.AddSingleton<IConfigureOptions<OpenIdConnectOptions>, ConfigureAzureOptions>();
@@ -25,9 +23,9 @@ namespace Moonglade.Web.Authentication.AzureAd
 
         private class ConfigureAzureOptions: IConfigureNamedOptions<OpenIdConnectOptions>
         {
-            private readonly AzureAdOptions _azureOptions;
+            private readonly AzureAdInfo _azureOptions;
 
-            public ConfigureAzureOptions(IOptions<AzureAdOptions> azureOptions)
+            public ConfigureAzureOptions(IOptions<AzureAdInfo> azureOptions)
             {
                 _azureOptions = azureOptions.Value;
             }

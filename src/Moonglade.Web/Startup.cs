@@ -86,20 +86,21 @@ namespace Moonglade.Web
                             sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                             sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                         })
-                        .AddAzureAD(options => Configuration.Bind("Authentication:AzureAd", options)).AddCookie();
+                        .AddAzureAD(info =>
+                        {
+                            info.CallbackPath = authentication.AzureAd.CallbackPath;
+                            info.ClientId = authentication.AzureAd.ClientId;
+                            info.Domain = authentication.AzureAd.Domain;
+                            info.Instance = authentication.AzureAd.Instance;
+                            info.TenantId = authentication.AzureAd.TenantId;
+                        }).AddCookie();
                     _logger.LogInformation("Authentication is configured using Azure Active Directory.");
                     break;
                 case "local":
                     AppDomain.CurrentDomain.SetData("LocalAccountInfo", authentication.Local);
 
                     services.AddAuthentication(Constants.CookieAuthSchemeName)
-                            .AddCookie(Constants.CookieAuthSchemeName, options =>
-                            {
-                                options.AccessDeniedPath = "/admin/accessdenied";
-                                options.LoginPath = "/admin/signin";
-                                options.LogoutPath = "/admin/signout";
-                            });
-                    services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+                            .AddMoongladeLocalAccount();
 
                     _logger.LogInformation("Authentication is configured using Local Account.");
                     break;
