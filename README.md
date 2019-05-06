@@ -2,7 +2,7 @@
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
-Moonglade is the new blog system for https://edi.wang, It is a complete rewrite of the old system using [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
+Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
 
 ![image](https://ediwangstorage.blob.core.windows.net/web-assets/ediwang-azure-arch.png?date=20190413)
 
@@ -28,7 +28,7 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 
 ### Setup Azure Active Directory
 
-This blog is using [Azure AD](https://azure.microsoft.com/en-us/services/active-directory/) to sign in to admin portal. Local authentication provider is pretending to be implmented. 
+This blog is using [Azure AD](https://azure.microsoft.com/en-us/services/active-directory/) to sign in to admin portal. Local authentication provider is arriving soon. 
 
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"**
@@ -133,9 +133,14 @@ The only built-in rule is removing trailing slash in URLs. For other rules, you 
 
 ### FAQ
 
-- How and why is this blog coupled with Microsoft Azure?
-  - Azure AD Authentication is the ONLY piece currently coupled with 
-Azure, once local authentication provider is implemented, this blog system will decouple with Azure. For other part of the blog system, like Image Storage, you don't have to use Azure already. But the entire system works best on Azure.
+**Does this blog support upgrade from a lower version?**
+
+It depends on whether the database schema is updated. If the schema is same for a higer version, then the system can be deployed and override old files without problem. If schema changes, you will need to execute **migration.sql** along with the deployment.
+
+**How and why is this blog coupled with Microsoft Azure?**
+
+Azure AD Authentication is the ONLY piece currently coupled with 
+Azure, once local authentication provider is implemented, **this blog system will decouple with Azure**. For other part of the blog system, like Image Storage, you don't have to use Azure already. But the entire system works best on Azure.
 
 ### Optional Recommendations
 - [Microsoft Azure DNS Zones](https://azure.microsoft.com/en-us/services/dns/)
