@@ -29,7 +29,7 @@ namespace Moonglade.Core
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService,
+            IBlogConfigurationService blogConfigurationService,
             IRepository<Comment> commentRepository,
             IRepository<CommentReply> commentReplyRepository) : base(logger, settings)
         {

@@ -28,7 +28,7 @@ namespace Moonglade.Configuration
             WatermarkSettings = new WatermarkSettings();
         }
 
-        public void Initialize(BlogConfigurationService blogConfigurationService)
+        public void Initialize(IBlogConfigurationService blogConfigurationService)
         {
             if (!_hasInitialized)
             {

@@ -30,7 +30,7 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             IHostingEnvironment env,
             IBlogConfig blogConfig,
-            BlogConfigurationService blogConfigurationService,
+            IBlogConfigurationService blogConfigurationService,
             IRepository<Post> postRepository) : base(logger, settings)
         {
             _env = env;
