@@ -41,22 +41,6 @@ namespace Moonglade.Core
 
         public int CountForApproved => _commentRepository.Count(c => c.IsApproved);
 
-        public async Task<Response<IReadOnlyList<Comment>>> GetRecentCommentsAsync(int top)
-        {
-            try
-            {
-                var spec = new RecentCommentSpec(top);
-                var list = await _commentRepository.GetAsync(spec);
-
-                return new SuccessResponse<IReadOnlyList<Comment>>(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetRecentCommentsAsync)}");
-                return new FailedResponse<IReadOnlyList<Comment>>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
-        }
-
         public IReadOnlyList<Comment> GetApprovedCommentsOfPost(Guid postId)
         {
             return _commentRepository.Get(new CommentOfPostSpec(postId), false);

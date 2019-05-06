@@ -5501,15 +5501,6 @@ body {
     font-size: 24px;
 }
 
-.recent-comment-item-footer {
-    background-color: #fafafa;
-    padding: 5px 15px;
-}
-
-.recent-comment-item-content p {
-    margin-bottom: 0;
-}
-
 .toptags-list a {
     background-color: #2b579a;
     color: #fff;

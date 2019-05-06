@@ -124,7 +124,6 @@ EnablePingBackReceive | Can blog receive pingback requests
 EnablePingBackSend | Can blog send pingback to another blog
 EnableHarmonizor | Filter bad words (in order to live in China)
 EnableReward | Show WeChat reward button and QR Code image
-RecentCommentsListSize | How many comments to show on side bar
 EnforceHttps | Force website use HTTPS
 DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
 
