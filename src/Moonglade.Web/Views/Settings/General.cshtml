@@ -5,129 +5,129 @@
 @model GeneralSettingsViewModel
 
 @section scripts{
-<script src="~/js/bs-custom-file-input.min.js"></script>
-<script>
-    var avatarDataURL;
+    <script src="~/js/bs-custom-file-input.min.js"></script>
+    <script>
+        var avatarDataURL;
 
-    $(document).ready(function () {
-        bsCustomFileInput.init();
-        $("#btn-upload-avatar").click(function () {
-            uploadAvatar();
+        $(document).ready(function () {
+            bsCustomFileInput.init();
+            $("#btn-upload-avatar").click(function () {
+                uploadAvatar();
+            });
         });
-    });
 
-    function enableUploadButton() {
-        $("#btn-upload-avatar").removeClass("disabled");
-        $("#btn-upload-avatar").removeAttr("disabled");
-    }
+        function enableUploadButton() {
+            $("#btn-upload-avatar").removeClass("disabled");
+            $("#btn-upload-avatar").removeAttr("disabled");
+        }
 
-    function disableUploadButton() {
-        $("#btn-upload-avatar").addClass("disabled");
-        $("#btn-upload-avatar").attr("disabled", "disabled");
-    }
+        function disableUploadButton() {
+            $("#btn-upload-avatar").addClass("disabled");
+            $("#btn-upload-avatar").attr("disabled", "disabled");
+        }
 
-    function uploadAvatar() {
-        if (avatarDataURL) {
-            disableUploadButton();
-            var rawData = { base64avatar: avatarDataURL.replace(/^data:image\/(png|jpeg|jpg);base64,/, "") };
+        function uploadAvatar() {
+            if (avatarDataURL) {
+                disableUploadButton();
+                var rawData = { base64avatar: avatarDataURL.replace(/^data:image\/(png|jpeg|jpg);base64,/, "") };
 
-            $.ajax({
-                type: 'POST',
-                headers: { csrfFieldName: $("input[name=" + csrfFieldName + "]").val() },
-                url: '/admin/settings/set-blogger-avatar',
-                data: makeCSRFExtendedData(rawData),
-                success: function (data) {
-                    console.info(data);
-                    $("#avatarmodal").modal('hide');
-                    toastr.success('Avatar updated');
-                    d = new Date();
-                    $(".blogadmin-avatar").attr("src", "/get-avatar?" + d.getTime());
-                },
-                error: function (xhr, status, err) {
-                    console.error(err);
-                    toastr.error('Upload avatar failed.');
+                $.ajax({
+                    type: 'POST',
+                    headers: { csrfFieldName: $("input[name=" + csrfFieldName + "]").val() },
+                    url: '/admin/settings/set-blogger-avatar',
+                    data: makeCSRFExtendedData(rawData),
+                    success: function (data) {
+                        console.info(data);
+                        $("#avatarmodal").modal('hide');
+                        toastr.success('Avatar updated');
+                        d = new Date();
+                        $(".blogadmin-avatar").attr("src", "/get-avatar?" + d.getTime());
+                    },
+                    error: function (xhr, status, err) {
+                        console.error(err);
+                        toastr.error('Upload avatar failed.');
+                        enableUploadButton();
+                    }
+                });
+            } else {
+                toastr.error('Please select an avatar image');
+            }
+        }
+
+        function resizeImage(file) {
+            var reader = new FileReader();
+            reader.onloadend = function () {
+
+                var tempImg = new Image();
+                tempImg.src = reader.result;
+                tempImg.onload = function () {
+
+                    var maxWidth = 300;
+                    var maxHeight = 300;
+                    var tempW = tempImg.width;
+                    var tempH = tempImg.height;
+                    if (tempW > tempH) {
+                        if (tempW > maxWidth) {
+                            tempH *= maxWidth / tempW;
+                            tempW = maxWidth;
+                        }
+                    } else {
+                        if (tempH > maxHeight) {
+                            tempW *= maxHeight / tempH;
+                            tempH = maxHeight;
+                        }
+                    }
+
+                    var canvas = document.createElement('canvas');
+                    canvas.width = tempW;
+                    canvas.height = tempH;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(this, 0, 0, tempW, tempH);
+                    avatarDataURL = canvas.toDataURL("image/jpeg");
+
+                    var div = $('#avatarDropTarget');
+                    div.html('<img class="img-fluid" src="' + avatarDataURL + '" />');
                     enableUploadButton();
                 }
-            });
-        } else {
-            toastr.error('Please select an avatar image');
+
+            }
+            reader.readAsDataURL(file);
         }
-    }
 
-    function resizeImage(file) {
-        var reader = new FileReader();
-        reader.onloadend = function () {
+        function fileSelect(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
 
-            var tempImg = new Image();
-            tempImg.src = reader.result;
-            tempImg.onload = function () {
-
-                var maxWidth = 300;
-                var maxHeight = 300;
-                var tempW = tempImg.width;
-                var tempH = tempImg.height;
-                if (tempW > tempH) {
-                    if (tempW > maxWidth) {
-                        tempH *= maxWidth / tempW;
-                        tempW = maxWidth;
-                    }
+            if (window.File && window.FileReader && window.FileList && window.Blob) {
+                var file;
+                if (evt.dataTransfer) {
+                    file = evt.dataTransfer.files[0];
+                    $(".custom-file-label").text(file.name);
                 } else {
-                    if (tempH > maxHeight) {
-                        tempW *= maxHeight / tempH;
-                        tempH = maxHeight;
-                    }
+                    file = evt.target.files[0];
                 }
 
-                var canvas = document.createElement('canvas');
-                canvas.width = tempW;
-                canvas.height = tempH;
-                var ctx = canvas.getContext("2d");
-                ctx.drawImage(this, 0, 0, tempW, tempH);
-                avatarDataURL = canvas.toDataURL("image/jpeg");
+                if (!file.type.match('image.*')) {
+                    toastr.error('Please select an image file.');
+                }
 
-                var div = $('#avatarDropTarget');
-                div.html('<img class="img-fluid" src="' + avatarDataURL + '" />');
-                enableUploadButton();
-            }
-
-        }
-        reader.readAsDataURL(file);
-    }
-
-    function fileSelect(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-
-        if (window.File && window.FileReader && window.FileList && window.Blob) {
-            var file;
-            if (evt.dataTransfer) {
-                file = evt.dataTransfer.files[0];
-                $(".custom-file-label").text(file.name);
+                resizeImage(file);
             } else {
-                file = evt.target.files[0];
+                toastr.error('The File APIs are not fully supported in this browser.');
             }
-
-            if (!file.type.match('image.*')) {
-                toastr.error('Please select an image file.');
-            }
-
-            resizeImage(file);
-        } else {
-            toastr.error('The File APIs are not fully supported in this browser.');
         }
-    }
-    document.getElementById('avatarImageFile').addEventListener('change', fileSelect, false);
+        document.getElementById('avatarImageFile').addEventListener('change', fileSelect, false);
 
-    function dragOver(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-        evt.dataTransfer.dropEffect = 'copy';
-    }
+        function dragOver(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            evt.dataTransfer.dropEffect = 'copy';
+        }
 
-    var dropTarget = document.getElementById('avatarDropTarget');
-    dropTarget.addEventListener('dragover', dragOver, false);
-    dropTarget.addEventListener('drop', fileSelect, false);
-</script>
+        var dropTarget = document.getElementById('avatarDropTarget');
+        dropTarget.addEventListener('dragover', dragOver, false);
+        dropTarget.addEventListener('drop', fileSelect, false);
+    </script>
 }
 
 <partial name="_SettingsHeader" />
@@ -169,7 +169,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="SideBarCustomizedHtmlPitch" class="control-label"></label>
-                        <input asp-for="SideBarCustomizedHtmlPitch" class="form-control" />
+                        <textarea asp-for="SideBarCustomizedHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
                         <span asp-validation-for="SideBarCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="BloggerDescription" class="control-label"></label>
-                                    <input asp-for="BloggerDescription" class="form-control" />
+                                    <textarea asp-for="BloggerDescription" class="form-control"></textarea>
                                     <span asp-validation-for="BloggerDescription" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">

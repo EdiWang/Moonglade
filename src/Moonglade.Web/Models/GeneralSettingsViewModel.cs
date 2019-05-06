@@ -36,6 +36,7 @@ namespace Moonglade.Web.Models
 
         [Required]
         [Display(Name = "Blogger Description (HTML)")]
+        [DataType(DataType.MultilineText)]
         public string BloggerDescription { get; set; }
 
         [Required]
@@ -43,6 +44,7 @@ namespace Moonglade.Web.Models
         public string BloggerShortDescription { get; set; }
 
         [Display(Name = "Side Bar Customized Html Pitch")]
+        [DataType(DataType.MultilineText)]
         public string SideBarCustomizedHtmlPitch { get; set; }
     }
 }
