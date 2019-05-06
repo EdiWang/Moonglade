@@ -55,8 +55,6 @@ Configure how to sign in to admin portal.
 
 ##### Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))
 
-This is the most wonderful SSO solution!
-
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"**
   - For local debugging, set URL to https://localhost:5001/signin-oidc
@@ -74,8 +72,6 @@ Register an App in **Azure Active Directory**
 ```
 
 ##### Alternative: Local Account
-
-> Currently under construction. Local authentication provider is arriving soon. 
 
 Set **Authentication:Provider** to **"Local"** and assign a pair of username and password. 
 
@@ -159,10 +155,9 @@ The only built-in rule is removing trailing slash in URLs. For other rules, you 
 
 It depends on whether the database schema is updated. If the schema is same for a higer version, then the system can be deployed and override old files without problem. If schema changes, you will need to execute **migration.sql** along with the deployment.
 
-**How and why is this blog coupled with Microsoft Azure?**
+**Does this blog coupled with Microsoft Azure?**
 
-Azure AD Authentication is the ONLY piece currently coupled with 
-Azure, once local authentication provider is implemented, **this blog system will decouple with Azure**. For other part of the blog system, like Image Storage, you don't have to use Azure already. But the entire system works best on Azure.
+No, the system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
 
 ### Optional Recommendations
 - [Microsoft Azure DNS Zones](https://azure.microsoft.com/en-us/services/dns/)
