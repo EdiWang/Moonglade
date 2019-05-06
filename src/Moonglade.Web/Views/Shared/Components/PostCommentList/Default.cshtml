@@ -1,7 +1,7 @@
 ﻿@using Microsoft.Extensions.Options
 @using Moonglade.Core
 @using Moonglade.Model.Settings
-@model IReadOnlyList<Moonglade.Data.Entities.Comment>
+@model IReadOnlyList<Moonglade.Model.PostCommentListItem>
 
 @inject IOptions<AppSettings> Settings
 
@@ -41,7 +41,7 @@
                     <div class="card-body">
                         @Html.Raw(Utils.MdContentToHtml(item.CommentContent))
                         <div>
-                            @foreach (var reply in item.CommentReply.OrderByDescending(t => t.ReplyTimeUtc))
+                            @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
                             {
                                 <hr/>
                                 <div class="reply-container">
@@ -49,7 +49,7 @@
                                         <strong>
                                             Edi Wang
                                         </strong>
-                                        <span class="float-right text-muted">Replied at @Utils.UtcToZoneTime(reply.ReplyTimeUtc.GetValueOrDefault(), Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</span>
+                                        <span class="float-right text-muted">Replied at @Utils.UtcToZoneTime(reply.ReplyTimeUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
                                     <p>
                                         @reply.ReplyContent
