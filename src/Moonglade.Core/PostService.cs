@@ -403,9 +403,9 @@ namespace Moonglade.Core
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
                 return new SuccessResponse<Post>(postModel);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logger.LogError(ex, $"Error in {nameof(CreateNewPost)}");
+                Logger.LogError(e, $"Error in {nameof(CreateNewPost)}");
                 return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
