@@ -11,7 +11,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
-  </ItemGroup>
 </Project>

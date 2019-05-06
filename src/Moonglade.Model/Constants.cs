@@ -30,7 +30,5 @@
             @"{""RssItemCount"":20,""RssCopyright"":""(c) {year} Moonglade"",""RssDescription"":""Latest posts from Moonglade"",""RssGeneratorName"":""Moonglade"",""RssTitle"":""Moonglade"",""AuthorName"":""Admin""}";
 
         public static string PostContentInitValue = "Moonglade is the successor of project Nordrassil, which was the .NET Framework version of the blog system. Moonglade is a complete rewrite of the old system using .NET Core, optimized for cloud-based hosting.";
-
-        public static string CookieAuthSchemeName = "MoongladeCookieAuthScheme";
     }
 }

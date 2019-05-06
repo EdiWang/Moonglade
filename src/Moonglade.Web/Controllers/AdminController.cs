@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moonglade.Model;
-using Moonglade.Model.Settings;
+using Moonglade.Web.Authentication;
+using Moonglade.Web.Authentication.LocalAccount;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
@@ -19,21 +19,12 @@ namespace Moonglade.Web.Controllers
     [Route("admin")]
     public class AdminController : MoongladeController
     {
-        private readonly bool isAADAuth;
+        private readonly AuthenticationProvider _currentAuthenticationProvider;
 
         public AdminController(ILogger<AdminController> logger)
             : base(logger)
         {
-            var authenticationProvider = AppDomain.CurrentDomain.GetData("AuthenticationProvider").ToString();
-            switch (authenticationProvider)
-            {
-                case "AzureAd":
-                    isAADAuth = true;
-                    break;
-                case "Local":
-                    isAADAuth = false;
-                    break;
-            }
+            _currentAuthenticationProvider = (AuthenticationProvider)AppDomain.CurrentDomain.GetData(nameof(AuthenticationProvider));
         }
 
         [Route("")]
@@ -48,7 +39,7 @@ namespace Moonglade.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignIn()
         {
-            if (isAADAuth)
+            if (_currentAuthenticationProvider == AuthenticationProvider.AzureAD)
             {
                 var redirectUrl = Url.Action(nameof(PostController.Index), "Post");
                 return Challenge(
@@ -56,7 +47,7 @@ namespace Moonglade.Web.Controllers
                     OpenIdConnectDefaults.AuthenticationScheme);
             }
 
-            await HttpContext.SignOutAsync(Constants.CookieAuthSchemeName);
+            await HttpContext.SignOutAsync(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName);
             return View();
         }
 
@@ -69,8 +60,9 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (AppDomain.CurrentDomain.GetData("LocalAccountInfo") is LocalAccountInfo accountInfo && 
-                        (model.Username == accountInfo.Username && model.Password == accountInfo.Password))
+                    if (AppDomain.CurrentDomain.GetData(nameof(LocalAccountOption)) is LocalAccountOption accountInfo &&
+                        model.Username == accountInfo.Username &&
+                        model.Password == accountInfo.Password)
                     {
                         var claims = new List<Claim>
                         {
@@ -79,7 +71,7 @@ namespace Moonglade.Web.Controllers
                         };
                         var ci = new ClaimsIdentity(claims, "Password", "name", "role");
                         var p = new ClaimsPrincipal(ci);
-                        await HttpContext.SignInAsync(Constants.CookieAuthSchemeName, p);
+                        await HttpContext.SignInAsync(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName, p);
                         Logger.LogInformation($@"Authentication success for local account ""{model.Username}""");
 
                         return RedirectToAction("Index");
@@ -106,7 +98,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("signout")]
         public async Task<IActionResult> SignOut()
         {
-            if (isAADAuth)
+            if (_currentAuthenticationProvider == AuthenticationProvider.AzureAD)
             {
                 var callbackUrl = Url.Action(nameof(SignedOut), "Admin", values: null, protocol: Request.Scheme);
                 return SignOut(
@@ -115,7 +107,7 @@ namespace Moonglade.Web.Controllers
                     OpenIdConnectDefaults.AuthenticationScheme);
             }
 
-            await HttpContext.SignOutAsync(Constants.CookieAuthSchemeName);
+            await HttpContext.SignOutAsync(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName);
             return RedirectToAction("Index", "Post");
         }
 

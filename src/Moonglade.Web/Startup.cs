@@ -33,6 +33,7 @@ using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Web.Authentication;
 using Moonglade.Web.Authentication.AzureAd;
 using Moonglade.Web.Authentication.LocalAccount;
 using Moonglade.Web.Filters;
@@ -74,12 +75,12 @@ namespace Moonglade.Web
             services.Configure<AppSettings>(_appSettingsSection);
             services.Configure<RobotsTxtOptions>(Configuration.GetSection("RobotsTxt"));
 
-            var authentication = new Model.Settings.Authentication();
+            var authentication = new Authentication.Authentication();
             Configuration.Bind(nameof(Authentication), authentication);
-            AppDomain.CurrentDomain.SetData("AuthenticationProvider", authentication.Provider);
-            switch (authentication.Provider.ToLower())
+            AppDomain.CurrentDomain.SetData(nameof(AuthenticationProvider), authentication.Provider);
+            switch (authentication.Provider)
             {
-                case "aad":
+                case AuthenticationProvider.AzureAD:
                     services.AddAuthentication(sharedOptions =>
                         {
                             sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -95,10 +96,10 @@ namespace Moonglade.Web
                         }).AddCookie();
                     _logger.LogInformation("Authentication is configured using Azure Active Directory.");
                     break;
-                case "local":
-                    AppDomain.CurrentDomain.SetData("LocalAccountInfo", authentication.Local);
+                case AuthenticationProvider.Local:
+                    AppDomain.CurrentDomain.SetData(nameof(LocalAccountOption), authentication.Local);
 
-                    services.AddAuthentication(Constants.CookieAuthSchemeName)
+                    services.AddAuthentication(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName)
                             .AddMoongladeLocalAccount();
 
                     _logger.LogInformation("Authentication is configured using Local Account.");

@@ -3,17 +3,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Authentication.AzureAd
 {
-    // from https://github.com/aspnet/AspNetCore/tree/master/src/Azure/AzureAD/Authentication.AzureAD.UI/src
-    // official nuget package contains MVC Views, which makes it difficult to customize UI
-    // I have to download and separate the code, sad...
-
     public static class AzureAdAuthenticationBuilderExtensions
     {        
-        public static AuthenticationBuilder AddAzureAD(this AuthenticationBuilder builder, Action<AzureAdInfo> configureOptions)
+        public static AuthenticationBuilder AddAzureAD(this AuthenticationBuilder builder, Action<AzureAdOption> configureOptions)
         {
             builder.Services.Configure(configureOptions);
             builder.Services.AddSingleton<IConfigureOptions<OpenIdConnectOptions>, ConfigureAzureOptions>();
@@ -23,9 +18,9 @@ namespace Moonglade.Web.Authentication.AzureAd
 
         private class ConfigureAzureOptions: IConfigureNamedOptions<OpenIdConnectOptions>
         {
-            private readonly AzureAdInfo _azureOptions;
+            private readonly AzureAdOption _azureOptions;
 
-            public ConfigureAzureOptions(IOptions<AzureAdInfo> azureOptions)
+            public ConfigureAzureOptions(IOptions<AzureAdOption> azureOptions)
             {
                 _azureOptions = azureOptions.Value;
             }
