@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using HtmlAgilityPack;
+using System.Web;
 using Markdig;
 
 namespace Moonglade.Core
@@ -63,9 +63,7 @@ namespace Moonglade.Core
 
         public static string GetPostAbstract(string rawHtmlContent, int wordCount)
         {
-            var htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(rawHtmlContent);
-            var plainText = htmlDoc.DocumentNode.InnerText;
+            var plainText = RemoveTags(rawHtmlContent);
             var result = Left(plainText, wordCount);
             return result;
         }
@@ -78,6 +76,45 @@ namespace Moonglade.Core
         public static string Right(string sSource, int iLength)
         {
             return sSource.Substring(iLength > sSource.Length ? 0 : sSource.Length - iLength);
+        }
+
+        public static string RemoveTags(string html, bool htmlDecode = false)
+        {
+            if (string.IsNullOrEmpty(html))
+            {
+                return string.Empty;
+            }
+
+            var result = new char[html.Length];
+
+            var cursor = 0;
+            var inside = false;
+            foreach (var current in html)
+            {
+                switch (current)
+                {
+                    case '<':
+                        inside = true;
+                        continue;
+                    case '>':
+                        inside = false;
+                        continue;
+                }
+
+                if (!inside)
+                {
+                    result[cursor++] = current;
+                }
+            }
+
+            var stringResult = new string(result, 0, cursor);
+
+            if (htmlDecode)
+            {
+                stringResult = HttpUtility.HtmlDecode(stringResult);
+            }
+
+            return stringResult;
         }
 
         public static bool TryParseBase64(string input, out byte[] base64Array)

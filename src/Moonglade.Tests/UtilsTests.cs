@@ -151,5 +151,14 @@ namespace Moonglade.Tests
                 });
             }
         }
+
+        [Test]
+        public void TestRemoveTags()
+        {
+            var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
+            var output = Utils.RemoveTags(html);
+
+            Assert.IsTrue(output == "MicrosoftRocks!Azure  The best cloud!");
+        }
     }
 }
