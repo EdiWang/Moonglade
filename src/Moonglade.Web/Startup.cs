@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
@@ -368,21 +369,27 @@ namespace Moonglade.Web
 
         private void ListAllRegisteredServices(IApplicationBuilder app)
         {
-            app.Map("/allservices", builder => builder.Run(async context =>
+            app.Map("/debug/allservices", builder => builder.Run(async context =>
             {
                 var sb = new StringBuilder();
-                sb.Append("<table border='1'><thead>");
-                sb.Append("<tr><th>Type</th><th>Lifetime</th><th>Instance</th></tr>");
+                sb.Append("<html>" +
+                          "<head>" +
+                          "<title>All Registered Services</title>" +
+                          "<link href=\"/css/mooglade-css-bundle.min.css?\" rel=\"stylesheet\" />\r" +
+                          "</head>" +
+                          "<body><div class=\"container-fluid\" style=\"font-family: Consolas\">" +
+                          "<table class=\"table table-bordered table-hover table-sm table-responsive\">" +
+                          "<thead>");
+                sb.Append("<tr><th>Lifetime</th><th>Instance</th></tr>");
                 sb.Append("</thead><tbody>");
-                foreach (var svc in _services)
+                foreach (var svc in _services.Where(svc => svc.ImplementationType != null).OrderBy(svc => svc.ImplementationType.FullName))
                 {
                     sb.Append("<tr>");
-                    sb.Append($"<td>{svc.ServiceType.FullName}</td>");
                     sb.Append($"<td>{svc.Lifetime}</td>");
-                    sb.Append($"<td>{svc.ImplementationType?.FullName}</td>");
+                    sb.Append($"<td>{svc.ImplementationType.FullName}</td>");
                     sb.Append("</tr>");
                 }
-                sb.Append("</tbody></table>");
+                sb.Append("</tbody></table></div></body></html>");
                 context.Response.ContentType = "text/html";
                 await context.Response.WriteAsync(sb.ToString());
             }));
