@@ -8,7 +8,7 @@ namespace Moonglade.Web.Middleware.RobotsTxt
     // From https://github.com/karl-sjogren/robots-txt-middleware
     public class RobotsTxtMiddleware
     {
-        private static readonly PathString _robotsTxtPath = new PathString("/robots.txt");
+        private static readonly PathString RobotsTxtPath = new PathString("/robots.txt");
         private readonly RobotsTxtOptions _options;
         private readonly RequestDelegate _next;
 
@@ -27,7 +27,7 @@ namespace Moonglade.Web.Middleware.RobotsTxt
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path == _robotsTxtPath)
+            if (context.Request.Path == RobotsTxtPath)
             {
                 context.Response.ContentType = "text/plain";
                 context.Response.Headers.Add("Cache-Control", $"max-age={_options.MaxAge.TotalSeconds}");
