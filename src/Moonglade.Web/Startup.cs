@@ -95,7 +95,7 @@ namespace Moonglade.Web
                 case AuthenticationProvider.Local:
                     AppDomain.CurrentDomain.SetData(nameof(LocalAccountOption), authentication.Local);
 
-                    services.AddAuthentication(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName)
+                    services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                             .AddMoongladeLocalAccount();
 
                     _logger.LogInformation("Authentication is configured using Local Account.");
