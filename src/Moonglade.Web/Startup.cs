@@ -33,7 +33,6 @@ using Moonglade.Web.Authentication;
 using Moonglade.Web.Authentication.AzureAd;
 using Moonglade.Web.Authentication.LocalAccount;
 using Moonglade.Web.Filters;
-using Moonglade.Web.Middleware;
 using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.Middleware.RobotsTxt;
 using Newtonsoft.Json;
