@@ -32,7 +32,6 @@ namespace Moonglade.Web.Controllers
         private readonly FriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogConfigurationService _blogConfigurationService;
-        private readonly IApplicationLifetime _applicationLifetime;
 
         #endregion
 
@@ -40,15 +39,12 @@ namespace Moonglade.Web.Controllers
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
             IMemoryCache memoryCache,
-            IApplicationLifetime appLifetime,
             EmailService emailService,
             FriendLinkService friendLinkService,
             IBlogConfig blogConfig,
             IBlogConfigurationService blogConfigurationService)
             : base(logger, settings, memoryCache: memoryCache)
         {
-            _applicationLifetime = appLifetime;
-
             _blogConfig = blogConfig;
             _blogConfigurationService = blogConfigurationService;
             _blogConfig.Initialize(blogConfigurationService);
@@ -420,10 +416,10 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("shutdown")]
         [ValidateAntiForgeryToken]
-        public IActionResult Shutdown(int nonce)
+        public IActionResult Shutdown(int nonce, [FromServices] IApplicationLifetime applicationLifetime)
         {
             Logger.LogWarning($"Shutdown is requested. Nonce value: {nonce}");
-            _applicationLifetime.StopApplication();
+            applicationLifetime.StopApplication();
             return Ok();
         }
 

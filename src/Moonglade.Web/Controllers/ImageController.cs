@@ -21,8 +21,6 @@ namespace Moonglade.Web.Controllers
 {
     public class ImageController : MoongladeController
     {
-        private readonly ISessionBasedCaptcha _captcha;
-
         private readonly IAsyncImageStorageProvider _imageStorageProvider;
 
         private readonly IBlogConfig _blogConfig;
@@ -32,7 +30,6 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings,
             IMemoryCache memoryCache,
             IAsyncImageStorageProvider imageStorageProvider,
-            ISessionBasedCaptcha captcha,
             IBlogConfig blogConfig,
             IBlogConfigurationService blogConfigurationService)
             : base(logger, settings, memoryCache: memoryCache)
@@ -41,7 +38,6 @@ namespace Moonglade.Web.Controllers
             _blogConfig.Initialize(blogConfigurationService);
 
             _imageStorageProvider = imageStorageProvider;
-            _captcha = captcha;
         }
 
         [Route("uploads/{filename}")]
@@ -171,9 +167,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("get-captcha-image")]
-        public IActionResult GetCaptchaImage()
+        public IActionResult GetCaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
-            var s = _captcha.GenerateCaptchaImageFileStream(HttpContext.Session,
+            var s = captcha.GenerateCaptchaImageFileStream(HttpContext.Session,
                 AppSettings.CaptchaSettings.ImageWidth,
                 AppSettings.CaptchaSettings.ImageHeight);
             return s;

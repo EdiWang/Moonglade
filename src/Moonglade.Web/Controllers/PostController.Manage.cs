@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using Edi.Blog.Pingback;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
@@ -53,7 +55,9 @@ namespace Moonglade.Web.Controllers
         [Route("manage/create")]
         [HttpPost, ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        public IActionResult Create(PostEditModel model)
+        public IActionResult Create(PostEditModel model, 
+            [FromServices] LinkGenerator linkGenerator,
+            [FromServices] IPingbackSender pingbackSender)
         {
             try
             {
@@ -89,11 +93,11 @@ namespace Moonglade.Web.Controllers
                         Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
 
                         var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
-                        var link = GetPostUrl(_linkGenerator, pubDate, response.Item.Slug);
+                        var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
 
                         if (AppSettings.EnablePingBackSend)
                         {
-                            Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
+                            Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
                         }
 
                         return RedirectToAction(nameof(Manage));
@@ -177,7 +181,9 @@ namespace Moonglade.Web.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [Route("manage/edit")]
-        public IActionResult Edit(PostEditModel model)
+        public IActionResult Edit(PostEditModel model, 
+            [FromServices] LinkGenerator linkGenerator,
+            [FromServices] IPingbackSender pingbackSender)
         {
             if (ModelState.IsValid)
             {
@@ -208,11 +214,11 @@ namespace Moonglade.Web.Controllers
                         Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
 
                         var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
-                        var link = GetPostUrl(_linkGenerator, pubDate, response.Item.Slug);
+                        var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
 
                         if (AppSettings.EnablePingBackSend)
                         {
-                            Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
+                            Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
                         }
                     }
 
