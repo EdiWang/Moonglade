@@ -24,9 +24,7 @@ namespace Moonglade.Web.Controllers
         private readonly CommentService _commentService;
         private readonly EmailService _emailService;
         private readonly PostService _postService;
-        private readonly ISessionBasedCaptcha _captcha;
         private readonly IBlogConfig _blogConfig;
-        private readonly LinkGenerator _linkGenerator;
 
         #endregion
 
@@ -37,32 +35,29 @@ namespace Moonglade.Web.Controllers
             CommentService commentService,
             EmailService emailService,
             PostService postService,
-            ISessionBasedCaptcha captcha,
             IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService,
-            LinkGenerator linkGenerator)
+            IBlogConfigurationService blogConfigurationService)
             : base(logger, settings, memoryCache: memoryCache)
         {
             _blogConfig = blogConfig;
-            _linkGenerator = linkGenerator;
             _blogConfig.Initialize(blogConfigurationService);
 
             _commentService = commentService;
             _emailService = emailService;
             _postService = postService;
-            _captcha = captcha;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult NewComment(PostSlugViewModelWrapper model)
+        public IActionResult NewComment(PostSlugViewModelWrapper model, 
+            [FromServices] ISessionBasedCaptcha captcha)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
                     // Validate BasicCaptcha Code
-                    if (!_captcha.ValidateCaptchaCode(model.NewCommentModel.CaptchaCode, HttpContext.Session))
+                    if (!captcha.ValidateCaptchaCode(model.NewCommentModel.CaptchaCode, HttpContext.Session))
                     {
                         Logger.LogWarning($"Wrong Captcha Code, model: {JsonConvert.SerializeObject(model.NewCommentModel)}");
                         ModelState.AddModelError(nameof(model.NewCommentModel.CaptchaCode), "Wrong Captcha Code");

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Web;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
 using Edi.Net.AesEncryption;
@@ -18,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -26,7 +23,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.AzureBlob;
@@ -99,7 +95,7 @@ namespace Moonglade.Web
                 case AuthenticationProvider.Local:
                     AppDomain.CurrentDomain.SetData(nameof(LocalAccountOption), authentication.Local);
 
-                    services.AddAuthentication(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName)
+                    services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                             .AddMoongladeLocalAccount();
 
                     _logger.LogInformation("Authentication is configured using Local Account.");
@@ -150,8 +146,7 @@ namespace Moonglade.Web
 
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()
-                           .UseSqlServer(Configuration.GetConnectionString(Constants.DbConnectionName), sqlServerOptionsAction:
-                               sqlOptions =>
+                           .UseSqlServer(Configuration.GetConnectionString(Constants.DbConnectionName), sqlOptions =>
                                {
                                    sqlOptions.EnableRetryOnFailure(
                                        maxRetryCount: 3,
@@ -216,8 +211,7 @@ namespace Moonglade.Web
 
             app.UseStaticFiles();
             app.UseSession();
-            app.UseAuthentication();
-
+            
             // robots.txt
             app.UseRobotsTxt();
             //app.UseRobotsTxt(builder =>
@@ -228,6 +222,7 @@ namespace Moonglade.Web
             ////.AddSitemap("https://example.com/sitemap.xml")
             //);
 
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -235,197 +230,11 @@ namespace Moonglade.Web
                     template: "{controller=Post}/{action=Index}/{id?}");
             });
 
-            TryInitializeData(app.ApplicationServices);
+            BlogManager.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
         }
 
         #region Private Helpers
 
-        // DO NOT use async! DO NOT use async! DO NOT use async! Important thing say 3 times!
-        private void TryInitializeData(IServiceProvider serviceProvider)
-        {
-            // Caveat: This will require non-readonly for the application directory
-            void SetInitialEncryptionKey()
-            {
-                try
-                {
-                    var ki = new KeyInfo();
-
-                    var appSettingsFilePath = Path.Combine(Environment.ContentRootPath,
-                        Environment.EnvironmentName != EnvironmentName.Production ?
-                            $"appsettings.{Environment.EnvironmentName}.json" :
-                            "appsettings.json");
-
-                    if (File.Exists(appSettingsFilePath))
-                    {
-                        var json = File.ReadAllText(appSettingsFilePath);
-                        var jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
-                        var encryptionNode = jsonObj["Encryption"];
-                        if (null != encryptionNode)
-                        {
-                            encryptionNode["Key"] = ki.KeyString;
-                            encryptionNode["IV"] = ki.IVString;
-                            var newJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
-                            File.WriteAllText(appSettingsFilePath, newJson);
-                        }
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException("Failed to initialize Key and IV for password encryption. Settings file is not found.", appSettingsFilePath);
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Unable to set initial Key and IV, please do it manually.", e);
-                }
-            }
-
-            IEnumerable<BlogConfiguration> GetBlogConfigurationObjects(IEnumerable<KeyValuePair<string, string>> configData)
-            {
-                return configData.Select((t, i) => new BlogConfiguration
-                {
-                    Id = i,
-                    CfgKey = t.Key,
-                    CfgValue = t.Value,
-                    LastModifiedTimeUtc = DateTime.UtcNow
-                }).ToList();
-            }
-
-            void InitBlogConfiguration(DbContext moongladeDbContext)
-            {
-                // oh, I wish C# could simplify this syntax...
-                var defaultConfigData = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.BlogOwnerSettings),  Constants.BlogOwnerSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.GeneralSettings), Constants.GeneralSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.ContentSettings), Constants.ContentSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.WatermarkSettings), Constants.WatermarkSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.EmailConfiguration), Constants.EmailConfigurationDefaultValue)
-                };
-
-                var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
-                moongladeDbContext.AddRange(cfgObjs);
-                moongladeDbContext.SaveChanges();
-
-                _logger.LogInformation("BlogConfiguration Initialized");
-            }
-
-            Guid catId;
-            void InitCategories(DbContext moongladeDbContext)
-            {
-                var cat = new Category
-                {
-                    Id = Guid.NewGuid(),
-                    DisplayName = "Default",
-                    Note = "Default Category",
-                    Title = "default"
-                };
-                moongladeDbContext.Add(cat);
-                moongladeDbContext.SaveChanges();
-                catId = cat.Id;
-
-                _logger.LogInformation("Default Categories Initialized");
-            }
-
-            void InitFriendLinks(DbContext moongladeDbContext)
-            {
-                var friendLink = new FriendLink
-                {
-                    Id = Guid.NewGuid(),
-                    LinkUrl = "https://edi.wang",
-                    Title = "Edi.Wang"
-                };
-                moongladeDbContext.Add(friendLink);
-                moongladeDbContext.SaveChanges();
-
-                _logger.LogInformation("Default Friend Links Initialized");
-            }
-
-            List<Tag> tags;
-            void InitDefaultTags(DbContext moongladeDbContext)
-            {
-                tags = new List<Tag>
-                {
-                    new Tag{ DisplayName = "Moonglade", NormalizedName = "moonglade" },
-                    new Tag{ DisplayName = ".NET Core", NormalizedName = "dot-net-core" }
-                };
-                moongladeDbContext.AddRange(tags);
-                moongladeDbContext.SaveChanges();
-
-                _logger.LogInformation("Default Tags Initialized");
-            }
-
-            void InitFirstPost(DbContext moongladeDbContext)
-            {
-                var id = Guid.NewGuid();
-                var post = new Post
-                {
-                    Id = id,
-                    CommentEnabled = true,
-                    Title = "Welcome to Moonglade",
-                    Slug = "welcome-to-moonglade",
-                    PostContent = HttpUtility.HtmlEncode($"<p>{Constants.PostContentInitValue}</p>"),
-                    ContentAbstract = Constants.PostContentInitValue,
-                    CreateOnUtc = DateTime.UtcNow,
-                    PostExtension = new PostExtension
-                    {
-                        Hits = 1024,
-                        Likes = 512,
-                        PostId = id
-                    },
-                    PostPublish = new PostPublish
-                    {
-                        PostId = id,
-                        ContentLanguageCode = "en-us",
-                        ExposedToSiteMap = true,
-                        IsFeedIncluded = true,
-                        IsPublished = true,
-                        IsDeleted = false,
-                        PubDateUtc = DateTime.UtcNow,
-                        PublisherIp = "127.0.0.1"
-                    },
-                    PostCategory = new List<PostCategory>
-                    {
-                        new PostCategory{ CategoryId = catId, PostId = id }
-                    },
-                    PostTag = new List<PostTag>
-                    {
-                        new PostTag{ TagId = tags[0].Id, PostId = id },
-                        new PostTag{ TagId = tags[1].Id, PostId = id }
-                    }
-                };
-
-                moongladeDbContext.Add(post);
-                moongladeDbContext.SaveChanges();
-
-                _logger.LogInformation("First Post Created");
-            }
-
-            try
-            {
-                using (var serviceScope = serviceProvider.CreateScope())
-                {
-                    var scopeServiceProvider = serviceScope.ServiceProvider;
-                    var db = scopeServiceProvider.GetService<MoongladeDbContext>();
-                    var isFirstRun = !EnumerableExtensions.Any(db.BlogConfiguration);
-
-                    if (isFirstRun)
-                    {
-                        SetInitialEncryptionKey();
-                        InitBlogConfiguration(db);
-                        InitCategories(db);
-                        InitFriendLinks(db);
-                        InitDefaultTags(db);
-                        InitFirstPost(db);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogCritical("Something ugly blown up when trying to initialize blog configuration, what a day!", e);
-                throw;
-            }
-        }
 
         private void AddImageStorage(IServiceCollection services)
         {
@@ -456,7 +265,7 @@ namespace Moonglade.Web
                     var path = imageStorage.FileSystemSettings.Path;
                     try
                     {
-                        var fullPath = ResolveImageStoragePath(path);
+                        var fullPath = Utils.ResolveImageStoragePath(Environment.ContentRootPath, path);
 
                         _logger.LogInformation($"Setting {nameof(FileSystemImageProvider)} to use Path: {fullPath}");
                         services.AddSingleton(s => new FileSystemImageProviderInfo(path));
@@ -478,6 +287,30 @@ namespace Moonglade.Web
 
         private void PrepareRuntimePathDependencies(IApplicationBuilder app, IHostingEnvironment env)
         {
+            void DeleteDataFile(string path)
+            {
+                try
+                {
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, $"Error Deleting file {path}");
+                }
+            }
+
+            void CleanDataCache()
+            {
+                var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpenSearchFileName}";
+                var opmlDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}";
+
+                DeleteDataFile(openSearchDataFile);
+                DeleteDataFile(opmlDataFile);
+            }
+
             var baseDir = env.ContentRootPath;
             TryAddUrlRewrite(app, baseDir);
             AppDomain.CurrentDomain.SetData(Constants.AppBaseDirectory, baseDir);
@@ -534,91 +367,29 @@ namespace Moonglade.Web
             }
         }
 
-        private void CleanDataCache()
-        {
-            var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpenSearchFileName}";
-            var opmlDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}";
-
-            DeleteDataFile(openSearchDataFile);
-            DeleteDataFile(opmlDataFile);
-        }
-
-        private void DeleteDataFile(string path)
-        {
-            try
-            {
-                _logger.LogInformation($"Deleting {path}");
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error Deleting file {path}");
-            }
-        }
-
-        private string ResolveImageStoragePath(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            var basedirStr = "${basedir}"; // Do not use "." because there could be "." in path.
-            if (path.IndexOf(basedirStr, StringComparison.Ordinal) > 0)
-            {
-                _logger.LogError($"Invalid Path settings for {nameof(FileSystemImageProvider)}, settings value: {path}, {basedirStr} can only be at the beginning.");
-                throw new NotSupportedException($"{basedirStr} can only be at the beginning.");
-            }
-            if (path.IndexOf(basedirStr, StringComparison.Ordinal) == 0)
-            {
-                // Use relative path
-                // Warning: Write data under application directory may blow up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.
-                path = path.Replace(basedirStr, Environment.ContentRootPath);
-            }
-
-            // IsPathFullyQualified can't check if path is valid, e.g.:
-            // Path: C:\Documents<>|foo
-            //   Rooted: True
-            //   Fully qualified: True
-            //   Full path: C:\Documents<>|foo
-            var invalidChars = Path.GetInvalidPathChars();
-            if (path.IndexOfAny(invalidChars) >= 0)
-            {
-                throw new InvalidOperationException("Path can not contain invalid chars.");
-            }
-            if (!Path.IsPathFullyQualified(path))
-            {
-                throw new InvalidOperationException("Path is not fully qualified.");
-            }
-
-            var fullPath = Path.GetFullPath(path);
-            if (!Directory.Exists(fullPath))
-            {
-                Directory.CreateDirectory(fullPath);
-            }
-            return fullPath;
-        }
-
         private void ListAllRegisteredServices(IApplicationBuilder app)
         {
-            app.Map("/allservices", builder => builder.Run(async context =>
+            app.Map("/debug/allservices", builder => builder.Run(async context =>
             {
                 var sb = new StringBuilder();
-                sb.Append("<table border='1'><thead>");
-                sb.Append("<tr><th>Type</th><th>Lifetime</th><th>Instance</th></tr>");
+                sb.Append("<html>" +
+                          "<head>" +
+                          "<title>All Registered Services</title>" +
+                          "<link href=\"/css/mooglade-css-bundle.min.css?\" rel=\"stylesheet\" />\r" +
+                          "</head>" +
+                          "<body><div class=\"container-fluid\" style=\"font-family: Consolas\">" +
+                          "<table class=\"table table-bordered table-hover table-sm table-responsive\">" +
+                          "<thead>");
+                sb.Append("<tr><th>Lifetime</th><th>Instance</th></tr>");
                 sb.Append("</thead><tbody>");
-                foreach (var svc in _services)
+                foreach (var svc in _services.Where(svc => svc.ImplementationType != null).OrderBy(svc => svc.ImplementationType.FullName))
                 {
                     sb.Append("<tr>");
-                    sb.Append($"<td>{svc.ServiceType.FullName}</td>");
                     sb.Append($"<td>{svc.Lifetime}</td>");
-                    sb.Append($"<td>{svc.ImplementationType?.FullName}</td>");
+                    sb.Append($"<td>{svc.ImplementationType.FullName}</td>");
                     sb.Append("</tr>");
                 }
-                sb.Append("</tbody></table>");
+                sb.Append("</tbody></table></div></body></html>");
                 context.Response.ContentType = "text/html";
                 await context.Response.WriteAsync(sb.ToString());
             }));

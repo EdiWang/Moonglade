@@ -2,15 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using Edi.Blog.Pingback;
 using Edi.Blog.Pingback.MvcExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
@@ -23,22 +20,16 @@ namespace Moonglade.Web.Controllers
     {
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
-        private readonly IPingbackSender _pingbackSender;
-        private readonly LinkGenerator _linkGenerator;
 
         public PostController(
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
             PostService postService,
-            CategoryService categoryService,
-            IPingbackSender pingbackSender,
-            LinkGenerator linkGenerator)
+            CategoryService categoryService)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
-            _pingbackSender = pingbackSender;
-            _linkGenerator = linkGenerator;
         }
 
         [Route(""), Route("/")]

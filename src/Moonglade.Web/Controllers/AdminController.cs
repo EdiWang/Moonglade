@@ -47,7 +47,7 @@ namespace Moonglade.Web.Controllers
                     OpenIdConnectDefaults.AuthenticationScheme);
             }
 
-            await HttpContext.SignOutAsync(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
 
@@ -66,12 +66,12 @@ namespace Moonglade.Web.Controllers
                     {
                         var claims = new List<Claim>
                         {
-                            new Claim("name", model.Username),
-                            new Claim("role", "Administrator")
+                            new Claim(ClaimTypes.Name, model.Username),
+                            new Claim(ClaimTypes.Role, "Administrator"),
                         };
-                        var ci = new ClaimsIdentity(claims, "Password", "name", "role");
+                        var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var p = new ClaimsPrincipal(ci);
-                        await HttpContext.SignInAsync(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName, p);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
                         Logger.LogInformation($@"Authentication success for local account ""{model.Username}""");
 
                         return RedirectToAction("Index");
@@ -107,7 +107,7 @@ namespace Moonglade.Web.Controllers
                     OpenIdConnectDefaults.AuthenticationScheme);
             }
 
-            await HttpContext.SignOutAsync(LocalAccountAuthenticationBuilderExtensions.CookieAuthSchemeName);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Post");
         }
 

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Moonglade.Model;
 using X.PagedList;
 
@@ -75,7 +76,7 @@ namespace Moonglade.Web.Controllers
         [Authorize, HttpPost]
         [ValidateAntiForgeryToken]
         [Route("reply")]
-        public IActionResult ReplyComment(Guid commentId, string replyContent)
+        public IActionResult ReplyComment(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
             var response = _commentService.NewReply(commentId, replyContent,
                 HttpContext.Connection.RemoteIpAddress.ToString(), GetUserAgent());
@@ -88,7 +89,7 @@ namespace Moonglade.Web.Controllers
 
             if (_blogConfig.EmailConfiguration.SendEmailOnCommentReply)
             {
-                var postLink = GetPostUrl(_linkGenerator, response.Item.PubDateUtc.GetValueOrDefault(), response.Item.Slug);
+                var postLink = GetPostUrl(linkGenerator, response.Item.PubDateUtc.GetValueOrDefault(), response.Item.Slug);
                 Task.Run(async () => { await _emailService.SendCommentReplyNotification(response.Item, postLink); });
             }
 
