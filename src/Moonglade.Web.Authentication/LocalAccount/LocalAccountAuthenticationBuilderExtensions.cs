@@ -15,7 +15,6 @@ namespace Moonglade.Web.Authentication.LocalAccount
                 options.LogoutPath = "/admin/signout";
             });
 
-            builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
             return builder;
         }
     }

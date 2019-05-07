@@ -211,8 +211,7 @@ namespace Moonglade.Web
 
             app.UseStaticFiles();
             app.UseSession();
-            app.UseAuthentication();
-
+            
             // robots.txt
             app.UseRobotsTxt();
             //app.UseRobotsTxt(builder =>
@@ -223,6 +222,7 @@ namespace Moonglade.Web
             ////.AddSitemap("https://example.com/sitemap.xml")
             //);
 
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
