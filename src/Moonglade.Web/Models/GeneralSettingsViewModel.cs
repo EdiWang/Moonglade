@@ -5,11 +5,6 @@ namespace Moonglade.Web.Models
     public class GeneralSettingsViewModel
     {
         [Required]
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "Blocked Words")]
-        public string DisharmonyWords { get; set; }
-
-        [Required]
         [Display(Name = "Meta Keyword")]
         public string MetaKeyword { get; set; }
 
@@ -25,10 +20,6 @@ namespace Moonglade.Web.Models
         [Required]
         [Display(Name = "Website Title")]
         public string SiteTitle { get; set; }
-
-        [Required]
-        [Display(Name = "Enable Comments")]
-        public bool EnableComments { get; set; }
 
         [Required]
         [Display(Name = "Blogger Name")]
