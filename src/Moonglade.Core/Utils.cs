@@ -64,8 +64,54 @@ namespace Moonglade.Core
         public static string GetPostAbstract(string rawHtmlContent, int wordCount)
         {
             var plainText = RemoveTags(rawHtmlContent);
-            var result = Left(plainText, wordCount);
+            var result = plainText.Ellipsize(wordCount);
             return result;
+        }
+
+        public static string Ellipsize(this string text, int characterCount)
+        {
+            return text.Ellipsize(characterCount, "\u00A0\u2026");
+        }
+
+        public static string Ellipsize(this string text, int characterCount, string ellipsis, bool wordBoundary = false)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return "";
+
+            if (characterCount < 0 || text.Length <= characterCount)
+                return text;
+
+            // search beginning of word
+            var backup = characterCount;
+            while (characterCount > 0 && text[characterCount - 1].IsLetter())
+            {
+                characterCount--;
+            }
+
+            // search previous word
+            while (characterCount > 0 && text[characterCount - 1].IsSpace())
+            {
+                characterCount--;
+            }
+
+            // if it was the last word, recover it, unless boundary is requested
+            if (characterCount == 0 && !wordBoundary)
+            {
+                characterCount = backup;
+            }
+
+            var trimmed = text.Substring(0, characterCount);
+            return trimmed + ellipsis;
+        }
+
+        public static bool IsLetter(this char c)
+        {
+            return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
+        }
+
+        public static bool IsSpace(this char c)
+        {
+            return (c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == ' ');
         }
 
         public static string Left(string sSource, int iLength)

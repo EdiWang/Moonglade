@@ -160,5 +160,47 @@ namespace Moonglade.Tests
 
             Assert.IsTrue(output == "MicrosoftRocks!Azure  The best cloud!");
         }
+
+        [Test]
+        public void TestIsLetter()
+        {
+            char c1 = 'f';
+            Assert.IsTrue(c1.IsLetter());
+
+            char c2 = '0';
+            Assert.IsFalse(c2.IsLetter());
+        }
+
+        [Test]
+        public void TestIsSpace()
+        {
+            char c1 = ' ';
+            Assert.IsTrue(c1.IsSpace());
+
+            char c2 = '0';
+            Assert.IsFalse(c2.IsSpace());
+        }
+
+        [Test]
+        public void TestEllipsize()
+        {
+            var text1 = "A 996 programmer went to heaven.";
+            var result1 = text1.Ellipsize(10);
+            var expected1 = "A 996" + "\u00A0\u2026";
+            Assert.IsTrue(result1 == expected1);
+
+            var text2 = "Fu bao";
+            var result2 = text2.Ellipsize(10);
+            Assert.IsTrue(result2 == "Fu bao");
+        }
+
+        [Test]
+        public void TestGetPostAbstract()
+        {
+            var html = @"<p>Microsoft</p> <p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
+            var result = Utils.GetPostAbstract(html, 16);
+            var expected = "Microsoft Rocks!" + "\u00A0\u2026";
+            Assert.IsTrue(result == expected);
+        }
     }
 }
