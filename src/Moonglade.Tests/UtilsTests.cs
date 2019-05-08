@@ -202,5 +202,26 @@ namespace Moonglade.Tests
             var expected = "Microsoft Rocks!" + "\u00A0\u2026";
             Assert.IsTrue(result == expected);
         }
+
+        [Test]
+        public void TestGetSlugInfoFromPostUrlSuccess()
+        {
+            var url = "https://edi.wang/post/2075/4/4/happy-birthday-to-microsoft";
+            var result = Utils.GetSlugInfoFromPostUrl(url);
+            Assert.IsTrue(result.IsSuccess);
+            Assert.IsNotNull(result.Item);
+            Assert.IsTrue(result.Item.Slug == "happy-birthday-to-microsoft");
+            Assert.IsTrue(result.Item.PubDate == new DateTime(2075,4,4));
+        }
+
+        [Test]
+        public void TestGetSlugInfoFromPostUrlFail()
+        {
+            var url = "https://edi.wang/996-workers-ganked-alibaba";
+            var result = Utils.GetSlugInfoFromPostUrl(url);
+            Assert.IsFalse(result.IsSuccess);
+            Assert.IsNull(result.Item.Slug);
+            Assert.IsTrue(result.Item.PubDate == DateTime.MinValue);
+        }
     }
 }
