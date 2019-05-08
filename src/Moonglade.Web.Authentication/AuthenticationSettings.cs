@@ -3,7 +3,7 @@ using Moonglade.Web.Authentication.LocalAccount;
 
 namespace Moonglade.Web.Authentication
 {
-    public class Authentication
+    public class AuthenticationSettings
     {
         public AuthenticationProvider Provider { get; set; }
 
@@ -11,7 +11,7 @@ namespace Moonglade.Web.Authentication
 
         public LocalAccountOption Local { get; set; }
 
-        public Authentication()
+        public AuthenticationSettings()
         {
             Provider = AuthenticationProvider.None;
         }

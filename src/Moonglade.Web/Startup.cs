@@ -7,8 +7,6 @@ using Edi.Captcha;
 using Edi.Net.AesEncryption;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,8 +28,6 @@ using Moonglade.ImageStorage.FileSystem;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Authentication;
-using Moonglade.Web.Authentication.AzureAd;
-using Moonglade.Web.Authentication.LocalAccount;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.Middleware.RobotsTxt;
@@ -71,40 +67,9 @@ namespace Moonglade.Web
             services.Configure<AppSettings>(_appSettingsSection);
             services.Configure<RobotsTxtOptions>(Configuration.GetSection("RobotsTxt"));
 
-            var authentication = new Authentication.Authentication();
+            var authentication = new AuthenticationSettings();
             Configuration.Bind(nameof(Authentication), authentication);
-            AppDomain.CurrentDomain.SetData(nameof(AuthenticationProvider), authentication.Provider);
-            switch (authentication.Provider)
-            {
-                case AuthenticationProvider.AzureAD:
-                    services.AddAuthentication(sharedOptions =>
-                        {
-                            sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                            sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                        })
-                        .AddAzureAD(info =>
-                        {
-                            info.CallbackPath = authentication.AzureAd.CallbackPath;
-                            info.ClientId = authentication.AzureAd.ClientId;
-                            info.Domain = authentication.AzureAd.Domain;
-                            info.Instance = authentication.AzureAd.Instance;
-                            info.TenantId = authentication.AzureAd.TenantId;
-                        }).AddCookie();
-                    _logger.LogInformation("Authentication is configured using Azure Active Directory.");
-                    break;
-                case AuthenticationProvider.Local:
-                    AppDomain.CurrentDomain.SetData(nameof(LocalAccountOption), authentication.Local);
-
-                    services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                            .AddMoongladeLocalAccount();
-
-                    _logger.LogInformation("Authentication is configured using Local Account.");
-                    break;
-                default:
-                    var msg = $"Provider {authentication.Provider} is not supported.";
-                    _logger.LogCritical(msg);
-                    throw new NotSupportedException(msg);
-            }
+            services.AddMoongladeAuthenticaton(authentication);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                     .AddJsonOptions(
