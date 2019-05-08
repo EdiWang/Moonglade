@@ -60,8 +60,6 @@ namespace Moonglade.Web.Controllers
                 SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
                 Copyright = _blogConfig.GeneralSettings.Copyright.Replace("&copy;", "[c]"),
                 SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
-                DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
-                EnableComments = _blogConfig.ContentSettings.EnableComments,
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
                 BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
                 BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription
@@ -69,8 +67,7 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost]
-        [Route("general")]
+        [HttpPost("general")]
         public IActionResult General(GeneralSettingsViewModel model)
         {
             if (ModelState.IsValid)
@@ -82,10 +79,6 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
                 _blogConfigurationService.SaveConfiguration(_blogConfig.GeneralSettings);
 
-                _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
-                _blogConfig.ContentSettings.EnableComments = model.EnableComments;
-                _blogConfigurationService.SaveConfiguration(_blogConfig.ContentSettings);
-
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
                 _blogConfig.BlogOwnerSettings.Description = model.BloggerDescription;
                 _blogConfig.BlogOwnerSettings.ShortDescription = model.BloggerShortDescription;
@@ -93,6 +86,32 @@ namespace Moonglade.Web.Controllers
 
                 _blogConfig.RequireRefresh();
                 return Json(response);
+            }
+            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+        }
+
+        [Route("content-settings")]
+        public IActionResult ContentSettings()
+        {
+            var vm = new ContentSettingsViewModel
+            {
+                DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
+                EnableComments = _blogConfig.ContentSettings.EnableComments,
+            };
+            return View(vm);
+        }
+
+        [HttpPost("content-settings")]
+        public IActionResult ContentSettings(ContentSettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
+                _blogConfig.ContentSettings.EnableComments = model.EnableComments;
+                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.ContentSettings);
+                _blogConfig.RequireRefresh();
+                return Json(response);
+
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
         }
@@ -119,8 +138,7 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost]
-        [Route("email-settings")]
+        [HttpPost("email-settings")]
         public IActionResult EmailSettings(EmailSettingsViewModel model)
         {
             if (ModelState.IsValid)
@@ -148,8 +166,7 @@ namespace Moonglade.Web.Controllers
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
         }
 
-        [HttpPost]
-        [Route("send-test-email")]
+        [HttpPost("send-test-email")]
         public async Task<IActionResult> SendTestEmail([FromServices] EmailService emailService)
         {
             var response = await emailService.TestSendTestMailAsync();
@@ -197,8 +214,7 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost]
-        [Route("feed-settings")]
+        [HttpPost("feed-settings")]
         public IActionResult FeedSettings(FeedSettingsViewModel model)
         {
             if (ModelState.IsValid)
@@ -237,8 +253,7 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost]
-        [Route("watermark-settings")]
+        [HttpPost("watermark-settings")]
         public IActionResult WatermarkSettings(WatermarkSettingsViewModel model)
         {
             if (ModelState.IsValid)
@@ -360,8 +375,7 @@ namespace Moonglade.Web.Controllers
         #region User Avatar
 
         [ValidateAntiForgeryToken]
-        [HttpPost]
-        [Route("set-blogger-avatar")]
+        [HttpPost("set-blogger-avatar")]
         public IActionResult SetBloggerAvatar(string base64Avatar)
         {
             try
@@ -406,6 +420,7 @@ namespace Moonglade.Web.Controllers
 
         #region Advanced Settings
 
+        [Route("advanced-settings")]
         public IActionResult AdvancedSettings()
         {
             return View();

@@ -1,6 +1,9 @@
-﻿namespace Moonglade.Web.Authentication
+﻿using Moonglade.Web.Authentication.AzureAd;
+using Moonglade.Web.Authentication.LocalAccount;
+
+namespace Moonglade.Web.Authentication
 {
-    public class Authentication
+    public class AuthenticationSettings
     {
         public AuthenticationProvider Provider { get; set; }
 
@@ -8,7 +11,7 @@
 
         public LocalAccountOption Local { get; set; }
 
-        public Authentication()
+        public AuthenticationSettings()
         {
             Provider = AuthenticationProvider.None;
         }

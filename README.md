@@ -24,7 +24,6 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 - [.NET Core 2.2 SDK](http://dot.net)
 - [Visual Studio 2019](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
 - [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) or [SQL Server 2017](https://www.microsoft.com/en-us/sql-server/sql-server-2017)
-- [Microsoft Azure Subscription](https://azure.microsoft.com/)
 
 ### Setup Database
 
@@ -53,7 +52,7 @@ Example:
 
 Configure how to sign in to admin portal.
 
-##### Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))
+**Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))**
 
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"**
@@ -71,7 +70,7 @@ Register an App in **Azure Active Directory**
 }
 ```
 
-##### Alternative: Local Account
+**Alternative: Local Account**
 
 Set **Authentication:Provider** to **"Local"** and assign a pair of username and password. 
 

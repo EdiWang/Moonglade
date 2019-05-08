@@ -90,23 +90,14 @@ namespace Moonglade.Core
         {
             try
             {
-                // https://domain/post/yyyy/MM/dd/slug
-                var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
-                var match = blogSlugRegex.Match(url);
-                if (!match.Success)
+                var response = Utils.GetSlugInfoFromPostUrl(url);
+                if (!response.IsSuccess)
                 {
                     return null;
                 }
 
-                var year = int.Parse(match.Groups["yyyy"].Value);
-                var month = int.Parse(match.Groups["MM"].Value);
-                var day = int.Parse(match.Groups["dd"].Value);
-                var slug = match.Groups["slug"].Value;
-
-                var date = new DateTime(year, month, day);
-
-                var post = _postRepository.Get(p => p.Slug == slug &&
-                                               p.PostPublish.PubDateUtc.GetValueOrDefault().Date == date.Date &&
+                var post = _postRepository.Get(p => p.Slug == response.Item.Slug &&
+                                               p.PostPublish.PubDateUtc.GetValueOrDefault().Date == response.Item.PubDate.Date &&
                                                p.PostPublish.IsPublished &&
                                                !p.PostPublish.IsDeleted);
 

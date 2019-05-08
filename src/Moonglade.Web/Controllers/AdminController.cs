@@ -18,12 +18,12 @@ namespace Moonglade.Web.Controllers
     [Route("admin")]
     public class AdminController : MoongladeController
     {
-        private readonly AuthenticationProvider _currentAuthenticationProvider;
+        private readonly AuthenticationSettings _authenticationSettings;
 
         public AdminController(ILogger<AdminController> logger)
             : base(logger)
         {
-            _currentAuthenticationProvider = (AuthenticationProvider)AppDomain.CurrentDomain.GetData(nameof(AuthenticationProvider));
+            _authenticationSettings = AppDomain.CurrentDomain.GetData(nameof(AuthenticationSettings)) as AuthenticationSettings;
         }
 
         [Route("")]
@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignIn()
         {
-            if (_currentAuthenticationProvider == AuthenticationProvider.AzureAD)
+            if (_authenticationSettings.Provider == AuthenticationProvider.AzureAD)
             {
                 var redirectUrl = Url.Action(nameof(PostController.Index), "Post");
                 return Challenge(
@@ -59,14 +59,13 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (AppDomain.CurrentDomain.GetData(nameof(LocalAccountOption)) is LocalAccountOption accountInfo &&
-                        model.Username == accountInfo.Username &&
-                        model.Password == accountInfo.Password)
+                    if (model.Username == _authenticationSettings.Local.Username &&
+                        model.Password == _authenticationSettings.Local.Password)
                     {
                         var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name, model.Username),
-                            new Claim(ClaimTypes.Role, "Administrator"),
+                            new Claim(ClaimTypes.Role, "Administrator")
                         };
                         var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var p = new ClaimsPrincipal(ci);
@@ -97,7 +96,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("signout")]
         public async Task<IActionResult> SignOut()
         {
-            if (_currentAuthenticationProvider == AuthenticationProvider.AzureAD)
+            if (_authenticationSettings.Provider == AuthenticationProvider.AzureAD)
             {
                 var callbackUrl = Url.Action(nameof(SignedOut), "Admin", values: null, protocol: Request.Scheme);
                 return SignOut(

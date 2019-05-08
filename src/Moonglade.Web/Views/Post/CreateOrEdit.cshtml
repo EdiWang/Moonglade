@@ -84,7 +84,7 @@
             </div>
 
             <div class="form-group">
-                <input type="text" asp-for="Tags" class="form-control" />
+                <input type="text" asp-for="Tags" class="form-control" placeholder="Tags" />
             </div>
         </div>
         <div class="col-md-3 col-xl-2">
@@ -130,21 +130,24 @@
                 <div class="card-body">
                     @if (null != Model.CategoryList && Model.CategoryList.Count > 0)
                     {
-                    <div class="catlist">
-                        <ul>
-                            @foreach (var item in Model.CategoryList)
+                        <div class="catlist">
+                            <ul>
+                                @foreach (var item in Model.CategoryList)
                                 {
-                            <li>
-                                <div class="custom-control custom-checkbox">
-                                    <input id="cat-@item.Value" name="SelectedCategoryIds" class="custom-control-input" type="checkbox" value="@item.Value"
-                                           @(item.IsChecked ? "checked=\"checked\"" : null)>
-                                    <label for="cat-@item.Value" class="custom-control-label">@item.DisplayText</label>
-                                </div>
-                            </li>
+                                    <li>
+                                        <div class="custom-control custom-checkbox">
+                                            <input id="cat-@item.Value" name="SelectedCategoryIds" class="custom-control-input" type="checkbox" value="@item.Value"
+                                                   @(item.IsChecked ? "checked=\"checked\"" : null)>
+                                            <label for="cat-@item.Value" class="custom-control-label">@item.DisplayText</label>
+                                        </div>
+                                    </li>
                                 }
-                        </ul>
-                    </div>
+                            </ul>
+                        </div>
                     }
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Create" asp-controller="Category" class="btn btn-sm btn-secondary">New Category</a>
                 </div>
             </div>
         </div>
@@ -156,6 +159,6 @@
         <button type="submit" class="btn btn-success ediblogeditor-submit" id="btn-submit">
             Submit
         </button>
-        <a asp-controller="Post" asp-action="Manage" class="btn btn-secondary">Cancel</a>
+        <a asp-controller="Post" asp-action="Manage" class="btn btn-light">Cancel</a>
     </div>
 </form>

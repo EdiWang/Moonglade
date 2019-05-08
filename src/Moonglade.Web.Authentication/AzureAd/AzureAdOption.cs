@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Web.Authentication
+﻿namespace Moonglade.Web.Authentication.AzureAd
 {
     public class AzureAdOption
     {
