@@ -28,7 +28,6 @@ namespace Moonglade.Web.Controllers
     {
         #region Private Fields
 
-        private readonly EmailService _emailService;
         private readonly FriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogConfigurationService _blogConfigurationService;
@@ -39,7 +38,6 @@ namespace Moonglade.Web.Controllers
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
             IMemoryCache memoryCache,
-            EmailService emailService,
             FriendLinkService friendLinkService,
             IBlogConfig blogConfig,
             IBlogConfigurationService blogConfigurationService)
@@ -49,7 +47,6 @@ namespace Moonglade.Web.Controllers
             _blogConfigurationService = blogConfigurationService;
             _blogConfig.Initialize(blogConfigurationService);
 
-            _emailService = emailService;
             _friendLinkService = friendLinkService;
         }
 
@@ -153,9 +150,9 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost]
         [Route("send-test-email")]
-        public async Task<IActionResult> SendTestEmail()
+        public async Task<IActionResult> SendTestEmail([FromServices] EmailService emailService)
         {
-            var response = await _emailService.TestSendTestMailAsync();
+            var response = await emailService.TestSendTestMailAsync();
             if (!response.IsSuccess)
             {
                 Response.StatusCode = StatusCodes.Status500InternalServerError;

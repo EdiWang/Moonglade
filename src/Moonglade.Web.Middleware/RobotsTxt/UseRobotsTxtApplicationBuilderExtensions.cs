@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Moonglade.Web.Middleware.RobotsTxt;
-using System;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 
-namespace Moonglade.Web.Middleware
+namespace Moonglade.Web.Middleware.RobotsTxt
 {
     public static class UseRobotsTxtApplicationBuilderExtensions
     {
