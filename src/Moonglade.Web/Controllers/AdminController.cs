@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Web.Authentication;
+using Moonglade.Web.Authentication.LocalAccount;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
