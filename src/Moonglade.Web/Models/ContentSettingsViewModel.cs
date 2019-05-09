@@ -20,5 +20,9 @@ namespace Moonglade.Web.Models
         [Required]
         [Display(Name = "Enable Word Filter")]
         public bool EnableWordFilter { get; set; }
+
+        [Required]
+        [Display(Name = "Use Friendly 404 Image")]
+        public bool UseFriendlyNotFoundImage { get; set; }
     }
 }

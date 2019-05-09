@@ -136,11 +136,8 @@ PostListPageSize | How may posts listed per page
 PostSummaryWords | How may words to show in post list summary
 ImageCacheSlidingExpirationMinutes | Time for cached images to expire
 EnableImageLazyLoad | Use lazy load to show images when user scrolls the page
-UsePictureInsteadOfNotFoundResult | Show a friendly 404 picture or not
 EnablePingBackReceive | Can blog receive pingback requests
 EnablePingBackSend | Can blog send pingback to another blog
-EnableHarmonizor | Filter bad words (in order to live in China)
-EnableReward | Show WeChat reward button and QR Code image
 EnforceHttps | Force website use HTTPS
 DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
 

@@ -97,7 +97,8 @@ namespace Moonglade.Web.Controllers
             {
                 DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
                 EnableComments = _blogConfig.ContentSettings.EnableComments,
-                EnableWordFilter = _blogConfig.ContentSettings.EnableWordFilter
+                EnableWordFilter = _blogConfig.ContentSettings.EnableWordFilter,
+                UseFriendlyNotFoundImage = _blogConfig.ContentSettings.UseFriendlyNotFoundImage
             };
             return View(vm);
         }
@@ -110,6 +111,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
                 _blogConfig.ContentSettings.EnableComments = model.EnableComments;
                 _blogConfig.ContentSettings.EnableWordFilter = model.EnableWordFilter;
+                _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
                 var response = _blogConfigurationService.SaveConfiguration(_blogConfig.ContentSettings);
                 _blogConfig.RequireRefresh();
                 return Json(response);
