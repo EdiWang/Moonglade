@@ -204,7 +204,7 @@ namespace Moonglade.Web
 
         private void AddImageStorage(IServiceCollection services)
         {
-            var imageStorage = new Model.Settings.ImageStorage();
+            var imageStorage = new ImageStorage.ImageStorage();
             Configuration.Bind(nameof(ImageStorage), imageStorage);
 
             if (null == imageStorage.Provider)
