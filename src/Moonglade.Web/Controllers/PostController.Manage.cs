@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
@@ -301,23 +300,6 @@ namespace Moonglade.Web.Controllers
             }
 
             return view;
-        }
-
-        private static List<PostMetaData> QueryToPostGridModel(IQueryable<Post> query)
-        {
-            var result = query.Select(p => new PostMetaData
-            {
-                Id = p.Id,
-                Title = p.Title,
-                PubDateUtc = p.PostPublish.PubDateUtc,
-                IsPublished = p.PostPublish.IsPublished,
-                IsDeleted = p.PostPublish.IsDeleted,
-                Revision = p.PostPublish.Revision,
-                CreateOnUtc = p.CreateOnUtc.Value,
-                Hits = p.PostExtension.Hits
-            });
-
-            return result.ToList();
         }
 
         #endregion

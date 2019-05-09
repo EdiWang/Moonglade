@@ -184,7 +184,7 @@ namespace Moonglade.Core
                 throw new ArgumentOutOfRangeException(nameof(month));
             }
 
-            var spec = new ArchivedPostSpec(year, month);
+            var spec = new GetPostSpec(year, month);
             var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItem
             {
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
@@ -279,7 +279,8 @@ namespace Moonglade.Core
 
         public string GetPostTitle(Guid postId)
         {
-            return _postRepository.SelectFirstOrDefault(new PostSpec(postId), p => p.Title);
+            var spec = new GetPostSpec(postId, false);
+            return _postRepository.SelectFirstOrDefault(spec, p => p.Title);
         }
 
         public Response<Post> CreateNewPost(CreateEditPostRequest request)
