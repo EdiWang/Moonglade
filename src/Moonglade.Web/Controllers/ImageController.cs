@@ -70,7 +70,7 @@ namespace Moonglade.Web.Controllers
 
                 Logger.LogError($"Error getting image, filename: {filename}, {imageEntry.Message}");
 
-                return AppSettings.UsePictureInsteadOfNotFoundResult
+                return _blogConfig.ContentSettings.UseFriendlyNotFoundImage
                     ? (IActionResult)File("~/images/image-not-found.png", "image/png")
                     : NotFound();
             }

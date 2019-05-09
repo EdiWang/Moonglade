@@ -18,7 +18,17 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">Comments</div>
+                <div class="card-header">Content</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="UseFriendlyNotFoundImage" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.UseFriendlyNotFoundImage ? "checked=\"checked\"" : string.Empty) id="UseFriendlyNotFoundImage" name="UseFriendlyNotFoundImage" type="checkbox" value="true">
+                            <label for="UseFriendlyNotFoundImage" class="label-success"></label>
+                            <input name="UseFriendlyNotFoundImage" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <label asp-for="EnableComments" class="control-label"></label>
