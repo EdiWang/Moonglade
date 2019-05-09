@@ -220,7 +220,7 @@ namespace Moonglade.Core
 
         #region Search
 
-        public async Task<Response<IReadOnlyList<SearchResult>>> SearchPostAsync(string keyword)
+        public async Task<Response<IReadOnlyList<PostListItem>>> SearchPostAsync(string keyword)
         {
             try
             {
@@ -231,20 +231,25 @@ namespace Moonglade.Core
 
                 var postList = SearchPostByKeyword(keyword);
 
-                var resultList = await postList.Select(p => p.PostPublish.PubDateUtc != null ? new SearchResult
+                var resultList = await postList.Select(p => new PostListItem
                 {
+                    Title = p.Title,
                     Slug = p.Slug,
+                    ContentAbstract = p.ContentAbstract,
                     PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                    Summary = p.ContentAbstract,
-                    Title = p.Title
-                } : null).ToListAsync();
+                    Tags = p.PostTag.Select(pt => new TagInfo
+                    {
+                        NormalizedTagName = pt.Tag.NormalizedName,
+                        TagName = pt.Tag.DisplayName
+                    }).ToList()
+                }).ToListAsync();
 
-                return new SuccessResponse<IReadOnlyList<SearchResult>>(resultList);
+                return new SuccessResponse<IReadOnlyList<PostListItem>>(resultList);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(SearchPostAsync)}(keyword: {keyword})");
-                return new FailedResponse<IReadOnlyList<SearchResult>>((int)ResponseFailureCode.GeneralException, e.Message, e);
+                return new FailedResponse<IReadOnlyList<PostListItem>>((int)ResponseFailureCode.GeneralException, e.Message, e);
             }
         }
 
