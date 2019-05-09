@@ -1,12 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup Label="Globals">
-    <SccProjectName></SccProjectName>
-    <SccProvider></SccProvider>
-    <SccAuxPath></SccAuxPath>
-    <SccLocalPath></SccLocalPath>
-  </PropertyGroup>
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <Authors>Edi Wang</Authors>
@@ -23,10 +15,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Moonglade.Core.csproj.vspscc" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Edi.Blog.Pingback" Version="10.1.0" />

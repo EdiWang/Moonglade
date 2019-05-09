@@ -1,12 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup Label="Globals">
-    <SccProjectName></SccProjectName>
-    <SccProvider></SccProvider>
-    <SccAuxPath></SccAuxPath>
-    <SccLocalPath></SccLocalPath>
-  </PropertyGroup>
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyVersion>10.0.0.0</AssemblyVersion>
@@ -14,10 +6,6 @@
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Moonglade.ImageStorage.AzureBlob.csproj.vspscc" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />

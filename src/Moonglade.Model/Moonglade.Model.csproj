@@ -1,12 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup Label="Globals">
-    <SccProjectName></SccProjectName>
-    <SccProvider></SccProvider>
-    <SccAuxPath></SccAuxPath>
-    <SccLocalPath></SccLocalPath>
-  </PropertyGroup>
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyVersion>10.0.0.0</AssemblyVersion>
@@ -14,9 +6,4 @@
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Moonglade.Model.csproj.vspscc" />
-  </ItemGroup>
-
 </Project>
