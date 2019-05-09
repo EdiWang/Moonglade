@@ -11,7 +11,6 @@
         public int TimeZone { get; set; }
         public int PostSummaryWords { get; set; }
         public bool EnablePingBackSend { get; set; }
-        public bool EnableHarmonizor { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
         public bool DisableEmailSendingInDevelopment { get; set; }
     }

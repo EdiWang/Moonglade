@@ -16,5 +16,9 @@ namespace Moonglade.Web.Models
         [DataType(DataType.MultilineText)]
         [Display(Name = "Blocked Words")]
         public string DisharmonyWords { get; set; }
+
+        [Required]
+        [Display(Name = "Enable Word Filter")]
+        public bool EnableWordFilter { get; set; }
     }
 }

@@ -1,12 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup Label="Globals">
-    <SccProjectName></SccProjectName>
-    <SccProvider></SccProvider>
-    <SccAuxPath></SccAuxPath>
-    <SccLocalPath></SccLocalPath>
-  </PropertyGroup>
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyVersion>10.0.0.0</AssemblyVersion>
@@ -15,10 +7,6 @@
     <Company>edi.wang</Company>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Moonglade.Configuration.csproj.vspscc" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Edi.Net.AesEncryption" Version="1.1.0" />

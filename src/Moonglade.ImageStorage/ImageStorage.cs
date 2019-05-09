@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Model.Settings
+﻿namespace Moonglade.ImageStorage
 {
     public class ImageStorage
     {

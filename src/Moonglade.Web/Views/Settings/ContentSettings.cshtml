@@ -29,6 +29,16 @@
                         </div>
                     </li>
                 </ul>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="EnableWordFilter" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnableWordFilter ? "checked=\"checked\"" : string.Empty) id="EnableWordFilter" name="EnableWordFilter" type="checkbox" value="true">
+                            <label for="EnableWordFilter" class="label-success"></label>
+                            <input name="EnableWordFilter" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
                 <div class="card-body">
                     <div class="form-group">
                         <label asp-for="DisharmonyWords" class="control-label"></label>

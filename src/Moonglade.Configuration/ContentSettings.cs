@@ -7,7 +7,10 @@ namespace Moonglade.Configuration
     public class ContentSettings : MoongladeSettings
     {
         public string DisharmonyWords { get; set; }
+
         public bool EnableComments { get; set; }
+
+        public bool EnableWordFilter { get; set; }
 
         public ContentSettings()
         {
