@@ -13,7 +13,7 @@ namespace Moonglade.Web.Models
         public string Username { get; set; }
 
         [Required]
-        [DataType(DataType.MultilineText), MaxLength(512)]
+        [DataType(DataType.MultilineText), MaxLength(1024)]
         public string Content { get; set; }
 
         [Required]
