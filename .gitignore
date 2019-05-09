@@ -10,6 +10,9 @@ errorpages-bundle.min.css
 mooglade-css-bundle.min.css
 tinymce-editor-bs-bundle.min.css
 
+## Test Libman Restore on dotnet build
+wwwroot/lib/simplemde/
+
 # User-specific files
 *.suo
 *.user
