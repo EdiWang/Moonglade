@@ -47,5 +47,23 @@ namespace Moonglade.Data.Spec
                 .Include(p => p.PostCategory)
                 .ThenInclude(pc => pc.Category));
         }
+
+        public GetPostSpec(bool isDeleted, bool isPublished) :
+            base(p => p.PostPublish.IsDeleted == isDeleted && p.PostPublish.IsPublished == isPublished)
+        {
+
+        }
+
+        public GetPostSpec(bool isDeleted) :
+            base(p => p.PostPublish.IsDeleted == isDeleted)
+        {
+
+        }
+
+        public GetPostSpec() :
+            base(p => p.PostPublish.IsDeleted)
+        {
+
+        }
     }
 }

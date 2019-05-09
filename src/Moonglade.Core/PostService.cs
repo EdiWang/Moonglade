@@ -130,7 +130,7 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<PostMetaData>> GetPostMetaListAsync(bool isDeleted = false, bool? isPublished = true)
         {
-            var spec = null != isPublished ? new GetPostMetaListSpec(isDeleted, isPublished.Value) : new GetPostMetaListSpec();
+            var spec = null != isPublished ? new GetPostSpec(isDeleted, isPublished.Value) : new GetPostSpec();
             return _postRepository.SelectAsync(spec, p => new PostMetaData
             {
                 Id = p.Id,
@@ -523,6 +523,23 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(Delete)}(postId: {postId}, isRecycle: {isRecycle})");
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+            }
+        }
+
+        public async Task<Response> DeleteRecycledPostsAsync()
+        {
+            try
+            {
+                var spec = new GetPostSpec(true);
+                var posts = await _postRepository.GetAsync(spec);
+                await _postRepository.DeleteAsync(posts);
+
+                return new SuccessResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error {nameof(DeleteRecycledPostsAsync)}()");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }

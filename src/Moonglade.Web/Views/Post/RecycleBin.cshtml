@@ -35,10 +35,15 @@
 }
 <partial name="_PostManageHeader" />
 
+<a asp-controller="Post" asp-action="EmptyRecycleBin" class="btn btn-outline-danger">
+    <i class="fas fa-recycle"></i>
+    Empty Recycle Bin
+</a>
+
 @if (Model.Any())
 {
     @Html.AntiForgeryToken()
-    <table class="table table-bordered">
+    <table class="table table-bordered mt-3">
         <thead>
             <tr>
                 <th>Title</th>

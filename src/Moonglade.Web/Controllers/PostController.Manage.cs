@@ -268,6 +268,15 @@ namespace Moonglade.Web.Controllers
             return ServerError();
         }
 
+        [Authorize]
+        [HttpGet("manage/empty-recycle-bin")]
+        [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        public async Task<ActionResult> EmptyRecycleBin()
+        {
+            await _postService.DeleteRecycledPostsAsync();
+            return RedirectToAction("RecycleBin");
+        }
+
         #endregion
 
         #region Helper Methods
