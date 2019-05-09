@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.4 (2019-04-23)
+ * Version: 5.0.5 (2019-05-09)
  */
 (function () {
 var table = (function (domGlobals) {
@@ -4021,9 +4021,15 @@ var table = (function (domGlobals) {
         toOption: Option.none
       };
     };
+    var fromOption = function (opt, err) {
+      return opt.fold(function () {
+        return error(err);
+      }, value$1);
+    };
     var Result = {
       value: value$1,
-      error: error
+      error: error,
+      fromOption: fromOption
     };
 
     var measure = function (startAddress, gridA, gridB) {

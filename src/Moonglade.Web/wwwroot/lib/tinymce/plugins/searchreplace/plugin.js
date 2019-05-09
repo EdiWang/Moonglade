@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.4 (2019-04-23)
+ * Version: 5.0.5 (2019-05-09)
  */
 (function () {
 var searchreplace = (function () {
@@ -518,6 +518,8 @@ var searchreplace = (function () {
       return slice.call(x);
     };
 
+    var global$2 = tinymce.util.Tools.resolve('tinymce.util.I18n');
+
     var open = function (editor, currentIndexState) {
       var last = {}, selectedText;
       editor.undoManager.add();
@@ -639,7 +641,7 @@ var searchreplace = (function () {
             name: 'prev',
             text: 'Previous',
             align: 'end',
-            icon: 'arrow-left',
+            icon: global$2.isRtl() ? 'arrow-right' : 'arrow-left',
             disabled: true
           },
           {
@@ -647,7 +649,7 @@ var searchreplace = (function () {
             name: 'next',
             text: 'Next',
             align: 'end',
-            icon: 'arrow-right',
+            icon: global$2.isRtl() ? 'arrow-left' : 'arrow-right',
             disabled: true
           }
         ],

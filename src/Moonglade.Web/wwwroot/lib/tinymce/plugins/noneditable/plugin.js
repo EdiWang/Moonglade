@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.4 (2019-04-23)
+ * Version: 5.0.5 (2019-05-09)
  */
 (function () {
 var noneditable = (function () {

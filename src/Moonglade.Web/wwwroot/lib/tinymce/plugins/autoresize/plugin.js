@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.4 (2019-04-23)
+ * Version: 5.0.5 (2019-05-09)
  */
 (function () {
 var autoresize = (function () {
@@ -94,11 +94,12 @@ var autoresize = (function () {
         toggleScrolling(editor, true);
         return;
       }
-      var body = doc.body;
+      var docEle = doc.documentElement;
+      var resizeBottomMargin = Settings.getAutoResizeBottomMargin(editor);
       resizeHeight = Settings.getAutoResizeMinHeight(editor);
-      var marginTop = parseCssValueToInt(dom, body, 'margin-top', true);
-      var marginBottom = parseCssValueToInt(dom, body, 'margin-bottom', true);
-      contentHeight = body.offsetHeight + marginTop + marginBottom;
+      var marginTop = parseCssValueToInt(dom, docEle, 'margin-top', true);
+      var marginBottom = parseCssValueToInt(dom, docEle, 'margin-bottom', true);
+      contentHeight = docEle.offsetHeight + marginTop + marginBottom + resizeBottomMargin;
       if (contentHeight < 0) {
         contentHeight = 0;
       }
@@ -127,16 +128,14 @@ var autoresize = (function () {
     var setup = function (editor, oldSize) {
       editor.on('init', function () {
         var overflowPadding = Settings.getAutoResizeOverflowPadding(editor);
-        var bottomMargin = Settings.getAutoResizeBottomMargin(editor);
         var dom = editor.dom;
         dom.setStyles(editor.getBody(), {
           'paddingLeft': overflowPadding,
           'paddingRight': overflowPadding,
-          'paddingBottom': bottomMargin,
           'min-height': 0
         });
       });
-      editor.on('NodeChange SetContent keyup FullscreenStateChanged', function (e) {
+      editor.on('NodeChange SetContent keyup FullscreenStateChanged ResizeContent', function (e) {
         resize(editor, oldSize);
       });
       if (Settings.shouldAutoResizeOnInit(editor)) {
