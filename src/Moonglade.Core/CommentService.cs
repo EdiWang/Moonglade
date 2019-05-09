@@ -174,7 +174,7 @@ namespace Moonglade.Core
                 username = HttpUtility.HtmlEncode(username);
 
                 // 4. Harmonize banned keywords
-                if (AppSettings.EnableHarmonizor)
+                if (_blogConfig.ContentSettings.EnableWordFilter)
                 {
                     var dw = _blogConfig.ContentSettings.DisharmonyWords;
                     var maskWordFilter = new MaskWordFilter(new StringWordSource(dw));
