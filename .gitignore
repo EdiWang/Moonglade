@@ -13,6 +13,8 @@ tinymce-editor-bs-bundle.min.css
 ## Libman Restore on dotnet build (non-bundle part)
 simplemde/
 highlight-js/
+typeahead.js/
+jquery.AreYouSure/
 
 # User-specific files
 *.suo
