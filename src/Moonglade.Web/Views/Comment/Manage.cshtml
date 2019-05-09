@@ -35,7 +35,7 @@
                 ajaxPostWithCSRFToken("reply", { commentId: cid, replyContent: replyContent }, function (data) {
                     $(`#panel-comment-${data.commentId} .reply-ui`).slideUp();
                     $(`#panel-comment-${data.commentId} .reply-list`).prepend(
-                        `<hr /><div class="reply-container"><div><strong>Edi Wang</strong><span class="pull-right text-muted">${data.replyTimeUtc
+                        `<hr /><div class="reply-container"><div><strong>Reply</strong><span class="pull-right text-muted">${data.replyTimeUtc
                         }</span></div><p>${data.replyContent}</p></div>`);
                 });
             });

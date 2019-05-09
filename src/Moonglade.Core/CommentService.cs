@@ -148,8 +148,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<Comment> NewComment(string username, string commentContent, Guid postId,
-            string email, string ipAddress, string userAgent)
+        public Response<Comment> NewComment(NewCommentRequest request)
         {
             try
             {
@@ -163,7 +162,7 @@ namespace Moonglade.Core
                 var bannedDomains = _blogConfig.EmailConfiguration.BannedMailDomain;
                 if (bannedDomains.Any())
                 {
-                    var address = new MailAddress(email);
+                    var address = new MailAddress(request.Email);
                     if (bannedDomains.Contains(address.Host))
                     {
                         return new FailedResponse<Comment>((int)ResponseFailureCode.EmailDomainBlocked);
@@ -171,28 +170,28 @@ namespace Moonglade.Core
                 }
 
                 // 3. Encode HTML
-                username = HttpUtility.HtmlEncode(username);
+                request.Username = HttpUtility.HtmlEncode(request.Username);
 
                 // 4. Harmonize banned keywords
                 if (_blogConfig.ContentSettings.EnableWordFilter)
                 {
                     var dw = _blogConfig.ContentSettings.DisharmonyWords;
                     var maskWordFilter = new MaskWordFilter(new StringWordSource(dw));
-                    username = maskWordFilter.FilterContent(username);
-                    commentContent = maskWordFilter.FilterContent(commentContent);
+                    request.Username = maskWordFilter.FilterContent(request.Username);
+                    request.Content = maskWordFilter.FilterContent(request.Content);
                 }
 
                 var model = new Comment
                 {
                     Id = Guid.NewGuid(),
-                    Username = username,
-                    CommentContent = commentContent,
-                    PostId = postId,
+                    Username = request.Username,
+                    CommentContent = request.Content,
+                    PostId = request.PostId,
                     CreateOnUtc = DateTime.UtcNow,
-                    Email = email,
-                    IPAddress = ipAddress,
+                    Email = request.Email,
+                    IPAddress = request.IpAddress,
                     IsApproved = false,
-                    UserAgent = userAgent
+                    UserAgent = request.UserAgent
                 };
 
                 _commentRepository.Add(model);

@@ -1,7 +1,8 @@
-﻿@using Microsoft.Extensions.Options
+﻿@using System.Globalization
+@using Microsoft.Extensions.Options
 @using Moonglade.Core
 @using Moonglade.Model.Settings
-@model IReadOnlyList<Moonglade.Model.SearchResult>
+@model IReadOnlyList<Moonglade.Model.PostListItem>
 @inject IOptions<AppSettings> Settings
 
 @section meta
@@ -29,26 +30,45 @@ else
     {
         foreach (var item in Model.OrderByDescending(s => s.PubDateUtc))
         {
-            <div class="card mb-3">
-                <div class="card-header">
-                    <strong>
+            <article class="article-post-summary">
+                <div class="post-date-box d-none d-md-block">
+                    <h1 class="post-date-day">@item.PubDateUtc.Day.ToString("00")</h1>
+                    <div class="post-date-month">
+                        @Utils.UtcToZoneTime(item.PubDateUtc, Settings.Value.TimeZone).ToString("MMM", new CultureInfo("en-US")).ToUpper()
+                    </div>
+                </div>
+                <div class="post-summary-box">
+                    <time datetime="@item.PubDateUtc.ToString("u")" class="none d-none">
+                        @item.PubDateUtc
+                    </time>
+
+                    <h4 class="post-summary-title">
                         <a asp-controller="Post" asp-action="Slug"
                            asp-route-year="@item.PubDateUtc.Year"
                            asp-route-month="@item.PubDateUtc.Month"
                            asp-route-day="@item.PubDateUtc.Day"
-                           asp-route-slug="@item.Slug"
-                           target="_blank">
+                           asp-route-slug="@item.Slug">
                             @item.Title
                         </a>
-                    </strong>
-                    <span class="text-muted pull-right">
-                        @Utils.UtcToZoneTime(item.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd")
-                    </span>
+                    </h4>
+
+                    <p class="post-summary-text">@(item.ContentAbstract)...</p>
+
+                    <div class="post-summary-tags">
+                        @foreach (var tag in item.Tags)
+                        {
+                            <a asp-controller="Tags"
+                               asp-action="List"
+                               asp-route-normalizedName="@tag.NormalizedTagName"
+                               class="post-summary-tag">
+                                @tag.TagName
+                            </a>
+                        }
+                    </div>
                 </div>
-                <div class="card-body">
-                    @item.Summary
-                </div>
-            </div>
+            </article>
+            <div class="mb-4 d-none d-md-block"></div>
+            <hr class="d-none d-md-block" />
         }
     }
 }

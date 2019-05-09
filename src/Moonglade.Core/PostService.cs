@@ -130,7 +130,7 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<PostMetaData>> GetPostMetaListAsync(bool isDeleted = false, bool? isPublished = true)
         {
-            var spec = null != isPublished ? new GetPostMetaListSpec(isDeleted, isPublished.Value) : new GetPostMetaListSpec();
+            var spec = null != isPublished ? new GetPostSpec(isDeleted, isPublished.Value) : new GetPostSpec();
             return _postRepository.SelectAsync(spec, p => new PostMetaData
             {
                 Id = p.Id,
@@ -184,7 +184,7 @@ namespace Moonglade.Core
                 throw new ArgumentOutOfRangeException(nameof(month));
             }
 
-            var spec = new ArchivedPostSpec(year, month);
+            var spec = new GetPostSpec(year, month);
             var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItem
             {
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
@@ -220,7 +220,7 @@ namespace Moonglade.Core
 
         #region Search
 
-        public async Task<Response<IReadOnlyList<SearchResult>>> SearchPostAsync(string keyword)
+        public async Task<Response<IReadOnlyList<PostListItem>>> SearchPostAsync(string keyword)
         {
             try
             {
@@ -231,20 +231,25 @@ namespace Moonglade.Core
 
                 var postList = SearchPostByKeyword(keyword);
 
-                var resultList = await postList.Select(p => p.PostPublish.PubDateUtc != null ? new SearchResult
+                var resultList = await postList.Select(p => new PostListItem
                 {
+                    Title = p.Title,
                     Slug = p.Slug,
+                    ContentAbstract = p.ContentAbstract,
                     PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                    Summary = p.ContentAbstract,
-                    Title = p.Title
-                } : null).ToListAsync();
+                    Tags = p.PostTag.Select(pt => new TagInfo
+                    {
+                        NormalizedTagName = pt.Tag.NormalizedName,
+                        TagName = pt.Tag.DisplayName
+                    }).ToList()
+                }).ToListAsync();
 
-                return new SuccessResponse<IReadOnlyList<SearchResult>>(resultList);
+                return new SuccessResponse<IReadOnlyList<PostListItem>>(resultList);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(SearchPostAsync)}(keyword: {keyword})");
-                return new FailedResponse<IReadOnlyList<SearchResult>>((int)ResponseFailureCode.GeneralException, e.Message, e);
+                return new FailedResponse<IReadOnlyList<PostListItem>>((int)ResponseFailureCode.GeneralException, e.Message, e);
             }
         }
 
@@ -279,7 +284,8 @@ namespace Moonglade.Core
 
         public string GetPostTitle(Guid postId)
         {
-            return _postRepository.SelectFirstOrDefault(new PostSpec(postId), p => p.Title);
+            var spec = new GetPostSpec(postId, false);
+            return _postRepository.SelectFirstOrDefault(spec, p => p.Title);
         }
 
         public Response<Post> CreateNewPost(CreateEditPostRequest request)
@@ -523,6 +529,23 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(Delete)}(postId: {postId}, isRecycle: {isRecycle})");
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+            }
+        }
+
+        public async Task<Response> DeleteRecycledPostsAsync()
+        {
+            try
+            {
+                var spec = new GetPostSpec(true);
+                var posts = await _postRepository.GetAsync(spec);
+                await _postRepository.DeleteAsync(posts);
+
+                return new SuccessResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error {nameof(DeleteRecycledPostsAsync)}()");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }

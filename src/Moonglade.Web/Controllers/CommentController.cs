@@ -3,7 +3,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -49,7 +48,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult NewComment(PostSlugViewModelWrapper model, 
+        public IActionResult NewComment(PostSlugViewModelWrapper model,
             [FromServices] ISessionBasedCaptcha captcha)
         {
             try
@@ -68,10 +67,15 @@ namespace Moonglade.Web.Controllers
                     }
 
                     var commentPostModel = model.NewCommentModel;
-                    var response = _commentService.NewComment(commentPostModel.Username, commentPostModel.Content,
-                                                              commentPostModel.PostId, commentPostModel.Email,
-                                                              HttpContext.Connection.RemoteIpAddress.ToString(),
-                                                              GetUserAgent());
+                    var response = _commentService.NewComment(new NewCommentRequest
+                    {
+                        Username = commentPostModel.Username,
+                        Content = commentPostModel.Content,
+                        PostId = commentPostModel.PostId,
+                        Email = commentPostModel.Email,
+                        IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+                        UserAgent = GetUserAgent()
+                    });
 
                     if (response.IsSuccess)
                     {
