@@ -15,6 +15,7 @@ simplemde/
 highlight-js/
 typeahead.js/
 jquery.AreYouSure/
+tinymce/
 
 # User-specific files
 *.suo
