@@ -24,5 +24,10 @@ namespace Moonglade.Web.Models
         [Required]
         [Display(Name = "Use Friendly 404 Image")]
         public bool UseFriendlyNotFoundImage { get; set; }
+
+        [Required]
+        [Display(Name = "Post List Page Size")]
+        [Range(1, 100, ErrorMessage = "Page Size can only range from 1-1024")]
+        public int PostListPageSize { get; set; }
     }
 }
