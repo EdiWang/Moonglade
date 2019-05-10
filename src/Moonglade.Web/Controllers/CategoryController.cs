@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
@@ -16,15 +17,22 @@ namespace Moonglade.Web.Controllers
 
         private readonly CategoryService _categoryService;
 
+        private readonly IBlogConfig _blogConfig;
+
         public CategoryController(
             ILogger<CategoryController> logger,
             IOptions<AppSettings> settings,
             CategoryService categoryService,
-            PostService postService)
+            PostService postService, 
+            IBlogConfig blogConfig, 
+            IBlogConfigurationService blogConfigurationService)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
+
+            _blogConfig = blogConfig;
+            _blogConfig.Initialize(blogConfigurationService);
         }
 
         [Route("list/{categoryName}")]
@@ -35,7 +43,7 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            var pageSize = AppSettings.PostListPageSize;
+            var pageSize = _blogConfig.ContentSettings.PostListPageSize;
             var catResponse = await _categoryService.GetCategoryAsync(categoryName);
             if (!catResponse.IsSuccess)
             {

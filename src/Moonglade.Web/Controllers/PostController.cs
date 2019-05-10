@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
@@ -21,21 +22,28 @@ namespace Moonglade.Web.Controllers
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
 
+        private readonly IBlogConfig _blogConfig;
+
         public PostController(
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
             PostService postService,
-            CategoryService categoryService)
+            CategoryService categoryService, 
+            IBlogConfig blogConfig, 
+            IBlogConfigurationService blogConfigurationService)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
+            _blogConfig = blogConfig;
+            _blogConfig.Initialize(blogConfigurationService);
+
         }
 
         [Route(""), Route("/")]
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pagesize = AppSettings.PostListPageSize;
+            int pagesize = _blogConfig.ContentSettings.PostListPageSize;
             var postList = await _postService.GetPagedPostsAsync(pagesize, page);
             var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pagesize, _postService.CountForPublic);
             return View(postsAsIPagedList);

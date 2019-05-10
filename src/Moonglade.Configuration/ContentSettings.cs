@@ -14,11 +14,14 @@ namespace Moonglade.Configuration
 
         public bool UseFriendlyNotFoundImage { get; set; }
 
+        public int PostListPageSize { get; set; }
+
         public ContentSettings()
         {
             DisharmonyWords = string.Empty;
             EnableComments = true;
             UseFriendlyNotFoundImage = true;
+            PostListPageSize = 10;
         }
     }
 }
