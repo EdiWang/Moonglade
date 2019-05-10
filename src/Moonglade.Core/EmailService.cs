@@ -110,7 +110,7 @@ namespace Moonglade.Core
                                                  .Map(nameof(comment.IPAddress), comment.IPAddress)
                                                  .Map(nameof(comment.CreateOnUtc), comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
                                                  .Map("Title", postTitle)
-                                                 .Map(nameof(comment.CommentContent), comment.CommentContent);
+                                                 .Map(nameof(comment.CommentContent), Utils.MdContentToHtml(comment.CommentContent));
 
             if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
             {
