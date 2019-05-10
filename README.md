@@ -132,7 +132,6 @@ CaptchaSettings:ImageWidth | Pixel Width of Captcha Image
 CaptchaSettings.ImageHeight | Pixel Height of Captcha Image
 TimeZone | The blog owner's current time zone (relative to UTC)
 HotTagAmount | How many tags to show on the side bar
-PostListPageSize | How may posts listed per page
 PostSummaryWords | How may words to show in post list summary
 ImageCacheSlidingExpirationMinutes | Time for cached images to expire
 EnableImageLazyLoad | Use lazy load to show images when user scrolls the page
