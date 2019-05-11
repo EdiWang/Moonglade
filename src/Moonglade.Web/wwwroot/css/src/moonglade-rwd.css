@@ -8,6 +8,12 @@
     padding: 1rem;
 }
 
+@media (min-width: 576px) {
+    .card-columns.card-columns-categories {
+        column-count: 4;
+    }
+}
+
 @media (max-width: 767px) {
 
     .gdpr-warning-msg {

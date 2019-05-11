@@ -125,12 +125,6 @@ div.mce-fullscreen {
     color: #90111A !important;
 }
 
-@media (min-width: 576px) {
-    .card-columns.card-columns-categories {
-        column-count: 4;
-    }
-}
-
 .h-30px {
     height: 30px !important;
 }
@@ -1197,13 +1191,13 @@ body {
     font-weight: normal;
 }
 
-.ediwang-logo {
+.moonglade-logo {
     font-family: KlavikaMedium-Plain;
     font-size: 28px;
     line-height: 1px;
 }
 
-.ediwang-logo-admin {
+.moonglade-logo-admin {
     font-size: 24px;
 }
 
