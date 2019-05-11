@@ -31,36 +31,6 @@
         border-color: #fff;
     }
 
-.admin-main {
-    overflow: hidden;
-}
-
-    .admin-main .validation-summary-errors ul {
-        margin-bottom: 0;
-    }
-
-    .admin-main .catlist ul {
-        margin: 0;
-        list-style-type: none;
-        padding: 0;
-    }
-
-        .admin-main .catlist ul li {
-            width: 175px;
-            display: inline-block;
-        }
-
-            .admin-main .catlist ul li label {
-                display: inline-block;
-                font-weight: normal;
-                padding-left: 6px;
-                vertical-align: middle;
-            }
-
-div.mce-fullscreen {
-    z-index: 1050;
-}
-
 .navbar .container-fluid {
     padding-right: 0;
     padding-left: 0;
@@ -110,10 +80,6 @@ div.mce-fullscreen {
     padding-bottom: 50px;
 }
 
-.admin-main {
-    min-height: 512px;
-}
-
 .tags_clear {
     clear: both;
     width: 100%;
@@ -157,13 +123,6 @@ div.mce-fullscreen {
         color: #fff;
         text-shadow: 1px 1px 4px #000;
     }
-
-.empty-recycle {
-    height: 208px;
-    margin: 0 auto;
-    padding-top: 52px;
-    width: 208px;
-}
 
 .page-content .card-header {
     padding: 0.5rem !important;
@@ -1195,10 +1154,6 @@ body {
     font-family: KlavikaMedium-Plain;
     font-size: 28px;
     line-height: 1px;
-}
-
-.moonglade-logo-admin {
-    font-size: 24px;
 }
 
 .toptags-list a {
