@@ -16,12 +16,15 @@ namespace Moonglade.Configuration
 
         public int PostListPageSize { get; set; }
 
+        public int HotTagAmount { get; set; }
+
         public ContentSettings()
         {
             DisharmonyWords = string.Empty;
             EnableComments = true;
             UseFriendlyNotFoundImage = true;
             PostListPageSize = 10;
+            HotTagAmount = 10;
         }
     }
 }

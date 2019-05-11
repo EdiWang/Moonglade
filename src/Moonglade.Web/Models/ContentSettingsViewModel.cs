@@ -29,5 +29,10 @@ namespace Moonglade.Web.Models
         [Display(Name = "Post List Page Size")]
         [Range(1, 100, ErrorMessage = "Page Size can only range from 1-1024")]
         public int PostListPageSize { get; set; }
+
+        [Required]
+        [Display(Name = "How many tags show on sidebar")]
+        [Range(1, 50, ErrorMessage = "Page Size can only range from 1-50")]
+        public int HotTagAmount { get; set; }
     }
 }
