@@ -1,0 +1,76 @@
+﻿/* Admin Portal */
+.admin-body {
+    padding-top: 0;
+}
+
+.admin-wrap {
+    height: 100%;
+}
+
+.admin-nav {
+    width: 250px;
+    background-color: #124078;
+}
+
+.admin-main {
+    flex: 1;
+    min-height: 512px;
+}
+
+hr.admin-nav-divider {
+    border-top: 1px solid #7DA3C6;
+    margin: 0 20px;
+}
+
+.text-moonglade-dark-secondary {
+    color: #98abc7;
+}
+
+.admin-nav-section .list-group-item {
+    background-color: transparent;
+    border: 0 none;
+    color: rgba(255,255,255,.5);
+}
+
+    .admin-nav-section .list-group-item.active,
+    .admin-nav-section .list-group-item:hover {
+        color: #FFF;
+        background-color: #002050;
+    }
+
+.admin-nav-link:active {
+    color: #FFF;
+}
+
+.admin-main .validation-summary-errors ul {
+    margin-bottom: 0;
+}
+
+.admin-main .catlist ul {
+    margin: 0;
+    list-style-type: none;
+    padding: 0;
+}
+
+    .admin-main .catlist ul li {
+        width: 175px;
+        display: inline-block;
+    }
+
+        .admin-main .catlist ul li label {
+            display: inline-block;
+            font-weight: normal;
+            padding-left: 6px;
+            vertical-align: middle;
+        }
+
+div.mce-fullscreen {
+    z-index: 1050;
+}
+
+.empty-recycle {
+    height: 208px;
+    margin: 0 auto;
+    padding-top: 52px;
+    width: 208px;
+}

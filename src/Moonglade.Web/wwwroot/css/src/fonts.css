@@ -1,0 +1,7 @@
+﻿@font-face {
+    font-family: 'KlavikaMedium-Plain';
+    font-style: normal;
+    font-weight: normal;
+    src: url('/webfonts/KlavikaMedium-Plain.eot');
+    src: local('KlavikaMedium-Plain'), url('/webfonts/KlavikaMedium-Plain.eot?#iefix') format('embedded-opentype'), url('/webfonts/KlavikaMedium-Plain.woff2') format('woff2'), url('/webfonts/KlavikaMedium-Plain.woff') format('woff'), url('/webfonts/KlavikaMedium-Plain.ttf') format('truetype'), url('/webfonts/KlavikaMedium-Plain.svg#KlavikaMedium-Plain') format('svg');
+}
