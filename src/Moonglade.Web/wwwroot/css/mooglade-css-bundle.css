@@ -43,36 +43,6 @@
         border-color: #fff;
     }
 
-.admin-main {
-    overflow: hidden;
-}
-
-    .admin-main .validation-summary-errors ul {
-        margin-bottom: 0;
-    }
-
-    .admin-main .catlist ul {
-        margin: 0;
-        list-style-type: none;
-        padding: 0;
-    }
-
-        .admin-main .catlist ul li {
-            width: 175px;
-            display: inline-block;
-        }
-
-            .admin-main .catlist ul li label {
-                display: inline-block;
-                font-weight: normal;
-                padding-left: 6px;
-                vertical-align: middle;
-            }
-
-div.mce-fullscreen {
-    z-index: 1050;
-}
-
 .navbar .container-fluid {
     padding-right: 0;
     padding-left: 0;
@@ -100,19 +70,6 @@ div.mce-fullscreen {
     display: none;
 }
 
-.example-field {
-    color: #888888;
-}
-
-#cookieConsent {
-    margin-bottom: 0;
-}
-
-.gdpr-warning-msg {
-    line-height: 35px;
-    margin-bottom: 0;
-}
-
 .sec.sec-alter {
     background-color: #f2f2f2;
 }
@@ -120,27 +77,6 @@ div.mce-fullscreen {
 .sec {
     padding-top: 50px;
     padding-bottom: 50px;
-}
-
-.admin-main {
-    min-height: 512px;
-}
-
-.tags_clear {
-    clear: both;
-    width: 100%;
-    height: 0px;
-}
-
-.not_valid {
-    background: #FBD8DB !important;
-    color: #90111A !important;
-}
-
-@media (min-width: 576px) {
-    .card-columns.card-columns-categories {
-        column-count: 4;
-    }
 }
 
 .h-30px {
@@ -175,13 +111,6 @@ div.mce-fullscreen {
         color: #fff;
         text-shadow: 1px 1px 4px #000;
     }
-
-.empty-recycle {
-    height: 208px;
-    margin: 0 auto;
-    padding-top: 52px;
-    width: 208px;
-}
 
 .page-content .card-header {
     padding: 0.5rem !important;
@@ -251,7 +180,7 @@ div.mce-fullscreen {
 }
 
 .comment-list .thumbnail {
-    padding: 0px;
+    padding: 0;
 }
 
 .comment-list .card {
@@ -598,53 +527,7 @@ label {
     transition: border .2s ease-in-out;
 }
 
-.msportalfx-svg-c01 {
-    fill: #fff;
-}
 
-.msportalfx-svg-c03 {
-    fill: #a0a1a2;
-}
-
-.msportalfx-svg-c04 {
-    fill: #7a7a7a;
-}
-
-.msportalfx-svg-c06 {
-    fill: #1e1e1e;
-}
-
-.msportalfx-svg-c10 {
-    fill: #ff8c00;
-}
-
-.msportalfx-svg-c11 {
-    fill: #fcd116;
-}
-
-.msportalfx-svg-c13 {
-    fill: #b8d432;
-}
-
-.msportalfx-svg-c14 {
-    fill: #7fba00;
-}
-
-.msportalfx-svg-c15 {
-    fill: #59b4d9;
-}
-
-.msportalfx-svg-c16 {
-    fill: #3999c6;
-}
-
-.msportalfx-svg-c17 {
-    fill: #804998;
-}
-
-.msportalfx-svg-c19 {
-    fill: #0072c6;
-}
 
 .small-svg-icon svg {
     fill: #0072c6;
@@ -1039,7 +922,7 @@ a {
         text-decoration: none;
     }
 
-.bg-ediblogblue {
+.bg-moonglade-blue {
     background-color: #2a579a !important;
 }
 
@@ -1209,14 +1092,10 @@ body {
     font-weight: normal;
 }
 
-.ediwang-logo {
+.moonglade-logo {
     font-family: KlavikaMedium-Plain;
     font-size: 28px;
     line-height: 1px;
-}
-
-.ediwang-logo-admin {
-    font-size: 24px;
 }
 
 .toptags-list a {
@@ -1241,6 +1120,12 @@ body {
 
 .card-body {
     padding: 1rem;
+}
+
+@media (min-width: 576px) {
+    .card-columns.card-columns-categories {
+        column-count: 4;
+    }
 }
 
 @media (max-width: 767px) {
@@ -1364,6 +1249,83 @@ body {
             left: -14px;
             right: auto;
         }
+}
+
+/* Admin Portal */
+.admin-body {
+    padding-top: 0;
+}
+
+.admin-wrap {
+    height: 100%;
+}
+
+.admin-nav {
+    width: 250px;
+    background-color: #124078;
+}
+
+.admin-main {
+    flex: 1;
+    min-height: 512px;
+}
+
+hr.admin-nav-divider {
+    border-top: 1px solid #7DA3C6;
+    margin: 0 20px;
+}
+
+.text-moonglade-dark-secondary {
+    color: #98abc7;
+}
+
+.admin-nav-section .list-group-item {
+    background-color: transparent;
+    border: 0 none;
+    color: rgba(255,255,255,.5);
+}
+
+    .admin-nav-section .list-group-item.active,
+    .admin-nav-section .list-group-item:hover {
+        color: #FFF;
+        background-color: #002050;
+    }
+
+.admin-nav-link:active {
+    color: #FFF;
+}
+
+.admin-main .validation-summary-errors ul {
+    margin-bottom: 0;
+}
+
+.admin-main .catlist ul {
+    margin: 0;
+    list-style-type: none;
+    padding: 0;
+}
+
+    .admin-main .catlist ul li {
+        width: 175px;
+        display: inline-block;
+    }
+
+        .admin-main .catlist ul li label {
+            display: inline-block;
+            font-weight: normal;
+            padding-left: 6px;
+            vertical-align: middle;
+        }
+
+div.mce-fullscreen {
+    z-index: 1050;
+}
+
+.empty-recycle {
+    height: 208px;
+    margin: 0 auto;
+    padding-top: 52px;
+    width: 208px;
 }
 
 .hljs {
