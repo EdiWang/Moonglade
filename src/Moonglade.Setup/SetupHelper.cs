@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Web;
+using Dapper;
 using Edi.Net.AesEncryption;
+using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -19,6 +23,41 @@ namespace Moonglade.Setup
 {
     public class SetupHelper
     {
+        public static string GetDatabaseSchemaScript()
+        {
+            var assembly = typeof(SetupHelper).GetTypeInfo().Assembly;
+            using (var stream = assembly.GetManifestResourceStream("Moonglade.Setup.Data.schema-mssql-140.sql"))
+            using (var reader = new StreamReader(stream))
+            {
+                var sql = reader.ReadToEnd();
+                return sql;
+            }
+        }
+
+        public static Response SetupDatabase(string dbConnection)
+        {
+            if (!TestDatabaseConnection(dbConnection)) return new FailedResponse("Database Connection Error");
+            using (var conn = new SqlConnection(dbConnection))
+            {
+                var sql = GetDatabaseSchemaScript();
+                if (!string.IsNullOrWhiteSpace(sql))
+                {
+                    conn.Execute(sql);
+                    return new SuccessResponse();
+                }
+                return new FailedResponse("Database Schema Script is empty.");
+            }
+        }
+
+        public static bool TestDatabaseConnection(string dbConnection)
+        {
+            using (var conn = new SqlConnection(dbConnection))
+            {
+                int result = conn.ExecuteScalar<int>("SELECT 1");
+                return result == 1;
+            }
+        }
+
         public static void TryInitializeFirstRunData(IHostingEnvironment env, IServiceProvider serviceProvider, ILogger logger)
         {
             // Caveat: This will require non-readonly for the application directory
