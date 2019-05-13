@@ -27,7 +27,7 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 
 ### Setup Database
 
-1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database and run **"Database\schema-mssql-140.sql"** 
+1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database and run **"src\Moonglade.Setup\Data\schema-mssql-140.sql"** 
 
 2. Update the connection string "**MoongladeDatabase**" in **appsettings.[env].json** according to your database configuration.
 

@@ -27,6 +27,7 @@ using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Setup;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
@@ -196,7 +197,7 @@ namespace Moonglade.Web
                     template: "{controller=Post}/{action=Index}/{id?}");
             });
 
-            BlogManager.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
+            SetupHelper.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
         }
 
         #region Private Helpers

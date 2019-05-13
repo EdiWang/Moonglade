@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using Edi.Net.AesEncryption;
 using Microsoft.AspNetCore.Hosting;
@@ -12,12 +13,11 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Model;
 using Newtonsoft.Json;
 
-namespace Moonglade.Core
+namespace Moonglade.Setup
 {
-    public class BlogManager
+    public class SetupHelper
     {
         public static void TryInitializeFirstRunData(IHostingEnvironment env, IServiceProvider serviceProvider, ILogger logger)
         {
@@ -73,12 +73,12 @@ namespace Moonglade.Core
                 // oh, I wish C# could simplify this syntax...
                 var defaultConfigData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.BlogOwnerSettings),  Constants.BlogOwnerSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.GeneralSettings), Constants.GeneralSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.ContentSettings), Constants.ContentSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.FeedSettings), Constants.FeedSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.WatermarkSettings), Constants.WatermarkSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.EmailConfiguration), Constants.EmailConfigurationDefaultValue)
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.BlogOwnerSettings),  SetupConstants.BlogOwnerSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.GeneralSettings), SetupConstants.GeneralSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.ContentSettings), SetupConstants.ContentSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.FeedSettings), SetupConstants.FeedSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.WatermarkSettings), SetupConstants.WatermarkSettingsDefaultValue),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.EmailConfiguration), SetupConstants.EmailConfigurationDefaultValue)
                 };
 
                 var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
@@ -142,8 +142,8 @@ namespace Moonglade.Core
                     CommentEnabled = true,
                     Title = "Welcome to Moonglade",
                     Slug = "welcome-to-moonglade",
-                    PostContent = HttpUtility.HtmlEncode($"<p>{Constants.PostContentInitValue}</p>"),
-                    ContentAbstract = Constants.PostContentInitValue,
+                    PostContent = HttpUtility.HtmlEncode($"<p>{SetupConstants.PostContentInitValue}</p>"),
+                    ContentAbstract = SetupConstants.PostContentInitValue,
                     CreateOnUtc = DateTime.UtcNow,
                     PostExtension = new PostExtension
                     {
