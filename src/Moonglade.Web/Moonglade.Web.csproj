@@ -44,7 +44,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.172" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.48" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.9.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.2" />
@@ -63,6 +63,7 @@
     <ProjectReference Include="..\Moonglade.ImageStorage.FileSystem\Moonglade.ImageStorage.FileSystem.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+    <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
     <ProjectReference Include="..\Moonglade.Web.Authentication\Moonglade.Web.Authentication.csproj" />
     <ProjectReference Include="..\Moonglade.Web.Middleware\Moonglade.Web.Middleware.csproj" />
   </ItemGroup>

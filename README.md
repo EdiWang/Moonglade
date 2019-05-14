@@ -27,7 +27,7 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 
 ### Setup Database
 
-1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database and run **"Database\schema-mssql-140.sql"** 
+1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database
 
 2. Update the connection string "**MoongladeDatabase**" in **appsettings.[env].json** according to your database configuration.
 
@@ -38,21 +38,23 @@ Example:
 }
 ```
 
+*The blog will automatically setup datbase schema and initial data in first run*
+
 ### Build Source
 
 1. Create an "**appsettings.Development.json**" under "**src\Moonglade.Web**", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
 
 2. Build and run **Moonglade.sln**
 
-### Configuration
+## Configuration
 
 > Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
-#### Authentication
+### Authentication
 
 Configure how to sign in to admin portal.
 
-**Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))**
+#### Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))
 
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"**
@@ -70,7 +72,7 @@ Register an App in **Azure Active Directory**
 }
 ```
 
-**Alternative: Local Account**
+#### Alternative: Local Account
 
 Set **Authentication:Provider** to **"Local"** and assign a pair of username and password. 
 
@@ -86,10 +88,10 @@ Set **Authentication:Provider** to **"Local"** and assign a pair of username and
 }
 ```
 
-#### Image Storage
+### Image Storage
 **AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built-in options:
 
-**Preferred: [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)**
+#### Preferred: [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)
 
 You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with **container level permission**. 
 ```json
@@ -100,7 +102,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 },
 ```
 
-**Alternative: File System**
+#### Alternative: File System
 
 ```json
 "Provider": "filesystem",
@@ -110,7 +112,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 ```
 The **Path** can be relative or absolute. **"$\{basedir\}"** represents the website's current directory. Storing images files under website directory is NOT recommended. 
 
-#### Email Password Encryption
+### Email Password Encryption
 
 **Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
 
@@ -118,13 +120,13 @@ The **Path** can be relative or absolute. **"$\{basedir\}"** represents the webs
 
 To get a random generated key, access URL "/admin/settings/generate-new-aes-keys".
 
-#### Robots.txt
+### Robots.txt
 
 This blog generates robots.txt based on configuration. However, if there are a physical file named "robots.txt" under "wwwroot" directory, it will override the configuration based robots.txt generation.
 
 To customize robots.txt, modify the configuration under **RobotsTxt** section.
 
-#### Others
+### Others
 
 Key | Description
 --- | ---
@@ -143,25 +145,25 @@ DisableEmailSendingInDevelopment | When debugging locally, do not send email for
 
 The only built-in rule is removing trailing slash in URLs. For other rules, you can customize by editing "\src\Moonglade.Web\urlrewrite.xml" according to [IIS URL Rewrite Module configuration](https://www.iis.net/downloads/microsoft/url-rewrite)
 
-### FAQ
+## FAQ
 
-**Does this blog support upgrade from a lower version?**
+### Does this blog support upgrade from a lower version?
 
-It depends on whether the database schema is updated. If the schema is same for a higer version, then the system can be deployed and override old files without problem. If schema changes, you will need to execute **migration.sql** along with the deployment.
+It depends on whether the database schema is updated. If the schema is same for a higer version, then the system can be deployed and override old files without problem.
 
-**Does this blog coupled with Microsoft Azure?**
+### Does this blog coupled with Microsoft Azure?
 
 No, the system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
 
-### Optional Recommendations
+## Optional Recommendations
 - [Microsoft Azure DNS Zones](https://azure.microsoft.com/en-us/services/dns/)
 - [Microsoft Azure App Service](https://azure.microsoft.com/en-us/services/app-service/)
 - [Microsoft Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/)
 - [Microsoft Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)
 
-### Related Projects
+## Related Projects
 
-Below open source projects are reusable components (NuGet packages) used in my blog, and they can be used in other websites as well. 
+> Below open source projects are reusable components (NuGet packages) used in my blog, and they can be used in other websites as well. 
 
 - [Edi.Blog.Pingback](https://github.com/EdiWang/Edi.Blog.Pingback)
 - [Edi.Blog.OpmlFileWriter](https://github.com/EdiWang/Edi.Blog.OpmlFileWriter)

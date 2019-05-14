@@ -27,6 +27,7 @@ using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Setup;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
@@ -177,7 +178,7 @@ namespace Moonglade.Web
 
             app.UseStaticFiles();
             app.UseSession();
-            
+
             // robots.txt
             app.UseRobotsTxt();
             //app.UseRobotsTxt(builder =>
@@ -189,14 +190,35 @@ namespace Moonglade.Web
             //);
 
             app.UseAuthentication();
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Post}/{action=Index}/{id?}");
-            });
 
-            BlogManager.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
+            var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
+            if (!SetupHelper.TestDatabaseConnection(conn, exception =>
+            {
+                _logger.LogCritical(exception, $"Error {nameof(SetupHelper.TestDatabaseConnection)}, connection string: {conn}");
+            }))
+            {
+                app.Run(async context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    await context.Response.WriteAsync("Database connection failed. Please see error log, fix it and RESTART this application.");
+                });
+            }
+            else
+            {
+                if (SetupHelper.IsFirstRun(conn))
+                {
+                    SetupHelper.SetInitialEncryptionKey(Environment, _logger);
+                    SetupHelper.SetupDatabase(conn);
+                    SetupHelper.TryInitializeFirstRunData(app.ApplicationServices, _logger);
+                }
+
+                app.UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "default",
+                        template: "{controller=Post}/{action=Index}/{id?}");
+                });
+            }
         }
 
         #region Private Helpers
