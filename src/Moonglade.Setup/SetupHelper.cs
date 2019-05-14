@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Web;
 using Dapper;
 using Edi.Net.AesEncryption;
@@ -21,6 +22,14 @@ namespace Moonglade.Setup
 {
     public class SetupHelper
     {
+        private static ResourceManager Rm =>
+            new ResourceManager("Moonglade.Setup.Data.DataResource", Assembly.GetExecutingAssembly());
+
+        public static string GetJsonResource(JsonDataName key)
+        {
+            return Rm.GetString(key.ToString());
+        }
+
         public static string GetDatabaseSchemaScript()
         {
             var assembly = typeof(SetupHelper).GetTypeInfo().Assembly;
@@ -160,12 +169,12 @@ namespace Moonglade.Setup
                 // oh, I wish C# could simplify this syntax...
                 var defaultConfigData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.BlogOwnerSettings),  SetupConstants.BlogOwnerSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.GeneralSettings), SetupConstants.GeneralSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.ContentSettings), SetupConstants.ContentSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.FeedSettings), SetupConstants.FeedSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.WatermarkSettings), SetupConstants.WatermarkSettingsDefaultValue),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.EmailConfiguration), SetupConstants.EmailConfigurationDefaultValue)
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.BlogOwnerSettings),  GetJsonResource(JsonDataName.BlogOwnerSettings)),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.GeneralSettings), GetJsonResource(JsonDataName.GeneralSettings)),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.ContentSettings), GetJsonResource(JsonDataName.ContentSettings)),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.FeedSettings), GetJsonResource(JsonDataName.FeedSettings)),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.WatermarkSettings), GetJsonResource(JsonDataName.WatermarkSettings)),
+                    new KeyValuePair<string, string>(nameof(IBlogConfig.EmailConfiguration), GetJsonResource(JsonDataName.EmailConfiguration))
                 };
 
                 var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);

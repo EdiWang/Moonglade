@@ -20,6 +20,13 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        public void TestGetJsonResource()
+        {
+            var json = SetupHelper.GetJsonResource(JsonDataName.BlogOwnerSettings);
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(json));
+        }
+
+        [Test]
         public void TestGetDatabaseSchemaScript()
         {
             var sql = SetupHelper.GetDatabaseSchemaScript();
