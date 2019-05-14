@@ -47,12 +47,20 @@ namespace Moonglade.Setup
             }
         }
 
-        public static bool TestDatabaseConnection(string dbConnection)
+        public static bool TestDatabaseConnection(string dbConnection, Action<Exception> errorLogAction = null)
         {
-            using (var conn = new SqlConnection(dbConnection))
+            try
             {
-                int result = conn.ExecuteScalar<int>("SELECT 1");
-                return result == 1;
+                using (var conn = new SqlConnection(dbConnection))
+                {
+                    int result = conn.ExecuteScalar<int>("SELECT 1");
+                    return result == 1;
+                }
+            }
+            catch (Exception e)
+            {
+                errorLogAction?.Invoke(e);
+                return false;
             }
         }
 
@@ -84,7 +92,9 @@ namespace Moonglade.Setup
         {
             using (var conn = new SqlConnection(dbConnection))
             {
-                var result = conn.ExecuteScalar<int>("SELECT TOP 1 1 FROM BlogConfiguration");
+                var result = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
+                                                     "FROM INFORMATION_SCHEMA.TABLES " +
+                                                     "WHERE TABLE_NAME = N'BlogConfiguration'");
                 return result == 0;
             }
         }

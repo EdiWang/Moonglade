@@ -190,16 +190,33 @@ namespace Moonglade.Web
             //);
 
             app.UseAuthentication();
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Post}/{action=Index}/{id?}");
-            });
 
-            if (SetupHelper.IsFirstRun(Configuration.GetConnectionString(Constants.DbConnectionName)))
+            var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
+            if (!SetupHelper.TestDatabaseConnection(conn, exception =>
             {
-                SetupHelper.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
+                _logger.LogCritical(exception, $"Error {nameof(SetupHelper.TestDatabaseConnection)}, connection string: {conn}");
+            }))
+            {
+                app.Run(async context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    await context.Response.WriteAsync("Database connection failed. Please see error log, fix it and RESTART this application.");
+                });
+            }
+            else
+            {
+                if (SetupHelper.IsFirstRun(conn))
+                {
+                    SetupHelper.SetupDatabase(conn);
+                    SetupHelper.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
+                }
+
+                app.UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "default",
+                        template: "{controller=Post}/{action=Index}/{id?}");
+                });
             }
         }
 
