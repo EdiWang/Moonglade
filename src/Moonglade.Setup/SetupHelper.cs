@@ -4,14 +4,12 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Web;
 using Dapper;
 using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -55,6 +53,39 @@ namespace Moonglade.Setup
             {
                 int result = conn.ExecuteScalar<int>("SELECT 1");
                 return result == 1;
+            }
+        }
+
+        public static void ClearData(string dbConnection)
+        {
+            using (var conn = new SqlConnection(dbConnection))
+            {
+                // Clear Relation Tables
+                conn.Execute("DELETE FROM PostTag");
+                conn.Execute("DELETE FROM PostCategory");
+                conn.Execute("DELETE FROM CommentReply");
+
+                // Clear Individual Tables
+                conn.Execute("DELETE FROM Category");
+                conn.Execute("DELETE FROM Tag");
+                conn.Execute("DELETE FROM Comment");
+                conn.Execute("DELETE FROM FriendLink");
+                conn.Execute("DELETE FROM PingbackHistory");
+                conn.Execute("DELETE FROM PostExtension");
+                conn.Execute("DELETE FROM PostPublish");
+                conn.Execute("DELETE FROM Post");
+
+                // Clear Configuration Table
+                conn.Execute("DELETE FROM BlogConfiguration");
+            }
+        }
+
+        public static bool IsFirstRun(string dbConnection)
+        {
+            using (var conn = new SqlConnection(dbConnection))
+            {
+                var result = conn.ExecuteScalar<int>("SELECT TOP 1 1 FROM BlogConfiguration");
+                return result == 0;
             }
         }
 
@@ -224,17 +255,12 @@ namespace Moonglade.Setup
                 {
                     var scopeServiceProvider = serviceScope.ServiceProvider;
                     var db = scopeServiceProvider.GetService<MoongladeDbContext>();
-                    var isFirstRun = !EnumerableExtensions.Any(db.BlogConfiguration);
-
-                    if (isFirstRun)
-                    {
-                        SetInitialEncryptionKey();
-                        InitBlogConfiguration(db);
-                        InitCategories(db);
-                        InitFriendLinks(db);
-                        InitDefaultTags(db);
-                        InitFirstPost(db);
-                    }
+                    SetInitialEncryptionKey();
+                    InitBlogConfiguration(db);
+                    InitCategories(db);
+                    InitFriendLinks(db);
+                    InitDefaultTags(db);
+                    InitFirstPost(db);
                 }
             }
             catch (Exception e)

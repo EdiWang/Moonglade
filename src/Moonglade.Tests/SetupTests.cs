@@ -8,6 +8,17 @@ namespace Moonglade.Tests
 {
     public class SetupTests
     {
+        private string _conn;
+
+        [SetUp]
+        public void Setup()
+        {
+            _conn = "Server=(local);Database=moonglade-setup;Trusted_Connection=True;";
+#if DEBUG
+            SetupHelper.ClearData(_conn);
+#endif
+        }
+
         [Test]
         public void TestGetDatabaseSchemaScript()
         {
@@ -20,17 +31,22 @@ namespace Moonglade.Tests
         [Test]
         public void TestValidateDatabaseConnection()
         {
-            var conn = "Server=(local);Database=moonglade-dev;Trusted_Connection=True;";
-            bool ok = SetupHelper.TestDatabaseConnection(conn);
+            bool ok = SetupHelper.TestDatabaseConnection(_conn);
             Assert.IsTrue(ok);
         }
 
         [Test]
         public void TestSetupDatabase()
         {
-            var conn = "Server=(local);Database=moonglade-setup;Trusted_Connection=True;";
-            var response = SetupHelper.SetupDatabase(conn);
+            var response = SetupHelper.SetupDatabase(_conn);
             Assert.IsTrue(response.IsSuccess);
+        }
+
+        [Test]
+        public void TestIsFirstRun()
+        {
+            var response = SetupHelper.IsFirstRun(_conn);
+            Assert.IsTrue(response);
         }
 #endif
     }

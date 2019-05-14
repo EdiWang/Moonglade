@@ -178,7 +178,7 @@ namespace Moonglade.Web
 
             app.UseStaticFiles();
             app.UseSession();
-            
+
             // robots.txt
             app.UseRobotsTxt();
             //app.UseRobotsTxt(builder =>
@@ -197,7 +197,10 @@ namespace Moonglade.Web
                     template: "{controller=Post}/{action=Index}/{id?}");
             });
 
-            SetupHelper.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
+            if (SetupHelper.IsFirstRun(Configuration.GetConnectionString(Constants.DbConnectionName)))
+            {
+                SetupHelper.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
+            }
         }
 
         #region Private Helpers
