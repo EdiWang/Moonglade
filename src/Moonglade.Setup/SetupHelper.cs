@@ -34,16 +34,23 @@ namespace Moonglade.Setup
 
         public static Response SetupDatabase(string dbConnection)
         {
-            if (!TestDatabaseConnection(dbConnection)) return new FailedResponse("Database Connection Error");
-            using (var conn = new SqlConnection(dbConnection))
+            try
             {
-                var sql = GetDatabaseSchemaScript();
-                if (!string.IsNullOrWhiteSpace(sql))
+                if (!TestDatabaseConnection(dbConnection)) return new FailedResponse("Database Connection Error");
+                using (var conn = new SqlConnection(dbConnection))
                 {
-                    conn.Execute(sql);
-                    return new SuccessResponse();
+                    var sql = GetDatabaseSchemaScript();
+                    if (!string.IsNullOrWhiteSpace(sql))
+                    {
+                        conn.Execute(sql);
+                        return new SuccessResponse();
+                    }
+                    return new FailedResponse("Database Schema Script is empty.");
                 }
-                return new FailedResponse("Database Schema Script is empty.");
+            }
+            catch (Exception e)
+            {
+                return new FailedResponse(e.Message);
             }
         }
 
@@ -99,44 +106,44 @@ namespace Moonglade.Setup
             }
         }
 
-        public static void TryInitializeFirstRunData(IHostingEnvironment env, IServiceProvider serviceProvider, ILogger logger)
+        // Caveat: This will require non-readonly for the application directory
+        public static void SetInitialEncryptionKey(IHostingEnvironment env, ILogger logger)
         {
-            // Caveat: This will require non-readonly for the application directory
-            void SetInitialEncryptionKey()
+            try
             {
-                try
+                var ki = new KeyInfo();
+
+                var appSettingsFilePath = Path.Combine(env.ContentRootPath,
+                    env.EnvironmentName != EnvironmentName.Production ?
+                        $"appsettings.{env.EnvironmentName}.json" :
+                        "appsettings.json");
+
+                if (File.Exists(appSettingsFilePath))
                 {
-                    var ki = new KeyInfo();
-
-                    var appSettingsFilePath = Path.Combine(env.ContentRootPath,
-                        env.EnvironmentName != EnvironmentName.Production ?
-                            $"appsettings.{env.EnvironmentName}.json" :
-                            "appsettings.json");
-
-                    if (File.Exists(appSettingsFilePath))
+                    var json = File.ReadAllText(appSettingsFilePath);
+                    var jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+                    var encryptionNode = jsonObj["Encryption"];
+                    if (null != encryptionNode)
                     {
-                        var json = File.ReadAllText(appSettingsFilePath);
-                        var jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
-                        var encryptionNode = jsonObj["Encryption"];
-                        if (null != encryptionNode)
-                        {
-                            encryptionNode["Key"] = ki.KeyString;
-                            encryptionNode["IV"] = ki.IVString;
-                            var newJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
-                            File.WriteAllText(appSettingsFilePath, newJson);
-                        }
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException("Failed to initialize Key and IV for password encryption. Settings file is not found.", appSettingsFilePath);
+                        encryptionNode["Key"] = ki.KeyString;
+                        encryptionNode["IV"] = ki.IVString;
+                        var newJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+                        File.WriteAllText(appSettingsFilePath, newJson);
                     }
                 }
-                catch (Exception e)
+                else
                 {
-                    logger.LogError("Unable to set initial Key and IV, please do it manually.", e);
+                    throw new FileNotFoundException("Failed to initialize Key and IV for password encryption. Settings file is not found.", appSettingsFilePath);
                 }
             }
+            catch (Exception e)
+            {
+                logger.LogError("Unable to set initial Key and IV, please do it manually.", e);
+            }
+        }
 
+        public static void TryInitializeFirstRunData(IServiceProvider serviceProvider, ILogger logger)
+        {
             IEnumerable<BlogConfiguration> GetBlogConfigurationObjects(IEnumerable<KeyValuePair<string, string>> configData)
             {
                 return configData.Select((t, i) => new BlogConfiguration
@@ -265,7 +272,6 @@ namespace Moonglade.Setup
                 {
                     var scopeServiceProvider = serviceScope.ServiceProvider;
                     var db = scopeServiceProvider.GetService<MoongladeDbContext>();
-                    SetInitialEncryptionKey();
                     InitBlogConfiguration(db);
                     InitCategories(db);
                     InitFriendLinks(db);

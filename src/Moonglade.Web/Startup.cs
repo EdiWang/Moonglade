@@ -207,8 +207,9 @@ namespace Moonglade.Web
             {
                 if (SetupHelper.IsFirstRun(conn))
                 {
+                    SetupHelper.SetInitialEncryptionKey(Environment, _logger);
                     SetupHelper.SetupDatabase(conn);
-                    SetupHelper.TryInitializeFirstRunData(Environment, app.ApplicationServices, _logger);
+                    SetupHelper.TryInitializeFirstRunData(app.ApplicationServices, _logger);
                 }
 
                 app.UseMvc(routes =>
