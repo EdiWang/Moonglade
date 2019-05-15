@@ -1,0 +1,2 @@
+﻿INSERT INTO Category (Id, DisplayName, Note, Title) VALUES (NEWID(), 'Default', 'Default Category', 'default')
+INSERT INTO FriendLink (Id, LinkUrl, Title) VALUES (NEWID(), 'https://edi.wang', 'Edi.Wang')

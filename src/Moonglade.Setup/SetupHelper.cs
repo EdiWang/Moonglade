@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Web;
 using Dapper;
@@ -102,7 +103,28 @@ namespace Moonglade.Setup
                         conn.Execute(sql);
                         return new SuccessResponse();
                     }
-                    return new FailedResponse("Database Schema Script is empty.");
+                    return new FailedResponse("SQL Script is empty.");
+                }
+            }
+            catch (Exception e)
+            {
+                return new FailedResponse(e.Message);
+            }
+        }
+
+        public Response InitSampleData()
+        {
+            try
+            {
+                using (var conn = new SqlConnection(DatabaseConnectionString))
+                {
+                    var sql = GetEmbeddedSqlScript("init-sampledata");
+                    if (!string.IsNullOrWhiteSpace(sql))
+                    {
+                        conn.Execute(sql);
+                        return new SuccessResponse();
+                    }
+                    return new FailedResponse("SQL Script is empty.");
                 }
             }
             catch (Exception e)
@@ -167,34 +189,10 @@ namespace Moonglade.Setup
         public static void TryInitializeFirstRunData(IServiceProvider serviceProvider, ILogger logger)
         {
             Guid catId;
-            void InitCategories(DbContext moongladeDbContext)
+            void GetDefaultCategoryId(DbContext moongladeDbContext)
             {
-                var cat = new Category
-                {
-                    Id = Guid.NewGuid(),
-                    DisplayName = "Default",
-                    Note = "Default Category",
-                    Title = "default"
-                };
-                moongladeDbContext.Add(cat);
-                moongladeDbContext.SaveChanges();
+                var cat = moongladeDbContext.Set<Category>().First();
                 catId = cat.Id;
-
-                logger.LogInformation("Default Categories Initialized");
-            }
-
-            void InitFriendLinks(DbContext moongladeDbContext)
-            {
-                var friendLink = new FriendLink
-                {
-                    Id = Guid.NewGuid(),
-                    LinkUrl = "https://edi.wang",
-                    Title = "Edi.Wang"
-                };
-                moongladeDbContext.Add(friendLink);
-                moongladeDbContext.SaveChanges();
-
-                logger.LogInformation("Default Friend Links Initialized");
             }
 
             List<Tag> tags;
@@ -263,8 +261,7 @@ namespace Moonglade.Setup
                 {
                     var scopeServiceProvider = serviceScope.ServiceProvider;
                     var db = scopeServiceProvider.GetService<MoongladeDbContext>();
-                    InitCategories(db);
-                    InitFriendLinks(db);
+                    GetDefaultCategoryId(db);
                     InitDefaultTags(db);
                     InitFirstPost(db);
                 }

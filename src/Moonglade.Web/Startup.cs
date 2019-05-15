@@ -212,6 +212,7 @@ namespace Moonglade.Web
                     SetupHelper.SetInitialEncryptionKey(Environment, _logger);
                     setupHelper.SetupDatabase();
                     setupHelper.ResetDefaultConfiguration();
+                    setupHelper.InitSampleData();
                     SetupHelper.TryInitializeFirstRunData(app.ApplicationServices, _logger);
                 }
 
