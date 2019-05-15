@@ -192,7 +192,9 @@ namespace Moonglade.Web
             app.UseAuthentication();
 
             var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
-            if (!SetupHelper.TestDatabaseConnection(conn, exception =>
+            var setupHelper = new SetupHelper(conn);
+
+            if (!setupHelper.TestDatabaseConnection(exception =>
             {
                 _logger.LogCritical(exception, $"Error {nameof(SetupHelper.TestDatabaseConnection)}, connection string: {conn}");
             }))
@@ -205,11 +207,24 @@ namespace Moonglade.Web
             }
             else
             {
-                if (SetupHelper.IsFirstRun(conn))
+                if (setupHelper.IsFirstRun())
                 {
-                    SetupHelper.SetInitialEncryptionKey(Environment, _logger);
-                    SetupHelper.SetupDatabase(conn);
-                    SetupHelper.TryInitializeFirstRunData(app.ApplicationServices, _logger);
+                    try
+                    {
+                        SetupHelper.SetInitialEncryptionKey(Environment, _logger);
+                        setupHelper.SetupDatabase();
+                        setupHelper.ResetDefaultConfiguration();
+                        setupHelper.InitSampleData();
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogCritical(e, e.Message);
+                        app.Run(async context =>
+                        {
+                            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                            await context.Response.WriteAsync("Error initializing first run, please check error log.");
+                        });
+                    }
                 }
 
                 app.UseMvc(routes =>
