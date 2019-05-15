@@ -209,11 +209,23 @@ namespace Moonglade.Web
             {
                 if (setupHelper.IsFirstRun())
                 {
-                    SetupHelper.SetInitialEncryptionKey(Environment, _logger);
-                    setupHelper.SetupDatabase();
-                    setupHelper.ResetDefaultConfiguration();
-                    setupHelper.InitSampleData();
-                    SetupHelper.TryInitializeFirstRunData(app.ApplicationServices, _logger);
+                    try
+                    {
+                        SetupHelper.SetInitialEncryptionKey(Environment, _logger);
+                        setupHelper.SetupDatabase();
+                        setupHelper.ResetDefaultConfiguration();
+                        setupHelper.InitSampleData();
+                        SetupHelper.TryInitializeFirstRunData(app.ApplicationServices, _logger);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogCritical(e, e.Message);
+                        app.Run(async context =>
+                        {
+                            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                            await context.Response.WriteAsync("Error initializing first run, please check error log.");
+                        });
+                    }
                 }
 
                 app.UseMvc(routes =>

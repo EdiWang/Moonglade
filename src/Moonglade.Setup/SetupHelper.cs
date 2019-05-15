@@ -195,20 +195,6 @@ namespace Moonglade.Setup
                 catId = cat.Id;
             }
 
-            List<Tag> tags;
-            void InitDefaultTags(DbContext moongladeDbContext)
-            {
-                tags = new List<Tag>
-                {
-                    new Tag{ DisplayName = "Moonglade", NormalizedName = "moonglade" },
-                    new Tag{ DisplayName = ".NET Core", NormalizedName = "dot-net-core" }
-                };
-                moongladeDbContext.AddRange(tags);
-                moongladeDbContext.SaveChanges();
-
-                logger.LogInformation("Default Tags Initialized");
-            }
-
             void InitFirstPost(DbContext moongladeDbContext)
             {
                 var id = Guid.NewGuid();
@@ -244,8 +230,8 @@ namespace Moonglade.Setup
                     },
                     PostTag = new List<PostTag>
                     {
-                        new PostTag{ TagId = tags[0].Id, PostId = id },
-                        new PostTag{ TagId = tags[1].Id, PostId = id }
+                        new PostTag{ TagId = 1, PostId = id },
+                        new PostTag{ TagId = 2, PostId = id }
                     }
                 };
 
@@ -262,7 +248,6 @@ namespace Moonglade.Setup
                     var scopeServiceProvider = serviceScope.ServiceProvider;
                     var db = scopeServiceProvider.GetService<MoongladeDbContext>();
                     GetDefaultCategoryId(db);
-                    InitDefaultTags(db);
                     InitFirstPost(db);
                 }
             }
