@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Web;
 using Dapper;
 using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Newtonsoft.Json;
 
 namespace Moonglade.Setup
@@ -183,78 +176,6 @@ namespace Moonglade.Setup
             catch (Exception e)
             {
                 logger.LogError("Unable to set initial Key and IV, please do it manually.", e);
-            }
-        }
-
-        public static void TryInitializeFirstRunData(IServiceProvider serviceProvider, ILogger logger)
-        {
-            Guid catId;
-            void GetDefaultCategoryId(DbContext moongladeDbContext)
-            {
-                var cat = moongladeDbContext.Set<Category>().First();
-                catId = cat.Id;
-            }
-
-            void InitFirstPost(DbContext moongladeDbContext)
-            {
-                var id = Guid.NewGuid();
-                var post = new Post
-                {
-                    Id = id,
-                    CommentEnabled = true,
-                    Title = "Welcome to Moonglade",
-                    Slug = "welcome-to-moonglade",
-                    PostContent = HttpUtility.HtmlEncode($"<p>{SetupConstants.PostContentInitValue}</p>"),
-                    ContentAbstract = SetupConstants.PostContentInitValue,
-                    CreateOnUtc = DateTime.UtcNow,
-                    PostExtension = new PostExtension
-                    {
-                        Hits = 1024,
-                        Likes = 512,
-                        PostId = id
-                    },
-                    PostPublish = new PostPublish
-                    {
-                        PostId = id,
-                        ContentLanguageCode = "en-us",
-                        ExposedToSiteMap = true,
-                        IsFeedIncluded = true,
-                        IsPublished = true,
-                        IsDeleted = false,
-                        PubDateUtc = DateTime.UtcNow,
-                        PublisherIp = "127.0.0.1"
-                    },
-                    PostCategory = new List<PostCategory>
-                    {
-                        new PostCategory{ CategoryId = catId, PostId = id }
-                    },
-                    PostTag = new List<PostTag>
-                    {
-                        new PostTag{ TagId = 1, PostId = id },
-                        new PostTag{ TagId = 2, PostId = id }
-                    }
-                };
-
-                moongladeDbContext.Add(post);
-                moongladeDbContext.SaveChanges();
-
-                logger.LogInformation("First Post Created");
-            }
-
-            try
-            {
-                using (var serviceScope = serviceProvider.CreateScope())
-                {
-                    var scopeServiceProvider = serviceScope.ServiceProvider;
-                    var db = scopeServiceProvider.GetService<MoongladeDbContext>();
-                    GetDefaultCategoryId(db);
-                    InitFirstPost(db);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.LogCritical("Something ugly blown up when trying to initialize blog configuration, what a day!", e);
-                throw;
             }
         }
 

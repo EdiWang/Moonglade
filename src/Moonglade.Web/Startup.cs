@@ -215,7 +215,6 @@ namespace Moonglade.Web
                         setupHelper.SetupDatabase();
                         setupHelper.ResetDefaultConfiguration();
                         setupHelper.InitSampleData();
-                        SetupHelper.TryInitializeFirstRunData(app.ApplicationServices, _logger);
                     }
                     catch (Exception e)
                     {
