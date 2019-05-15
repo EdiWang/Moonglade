@@ -38,15 +38,23 @@ namespace Moonglade.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignIn()
         {
-            if (_authenticationSettings.Provider == AuthenticationProvider.AzureAD)
+            switch (_authenticationSettings.Provider)
             {
-                var redirectUrl = Url.Action(nameof(PostController.Index), "Post");
-                return Challenge(
-                    new AuthenticationProperties { RedirectUri = redirectUrl },
-                    OpenIdConnectDefaults.AuthenticationScheme);
+                case AuthenticationProvider.AzureAD:
+                    {
+                        var redirectUrl = Url.Action(nameof(PostController.Index), "Post");
+                        return Challenge(
+                            new AuthenticationProperties { RedirectUri = redirectUrl },
+                            OpenIdConnectDefaults.AuthenticationScheme);
+                    }
+                case AuthenticationProvider.Local:
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                    break;
+                case AuthenticationProvider.None:
+                    Response.StatusCode = StatusCodes.Status501NotImplemented;
+                    return Content("No AuthenticationProvider is set, please check system settings.");
             }
 
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
 
@@ -96,16 +104,21 @@ namespace Moonglade.Web.Controllers
         [HttpGet("signout")]
         public async Task<IActionResult> SignOut()
         {
-            if (_authenticationSettings.Provider == AuthenticationProvider.AzureAD)
+            switch (_authenticationSettings.Provider)
             {
-                var callbackUrl = Url.Action(nameof(SignedOut), "Admin", values: null, protocol: Request.Scheme);
-                return SignOut(
-                    new AuthenticationProperties { RedirectUri = callbackUrl },
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    OpenIdConnectDefaults.AuthenticationScheme);
+                case AuthenticationProvider.AzureAD:
+                {
+                    var callbackUrl = Url.Action(nameof(SignedOut), "Admin", values: null, protocol: Request.Scheme);
+                    return SignOut(
+                        new AuthenticationProperties { RedirectUri = callbackUrl },
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        OpenIdConnectDefaults.AuthenticationScheme);
+                }
+                case AuthenticationProvider.Local:
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                    break;
             }
 
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Post");
         }
 
