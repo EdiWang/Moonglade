@@ -17,7 +17,6 @@
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
-    <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
     <ProjectReference Include="..\Moonglade.Web.Middleware\Moonglade.Web.Middleware.csproj" />
   </ItemGroup>
 
