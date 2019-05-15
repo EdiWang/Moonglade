@@ -192,7 +192,9 @@ namespace Moonglade.Web
             app.UseAuthentication();
 
             var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
-            if (!SetupHelper.TestDatabaseConnection(conn, exception =>
+            var setupHelper = new SetupHelper(conn);
+
+            if (!setupHelper.TestDatabaseConnection(exception =>
             {
                 _logger.LogCritical(exception, $"Error {nameof(SetupHelper.TestDatabaseConnection)}, connection string: {conn}");
             }))
@@ -205,10 +207,11 @@ namespace Moonglade.Web
             }
             else
             {
-                if (SetupHelper.IsFirstRun(conn))
+                if (setupHelper.IsFirstRun())
                 {
                     SetupHelper.SetInitialEncryptionKey(Environment, _logger);
-                    SetupHelper.SetupDatabase(conn);
+                    setupHelper.SetupDatabase();
+                    setupHelper.ResetDefaultConfiguration();
                     SetupHelper.TryInitializeFirstRunData(app.ApplicationServices, _logger);
                 }
 

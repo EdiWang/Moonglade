@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Web;
 using Dapper;
 using Edi.Net.AesEncryption;
@@ -13,7 +11,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Newtonsoft.Json;
@@ -22,33 +19,31 @@ namespace Moonglade.Setup
 {
     public class SetupHelper
     {
-        private static ResourceManager Rm =>
-            new ResourceManager("Moonglade.Setup.Data.DataResource", Assembly.GetExecutingAssembly());
+        public string DatabaseConnectionString { get; set; }
 
-        public static string GetJsonResource(JsonDataName key)
+        public SetupHelper(string databaseConnectionString)
         {
-            return Rm.GetString(key.ToString());
+            DatabaseConnectionString = databaseConnectionString;
         }
 
-        public static string GetDatabaseSchemaScript()
+        public bool IsFirstRun()
         {
-            var assembly = typeof(SetupHelper).GetTypeInfo().Assembly;
-            using (var stream = assembly.GetManifestResourceStream("Moonglade.Setup.Data.schema-mssql-140.sql"))
-            using (var reader = new StreamReader(stream))
+            using (var conn = new SqlConnection(DatabaseConnectionString))
             {
-                var sql = reader.ReadToEnd();
-                return sql;
+                var result = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
+                                                     "FROM INFORMATION_SCHEMA.TABLES " +
+                                                     "WHERE TABLE_NAME = N'BlogConfiguration'");
+                return result == 0;
             }
         }
 
-        public static Response SetupDatabase(string dbConnection)
+        public Response SetupDatabase()
         {
             try
             {
-                if (!TestDatabaseConnection(dbConnection)) return new FailedResponse("Database Connection Error");
-                using (var conn = new SqlConnection(dbConnection))
+                using (var conn = new SqlConnection(DatabaseConnectionString))
                 {
-                    var sql = GetDatabaseSchemaScript();
+                    var sql = GetEmbeddedSqlScript("schema-mssql-140");
                     if (!string.IsNullOrWhiteSpace(sql))
                     {
                         conn.Execute(sql);
@@ -63,11 +58,64 @@ namespace Moonglade.Setup
             }
         }
 
-        public static bool TestDatabaseConnection(string dbConnection, Action<Exception> errorLogAction = null)
+        public Response ClearData()
         {
             try
             {
-                using (var conn = new SqlConnection(dbConnection))
+                using (var conn = new SqlConnection(DatabaseConnectionString))
+                {
+                    // Clear Relation Tables
+                    conn.Execute("DELETE FROM PostTag");
+                    conn.Execute("DELETE FROM PostCategory");
+                    conn.Execute("DELETE FROM CommentReply");
+
+                    // Clear Individual Tables
+                    conn.Execute("DELETE FROM Category");
+                    conn.Execute("DELETE FROM Tag");
+                    conn.Execute("DELETE FROM Comment");
+                    conn.Execute("DELETE FROM FriendLink");
+                    conn.Execute("DELETE FROM PingbackHistory");
+                    conn.Execute("DELETE FROM PostExtension");
+                    conn.Execute("DELETE FROM PostPublish");
+                    conn.Execute("DELETE FROM Post");
+
+                    // Clear Configuration Table
+                    conn.Execute("DELETE FROM BlogConfiguration");
+                    return new SuccessResponse();
+                }
+            }
+            catch (Exception e)
+            {
+                return new FailedResponse(e.Message);
+            }
+        }
+
+        public Response ResetDefaultConfiguration()
+        {
+            try
+            {
+                using (var conn = new SqlConnection(DatabaseConnectionString))
+                {
+                    var sql = GetEmbeddedSqlScript("init-blogconfiguration");
+                    if (!string.IsNullOrWhiteSpace(sql))
+                    {
+                        conn.Execute(sql);
+                        return new SuccessResponse();
+                    }
+                    return new FailedResponse("Database Schema Script is empty.");
+                }
+            }
+            catch (Exception e)
+            {
+                return new FailedResponse(e.Message);
+            }
+        }
+
+        public bool TestDatabaseConnection(Action<Exception> errorLogAction = null)
+        {
+            try
+            {
+                using (var conn = new SqlConnection(DatabaseConnectionString))
                 {
                     int result = conn.ExecuteScalar<int>("SELECT 1");
                     return result == 1;
@@ -77,41 +125,6 @@ namespace Moonglade.Setup
             {
                 errorLogAction?.Invoke(e);
                 return false;
-            }
-        }
-
-        public static void ClearData(string dbConnection)
-        {
-            using (var conn = new SqlConnection(dbConnection))
-            {
-                // Clear Relation Tables
-                conn.Execute("DELETE FROM PostTag");
-                conn.Execute("DELETE FROM PostCategory");
-                conn.Execute("DELETE FROM CommentReply");
-
-                // Clear Individual Tables
-                conn.Execute("DELETE FROM Category");
-                conn.Execute("DELETE FROM Tag");
-                conn.Execute("DELETE FROM Comment");
-                conn.Execute("DELETE FROM FriendLink");
-                conn.Execute("DELETE FROM PingbackHistory");
-                conn.Execute("DELETE FROM PostExtension");
-                conn.Execute("DELETE FROM PostPublish");
-                conn.Execute("DELETE FROM Post");
-
-                // Clear Configuration Table
-                conn.Execute("DELETE FROM BlogConfiguration");
-            }
-        }
-
-        public static bool IsFirstRun(string dbConnection)
-        {
-            using (var conn = new SqlConnection(dbConnection))
-            {
-                var result = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
-                                                     "FROM INFORMATION_SCHEMA.TABLES " +
-                                                     "WHERE TABLE_NAME = N'BlogConfiguration'");
-                return result == 0;
             }
         }
 
@@ -153,37 +166,6 @@ namespace Moonglade.Setup
 
         public static void TryInitializeFirstRunData(IServiceProvider serviceProvider, ILogger logger)
         {
-            IEnumerable<BlogConfiguration> GetBlogConfigurationObjects(IEnumerable<KeyValuePair<string, string>> configData)
-            {
-                return configData.Select((t, i) => new BlogConfiguration
-                {
-                    Id = i,
-                    CfgKey = t.Key,
-                    CfgValue = t.Value,
-                    LastModifiedTimeUtc = DateTime.UtcNow
-                }).ToList();
-            }
-
-            void InitBlogConfiguration(DbContext moongladeDbContext)
-            {
-                // oh, I wish C# could simplify this syntax...
-                var defaultConfigData = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.BlogOwnerSettings),  GetJsonResource(JsonDataName.BlogOwnerSettings)),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.GeneralSettings), GetJsonResource(JsonDataName.GeneralSettings)),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.ContentSettings), GetJsonResource(JsonDataName.ContentSettings)),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.FeedSettings), GetJsonResource(JsonDataName.FeedSettings)),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.WatermarkSettings), GetJsonResource(JsonDataName.WatermarkSettings)),
-                    new KeyValuePair<string, string>(nameof(IBlogConfig.EmailConfiguration), GetJsonResource(JsonDataName.EmailConfiguration))
-                };
-
-                var cfgObjs = GetBlogConfigurationObjects(defaultConfigData);
-                moongladeDbContext.AddRange(cfgObjs);
-                moongladeDbContext.SaveChanges();
-
-                logger.LogInformation("BlogConfiguration Initialized");
-            }
-
             Guid catId;
             void InitCategories(DbContext moongladeDbContext)
             {
@@ -281,7 +263,6 @@ namespace Moonglade.Setup
                 {
                     var scopeServiceProvider = serviceScope.ServiceProvider;
                     var db = scopeServiceProvider.GetService<MoongladeDbContext>();
-                    InitBlogConfiguration(db);
                     InitCategories(db);
                     InitFriendLinks(db);
                     InitDefaultTags(db);
@@ -292,6 +273,17 @@ namespace Moonglade.Setup
             {
                 logger.LogCritical("Something ugly blown up when trying to initialize blog configuration, what a day!", e);
                 throw;
+            }
+        }
+
+        private string GetEmbeddedSqlScript(string scriptName)
+        {
+            var assembly = typeof(SetupHelper).GetTypeInfo().Assembly;
+            using (var stream = assembly.GetManifestResourceStream($"Moonglade.Setup.Data.{scriptName}.sql"))
+            using (var reader = new StreamReader(stream))
+            {
+                var sql = reader.ReadToEnd();
+                return sql;
             }
         }
     }
