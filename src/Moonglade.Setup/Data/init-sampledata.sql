@@ -22,5 +22,4 @@ INSERT INTO PostPublish(PostId, IsPublished, ExposedToSiteMap, IsFeedIncluded, L
 VALUES (@NewPostId, 1, 1, 1, NULL, 0, GETDATE(), 0, '127.0.0.1', 'en-us')
 
 INSERT INTO PostCategory (PostId, CategoryId) VALUES (@NewPostId, @CatId)
-INSERT INTO PostTag (PostId, TagId) VALUES (@NewPostId, 1)
-INSERT INTO PostTag (PostId, TagId) VALUES (@NewPostId, 2)
+INSERT INTO PostTag (PostId, TagId) (SELECT p.Id, t.Id FROM Post p LEFT JOIN Tag t ON 1 = 1)

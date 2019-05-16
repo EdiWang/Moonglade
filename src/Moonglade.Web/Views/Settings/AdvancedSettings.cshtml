@@ -9,17 +9,33 @@
         $(".btn-restart").click(function () {
             tryRestartWebsite();
         });
+
+        $(".btn-reset").click(function () {
+            tryResetWebsite();
+        });
     });
 
     function tryRestartWebsite() {
         var nonce = Math.floor((Math.random() * 128) + 1);
-        ajaxPostWithCSRFToken("settings/shutdown", { nonce }, function () { });
+        ajaxPostWithCSRFToken("shutdown", { nonce }, function () { });
         $(".btn-restart").text("Wait...");
         $(".btn-restart").addClass("disabled");
         $(".btn-restart").attr("disabled", "disabled");
         startTimer(30, $(".btn-restart"));
         setTimeout(function () {
             location.href = "/admin/settings";
+        }, 30000);
+    }
+
+    function tryResetWebsite() {
+        var nonce = Math.floor((Math.random() * 128) + 1);
+        ajaxPostWithCSRFToken("reset", { nonce }, function () { });
+        $(".btn-reset").text("Wait...");
+        $(".btn-reset").addClass("disabled");
+        $(".btn-reset").attr("disabled", "disabled");
+        startTimer(30, $(".btn-reset"));
+        setTimeout(function () {
+            location.href = "/";
         }, 30000);
     }
 
@@ -51,11 +67,18 @@
 
 <button class="btn btn-danger" data-toggle="modal" data-target="#restartModal">Restart</button>
 
+<h5 class="mt-4">System Reset</h5>
+<hr />
+
+<div class="alert alert-warning">Erase all data and configuration.</div>
+
+<button class="btn btn-danger" data-toggle="modal" data-target="#resetModal">Reset</button>
+
 <div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Restart Website</h5>
+                <h5 class="modal-title" id="restartModalLabel">Restart Website</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -66,6 +89,26 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger btn-restart">Restart</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="resetModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetModalLabel">System Reset</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you ABSOLUTELY sure? ALL data and configuration will be erased!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger btn-reset">Reset</button>
             </div>
         </div>
     </div>
