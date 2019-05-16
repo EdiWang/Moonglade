@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
@@ -17,6 +18,7 @@ using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Setup;
 using Moonglade.Web.Models;
 using Newtonsoft.Json;
 
@@ -439,6 +441,19 @@ namespace Moonglade.Web.Controllers
         public IActionResult Shutdown(int nonce, [FromServices] IApplicationLifetime applicationLifetime)
         {
             Logger.LogWarning($"Shutdown is requested. Nonce value: {nonce}");
+            applicationLifetime.StopApplication();
+            return Ok();
+        }
+
+        [HttpPost("reset")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Reset(int nonce, [FromServices] IConfiguration configuration, [FromServices] IApplicationLifetime applicationLifetime)
+        {
+            Logger.LogWarning($"System reset is requested by {User.Identity.Name}, IP: {HttpContext.Connection.RemoteIpAddress}. Nonce value: {nonce}");
+            var conn = configuration.GetConnectionString(Constants.DbConnectionName);
+            var setupHelper = new SetupHelper(conn);
+            var response = setupHelper.ClearData();
+            if (!response.IsSuccess) return ServerError(response.Message);
             applicationLifetime.StopApplication();
             return Ok();
         }

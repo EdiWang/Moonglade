@@ -17,6 +17,11 @@ namespace Moonglade.Setup
 
         public SetupHelper(string databaseConnectionString)
         {
+            if (string.IsNullOrWhiteSpace(databaseConnectionString))
+            {
+                throw new ArgumentNullException(nameof(databaseConnectionString));
+            }
+
             DatabaseConnectionString = databaseConnectionString;
         }
 

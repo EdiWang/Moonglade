@@ -12,8 +12,6 @@ namespace Moonglade.Web.Controllers
 {
     public class MoongladeController : Controller
     {
-        protected IConfiguration Configuration;
-
         protected readonly ILogger<ControllerBase> Logger;
 
         protected IMemoryCache Cache;
@@ -23,12 +21,10 @@ namespace Moonglade.Web.Controllers
         public MoongladeController(
             ILogger<ControllerBase> logger = null,
             IOptions<AppSettings> settings = null,
-            IConfiguration configuration = null,
             IMemoryCache memoryCache = null)
         {
             if (null != logger) Logger = logger;
             if (null != settings) AppSettings = settings.Value;
-            if (null != configuration) Configuration = configuration;
             if (null != memoryCache) Cache = memoryCache;
         }
 
