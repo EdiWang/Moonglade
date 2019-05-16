@@ -25,17 +25,30 @@ namespace Moonglade.Setup
             DatabaseConnectionString = databaseConnectionString;
         }
 
+        /// <summary>
+        /// Check if the blog system is first run
+        /// Either BlogConfiguration table does not exist or it has empty data is treated as first run.
+        /// </summary>
         public bool IsFirstRun()
         {
             using (var conn = new SqlConnection(DatabaseConnectionString))
             {
-                var result = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
+                var tableExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
                                                      "FROM INFORMATION_SCHEMA.TABLES " +
-                                                     "WHERE TABLE_NAME = N'BlogConfiguration'");
-                return result == 0;
+                                                     "WHERE TABLE_NAME = N'BlogConfiguration'") == 1;
+                if (tableExists)
+                {
+                    var dataExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 FROM BlogConfiguration") == 1;
+                    return !dataExists;
+                }
+
+                return true;
             }
         }
 
+        /// <summary>
+        /// Execute SQL to build database schema
+        /// </summary>
         public Response SetupDatabase()
         {
             try
@@ -57,6 +70,9 @@ namespace Moonglade.Setup
             }
         }
 
+        /// <summary>
+        /// Clear all data in database but preserve tables schema
+        /// </summary>
         public Response ClearData()
         {
             try
