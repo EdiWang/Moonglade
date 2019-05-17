@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Configuration
+﻿using Moonglade.Configuration.Abstraction;
+
+namespace Moonglade.Configuration
 {
     public class FeedSettings : MoongladeSettings
     {

@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Infrastructure;

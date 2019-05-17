@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Moonglade.Configuration.Abstraction;
+using Newtonsoft.Json;
 
 namespace Moonglade.Configuration
 {

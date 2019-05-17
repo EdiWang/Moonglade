@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Model;
 using Moonglade.ImageStorage;
 using Moonglade.Model.Settings;

@@ -4,6 +4,7 @@ using System.Linq;
 using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
@@ -55,42 +56,28 @@ namespace Moonglade.Configuration
             }
         }
 
-        public Response SetConfiguration(string key, string value)
+        public Response SaveConfiguration<T>(T moongladeSettings) where T : MoongladeSettings
         {
-            try
+            void SetConfiguration(string key, string value)
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    return new FailedResponse((int)ResponseFailureCode.InvalidParameter, "value can not be empty.");
-                }
-
                 var cfg = _blogConfigurationRepository.Get(k => k.CfgKey == key.ToString());
                 if (null != cfg)
                 {
                     cfg.CfgValue = value;
                     cfg.LastModifiedTimeUtc = DateTime.UtcNow;
-                    int rows = _blogConfigurationRepository.Update(cfg);
-                    return new Response(rows > 0);
+                    _blogConfigurationRepository.Update(cfg);
                 }
 
                 var msg = $@"{nameof(BlogConfiguration.CfgKey)} ""{key}"" is not found, can not set value.";
                 Logger.LogError(msg);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, msg);
+                throw new KeyNotFoundException(key);
             }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
-            }
-        }
 
-        public Response SaveConfiguration<T>(T moongladeSettings) where T : MoongladeSettings
-        {
             try
             {
                 var json = moongladeSettings.GetJson();
-                var r = SetConfiguration(typeof(T).Name, json);
-                return new Response(r.IsSuccess);
+                SetConfiguration(typeof(T).Name, json);
+                return new SuccessResponse();
             }
             catch (Exception e)
             {

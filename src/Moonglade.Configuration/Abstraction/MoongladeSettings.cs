@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Moonglade.Configuration
+namespace Moonglade.Configuration.Abstraction
 {
     public class MoongladeSettings
     {

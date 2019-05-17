@@ -6,7 +6,7 @@ using Edi.SyndicationFeedGenerator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;

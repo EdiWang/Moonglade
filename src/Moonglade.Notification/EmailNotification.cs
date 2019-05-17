@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;

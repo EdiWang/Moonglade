@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using NUnit.Framework;
 
 namespace Moonglade.Tests

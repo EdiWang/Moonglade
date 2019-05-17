@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Edi.Blog.OpmlFileWriter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Model;

@@ -8,7 +8,7 @@ using Edi.Practice.RequestResponseModel;
 using Edi.WordFilter;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;

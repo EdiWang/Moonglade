@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration.Abstraction
 {
     public interface IBlogConfig
     {

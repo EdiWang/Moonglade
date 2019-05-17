@@ -5,7 +5,7 @@ using Edi.Captcha;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
