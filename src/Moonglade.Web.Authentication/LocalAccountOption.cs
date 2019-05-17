@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Web.Authentication.LocalAccount
+﻿namespace Moonglade.Web.Authentication
 {
     public class LocalAccountOption
     {
