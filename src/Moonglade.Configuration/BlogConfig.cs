@@ -50,9 +50,11 @@ namespace Moonglade.Configuration
             EmailConfiguration = new EmailConfiguration();
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
+
+            Initialize();
         }
 
-        public void Initialize()
+        private void Initialize()
         {
             if (!_hasInitialized)
             {

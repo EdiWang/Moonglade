@@ -35,7 +35,6 @@ namespace Moonglade.Web.Controllers
             _postService = postService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
-            _blogConfig.Initialize();
 
         }
 

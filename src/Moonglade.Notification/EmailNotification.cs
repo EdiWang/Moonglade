@@ -33,7 +33,6 @@ namespace Moonglade.Notification
             _logger = logger;
 
             _blogConfig = blogConfig;
-            _blogConfig.Initialize();
 
             IsEnabled = _blogConfig.EmailConfiguration.EnableEmailSending;
             if (env.IsDevelopment() && settings.Value.DisableEmailSendingInDevelopment)

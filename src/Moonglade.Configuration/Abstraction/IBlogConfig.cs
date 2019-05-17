@@ -11,7 +11,7 @@ namespace Moonglade.Configuration.Abstraction
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
 
-        void Initialize();
+        // void Initialize();
 
         Response SaveConfiguration<T>(T moongladeSettings) where T : MoongladeSettings;
 

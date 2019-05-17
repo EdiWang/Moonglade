@@ -22,7 +22,6 @@ namespace Moonglade.Web.ViewComponents
         {
             _tagService = tagService;
             _blogConfig = blogConfig;
-            _blogConfig.Initialize();
         }
 
         public async Task<IViewComponentResult> InvokeAsync()

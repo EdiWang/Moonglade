@@ -29,7 +29,6 @@ namespace Moonglade.Web.Controllers
         {
             _postService = postService;
             _blogConfig = blogConfig;
-            _blogConfig.Initialize();
         }
 
         [Route("opensearch")]

@@ -33,7 +33,6 @@ namespace Moonglade.Core
             IRepository<CommentReply> commentReplyRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogConfig.Initialize();
 
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;

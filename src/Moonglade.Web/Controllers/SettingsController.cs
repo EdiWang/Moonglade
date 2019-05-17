@@ -44,7 +44,6 @@ namespace Moonglade.Web.Controllers
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogConfig.Initialize();
 
             _friendLinkService = friendLinkService;
         }

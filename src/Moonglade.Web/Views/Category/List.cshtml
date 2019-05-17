@@ -4,10 +4,6 @@
 @inject IBlogConfig BlogConfig
 
 @{
-    BlogConfig.Initialize();
-}
-
-@{
     ViewBag.TitlePrefix = ViewBag.CategoryDisplayName + " - " + BlogConfig.GeneralSettings.SiteTitle;
     ViewBag.ActionName = "list";
     ViewBag.ShowBloggerIntroInXS = true;

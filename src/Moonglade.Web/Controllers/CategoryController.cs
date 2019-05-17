@@ -31,7 +31,6 @@ namespace Moonglade.Web.Controllers
             _categoryService = categoryService;
 
             _blogConfig = blogConfig;
-            _blogConfig.Initialize();
         }
 
         [Route("list/{categoryName}")]
