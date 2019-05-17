@@ -39,11 +39,10 @@ namespace Moonglade.Web.Controllers
         public SettingsController(
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
-            IMemoryCache memoryCache,
             FriendLinkService friendLinkService,
             IBlogConfig blogConfig,
             IBlogConfigurationService blogConfigurationService)
-            : base(logger, settings, memoryCache: memoryCache)
+            : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _blogConfigurationService = blogConfigurationService;
@@ -386,7 +385,7 @@ namespace Moonglade.Web.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost("set-blogger-avatar")]
-        public IActionResult SetBloggerAvatar(string base64Avatar)
+        public IActionResult SetBloggerAvatar(string base64Avatar, [FromServices] IMemoryCache cache)
         {
             try
             {
@@ -416,7 +415,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
                 var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
-                Cache.Remove(StaticCacheKeys.Avatar);
+                cache.Remove(StaticCacheKeys.Avatar);
                 return Json(response);
             }
             catch (Exception e)

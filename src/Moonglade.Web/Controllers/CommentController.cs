@@ -30,13 +30,12 @@ namespace Moonglade.Web.Controllers
         public CommentController(
             ILogger<CommentController> logger,
             IOptions<AppSettings> settings,
-            IMemoryCache memoryCache,
             CommentService commentService,
             EmailService emailService,
             PostService postService,
             IBlogConfig blogConfig,
             IBlogConfigurationService blogConfigurationService)
-            : base(logger, settings, memoryCache: memoryCache)
+            : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _blogConfig.Initialize(blogConfigurationService);
