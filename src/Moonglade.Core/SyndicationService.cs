@@ -113,7 +113,7 @@ namespace Moonglade.Core
                 top = _blogConfig.FeedSettings.RssItemCount;
             }
 
-            var postSpec = new GetPostSpec(categoryId, top);
+            var postSpec = new PostSpec(categoryId, top);
             return _postRepository.SelectAsync(postSpec, p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
             {
                 Id = p.Id.ToString(),

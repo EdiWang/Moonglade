@@ -75,7 +75,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var spec = new GetPostSpec(id);
+                var spec = new PostSpec(id);
                 var post = _postRepository.GetFirstOrDefault(spec);
                 return new SuccessResponse<Post>(post);
             }
@@ -116,7 +116,7 @@ namespace Moonglade.Core
             try
             {
                 var date = new DateTime(year, month, day);
-                var spec = new GetPostSpec(date, slug);
+                var spec = new PostSpec(date, slug);
                 var post = await _postRepository.GetFirstOrDefaultAsync(spec, false);
 
                 return new SuccessResponse<Post>(post);
@@ -130,7 +130,7 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<PostMetaData>> GetPostMetaListAsync(bool isDeleted = false, bool? isPublished = true)
         {
-            var spec = null != isPublished ? new GetPostSpec(isDeleted, isPublished.Value) : new GetPostSpec();
+            var spec = null != isPublished ? new PostSpec(isDeleted, isPublished.Value) : new PostSpec();
             return _postRepository.SelectAsync(spec, p => new PostMetaData
             {
                 Id = p.Id,
@@ -157,7 +157,7 @@ namespace Moonglade.Core
                     $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
             }
 
-            var spec = new GetPostSpec(pageSize, pageIndex, categoryId);
+            var spec = new PostSpec(pageSize, pageIndex, categoryId);
             return _postRepository.SelectAsync(spec, p => new PostListItem
             {
                 Title = p.Title,
@@ -184,7 +184,7 @@ namespace Moonglade.Core
                 throw new ArgumentOutOfRangeException(nameof(month));
             }
 
-            var spec = new GetPostSpec(year, month);
+            var spec = new PostSpec(year, month);
             var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItem
             {
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
@@ -284,7 +284,7 @@ namespace Moonglade.Core
 
         public string GetPostTitle(Guid postId)
         {
-            var spec = new GetPostSpec(postId, false);
+            var spec = new PostSpec(postId, false);
             return _postRepository.SelectFirstOrDefault(spec, p => p.Title);
         }
 
@@ -537,7 +537,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var spec = new GetPostSpec(true);
+                var spec = new PostSpec(true);
                 var posts = await _postRepository.GetAsync(spec);
                 await _postRepository.DeleteAsync(posts);
 

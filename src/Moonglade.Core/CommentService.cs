@@ -43,7 +43,7 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<PostCommentListItem>> GetApprovedCommentsOfPostAsync(Guid postId)
         {
-            return _commentRepository.SelectAsync(new CommentOfPostSpec(postId), c => new PostCommentListItem
+            return _commentRepository.SelectAsync(new CommentSepc(postId), c => new PostCommentListItem
             {
                 CommentContent = c.CommentContent,
                 CreateOnUtc = c.CreateOnUtc,
@@ -77,7 +77,7 @@ namespace Moonglade.Core
                 throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
             }
 
-            var spec = new PagedCommentSepc(pageSize, pageIndex);
+            var spec = new CommentSepc(pageSize, pageIndex);
             var comments = await _commentRepository.SelectAsync(spec, p => new CommentListItem
             {
                 Id = p.Id,
@@ -105,7 +105,7 @@ namespace Moonglade.Core
                     throw new ArgumentNullException(nameof(commentIds));
                 }
 
-                var spec = new CommentInIdSpec(commentIds);
+                var spec = new CommentSepc(commentIds);
                 var comments = await _commentRepository.GetAsync(spec);
                 foreach (var cmt in comments)
                 {
@@ -125,7 +125,7 @@ namespace Moonglade.Core
         {
             try
             {
-                var spec = new CommentInIdSpec(commentIds);
+                var spec = new CommentSepc(commentIds);
                 var comments = await _commentRepository.GetAsync(spec);
                 foreach (var cmt in comments)
                 {

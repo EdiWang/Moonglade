@@ -6,9 +6,9 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec
 {
-    public sealed class GetPostSpec : BaseSpecification<Post>
+    public sealed class PostSpec : BaseSpecification<Post>
     {
-        public GetPostSpec(Guid? categoryId, int? top = null) :
+        public PostSpec(Guid? categoryId, int? top = null) :
             base(p => !p.PostPublish.IsDeleted &&
                       p.PostPublish.IsPublished &&
                       p.PostPublish.IsFeedIncluded &&
@@ -23,7 +23,7 @@ namespace Moonglade.Data.Spec
             }
         }
 
-        public GetPostSpec(int year, int month = 0) :
+        public PostSpec(int year, int month = 0) :
             base(p => p.PostPublish.PubDateUtc.Value.Year == year &&
                       (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month))
         {
@@ -31,7 +31,7 @@ namespace Moonglade.Data.Spec
             ApplyOrderByDescending(p => p.PostPublish.PubDateUtc);
         }
 
-        public GetPostSpec(DateTime date, string slug)
+        public PostSpec(DateTime date, string slug)
             : base(p => p.Slug == slug &&
              p.PostPublish.IsPublished &&
              p.PostPublish.PubDateUtc.Value.Date == date &&
@@ -45,7 +45,7 @@ namespace Moonglade.Data.Spec
                 .Include(p => p.PostCategory).ThenInclude(pc => pc.Category));
         }
 
-        public GetPostSpec(int pageSize, int pageIndex, Guid? categoryId = null)
+        public PostSpec(int pageSize, int pageIndex, Guid? categoryId = null)
             : base(p => !p.PostPublish.IsDeleted &&
                         p.PostPublish.IsPublished &&
                         (categoryId == null || p.PostCategory.Select(c => c.CategoryId).Contains(categoryId.Value)))
@@ -61,7 +61,7 @@ namespace Moonglade.Data.Spec
             ApplyOrderByDescending(p => p.PostPublish.PubDateUtc);
         }
 
-        public GetPostSpec(Guid id, bool includeRelatedData = true) : base(p => p.Id == id)
+        public PostSpec(Guid id, bool includeRelatedData = true) : base(p => p.Id == id)
         {
             if (includeRelatedData)
             {
@@ -74,19 +74,19 @@ namespace Moonglade.Data.Spec
             }
         }
 
-        public GetPostSpec(bool isDeleted, bool isPublished) :
+        public PostSpec(bool isDeleted, bool isPublished) :
             base(p => p.PostPublish.IsDeleted == isDeleted && p.PostPublish.IsPublished == isPublished)
         {
 
         }
 
-        public GetPostSpec(bool isDeleted) :
+        public PostSpec(bool isDeleted) :
             base(p => p.PostPublish.IsDeleted == isDeleted)
         {
 
         }
 
-        public GetPostSpec() :
+        public PostSpec() :
             base(p => p.PostPublish.IsDeleted)
         {
 
