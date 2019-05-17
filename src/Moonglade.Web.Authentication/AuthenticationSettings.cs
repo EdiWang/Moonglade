@@ -1,7 +1,4 @@
-﻿using Moonglade.Web.Authentication.AzureAd;
-using Moonglade.Web.Authentication.LocalAccount;
-
-namespace Moonglade.Web.Authentication
+﻿namespace Moonglade.Web.Authentication
 {
     public class AuthenticationSettings
     {

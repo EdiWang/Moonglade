@@ -1,6 +1,6 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @using Microsoft.Extensions.Options
-@using Moonglade.Configuration
+@using Moonglade.Configuration.Abstraction
 @using Moonglade.Core
 @using Moonglade.Model.Settings
 @{
@@ -8,12 +8,7 @@
 }
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject IOptions<AppSettings> Settings
-@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
-
-@{
-    BlogConfig.Initialize(BlogConfigurationService);
-}
 
 <!DOCTYPE html>
 <html>

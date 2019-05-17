@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Configuration
+﻿using Edi.Practice.RequestResponseModel;
+
+namespace Moonglade.Configuration.Abstraction
 {
     public interface IBlogConfig
     {
@@ -8,7 +10,13 @@
         EmailConfiguration EmailConfiguration { get; set; }
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
-        void Initialize(IBlogConfigurationService blogConfigurationService);
+
+        // void Initialize();
+
+        Response SaveConfiguration<T>(T moongladeSettings) where T : MoongladeSettings;
+
+        string EncryptPassword(string clearPassword);
+
         void RequireRefresh();
     }
 }

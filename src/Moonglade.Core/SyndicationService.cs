@@ -6,7 +6,7 @@ using Edi.SyndicationFeedGenerator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -29,7 +29,6 @@ namespace Moonglade.Core
             ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService,
             IHttpContextAccessor httpContextAccessor,
             IRepository<Category> categoryRepository,
             IRepository<Post> postRepository) : base(logger, settings)
@@ -37,7 +36,6 @@ namespace Moonglade.Core
             _blogConfig = blogConfig;
             _categoryRepository = categoryRepository;
             _postRepository = postRepository;
-            _blogConfig.Initialize(blogConfigurationService);
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
@@ -113,7 +111,7 @@ namespace Moonglade.Core
                 top = _blogConfig.FeedSettings.RssItemCount;
             }
 
-            var postSpec = new GetPostSpec(categoryId, top);
+            var postSpec = new PostSpec(categoryId, top);
             return _postRepository.SelectAsync(postSpec, p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
             {
                 Id = p.Id.ToString(),

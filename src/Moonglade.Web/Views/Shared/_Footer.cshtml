@@ -1,14 +1,10 @@
 ﻿@using Microsoft.Extensions.Options
-@using Moonglade.Configuration
+@using Moonglade.Configuration.Abstraction
 @using Moonglade.Core
 @using Moonglade.Model.Settings
 @inject IOptions<AppSettings> Settings
-@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
 
-@{
-    BlogConfig.Initialize(BlogConfigurationService);
-}
 <footer>
     <div class="container">
         <div class="row">

@@ -1,12 +1,7 @@
-﻿@using Moonglade.Configuration
+﻿@using Moonglade.Configuration.Abstraction
 @model X.PagedList.StaticPagedList<Moonglade.Model.PostListItem>
 
-@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
-
-@{
-    BlogConfig.Initialize(BlogConfigurationService);
-}
 
 @{
     ViewBag.TitlePrefix = ViewBag.CategoryDisplayName + " - " + BlogConfig.GeneralSettings.SiteTitle;

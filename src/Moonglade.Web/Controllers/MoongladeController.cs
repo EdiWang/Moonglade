@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Model.Settings;
@@ -12,20 +10,16 @@ namespace Moonglade.Web.Controllers
 {
     public class MoongladeController : Controller
     {
-        protected readonly ILogger<ControllerBase> Logger;
-
-        protected IMemoryCache Cache;
+        protected ILogger<ControllerBase> Logger { get; }
 
         protected AppSettings AppSettings { get; set; }
 
         public MoongladeController(
-            ILogger<ControllerBase> logger = null,
-            IOptions<AppSettings> settings = null,
-            IMemoryCache memoryCache = null)
+            ILogger<ControllerBase> logger,
+            IOptions<AppSettings> settings = null)
         {
             if (null != logger) Logger = logger;
             if (null != settings) AppSettings = settings.Value;
-            if (null != memoryCache) Cache = memoryCache;
         }
 
         [Route("server-error")]

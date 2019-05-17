@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
@@ -29,14 +29,12 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings,
             PostService postService,
             CategoryService categoryService, 
-            IBlogConfig blogConfig, 
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
 
         }
 

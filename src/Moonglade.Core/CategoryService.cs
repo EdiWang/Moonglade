@@ -6,6 +6,7 @@ using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 
 namespace Moonglade.Core
@@ -42,41 +43,49 @@ namespace Moonglade.Core
             }
         }
 
-        public int GetPostCountByCategoryId(Guid catId)
-        {
-            return _postCategoryRepository.Count(c => c.CategoryId == catId);
-        }
-
-        public async Task<Response<Category>> GetCategoryAsync(string categoryName)
+        public async Task<Response<CategoryInfo>> GetCategoryAsync(string categoryName)
         {
             try
             {
-                var cat = await _categoryRepository.GetAsync(p => p.Title == categoryName);
-                return new SuccessResponse<Category>(cat);
+                var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
+                    new CategorySpec(categoryName), category =>
+                    new CategoryInfo
+                    {
+                        DisplayName = category.DisplayName,
+                        Id = category.Id,
+                        Name = category.Title,
+                        Note = category.Note
+                    });
+
+                return new SuccessResponse<CategoryInfo>(cat);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetCategoryAsync)}");
-                return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<CategoryInfo>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
-        public async Task<Response<Category>> GetCategoryAsync(Guid categoryId)
+        public async Task<Response<CategoryInfo>> GetCategoryAsync(Guid categoryId)
         {
             try
             {
-                var cat = await _categoryRepository.GetAsync(categoryId);
-                if (null != cat)
-                {
-                    return new SuccessResponse<Category>(cat);
-                }
+                var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
+                    new CategorySpec(categoryId), category =>
+                    new CategoryInfo
+                    {
+                        DisplayName = category.DisplayName,
+                        Id = category.Id,
+                        Name = category.Title,
+                        Note = category.Note
+                    });
 
-                return new FailedResponse<Category>((int)ResponseFailureCode.CategoryNotFound);
+                return new SuccessResponse<CategoryInfo>(cat);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetCategoryAsync)}");
-                return new FailedResponse<Category>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<CategoryInfo>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 

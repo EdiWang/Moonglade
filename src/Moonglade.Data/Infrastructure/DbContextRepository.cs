@@ -165,8 +165,8 @@ namespace Moonglade.Data.Infrastructure
 
         public Task<T> GetFirstOrDefaultAsync(ISpecification<T> spec, bool asNoTracking = true)
         {
-            return asNoTracking ? 
-                ApplySpecification(spec).AsNoTracking().FirstOrDefaultAsync() : 
+            return asNoTracking ?
+                ApplySpecification(spec).AsNoTracking().FirstOrDefaultAsync() :
                 ApplySpecification(spec).FirstOrDefaultAsync();
         }
 
@@ -186,6 +186,13 @@ namespace Moonglade.Data.Infrastructure
                 return await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync();
             }
             return await ApplySpecification(spec).Select(selector).ToListAsync();
+        }
+
+        public Task<TResult> SelectFirstOrDefaultAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+        {
+            return asNoTracking ? 
+                ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync() : 
+                ApplySpecification(spec).Select(selector).FirstOrDefaultAsync();
         }
 
         public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(

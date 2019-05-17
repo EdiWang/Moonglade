@@ -1,17 +1,11 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-@using Moonglade.Configuration
+@using Moonglade.Configuration.Abstraction
 @using Moonglade.Core
 @model SignInViewModel
 @{
     Layout = null;
 }
-@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
-
-@{
-    BlogConfig.Initialize(BlogConfigurationService);
-}
-
 
 <!DOCTYPE html>
 <html>

@@ -1,16 +1,14 @@
 ﻿@using Microsoft.Extensions.Options
-@using Moonglade.Configuration
+@using Moonglade.Configuration.Abstraction
 @using Moonglade.Core
 @using Moonglade.Model.Settings
 
 @model PostSlugViewModelWrapper
 @inject IOptions<AppSettings> Settings
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
 
 @{
-    BlogConfig.Initialize(BlogConfigurationService);
     ViewBag.ShowBloggerIntroInXS = true;
 }
 

@@ -13,11 +13,12 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Notification;
 using Moonglade.Setup;
 using Moonglade.Web.Models;
 using Newtonsoft.Json;
@@ -32,22 +33,17 @@ namespace Moonglade.Web.Controllers
 
         private readonly FriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
-        private readonly IBlogConfigurationService _blogConfigurationService;
 
         #endregion
 
         public SettingsController(
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
-            IMemoryCache memoryCache,
             FriendLinkService friendLinkService,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
-            : base(logger, settings, memoryCache: memoryCache)
+            IBlogConfig blogConfig)
+            : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogConfigurationService = blogConfigurationService;
-            _blogConfig.Initialize(blogConfigurationService);
 
             _friendLinkService = friendLinkService;
         }
@@ -79,12 +75,12 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.Copyright = model.Copyright.Replace("[c]", "&copy;");
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
-                _blogConfigurationService.SaveConfiguration(_blogConfig.GeneralSettings);
+                _blogConfig.SaveConfiguration(_blogConfig.GeneralSettings);
 
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
                 _blogConfig.BlogOwnerSettings.Description = model.BloggerDescription;
                 _blogConfig.BlogOwnerSettings.ShortDescription = model.BloggerShortDescription;
-                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
+                var response = _blogConfig.SaveConfiguration(_blogConfig.BlogOwnerSettings);
 
                 _blogConfig.RequireRefresh();
                 return Json(response);
@@ -118,7 +114,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
                 _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
                 _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
-                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.ContentSettings);
+                var response = _blogConfig.SaveConfiguration(_blogConfig.ContentSettings);
                 _blogConfig.RequireRefresh();
                 return Json(response);
 
@@ -166,10 +162,10 @@ namespace Moonglade.Web.Controllers
                 ec.SmtpUserName = model.SmtpUserName;
                 if (!string.IsNullOrWhiteSpace(model.SmtpClearPassword))
                 {
-                    ec.SmtpPassword = _blogConfigurationService.EncryptPassword(model.SmtpClearPassword);
+                    ec.SmtpPassword = _blogConfig.EncryptPassword(model.SmtpClearPassword);
                 }
 
-                var response = _blogConfigurationService.SaveConfiguration(ec);
+                var response = _blogConfig.SaveConfiguration(ec);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -177,9 +173,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("send-test-email")]
-        public async Task<IActionResult> SendTestEmail([FromServices] EmailService emailService)
+        public async Task<IActionResult> SendTestEmail([FromServices] IMoongladeNotification notification)
         {
-            var response = await emailService.TestSendTestMailAsync();
+            var response = await notification.SendTestNotificationAsync();
             if (!response.IsSuccess)
             {
                 Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -237,7 +233,7 @@ namespace Moonglade.Web.Controllers
                 fs.RssItemCount = model.RssItemCount;
                 fs.RssTitle = model.RssTitle;
 
-                var response = _blogConfigurationService.SaveConfiguration(fs);
+                var response = _blogConfig.SaveConfiguration(fs);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -274,7 +270,7 @@ namespace Moonglade.Web.Controllers
                 ws.FontSize = model.FontSize;
                 ws.WatermarkText = model.WatermarkText;
 
-                var response = _blogConfigurationService.SaveConfiguration(ws);
+                var response = _blogConfig.SaveConfiguration(ws);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -386,7 +382,7 @@ namespace Moonglade.Web.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost("set-blogger-avatar")]
-        public IActionResult SetBloggerAvatar(string base64Avatar)
+        public IActionResult SetBloggerAvatar(string base64Avatar, [FromServices] IMemoryCache cache)
         {
             try
             {
@@ -414,9 +410,9 @@ namespace Moonglade.Web.Controllers
                 }
 
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
-                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
+                var response = _blogConfig.SaveConfiguration(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
-                Cache.Remove(StaticCacheKeys.Avatar);
+                cache.Remove(StaticCacheKeys.Avatar);
                 return Json(response);
             }
             catch (Exception e)

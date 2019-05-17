@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Model;
 using Moonglade.ImageStorage;
 using Moonglade.Model.Settings;
@@ -28,20 +28,17 @@ namespace Moonglade.Web.Controllers
         public ImageController(
             ILogger<ImageController> logger,
             IOptions<AppSettings> settings,
-            IMemoryCache memoryCache,
             IAsyncImageStorageProvider imageStorageProvider,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
-            : base(logger, settings, memoryCache: memoryCache)
+            IBlogConfig blogConfig)
+            : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
 
             _imageStorageProvider = imageStorageProvider;
         }
 
         [Route("uploads/{filename}")]
-        public async Task<IActionResult> GetImageAsync(string filename)
+        public async Task<IActionResult> GetImageAsync(string filename, [FromServices] IMemoryCache cache)
         {
             try
             {
@@ -54,7 +51,7 @@ namespace Moonglade.Web.Controllers
 
                 Logger.LogTrace($"Requesting image file {filename}");
 
-                var imageEntry = await Cache.GetOrCreateAsync(filename, async entry =>
+                var imageEntry = await cache.GetOrCreateAsync(filename, async entry =>
                 {
                     Logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
@@ -176,7 +173,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("get-avatar")]
-        public IActionResult GetBloggerAvatar()
+        public IActionResult GetBloggerAvatar([FromServices] IMemoryCache cache)
         {
             var fallbackImageFile =
                 $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png";
@@ -185,7 +182,7 @@ namespace Moonglade.Web.Controllers
             {
                 try
                 {
-                    var avatarEntry = Cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
+                    var avatarEntry = cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
                     {
                         Logger.LogTrace("Avatar not on cache, getting new avatar image...");
                         var avatarBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Edi.Blog.OpmlFileWriter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 
@@ -20,13 +20,11 @@ namespace Moonglade.Web.Controllers
         public OpmlController(
             ILogger<OpmlController> logger,
             CategoryService categoryService,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
             : base(logger)
         {
             _categoryService = categoryService;
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
         }
 
         public async Task<IActionResult> Index()

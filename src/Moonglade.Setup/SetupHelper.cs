@@ -200,14 +200,17 @@ namespace Moonglade.Setup
             }
         }
 
-        private string GetEmbeddedSqlScript(string scriptName)
+        private static string GetEmbeddedSqlScript(string scriptName)
         {
             var assembly = typeof(SetupHelper).GetTypeInfo().Assembly;
             using (var stream = assembly.GetManifestResourceStream($"Moonglade.Setup.Data.{scriptName}.sql"))
-            using (var reader = new StreamReader(stream))
             {
-                var sql = reader.ReadToEnd();
-                return sql;
+                if (stream == null) return null;
+                using (var reader = new StreamReader(stream))
+                {
+                    var sql = reader.ReadToEnd();
+                    return sql;
+                }
             }
         }
     }

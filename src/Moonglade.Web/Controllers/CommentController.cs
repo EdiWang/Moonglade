@@ -3,13 +3,13 @@ using System.Net;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Notification;
 using Moonglade.Web.Models;
 using Newtonsoft.Json;
 
@@ -21,7 +21,7 @@ namespace Moonglade.Web.Controllers
         #region Private Fields
 
         private readonly CommentService _commentService;
-        private readonly EmailService _emailService;
+        private readonly IMoongladeNotification _notification;
         private readonly PostService _postService;
         private readonly IBlogConfig _blogConfig;
 
@@ -30,19 +30,16 @@ namespace Moonglade.Web.Controllers
         public CommentController(
             ILogger<CommentController> logger,
             IOptions<AppSettings> settings,
-            IMemoryCache memoryCache,
             CommentService commentService,
-            EmailService emailService,
+            IMoongladeNotification notification,
             PostService postService,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
-            : base(logger, settings, memoryCache: memoryCache)
+            IBlogConfig blogConfig)
+            : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
 
             _commentService = commentService;
-            _emailService = emailService;
+            _notification = notification;
             _postService = postService;
         }
 
@@ -84,7 +81,8 @@ namespace Moonglade.Web.Controllers
                             var postTitle = _postService.GetPostTitle(commentPostModel.PostId);
                             Task.Run(async () =>
                             {
-                                await _emailService.SendNewCommentNotificationAsync(response.Item, postTitle);
+                                await _notification.SendNewCommentNotificationAsync(response.Item, postTitle, 
+                                    Utils.MdContentToHtml);
                             });
                         }
                         var cResponse = new CommentResponse(true, CommentResponseCode.Success);
