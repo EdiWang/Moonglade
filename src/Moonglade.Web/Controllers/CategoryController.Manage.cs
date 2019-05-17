@@ -101,7 +101,7 @@ namespace Moonglade.Web.Controllers
                 {
                     Id = r.Item.Id,
                     DisplayName = r.Item.DisplayName,
-                    Name = r.Item.Title,
+                    Name = r.Item.Name,
                     Note = r.Item.Note,
                 };
 
@@ -164,7 +164,7 @@ namespace Moonglade.Web.Controllers
                 {
                     Id = r.Item.Id,
                     DisplayName = r.Item.DisplayName,
-                    Name = r.Item.Title,
+                    Name = r.Item.Name,
                     Note = r.Item.Note
                 };
 

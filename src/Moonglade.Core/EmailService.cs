@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -17,8 +16,6 @@ namespace Moonglade.Core
 {
     public class EmailService : MoongladeService
     {
-        private readonly IRepository<Post> _postRepository;
-
         private readonly IHostingEnvironment _env;
 
         private IEmailHelper EmailHelper { get; }
@@ -30,12 +27,10 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             IHostingEnvironment env,
             IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService,
-            IRepository<Post> postRepository) : base(logger, settings)
+            IBlogConfigurationService blogConfigurationService) : base(logger, settings)
         {
             _env = env;
             _blogConfig = blogConfig;
-            _postRepository = postRepository;
             _blogConfig.Initialize(blogConfigurationService);
 
             var configSource = $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\mailConfiguration.xml";
@@ -145,31 +140,22 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task SendPingNotification(PingbackHistory receivedPingback)
+        public async Task SendPingNotification(PingbackHistory receivedPingback, string postTitle)
         {
-            var post = _postRepository.Get(receivedPingback.TargetPostId);
-            if (null != post)
-            {
-                Logger.LogInformation($"Sending BeingPinged mail for post id {receivedPingback.TargetPostId}");
+            Logger.LogInformation($"Sending BeingPinged mail for post id {receivedPingback.TargetPostId}");
 
-                var postTitle = post.Title;
-                var pipeline = new TemplatePipeline().Map("Title", postTitle)
-                                                     .Map("PingTime", receivedPingback.PingTimeUtc)
-                                                     .Map("SourceDomain", receivedPingback.Domain)
-                                                     .Map(nameof(receivedPingback.SourceIp), receivedPingback.SourceIp)
-                                                     .Map(nameof(receivedPingback.SourceTitle), receivedPingback.SourceTitle)
-                                                     .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl)
-                                                     .Map(nameof(receivedPingback.Direction), receivedPingback.Direction);
+            var pipeline = new TemplatePipeline().Map("Title", postTitle)
+                                                 .Map("PingTime", receivedPingback.PingTimeUtc)
+                                                 .Map("SourceDomain", receivedPingback.Domain)
+                                                 .Map(nameof(receivedPingback.SourceIp), receivedPingback.SourceIp)
+                                                 .Map(nameof(receivedPingback.SourceTitle), receivedPingback.SourceTitle)
+                                                 .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl)
+                                                 .Map(nameof(receivedPingback.Direction), receivedPingback.Direction);
 
-                if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
-                {
-                    await EmailHelper.ApplyTemplate(MailMesageTypes.BeingPinged.ToString(), pipeline)
-                        .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
-                }
-            }
-            else
+            if (_blogConfig.EmailConfiguration.EnableEmailSending && !BlockEmailSending)
             {
-                Logger.LogWarning($"Post id {receivedPingback.TargetPostId} not found, skipping sending ping notification email.");
+                await EmailHelper.ApplyTemplate(MailMesageTypes.BeingPinged.ToString(), pipeline)
+                    .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
             }
         }
 

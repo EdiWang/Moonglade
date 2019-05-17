@@ -105,7 +105,11 @@ namespace Moonglade.Core
         private async Task NotifyAdminForReceivedPing(Guid pingbackId)
         {
             var pingback = _pingbackRepository.Get(pingbackId);
-            await _emailService.SendPingNotification(pingback);
+            var title = _postService.GetPostTitle(pingback.TargetPostId.GetValueOrDefault());
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                await _emailService.SendPingNotification(pingback, title);
+            }
         }
 
         public Response DeleteReceivedPingback(Guid pingbackId)

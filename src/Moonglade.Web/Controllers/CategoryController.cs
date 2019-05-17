@@ -53,15 +53,15 @@ namespace Moonglade.Web.Controllers
             var cat = catResponse.Item;
             if (null == cat)
             {
-                Logger.LogWarning($"{categoryName} is not found, returning NotFound.");
+                Logger.LogWarning($"{categoryName} is not found.");
                 return NotFound();
             }
 
             ViewBag.CategoryDisplayName = cat.DisplayName;
-            ViewBag.CategoryName = cat.Title;
+            ViewBag.CategoryName = cat.Name;
             ViewBag.CategoryDescription = cat.Note;
 
-            var postCount = _categoryService.GetPostCountByCategoryId(cat.Id);
+            var postCount = _postService.CountByCategoryId(cat.Id);
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
             var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pageSize, postCount);

@@ -28,22 +28,31 @@ namespace Moonglade.Core
 
         private readonly IRepository<Category> _categoryRepository;
 
+        private readonly IRepository<PostCategory> _postCategoryRepository;
+
         public PostService(ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<Post> postRepository,
             IRepository<PostExtension> postExtensionRepository,
             IRepository<Tag> tagRepository,
             IRepository<PostPublish> postPublishRepository,
-            IRepository<Category> categoryRepository) : base(logger, settings)
+            IRepository<Category> categoryRepository, 
+            IRepository<PostCategory> postCategoryRepository) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
             _tagRepository = tagRepository;
             _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
+            _postCategoryRepository = postCategoryRepository;
         }
 
         public int CountForPublic => _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
+
+        public int CountByCategoryId(Guid catId)
+        {
+            return _postCategoryRepository.Count(c => c.CategoryId == catId);
+        }
 
         public async Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticTypes statisticTypes)
         {
