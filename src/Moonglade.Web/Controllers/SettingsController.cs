@@ -18,6 +18,7 @@ using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Notification;
 using Moonglade.Setup;
 using Moonglade.Web.Models;
 using Newtonsoft.Json;
@@ -176,9 +177,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("send-test-email")]
-        public async Task<IActionResult> SendTestEmail([FromServices] EmailService emailService)
+        public async Task<IActionResult> SendTestEmail([FromServices] IMoongladeNotification notification)
         {
-            var response = await emailService.TestSendTestMailAsync();
+            var response = await notification.SendTestNotificationAsync();
             if (!response.IsSuccess)
             {
                 Response.StatusCode = StatusCodes.Status500InternalServerError;

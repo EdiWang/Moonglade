@@ -8,12 +8,13 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
+using Moonglade.Notification;
 
 namespace Moonglade.Core
 {
     public class PingbackService : MoongladeService
     {
-        private readonly EmailService _emailService;
+        private readonly IMoongladeNotification _notification;
 
         private readonly PostService _postService;
 
@@ -23,12 +24,12 @@ namespace Moonglade.Core
 
         public PingbackService(
             ILogger<PingbackService> logger,
-            EmailService emailService,
+            IMoongladeNotification notification,
             PostService postService,
             IPingbackReceiver pingbackReceiver,
             IRepository<PingbackHistory> pingbackRepository) : base(logger)
         {
-            _emailService = emailService;
+            _notification = notification;
             _postService = postService;
             _pingbackReceiver = pingbackReceiver;
             _pingbackRepository = pingbackRepository;
@@ -108,7 +109,7 @@ namespace Moonglade.Core
             var title = _postService.GetPostTitle(pingback.TargetPostId.GetValueOrDefault());
             if (!string.IsNullOrWhiteSpace(title))
             {
-                await _emailService.SendPingNotification(pingback, title);
+                await _notification.SendPingNotification(pingback, title);
             }
         }
 

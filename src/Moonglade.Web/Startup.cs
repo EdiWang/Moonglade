@@ -27,6 +27,7 @@ using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Notification;
 using Moonglade.Setup;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
@@ -97,7 +98,7 @@ namespace Moonglade.Web
             services.AddTransient<IBlogConfigurationService, BlogConfigurationService>();
             services.AddTransient<CategoryService>();
             services.AddTransient<CommentService>();
-            services.AddTransient<EmailService>();
+            services.AddTransient<IMoongladeNotification, EmailNotification>();
             services.AddTransient<FriendLinkService>();
             services.AddTransient<PostService>();
             services.AddTransient<IPingbackSender, PingbackSender>();
