@@ -26,7 +26,6 @@ namespace Moonglade.Data
         public virtual DbSet<PostTag> PostTag { get; set; }
         public virtual DbSet<Tag> Tag { get; set; }
         public virtual DbSet<FriendLink> FriendLink { get; set; }
-        public virtual DbSet<BlogConfiguration> BlogConfiguration { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,7 +42,6 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new PostTagConfiguration());
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
-            modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
         }
     }
 }

@@ -10,11 +10,12 @@
   
   <ItemGroup>
     <PackageReference Include="Edi.TemplateEmail.NetStd" Version="2019.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+    <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
   </ItemGroup>
 </Project>

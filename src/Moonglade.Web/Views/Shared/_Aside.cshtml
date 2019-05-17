@@ -1,9 +1,8 @@
 ﻿@using Moonglade.Configuration.Abstraction
-@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
 
 @{
-    BlogConfig.Initialize(BlogConfigurationService);
+    BlogConfig.Initialize();
 }
 
 <aside class="col-xl-3 d-none d-xl-block">

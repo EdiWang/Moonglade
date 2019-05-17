@@ -24,15 +24,14 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings,
             CategoryService categoryService,
             PostService postService, 
-            IBlogConfig blogConfig, 
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
 
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
         }
 
         [Route("list/{categoryName}")]

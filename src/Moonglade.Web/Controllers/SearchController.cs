@@ -24,13 +24,12 @@ namespace Moonglade.Web.Controllers
             ILogger<OpmlController> logger,
             IOptions<AppSettings> settings,
             PostService postService,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _postService = postService;
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
         }
 
         [Route("opensearch")]

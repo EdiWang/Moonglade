@@ -33,12 +33,11 @@ namespace Moonglade.Web.Controllers
             CommentService commentService,
             IMoongladeNotification notification,
             PostService postService,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
 
             _commentService = commentService;
             _notification = notification;

@@ -29,12 +29,11 @@ namespace Moonglade.Web.Controllers
             ILogger<ImageController> logger,
             IOptions<AppSettings> settings,
             IAsyncImageStorageProvider imageStorageProvider,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
 
             _imageStorageProvider = imageStorageProvider;
         }

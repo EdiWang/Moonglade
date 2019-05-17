@@ -33,7 +33,6 @@ namespace Moonglade.Web.Controllers
 
         private readonly FriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
-        private readonly IBlogConfigurationService _blogConfigurationService;
 
         #endregion
 
@@ -41,13 +40,11 @@ namespace Moonglade.Web.Controllers
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
             FriendLinkService friendLinkService,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogConfigurationService = blogConfigurationService;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
 
             _friendLinkService = friendLinkService;
         }
@@ -79,12 +76,12 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.Copyright = model.Copyright.Replace("[c]", "&copy;");
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
-                _blogConfigurationService.SaveConfiguration(_blogConfig.GeneralSettings);
+                _blogConfig.SaveConfiguration(_blogConfig.GeneralSettings);
 
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
                 _blogConfig.BlogOwnerSettings.Description = model.BloggerDescription;
                 _blogConfig.BlogOwnerSettings.ShortDescription = model.BloggerShortDescription;
-                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
+                var response = _blogConfig.SaveConfiguration(_blogConfig.BlogOwnerSettings);
 
                 _blogConfig.RequireRefresh();
                 return Json(response);
@@ -118,7 +115,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
                 _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
                 _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
-                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.ContentSettings);
+                var response = _blogConfig.SaveConfiguration(_blogConfig.ContentSettings);
                 _blogConfig.RequireRefresh();
                 return Json(response);
 
@@ -166,10 +163,10 @@ namespace Moonglade.Web.Controllers
                 ec.SmtpUserName = model.SmtpUserName;
                 if (!string.IsNullOrWhiteSpace(model.SmtpClearPassword))
                 {
-                    ec.SmtpPassword = _blogConfigurationService.EncryptPassword(model.SmtpClearPassword);
+                    ec.SmtpPassword = _blogConfig.EncryptPassword(model.SmtpClearPassword);
                 }
 
-                var response = _blogConfigurationService.SaveConfiguration(ec);
+                var response = _blogConfig.SaveConfiguration(ec);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -237,7 +234,7 @@ namespace Moonglade.Web.Controllers
                 fs.RssItemCount = model.RssItemCount;
                 fs.RssTitle = model.RssTitle;
 
-                var response = _blogConfigurationService.SaveConfiguration(fs);
+                var response = _blogConfig.SaveConfiguration(fs);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -274,7 +271,7 @@ namespace Moonglade.Web.Controllers
                 ws.FontSize = model.FontSize;
                 ws.WatermarkText = model.WatermarkText;
 
-                var response = _blogConfigurationService.SaveConfiguration(ws);
+                var response = _blogConfig.SaveConfiguration(ws);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -414,7 +411,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
-                var response = _blogConfigurationService.SaveConfiguration(_blogConfig.BlogOwnerSettings);
+                var response = _blogConfig.SaveConfiguration(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
                 cache.Remove(StaticCacheKeys.Avatar);
                 return Json(response);

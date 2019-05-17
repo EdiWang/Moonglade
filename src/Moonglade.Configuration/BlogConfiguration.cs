@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Moonglade.Data.Entities
+namespace Moonglade.Configuration
 {
     public class BlogConfiguration
     {

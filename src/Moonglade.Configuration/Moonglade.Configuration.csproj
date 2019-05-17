@@ -9,15 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.60.6" />
     <PackageReference Include="Edi.Net.AesEncryption" Version="1.1.0" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
   </ItemGroup>
 

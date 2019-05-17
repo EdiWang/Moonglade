@@ -6,11 +6,10 @@
 @model PostSlugViewModelWrapper
 @inject IOptions<AppSettings> Settings
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
 
 @{
-    BlogConfig.Initialize(BlogConfigurationService);
+    BlogConfig.Initialize();
     ViewBag.ShowBloggerIntroInXS = true;
 }
 

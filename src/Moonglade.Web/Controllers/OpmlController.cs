@@ -20,13 +20,12 @@ namespace Moonglade.Web.Controllers
         public OpmlController(
             ILogger<OpmlController> logger,
             CategoryService categoryService,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
             : base(logger)
         {
             _categoryService = categoryService;
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
         }
 
         public async Task<IActionResult> Index()

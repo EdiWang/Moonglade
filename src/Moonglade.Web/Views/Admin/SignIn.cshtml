@@ -5,13 +5,11 @@
 @{
     Layout = null;
 }
-@inject IBlogConfigurationService BlogConfigurationService
 @inject IBlogConfig BlogConfig
 
 @{
-    BlogConfig.Initialize(BlogConfigurationService);
+    BlogConfig.Initialize();
 }
-
 
 <!DOCTYPE html>
 <html>

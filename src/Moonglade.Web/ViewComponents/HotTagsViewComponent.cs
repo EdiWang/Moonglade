@@ -18,12 +18,11 @@ namespace Moonglade.Web.ViewComponents
             ILogger<HotTagsViewComponent> logger,
             IOptions<AppSettings> settings, 
             TagService tagService, 
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService) : base(logger, settings)
+            IBlogConfig blogConfig) : base(logger, settings)
         {
             _tagService = tagService;
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
         }
 
         public async Task<IViewComponentResult> InvokeAsync()

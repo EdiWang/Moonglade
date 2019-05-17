@@ -29,7 +29,6 @@ namespace Moonglade.Core
             ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService,
             IHttpContextAccessor httpContextAccessor,
             IRepository<Category> categoryRepository,
             IRepository<Post> postRepository) : base(logger, settings)
@@ -37,7 +36,7 @@ namespace Moonglade.Core
             _blogConfig = blogConfig;
             _categoryRepository = categoryRepository;
             _postRepository = postRepository;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";

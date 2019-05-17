@@ -29,14 +29,14 @@ namespace Moonglade.Core
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService,
             IRepository<Comment> commentRepository,
             IRepository<CommentReply> commentReplyRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
+            _blogConfig.Initialize();
+
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
-            _blogConfig.Initialize(blogConfigurationService);
         }
 
         public int CountForApproved => _commentRepository.Count(c => c.IsApproved);

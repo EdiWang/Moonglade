@@ -28,13 +28,12 @@ namespace Moonglade.Notification
             ILogger<EmailNotification> logger,
             IOptions<AppSettings> settings,
             IHostingEnvironment env,
-            IBlogConfig blogConfig,
-            IBlogConfigurationService blogConfigurationService)
+            IBlogConfig blogConfig)
         {
             _logger = logger;
 
             _blogConfig = blogConfig;
-            _blogConfig.Initialize(blogConfigurationService);
+            _blogConfig.Initialize();
 
             IsEnabled = _blogConfig.EmailConfiguration.EnableEmailSending;
             if (env.IsDevelopment() && settings.Value.DisableEmailSendingInDevelopment)
