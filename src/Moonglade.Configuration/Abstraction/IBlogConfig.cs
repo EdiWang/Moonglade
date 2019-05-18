@@ -1,4 +1,5 @@
-﻿using Edi.Practice.RequestResponseModel;
+﻿using System.Threading.Tasks;
+using Edi.Practice.RequestResponseModel;
 
 namespace Moonglade.Configuration.Abstraction
 {
@@ -11,9 +12,7 @@ namespace Moonglade.Configuration.Abstraction
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
 
-        // void Initialize();
-
-        Response SaveConfiguration<T>(T moongladeSettings) where T : MoongladeSettings;
+        Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings;
 
         string EncryptPassword(string clearPassword);
 

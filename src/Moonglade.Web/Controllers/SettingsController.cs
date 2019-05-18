@@ -66,7 +66,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("general")]
-        public IActionResult General(GeneralSettingsViewModel model)
+        public async Task<IActionResult> General(GeneralSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -75,12 +75,12 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.Copyright = model.Copyright.Replace("[c]", "&copy;");
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
-                _blogConfig.SaveConfiguration(_blogConfig.GeneralSettings);
+                await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
 
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
                 _blogConfig.BlogOwnerSettings.Description = model.BloggerDescription;
                 _blogConfig.BlogOwnerSettings.ShortDescription = model.BloggerShortDescription;
-                var response = _blogConfig.SaveConfiguration(_blogConfig.BlogOwnerSettings);
+                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.BlogOwnerSettings);
 
                 _blogConfig.RequireRefresh();
                 return Json(response);
@@ -104,7 +104,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("content-settings")]
-        public IActionResult ContentSettings(ContentSettingsViewModel model)
+        public async Task<IActionResult> ContentSettings(ContentSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -114,7 +114,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
                 _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
                 _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
-                var response = _blogConfig.SaveConfiguration(_blogConfig.ContentSettings);
+                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
                 _blogConfig.RequireRefresh();
                 return Json(response);
 
@@ -145,7 +145,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("email-settings")]
-        public IActionResult EmailSettings(EmailSettingsViewModel model)
+        public async Task<IActionResult> EmailSettings(EmailSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -165,7 +165,7 @@ namespace Moonglade.Web.Controllers
                     ec.SmtpPassword = _blogConfig.EncryptPassword(model.SmtpClearPassword);
                 }
 
-                var response = _blogConfig.SaveConfiguration(ec);
+                var response = await _blogConfig.SaveConfigurationAsync(ec);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -221,7 +221,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("feed-settings")]
-        public IActionResult FeedSettings(FeedSettingsViewModel model)
+        public async Task<IActionResult> FeedSettings(FeedSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -233,7 +233,7 @@ namespace Moonglade.Web.Controllers
                 fs.RssItemCount = model.RssItemCount;
                 fs.RssTitle = model.RssTitle;
 
-                var response = _blogConfig.SaveConfiguration(fs);
+                var response = await _blogConfig.SaveConfigurationAsync(fs);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -260,7 +260,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("watermark-settings")]
-        public IActionResult WatermarkSettings(WatermarkSettingsViewModel model)
+        public async Task<IActionResult> WatermarkSettings(WatermarkSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -270,7 +270,7 @@ namespace Moonglade.Web.Controllers
                 ws.FontSize = model.FontSize;
                 ws.WatermarkText = model.WatermarkText;
 
-                var response = _blogConfig.SaveConfiguration(ws);
+                var response = await _blogConfig.SaveConfigurationAsync(ws);
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
@@ -382,7 +382,7 @@ namespace Moonglade.Web.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost("set-blogger-avatar")]
-        public IActionResult SetBloggerAvatar(string base64Avatar, [FromServices] IMemoryCache cache)
+        public async Task<IActionResult> SetBloggerAvatar(string base64Avatar, [FromServices] IMemoryCache cache)
         {
             try
             {
@@ -410,7 +410,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
-                var response = _blogConfig.SaveConfiguration(_blogConfig.BlogOwnerSettings);
+                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
                 cache.Remove(StaticCacheKeys.Avatar);
                 return Json(response);
