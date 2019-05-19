@@ -2,9 +2,9 @@
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
-The new blog system for https://edi.wang. It is a complete rewrite of the old system using [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
+The new blog system for https://edi.wang. Written in C# on [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
 
-![image](https://ediwangstorage.blob.core.windows.net/web-assets/ediwang-azure-arch.png?date=20190413)
+![image](https://ews.azureedge.net/web-assets/ediwang-azure-arch-v2.png)
 
 ## Features
 
@@ -149,7 +149,7 @@ The only built-in rule is removing trailing slash in URLs. For other rules, you 
 
 ### Does this blog support upgrade from a lower version?
 
-It depends on whether the database schema is updated. If the schema is same for a higer version, then the system can be deployed and override old files without problem.
+Not yet. Currently it depends on whether the database schema is changed. If the schema is same for a higer version, then the system can be deployed and override old files without problem.
 
 ### Does this blog coupled with Microsoft Azure?
 

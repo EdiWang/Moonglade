@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
@@ -77,9 +78,9 @@ namespace Moonglade.Configuration
             }
         }
 
-        public Response SaveConfiguration<T>(T moongladeSettings) where T : MoongladeSettings
+        public async Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings
         {
-            void SetConfiguration(string key, string value)
+            Task<int> SetConfiguration(string key, string value)
             {
                 var connStr = Configuration.GetConnectionString(Constants.DbConnectionName);
                 using (var conn = new SqlConnection(connStr))
@@ -88,15 +89,15 @@ namespace Moonglade.Configuration
                                  $"SET {nameof(BlogConfiguration.CfgValue)} = @value, {nameof(BlogConfiguration.LastModifiedTimeUtc)} = @lastModifiedTimeUtc " +
                                  $"WHERE {nameof(BlogConfiguration.CfgKey)} = @key";
 
-                    conn.Execute(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
+                    return conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
                 }
             }
 
             try
             {
                 var json = moongladeSettings.GetJson();
-                SetConfiguration(typeof(T).Name, json);
-                return new SuccessResponse();
+                int rows = await SetConfiguration(typeof(T).Name, json);
+                return new Response(rows > 0);
             }
             catch (Exception e)
             {
