@@ -13,7 +13,7 @@ namespace Moonglade.Core
 {
     public class CategoryService : MoongladeService
     {
-        private readonly IRepository<Post> _postRepository;
+        private readonly IRepository<PostEntity> _postRepository;
 
         private readonly IRepository<CategoryEntity> _categoryRepository;
 
@@ -22,7 +22,7 @@ namespace Moonglade.Core
         public CategoryService(ILogger<CategoryService> logger,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
-            IRepository<Post> postRepository) : base(logger)
+            IRepository<PostEntity> postRepository) : base(logger)
         {
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;

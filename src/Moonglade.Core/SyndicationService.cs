@@ -23,7 +23,7 @@ namespace Moonglade.Core
 
         private readonly IRepository<CategoryEntity> _categoryRepository;
 
-        private readonly IRepository<Post> _postRepository;
+        private readonly IRepository<PostEntity> _postRepository;
 
         public SyndicationService(
             ILogger<SyndicationService> logger,
@@ -31,7 +31,7 @@ namespace Moonglade.Core
             IBlogConfig blogConfig,
             IHttpContextAccessor httpContextAccessor,
             IRepository<CategoryEntity> categoryRepository,
-            IRepository<Post> postRepository) : base(logger, settings)
+            IRepository<PostEntity> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _categoryRepository = categoryRepository;

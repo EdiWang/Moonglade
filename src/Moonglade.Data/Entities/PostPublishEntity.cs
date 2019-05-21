@@ -15,6 +15,6 @@ namespace Moonglade.Data.Entities
         public string PublisherIp { get; set; }
         public string ContentLanguageCode { get; set; }
 
-        public virtual Post Post { get; set; }
+        public virtual PostEntity Post { get; set; }
     }
 }

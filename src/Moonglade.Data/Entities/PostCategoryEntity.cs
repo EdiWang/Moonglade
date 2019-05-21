@@ -8,6 +8,6 @@ namespace Moonglade.Data.Entities
         public Guid CategoryId { get; set; }
 
         public virtual CategoryEntity Category { get; set; }
-        public virtual Post Post { get; set; }
+        public virtual PostEntity Post { get; set; }
     }
 }

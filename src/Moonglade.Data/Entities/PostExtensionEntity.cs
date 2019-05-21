@@ -8,6 +8,6 @@ namespace Moonglade.Data.Entities
         public int Hits { get; set; }
         public int Likes { get; set; }
 
-        public virtual Post Post { get; set; }
+        public virtual PostEntity Post { get; set; }
     }
 }
