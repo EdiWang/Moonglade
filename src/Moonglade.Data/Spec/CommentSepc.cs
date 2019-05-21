@@ -6,7 +6,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec
 {
-    public sealed class CommentSepc : BaseSpecification<Comment>
+    public sealed class CommentSepc : BaseSpecification<CommentEntity>
     {
         public CommentSepc(int pageSize, int pageIndex) : base(c => c.IsApproved)
         {

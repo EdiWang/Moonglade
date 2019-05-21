@@ -21,7 +21,7 @@ namespace Moonglade.Core
     {
         private readonly IBlogConfig _blogConfig;
 
-        private readonly IRepository<Comment> _commentRepository;
+        private readonly IRepository<CommentEntity> _commentRepository;
 
         private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
 
@@ -29,7 +29,7 @@ namespace Moonglade.Core
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            IRepository<Comment> commentRepository,
+            IRepository<CommentEntity> commentRepository,
             IRepository<CommentReplyEntity> commentReplyRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
@@ -147,14 +147,14 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<Comment> NewComment(NewCommentRequest request)
+        public Response<CommentEntity> NewComment(NewCommentRequest request)
         {
             try
             {
                 // 1. Check comment enabled or not
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
-                    return new FailedResponse<Comment>((int)ResponseFailureCode.CommentDisabled);
+                    return new FailedResponse<CommentEntity>((int)ResponseFailureCode.CommentDisabled);
                 }
 
                 // 2. Check user email domain
@@ -164,7 +164,7 @@ namespace Moonglade.Core
                     var address = new MailAddress(request.Email);
                     if (bannedDomains.Contains(address.Host))
                     {
-                        return new FailedResponse<Comment>((int)ResponseFailureCode.EmailDomainBlocked);
+                        return new FailedResponse<CommentEntity>((int)ResponseFailureCode.EmailDomainBlocked);
                     }
                 }
 
@@ -180,7 +180,7 @@ namespace Moonglade.Core
                     request.Content = maskWordFilter.FilterContent(request.Content);
                 }
 
-                var model = new Comment
+                var model = new CommentEntity
                 {
                     Id = Guid.NewGuid(),
                     Username = request.Username,
@@ -194,12 +194,12 @@ namespace Moonglade.Core
                 };
 
                 _commentRepository.Add(model);
-                return new SuccessResponse<Comment>(model);
+                return new SuccessResponse<CommentEntity>(model);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(NewComment)}");
-                return new FailedResponse<Comment>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<CommentEntity>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 

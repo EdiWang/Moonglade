@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Moonglade.Data.Entities
 {
-    public class Comment
+    public class CommentEntity
     {
-        public Comment()
+        public CommentEntity()
         {
             CommentReply = new HashSet<CommentReplyEntity>();
         }

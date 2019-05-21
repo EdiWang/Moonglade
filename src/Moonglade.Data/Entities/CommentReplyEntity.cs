@@ -11,6 +11,6 @@ namespace Moonglade.Data.Entities
         public string IpAddress { get; set; }
         public Guid? CommentId { get; set; }
 
-        public virtual Comment Comment { get; set; }
+        public virtual CommentEntity Comment { get; set; }
     }
 }

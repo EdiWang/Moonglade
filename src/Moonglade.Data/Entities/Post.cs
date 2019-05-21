@@ -7,7 +7,7 @@ namespace Moonglade.Data.Entities
     {
         public Post()
         {
-            Comment = new HashSet<Comment>();
+            Comment = new HashSet<CommentEntity>();
             PostCategory = new HashSet<PostCategoryEntity>();
             PostTag = new HashSet<PostTagEntity>();
         }
@@ -22,7 +22,7 @@ namespace Moonglade.Data.Entities
 
         public virtual PostExtensionEntity PostExtension { get; set; }
         public virtual PostPublishEntity PostPublish { get; set; }
-        public virtual ICollection<Comment> Comment { get; set; }
+        public virtual ICollection<CommentEntity> Comment { get; set; }
         public virtual ICollection<PostCategoryEntity> PostCategory { get; set; }
         public virtual ICollection<PostTagEntity> PostTag { get; set; }
     }

@@ -107,18 +107,18 @@ namespace Moonglade.Notification
             }
         }
 
-        public async Task SendNewCommentNotificationAsync(Comment comment, string postTitle, Func<string, string> funcCommentContentFormat)
+        public async Task SendNewCommentNotificationAsync(CommentEntity commentEntity, string postTitle, Func<string, string> funcCommentContentFormat)
         {
             if (IsEnabled)
             {
                 _logger.LogInformation("Sending NewCommentNotification mail");
 
-                var pipeline = new TemplatePipeline().Map(nameof(comment.Username), comment.Username)
-                                                     .Map(nameof(comment.Email), comment.Email)
-                                                     .Map(nameof(comment.IPAddress), comment.IPAddress)
-                                                     .Map(nameof(comment.CreateOnUtc), comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
+                var pipeline = new TemplatePipeline().Map(nameof(commentEntity.Username), commentEntity.Username)
+                                                     .Map(nameof(commentEntity.Email), commentEntity.Email)
+                                                     .Map(nameof(commentEntity.IPAddress), commentEntity.IPAddress)
+                                                     .Map(nameof(commentEntity.CreateOnUtc), commentEntity.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
                                                      .Map("Title", postTitle)
-                                                     .Map(nameof(comment.CommentContent), funcCommentContentFormat(comment.CommentContent));
+                                                     .Map(nameof(commentEntity.CommentContent), funcCommentContentFormat(commentEntity.CommentContent));
 
 
                 await EmailHelper.ApplyTemplate(MailMesageTypes.NewCommentNotification.ToString(), pipeline)
