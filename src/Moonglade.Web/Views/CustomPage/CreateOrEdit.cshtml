@@ -37,6 +37,21 @@
         hasCssEditorInitialized = true;
     }
 
+    var assignEditorValues = function () {
+        var htmlValue = window.htmlContentEditor.getValue();
+        var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : "";
+
+        $("#RawHtmlContent").val(htmlValue);
+        $("#CssContentEditor").val(cssValue);
+    }
+
+    $("#btn-submit").click(function(e) {
+        assignEditorValues();
+        if (!$(".page-edit-form").valid()) {
+            e.preventDefault();
+        }
+    });
+
     $(function () {
         $('a[data-toggle="tab"]').on('shown.bs.tab',
             function (e) {
@@ -46,6 +61,7 @@
                 }
             });
     });
+
 </script>
 }
 
@@ -82,6 +98,13 @@
             <div>
                 <span asp-validation-for="RouteName" class="text-danger"></span>
             </div>
+            
+            <div>
+                <span asp-validation-for="RawHtmlContent" class="text-danger"></span>
+            </div>
+            <div>
+                <span asp-validation-for="CssContent" class="text-danger"></span>
+            </div>
 
             <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
                 <li class="nav-item">
@@ -101,18 +124,12 @@
 
                     </div>
                     <textarea asp-for="RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
-                    <div>
-                        <span asp-validation-for="RawHtmlContent" class="text-danger"></span>
-                    </div>
                 </div>
                 <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
                     <div id="CssContentEditor" class="monaco-target">
 
                     </div>
                     <textarea asp-for="CssContent" class="page-csscontent-textarea d-none"></textarea>
-                    <div>
-                        <span asp-validation-for="CssContent" class="text-danger"></span>
-                    </div>
                 </div>
                 <div class="tab-pane" id="preview-box" role="tabpanel" aria-labelledby="preview-tab">
                     <div class="alert alert-warning mt-3">
