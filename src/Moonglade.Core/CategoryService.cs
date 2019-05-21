@@ -15,12 +15,12 @@ namespace Moonglade.Core
     {
         private readonly IRepository<Post> _postRepository;
 
-        private readonly IRepository<Category> _categoryRepository;
+        private readonly IRepository<CategoryEntity> _categoryRepository;
 
         private readonly IRepository<PostCategory> _postCategoryRepository;
 
         public CategoryService(ILogger<CategoryService> logger,
-            IRepository<Category> categoryRepository,
+            IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategory> postCategoryRepository,
             IRepository<Post> postRepository) : base(logger)
         {
@@ -29,17 +29,17 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public async Task<Response<IReadOnlyList<Category>>> GetAllCategoriesAsync()
+        public async Task<Response<IReadOnlyList<CategoryEntity>>> GetAllCategoriesAsync()
         {
             try
             {
                 var item = await _categoryRepository.GetAsync();
-                return new SuccessResponse<IReadOnlyList<Category>>(item);
+                return new SuccessResponse<IReadOnlyList<CategoryEntity>>(item);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetAllCategoriesAsync)}");
-                return new FailedResponse<IReadOnlyList<Category>>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<IReadOnlyList<CategoryEntity>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -140,18 +140,18 @@ namespace Moonglade.Core
             }
         }
 
-        public Response CreateCategory(Category category)
+        public Response CreateCategory(CategoryEntity categoryEntity)
         {
             try
             {
-                var exists = _categoryRepository.Any(c => c.Title == category.Title);
+                var exists = _categoryRepository.Any(c => c.Title == categoryEntity.Title);
                 if (exists)
                 {
-                    return new Response { Message = $"Category titled {category.Title} already exists." };
+                    return new Response { Message = $"CategoryEntity titled {categoryEntity.Title} already exists." };
                 }
 
-                Logger.LogInformation("Adding new category to database.");
-                _categoryRepository.Add(category);
+                Logger.LogInformation("Adding new categoryEntity to database.");
+                _categoryRepository.Add(categoryEntity);
                 return new SuccessResponse();
             }
             catch (Exception e)
@@ -168,14 +168,14 @@ namespace Moonglade.Core
                 var exists = _categoryRepository.Any(c => c.Id == id);
                 if (!exists)
                 {
-                    return new Response { Message = $"Category ID {id} not exists." };
+                    return new Response { Message = $"CategoryEntity ID {id} not exists." };
                 }
 
                 Logger.LogInformation($"Removing Post-Category associations for category id: {id}");
                 var pcs = _postCategoryRepository.Get(pc => pc.CategoryId == id);
                 _postCategoryRepository.Delete(pcs);
 
-                Logger.LogInformation($"Removing category {id}");
+                Logger.LogInformation($"Removing categoryEntity {id}");
                 _categoryRepository.Delete(id);
                 return new SuccessResponse();
             }
@@ -190,19 +190,19 @@ namespace Moonglade.Core
             }
         }
 
-        public Response UpdateCategory(Category category)
+        public Response UpdateCategory(CategoryEntity categoryEntity)
         {
             try
             {
-                var cat = _categoryRepository.Get(category.Id);
+                var cat = _categoryRepository.Get(categoryEntity.Id);
                 if (null == cat)
                 {
-                    return new Response { Message = $"Category id {category.Id} not found." };
+                    return new Response { Message = $"CategoryEntity id {categoryEntity.Id} not found." };
                 }
 
-                cat.Title = category.Title;
-                cat.DisplayName = category.DisplayName;
-                cat.Note = category.Note;
+                cat.Title = categoryEntity.Title;
+                cat.DisplayName = categoryEntity.DisplayName;
+                cat.Note = categoryEntity.Note;
 
                 int rows = _categoryRepository.Update(cat);
                 return new Response(rows > 0);

@@ -6,7 +6,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec
 {
-    public class CategorySpec : BaseSpecification<Category>
+    public class CategorySpec : BaseSpecification<CategoryEntity>
     {
         public CategorySpec(string categoryName) : base(c => c.Title == categoryName)
         {

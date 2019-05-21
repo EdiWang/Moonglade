@@ -21,7 +21,7 @@ namespace Moonglade.Core
 
         private readonly string _baseUrl;
 
-        private readonly IRepository<Category> _categoryRepository;
+        private readonly IRepository<CategoryEntity> _categoryRepository;
 
         private readonly IRepository<Post> _postRepository;
 
@@ -30,7 +30,7 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IHttpContextAccessor httpContextAccessor,
-            IRepository<Category> categoryRepository,
+            IRepository<CategoryEntity> categoryRepository,
             IRepository<Post> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;

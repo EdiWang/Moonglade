@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Moonglade.Data.Entities
 {
-    public class Category
+    public class CategoryEntity
     {
-        public Category()
+        public CategoryEntity()
         {
             PostCategory = new HashSet<PostCategory>();
         }

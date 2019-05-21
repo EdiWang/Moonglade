@@ -26,7 +26,7 @@ namespace Moonglade.Core
 
         private readonly IRepository<TagEntity> _tagRepository;
 
-        private readonly IRepository<Category> _categoryRepository;
+        private readonly IRepository<CategoryEntity> _categoryRepository;
 
         private readonly IRepository<PostCategory> _postCategoryRepository;
 
@@ -36,7 +36,7 @@ namespace Moonglade.Core
             IRepository<PostExtensionEntity> postExtensionRepository,
             IRepository<TagEntity> tagRepository,
             IRepository<PostPublishEntity> postPublishRepository,
-            IRepository<Category> categoryRepository, 
+            IRepository<CategoryEntity> categoryRepository, 
             IRepository<PostCategory> postCategoryRepository) : base(logger, settings)
         {
             _postRepository = postRepository;

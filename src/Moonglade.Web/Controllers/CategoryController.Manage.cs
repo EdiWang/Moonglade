@@ -24,7 +24,7 @@ namespace Moonglade.Web.Controllers
                 {
                     ViewBag.HasError = true;
                     ViewBag.ErrorMessage = allCats.Message;
-                    return View(new List<Category>());
+                    return View(new List<CategoryEntity>());
                 }
                 return View(allCats.Item);
             }
@@ -34,7 +34,7 @@ namespace Moonglade.Web.Controllers
 
                 ViewBag.HasError = true;
                 ViewBag.ErrorMessage = e.Message;
-                return View(new List<Category>());
+                return View(new List<CategoryEntity>());
             }
         }
 
@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var category = new Category
+                    var category = new CategoryEntity
                     {
                         Id = Guid.NewGuid(),
                         Title = model.Name,
@@ -121,7 +121,7 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var category = new Category
+                    var category = new CategoryEntity
                     {
                         Id = model.Id,
                         Title = model.Name,

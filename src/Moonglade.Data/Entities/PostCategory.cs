@@ -7,7 +7,7 @@ namespace Moonglade.Data.Entities
         public Guid PostId { get; set; }
         public Guid CategoryId { get; set; }
 
-        public virtual Category Category { get; set; }
+        public virtual CategoryEntity Category { get; set; }
         public virtual Post Post { get; set; }
     }
 }

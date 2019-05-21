@@ -15,7 +15,7 @@ namespace Moonglade.Data
         {
         }
 
-        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<CategoryEntity> Category { get; set; }
         public virtual DbSet<Comment> Comment { get; set; }
         public virtual DbSet<CommentReply> CommentReply { get; set; }
         public virtual DbSet<PingbackHistoryEntity> PingbackHistory { get; set; }
