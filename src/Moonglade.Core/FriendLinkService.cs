@@ -13,41 +13,41 @@ namespace Moonglade.Core
 {
     public class FriendLinkService : MoongladeService
     {
-        private readonly IRepository<FriendLink> _friendlinkRepository;
+        private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
 
         public FriendLinkService(
             ILogger<FriendLinkService> logger,
             IOptions<AppSettings> settings,
-            IRepository<FriendLink> friendlinkRepository) : base(logger, settings)
+            IRepository<FriendLinkEntity> friendlinkRepository) : base(logger, settings)
         {
             _friendlinkRepository = friendlinkRepository;
         }
 
-        public async Task<Response<FriendLink>> GetFriendLinkAsync(Guid id)
+        public async Task<Response<FriendLinkEntity>> GetFriendLinkAsync(Guid id)
         {
             try
             {
                 var item = await _friendlinkRepository.GetAsync(id);
-                return new SuccessResponse<FriendLink>(item);
+                return new SuccessResponse<FriendLinkEntity>(item);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetFriendLinkAsync)}");
-                return new FailedResponse<FriendLink>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<FriendLinkEntity>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
-        public async Task<Response<IReadOnlyList<FriendLink>>> GetAllFriendLinksAsync()
+        public async Task<Response<IReadOnlyList<FriendLinkEntity>>> GetAllFriendLinksAsync()
         {
             try
             {
                 var item = await _friendlinkRepository.GetAsync();
-                return new SuccessResponse<IReadOnlyList<FriendLink>>(item);
+                return new SuccessResponse<IReadOnlyList<FriendLinkEntity>>(item);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetAllFriendLinksAsync)}");
-                return new FailedResponse<IReadOnlyList<FriendLink>>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<IReadOnlyList<FriendLinkEntity>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -70,7 +70,7 @@ namespace Moonglade.Core
                     return new FailedResponse((int)ResponseFailureCode.InvalidParameter, $"{nameof(linkUrl)} is not a valid url.");
                 }
 
-                var fdLink = new FriendLink
+                var fdLink = new FriendLinkEntity
                 {
                     Id = Guid.NewGuid(),
                     LinkUrl = linkUrl,

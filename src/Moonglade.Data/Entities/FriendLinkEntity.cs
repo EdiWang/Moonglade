@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Moonglade.Data.Entities
 {
-    public class FriendLink
+    public class FriendLinkEntity
     {
         public Guid Id { get; set; }
 

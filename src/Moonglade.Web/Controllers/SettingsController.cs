@@ -292,7 +292,7 @@ namespace Moonglade.Web.Controllers
 
             ViewBag.HasError = true;
             ViewBag.ErrorMessage = response.Message;
-            return View(new List<FriendLink>());
+            return View(new List<FriendLinkEntity>());
         }
 
         [HttpGet("create-friendlink")]

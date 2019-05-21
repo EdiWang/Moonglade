@@ -7,9 +7,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class FriendLinkConfiguration : IEntityTypeConfiguration<FriendLink>
+    public class FriendLinkConfiguration : IEntityTypeConfiguration<FriendLinkEntity>
     {
-        public void Configure(EntityTypeBuilder<FriendLink> builder)
+        public void Configure(EntityTypeBuilder<FriendLinkEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.Title).HasMaxLength(64);
