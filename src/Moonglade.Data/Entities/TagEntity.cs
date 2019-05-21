@@ -2,9 +2,9 @@
 
 namespace Moonglade.Data.Entities
 {
-    public class Tag
+    public class TagEntity
     {
-        public Tag()
+        public TagEntity()
         {
             PostTag = new HashSet<PostTag>();
         }

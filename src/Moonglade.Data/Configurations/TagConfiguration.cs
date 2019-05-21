@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class TagConfiguration : IEntityTypeConfiguration<Tag>
+    internal class TagConfiguration : IEntityTypeConfiguration<TagEntity>
     {
-        public void Configure(EntityTypeBuilder<Tag> builder)
+        public void Configure(EntityTypeBuilder<TagEntity> builder)
         {
             builder.Property(e => e.DisplayName).HasMaxLength(32);
             builder.Property(e => e.NormalizedName).HasMaxLength(32);

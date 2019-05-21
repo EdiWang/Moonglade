@@ -24,7 +24,7 @@ namespace Moonglade.Core
 
         private readonly IRepository<PostPublish> _postPublishRepository;
 
-        private readonly IRepository<Tag> _tagRepository;
+        private readonly IRepository<TagEntity> _tagRepository;
 
         private readonly IRepository<Category> _categoryRepository;
 
@@ -34,7 +34,7 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             IRepository<Post> postRepository,
             IRepository<PostExtension> postExtensionRepository,
-            IRepository<Tag> tagRepository,
+            IRepository<TagEntity> tagRepository,
             IRepository<PostPublish> postPublishRepository,
             IRepository<Category> categoryRepository, 
             IRepository<PostCategory> postCategoryRepository) : base(logger, settings)
@@ -375,14 +375,14 @@ namespace Moonglade.Core
                 // add tags
                 if (null != request.Tags && request.Tags.Count > 0)
                 {
-                    var tagsList = new List<Tag>();
+                    var tagsList = new List<TagEntity>();
                     foreach (var item in request.Tags)
                     {
                         var tag = _tagRepository.Get(q => q.DisplayName == item);
                         if (null == tag)
                         {
                             // for new tags
-                            var newTag = new Tag
+                            var newTag = new TagEntity
                             {
                                 DisplayName = item,
                                 NormalizedName = Utils.NormalizeTagName(item)
@@ -448,7 +448,7 @@ namespace Moonglade.Core
                 // 1. Add new tags to tag lib
                 foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
                 {
-                    _tagRepository.Add(new Tag
+                    _tagRepository.Add(new TagEntity
                     {
                         DisplayName = item,
                         NormalizedName = Utils.NormalizeTagName(item)
