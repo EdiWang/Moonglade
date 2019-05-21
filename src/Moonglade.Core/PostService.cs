@@ -398,7 +398,7 @@ namespace Moonglade.Core
                         }
                     }
 
-                    tagsList.ForEach(t => postModel.PostTag.Add(new PostTag
+                    tagsList.ForEach(t => postModel.PostTag.Add(new PostTagEntity
                     {
                         TagId = t.Id,
                         PostId = postModel.Id
@@ -462,7 +462,7 @@ namespace Moonglade.Core
                     foreach (var t in request.Tags)
                     {
                         var tag = _tagRepository.Get(_ => _.DisplayName == t);
-                        if (tag != null) postModel.PostTag.Add(new PostTag
+                        if (tag != null) postModel.PostTag.Add(new PostTagEntity
                         {
                             PostId = postModel.Id,
                             TagId = tag.Id

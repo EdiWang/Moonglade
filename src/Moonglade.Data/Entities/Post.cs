@@ -9,7 +9,7 @@ namespace Moonglade.Data.Entities
         {
             Comment = new HashSet<Comment>();
             PostCategory = new HashSet<PostCategory>();
-            PostTag = new HashSet<PostTag>();
+            PostTag = new HashSet<PostTagEntity>();
         }
 
         public Guid Id { get; set; }
@@ -24,6 +24,6 @@ namespace Moonglade.Data.Entities
         public virtual PostPublish PostPublish { get; set; }
         public virtual ICollection<Comment> Comment { get; set; }
         public virtual ICollection<PostCategory> PostCategory { get; set; }
-        public virtual ICollection<PostTag> PostTag { get; set; }
+        public virtual ICollection<PostTagEntity> PostTag { get; set; }
     }
 }

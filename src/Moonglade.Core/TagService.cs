@@ -13,12 +13,12 @@ namespace Moonglade.Core
     public class TagService : MoongladeService
     {
         private readonly IRepository<TagEntity> _tagRepository;
-        private readonly IRepository<PostTag> _postTagRepository;
+        private readonly IRepository<PostTagEntity> _postTagRepository;
 
         public TagService(
             ILogger<TagService> logger,
             IRepository<TagEntity> tagRepository,
-            IRepository<PostTag> postTagRepository) : base(logger)
+            IRepository<PostTagEntity> postTagRepository) : base(logger)
         {
             _tagRepository = tagRepository;
             _postTagRepository = postTagRepository;
