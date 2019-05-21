@@ -28,7 +28,7 @@ namespace Moonglade.Core
 
         private readonly IRepository<CategoryEntity> _categoryRepository;
 
-        private readonly IRepository<PostCategory> _postCategoryRepository;
+        private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
 
         public PostService(ILogger<PostService> logger,
             IOptions<AppSettings> settings,
@@ -37,7 +37,7 @@ namespace Moonglade.Core
             IRepository<TagEntity> tagRepository,
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository, 
-            IRepository<PostCategory> postCategoryRepository) : base(logger, settings)
+            IRepository<PostCategoryEntity> postCategoryRepository) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -363,7 +363,7 @@ namespace Moonglade.Core
                     {
                         if (_categoryRepository.Any(c => c.Id == cid))
                         {
-                            postModel.PostCategory.Add(new PostCategory
+                            postModel.PostCategory.Add(new PostCategoryEntity
                             {
                                 CategoryId = cid,
                                 PostId = postModel.Id
@@ -478,7 +478,7 @@ namespace Moonglade.Core
                     {
                         if (_categoryRepository.Any(c => c.Id == cid))
                         {
-                            postModel.PostCategory.Add(new PostCategory
+                            postModel.PostCategory.Add(new PostCategoryEntity
                             {
                                 PostId = postModel.Id,
                                 CategoryId = cid

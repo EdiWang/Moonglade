@@ -20,7 +20,7 @@ namespace Moonglade.Data
         public virtual DbSet<CommentReply> CommentReply { get; set; }
         public virtual DbSet<PingbackHistoryEntity> PingbackHistory { get; set; }
         public virtual DbSet<Post> Post { get; set; }
-        public virtual DbSet<PostCategory> PostCategory { get; set; }
+        public virtual DbSet<PostCategoryEntity> PostCategory { get; set; }
         public virtual DbSet<PostExtensionEntity> PostExtension { get; set; }
         public virtual DbSet<PostPublishEntity> PostPublish { get; set; }
         public virtual DbSet<PostTagEntity> PostTag { get; set; }

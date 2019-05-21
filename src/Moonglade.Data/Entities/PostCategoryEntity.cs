@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Entities
 {
-    public class PostCategory
+    public class PostCategoryEntity
     {
         public Guid PostId { get; set; }
         public Guid CategoryId { get; set; }
