@@ -157,6 +157,11 @@ namespace Moonglade.Core
 
         private CustomPage EntityToCustomPage(CustomPageEntity entity)
         {
+            if (null == entity)
+            {
+                return null;
+            }
+
             return new CustomPage
             {
                 Id = entity.Id,
