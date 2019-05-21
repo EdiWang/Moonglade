@@ -17,6 +17,6 @@ namespace Moonglade.Notification
 
         Task SendCommentReplyNotification(CommentReplySummary model, string postLink);
 
-        Task SendPingNotification(PingbackHistory receivedPingback, string postTitle);
+        Task SendPingNotification(PingbackHistoryEntity receivedPingback, string postTitle);
     }
 }

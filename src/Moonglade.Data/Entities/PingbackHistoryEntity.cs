@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Entities
 {
-    public class PingbackHistory
+    public class PingbackHistoryEntity
     {
         public Guid Id { get; set; }
         public string Domain { get; set; }

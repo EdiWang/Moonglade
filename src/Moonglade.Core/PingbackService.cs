@@ -20,14 +20,14 @@ namespace Moonglade.Core
 
         private readonly IPingbackReceiver _pingbackReceiver;
 
-        private readonly IRepository<PingbackHistory> _pingbackRepository;
+        private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
 
         public PingbackService(
             ILogger<PingbackService> logger,
             IMoongladeNotification notification,
             PostService postService,
             IPingbackReceiver pingbackReceiver,
-            IRepository<PingbackHistory> pingbackRepository) : base(logger)
+            IRepository<PingbackHistoryEntity> pingbackRepository) : base(logger)
         {
             _notification = notification;
             _postService = postService;
@@ -73,7 +73,7 @@ namespace Moonglade.Core
             try
             {
                 var pid = Guid.NewGuid();
-                var rpb = new PingbackHistory
+                var rpb = new PingbackHistoryEntity
                 {
                     Domain = domain,
                     SourceIp = sourceIp,
@@ -98,7 +98,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Task<IReadOnlyList<PingbackHistory>> GetReceivedPingbacksAsync()
+        public Task<IReadOnlyList<PingbackHistoryEntity>> GetReceivedPingbacksAsync()
         {
             return _pingbackRepository.GetAsync();
         }

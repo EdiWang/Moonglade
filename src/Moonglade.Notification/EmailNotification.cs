@@ -151,7 +151,7 @@ namespace Moonglade.Notification
             }
         }
 
-        public async Task SendPingNotification(PingbackHistory receivedPingback, string postTitle)
+        public async Task SendPingNotification(PingbackHistoryEntity receivedPingback, string postTitle)
         {
             if (IsEnabled)
             {
