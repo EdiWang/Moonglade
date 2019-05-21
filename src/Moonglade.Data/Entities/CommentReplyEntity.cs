@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Entities
 {
-    public class CommentReply
+    public class CommentReplyEntity
     {
         public Guid Id { get; set; }
         public string ReplyContent { get; set; }

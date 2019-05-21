@@ -23,14 +23,14 @@ namespace Moonglade.Core
 
         private readonly IRepository<Comment> _commentRepository;
 
-        private readonly IRepository<CommentReply> _commentReplyRepository;
+        private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
 
         public CommentService(
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IRepository<Comment> commentRepository,
-            IRepository<CommentReply> commentReplyRepository) : base(logger, settings)
+            IRepository<CommentReplyEntity> commentReplyRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
 
@@ -220,7 +220,7 @@ namespace Moonglade.Core
                 }
 
                 var id = Guid.NewGuid();
-                var model = new CommentReply
+                var model = new CommentReplyEntity
                 {
                     Id = id,
                     ReplyContent = replyContent,
