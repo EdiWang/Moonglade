@@ -100,6 +100,10 @@
         "webfonts/fa-solid-900.woff",
         "webfonts/fa-solid-900.woff2"
       ]
+    },
+    {
+      "library": "monaco-editor@0.17.0",
+      "destination": "wwwroot/lib/monaco-editor/"
     }
   ]
 }

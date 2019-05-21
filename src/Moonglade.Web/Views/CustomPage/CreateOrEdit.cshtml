@@ -4,8 +4,35 @@
 
 @model CustomPageEditViewModel
 
-@section scripts{ 
+@section scripts{
+    <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
+    <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
+    <script>
+        var el = document.getElementById('RawHtmlContentEditor');
+        var editor = null;
+        var init = function () {
+            require(['vs/editor/editor.main'], function () {
+                editor = monaco.editor.create(el, {
+                    language: 'html'
+                });
 
+                editor.layout();
+            });
+            // no point in keeping this around.
+            window.removeEventListener("load", init);
+        };
+        window.addEventListener("load", init);
+    </script>
+}
+
+@section head{
+    <style>
+        .monaco-target {
+            border: 1px solid #CECECE;
+            width: 100%;
+            min-height: 400px;
+        }
+    </style>
 }
 
 <form class="page-edit-form" method="post">
@@ -38,7 +65,11 @@
             </div>
 
             <div class="form-group">
-                <textarea asp-for="RawHtmlContent" class="page-rawhtmlcontent-textarea"></textarea>
+                <label asp-for="RawHtmlContent"></label>
+                <div id="RawHtmlContentEditor" class="monaco-target">
+
+                </div>
+                <textarea asp-for="RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
                 <div>
                     <span asp-validation-for="RawHtmlContent" class="text-danger"></span>
                 </div>
