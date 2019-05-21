@@ -20,7 +20,7 @@ namespace Moonglade.Data.Entities
         public DateTime? CreateOnUtc { get; set; }
         public string ContentAbstract { get; set; }
 
-        public virtual PostExtension PostExtension { get; set; }
+        public virtual PostExtensionEntity PostExtension { get; set; }
         public virtual PostPublishEntity PostPublish { get; set; }
         public virtual ICollection<Comment> Comment { get; set; }
         public virtual ICollection<PostCategory> PostCategory { get; set; }

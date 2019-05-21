@@ -20,7 +20,7 @@ namespace Moonglade.Core
     {
         private readonly IRepository<Post> _postRepository;
 
-        private readonly IRepository<PostExtension> _postExtensionRepository;
+        private readonly IRepository<PostExtensionEntity> _postExtensionRepository;
 
         private readonly IRepository<PostPublishEntity> _postPublishRepository;
 
@@ -33,7 +33,7 @@ namespace Moonglade.Core
         public PostService(ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<Post> postRepository,
-            IRepository<PostExtension> postExtensionRepository,
+            IRepository<PostExtensionEntity> postExtensionRepository,
             IRepository<TagEntity> tagRepository,
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<Category> categoryRepository, 
@@ -312,7 +312,7 @@ namespace Moonglade.Core
 
                 if (null == postModel.PostExtension)
                 {
-                    postModel.PostExtension = new PostExtension
+                    postModel.PostExtension = new PostExtensionEntity
                     {
                         Hits = 0,
                         Likes = 0
