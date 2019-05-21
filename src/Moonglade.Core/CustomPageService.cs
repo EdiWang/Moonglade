@@ -15,31 +15,31 @@ namespace Moonglade.Core
 {
     public class CustomPageService : MoongladeService
     {
-        private readonly IRepository<CustomPage> _customPageRepository;
+        private readonly IRepository<CustomPageEntity> _customPageRepository;
 
         public CustomPageService(
             ILogger<CustomPageService> logger,
             IOptions<AppSettings> settings,
-            IRepository<CustomPage> customPageRepository) : base(logger, settings)
+            IRepository<CustomPageEntity> customPageRepository) : base(logger, settings)
         {
             _customPageRepository = customPageRepository;
         }
 
-        public async Task<Response<CustomPage>> GetPageAsync(Guid pageId)
+        public async Task<Response<CustomPageEntity>> GetPageAsync(Guid pageId)
         {
             try
             {
                 var item = await _customPageRepository.GetAsync(pageId);
-                return new SuccessResponse<CustomPage>(item);
+                return new SuccessResponse<CustomPageEntity>(item);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetPageAsync)}");
-                return new FailedResponse<CustomPage>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<CustomPageEntity>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
-        public async Task<Response<CustomPage>> GetPageAsync(string routeName)
+        public async Task<Response<CustomPageEntity>> GetPageAsync(string routeName)
         {
             try
             {
@@ -50,12 +50,12 @@ namespace Moonglade.Core
 
                 var loweredRouteName = routeName.ToLower();
                 var item = await _customPageRepository.GetAsync(p => p.RouteName == loweredRouteName);
-                return new SuccessResponse<CustomPage>(item);
+                return new SuccessResponse<CustomPageEntity>(item);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetPageAsync)}");
-                return new FailedResponse<CustomPage>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<CustomPageEntity>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -85,7 +85,7 @@ namespace Moonglade.Core
             try
             {
                 var uid = Guid.NewGuid();
-                var customPage = new CustomPage
+                var customPage = new CustomPageEntity
                 {
                     Id = uid,
                     Title = request.Title.Trim(),
@@ -113,7 +113,7 @@ namespace Moonglade.Core
                 var page = await _customPageRepository.GetAsync(request.Id);
                 if (null == page)
                 {
-                    throw new InvalidOperationException($"CustomPage with Id '{request.Id}' is not found.");
+                    throw new InvalidOperationException($"CustomPageEntity with Id '{request.Id}' is not found.");
                 }
 
                 page.Title = request.Title.Trim();
@@ -140,7 +140,7 @@ namespace Moonglade.Core
                 var page = _customPageRepository.Get(pageId);
                 if (null == page)
                 {
-                    throw new InvalidOperationException($"CustomPage with Id '{pageId}' is not found.");
+                    throw new InvalidOperationException($"CustomPageEntity with Id '{pageId}' is not found.");
                 }
 
                 _customPageRepository.Delete(pageId);

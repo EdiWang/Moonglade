@@ -2,9 +2,9 @@ using System;
 
 namespace Moonglade.Data.Entities
 {
-    public class CustomPage
+    public class CustomPageEntity
     {
-        public CustomPage()
+        public CustomPageEntity()
         {
         }
 

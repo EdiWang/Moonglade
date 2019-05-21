@@ -26,7 +26,7 @@ namespace Moonglade.Data
         public virtual DbSet<PostTag> PostTag { get; set; }
         public virtual DbSet<Tag> Tag { get; set; }
         public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
-        public virtual DbSet<CustomPage> CustomPage { get; set; }
+        public virtual DbSet<CustomPageEntity> CustomPage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
