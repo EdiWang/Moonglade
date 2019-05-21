@@ -5,34 +5,60 @@
 @model CustomPageEditViewModel
 
 @section scripts{
-    <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
-    <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
-    <script>
-        var el = document.getElementById('RawHtmlContentEditor');
-        var editor = null;
-        var init = function () {
-            require(['vs/editor/editor.main'], function () {
-                editor = monaco.editor.create(el, {
-                    language: 'html'
-                });
+<script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
+<script src="~/lib/monaco-editor/min/vs/loader.js"></script>
+<script>
+    $("#Title").change(function () {
+        $("#RouteName").val(slugify($(this).val()));
+    });
 
-                editor.layout();
+    var htmlContentEditor = null;
+    var cssContentEditor = null;
+    var hasCssEditorInitialized = false;
+
+    require(['vs/editor/editor.main'], function () {
+        initHtmlEditor();
+    });
+
+    var initHtmlEditor = function () {
+        var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
+        htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
+            language: 'html'
+        });
+        htmlContentEditor.layout();
+    }
+
+    var initCssEditor = function () {
+        var cssContentEditorDiv = document.getElementById('CssContentEditor');
+        cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
+            language: 'css'
+        });
+        cssContentEditor.layout();
+        hasCssEditorInitialized = true;
+    }
+
+    $(function () {
+        $('a[data-toggle="tab"]').on('shown.bs.tab',
+            function (e) {
+                var isCSSTab = e.target.id === "csscontent-tab";
+                if (isCSSTab && !hasCssEditorInitialized) {
+                    initCssEditor();
+                }
             });
-            // no point in keeping this around.
-            window.removeEventListener("load", init);
-        };
-        window.addEventListener("load", init);
-    </script>
+    });
+</script>
 }
 
 @section head{
-    <style>
-        .monaco-target {
-            border: 1px solid #CECECE;
-            width: 100%;
-            min-height: 400px;
-        }
-    </style>
+<style>
+    .monaco-target {
+        border-left: 1px solid #dee2e6;
+        border-right: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+        width: 100%;
+        min-height: 512px;
+    }
+</style>
 }
 
 <form class="page-edit-form" method="post">
@@ -57,21 +83,41 @@
                 <span asp-validation-for="RouteName" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <textarea asp-for="CssContent" class="page-csscontent-textarea"></textarea>
-                <div>
-                    <span asp-validation-for="CssContent" class="text-danger"></span>
-                </div>
-            </div>
+            <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html" aria-selected="false">HTML</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="csscontent-tab" data-toggle="tab" href="#csscontent-editor-box" role="tab" aria-controls="css" aria-selected="true">CSS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="preview-tab" data-toggle="tab" href="#preview-box" role="tab" aria-controls="preview" aria-selected="true">Preview</a>
+                </li>
+            </ul>
 
-            <div class="form-group">
-                <label asp-for="RawHtmlContent"></label>
-                <div id="RawHtmlContentEditor" class="monaco-target">
+            <div class="tab-content">
+                <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel" aria-labelledby="html-tab">
+                    <div id="RawHtmlContentEditor" class="monaco-target">
 
+                    </div>
+                    <textarea asp-for="RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
+                    <div>
+                        <span asp-validation-for="RawHtmlContent" class="text-danger"></span>
+                    </div>
                 </div>
-                <textarea asp-for="RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
-                <div>
-                    <span asp-validation-for="RawHtmlContent" class="text-danger"></span>
+                <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
+                    <div id="CssContentEditor" class="monaco-target">
+
+                    </div>
+                    <textarea asp-for="CssContent" class="page-csscontent-textarea d-none"></textarea>
+                    <div>
+                        <span asp-validation-for="CssContent" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="tab-pane" id="preview-box" role="tabpanel" aria-labelledby="preview-tab">
+                    <div class="alert alert-warning mt-3">
+                        Under development.
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,7 +129,7 @@
                     <li class="list-group-item">
                         <label asp-for="HideSidebar" class="control-label"></label>
                         <div class="material-switch float-right">
-                            <input @(Model.HideSidebar ? "checked=\"checked\"" : "") id="HideSidebar" name="HideSidebar" type="checkbox" value="true">
+                            <input @(Model.HideSidebar ? "checked=\" checked\"" : "" ) id="HideSidebar" name="HideSidebar" type="checkbox" value="true">
                             <label for="HideSidebar" class="label-success"></label>
                             <input name="HideSidebar" type="hidden" value="false">
                         </div>
