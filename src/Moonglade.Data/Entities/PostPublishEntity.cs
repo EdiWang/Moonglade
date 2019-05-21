@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Entities
 {
-    public class PostPublish
+    public class PostPublishEntity
     {
         public Guid PostId { get; set; }
         public bool IsPublished { get; set; }

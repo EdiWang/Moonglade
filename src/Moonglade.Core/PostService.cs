@@ -22,7 +22,7 @@ namespace Moonglade.Core
 
         private readonly IRepository<PostExtension> _postExtensionRepository;
 
-        private readonly IRepository<PostPublish> _postPublishRepository;
+        private readonly IRepository<PostPublishEntity> _postPublishRepository;
 
         private readonly IRepository<TagEntity> _tagRepository;
 
@@ -35,7 +35,7 @@ namespace Moonglade.Core
             IRepository<Post> postRepository,
             IRepository<PostExtension> postExtensionRepository,
             IRepository<TagEntity> tagRepository,
-            IRepository<PostPublish> postPublishRepository,
+            IRepository<PostPublishEntity> postPublishRepository,
             IRepository<Category> categoryRepository, 
             IRepository<PostCategory> postCategoryRepository) : base(logger, settings)
         {
@@ -331,7 +331,7 @@ namespace Moonglade.Core
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
                     Title = request.Title.Trim(),
-                    PostPublish = new PostPublish
+                    PostPublish = new PostPublishEntity
                     {
                         IsDeleted = false,
                         IsPublished = request.IsPublished,

@@ -22,7 +22,7 @@ namespace Moonglade.Data
         public virtual DbSet<Post> Post { get; set; }
         public virtual DbSet<PostCategory> PostCategory { get; set; }
         public virtual DbSet<PostExtension> PostExtension { get; set; }
-        public virtual DbSet<PostPublish> PostPublish { get; set; }
+        public virtual DbSet<PostPublishEntity> PostPublish { get; set; }
         public virtual DbSet<PostTagEntity> PostTag { get; set; }
         public virtual DbSet<TagEntity> Tag { get; set; }
         public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }

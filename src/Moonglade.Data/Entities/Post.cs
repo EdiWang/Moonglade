@@ -21,7 +21,7 @@ namespace Moonglade.Data.Entities
         public string ContentAbstract { get; set; }
 
         public virtual PostExtension PostExtension { get; set; }
-        public virtual PostPublish PostPublish { get; set; }
+        public virtual PostPublishEntity PostPublish { get; set; }
         public virtual ICollection<Comment> Comment { get; set; }
         public virtual ICollection<PostCategory> PostCategory { get; set; }
         public virtual ICollection<PostTagEntity> PostTag { get; set; }
