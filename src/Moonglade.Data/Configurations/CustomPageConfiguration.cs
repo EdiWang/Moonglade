@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -7,13 +7,13 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class FriendLinkConfiguration : IEntityTypeConfiguration<FriendLinkEntity>
+    public class CustomPageConfiguration : IEntityTypeConfiguration<CustomPageEntity>
     {
-        public void Configure(EntityTypeBuilder<FriendLinkEntity> builder)
+        public void Configure(EntityTypeBuilder<CustomPageEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
-            builder.Property(e => e.Title).HasMaxLength(64);
-            builder.Property(e => e.LinkUrl).HasMaxLength(256);
+            builder.Property(e => e.Title).HasMaxLength(128);
+            builder.Property(e => e.RouteName).HasMaxLength(128);
         }
     }
 }

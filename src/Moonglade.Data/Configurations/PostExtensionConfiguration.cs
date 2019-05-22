@@ -4,16 +4,16 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class PostExtensionConfiguration: IEntityTypeConfiguration<PostExtension>
+    internal class PostExtensionConfiguration: IEntityTypeConfiguration<PostExtensionEntity>
     {
-        public void Configure(EntityTypeBuilder<PostExtension> builder)
+        public void Configure(EntityTypeBuilder<PostExtensionEntity> builder)
         {
             builder.HasKey(e => e.PostId);
             builder.Property(e => e.PostId).ValueGeneratedNever();
 
             builder.HasOne(d => d.Post)
                    .WithOne(p => p.PostExtension)
-                   .HasForeignKey<PostExtension>(d => d.PostId)
+                   .HasForeignKey<PostExtensionEntity>(d => d.PostId)
                    .HasConstraintName("FK_PostExtension_Post");
         }
     }

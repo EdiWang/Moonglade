@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class PostPublishConfiguration : IEntityTypeConfiguration<PostPublish>
+    internal class PostPublishConfiguration : IEntityTypeConfiguration<PostPublishEntity>
     {
-        public void Configure(EntityTypeBuilder<PostPublish> builder)
+        public void Configure(EntityTypeBuilder<PostPublishEntity> builder)
         {
             builder.HasKey(e => e.PostId);
             builder.Property(e => e.PostId).ValueGeneratedNever();
@@ -20,7 +20,7 @@ namespace Moonglade.Data.Configurations
 
             builder.HasOne(d => d.Post)
                    .WithOne(p => p.PostPublish)
-                   .HasForeignKey<PostPublish>(d => d.PostId)
+                   .HasForeignKey<PostPublishEntity>(d => d.PostId)
                    .HasConstraintName("FK_PostPublish_Post");
         }
     }

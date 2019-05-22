@@ -108,7 +108,7 @@ var sendTestEmail = function () {
             }
         })
         .fail(function (xhr, status, error) {
-	        var responseJson = $.parseJSON(xhr.responseText);
+            var responseJson = $.parseJSON(xhr.responseText);
             window.toastr.error(responseJson.message);
         })
         .always(function () {

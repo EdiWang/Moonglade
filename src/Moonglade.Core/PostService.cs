@@ -18,26 +18,26 @@ namespace Moonglade.Core
 {
     public class PostService : MoongladeService
     {
-        private readonly IRepository<Post> _postRepository;
+        private readonly IRepository<PostEntity> _postRepository;
 
-        private readonly IRepository<PostExtension> _postExtensionRepository;
+        private readonly IRepository<PostExtensionEntity> _postExtensionRepository;
 
-        private readonly IRepository<PostPublish> _postPublishRepository;
+        private readonly IRepository<PostPublishEntity> _postPublishRepository;
 
-        private readonly IRepository<Tag> _tagRepository;
+        private readonly IRepository<TagEntity> _tagRepository;
 
-        private readonly IRepository<Category> _categoryRepository;
+        private readonly IRepository<CategoryEntity> _categoryRepository;
 
-        private readonly IRepository<PostCategory> _postCategoryRepository;
+        private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
 
         public PostService(ILogger<PostService> logger,
             IOptions<AppSettings> settings,
-            IRepository<Post> postRepository,
-            IRepository<PostExtension> postExtensionRepository,
-            IRepository<Tag> tagRepository,
-            IRepository<PostPublish> postPublishRepository,
-            IRepository<Category> categoryRepository, 
-            IRepository<PostCategory> postCategoryRepository) : base(logger, settings)
+            IRepository<PostEntity> postRepository,
+            IRepository<PostExtensionEntity> postExtensionRepository,
+            IRepository<TagEntity> tagRepository,
+            IRepository<PostPublishEntity> postPublishRepository,
+            IRepository<CategoryEntity> categoryRepository, 
+            IRepository<PostCategoryEntity> postCategoryRepository) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -80,18 +80,18 @@ namespace Moonglade.Core
             }
         }
 
-        public Response<Post> GetPost(Guid id)
+        public Response<PostEntity> GetPost(Guid id)
         {
             try
             {
                 var spec = new PostSpec(id);
                 var post = _postRepository.GetFirstOrDefault(spec);
-                return new SuccessResponse<Post>(post);
+                return new SuccessResponse<PostEntity>(post);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetPost)}(id: {id})");
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<PostEntity>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -120,7 +120,7 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task<Response<Post>> GetPostAsync(int year, int month, int day, string slug)
+        public async Task<Response<PostEntity>> GetPostAsync(int year, int month, int day, string slug)
         {
             try
             {
@@ -128,12 +128,12 @@ namespace Moonglade.Core
                 var spec = new PostSpec(date, slug);
                 var post = await _postRepository.GetFirstOrDefaultAsync(spec, false);
 
-                return new SuccessResponse<Post>(post);
+                return new SuccessResponse<PostEntity>(post);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, $"Error {nameof(GetPost)}(year: {year}, month: {month}, day: {day}, slug: {slug})");
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
+                return new FailedResponse<PostEntity>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
             }
         }
 
@@ -203,7 +203,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public async Task<Response<IReadOnlyList<Post>>> GetPostsByTagAsync(string normalizedName)
+        public async Task<Response<IReadOnlyList<PostEntity>>> GetPostsByTagAsync(string normalizedName)
         {
             try
             {
@@ -218,12 +218,12 @@ namespace Moonglade.Core
                                                 .Select(p => p.Post)
                                                 .Include(p => p.PostPublish).ToListAsync();
 
-                return new SuccessResponse<IReadOnlyList<Post>>(posts);
+                return new SuccessResponse<IReadOnlyList<PostEntity>>(posts);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(GetPostsByTagAsync)}(normalizedName: {normalizedName})");
-                return new FailedResponse<IReadOnlyList<Post>>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<IReadOnlyList<PostEntity>>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
@@ -262,7 +262,7 @@ namespace Moonglade.Core
             }
         }
 
-        private IQueryable<Post> SearchPostByKeyword(string keyword)
+        private IQueryable<PostEntity> SearchPostByKeyword(string keyword)
         {
             var query = _postRepository.GetAsQueryable()
                                        .Include(p => p.PostPublish)
@@ -297,9 +297,9 @@ namespace Moonglade.Core
             return _postRepository.SelectFirstOrDefault(spec, p => p.Title);
         }
 
-        public Response<Post> CreateNewPost(CreateEditPostRequest request)
+        public Response<PostEntity> CreateNewPost(CreateEditPostRequest request)
         {
-            void ApplyDefaultValuesOnPost(Post postModel)
+            void ApplyDefaultValuesOnPost(PostEntity postModel)
             {
                 if (postModel.Id == Guid.Empty)
                 {
@@ -312,7 +312,7 @@ namespace Moonglade.Core
 
                 if (null == postModel.PostExtension)
                 {
-                    postModel.PostExtension = new PostExtension
+                    postModel.PostExtension = new PostExtensionEntity
                     {
                         Hits = 0,
                         Likes = 0
@@ -322,7 +322,7 @@ namespace Moonglade.Core
 
             try
             {
-                var postModel = new Post
+                var postModel = new PostEntity
                 {
                     CommentEnabled = request.EnableComment,
                     Id = request.PostId,
@@ -331,7 +331,7 @@ namespace Moonglade.Core
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
                     Title = request.Title.Trim(),
-                    PostPublish = new PostPublish
+                    PostPublish = new PostPublishEntity
                     {
                         IsDeleted = false,
                         IsPublished = request.IsPublished,
@@ -363,7 +363,7 @@ namespace Moonglade.Core
                     {
                         if (_categoryRepository.Any(c => c.Id == cid))
                         {
-                            postModel.PostCategory.Add(new PostCategory
+                            postModel.PostCategory.Add(new PostCategoryEntity
                             {
                                 CategoryId = cid,
                                 PostId = postModel.Id
@@ -375,14 +375,14 @@ namespace Moonglade.Core
                 // add tags
                 if (null != request.Tags && request.Tags.Count > 0)
                 {
-                    var tagsList = new List<Tag>();
+                    var tagsList = new List<TagEntity>();
                     foreach (var item in request.Tags)
                     {
                         var tag = _tagRepository.Get(q => q.DisplayName == item);
                         if (null == tag)
                         {
                             // for new tags
-                            var newTag = new Tag
+                            var newTag = new TagEntity
                             {
                                 DisplayName = item,
                                 NormalizedName = Utils.NormalizeTagName(item)
@@ -398,7 +398,7 @@ namespace Moonglade.Core
                         }
                     }
 
-                    tagsList.ForEach(t => postModel.PostTag.Add(new PostTag
+                    tagsList.ForEach(t => postModel.PostTag.Add(new PostTagEntity
                     {
                         TagId = t.Id,
                         PostId = postModel.Id
@@ -407,23 +407,23 @@ namespace Moonglade.Core
 
                 _postRepository.Add(postModel);
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
-                return new SuccessResponse<Post>(postModel);
+                return new SuccessResponse<PostEntity>(postModel);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error in {nameof(CreateNewPost)}");
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<PostEntity>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
-        public Response<Post> EditPost(CreateEditPostRequest request)
+        public Response<PostEntity> EditPost(CreateEditPostRequest request)
         {
             try
             {
                 var postModel = _postRepository.Get(request.PostId);
                 if (null == postModel)
                 {
-                    return new FailedResponse<Post>((int)ResponseFailureCode.PostNotFound);
+                    return new FailedResponse<PostEntity>((int)ResponseFailureCode.PostNotFound);
                 }
 
                 postModel.CommentEnabled = request.EnableComment;
@@ -448,7 +448,7 @@ namespace Moonglade.Core
                 // 1. Add new tags to tag lib
                 foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
                 {
-                    _tagRepository.Add(new Tag
+                    _tagRepository.Add(new TagEntity
                     {
                         DisplayName = item,
                         NormalizedName = Utils.NormalizeTagName(item)
@@ -462,7 +462,7 @@ namespace Moonglade.Core
                     foreach (var t in request.Tags)
                     {
                         var tag = _tagRepository.Get(_ => _.DisplayName == t);
-                        if (tag != null) postModel.PostTag.Add(new PostTag
+                        if (tag != null) postModel.PostTag.Add(new PostTagEntity
                         {
                             PostId = postModel.Id,
                             TagId = tag.Id
@@ -478,7 +478,7 @@ namespace Moonglade.Core
                     {
                         if (_categoryRepository.Any(c => c.Id == cid))
                         {
-                            postModel.PostCategory.Add(new PostCategory
+                            postModel.PostCategory.Add(new PostCategoryEntity
                             {
                                 PostId = postModel.Id,
                                 CategoryId = cid
@@ -488,12 +488,12 @@ namespace Moonglade.Core
                 }
 
                 _postRepository.Update(postModel);
-                return new SuccessResponse<Post>(postModel);
+                return new SuccessResponse<PostEntity>(postModel);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error {nameof(EditPost)}, PostId: {request.PostId}");
-                return new FailedResponse<Post>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<PostEntity>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 

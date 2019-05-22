@@ -12,19 +12,19 @@ namespace Moonglade.Core
 {
     public class TagService : MoongladeService
     {
-        private readonly IRepository<Tag> _tagRepository;
-        private readonly IRepository<PostTag> _postTagRepository;
+        private readonly IRepository<TagEntity> _tagRepository;
+        private readonly IRepository<PostTagEntity> _postTagRepository;
 
         public TagService(
             ILogger<TagService> logger,
-            IRepository<Tag> tagRepository,
-            IRepository<PostTag> postTagRepository) : base(logger)
+            IRepository<TagEntity> tagRepository,
+            IRepository<PostTagEntity> postTagRepository) : base(logger)
         {
             _tagRepository = tagRepository;
             _postTagRepository = postTagRepository;
         }
 
-        public Task<IReadOnlyList<Tag>> GetAllTagsAsync()
+        public Task<IReadOnlyList<TagEntity>> GetAllTagsAsync()
         {
             return _tagRepository.GetAsync();
         }
@@ -101,7 +101,7 @@ namespace Moonglade.Core
             }
         }
 
-        public Tag GetTag(string normalizedName)
+        public TagEntity GetTag(string normalizedName)
         {
             var tag = _tagRepository.Get(t => t.NormalizedName == normalizedName);
             return tag;

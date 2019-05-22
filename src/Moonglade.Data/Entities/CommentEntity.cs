@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Moonglade.Data.Entities
 {
-    public class Comment
+    public class CommentEntity
     {
-        public Comment()
+        public CommentEntity()
         {
-            CommentReply = new HashSet<CommentReply>();
+            CommentReply = new HashSet<CommentReplyEntity>();
         }
 
         public Guid Id { get; set; }
@@ -20,7 +20,7 @@ namespace Moonglade.Data.Entities
         public bool IsApproved { get; set; }
         public string UserAgent { get; set; }
 
-        public virtual Post Post { get; set; }
-        public virtual ICollection<CommentReply> CommentReply { get; set; }
+        public virtual PostEntity Post { get; set; }
+        public virtual ICollection<CommentReplyEntity> CommentReply { get; set; }
     }
 }

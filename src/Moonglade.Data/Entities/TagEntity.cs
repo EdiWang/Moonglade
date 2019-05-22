@@ -2,17 +2,17 @@
 
 namespace Moonglade.Data.Entities
 {
-    public class Tag
+    public class TagEntity
     {
-        public Tag()
+        public TagEntity()
         {
-            PostTag = new HashSet<PostTag>();
+            PostTag = new HashSet<PostTagEntity>();
         }
 
         public int Id { get; set; }
         public string DisplayName { get; set; }
         public string NormalizedName { get; set; }
 
-        public virtual ICollection<PostTag> PostTag { get; set; }
+        public virtual ICollection<PostTagEntity> PostTag { get; set; }
     }
 }

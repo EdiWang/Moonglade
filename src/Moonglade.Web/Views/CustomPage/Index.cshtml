@@ -1,0 +1,14 @@
+﻿@model Moonglade.Model.CustomPage
+
+@{
+    ViewBag.TitlePrefix = Model.Title;
+    ViewBag.HideSideBar = Model.HideSidebar;
+}
+
+@section head{ 
+    <style>
+        @Model.CssContent
+    </style>
+}
+
+@Html.Raw(Model.RawHtmlContent)

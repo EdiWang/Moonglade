@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class PostConfiguration: IEntityTypeConfiguration<Post>
+    public class PostConfiguration: IEntityTypeConfiguration<PostEntity>
     {
-        public void Configure(EntityTypeBuilder<Post> builder)
+        public void Configure(EntityTypeBuilder<PostEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.CommentEnabled);

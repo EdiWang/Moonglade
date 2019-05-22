@@ -25,14 +25,14 @@ namespace Moonglade.Web.ViewComponents
             try
             {
                 var response = await _friendLinkService.GetAllFriendLinksAsync();
-                return View(response.IsSuccess ? response.Item : new List<Data.Entities.FriendLink>());
+                return View(response.IsSuccess ? response.Item : new List<Data.Entities.FriendLinkEntity>());
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Error Reading FriendLink.");
 
                 // should not block website
-                return View(new List<Data.Entities.FriendLink>());
+                return View(new List<Data.Entities.FriendLinkEntity>());
             }
         }
     }

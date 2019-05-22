@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class PingbackHistoryConfiguration : IEntityTypeConfiguration<PingbackHistory>
+    internal class PingbackHistoryConfiguration : IEntityTypeConfiguration<PingbackHistoryEntity>
     {
-        public void Configure(EntityTypeBuilder<PingbackHistory> builder)
+        public void Configure(EntityTypeBuilder<PingbackHistoryEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.Direction).HasMaxLength(16);

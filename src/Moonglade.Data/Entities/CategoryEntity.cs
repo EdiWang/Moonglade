@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Moonglade.Data.Entities
 {
-    public class Category
+    public class CategoryEntity
     {
-        public Category()
+        public CategoryEntity()
         {
-            PostCategory = new HashSet<PostCategory>();
+            PostCategory = new HashSet<PostCategoryEntity>();
         }
 
         public Guid Id { get; set; }
@@ -15,6 +15,6 @@ namespace Moonglade.Data.Entities
         public string DisplayName { get; set; }
         public string Note { get; set; }
 
-        public virtual ICollection<PostCategory> PostCategory { get; set; }
+        public virtual ICollection<PostCategoryEntity> PostCategory { get; set; }
     }
 }

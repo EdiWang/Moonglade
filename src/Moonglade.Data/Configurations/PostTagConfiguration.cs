@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class PostTagConfiguration : IEntityTypeConfiguration<PostTag>
+    internal class PostTagConfiguration : IEntityTypeConfiguration<PostTagEntity>
     {
-        public void Configure(EntityTypeBuilder<PostTag> builder)
+        public void Configure(EntityTypeBuilder<PostTagEntity> builder)
         {
             builder.HasKey(e => new { e.PostId, e.TagId });
 

@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class CommentReplyConfiguration : IEntityTypeConfiguration<CommentReply>
+    internal class CommentReplyConfiguration : IEntityTypeConfiguration<CommentReplyEntity>
     {
-        public void Configure(EntityTypeBuilder<CommentReply> builder)
+        public void Configure(EntityTypeBuilder<CommentReplyEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.IpAddress).HasMaxLength(64);

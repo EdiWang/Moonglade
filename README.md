@@ -27,14 +27,24 @@ Tools | Alternative
 
 ### Setup Database
 
-1. [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database. e.g. moonglade-dev
+#### 1. Create Database 
 
-2. Update the connection string "**MoongladeDatabase**" in **appsettings.[env].json** according to your database configuration.
+##### For Development (Light Weight, Recommended for Windows)
+
+Create an [SQL Server 2017 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-2017) database. e.g. moonglade-dev
+
+##### For Production
+
+[Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started) or a SQL Server 2017+ database. e.g. moonglade-dev
+
+#### 2. Set Connection String
+
+Update the connection string "**MoongladeDatabase**" in **appsettings.[env].json** according to your database configuration.
 
 Example:
 ```json
 "ConnectionStrings": {
-  "MoongladeDatabase": "Server=(local);Database=moonglade-dev;Trusted_Connection=True;"
+  "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;"
 }
 ```
 

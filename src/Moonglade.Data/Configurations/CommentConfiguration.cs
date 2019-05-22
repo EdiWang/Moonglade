@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class CommentConfiguration : IEntityTypeConfiguration<Comment>
+    internal class CommentConfiguration : IEntityTypeConfiguration<CommentEntity>
     {
-        public void Configure(EntityTypeBuilder<Comment> builder)
+        public void Configure(EntityTypeBuilder<CommentEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.CommentContent).IsRequired();

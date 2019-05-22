@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class PostCategoryConfiguration: IEntityTypeConfiguration<PostCategory>
+    internal class PostCategoryConfiguration: IEntityTypeConfiguration<PostCategoryEntity>
     {
-        public void Configure(EntityTypeBuilder<PostCategory> builder)
+        public void Configure(EntityTypeBuilder<PostCategoryEntity> builder)
         {
             builder.HasKey(e => new { e.PostId, e.CategoryId });
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
@@ -96,16 +97,19 @@ namespace Moonglade.Web
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddTransient<ISessionBasedCaptcha, BasicLetterCaptcha>();
-            services.AddTransient<CategoryService>();
-            services.AddTransient<CommentService>();
             services.AddTransient<IMoongladeNotification, EmailNotification>();
-            services.AddTransient<FriendLinkService>();
-            services.AddTransient<PostService>();
             services.AddTransient<IPingbackSender, PingbackSender>();
             services.AddTransient<IPingbackReceiver, PingbackReceiver>();
-            services.AddTransient<PingbackService>();
-            services.AddTransient<SyndicationService>();
-            services.AddTransient<TagService>();
+
+            var asm = Assembly.GetAssembly(typeof(MoongladeService));
+            if (null != asm)
+            {
+                var types = asm.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));
+                foreach (var t in types)
+                {
+                    services.AddTransient(t, t);
+                }
+            }
 
             var encryption = new Encryption();
             Configuration.Bind(nameof(Encryption), encryption);

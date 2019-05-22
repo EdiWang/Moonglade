@@ -16,6 +16,7 @@ highlight-js/
 typeahead.js/
 jquery.AreYouSure/
 tinymce/
+monaco-editor/
 
 # User-specific files
 *.suo

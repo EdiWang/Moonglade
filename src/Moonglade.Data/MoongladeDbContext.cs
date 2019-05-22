@@ -15,17 +15,18 @@ namespace Moonglade.Data
         {
         }
 
-        public virtual DbSet<Category> Category { get; set; }
-        public virtual DbSet<Comment> Comment { get; set; }
-        public virtual DbSet<CommentReply> CommentReply { get; set; }
-        public virtual DbSet<PingbackHistory> PingbackHistory { get; set; }
-        public virtual DbSet<Post> Post { get; set; }
-        public virtual DbSet<PostCategory> PostCategory { get; set; }
-        public virtual DbSet<PostExtension> PostExtension { get; set; }
-        public virtual DbSet<PostPublish> PostPublish { get; set; }
-        public virtual DbSet<PostTag> PostTag { get; set; }
-        public virtual DbSet<Tag> Tag { get; set; }
-        public virtual DbSet<FriendLink> FriendLink { get; set; }
+        public virtual DbSet<CategoryEntity> Category { get; set; }
+        public virtual DbSet<CommentEntity> Comment { get; set; }
+        public virtual DbSet<CommentReplyEntity> CommentReply { get; set; }
+        public virtual DbSet<PingbackHistoryEntity> PingbackHistory { get; set; }
+        public virtual DbSet<PostEntity> Post { get; set; }
+        public virtual DbSet<PostCategoryEntity> PostCategory { get; set; }
+        public virtual DbSet<PostExtensionEntity> PostExtension { get; set; }
+        public virtual DbSet<PostPublishEntity> PostPublish { get; set; }
+        public virtual DbSet<PostTagEntity> PostTag { get; set; }
+        public virtual DbSet<TagEntity> Tag { get; set; }
+        public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
+        public virtual DbSet<CustomPageEntity> CustomPage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +43,7 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new PostTagConfiguration());
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomPageConfiguration());
         }
     }
 }

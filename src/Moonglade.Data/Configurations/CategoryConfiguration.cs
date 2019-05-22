@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    internal class CategoryConfiguration : IEntityTypeConfiguration<CategoryEntity>
     {
-        public void Configure(EntityTypeBuilder<Category> builder)
+        public void Configure(EntityTypeBuilder<CategoryEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.DisplayName).HasMaxLength(64);
