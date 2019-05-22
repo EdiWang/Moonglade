@@ -5,12 +5,9 @@
 @model CustomPageEditViewModel
 
 @{
-    if (!string.IsNullOrWhiteSpace(Model.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.CssContent))
-    {
 <script>
-    var needLoadInitValues = true;
+    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.CssContent)).ToString().ToLower());
 </script>
-    }
 }
 
 @section scripts{
