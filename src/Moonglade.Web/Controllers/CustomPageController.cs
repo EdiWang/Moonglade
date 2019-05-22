@@ -26,6 +26,8 @@ namespace Moonglade.Web.Controllers
             _customPageService = customPageService;
         }
 
+        public string[] InvalidPageRouteNames => new[] { "index", "manage" };
+
         [HttpGet("{routeName}")]
         public async Task<IActionResult> Index(string routeName)
         {
@@ -60,7 +62,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("edit")]
+        [HttpGet("manage/edit")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _customPageService.GetPageAsync(id);
@@ -87,13 +89,19 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("edit"), ValidateAntiForgeryToken]
+        [HttpPost("manage/edit"), ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CustomPageEditViewModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    if (InvalidPageRouteNames.Contains(model.RouteName.ToLower()))
+                    {
+                        ModelState.AddModelError(nameof(model.RouteName), "Reserved Route Name.");
+                        return View("CreateOrEdit", model);
+                    }
+
                     var req = new CreateEditCustomPageRequest
                     {
                         HtmlContent = model.RawHtmlContent,
@@ -124,7 +132,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("create")]
+        [HttpGet("manage/create")]
         public IActionResult Create()
         {
             var model = new CustomPageEditViewModel();
@@ -132,13 +140,19 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("create"), ValidateAntiForgeryToken]
+        [HttpPost("manage/create"), ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CustomPageEditViewModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    if (InvalidPageRouteNames.Contains(model.RouteName.ToLower()))
+                    {
+                        ModelState.AddModelError(nameof(model.RouteName), "Reserved Route Name.");
+                        return View("CreateOrEdit", model);
+                    }
+
                     var req = new CreateEditCustomPageRequest
                     {
                         HtmlContent = model.RawHtmlContent,
