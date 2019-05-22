@@ -180,5 +180,26 @@ namespace Moonglade.Web.Controllers
                 return View("CreateOrEdit", model);
             }
         }
+
+        [Authorize]
+        [HttpPost("manage/delete"), ValidateAntiForgeryToken]
+        public IActionResult Delete(Guid pageId)
+        {
+            try
+            {
+                var response = _customPageService.DeletePage(pageId);
+                if (response.IsSuccess)
+                {
+                    return Json(pageId);
+                }
+
+                return ServerError();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error Delete CustomPage, Id: {pageId}.");
+                return ServerError();
+            }
+        }
     }
 }
