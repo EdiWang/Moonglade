@@ -4,6 +4,15 @@
 
 @model CustomPageEditViewModel
 
+@{
+    if (!string.IsNullOrWhiteSpace(Model.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.CssContent))
+    {
+<script>
+    var needLoadInitValues = true;
+</script>
+    }
+}
+
 @section scripts{
 <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
 <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
@@ -26,6 +35,11 @@
             language: 'html'
         });
         htmlContentEditor.layout();
+
+        if (needLoadInitValues) {
+            var htmlValue = $("#RawHtmlContent").val();
+            htmlContentEditor.setValue(htmlValue);
+        }
     }
 
     var initCssEditor = function () {
@@ -35,6 +49,11 @@
         });
         cssContentEditor.layout();
         hasCssEditorInitialized = true;
+
+        if (needLoadInitValues) {
+            var cssValue = $("#CssContent").val();
+            window.cssContentEditor.setValue(cssValue);
+        }
     }
 
     var assignEditorValues = function () {
@@ -42,10 +61,10 @@
         var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : "";
 
         $("#RawHtmlContent").val(htmlValue);
-        $("#CssContentEditor").val(cssValue);
+        $("#CssContent").val(cssValue);
     }
 
-    $("#btn-submit").click(function(e) {
+    $("#btn-submit").click(function (e) {
         assignEditorValues();
         if (!$(".page-edit-form").valid()) {
             e.preventDefault();
@@ -98,7 +117,7 @@
             <div>
                 <span asp-validation-for="RouteName" class="text-danger"></span>
             </div>
-            
+
             <div>
                 <span asp-validation-for="RawHtmlContent" class="text-danger"></span>
             </div>

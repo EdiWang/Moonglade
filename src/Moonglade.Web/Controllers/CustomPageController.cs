@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
+using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 
@@ -86,11 +87,84 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
+        [HttpPost("edit"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(CustomPageEditViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var req = new CreateEditCustomPageRequest
+                    {
+                        HtmlContent = model.RawHtmlContent,
+                        CssContent = model.CssContent,
+                        HideSidebar = model.HideSidebar,
+                        RouteName = model.RouteName,
+                        Title = model.Title,
+                        Id = model.Id
+                    };
+
+                    var response = await _customPageService.EditPageAsync(req);
+                    if (response.IsSuccess)
+                    {
+                        return RedirectToAction("Manage");
+                    }
+
+                    ModelState.AddModelError(string.Empty, response.Message);
+                    return View("CreateOrEdit", model);
+                }
+                return View("CreateOrEdit", model);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Error Editing CustomPage.");
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View("CreateOrEdit", model);
+            }
+        }
+
+        [Authorize]
         [HttpGet("create")]
         public IActionResult Create()
         {
             var model = new CustomPageEditViewModel();
             return View("CreateOrEdit", model);
+        }
+
+        [Authorize]
+        [HttpPost("create"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CustomPageEditViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var req = new CreateEditCustomPageRequest
+                    {
+                        HtmlContent = model.RawHtmlContent,
+                        CssContent = model.CssContent,
+                        HideSidebar = model.HideSidebar,
+                        RouteName = model.RouteName,
+                        Title = model.Title
+                    };
+
+                    var response = await _customPageService.CreatePageAsync(req);
+                    if (response.IsSuccess)
+                    {
+                        return RedirectToAction("Manage");
+                    }
+
+                    ModelState.AddModelError(string.Empty, response.Message);
+                    return View("CreateOrEdit", model);
+                }
+                return View("CreateOrEdit", model);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Error Creating CustomPage.");
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View("CreateOrEdit", model);
+            }
         }
     }
 }
