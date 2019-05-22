@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
@@ -29,22 +30,28 @@ namespace Moonglade.Web.Controllers
         public string[] InvalidPageRouteNames => new[] { "index", "manage" };
 
         [HttpGet("{routeName}")]
-        public async Task<IActionResult> Index(string routeName)
+        public async Task<IActionResult> Index(string routeName, [FromServices] IMemoryCache cache)
         {
             if (string.IsNullOrWhiteSpace(routeName))
             {
                 return BadRequest();
             }
 
-            var response = await _customPageService.GetPageAsync(routeName);
-            if (response.IsSuccess)
+            var cacheKey = $"page-{routeName.ToLower()}";
+            var pageResponse = await cache.GetOrCreateAsync(cacheKey, async entry =>
             {
-                if (response.Item == null)
+                var response = await _customPageService.GetPageAsync(routeName);
+                return response;
+            });
+
+            if (pageResponse.IsSuccess)
+            {
+                if (pageResponse.Item == null)
                 {
                     return NotFound();
                 }
 
-                return View(response.Item);
+                return View(pageResponse.Item);
             }
             return ServerError();
         }
@@ -90,7 +97,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/edit"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CustomPageEditViewModel model)
+        public async Task<IActionResult> Edit(CustomPageEditViewModel model, [FromServices] IMemoryCache cache)
         {
             try
             {
@@ -115,6 +122,9 @@ namespace Moonglade.Web.Controllers
                     var response = await _customPageService.EditPageAsync(req);
                     if (response.IsSuccess)
                     {
+                        var cacheKey = $"page-{req.RouteName.ToLower()}";
+                        cache.Remove(cacheKey);
+
                         return RedirectToAction("Manage");
                     }
 
@@ -183,13 +193,16 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/delete"), ValidateAntiForgeryToken]
-        public IActionResult Delete(Guid pageId)
+        public IActionResult Delete(Guid pageId, string routeName, [FromServices] IMemoryCache cache)
         {
             try
             {
                 var response = _customPageService.DeletePage(pageId);
                 if (response.IsSuccess)
                 {
+                    var cacheKey = $"page-{routeName.ToLower()}";
+                    cache.Remove(cacheKey);
+
                     return Json(pageId);
                 }
 

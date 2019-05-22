@@ -10,14 +10,14 @@
             $(".btn-delete").click(function () {
                 var cfm = confirm("Delete Confirmation?");
                 if (cfm) {
-                    deletePage($(this).data("pageid"));
+                    deletePage($(this).data("pageid"), $(this).data("routename"));
                 }
             });
         });
 
-        function deletePage(pageid) {
+        function deletePage(pageid, routename) {
             $("#span-processing-" + pageid).show();
-            ajaxPostWithCSRFToken("manage/delete", { pageid: pageid }, function (data) {
+            ajaxPostWithCSRFToken("manage/delete", { pageid: pageid, routename: routename }, function (data) {
                 $("#tr-" + data).hide();
             });
         }
@@ -60,7 +60,7 @@
                         <a class="btn btn-primary btn-sm btn-edit" asp-controller="CustomPage" asp-action="Edit" asp-route-id="@customPage.Id">
                             Edit
                         </a>
-                        <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" href="javascript:;">
+                        <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" data-routename="@customPage.RouteName" href="javascript:;">
                             Delete
                         </a>
                         <span id="span-processing-@customPage.Id" style="display: none">...</span>
