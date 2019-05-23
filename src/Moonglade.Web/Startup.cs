@@ -246,8 +246,31 @@ namespace Moonglade.Web
 
         private void AddImageStorage(IServiceCollection services)
         {
-            var imageStorage = new ImageStorage.ImageStorage();
+            var imageStorage = new ImageStorageSettings();
             Configuration.Bind(nameof(ImageStorage), imageStorage);
+            services.Configure<ImageStorageSettings>(Configuration.GetSection(nameof(ImageStorage)));
+
+            if (imageStorage.CDNSettings.GetImageByCDNRedirect)
+            {
+                if (string.IsNullOrWhiteSpace(imageStorage.CDNSettings.CDNEndpoint))
+                {
+                    throw new ArgumentNullException(nameof(imageStorage.CDNSettings.CDNEndpoint), 
+                        $"{nameof(imageStorage.CDNSettings.CDNEndpoint)} must be specified when {nameof(imageStorage.CDNSettings.GetImageByCDNRedirect)} is set to 'true'.");
+                }
+
+                _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
+
+                // Validate endpoint Url to avoid security risks
+                // But it still has risks:
+                // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
+
+                var endpoint = imageStorage.CDNSettings.CDNEndpoint;
+                var isValidEndpoint = endpoint.IsValidUrl(Utils.UrlScheme.Https);
+                if (!isValidEndpoint)
+                {
+                    throw new UriFormatException("CDN Endpoint is not a valid HTTPS Url.");
+                }
+            }
 
             if (null == imageStorage.Provider)
             {

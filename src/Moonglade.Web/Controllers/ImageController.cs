@@ -16,6 +16,7 @@ using Moonglade.Model;
 using Moonglade.ImageStorage;
 using Moonglade.Model.Settings;
 using Newtonsoft.Json;
+using Moonglade.Core;
 
 namespace Moonglade.Web.Controllers
 {
@@ -25,16 +26,19 @@ namespace Moonglade.Web.Controllers
 
         private readonly IBlogConfig _blogConfig;
 
+        private readonly CDNSettings _cdnSettings;
+
         public ImageController(
             ILogger<ImageController> logger,
             IOptions<AppSettings> settings,
+            IOptions<ImageStorageSettings> imageStorageSettings,
             IAsyncImageStorageProvider imageStorageProvider,
             IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
-
             _imageStorageProvider = imageStorageProvider;
+            _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
 
         [Route("uploads/{filename}")]
@@ -51,25 +55,33 @@ namespace Moonglade.Web.Controllers
 
                 Logger.LogTrace($"Requesting image file {filename}");
 
-                var imageEntry = await cache.GetOrCreateAsync(filename, async entry =>
+                if (_cdnSettings.GetImageByCDNRedirect)
                 {
-                    Logger.LogTrace($"Image file {filename} not on cache, fetching image...");
-
-                    entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.ImageCacheSlidingExpirationMinutes);
-                    var imgBytesResponse = await _imageStorageProvider.GetAsync(filename);
-                    return imgBytesResponse;
-                });
-
-                if (imageEntry.IsSuccess)
-                {
-                    return File(imageEntry.Item.ImageBytes, imageEntry.Item.ImageContentType);
+                    var imageUrl = Utils.CombineUrl(_cdnSettings.CDNEndpoint, filename);
+                    return Redirect(imageUrl);
                 }
+                else
+                {
+                    var imageEntry = await cache.GetOrCreateAsync(filename, async entry =>
+                    {
+                        Logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
-                Logger.LogError($"Error getting image, filename: {filename}, {imageEntry.Message}");
+                        entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.ImageCacheSlidingExpirationMinutes);
+                        var imgBytesResponse = await _imageStorageProvider.GetAsync(filename);
+                        return imgBytesResponse;
+                    });
 
-                return _blogConfig.ContentSettings.UseFriendlyNotFoundImage
-                    ? (IActionResult)File("~/images/image-not-found.png", "image/png")
-                    : NotFound();
+                    if (imageEntry.IsSuccess)
+                    {
+                        return File(imageEntry.Item.ImageBytes, imageEntry.Item.ImageContentType);
+                    }
+
+                    Logger.LogError($"Error getting image, filename: {filename}, {imageEntry.Message}");
+
+                    return _blogConfig.ContentSettings.UseFriendlyNotFoundImage
+                        ? (IActionResult)File("~/images/image-not-found.png", "image/png")
+                        : NotFound();
+                }
             }
             catch (Exception e)
             {
