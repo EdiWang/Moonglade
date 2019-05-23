@@ -26,7 +26,7 @@ namespace Moonglade.Web.Models
         public string BloggerName { get; set; }
 
         [Required]
-        [Display(Name = "Blogger Description (HTML)")]
+        [Display(Name = "Blogger Description")]
         [DataType(DataType.MultilineText)]
         public string BloggerDescription { get; set; }
 
