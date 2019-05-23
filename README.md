@@ -122,6 +122,17 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 ```
 The **Path** can be relative or absolute. **"$\{basedir\}"** represents the website's current directory. Storing images files under website directory is NOT recommended. 
 
+#### CDN
+
+If **GetImageByCDNRedirect** is set to **true**, the blog will get images from client browser using a 302 redirect, not by fetching images in backend and put into memory cache. This is especially useful when you have a CDN for your image resources, like what I did on Azure. 
+
+```json
+"CDNSettings": {
+    "GetImageByCDNRedirect": true,
+    "CDNEndpoint": "https://ews.azureedge.net/ediwang-images"
+}
+```
+
 ### Email Password Encryption
 
 **Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
@@ -150,6 +161,7 @@ EnablePingBackReceive | Can blog receive pingback requests
 EnablePingBackSend | Can blog send pingback to another blog
 EnforceHttps | Force website use HTTPS
 DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
+DNSPrefetchEndpoint | Add HTML head named "dns-prefetch"
 
 ### URL Rewrite
 
