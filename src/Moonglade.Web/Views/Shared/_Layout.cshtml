@@ -31,6 +31,11 @@
         <meta name="keywords" content="@Html.Raw(BlogConfig.GeneralSettings.MetaKeyword)" />
     }
     @RenderSection("meta", false)
+
+    @if (!string.IsNullOrWhiteSpace(Settings.Value.DNSPrefetchEndpoint))
+    {
+        <link rel="dns-prefetch" href="@Settings.Value.DNSPrefetchEndpoint" />
+    }
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
     <link rel="alternate" type="application/rss+xml" title="@BlogConfig.FeedSettings.RssTitle" href="~/rss" />
     <link type="application/opensearchdescription+xml" rel="search" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/opensearch" />
