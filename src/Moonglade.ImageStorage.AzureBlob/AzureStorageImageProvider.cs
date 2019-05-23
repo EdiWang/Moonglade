@@ -48,6 +48,22 @@ namespace Moonglade.ImageStorage.AzureBlob
                 _logger.LogInformation($"Uploading {fileName} to Azure Blob Storage.");
 
                 var blockBlob = _container.GetBlockBlobReference(fileName);
+
+                // Why .NET Core doesn't have MimeMapping.GetMimeMapping()
+                string extension = Path.GetExtension(blockBlob.Uri.AbsoluteUri);
+                switch (extension.ToLower())
+                {
+                    case ".jpg":
+                    case ".jpeg":
+                        blockBlob.Properties.ContentType = "image/jpeg";
+                        break;
+                    case ".png":
+                        blockBlob.Properties.ContentType = "image/png";
+                        break;
+                    default:
+                        break;
+                }
+
                 using (var fileStream = new MemoryStream(imageBytes))
                 {
                     await blockBlob.UploadFromStreamAsync(fileStream);
