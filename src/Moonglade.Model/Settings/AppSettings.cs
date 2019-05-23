@@ -10,5 +10,6 @@
         public bool EnablePingBackSend { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
         public bool DisableEmailSendingInDevelopment { get; set; }
+        public string DNSPrefetchEndpoint { get; set; }
     }
 }
