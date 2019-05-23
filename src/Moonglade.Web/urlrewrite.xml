@@ -25,5 +25,9 @@
       <match url="subscription/atom" />
       <action type="Redirect" url="/atom" redirectType="Permanent" />
     </rule>
+    <rule name="Migrate apps to page-apps" stopProcessing="true">
+      <match url="^apps" />
+      <action type="Redirect" url="/page/apps" redirectType="Permanent" />
+    </rule>
   </rules>
 </rewrite>

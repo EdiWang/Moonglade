@@ -8,7 +8,7 @@ The new blog system for https://edi.wang. Written in C# on [**.NET Core**](https
 
 ## Features
 
-**Basic:** Post, Comment, Category, Archive, Tag, Friendlink
+**Basic:** Post, Comment, Category, Archive, Tag, Page, Friendlink
 
 **Misc:** Pingback, RSS/Atom/OPML, Open Search, Reader View
 
