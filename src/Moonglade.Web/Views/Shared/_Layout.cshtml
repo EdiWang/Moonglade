@@ -79,8 +79,8 @@
                                 <strong>Archive</strong>
                             </a>
                         </li>
-                        <li class="nav-item @(string.Compare("/apps", currentPage, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
-                            <a asp-page="/apps" class="nav-link">
+                        <li class="nav-item @(string.Compare("CustomPage", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a href="~/page/apps" class="nav-link">
                                 <i class="fab fa-windows"></i>
                                 <strong>Apps</strong>
                             </a>
