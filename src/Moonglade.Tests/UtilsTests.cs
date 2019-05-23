@@ -223,5 +223,51 @@ namespace Moonglade.Tests
             Assert.IsNull(result.Item.Slug);
             Assert.IsTrue(result.Item.PubDate == DateTime.MinValue);
         }
+
+        [Test]
+        public void TestIsValidUrlDefault()
+        {
+            string url = "https://ews.azureedge.net/ediwang-images";
+            Assert.IsTrue(url.IsValidUrl());
+        }
+
+        [Test]
+        public void TestIsValidUrlDefaultFail()
+        {
+            string url = "a quick brown fox jumped over the lazy dog.";
+            Assert.IsFalse(url.IsValidUrl());
+        }
+
+        [Test]
+        public void TestIsValidUrlHttps()
+        {
+            string url = "https://ews.azureedge.net/ediwang-images";
+            Assert.IsTrue(url.IsValidUrl(Utils.UrlScheme.Https));
+        }
+
+        [Test]
+        public void TestIsValidUrlHttpFail()
+        {
+            string url = "https://ews.azureedge.net/ediwang-images";
+            Assert.IsTrue(url.IsValidUrl(Utils.UrlScheme.Http));
+        }
+
+        [Test]
+        public void TestIsValidUrlHttpsFail()
+        {
+            string url = "http://ews.azureedge.net/ediwang-images";
+            Assert.IsTrue(url.IsValidUrl(Utils.UrlScheme.Https));
+        }
+
+        [Test]
+        // TODO: Use TestCase to test multiple scenarios
+        public void TestCombineUrl()
+        {
+            string url = "http://ews.azureedge.net/ediwang-images";
+            string path = "996.png";
+
+            var result = Utils.CombineUrl(url, path);
+            Assert.IsTrue(result == url + "/" + path);
+        }
     }
 }

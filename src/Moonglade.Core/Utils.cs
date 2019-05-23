@@ -57,6 +57,36 @@ namespace Moonglade.Core
             return fullPath;
         }
 
+        [Flags]
+        public enum UrlScheme
+        {
+            Http = 1,
+            Https = 2,
+            All = Http | Https
+        }
+
+        public static bool IsValidUrl(this string url, UrlScheme urlScheme = UrlScheme.All)
+        {
+            bool isValidUrl = Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+                              && ((urlScheme.HasFlag(UrlScheme.Https) ? uriResult.Scheme == Uri.UriSchemeHttps : true)
+                              || (urlScheme.HasFlag(UrlScheme.Http) ? uriResult.Scheme == Uri.UriSchemeHttp : true));
+
+            return isValidUrl;
+        }
+
+        public static string CombineUrl(string url, string path)
+        {
+            if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentNullException();
+            }
+
+            url = url.Trim();
+            path = path.Trim();
+
+            return url.TrimEnd('/') + "/" + path.TrimStart('/');
+        }
+
         public static DateTime UtcToZoneTime(DateTime utcTime, int timeZone)
         {
             return utcTime.AddHours(timeZone);
