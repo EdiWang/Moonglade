@@ -80,7 +80,7 @@ namespace Moonglade.Configuration
 
         public async Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings
         {
-            Task<int> SetConfiguration(string key, string value)
+            async Task<int> SetConfiguration(string key, string value)
             {
                 var connStr = Configuration.GetConnectionString(Constants.DbConnectionName);
                 using (var conn = new SqlConnection(connStr))
@@ -89,7 +89,7 @@ namespace Moonglade.Configuration
                                  $"SET {nameof(BlogConfiguration.CfgValue)} = @value, {nameof(BlogConfiguration.LastModifiedTimeUtc)} = @lastModifiedTimeUtc " +
                                  $"WHERE {nameof(BlogConfiguration.CfgKey)} = @key";
 
-                    return conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
+                    return await conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
                 }
             }
 
