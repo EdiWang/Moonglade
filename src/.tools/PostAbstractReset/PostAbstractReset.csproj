@@ -8,6 +8,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/EdiWang/Moonglade</RepositoryUrl>
     <PackageProjectUrl>https://edi.wang</PackageProjectUrl>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
