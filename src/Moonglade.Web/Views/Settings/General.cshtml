@@ -41,7 +41,7 @@
                         $("#avatarmodal").modal('hide');
                         toastr.success('Avatar updated');
                         d = new Date();
-                        $(".blogadmin-avatar").attr("src", "/get-avatar?" + d.getTime());
+                        $(".blogadmin-avatar").attr("src", "/avatar?" + d.getTime());
                     },
                     error: function (xhr, status, err) {
                         console.error(err);

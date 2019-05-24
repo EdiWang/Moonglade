@@ -184,7 +184,7 @@ namespace Moonglade.Web.Controllers
             return s;
         }
 
-        [Route("get-avatar")]
+        [Route("avatar")]
         public IActionResult GetBloggerAvatar([FromServices] IMemoryCache cache)
         {
             var fallbackImageFile =
