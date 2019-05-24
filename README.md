@@ -187,12 +187,41 @@ No, the system design does not couple with Azure, but the blog works best on Azu
 
 > Below open source projects are reusable components (NuGet packages) used in my blog, and they can be used in other websites as well. 
 
-- [Edi.Blog.Pingback](https://github.com/EdiWang/Edi.Blog.Pingback)
-- [Edi.Blog.OpmlFileWriter](https://github.com/EdiWang/Edi.Blog.OpmlFileWriter)
-- [Edi.Captcha.AspNetCore](https://github.com/EdiWang/Edi.Captcha.AspNetCore)
-- [Edi.ImageWatermark](https://github.com/EdiWang/Edi.ImageWatermark)
-- [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption)
-- [Edi.Practice.RequestResponseModel](https://github.com/EdiWang/Edi.Practice.RequestResponseModel)
-- [Edi.SyndicationFeedGenerator](https://github.com/EdiWang/Edi.SyndicationFeedGenerator)
-- [Edi.TemplateEmail](https://github.com/EdiWang/Edi.TemplateEmail)
-- [Edi.WordFilter](https://github.com/EdiWang/Edi.WordFilter)
+Repository | Nuget
+--- | ---
+[Edi.Blog.Pingback](https://github.com/EdiWang/Edi.Blog.Pingback) | [![NuGet][main-nuget-badge-1]][main-nuget-1]
+[Edi.Blog.OpmlFileWriter](https://github.com/EdiWang/Edi.Blog.OpmlFileWriter) | [![NuGet][main-nuget-badge-2]][main-nuget-2]
+[Edi.Captcha.AspNetCore](https://github.com/EdiWang/Edi.Captcha.AspNetCore) | [![NuGet][main-nuget-badge-3]][main-nuget-3]
+[Edi.ImageWatermark](https://github.com/EdiWang/Edi.ImageWatermark) | [![NuGet][main-nuget-badge-4]][main-nuget-4]
+[Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) | [![NuGet][main-nuget-badge-5]][main-nuget-5]
+[Edi.Practice.RequestResponseModel](https://github.com/EdiWang/Edi.Practice.RequestResponseModel) | [![NuGet][main-nuget-badge-6]][main-nuget-6]
+[Edi.SyndicationFeedGenerator](https://github.com/EdiWang/Edi.SyndicationFeedGenerator) | [![NuGet][main-nuget-badge-7]][main-nuget-7]
+[Edi.TemplateEmail](https://github.com/EdiWang/Edi.TemplateEmail) | [![NuGet][main-nuget-badge-8]][main-nuget-8]
+[Edi.WordFilter](https://github.com/EdiWang/Edi.WordFilter) | [![NuGet][main-nuget-badge-9]][main-nuget-9]
+
+[main-nuget-1]: https://www.nuget.org/packages/Edi.Blog.Pingback/
+[main-nuget-badge-1]: https://img.shields.io/nuget/v/Edi.Blog.Pingback.svg?style=flat-square&label=nuget
+
+[main-nuget-2]: https://www.nuget.org/packages/Edi.Blog.OpmlFileWriter/
+[main-nuget-badge-2]: https://img.shields.io/nuget/v/Edi.Blog.OpmlFileWriter.svg?style=flat-square&label=nuget
+
+[main-nuget-3]: https://www.nuget.org/packages/Edi.Captcha/
+[main-nuget-badge-3]: https://img.shields.io/nuget/v/Edi.Captcha.svg?style=flat-square&label=nuget
+
+[main-nuget-4]: https://www.nuget.org/packages/Edi.ImageWatermark/
+[main-nuget-badge-4]: https://img.shields.io/nuget/v/Edi.ImageWatermark.svg?style=flat-square&label=nuget
+
+[main-nuget-5]: https://www.nuget.org/packages/Edi.Net.AesEncryption/
+[main-nuget-badge-5]: https://img.shields.io/nuget/v/Edi.Net.AesEncryption.svg?style=flat-square&label=nuget
+
+[main-nuget-6]: https://www.nuget.org/packages/Edi.Practice.RequestResponseModel/
+[main-nuget-badge-6]: https://img.shields.io/nuget/v/Edi.Practice.RequestResponseModel.svg?style=flat-square&label=nuget
+
+[main-nuget-7]: https://www.nuget.org/packages/Edi.SyndicationFeedGenerator/
+[main-nuget-badge-7]: https://img.shields.io/nuget/v/Edi.SyndicationFeedGenerator.svg?style=flat-square&label=nuget
+
+[main-nuget-8]: https://www.nuget.org/packages/Edi.TemplateEmail.NetStd/
+[main-nuget-badge-8]: https://img.shields.io/nuget/v/Edi.TemplateEmail.NetStd.svg?style=flat-square&label=nuget
+
+[main-nuget-9]: https://www.nuget.org/packages/Edi.WordFilter/
+[main-nuget-badge-9]: https://img.shields.io/nuget/v/Edi.WordFilter.svg?style=flat-square&label=nuget
