@@ -31,15 +31,12 @@ namespace Moonglade.Tests
             Assert.IsTrue(left == "Sucks!");
         }
 
-        [Test]
-        public void TestNormalizeTagName()
+        [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
+        [TestCase("C#", ExpectedResult = "csharp")]
+        [TestCase("955", ExpectedResult = "955")]
+        public string TestNormalizeTagName(string str)
         {
-            var tag1org = ".NET Core";
-            var tag2org = "C#";
-            var tag1 = Utils.NormalizeTagName(tag1org);
-            var tag2 = Utils.NormalizeTagName(tag2org);
-            Assert.IsTrue(tag1 == "dotnet-core");
-            Assert.IsTrue(tag2 == "csharp");
+            return Utils.NormalizeTagName(str);
         }
 
         [Test]
@@ -161,37 +158,27 @@ namespace Moonglade.Tests
             Assert.IsTrue(output == "MicrosoftRocks!Azure  The best cloud!");
         }
 
-        [Test]
-        public void TestIsLetter()
+        [TestCase('f', ExpectedResult = true)]
+        [TestCase('0', ExpectedResult = false)]
+        public bool TestIsLetter(char c)
         {
-            char c1 = 'f';
-            Assert.IsTrue(c1.IsLetter());
-
-            char c2 = '0';
-            Assert.IsFalse(c2.IsLetter());
+            return c.IsLetter();
         }
 
-        [Test]
-        public void TestIsSpace()
+        [TestCase(' ', ExpectedResult = true)]
+        [TestCase('0', ExpectedResult = false)]
+        [TestCase('a', ExpectedResult = false)]
+        [TestCase('A', ExpectedResult = false)]
+        public bool TestIsSpace(char c)
         {
-            char c1 = ' ';
-            Assert.IsTrue(c1.IsSpace());
-
-            char c2 = '0';
-            Assert.IsFalse(c2.IsSpace());
+            return c.IsSpace();
         }
 
-        [Test]
-        public void TestEllipsize()
+        [TestCase("A 996 programmer went to heaven.", ExpectedResult = "A 996" + "\u00A0\u2026")]
+        [TestCase("Fu bao", ExpectedResult = "Fu bao")]
+        public string TestEllipsize(string str)
         {
-            var text1 = "A 996 programmer went to heaven.";
-            var result1 = text1.Ellipsize(10);
-            var expected1 = "A 996" + "\u00A0\u2026";
-            Assert.IsTrue(result1 == expected1);
-
-            var text2 = "Fu bao";
-            var result2 = text2.Ellipsize(10);
-            Assert.IsTrue(result2 == "Fu bao");
+            return str.Ellipsize(10);
         }
 
         [Test]
@@ -211,7 +198,7 @@ namespace Moonglade.Tests
             Assert.IsTrue(result.IsSuccess);
             Assert.IsNotNull(result.Item);
             Assert.IsTrue(result.Item.Slug == "happy-birthday-to-microsoft");
-            Assert.IsTrue(result.Item.PubDate == new DateTime(2075,4,4));
+            Assert.IsTrue(result.Item.PubDate == new DateTime(2075, 4, 4));
         }
 
         [Test]
@@ -224,50 +211,39 @@ namespace Moonglade.Tests
             Assert.IsTrue(result.Item.PubDate == DateTime.MinValue);
         }
 
-        [Test]
-        public void TestIsValidUrlDefault()
+        [TestCase("https://dot.net/955", ExpectedResult = true)]
+        [TestCase("https://edi.wang", ExpectedResult = true)]
+        [TestCase("http://javato.net", ExpectedResult = true)]
+        [TestCase("a quick brown fox jumped over the lazy dog.", ExpectedResult = false)]
+        [TestCase("http://a\\b", ExpectedResult = false)]
+        public bool TestIsValidUrl(string str)
         {
-            string url = "https://ews.azureedge.net/ediwang-images";
-            Assert.IsTrue(url.IsValidUrl());
+            return str.IsValidUrl();
         }
 
-        [Test]
-        public void TestIsValidUrlDefaultFail()
+        [TestCase("https://996.icu", ExpectedResult = true)]
+        [TestCase("http://996.rip", ExpectedResult = false)]
+        public bool TestIsValidUrlHttps(string str)
         {
-            string url = "a quick brown fox jumped over the lazy dog.";
-            Assert.IsFalse(url.IsValidUrl());
+            return str.IsValidUrl(Utils.UrlScheme.Https);
         }
 
-        [Test]
-        public void TestIsValidUrlHttps()
+        [TestCase("https://996.icu", ExpectedResult = false)]
+        [TestCase("http://996.rip", ExpectedResult = true)]
+        public bool TestIsValidUrlHttp(string str)
         {
-            string url = "https://ews.azureedge.net/ediwang-images";
-            Assert.IsTrue(url.IsValidUrl(Utils.UrlScheme.Https));
+            return str.IsValidUrl(Utils.UrlScheme.Http);
         }
 
-        [Test]
-        public void TestIsValidUrlHttpFail()
+        [TestCase("http://usejava.com/996/", "icu.png", ExpectedResult = "http://usejava.com/996/icu.png")]
+        [TestCase("https://dot.net/", "955.png", ExpectedResult = "https://dot.net/955.png")]
+        [TestCase("https://mayun.lie", "fubao.png", ExpectedResult = "https://mayun.lie/fubao.png")]
+        [TestCase("http://996.icu/", "/reject/fubao", ExpectedResult = "http://996.icu/reject/fubao")]
+        [TestCase("http://996.rip", "/dont-use-java", ExpectedResult = "http://996.rip/dont-use-java")]
+        public string TestCombineUrl(string url, string path)
         {
-            string url = "https://ews.azureedge.net/ediwang-images";
-            Assert.IsTrue(url.IsValidUrl(Utils.UrlScheme.Http));
-        }
-
-        [Test]
-        public void TestIsValidUrlHttpsFail()
-        {
-            string url = "http://ews.azureedge.net/ediwang-images";
-            Assert.IsTrue(url.IsValidUrl(Utils.UrlScheme.Https));
-        }
-
-        [Test]
-        // TODO: Use TestCase to test multiple scenarios
-        public void TestCombineUrl()
-        {
-            string url = "http://ews.azureedge.net/ediwang-images";
-            string path = "996.png";
-
             var result = Utils.CombineUrl(url, path);
-            Assert.IsTrue(result == url + "/" + path);
+            return result;
         }
     }
 }
