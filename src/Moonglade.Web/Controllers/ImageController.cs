@@ -93,7 +93,7 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [HttpPost]
         [Route("image/upload")]
-        public async Task<IActionResult> UploadImageAsync(IFormFile file)
+        public async Task<IActionResult> UploadImageAsync(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
         {
             try
             {
@@ -116,10 +116,8 @@ namespace Moonglade.Web.Controllers
                         return BadRequest();
                     }
 
-                    var uid = Guid.NewGuid();
-                    IFileNameGenerator gen = new GuidFileNameGenerator(uid);
-                    var primaryFileName = gen.GetFileName(name);
-                    var secondaryFieName = gen.GetFileName(name, "origin");
+                    var primaryFileName = fileNameGenerator.GetFileName(name);
+                    var secondaryFieName = fileNameGenerator.GetFileName(name, "origin");
 
                     using (var stream = new MemoryStream())
                     {
@@ -190,25 +188,25 @@ namespace Moonglade.Web.Controllers
             var fallbackImageFile =
                 $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png";
 
-            if (!string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
+            if (string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
             {
-                try
-                {
-                    return cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
-                    {
-                        Logger.LogTrace("Avatar not on cache, getting new avatar image...");
-                        var avatarBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);
-                        return File(avatarBytes, "image/png");
-                    });
-                }
-                catch (FormatException e)
-                {
-                    Logger.LogError($"Error {nameof(GetBloggerAvatar)}(), Invalid Base64 string", e);
-                    return PhysicalFile(fallbackImageFile, "image/png");
-                }
+                return PhysicalFile(fallbackImageFile, "image/png");
             }
 
-            return PhysicalFile(fallbackImageFile, "image/png");
+            try
+            {
+                return cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
+                {
+                    Logger.LogTrace("Avatar not on cache, getting new avatar image...");
+                    var avatarBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);
+                    return File(avatarBytes, "image/png");
+                });
+            }
+            catch (FormatException e)
+            {
+                Logger.LogError($"Error {nameof(GetBloggerAvatar)}(), Invalid Base64 string", e);
+                return PhysicalFile(fallbackImageFile, "image/png");
+            }
         }
     }
 }
