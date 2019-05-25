@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace Moonglade.Tests
 {
+    [TestFixture]
     public class GuidFileNameGeneratorTests
     {
         [SetUp]
@@ -39,36 +40,28 @@ namespace Moonglade.Tests
             Assert.IsTrue(fileName == $"img-{uid}-icu.png");
         }
 
-        [Test]
-        public void TestInvalidFileName()
+        [TestCase("007 Stupid")]
+        [TestCase(".icu")]
+        [TestCase(" ")]
+        public void TestInvalidFileName(string name)
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
             Assert.Catch<ArgumentException>(() =>
             {
-                var fileName = gen.GetFileName("007 Stupid");
-            });
-            Assert.Catch<ArgumentException>(() =>
-            {
-                var fileName = gen.GetFileName(".icu");
-            });
-            Assert.Catch<ArgumentNullException>(() =>
-            {
-                var fileName = gen.GetFileName(" ");
+                var fileName = gen.GetFileName(name);
             });
         }
 
-        [Test]
-        public void TestNullEmptyWhiteSpaceAppendix()
+        [TestCase("Choose .NET Core.png", "")]
+        [TestCase("And Microsoft Azure.png", null)]
+        [TestCase("Stay away from 996.png", " ")]
+        public void TestNullEmptyWhiteSpaceAppendix(string name, string appendix)
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
-            var fileName1 = gen.GetFileName("Choose .NET Core.png", string.Empty);
-            var fileName2 = gen.GetFileName("And Microsoft Azure.png", null);
-            var fileName3 = gen.GetFileName("Stay away from 996.png", " ");
-            Assert.IsTrue(fileName1 == $"img-{uid}.png");
-            Assert.IsTrue(fileName2 == $"img-{uid}.png");
-            Assert.IsTrue(fileName3 == $"img-{uid}.png");
+            var fileName = gen.GetFileName(name, appendix);
+            Assert.IsTrue(fileName == $"img-{uid}.png");
         }
     }
 }
