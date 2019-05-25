@@ -127,7 +127,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("email-settings")]
         public IActionResult EmailSettings()
         {
-            var ec = _blogConfig.EmailConfiguration;
+            var ec = _blogConfig.EmailSettings;
             var vm = new EmailSettingsViewModel
             {
                 AdminEmail = ec.AdminEmail,
@@ -149,7 +149,7 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ec = _blogConfig.EmailConfiguration;
+                var ec = _blogConfig.EmailSettings;
                 ec.AdminEmail = model.AdminEmail;
                 ec.BannedMailDomain = model.BannedMailDomain;
                 ec.EmailDisplayName = model.EmailDisplayName;

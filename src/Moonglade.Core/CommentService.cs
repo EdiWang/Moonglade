@@ -158,7 +158,7 @@ namespace Moonglade.Core
                 }
 
                 // 2. Check user email domain
-                var bannedDomains = _blogConfig.EmailConfiguration.BannedMailDomain;
+                var bannedDomains = _blogConfig.EmailSettings.BannedMailDomain;
                 if (bannedDomains.Any())
                 {
                     var address = new MailAddress(request.Email);

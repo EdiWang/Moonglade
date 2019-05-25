@@ -87,7 +87,7 @@ namespace Moonglade.Web.Controllers
                 return Json(response);
             }
 
-            if (_blogConfig.EmailConfiguration.SendEmailOnCommentReply)
+            if (_blogConfig.EmailSettings.SendEmailOnCommentReply)
             {
                 var postLink = GetPostUrl(linkGenerator, response.Item.PubDateUtc.GetValueOrDefault(), response.Item.Slug);
                 Task.Run(async () => { await _notification.SendCommentReplyNotification(response.Item, postLink); });

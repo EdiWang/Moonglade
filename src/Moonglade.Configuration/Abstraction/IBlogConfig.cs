@@ -8,7 +8,7 @@ namespace Moonglade.Configuration.Abstraction
         BlogOwnerSettings BlogOwnerSettings { get; set; }
         GeneralSettings GeneralSettings { get; set; }
         ContentSettings ContentSettings { get; set; }
-        EmailConfiguration EmailConfiguration { get; set; }
+        EmailSettings EmailSettings { get; set; }
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
 
