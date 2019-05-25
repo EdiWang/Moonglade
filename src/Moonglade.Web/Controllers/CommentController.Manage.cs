@@ -23,16 +23,16 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("pending-approval")]
+        [HttpGet("pending-approval")]
         public IActionResult PendingApproval()
         {
             var list = _commentService.GetPendingApprovalComments();
             return View(list);
         }
 
-        [Authorize, HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        [Route("approve-comments")]
+        [HttpPost("approve-comments")]
         public async Task<IActionResult> ApproveComments(Guid[] commentIds)
         {
             var response = await _commentService.ApproveComments(commentIds);
@@ -44,9 +44,9 @@ namespace Moonglade.Web.Controllers
         }
 
         // TODO: Obsolete this action
-        [Authorize, HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        [Route("set-approval-status")]
+        [HttpPost("set-approval-status")]
         public async Task<IActionResult> SetApprovalStatus(Guid commentId, bool isApproved)
         {
             if (isApproved)
@@ -64,18 +64,18 @@ namespace Moonglade.Web.Controllers
             return await Delete(commentId);
         }
 
-        [HttpPost, Authorize]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        [Route("delete")]
+        [HttpPost("delete")]
         public async Task<IActionResult> Delete(Guid commentId)
         {
             var response = await _commentService.DeleteComments(new[] { commentId });
             return response.IsSuccess ? Json(commentId) : Json(false);
         }
 
-        [Authorize, HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        [Route("reply")]
+        [HttpPost("reply")]
         public IActionResult ReplyComment(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
             var response = _commentService.NewReply(commentId, replyContent,

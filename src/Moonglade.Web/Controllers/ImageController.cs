@@ -41,7 +41,7 @@ namespace Moonglade.Web.Controllers
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
 
-        [Route("uploads/{filename}")]
+        [HttpGet("uploads/{filename}")]
         public async Task<IActionResult> GetImageAsync(string filename, [FromServices] IMemoryCache cache)
         {
             try
@@ -91,8 +91,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [Route("image/upload")]
+        [HttpPost("image/upload")]
         public async Task<IActionResult> UploadImageAsync(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
         {
             try
@@ -173,7 +172,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [Route("get-captcha-image")]
+        [HttpGet("get-captcha-image")]
         public IActionResult GetCaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
             var s = captcha.GenerateCaptchaImageFileStream(HttpContext.Session,
@@ -182,8 +181,8 @@ namespace Moonglade.Web.Controllers
             return s;
         }
 
-        [Route("avatar")]
-        public IActionResult GetBloggerAvatar([FromServices] IMemoryCache cache)
+        [HttpGet("avatar")]
+        public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
             var fallbackImageFile =
                 $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png";
@@ -204,7 +203,7 @@ namespace Moonglade.Web.Controllers
             }
             catch (FormatException e)
             {
-                Logger.LogError($"Error {nameof(GetBloggerAvatar)}(), Invalid Base64 string", e);
+                Logger.LogError($"Error {nameof(Avatar)}(), Invalid Base64 string", e);
                 return PhysicalFile(fallbackImageFile, "image/png");
             }
         }

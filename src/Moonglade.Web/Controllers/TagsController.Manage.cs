@@ -16,8 +16,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [Route("update")]
+        [HttpPost("update")]
         public IActionResult Update(int tagId, string newTagName)
         {
             Logger.LogInformation($"Updating tag ID {tagId} with new name '{newTagName}'");
@@ -31,8 +30,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [Route("delete")]
+        [HttpPost("delete")]
         public IActionResult Delete(int tagId)
         {
             var response = _tagService.Delete(tagId);

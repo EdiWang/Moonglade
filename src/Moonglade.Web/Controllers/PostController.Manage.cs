@@ -51,8 +51,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("manage/create")]
-        [HttpPost, ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
+        [HttpPost("manage/create")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         public IActionResult Create(PostEditModel model, 
             [FromServices] LinkGenerator linkGenerator,
@@ -177,9 +177,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost, ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [Route("manage/edit")]
+        [HttpPost("manage/edit")]
         public IActionResult Edit(PostEditModel model, 
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
@@ -233,9 +233,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost, ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [Route("manage/restore")]
+        [HttpPost("manage/restore")]
         public IActionResult Restore(Guid postId)
         {
             var response = _postService.RestoreFromRecycle(postId);
@@ -243,9 +243,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost, ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [Route("manage/delete")]
+        [HttpPost("manage/delete")]
         public IActionResult Delete(Guid postId)
         {
             var response = _postService.Delete(postId, true);
@@ -253,9 +253,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost, ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [Route("manage/delete-from-recycle")]
+        [HttpPost("manage/delete-from-recycle")]
         public IActionResult DeleteFromRecycleBin(Guid postId)
         {
             var response = _postService.Delete(postId);

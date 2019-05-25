@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig = blogConfig;
         }
 
-        [Route("list/{categoryName}")]
+        [HttpGet("list/{categoryName}")]
         public async Task<IActionResult> List(string categoryName, int page = 1)
         {
             if (string.IsNullOrWhiteSpace(categoryName))

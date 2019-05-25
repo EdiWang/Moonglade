@@ -55,9 +55,8 @@ namespace Moonglade.Web.Controllers
             return NotFound();
         }
 
-        [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("search")]
+        [HttpPost("search")]
         public IActionResult Index(string term)
         {
             if (!string.IsNullOrWhiteSpace(term))
@@ -67,7 +66,7 @@ namespace Moonglade.Web.Controllers
             return RedirectToAction("Index", "Post");
         }
 
-        [Route("search/{term}")]
+        [HttpGet("search/{term}")]
         public async Task<IActionResult> SearchGet(string term)
         {
             if (!string.IsNullOrWhiteSpace(term))
