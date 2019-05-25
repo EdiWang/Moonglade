@@ -194,13 +194,12 @@ namespace Moonglade.Web.Controllers
             {
                 try
                 {
-                    var avatarEntry = cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
+                    return cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
                     {
                         Logger.LogTrace("Avatar not on cache, getting new avatar image...");
                         var avatarBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);
-                        return avatarBytes;
+                        return File(avatarBytes, "image/png");
                     });
-                    return File(avatarEntry, "image/png");
                 }
                 catch (FormatException e)
                 {
