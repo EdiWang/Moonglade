@@ -41,7 +41,7 @@ namespace Moonglade.Web.Controllers
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
 
-        [Route("uploads/{filename}")]
+        [HttpGet("uploads/{filename}")]
         public async Task<IActionResult> GetImageAsync(string filename, [FromServices] IMemoryCache cache)
         {
             try
@@ -91,9 +91,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [Route("image/upload")]
-        public async Task<IActionResult> UploadImageAsync(IFormFile file)
+        [HttpPost("image/upload")]
+        public async Task<IActionResult> UploadImageAsync(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
         {
             try
             {
@@ -116,10 +115,8 @@ namespace Moonglade.Web.Controllers
                         return BadRequest();
                     }
 
-                    var uid = Guid.NewGuid();
-                    IFileNameGenerator gen = new GuidFileNameGenerator(uid);
-                    var primaryFileName = gen.GetFileName(name);
-                    var secondaryFieName = gen.GetFileName(name, "origin");
+                    var primaryFileName = fileNameGenerator.GetFileName(name);
+                    var secondaryFieName = fileNameGenerator.GetFileName(name, "origin");
 
                     using (var stream = new MemoryStream())
                     {
@@ -175,7 +172,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [Route("get-captcha-image")]
+        [HttpGet("get-captcha-image")]
         public IActionResult GetCaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
             var s = captcha.GenerateCaptchaImageFileStream(HttpContext.Session,
@@ -184,32 +181,31 @@ namespace Moonglade.Web.Controllers
             return s;
         }
 
-        [Route("avatar")]
-        public IActionResult GetBloggerAvatar([FromServices] IMemoryCache cache)
+        [HttpGet("avatar")]
+        public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
             var fallbackImageFile =
                 $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png";
 
-            if (!string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
+            if (string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
             {
-                try
-                {
-                    var avatarEntry = cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
-                    {
-                        Logger.LogTrace("Avatar not on cache, getting new avatar image...");
-                        var avatarBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);
-                        return avatarBytes;
-                    });
-                    return File(avatarEntry, "image/png");
-                }
-                catch (FormatException e)
-                {
-                    Logger.LogError($"Error {nameof(GetBloggerAvatar)}(), Invalid Base64 string", e);
-                    return PhysicalFile(fallbackImageFile, "image/png");
-                }
+                return PhysicalFile(fallbackImageFile, "image/png");
             }
 
-            return PhysicalFile(fallbackImageFile, "image/png");
+            try
+            {
+                return cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
+                {
+                    Logger.LogTrace("Avatar not on cache, getting new avatar image...");
+                    var avatarBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);
+                    return File(avatarBytes, "image/png");
+                });
+            }
+            catch (FormatException e)
+            {
+                Logger.LogError($"Error {nameof(Avatar)}(), Invalid Base64 string", e);
+                return PhysicalFile(fallbackImageFile, "image/png");
+            }
         }
     }
 }

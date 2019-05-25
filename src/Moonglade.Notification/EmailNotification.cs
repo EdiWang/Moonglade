@@ -34,7 +34,7 @@ namespace Moonglade.Notification
 
             _blogConfig = blogConfig;
 
-            IsEnabled = _blogConfig.EmailConfiguration.EnableEmailSending;
+            IsEnabled = _blogConfig.EmailSettings.EnableEmailSending;
             if (env.IsDevelopment() && settings.Value.DisableEmailSendingInDevelopment)
             {
                 IsEnabled = false;
@@ -51,14 +51,14 @@ namespace Moonglade.Notification
                 if (EmailHelper == null)
                 {
                     var emailSettings = new EmailSettings(
-                        _blogConfig.EmailConfiguration.SmtpServer,
-                        _blogConfig.EmailConfiguration.SmtpUserName,
-                        _blogConfig.EmailConfiguration.SmtpClearPassword,
-                        _blogConfig.EmailConfiguration.SmtpServerPort)
+                        _blogConfig.EmailSettings.SmtpServer,
+                        _blogConfig.EmailSettings.SmtpUserName,
+                        _blogConfig.EmailSettings.SmtpClearPassword,
+                        _blogConfig.EmailSettings.SmtpServerPort)
                     {
-                        EnableSsl = _blogConfig.EmailConfiguration.EnableSsl,
-                        EmailDisplayName = _blogConfig.EmailConfiguration.EmailDisplayName,
-                        SenderName = _blogConfig.EmailConfiguration.EmailDisplayName
+                        EnableSsl = _blogConfig.EmailSettings.EnableSsl,
+                        EmailDisplayName = _blogConfig.EmailSettings.EmailDisplayName,
+                        SenderName = _blogConfig.EmailSettings.EmailDisplayName
                     };
 
                     EmailHelper = new EmailHelper(configSource, emailSettings);
@@ -89,7 +89,7 @@ namespace Moonglade.Notification
                                                          .Map(nameof(EmailHelper.Settings.EnableSsl), EmailHelper.Settings.EnableSsl);
 
                     await EmailHelper.ApplyTemplate(MailMesageTypes.TestMail.ToString(), pipeline)
-                                     .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
+                                     .SendMailAsync(_blogConfig.EmailSettings.AdminEmail);
 
                     return new SuccessResponse();
                 }
@@ -122,7 +122,7 @@ namespace Moonglade.Notification
 
 
                 await EmailHelper.ApplyTemplate(MailMesageTypes.NewCommentNotification.ToString(), pipeline)
-                                 .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
+                                 .SendMailAsync(_blogConfig.EmailSettings.AdminEmail);
             }
         }
 
@@ -166,7 +166,7 @@ namespace Moonglade.Notification
                                                      .Map(nameof(receivedPingback.Direction), receivedPingback.Direction);
 
                 await EmailHelper.ApplyTemplate(MailMesageTypes.BeingPinged.ToString(), pipeline)
-                    .SendMailAsync(_blogConfig.EmailConfiguration.AdminEmail);
+                    .SendMailAsync(_blogConfig.EmailSettings.AdminEmail);
             }
         }
     }

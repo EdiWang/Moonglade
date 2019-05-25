@@ -48,7 +48,7 @@ namespace Moonglade.Web.Controllers
             _friendLinkService = friendLinkService;
         }
 
-        [Route("general")]
+        [HttpGet("general")]
         public IActionResult General()
         {
             var vm = new GeneralSettingsViewModel
@@ -88,7 +88,7 @@ namespace Moonglade.Web.Controllers
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
         }
 
-        [Route("content-settings")]
+        [HttpGet("content-settings")]
         public IActionResult ContentSettings()
         {
             var vm = new ContentSettingsViewModel
@@ -124,10 +124,10 @@ namespace Moonglade.Web.Controllers
 
         #region Email Settings
 
-        [Route("email-settings")]
+        [HttpGet("email-settings")]
         public IActionResult EmailSettings()
         {
-            var ec = _blogConfig.EmailConfiguration;
+            var ec = _blogConfig.EmailSettings;
             var vm = new EmailSettingsViewModel
             {
                 AdminEmail = ec.AdminEmail,
@@ -149,7 +149,7 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ec = _blogConfig.EmailConfiguration;
+                var ec = _blogConfig.EmailSettings;
                 ec.AdminEmail = model.AdminEmail;
                 ec.BannedMailDomain = model.BannedMailDomain;
                 ec.EmailDisplayName = model.EmailDisplayName;
@@ -183,27 +183,11 @@ namespace Moonglade.Web.Controllers
             return Json(response);
         }
 
-        [AllowAnonymous]
-        [HttpGet("generate-new-aes-keys")]
-        public IActionResult GenerateNewAesKeys()
-        {
-            var aesAlg = Aes.Create();
-            var key = aesAlg?.Key;
-            var iv = aesAlg?.IV;
-            var resp = new
-            {
-                Key = key,
-                Iv = iv,
-                GenTimeUtc = DateTime.UtcNow
-            };
-            return Json(resp, new JsonSerializerSettings { Formatting = Formatting.Indented });
-        }
-
         #endregion
 
         #region Feed Settings
 
-        [Route("feed-settings")]
+        [HttpGet("feed-settings")]
         public IActionResult FeedSettings()
         {
             var fs = _blogConfig.FeedSettings;
@@ -244,7 +228,7 @@ namespace Moonglade.Web.Controllers
 
         #region Watermark Settings
 
-        [Route("watermark-settings")]
+        [HttpGet("watermark-settings")]
         public IActionResult WatermarkSettings()
         {
             var ws = _blogConfig.WatermarkSettings;
@@ -426,7 +410,7 @@ namespace Moonglade.Web.Controllers
 
         #region Advanced Settings
 
-        [Route("advanced-settings")]
+        [HttpGet("advanced-settings")]
         public IActionResult AdvancedSettings()
         {
             return View();

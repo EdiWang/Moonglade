@@ -100,6 +100,7 @@ namespace Moonglade.Web
             services.AddTransient<IMoongladeNotification, EmailNotification>();
             services.AddTransient<IPingbackSender, PingbackSender>();
             services.AddTransient<IPingbackReceiver, PingbackReceiver>();
+            services.AddTransient<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
 
             var asm = Assembly.GetAssembly(typeof(MoongladeService));
             if (null != asm)
@@ -254,7 +255,7 @@ namespace Moonglade.Web
             {
                 if (string.IsNullOrWhiteSpace(imageStorage.CDNSettings.CDNEndpoint))
                 {
-                    throw new ArgumentNullException(nameof(imageStorage.CDNSettings.CDNEndpoint), 
+                    throw new ArgumentNullException(nameof(imageStorage.CDNSettings.CDNEndpoint),
                         $"{nameof(imageStorage.CDNSettings.CDNEndpoint)} must be specified when {nameof(imageStorage.CDNSettings.GetImageByCDNRedirect)} is set to 'true'.");
                 }
 

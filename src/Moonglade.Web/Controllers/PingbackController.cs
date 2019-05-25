@@ -62,9 +62,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("delete")]
+        [HttpPost("delete")]
         public IActionResult Delete(Guid pingbackId)
         {
             return _pingbackService.DeleteReceivedPingback(pingbackId).IsSuccess ? Json(pingbackId) : Json(null);

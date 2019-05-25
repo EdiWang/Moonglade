@@ -10,6 +10,7 @@ using NUnit.Framework;
 
 namespace Moonglade.Tests
 {
+    [TestFixture]
     public class PoweredByMiddlewareTests
     {
         [Test]

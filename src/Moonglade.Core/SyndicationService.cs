@@ -120,7 +120,7 @@ namespace Moonglade.Core
                 Description = p.ContentAbstract,
                 Link = GetPostLink(p.PostPublish.PubDateUtc.Value, p.Slug),
                 Author = _blogConfig.FeedSettings.AuthorName,
-                AuthorEmail = _blogConfig.EmailConfiguration.AdminEmail,
+                AuthorEmail = _blogConfig.EmailSettings.AdminEmail,
                 Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToList()
             } : null);
         }

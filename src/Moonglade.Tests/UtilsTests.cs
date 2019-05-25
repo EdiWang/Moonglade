@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace Moonglade.Tests
 {
+    [TestFixture]
     public class UtilsTests
     {
         [Test]
@@ -128,23 +129,17 @@ namespace Moonglade.Tests
             }
         }
 
-        [Test]
-        public void TestResolveImageStoragePathEmptyParameter()
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase(null)]
+        public void TestResolveImageStoragePathEmptyParameter(string path)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var contentRootPath = @"C:\Moonglade";
                 Assert.Catch<ArgumentNullException>(() =>
                 {
-                    var finalPath = Utils.ResolveImageStoragePath(contentRootPath, string.Empty);
-                });
-                Assert.Catch<ArgumentNullException>(() =>
-                {
-                    var finalPath = Utils.ResolveImageStoragePath(contentRootPath, " ");
-                });
-                Assert.Catch<ArgumentNullException>(() =>
-                {
-                    var finalPath = Utils.ResolveImageStoragePath(contentRootPath, null);
+                    var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
                 });
             }
         }

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Moonglade.Configuration
 {
-    public class EmailConfiguration : MoongladeSettings
+    public class EmailSettings : MoongladeSettings
     {
         public bool EnableEmailSending { get; set; }
         public bool EnableSsl { get; set; }

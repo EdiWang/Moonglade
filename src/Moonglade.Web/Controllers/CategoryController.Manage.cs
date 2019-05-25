@@ -14,7 +14,7 @@ namespace Moonglade.Web.Controllers
     public partial class CategoryController
     {
         [Authorize]
-        [Route("manage")]
+        [HttpGet("manage")]
         public async Task<IActionResult> Manage()
         {
             try
@@ -39,16 +39,15 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("create")]
+        [HttpGet("create")]
         public IActionResult Create()
         {
             var model = new CategoryEditViewModel();
             return View("CreateOrEdit", model);
         }
 
-        [HttpPost]
         [Authorize]
-        [Route("create")]
+        [HttpPost("create")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CategoryEditViewModel model)
         {
@@ -91,7 +90,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("edit")]
+        [HttpGet("edit")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var r = await _categoryService.GetCategoryAsync(id);
@@ -112,9 +111,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("edit")]
+        [HttpPost("edit")]
         public IActionResult Edit(CategoryEditViewModel model)
         {
             try
@@ -154,7 +152,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("delete")]
+        [HttpGet("delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var r = await _categoryService.GetCategoryAsync(id);
@@ -174,10 +172,9 @@ namespace Moonglade.Web.Controllers
             return NotFound();
         }
 
-        [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        [Route("delete")]
+        [HttpPost("delete")]
         public IActionResult ConfirmDelete(Guid id)
         {
             try

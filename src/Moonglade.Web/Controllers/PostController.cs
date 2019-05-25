@@ -47,7 +47,7 @@ namespace Moonglade.Web.Controllers
             return View(postsAsIPagedList);
         }
 
-        [Route("{year:int:min(2008):max(2108):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug}")]
+        [HttpGet("{year:int:min(2008):max(2108):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug}")]
         [AddPingbackHeader("pingback")]
         public async Task<IActionResult> Slug(int year, int month, int day, string slug)
         {

@@ -28,7 +28,7 @@ namespace Moonglade.Configuration
 
         public ContentSettings ContentSettings { get; set; }
 
-        public EmailConfiguration EmailConfiguration { get; set; }
+        public EmailSettings EmailSettings { get; set; }
 
         public FeedSettings FeedSettings { get; set; }
 
@@ -48,7 +48,7 @@ namespace Moonglade.Configuration
             BlogOwnerSettings = new BlogOwnerSettings();
             ContentSettings = new ContentSettings();
             GeneralSettings = new GeneralSettings();
-            EmailConfiguration = new EmailConfiguration();
+            EmailSettings = new EmailSettings();
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
 
@@ -65,10 +65,10 @@ namespace Moonglade.Configuration
                 GeneralSettings = JsonConvert.DeserializeObject<GeneralSettings>(cfgDic[nameof(GeneralSettings)]);
                 ContentSettings = JsonConvert.DeserializeObject<ContentSettings>(cfgDic[nameof(ContentSettings)]);
 
-                EmailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(cfgDic[nameof(EmailConfiguration)]);
-                if (!string.IsNullOrWhiteSpace(EmailConfiguration.SmtpPassword))
+                EmailSettings = JsonConvert.DeserializeObject<EmailSettings>(cfgDic[nameof(EmailSettings)]);
+                if (!string.IsNullOrWhiteSpace(EmailSettings.SmtpPassword))
                 {
-                    EmailConfiguration.SmtpClearPassword = DecryptPassword(EmailConfiguration.SmtpPassword);
+                    EmailSettings.SmtpClearPassword = DecryptPassword(EmailSettings.SmtpPassword);
                 }
 
                 FeedSettings = JsonConvert.DeserializeObject<FeedSettings>(cfgDic[nameof(FeedSettings)]);

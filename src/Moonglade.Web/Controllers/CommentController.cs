@@ -76,7 +76,7 @@ namespace Moonglade.Web.Controllers
 
                     if (response.IsSuccess)
                     {
-                        if (_blogConfig.EmailConfiguration.SendEmailOnNewComment)
+                        if (_blogConfig.EmailSettings.SendEmailOnNewComment)
                         {
                             var postTitle = _postService.GetPostTitle(commentPostModel.PostId);
                             Task.Run(async () =>
