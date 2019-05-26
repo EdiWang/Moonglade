@@ -29,5 +29,9 @@
       <match url="^apps" />
       <action type="Redirect" url="/page/apps" redirectType="Permanent" />
     </rule>
+    <rule name="Migrate about to page-about" stopProcessing="true">
+      <match url="^about" />
+      <action type="Redirect" url="/page/about" redirectType="Permanent" />
+    </rule>
   </rules>
 </rewrite>
