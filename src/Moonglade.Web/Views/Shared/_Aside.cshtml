@@ -7,7 +7,7 @@
             <img class="card-bkimg" alt="" src="@Url.Action("Avatar", "Image")" />
         </div>
         <div class="blog-info-photo-text text-center">
-            <a asp-page="/about">
+            <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about">
                 <img src="@Url.Action("Avatar", "Image")"
                      alt="@BlogConfig.BlogOwnerSettings.Name"
                      class="rounded-circle blogger-head-pic" />
@@ -22,7 +22,7 @@
             </div>
         </div>
         <div>
-            <a asp-page="/about" class="btn btn-success btn-block">
+            <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about" class="btn btn-success btn-block">
                 About
             </a>
         </div>
