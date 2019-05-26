@@ -2,7 +2,12 @@
 
 namespace Moonglade.Configuration.Abstraction
 {
-    public class MoongladeSettings
+    public interface IMoongladeSettings
+    {
+        string GetJson(Formatting formatting = Formatting.None);
+    }
+
+    public class MoongladeSettings : IMoongladeSettings
     {
         public string GetJson(Formatting formatting = Formatting.None)
         {

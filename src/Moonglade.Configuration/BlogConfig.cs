@@ -18,7 +18,7 @@ namespace Moonglade.Configuration
     {
         private readonly ILogger<BlogConfig> _logger;
 
-        private IConfiguration Configuration { get; }
+        private readonly IConfiguration _configuration;
 
         private readonly IAesEncryptionService _encryptionService;
 
@@ -42,7 +42,7 @@ namespace Moonglade.Configuration
             IConfiguration configuration)
         {
             _encryptionService = encryptionService;
-            Configuration = configuration;
+            _configuration = configuration;
             _logger = logger;
 
             BlogOwnerSettings = new BlogOwnerSettings();
@@ -78,11 +78,11 @@ namespace Moonglade.Configuration
             }
         }
 
-        public async Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings
+        public async Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : IMoongladeSettings
         {
             async Task<int> SetConfiguration(string key, string value)
             {
-                var connStr = Configuration.GetConnectionString(Constants.DbConnectionName);
+                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 using (var conn = new SqlConnection(connStr))
                 {
                     string sql = $"UPDATE {nameof(BlogConfiguration)} " +
@@ -127,7 +127,7 @@ namespace Moonglade.Configuration
         {
             try
             {
-                var connStr = Configuration.GetConnectionString(Constants.DbConnectionName);
+                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 using (var conn = new SqlConnection(connStr))
                 {
                     string sql = $"SELECT CfgKey, CfgValue FROM {nameof(BlogConfiguration)}";

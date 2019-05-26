@@ -13,11 +13,10 @@ namespace Moonglade.Core
 {
     public class CategoryService : MoongladeService
     {
-        private readonly IRepository<PostEntity> _postRepository;
-
         private readonly IRepository<CategoryEntity> _categoryRepository;
 
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
+        private readonly IRepository<PostEntity> _postRepository;
 
         public CategoryService(ILogger<CategoryService> logger,
             IRepository<CategoryEntity> categoryRepository,
@@ -43,14 +42,14 @@ namespace Moonglade.Core
             return await TryExecuteAsync<CategoryInfo>(async () =>
             {
                 var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
-                                new CategorySpec(categoryName), category =>
-                                new CategoryInfo
-                                {
-                                    DisplayName = category.DisplayName,
-                                    Id = category.Id,
-                                    Name = category.Title,
-                                    Note = category.Note
-                                });
+                    new CategorySpec(categoryName), category =>
+                        new CategoryInfo
+                        {
+                            DisplayName = category.DisplayName,
+                            Id = category.Id,
+                            Name = category.Title,
+                            Note = category.Note
+                        });
 
                 return new SuccessResponse<CategoryInfo>(cat);
             }, keyParameter: categoryName);
@@ -61,14 +60,14 @@ namespace Moonglade.Core
             return await TryExecuteAsync<CategoryInfo>(async () =>
             {
                 var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
-                                new CategorySpec(categoryId), category =>
-                                new CategoryInfo
-                                {
-                                    DisplayName = category.DisplayName,
-                                    Id = category.Id,
-                                    Name = category.Title,
-                                    Note = category.Note
-                                });
+                    new CategorySpec(categoryId), category =>
+                        new CategoryInfo
+                        {
+                            DisplayName = category.DisplayName,
+                            Id = category.Id,
+                            Name = category.Title,
+                            Note = category.Note
+                        });
 
                 return new SuccessResponse<CategoryInfo>(cat);
             }, keyParameter: categoryId);
@@ -96,9 +95,7 @@ namespace Moonglade.Core
             {
                 if (!_postRepository.Any(p =>
                     p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
-                {
                     return new SuccessResponse<IReadOnlyList<ArchiveItem>>();
-                }
 
                 var list = await _postRepository.SelectAsync(post => new
                 {
@@ -121,9 +118,7 @@ namespace Moonglade.Core
             {
                 var exists = _categoryRepository.Any(c => c.Title == categoryEntity.Title);
                 if (exists)
-                {
                     return new Response { Message = $"CategoryEntity titled {categoryEntity.Title} already exists." };
-                }
 
                 Logger.LogInformation("Adding new categoryEntity to database.");
                 _categoryRepository.Add(categoryEntity);
@@ -136,10 +131,7 @@ namespace Moonglade.Core
             return TryExecute(() =>
             {
                 var exists = _categoryRepository.Any(c => c.Id == id);
-                if (!exists)
-                {
-                    return new Response { Message = $"CategoryEntity ID {id} not exists." };
-                }
+                if (!exists) return new Response { Message = $"CategoryEntity ID {id} not exists." };
 
                 Logger.LogInformation($"Removing Post-Category associations for category id: {id}");
                 var pcs = _postCategoryRepository.Get(pc => pc.CategoryId == id);
@@ -156,16 +148,13 @@ namespace Moonglade.Core
             return TryExecute(() =>
             {
                 var cat = _categoryRepository.Get(categoryEntity.Id);
-                if (null == cat)
-                {
-                    return new Response { Message = $"CategoryEntity id {categoryEntity.Id} not found." };
-                }
+                if (null == cat) return new Response { Message = $"CategoryEntity id {categoryEntity.Id} not found." };
 
                 cat.Title = categoryEntity.Title;
                 cat.DisplayName = categoryEntity.DisplayName;
                 cat.Note = categoryEntity.Note;
 
-                int rows = _categoryRepository.Update(cat);
+                var rows = _categoryRepository.Update(cat);
                 return new Response(rows > 0);
             });
         }
