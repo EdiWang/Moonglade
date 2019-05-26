@@ -77,22 +77,17 @@ namespace Moonglade.Core
 
         public Response<PostEntity> GetPost(Guid id)
         {
-            try
+            return TryExecute(() =>
             {
                 var spec = new PostSpec(id);
                 var post = _postRepository.GetFirstOrDefault(spec);
                 return new SuccessResponse<PostEntity>(post);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetPost)}(id: {id})");
-                return new FailedResponse<PostEntity>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response<(Guid Id, string Title)> GetPostIdTitle(string url)
         {
-            try
+            return TryExecute(() =>
             {
                 var response = Utils.GetSlugInfoFromPostUrl(url);
                 if (!response.IsSuccess)
@@ -101,18 +96,15 @@ namespace Moonglade.Core
                 }
 
                 var post = _postRepository.Get(p => p.Slug == response.Item.Slug &&
-                                               p.PostPublish.PubDateUtc.GetValueOrDefault().Date == response.Item.PubDate.Date &&
+                                               p.PostPublish.PubDateUtc.GetValueOrDefault().Date ==
+                                               response.Item.PubDate.Date &&
                                                p.PostPublish.IsPublished &&
                                                !p.PostPublish.IsDeleted);
 
-                return null == post ?
-                    new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound) :
-                    new Response<(Guid, string)>((post.Id, post.Title));
-            }
-            catch (Exception ex)
-            {
-                return new FailedResponse<(Guid, string)>((int)ResponseFailureCode.GeneralException, ex.Message, ex);
-            }
+                return null == post
+                    ? new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound)
+                    : new Response<(Guid, string)>((post.Id, post.Title));
+            }, keyParameter: url);
         }
 
         public async Task<Response<PostEntity>> GetPostAsync(int year, int month, int day, string slug)
@@ -300,7 +292,7 @@ namespace Moonglade.Core
                 }
             }
 
-            try
+            return TryExecute(() =>
             {
                 var postModel = new PostEntity
                 {
@@ -388,17 +380,12 @@ namespace Moonglade.Core
                 _postRepository.Add(postModel);
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
                 return new SuccessResponse<PostEntity>(postModel);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error in {nameof(CreateNewPost)}");
-                return new FailedResponse<PostEntity>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response<PostEntity> EditPost(CreateEditPostRequest request)
         {
-            try
+            return TryExecute<PostEntity>(() =>
             {
                 var postModel = _postRepository.Get(request.PostId);
                 if (null == postModel)
@@ -469,12 +456,7 @@ namespace Moonglade.Core
 
                 _postRepository.Update(postModel);
                 return new SuccessResponse<PostEntity>(postModel);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(EditPost)}, PostId: {request.PostId}");
-                return new FailedResponse<PostEntity>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response RestoreFromRecycle(Guid postId)

@@ -141,7 +141,7 @@ namespace Moonglade.Core
 
         public Response<CommentEntity> NewComment(NewCommentRequest request)
         {
-            try
+            return TryExecute<CommentEntity>(() =>
             {
                 // 1. Check comment enabled or not
                 if (!_blogConfig.ContentSettings.EnableComments)
@@ -187,17 +187,12 @@ namespace Moonglade.Core
 
                 _commentRepository.Add(model);
                 return new SuccessResponse<CommentEntity>(model);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(NewComment)}");
-                return new FailedResponse<CommentEntity>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response<CommentReplySummary> NewReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
         {
-            try
+            return TryExecute<CommentReplySummary>(() =>
             {
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
@@ -241,12 +236,7 @@ namespace Moonglade.Core
                 };
 
                 return new SuccessResponse<CommentReplySummary>(summary);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(NewReply)}");
-                return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
     }
 }

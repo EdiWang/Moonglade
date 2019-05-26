@@ -125,7 +125,7 @@ namespace Moonglade.Core
             });
         }
 
-        private CustomPage EntityToCustomPage(CustomPageEntity entity)
+        private static CustomPage EntityToCustomPage(CustomPageEntity entity)
         {
             if (null == entity)
             {
