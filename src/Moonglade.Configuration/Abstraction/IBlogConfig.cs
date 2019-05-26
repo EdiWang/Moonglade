@@ -12,7 +12,7 @@ namespace Moonglade.Configuration.Abstraction
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
 
-        Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings;
+        Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : IMoongladeSettings;
 
         string EncryptPassword(string clearPassword);
 

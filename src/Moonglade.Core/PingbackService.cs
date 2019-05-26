@@ -16,11 +16,11 @@ namespace Moonglade.Core
     {
         private readonly IMoongladeNotification _notification;
 
-        private readonly PostService _postService;
-
         private readonly IPingbackReceiver _pingbackReceiver;
 
         private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
+
+        private readonly PostService _postService;
 
         public PingbackService(
             ILogger<PingbackService> logger,
@@ -49,48 +49,27 @@ namespace Moonglade.Core
                     var post = postResponse.Item;
 
                     _pingbackReceiver.OnPingSuccess += async (sender, args) => await SavePingbackRecord(
-                        args.Domain,
-                        args.PingRequest.SourceUrl,
-                        args.PingRequest.SourceDocumentInfo.Title,
-                        post.Id,
-                        post.Title,
-                        context.Connection.RemoteIpAddress.ToString());
+                        new PingbackRequest
+                        {
+                            Domain = args.Domain,
+                            SourceUrl = args.PingRequest.SourceUrl,
+                            SourceTitle = args.PingRequest.SourceDocumentInfo.Title,
+                            TargetPostId = post.Id,
+                            TargetPostTitle = post.Title,
+                            SourceIp = context.Connection.RemoteIpAddress.ToString()
+                        });
 
                     return _pingbackReceiver.ProcessReceivedPingback(
-                            pingRequest,
-                            () => true,
-                            () => HasAlreadyBeenPinged(post.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
+                        pingRequest,
+                        () => true,
+                        () => HasAlreadyBeenPinged(post.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
                 }
 
                 Logger.LogError(postResponse.Exception, postResponse.Message);
                 return PingbackServiceResponse.GenericError;
             }
+
             return response;
-        }
-
-        public async Task<Response> SavePingbackRecord(string domain, string sourceUrl, string sourceTitle, Guid targetPostId, string targetPostTitle, string sourceIp)
-        {
-            return await TryExecuteAsync(async () =>
-            {
-                var pid = Guid.NewGuid();
-                var rpb = new PingbackHistoryEntity
-                {
-                    Domain = domain,
-                    SourceIp = sourceIp,
-                    Id = pid,
-                    PingTimeUtc = DateTime.UtcNow,
-                    SourceTitle = sourceTitle,
-                    SourceUrl = sourceUrl,
-                    TargetPostId = targetPostId,
-                    TargetPostTitle = targetPostTitle,
-                    Direction = "INBOUND"
-                };
-
-                _pingbackRepository.Add(rpb);
-
-                await NotifyAdminForReceivedPing(pid);
-                return new SuccessResponse();
-            });
         }
 
         public Task<IReadOnlyList<PingbackHistoryEntity>> GetReceivedPingbacksAsync()
@@ -98,38 +77,66 @@ namespace Moonglade.Core
             return _pingbackRepository.GetAsync();
         }
 
-        private async Task NotifyAdminForReceivedPing(Guid pingbackId)
-        {
-            var pingback = _pingbackRepository.Get(pingbackId);
-            var title = _postService.GetPostTitle(pingback.TargetPostId.GetValueOrDefault());
-            if (!string.IsNullOrWhiteSpace(title))
-            {
-                await _notification.SendPingNotification(pingback, title);
-            }
-        }
-
         public Response DeleteReceivedPingback(Guid pingbackId)
         {
             return TryExecute(() =>
             {
                 Logger.LogInformation($"Deleting pingback {pingbackId}.");
-                int rows = _pingbackRepository.Delete(pingbackId);
+                var rows = _pingbackRepository.Delete(pingbackId);
                 if (rows == -1)
                 {
                     Logger.LogWarning($"Pingback id {pingbackId} not found, skip delete operation.");
-                    return new FailedResponse((int)ResponseFailureCode.PingbackRecordNotFound);
+                    return new FailedResponse((int) ResponseFailureCode.PingbackRecordNotFound);
                 }
 
-                return new Response { IsSuccess = rows > 0 };
+                return new Response {IsSuccess = rows > 0};
             }, keyParameter: pingbackId);
+        }
+
+        private async Task NotifyAdminForReceivedPing(Guid pingbackId)
+        {
+            var pingback = _pingbackRepository.Get(pingbackId);
+            var title = _postService.GetPostTitle(pingback.TargetPostId.GetValueOrDefault());
+            if (!string.IsNullOrWhiteSpace(title)) await _notification.SendPingNotification(pingback, title);
+        }
+
+        private async Task SavePingbackRecord(PingbackRequest request)
+        {
+            var pid = Guid.NewGuid();
+            var rpb = new PingbackHistoryEntity
+            {
+                Domain = request.Domain,
+                SourceIp = request.SourceIp,
+                Id = pid,
+                PingTimeUtc = DateTime.UtcNow,
+                SourceTitle = request.SourceTitle,
+                SourceUrl = request.SourceUrl,
+                TargetPostId = request.TargetPostId,
+                TargetPostTitle = request.TargetPostTitle,
+                Direction = "INBOUND"
+            };
+
+            _pingbackRepository.Add(rpb);
+
+            await NotifyAdminForReceivedPing(pid);
         }
 
         private bool HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp)
         {
             var any = _pingbackRepository.Any(p => p.TargetPostId == postId &&
-                                                       p.SourceUrl == sourceUrl &&
-                                                       p.SourceIp == sourceIp);
+                                                   p.SourceUrl == sourceUrl &&
+                                                   p.SourceIp == sourceIp);
             return any;
+        }
+
+        private class PingbackRequest
+        {
+            public string Domain { get; set; }
+            public string SourceUrl { get; set; }
+            public string SourceTitle { get; set; }
+            public Guid TargetPostId { get; set; }
+            public string TargetPostTitle { get; set; }
+            public string SourceIp { get; set; }
         }
     }
 }
