@@ -153,6 +153,16 @@ namespace Moonglade.Tests
             Assert.IsTrue(output == "MicrosoftRocks!Azure  The best cloud!");
         }
 
+        [Test]
+        public void TestRemoveWhiteSpaceFromStylesheets()
+        {
+            var css = @"h1 {
+                            color: red;
+                        }";
+            var output = Utils.RemoveWhiteSpaceFromStylesheets(css);
+            Assert.IsTrue(output == "h1{color:red}");
+        }
+
         [TestCase('f', ExpectedResult = true)]
         [TestCase('0', ExpectedResult = false)]
         public bool TestIsLetter(char c)
