@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Runtime.CompilerServices;
+using Edi.Practice.RequestResponseModel;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Model;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
@@ -15,6 +19,19 @@ namespace Moonglade.Core
         {
             if (null != settings) AppSettings = settings.Value;
             if (null != logger) Logger = logger;
+        }
+
+        public Response TryExecute(Func<Response> func, [CallerMemberName] string callerMemberName = "", object keyParameter = null)
+        {
+            try
+            {
+                return func();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error executing {callerMemberName}({keyParameter})");
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+            }
         }
     }
 }

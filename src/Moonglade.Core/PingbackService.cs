@@ -115,22 +115,18 @@ namespace Moonglade.Core
 
         public Response DeleteReceivedPingback(Guid pingbackId)
         {
-            try
+            return TryExecute(() =>
             {
                 Logger.LogInformation($"Deleting pingback {pingbackId}.");
                 int rows = _pingbackRepository.Delete(pingbackId);
                 if (rows == -1)
                 {
                     Logger.LogWarning($"Pingback id {pingbackId} not found, skip delete operation.");
-                    return new FailedResponse((int)ResponseFailureCode.PingbackRecordNotFound);
+                    return new FailedResponse((int) ResponseFailureCode.PingbackRecordNotFound);
                 }
-                return new Response { IsSuccess = rows > 0 };
-            }
-            catch (Exception e)
-            {
-                Logger.LogError($"Error ${nameof(DeleteReceivedPingback)}(pingbackId: {pingbackId})", e);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+
+                return new Response {IsSuccess = rows > 0};
+            }, keyParameter: pingbackId);
         }
 
         private bool HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp)

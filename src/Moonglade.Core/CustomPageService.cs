@@ -137,7 +137,7 @@ namespace Moonglade.Core
 
         public Response DeletePage(Guid pageId)
         {
-            try
+            return TryExecute(() =>
             {
                 var page = _customPageRepository.Get(pageId);
                 if (null == page)
@@ -147,12 +147,7 @@ namespace Moonglade.Core
 
                 _customPageRepository.Delete(pageId);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(DeletePage)}");
-                return new FailedResponse<Guid>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         private CustomPage EntityToCustomPage(CustomPageEntity entity)

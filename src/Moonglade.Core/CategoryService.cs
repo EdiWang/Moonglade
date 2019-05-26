@@ -142,7 +142,7 @@ namespace Moonglade.Core
 
         public Response CreateCategory(CategoryEntity categoryEntity)
         {
-            try
+            return TryExecute(() =>
             {
                 var exists = _categoryRepository.Any(c => c.Title == categoryEntity.Title);
                 if (exists)
@@ -153,17 +153,12 @@ namespace Moonglade.Core
                 Logger.LogInformation("Adding new categoryEntity to database.");
                 _categoryRepository.Add(categoryEntity);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(CreateCategory)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response Delete(Guid id)
         {
-            try
+            return TryExecute(() =>
             {
                 var exists = _categoryRepository.Any(c => c.Id == id);
                 if (!exists)
@@ -178,21 +173,12 @@ namespace Moonglade.Core
                 Logger.LogInformation($"Removing categoryEntity {id}");
                 _categoryRepository.Delete(id);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(Delete)}(id: {id})");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException)
-                {
-                    Exception = e,
-                    Message = e.Message
-                };
-            }
+            });
         }
 
         public Response UpdateCategory(CategoryEntity categoryEntity)
         {
-            try
+            return TryExecute(() =>
             {
                 var cat = _categoryRepository.Get(categoryEntity.Id);
                 if (null == cat)
@@ -206,16 +192,7 @@ namespace Moonglade.Core
 
                 int rows = _categoryRepository.Update(cat);
                 return new Response(rows > 0);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(UpdateCategory)}.");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException)
-                {
-                    Exception = e,
-                    Message = e.Message
-                };
-            }
+            });
         }
     }
 }
