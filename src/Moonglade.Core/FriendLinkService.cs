@@ -25,35 +25,25 @@ namespace Moonglade.Core
 
         public async Task<Response<FriendLinkEntity>> GetFriendLinkAsync(Guid id)
         {
-            try
+            return await TryExecuteAsync<FriendLinkEntity>(async () =>
             {
                 var item = await _friendlinkRepository.GetAsync(id);
                 return new SuccessResponse<FriendLinkEntity>(item);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetFriendLinkAsync)}");
-                return new FailedResponse<FriendLinkEntity>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response<IReadOnlyList<FriendLinkEntity>>> GetAllFriendLinksAsync()
         {
-            try
+            return await TryExecuteAsync<IReadOnlyList<FriendLinkEntity>>(async () =>
             {
                 var item = await _friendlinkRepository.GetAsync();
                 return new SuccessResponse<IReadOnlyList<FriendLinkEntity>>(item);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetAllFriendLinksAsync)}");
-                return new FailedResponse<IReadOnlyList<FriendLinkEntity>>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response> AddFriendLinkAsync(string title, string linkUrl)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 if (string.IsNullOrWhiteSpace(title))
                 {
@@ -79,31 +69,21 @@ namespace Moonglade.Core
 
                 await _friendlinkRepository.AddAsync(fdLink);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(AddFriendLinkAsync)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response> DeleteFriendLinkAsync(Guid id)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 await _friendlinkRepository.DeleteAsync(id);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(DeleteFriendLinkAsync)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            }, keyParameter: id);
         }
 
         public async Task<Response> UpdateFriendLinkAsync(Guid id, string newTitle, string newLinkUrl)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 if (string.IsNullOrWhiteSpace(newTitle))
                 {
@@ -130,12 +110,7 @@ namespace Moonglade.Core
                     return new SuccessResponse();
                 }
                 return new FailedResponse((int)ResponseFailureCode.FriendLinkNotFound);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(UpdateFriendLinkAsync)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            }, keyParameter: id);
         }
     }
 }

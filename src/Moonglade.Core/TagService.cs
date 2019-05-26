@@ -36,7 +36,7 @@ namespace Moonglade.Core
 
         public Response UpdateTag(int tagId, string newName)
         {
-            try
+            return TryExecute(() =>
             {
                 Logger.LogInformation($"Updating tag {tagId} with new name {newName}");
                 var tag = _tagRepository.Get(tagId);
@@ -47,18 +47,14 @@ namespace Moonglade.Core
                     var rows = _tagRepository.Update(tag);
                     return new Response(rows > 0);
                 }
+
                 return new FailedResponse((int)ResponseFailureCode.TagNotFound);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Updating Tag.");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response Delete(int tagId)
         {
-            try
+            return TryExecute(() =>
             {
                 // 1. Delete Post-Tag Association
                 var postTags = _postTagRepository.Get(new PostTagSpec(tagId));
@@ -67,17 +63,12 @@ namespace Moonglade.Core
                 // 2. Delte Tag itslef
                 int rows = _tagRepository.Delete(tagId);
                 return new Response(rows > 0);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Deleting Tag.");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response<IReadOnlyList<TagInfo>>> GetHotTagsAsync(int top)
         {
-            try
+            return await TryExecuteAsync<IReadOnlyList<TagInfo>>(async () =>
             {
                 if (_tagRepository.Any())
                 {
@@ -93,12 +84,7 @@ namespace Moonglade.Core
                 }
 
                 return new SuccessResponse<IReadOnlyList<TagInfo>>(new List<TagInfo>());
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetHotTagsAsync)}");
-                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            }, keyParameter: top);
         }
 
         public TagEntity GetTag(string normalizedName)
@@ -109,7 +95,7 @@ namespace Moonglade.Core
 
         public async Task<Response<IReadOnlyList<TagInfo>>> GetTagCountListAsync()
         {
-            try
+            return await TryExecuteAsync<IReadOnlyList<TagInfo>>(async () =>
             {
                 var list = await _tagRepository.SelectAsync(t => new TagInfo
                 {
@@ -119,12 +105,7 @@ namespace Moonglade.Core
                 });
 
                 return new SuccessResponse<IReadOnlyList<TagInfo>>(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetTagCountListAsync)}");
-                return new FailedResponse<IReadOnlyList<TagInfo>>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
     }
 }

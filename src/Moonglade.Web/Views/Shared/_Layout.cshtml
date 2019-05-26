@@ -5,7 +5,7 @@
 @{
     string currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
     string currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
-    string currentPage = ViewContext.RouteData?.Values["page"]?.ToString();
+    string customPageRouteName = ViewContext.RouteData?.Values["routeName"]?.ToString();
 }
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject IOptions<AppSettings> Settings
@@ -84,14 +84,14 @@
                                 <strong>Archive</strong>
                             </a>
                         </li>
-                        <li class="nav-item @(string.Compare("CustomPage", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
-                            <a href="~/page/apps" class="nav-link">
+                        <li class="nav-item @(string.Compare("apps", customPageRouteName, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="apps" class="nav-link">
                                 <i class="fab fa-windows"></i>
                                 <strong>Apps</strong>
                             </a>
                         </li>
-                        <li class="nav-item @(string.Compare("/about", currentPage, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
-                            <a asp-page="/about" class="nav-link">
+                        <li class="nav-item @(string.Compare("about", customPageRouteName, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
+                            <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about" class="nav-link">
                                 <i class="fas fa-star"></i>
                                 <strong>About</strong>
                             </a>

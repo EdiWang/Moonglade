@@ -97,7 +97,7 @@ namespace Moonglade.Core
 
         public async Task<Response> ApproveComments(Guid[] commentIds)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 if (null == commentIds || !commentIds.Any())
                 {
@@ -111,18 +111,14 @@ namespace Moonglade.Core
                     cmt.IsApproved = true;
                     await _commentRepository.UpdateAsync(cmt);
                 }
+
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(ApproveComments)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response> DeleteComments(Guid[] commentIds)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 var spec = new CommentSepc(commentIds);
                 var comments = await _commentRepository.GetAsync(spec);
@@ -138,18 +134,14 @@ namespace Moonglade.Core
                     // 2. Delete comment itself
                     _commentRepository.Delete(cmt);
                 }
+
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(DeleteComments)}()");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response<CommentEntity> NewComment(NewCommentRequest request)
         {
-            try
+            return TryExecute<CommentEntity>(() =>
             {
                 // 1. Check comment enabled or not
                 if (!_blogConfig.ContentSettings.EnableComments)
@@ -195,17 +187,12 @@ namespace Moonglade.Core
 
                 _commentRepository.Add(model);
                 return new SuccessResponse<CommentEntity>(model);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(NewComment)}");
-                return new FailedResponse<CommentEntity>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response<CommentReplySummary> NewReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
         {
-            try
+            return TryExecute<CommentReplySummary>(() =>
             {
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
@@ -249,12 +236,7 @@ namespace Moonglade.Core
                 };
 
                 return new SuccessResponse<CommentReplySummary>(summary);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(NewReply)}");
-                return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
     }
 }

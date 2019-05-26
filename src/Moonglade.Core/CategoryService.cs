@@ -31,67 +31,52 @@ namespace Moonglade.Core
 
         public async Task<Response<IReadOnlyList<CategoryEntity>>> GetAllCategoriesAsync()
         {
-            try
+            return await TryExecuteAsync<IReadOnlyList<CategoryEntity>>(async () =>
             {
                 var item = await _categoryRepository.GetAsync();
                 return new SuccessResponse<IReadOnlyList<CategoryEntity>>(item);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetAllCategoriesAsync)}");
-                return new FailedResponse<IReadOnlyList<CategoryEntity>>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response<CategoryInfo>> GetCategoryAsync(string categoryName)
         {
-            try
+            return await TryExecuteAsync<CategoryInfo>(async () =>
             {
                 var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
-                    new CategorySpec(categoryName), category =>
-                    new CategoryInfo
-                    {
-                        DisplayName = category.DisplayName,
-                        Id = category.Id,
-                        Name = category.Title,
-                        Note = category.Note
-                    });
+                                new CategorySpec(categoryName), category =>
+                                new CategoryInfo
+                                {
+                                    DisplayName = category.DisplayName,
+                                    Id = category.Id,
+                                    Name = category.Title,
+                                    Note = category.Note
+                                });
 
                 return new SuccessResponse<CategoryInfo>(cat);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetCategoryAsync)}");
-                return new FailedResponse<CategoryInfo>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            }, keyParameter: categoryName);
         }
 
         public async Task<Response<CategoryInfo>> GetCategoryAsync(Guid categoryId)
         {
-            try
+            return await TryExecuteAsync<CategoryInfo>(async () =>
             {
                 var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
-                    new CategorySpec(categoryId), category =>
-                    new CategoryInfo
-                    {
-                        DisplayName = category.DisplayName,
-                        Id = category.Id,
-                        Name = category.Title,
-                        Note = category.Note
-                    });
+                                new CategorySpec(categoryId), category =>
+                                new CategoryInfo
+                                {
+                                    DisplayName = category.DisplayName,
+                                    Id = category.Id,
+                                    Name = category.Title,
+                                    Note = category.Note
+                                });
 
                 return new SuccessResponse<CategoryInfo>(cat);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetCategoryAsync)}");
-                return new FailedResponse<CategoryInfo>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            }, keyParameter: categoryId);
         }
 
         public async Task<Response<IReadOnlyList<CategoryInfo>>> GetCategoryListAsync()
         {
-            try
+            return await TryExecuteAsync<IReadOnlyList<CategoryInfo>>(async () =>
             {
                 var list = await _categoryRepository.SelectAsync(c => new CategoryInfo
                 {
@@ -102,17 +87,12 @@ namespace Moonglade.Core
                 });
 
                 return new SuccessResponse<IReadOnlyList<CategoryInfo>>(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetCategoryListAsync)}");
-                return new FailedResponse<IReadOnlyList<CategoryInfo>>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
         {
-            try
+            return await TryExecuteAsync<IReadOnlyList<ArchiveItem>>(async () =>
             {
                 if (!_postRepository.Any(p =>
                     p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
@@ -132,17 +112,12 @@ namespace Moonglade.Core
                 });
 
                 return new SuccessResponse<IReadOnlyList<ArchiveItem>>(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetArchiveListAsync)}");
-                return new FailedResponse<IReadOnlyList<ArchiveItem>>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response CreateCategory(CategoryEntity categoryEntity)
         {
-            try
+            return TryExecute(() =>
             {
                 var exists = _categoryRepository.Any(c => c.Title == categoryEntity.Title);
                 if (exists)
@@ -153,17 +128,12 @@ namespace Moonglade.Core
                 Logger.LogInformation("Adding new categoryEntity to database.");
                 _categoryRepository.Add(categoryEntity);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(CreateCategory)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response Delete(Guid id)
         {
-            try
+            return TryExecute(() =>
             {
                 var exists = _categoryRepository.Any(c => c.Id == id);
                 if (!exists)
@@ -178,21 +148,12 @@ namespace Moonglade.Core
                 Logger.LogInformation($"Removing categoryEntity {id}");
                 _categoryRepository.Delete(id);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(Delete)}(id: {id})");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException)
-                {
-                    Exception = e,
-                    Message = e.Message
-                };
-            }
+            });
         }
 
         public Response UpdateCategory(CategoryEntity categoryEntity)
         {
-            try
+            return TryExecute(() =>
             {
                 var cat = _categoryRepository.Get(categoryEntity.Id);
                 if (null == cat)
@@ -206,16 +167,7 @@ namespace Moonglade.Core
 
                 int rows = _categoryRepository.Update(cat);
                 return new Response(rows > 0);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(UpdateCategory)}.");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException)
-                {
-                    Exception = e,
-                    Message = e.Message
-                };
-            }
+            });
         }
     }
 }

@@ -27,22 +27,17 @@ namespace Moonglade.Core
 
         public async Task<Response<CustomPage>> GetPageAsync(Guid pageId)
         {
-            try
+            return await TryExecuteAsync<CustomPage>(async () =>
             {
                 var entity = await _customPageRepository.GetAsync(pageId);
                 var item = EntityToCustomPage(entity);
                 return new SuccessResponse<CustomPage>(item);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetPageAsync)}");
-                return new FailedResponse<CustomPage>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response<CustomPage>> GetPageAsync(string routeName)
         {
-            try
+            return await TryExecuteAsync<CustomPage>(async () =>
             {
                 if (string.IsNullOrWhiteSpace(routeName))
                 {
@@ -53,17 +48,12 @@ namespace Moonglade.Core
                 var entity = await _customPageRepository.GetAsync(p => p.RouteName == loweredRouteName);
                 var item = EntityToCustomPage(entity);
                 return new SuccessResponse<CustomPage>(item);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetPageAsync)}");
-                return new FailedResponse<CustomPage>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response<IReadOnlyList<CustomPageMetaData>>> GetPagesMetaDataListAsync()
         {
-            try
+            return await TryExecuteAsync<IReadOnlyList<CustomPageMetaData>>(async () =>
             {
                 var list = await _customPageRepository.SelectAsync(page => new CustomPageMetaData
                 {
@@ -74,17 +64,12 @@ namespace Moonglade.Core
                 });
 
                 return new SuccessResponse<IReadOnlyList<CustomPageMetaData>>(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(GetPagesMetaDataListAsync)}");
-                return new FailedResponse<IReadOnlyList<CustomPageMetaData>>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response<Guid>> CreatePageAsync(CreateEditCustomPageRequest request)
         {
-            try
+            return await TryExecuteAsync<Guid>(async () =>
             {
                 var uid = Guid.NewGuid();
                 var customPage = new CustomPageEntity
@@ -100,17 +85,12 @@ namespace Moonglade.Core
 
                 await _customPageRepository.AddAsync(customPage);
                 return new SuccessResponse<Guid>(uid);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(CreatePageAsync)}");
-                return new FailedResponse<Guid>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public async Task<Response> EditPageAsync(CreateEditCustomPageRequest request)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 var page = await _customPageRepository.GetAsync(request.Id);
                 if (null == page)
@@ -127,17 +107,12 @@ namespace Moonglade.Core
 
                 await _customPageRepository.UpdateAsync(page);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(EditPageAsync)}");
-                return new FailedResponse<Guid>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response DeletePage(Guid pageId)
         {
-            try
+            return TryExecute(() =>
             {
                 var page = _customPageRepository.Get(pageId);
                 if (null == page)
@@ -147,15 +122,10 @@ namespace Moonglade.Core
 
                 _customPageRepository.Delete(pageId);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(DeletePage)}");
-                return new FailedResponse<Guid>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
-        private CustomPage EntityToCustomPage(CustomPageEntity entity)
+        private static CustomPage EntityToCustomPage(CustomPageEntity entity)
         {
             if (null == entity)
             {
