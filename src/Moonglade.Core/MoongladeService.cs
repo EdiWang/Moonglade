@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -31,6 +32,20 @@ namespace Moonglade.Core
             {
                 Logger.LogError(e, $"Error executing {callerMemberName}({keyParameter})");
                 return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+            }
+        }
+
+        public async Task<Response<T>> TryExecuteAsync<T>(Func<Task<Response<T>>> func,
+            [CallerMemberName] string callerMemberName = "", object keyParameter = null)
+        {
+            try
+            {
+                return await func();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error executing {callerMemberName}({keyParameter})");
+                return new FailedResponse<T>((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
     }
