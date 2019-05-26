@@ -70,7 +70,7 @@ namespace Moonglade.Core
 
         public async Task<Response> SavePingbackRecord(string domain, string sourceUrl, string sourceTitle, Guid targetPostId, string targetPostTitle, string sourceIp)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 var pid = Guid.NewGuid();
                 var rpb = new PingbackHistoryEntity
@@ -90,12 +90,7 @@ namespace Moonglade.Core
 
                 await NotifyAdminForReceivedPing(pid);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(SavePingbackRecord)}");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Task<IReadOnlyList<PingbackHistoryEntity>> GetReceivedPingbacksAsync()
@@ -122,10 +117,10 @@ namespace Moonglade.Core
                 if (rows == -1)
                 {
                     Logger.LogWarning($"Pingback id {pingbackId} not found, skip delete operation.");
-                    return new FailedResponse((int) ResponseFailureCode.PingbackRecordNotFound);
+                    return new FailedResponse((int)ResponseFailureCode.PingbackRecordNotFound);
                 }
 
-                return new Response {IsSuccess = rows > 0};
+                return new Response { IsSuccess = rows > 0 };
             }, keyParameter: pingbackId);
         }
 

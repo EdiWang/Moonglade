@@ -56,7 +56,7 @@ namespace Moonglade.Core
 
         public async Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticTypes statisticTypes)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 var pp = _postExtensionRepository.Get(postId);
                 if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
@@ -72,12 +72,7 @@ namespace Moonglade.Core
 
                 await _postExtensionRepository.UpdateAsync(pp);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(UpdatePostStatisticAsync)}(postId: {postId}, statisticTypes: {statisticTypes})");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            }, keyParameter: postId);
         }
 
         public Response<PostEntity> GetPost(Guid id)
@@ -519,19 +514,14 @@ namespace Moonglade.Core
 
         public async Task<Response> DeleteRecycledPostsAsync()
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 var spec = new PostSpec(true);
                 var posts = await _postRepository.GetAsync(spec);
                 await _postRepository.DeleteAsync(posts);
 
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(DeleteRecycledPostsAsync)}()");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
     }
 }

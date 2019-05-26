@@ -90,7 +90,7 @@ namespace Moonglade.Core
 
         public async Task<Response> EditPageAsync(CreateEditCustomPageRequest request)
         {
-            try
+            return await TryExecuteAsync(async () =>
             {
                 var page = await _customPageRepository.GetAsync(request.Id);
                 if (null == page)
@@ -107,12 +107,7 @@ namespace Moonglade.Core
 
                 await _customPageRepository.UpdateAsync(page);
                 return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(EditPageAsync)}");
-                return new FailedResponse<Guid>((int)ResponseFailureCode.GeneralException, e.Message);
-            }
+            });
         }
 
         public Response DeletePage(Guid pageId)

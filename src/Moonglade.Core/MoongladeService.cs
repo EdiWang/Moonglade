@@ -35,6 +35,19 @@ namespace Moonglade.Core
             }
         }
 
+        public async Task<Response> TryExecuteAsync(Func<Task<Response>> func, [CallerMemberName] string callerMemberName = "", object keyParameter = null)
+        {
+            try
+            {
+                return await func();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error executing {callerMemberName}({keyParameter})");
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+            }
+        }
+
         public async Task<Response<T>> TryExecuteAsync<T>(Func<Task<Response<T>>> func,
             [CallerMemberName] string callerMemberName = "", object keyParameter = null)
         {
