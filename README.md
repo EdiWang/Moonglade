@@ -18,12 +18,13 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 
 ## Build and Run
 
-### Tools and Dependencies
+> The following tools are required for development.
+
 Tools | Alternative
 --- | ---
 [.NET Core 2.2 SDK](http://dot.net) | N/A
 [Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
-[Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) | [SQL Server 2017](https://www.microsoft.com/en-us/sql-server/sql-server-2017)
+[Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) | [SQL Server 2017](https://www.microsoft.com/en-us/sql-server/sql-server-2017) / LocalDB (Dev Only)
 
 ### Setup Database
 
@@ -104,6 +105,7 @@ Set **Authentication:Provider** to **"Local"** and assign a pair of username and
 #### Preferred: [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)
 
 You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with **container level permission**. 
+
 ```json
 "Provider": "azurestorage"
 "AzureStorageSettings": {
@@ -138,8 +140,6 @@ If **GetImageByCDNRedirect** is set to **true**, the blog will get images from c
 **Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
 
 *The blog will try to generate a pair of Key and IV on first run, and write values into appsettings.**[Current Environment]**.json only. This means the application directory **must NOT be read only**. You'll have to set keys manully if you must use a read only deployment.*
-
-To get a random generated key, access URL "/admin/settings/generate-new-aes-keys".
 
 ### Robots.txt
 
