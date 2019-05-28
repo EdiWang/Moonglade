@@ -67,7 +67,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response<Guid>> CreatePageAsync(CreateEditCustomPageRequest request)
+        public async Task<Response<Guid>> CreatePageAsync(CreateCustomPageRequest request)
         {
             return await TryExecuteAsync<Guid>(async () =>
             {
@@ -88,7 +88,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response> EditPageAsync(CreateEditCustomPageRequest request)
+        public async Task<Response> EditPageAsync(EditCustomPageRequest request)
         {
             return await TryExecuteAsync(async () =>
             {

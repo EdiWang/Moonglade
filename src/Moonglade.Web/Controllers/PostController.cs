@@ -118,7 +118,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("hit")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Hit([FromForm] Guid postId)
         {
             if (HasCookie(CookieNames.Hit, postId.ToString()))
@@ -136,7 +135,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("like")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Like([FromForm] Guid postId)
         {
             if (HasCookie(CookieNames.Liked, postId.ToString()))

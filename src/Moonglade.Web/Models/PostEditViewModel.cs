@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Moonglade.Web.Models
 {
-    public class PostEditModel
+    public class PostEditViewModel
     {
         [HiddenInput]
         public Guid PostId { get; set; }
@@ -51,7 +51,7 @@ namespace Moonglade.Web.Models
         [RegularExpression(@"^[a-z]{2}-[a-zA-Z]{2}$", ErrorMessage = "Incorrect language code format. e.g. en-us")]
         public string ContentLanguageCode { get; set; }
 
-        public PostEditModel()
+        public PostEditViewModel()
         {
             PostId = Guid.Empty;
             ContentLanguageCode = "en-us";

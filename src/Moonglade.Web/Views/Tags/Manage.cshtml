@@ -1,24 +1,24 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
+@Html.AntiForgeryToken()
 
 @model IReadOnlyList<Moonglade.Data.Entities.TagEntity>
 
-@{
+    @{
     ViewBag.Title = "Manage Tags";
-}
+    }
 
-@section scripts{
+    @section scripts{
     <script>
         $(".btn-delete").click(function () {
             var tagid = $(this).data("tagid");
             var cfm = confirm("Confirm to delete tag: " + $(this).text().trim());
             if (cfm) {
-                $.post("Delete",
+                ajaxPostWithCSRFToken("delete",
                     {
                         tagId: tagid
-                    },
-                    function (data) {
+                    }, function (data) {
                         $("#li-tag-" + data).hide();
                     });
             }
@@ -27,26 +27,26 @@
         $(".span-tagcontent-editable").blur(function () {
             var tagId = $(this).data("tagid");
             var newTagName = $(this).text().trim();
-            $.post("Update",
+            ajaxPostWithCSRFToken("update",
                 {
                     tagId: tagId,
                     newTagName: newTagName
                 },
                 function (data) {
                     $("#li-tag-" + data.tagId).addClass("updated");
-                });
+                })
         });
     </script>
-}
+    }
 
-<h3>
-    Tags
-</h3>
-<hr />
+    <h3>
+        Tags
+    </h3>
+    <hr />
 
-<ul class="list-unstyled ul-tag-mgr">
-    @foreach (var tag in Model.OrderBy(model => model.DisplayName))
-    {
+    <ul class="list-unstyled ul-tag-mgr">
+        @foreach (var tag in Model.OrderBy(model => model.DisplayName))
+        {
         <li id="li-tag-@tag.Id">
             <span class="span-tagcontent-editable" contenteditable="true" data-tagid="@tag.Id">@tag.DisplayName</span>
             <a class="btn-delete" data-tagid="@tag.Id">
@@ -54,5 +54,5 @@
                 <span class="d-none">@tag.DisplayName</span>
             </a>
         </li>
-    }
-</ul>
+        }
+    </ul>

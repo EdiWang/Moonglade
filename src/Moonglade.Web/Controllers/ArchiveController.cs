@@ -11,23 +11,20 @@ namespace Moonglade.Web.Controllers
     [Route("archive")]
     public class ArchiveController : MoongladeController
     {
-        private readonly CategoryService _categoryService;
         private readonly PostService _postService;
 
         public ArchiveController(
             ILogger<PostController> logger,
-            CategoryService categoryService,
             PostService postService)
             : base(logger)
         {
-            _categoryService = categoryService;
             _postService = postService;
         }
 
         [Route("")]
         public async Task<IActionResult> Index()
         {
-            var response = await _categoryService.GetArchiveListAsync();
+            var response = await _postService.GetArchiveListAsync();
             if (!response.IsSuccess)
             {
                 SetFriendlyErrorMessage();

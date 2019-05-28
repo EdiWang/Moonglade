@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
@@ -364,7 +363,6 @@ namespace Moonglade.Web.Controllers
 
         #region User Avatar
 
-        [ValidateAntiForgeryToken]
         [HttpPost("set-blogger-avatar")]
         public async Task<IActionResult> SetBloggerAvatar(string base64Avatar, [FromServices] IMemoryCache cache)
         {
@@ -417,7 +415,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("shutdown")]
-        [ValidateAntiForgeryToken]
         public IActionResult Shutdown(int nonce, [FromServices] IApplicationLifetime applicationLifetime)
         {
             Logger.LogWarning($"Shutdown is requested. Nonce value: {nonce}");
@@ -426,7 +423,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("reset")]
-        [ValidateAntiForgeryToken]
         public IActionResult Reset(int nonce, [FromServices] IConfiguration configuration, [FromServices] IApplicationLifetime applicationLifetime)
         {
             Logger.LogWarning($"System reset is requested by {User.Identity.Name}, IP: {HttpContext.Connection.RemoteIpAddress}. Nonce value: {nonce}");

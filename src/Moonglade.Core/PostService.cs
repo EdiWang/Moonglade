@@ -18,17 +18,16 @@ namespace Moonglade.Core
 {
     public class PostService : MoongladeService
     {
+        #region Repository Objects
+
         private readonly IRepository<PostEntity> _postRepository;
-
         private readonly IRepository<PostExtensionEntity> _postExtensionRepository;
-
         private readonly IRepository<PostPublishEntity> _postPublishRepository;
-
         private readonly IRepository<TagEntity> _tagRepository;
-
         private readonly IRepository<CategoryEntity> _categoryRepository;
-
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
+
+        #endregion
 
         public PostService(ILogger<PostService> logger,
             IOptions<AppSettings> settings,
@@ -52,6 +51,29 @@ namespace Moonglade.Core
         public int CountByCategoryId(Guid catId)
         {
             return _postCategoryRepository.Count(c => c.CategoryId == catId);
+        }
+
+        public async Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
+        {
+            return await TryExecuteAsync<IReadOnlyList<ArchiveItem>>(async () =>
+            {
+                if (!_postRepository.Any(p =>
+                    p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
+                    return new SuccessResponse<IReadOnlyList<ArchiveItem>>();
+
+                var list = await _postRepository.SelectAsync(post => new
+                {
+                    year = post.PostPublish.PubDateUtc.Value.Year,
+                    month = post.PostPublish.PubDateUtc.Value.Month
+                }, monthList => new ArchiveItem
+                {
+                    Year = monthList.Key.year,
+                    Month = monthList.Key.month,
+                    Count = monthList.Select(p => p.Id).Count()
+                });
+
+                return new SuccessResponse<IReadOnlyList<ArchiveItem>>(list);
+            });
         }
 
         public async Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticTypes statisticTypes)
@@ -269,35 +291,14 @@ namespace Moonglade.Core
             return _postRepository.SelectFirstOrDefault(spec, p => p.Title);
         }
 
-        public Response<PostEntity> CreateNewPost(CreateEditPostRequest request)
+        public Response<PostEntity> CreateNewPost(CreatePostRequest request)
         {
-            void ApplyDefaultValuesOnPost(PostEntity postModel)
-            {
-                if (postModel.Id == Guid.Empty)
-                {
-                    postModel.Id = Guid.NewGuid();
-                }
-                if (string.IsNullOrWhiteSpace(postModel.Slug))
-                {
-                    postModel.Slug = postModel.Id.ToString();
-                }
-
-                if (null == postModel.PostExtension)
-                {
-                    postModel.PostExtension = new PostExtensionEntity
-                    {
-                        Hits = 0,
-                        Likes = 0
-                    };
-                }
-            }
-
             return TryExecute(() =>
             {
                 var postModel = new PostEntity
                 {
                     CommentEnabled = request.EnableComment,
-                    Id = request.PostId,
+                    Id = Guid.NewGuid(),
                     PostContent = HttpUtility.HtmlEncode(request.HtmlContent),
                     ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords),
                     CreateOnUtc = DateTime.UtcNow,
@@ -312,11 +313,13 @@ namespace Moonglade.Core
                         IsFeedIncluded = request.IsFeedIncluded,
                         Revision = 0,
                         ContentLanguageCode = request.ContentLanguageCode
+                    },
+                    PostExtension = new PostExtensionEntity
+                    {
+                        Hits = 0,
+                        Likes = 0
                     }
                 };
-
-                // add default values if fields are not assigned
-                ApplyDefaultValuesOnPost(postModel);
 
                 // check if exist same slug under the same day
                 if (_postRepository.Any(p =>
@@ -383,11 +386,11 @@ namespace Moonglade.Core
             });
         }
 
-        public Response<PostEntity> EditPost(CreateEditPostRequest request)
+        public Response<PostEntity> EditPost(EditPostRequest request)
         {
             return TryExecute<PostEntity>(() =>
             {
-                var postModel = _postRepository.Get(request.PostId);
+                var postModel = _postRepository.Get(request.Id);
                 if (null == postModel)
                 {
                     return new FailedResponse<PostEntity>((int)ResponseFailureCode.PostNotFound);
@@ -406,14 +409,14 @@ namespace Moonglade.Core
 
                 ++postModel.PostPublish.Revision;
 
-                // from draft
-                if (!postModel.PostPublish.PubDateUtc.HasValue)
+            // from draft
+            if (!postModel.PostPublish.PubDateUtc.HasValue)
                 {
                     postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
                 }
 
-                // 1. Add new tags to tag lib
-                foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
+            // 1. Add new tags to tag lib
+            foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
                 {
                     _tagRepository.Add(new TagEntity
                     {
@@ -422,8 +425,8 @@ namespace Moonglade.Core
                     });
                 }
 
-                // 2. update tags
-                postModel.PostTag.Clear();
+            // 2. update tags
+            postModel.PostTag.Clear();
                 if (request.Tags.Any())
                 {
                     foreach (var t in request.Tags)
@@ -437,8 +440,8 @@ namespace Moonglade.Core
                     }
                 }
 
-                // 3. update categories
-                postModel.PostCategory.Clear();
+            // 3. update categories
+            postModel.PostCategory.Clear();
                 if (null != request.CategoryIds && request.CategoryIds.Count > 0)
                 {
                     foreach (var cid in request.CategoryIds)
@@ -459,7 +462,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Response RestoreFromRecycle(Guid postId)
+        public Response RestoreDeletedPost(Guid postId)
         {
             return TryExecute(() =>
             {

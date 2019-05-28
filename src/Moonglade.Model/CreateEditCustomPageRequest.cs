@@ -4,13 +4,22 @@ using System.Text;
 
 namespace Moonglade.Model
 {
-    public class CreateEditCustomPageRequest
+    public class CreateCustomPageRequest
     {
-        public Guid Id { get; set; }
         public string Title { get; set; }
         public string RouteName { get; set; }
         public string HtmlContent { get; set; }
         public string CssContent { get; set; }
         public bool HideSidebar { get; set; }
+    }
+
+    public class EditCustomPageRequest : CreateCustomPageRequest
+    {
+        public Guid Id { get; }
+
+        public EditCustomPageRequest(Guid id)
+        {
+            Id = id;
+        }
     }
 }
