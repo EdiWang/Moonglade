@@ -51,10 +51,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost("manage/create")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        public IActionResult Create(PostEditModel model, 
+        public IActionResult Create(PostEditViewModel model, 
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
         {
@@ -62,16 +61,13 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var id = model.PostId == Guid.Empty ? Guid.NewGuid() : model.PostId;
-
                     // get tags
                     List<string> tagList = string.IsNullOrWhiteSpace(model.Tags)
                         ? new List<string>()
                         : model.Tags.Split(',').ToList();
 
-                    var request = new CreateEditPostRequest
+                    var request = new CreatePostRequest
                     {
-                        PostId = id,
                         Title = model.Title.Trim(),
                         Slug = model.Slug.Trim(),
                         HtmlContent = model.HtmlContent,
@@ -88,8 +84,6 @@ namespace Moonglade.Web.Controllers
                     if (response.IsSuccess)
                     {
                         if (!model.IsPublished) return RedirectToAction(nameof(Manage));
-
-                        Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
 
                         var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
                         var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
@@ -130,7 +124,7 @@ namespace Moonglade.Web.Controllers
             var post = postResponse.Item;
             if (null != post)
             {
-                var editViewModel = new PostEditModel
+                var editViewModel = new PostEditViewModel
                 {
                     PostId = post.Id,
                     IsPublished = post.PostPublish.IsPublished,
@@ -177,10 +171,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [HttpPost("manage/edit")]
-        public IActionResult Edit(PostEditModel model, 
+        public IActionResult Edit(PostEditViewModel model, 
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
         {
@@ -190,9 +183,8 @@ namespace Moonglade.Web.Controllers
                     ? new List<string>()
                     : model.Tags.Split(',').ToList();
 
-                var request = new CreateEditPostRequest
+                var request = new EditPostRequest(model.PostId)
                 {
-                    PostId = model.PostId,
                     Title = model.Title.Trim(),
                     Slug = model.Slug.Trim(),
                     HtmlContent = model.HtmlContent,
@@ -233,17 +225,15 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [HttpPost("manage/restore")]
         public IActionResult Restore(Guid postId)
         {
-            var response = _postService.RestoreFromRecycle(postId);
+            var response = _postService.RestoreDeletedPost(postId);
             return response.IsSuccess ? Json(postId) : ServerError();
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [HttpPost("manage/delete")]
         public IActionResult Delete(Guid postId)
@@ -253,7 +243,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [HttpPost("manage/delete-from-recycle")]
         public IActionResult DeleteFromRecycleBin(Guid postId)
@@ -270,7 +259,7 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [HttpGet("manage/empty-recycle-bin")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        public async Task<ActionResult> EmptyRecycleBin()
+        public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postService.DeleteRecycledPostsAsync();
             return RedirectToAction("RecycleBin");
@@ -280,9 +269,9 @@ namespace Moonglade.Web.Controllers
 
         #region Helper Methods
 
-        private async Task<PostEditModel> GetCreatePostModelAsync()
+        private async Task<PostEditViewModel> GetCreatePostModelAsync()
         {
-            var view = new PostEditModel
+            var view = new PostEditViewModel
             {
                 PostId = Guid.NewGuid(),
                 IsPublished = true,

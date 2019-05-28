@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
@@ -14,18 +13,14 @@ namespace Moonglade.Core
     public class CategoryService : MoongladeService
     {
         private readonly IRepository<CategoryEntity> _categoryRepository;
-
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
-        private readonly IRepository<PostEntity> _postRepository;
 
         public CategoryService(ILogger<CategoryService> logger,
             IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostCategoryEntity> postCategoryRepository,
-            IRepository<PostEntity> postRepository) : base(logger)
+            IRepository<PostCategoryEntity> postCategoryRepository) : base(logger)
         {
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
-            _postRepository = postRepository;
         }
 
         public async Task<Response<IReadOnlyList<CategoryEntity>>> GetAllCategoriesAsync()
@@ -89,39 +84,26 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
-        {
-            return await TryExecuteAsync<IReadOnlyList<ArchiveItem>>(async () =>
-            {
-                if (!_postRepository.Any(p =>
-                    p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
-                    return new SuccessResponse<IReadOnlyList<ArchiveItem>>();
-
-                var list = await _postRepository.SelectAsync(post => new
-                {
-                    year = post.PostPublish.PubDateUtc.Value.Year,
-                    month = post.PostPublish.PubDateUtc.Value.Month
-                }, monthList => new ArchiveItem
-                {
-                    Year = monthList.Key.year,
-                    Month = monthList.Key.month,
-                    Count = monthList.Select(p => p.Id).Count()
-                });
-
-                return new SuccessResponse<IReadOnlyList<ArchiveItem>>(list);
-            });
-        }
-
-        public Response CreateCategory(CategoryEntity categoryEntity)
+        public Response CreateCategory(CreateCategoryRequest createCategoryRequest)
         {
             return TryExecute(() =>
             {
-                var exists = _categoryRepository.Any(c => c.Title == categoryEntity.Title);
+                var exists = _categoryRepository.Any(c => c.Title == createCategoryRequest.Title);
                 if (exists)
-                    return new Response { Message = $"CategoryEntity titled {categoryEntity.Title} already exists." };
+                {
+                    return new Response { Message = $"CategoryEntity titled {createCategoryRequest.Title} already exists." };
+                }
+
+                var category = new CategoryEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Title = createCategoryRequest.Title,
+                    Note = createCategoryRequest.Note,
+                    DisplayName = createCategoryRequest.DisplayName
+                };
 
                 Logger.LogInformation("Adding new categoryEntity to database.");
-                _categoryRepository.Add(categoryEntity);
+                _categoryRepository.Add(category);
                 return new SuccessResponse();
             });
         }
@@ -143,16 +125,16 @@ namespace Moonglade.Core
             });
         }
 
-        public Response UpdateCategory(CategoryEntity categoryEntity)
+        public Response UpdateCategory(EditCategoryRequest editCategoryRequest)
         {
             return TryExecute(() =>
             {
-                var cat = _categoryRepository.Get(categoryEntity.Id);
-                if (null == cat) return new Response { Message = $"CategoryEntity id {categoryEntity.Id} not found." };
+                var cat = _categoryRepository.Get(editCategoryRequest.Id);
+                if (null == cat) return new Response { Message = $"CategoryEntity id {editCategoryRequest.Id} not found." };
 
-                cat.Title = categoryEntity.Title;
-                cat.DisplayName = categoryEntity.DisplayName;
-                cat.Note = categoryEntity.Note;
+                cat.Title = editCategoryRequest.Title;
+                cat.DisplayName = editCategoryRequest.DisplayName;
+                cat.Note = editCategoryRequest.Note;
 
                 var rows = _categoryRepository.Update(cat);
                 return new Response(rows > 0);

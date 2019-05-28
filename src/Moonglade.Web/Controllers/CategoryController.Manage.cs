@@ -48,25 +48,23 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("create")]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(CategoryEditViewModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var category = new CategoryEntity
+                    var request = new CreateCategoryRequest
                     {
-                        Id = Guid.NewGuid(),
                         Title = model.Name,
                         Note = model.Note,
                         DisplayName = model.DisplayName
                     };
 
-                    var catJson = JsonConvert.SerializeObject(category);
+                    var catJson = JsonConvert.SerializeObject(request);
                     Logger.LogInformation($"Creating new category: {catJson}");
 
-                    var response = _categoryService.CreateCategory(category);
+                    var response = _categoryService.CreateCategory(request);
                     if (response.IsSuccess)
                     {
                         DeleteOpmlFile();
@@ -111,7 +109,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost("edit")]
         public IActionResult Edit(CategoryEditViewModel model)
         {
@@ -119,15 +116,14 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var category = new CategoryEntity
+                    var request = new EditCategoryRequest(model.Id)
                     {
-                        Id = model.Id,
                         Title = model.Name,
                         Note = model.Note,
                         DisplayName = model.DisplayName
                     };
 
-                    var response = _categoryService.UpdateCategory(category);
+                    var response = _categoryService.UpdateCategory(request);
 
                     if (response.IsSuccess)
                     {
@@ -173,7 +169,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost("delete")]
         public IActionResult ConfirmDelete(Guid id)
         {

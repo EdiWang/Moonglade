@@ -95,7 +95,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("manage/edit"), ValidateAntiForgeryToken]
+        [HttpPost("manage/edit")]
         public async Task<IActionResult> Edit(CustomPageEditViewModel model, [FromServices] IMemoryCache cache)
         {
             try
@@ -108,14 +108,13 @@ namespace Moonglade.Web.Controllers
                         return View("CreateOrEdit", model);
                     }
 
-                    var req = new CreateEditCustomPageRequest
+                    var req = new EditCustomPageRequest(model.Id)
                     {
                         HtmlContent = model.RawHtmlContent,
                         CssContent = model.CssContent,
                         HideSidebar = model.HideSidebar,
                         RouteName = model.RouteName,
-                        Title = model.Title,
-                        Id = model.Id
+                        Title = model.Title
                     };
 
                     var response = await _customPageService.EditPageAsync(req);
@@ -149,7 +148,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("manage/create"), ValidateAntiForgeryToken]
+        [HttpPost("manage/create")]
         public async Task<IActionResult> Create(CustomPageEditViewModel model)
         {
             try
@@ -162,7 +161,7 @@ namespace Moonglade.Web.Controllers
                         return View("CreateOrEdit", model);
                     }
 
-                    var req = new CreateEditCustomPageRequest
+                    var req = new CreateCustomPageRequest
                     {
                         HtmlContent = model.RawHtmlContent,
                         CssContent = model.CssContent,
@@ -191,7 +190,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("manage/delete"), ValidateAntiForgeryToken]
+        [HttpPost("manage/delete")]
         public IActionResult Delete(Guid pageId, string routeName, [FromServices] IMemoryCache cache)
         {
             try

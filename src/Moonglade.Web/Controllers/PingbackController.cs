@@ -62,7 +62,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost("delete")]
         public IActionResult Delete(Guid pingbackId)
         {

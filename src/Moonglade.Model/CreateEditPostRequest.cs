@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace Moonglade.Model
 {
-    public class CreateEditPostRequest
+    public class CreatePostRequest
     {
-        public Guid PostId { get; set; }
         public string Title { get; set; }
         public string Slug { get; set; }
         public string HtmlContent { get; set; }
@@ -18,10 +17,20 @@ namespace Moonglade.Model
         public IList<string> Tags { get; set; }
         public IList<Guid> CategoryIds { get; set; }
 
-        public CreateEditPostRequest()
+        public CreatePostRequest()
         {
             Tags = new List<string>();
             CategoryIds = new List<Guid>();
+        }
+    }
+
+    public class EditPostRequest : CreatePostRequest
+    {
+        public Guid Id { get; }
+
+        public EditPostRequest(Guid id)
+        {
+            Id = id;
         }
     }
 }

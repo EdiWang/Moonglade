@@ -75,10 +75,11 @@ namespace Moonglade.Web
             Configuration.Bind(nameof(Authentication), authentication);
             services.AddMoongladeAuthenticaton(authentication);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                    .AddJsonOptions(
-                        options =>
-                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            services.AddMvc(options => 
+                            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                    .AddJsonOptions(options =>
+                                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     );
 
             services.AddAntiforgery(options =>

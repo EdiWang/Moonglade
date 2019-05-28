@@ -44,7 +44,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult NewComment(PostSlugViewModelWrapper model,
             [FromServices] ISessionBasedCaptcha captcha)
         {

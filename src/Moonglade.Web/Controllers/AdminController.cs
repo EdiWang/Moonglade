@@ -60,7 +60,6 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("signin")]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(SignInViewModel model)
         {
             try

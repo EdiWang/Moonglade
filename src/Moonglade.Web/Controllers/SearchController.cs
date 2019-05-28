@@ -55,7 +55,6 @@ namespace Moonglade.Web.Controllers
             return NotFound();
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("search")]
         public IActionResult Index(string term)
         {

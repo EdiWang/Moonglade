@@ -31,7 +31,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost("approve-comments")]
         public async Task<IActionResult> ApproveComments(Guid[] commentIds)
         {
@@ -45,7 +44,6 @@ namespace Moonglade.Web.Controllers
 
         // TODO: Obsolete this action
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost("set-approval-status")]
         public async Task<IActionResult> SetApprovalStatus(Guid commentId, bool isApproved)
         {
@@ -65,7 +63,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost("delete")]
         public async Task<IActionResult> Delete(Guid commentId)
         {
@@ -74,7 +71,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost("reply")]
         public IActionResult ReplyComment(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
