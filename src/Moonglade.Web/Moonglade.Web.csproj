@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
-    <PackageReference Include="Edi.Blog.OpmlFileWriter" Version="1.0.0" />
+    <PackageReference Include="Edi.Blog.OpmlFileWriter" Version="1.1.0" />
     <PackageReference Include="Edi.Blog.Pingback" Version="10.1.0" />
     <PackageReference Include="Edi.Blog.Pingback.MvcExtensions" Version="1.0.0" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />

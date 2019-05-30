@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Edi.Blog.OpmlFileWriter;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
 using Edi.Net.AesEncryption;
@@ -101,6 +102,7 @@ namespace Moonglade.Web
             services.AddTransient<IMoongladeNotification, EmailNotification>();
             services.AddTransient<IPingbackSender, PingbackSender>();
             services.AddTransient<IPingbackReceiver, PingbackReceiver>();
+            services.AddTransient<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
             services.AddTransient<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
 
             var asm = Assembly.GetAssembly(typeof(MoongladeService));
