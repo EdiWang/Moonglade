@@ -7,8 +7,13 @@ namespace Moonglade.Data.Spec
     {
         public TagSpec(int top) : base(t => true)
         {
-            ApplyPaging(0,top);
+            ApplyPaging(0, top);
             ApplyOrderByDescending(p => p.PostTag.Count);
+        }
+
+        public TagSpec(string normalizedName) : base(t => t.NormalizedName == normalizedName)
+        {
+
         }
     }
 }

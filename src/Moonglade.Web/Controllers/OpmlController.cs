@@ -16,15 +16,18 @@ namespace Moonglade.Web.Controllers
     {
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
+        private readonly IFileSystemOpmlWriter _fileSystemOpmlWriter;
 
         public OpmlController(
             ILogger<OpmlController> logger,
             CategoryService categoryService,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig,
+            IFileSystemOpmlWriter fileSystemOpmlWriter)
             : base(logger)
         {
             _categoryService = categoryService;
             _blogConfig = blogConfig;
+            _fileSystemOpmlWriter = fileSystemOpmlWriter;
         }
 
         public async Task<IActionResult> Index()
@@ -62,7 +65,7 @@ namespace Moonglade.Web.Controllers
                     CategoryHtmlUrlTemplate = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/category/list/[catTitle]"
                 };
 
-                await FileSystemOpmlWriter.WriteOpmlFileAsync(
+                await _fileSystemOpmlWriter.WriteOpmlFileAsync(
                     $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}", oi);
                 Logger.LogInformation("OPML file write completed.");
 

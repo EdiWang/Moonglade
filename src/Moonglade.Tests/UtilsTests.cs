@@ -8,6 +8,25 @@ namespace Moonglade.Tests
     [TestFixture]
     public class UtilsTests
     {
+        [TestCase(1, ExpectedResult = "January")]
+        [TestCase(2, ExpectedResult = "February")]
+        [TestCase(3, ExpectedResult = "March")]
+        [TestCase(4, ExpectedResult = "April")]
+        [TestCase(5, ExpectedResult = "May")]
+        [TestCase(6, ExpectedResult = "June")]
+        [TestCase(7, ExpectedResult = "July")]
+        [TestCase(8, ExpectedResult = "August")]
+        [TestCase(9, ExpectedResult = "September")]
+        [TestCase(10, ExpectedResult = "October")]
+        [TestCase(11, ExpectedResult = "November")]
+        [TestCase(12, ExpectedResult = "December")]
+        [TestCase(-128, ExpectedResult = "")]
+        [TestCase(128, ExpectedResult = "")]
+        public string TestGetMonthNameByNumber(int number)
+        {
+            return Utils.GetMonthNameByNumber(number);
+        }
+
         [Test]
         public void TestUtcToZoneTime()
         {

@@ -60,6 +60,9 @@ namespace Moonglade.ImageStorage.AzureBlob
                     case ".png":
                         blockBlob.Properties.ContentType = "image/png";
                         break;
+                    case ".gif":
+                        blockBlob.Properties.ContentType = "image/gif";
+                        break;
                     default:
                         break;
                 }

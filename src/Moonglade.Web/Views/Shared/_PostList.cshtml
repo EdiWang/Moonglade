@@ -1,12 +1,7 @@
-﻿@using System.Globalization
-@using Microsoft.Extensions.Options
-@using Moonglade.Core
-@using Moonglade.Model.Settings
-@using X.PagedList.Mvc.Common
+﻿@using X.PagedList.Mvc.Common
 @using X.PagedList.Mvc.Core
 
 @model X.PagedList.StaticPagedList<Moonglade.Model.PostListItem>
-@inject IOptions<AppSettings> Settings
 
 @if (Model.Count == 0)
 {
@@ -19,46 +14,9 @@ else
 {
     foreach (var item in Model)
     {
-        <article class="article-post-summary">
-            <div class="post-date-box d-none d-md-block">
-                <h1 class="post-date-day">@item.PubDateUtc.Day.ToString("00")</h1>
-                <div class="post-date-month">
-                    @Utils.UtcToZoneTime(item.PubDateUtc, Settings.Value.TimeZone).ToString("MMM", new CultureInfo("en-US")).ToUpper()
-                </div>
-            </div>
-            <div class="post-summary-box">
-                <time datetime="@item.PubDateUtc.ToString("u")" class="none d-none">
-                    @item.PubDateUtc
-                </time>
-
-                <h4 class="post-summary-title">
-                    <a asp-controller="Post" asp-action="Slug"
-                       asp-route-year="@item.PubDateUtc.Year"
-                       asp-route-month="@item.PubDateUtc.Month"
-                       asp-route-day="@item.PubDateUtc.Day"
-                       asp-route-slug="@item.Slug">
-                        @item.Title
-                    </a>
-                </h4>
-
-                <p class="post-summary-text">@(item.ContentAbstract)</p>
-
-                <div class="post-summary-tags">
-                    @foreach (var tag in item.Tags)
-                    {
-                        <a asp-controller="Tags"
-                           asp-action="List"
-                           asp-route-normalizedName="@tag.NormalizedTagName"
-                           class="post-summary-tag">
-                            @tag.TagName
-                        </a>
-                    }
-                </div>
-            </div>
-        </article>
+        <partial name="_PostListItem" model="item" />
         <div class="mb-4 d-none d-md-block"></div>
         <hr class="d-none d-md-block" />
-
     }
 
     @Html.PagedListPager(Model, page => $"?page={page}", new PagedListRenderOptions

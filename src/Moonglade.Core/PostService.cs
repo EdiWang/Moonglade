@@ -24,6 +24,7 @@ namespace Moonglade.Core
         private readonly IRepository<PostExtensionEntity> _postExtensionRepository;
         private readonly IRepository<PostPublishEntity> _postPublishRepository;
         private readonly IRepository<TagEntity> _tagRepository;
+        private readonly IRepository<PostTagEntity> _postTagRepository;
         private readonly IRepository<CategoryEntity> _categoryRepository;
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
 
@@ -34,6 +35,7 @@ namespace Moonglade.Core
             IRepository<PostEntity> postRepository,
             IRepository<PostExtensionEntity> postExtensionRepository,
             IRepository<TagEntity> tagRepository,
+            IRepository<PostTagEntity> postTagRepository,
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository) : base(logger, settings)
@@ -41,16 +43,28 @@ namespace Moonglade.Core
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
             _tagRepository = tagRepository;
+            _postTagRepository = postTagRepository;
             _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
         }
 
-        public int CountForPublic => _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
-
-        public int CountByCategoryId(Guid catId)
+        public Response<int> CountVisiblePosts()
         {
-            return _postCategoryRepository.Count(c => c.CategoryId == catId);
+            return TryExecute(() =>
+            {
+                int count = _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
+                return new SuccessResponse<int>(count);
+            });
+        }
+
+        public Response<int> CountByCategoryId(Guid catId)
+        {
+            return TryExecute(() =>
+            {
+                var count = _postCategoryRepository.Count(c => c.CategoryId == catId);
+                return new SuccessResponse<int>(count);
+            });
         }
 
         public async Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
@@ -185,7 +199,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<IReadOnlyList<PostArchiveItem>> GetArchivedPostsAsync(int year, int month = 0)
+        public async Task<IReadOnlyList<PostListItem>> GetArchivedPostsAsync(int year, int month = 0)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
@@ -198,31 +212,35 @@ namespace Moonglade.Core
             }
 
             var spec = new PostSpec(year, month);
-            var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItem
+            var list = await _postRepository.SelectAsync(spec, p => new PostListItem
             {
-                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                Title = p.Title,
                 Slug = p.Slug,
-                Title = p.Title
+                ContentAbstract = p.ContentAbstract,
+                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault()
             });
             return list;
         }
 
-        public async Task<Response<IReadOnlyList<PostEntity>>> GetPostsByTagAsync(string normalizedName)
+        public async Task<Response<IReadOnlyList<PostListItem>>> GetPostsByTagAsync(int tagId)
         {
-            return await TryExecuteAsync<IReadOnlyList<PostEntity>>(async () =>
+            return await TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
             {
-                if (string.IsNullOrWhiteSpace(normalizedName))
+                if (tagId == 0)
                 {
-                    throw new ArgumentNullException(nameof(normalizedName));
+                    throw new ArgumentOutOfRangeException(nameof(tagId));
                 }
 
-                var posts = await _tagRepository.GetAsQueryable()
-                                                .Where(t => t.NormalizedName == normalizedName)
-                                                .SelectMany(p => p.PostTag)
-                                                .Select(p => p.Post)
-                                                .Include(p => p.PostPublish).ToListAsync();
+                var posts = await _postTagRepository.SelectAsync(new PostTagSpec(tagId),
+                    p => new PostListItem
+                    {
+                        Title = p.Post.Title,
+                        Slug = p.Post.Slug,
+                        ContentAbstract = p.Post.ContentAbstract,
+                        PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault()
+                    });
 
-                return new SuccessResponse<IReadOnlyList<PostEntity>>(posts);
+                return new SuccessResponse<IReadOnlyList<PostListItem>>(posts);
             });
         }
 
@@ -287,6 +305,11 @@ namespace Moonglade.Core
 
         public string GetPostTitle(Guid postId)
         {
+            if (postId == Guid.Empty)
+            {
+                return string.Empty;
+            }
+
             var spec = new PostSpec(postId, false);
             return _postRepository.SelectFirstOrDefault(spec, p => p.Title);
         }
@@ -332,7 +355,7 @@ namespace Moonglade.Core
                 }
 
                 // add categories
-                if (null != request.CategoryIds && request.CategoryIds.Count > 0)
+                if (null != request.CategoryIds && request.CategoryIds.Length > 0)
                 {
                     foreach (var cid in request.CategoryIds)
                     {
@@ -348,36 +371,28 @@ namespace Moonglade.Core
                 }
 
                 // add tags
-                if (null != request.Tags && request.Tags.Count > 0)
+                if (null != request.Tags && request.Tags.Length > 0)
                 {
-                    var tagsList = new List<TagEntity>();
                     foreach (var item in request.Tags)
                     {
                         var tag = _tagRepository.Get(q => q.DisplayName == item);
                         if (null == tag)
                         {
-                            // for new tags
                             var newTag = new TagEntity
                             {
                                 DisplayName = item,
                                 NormalizedName = Utils.NormalizeTagName(item)
                             };
 
-                            tagsList.Add(newTag);
-                            _tagRepository.Add(newTag);
+                            tag = _tagRepository.Add(newTag);
                         }
-                        else
-                        {
-                            // existing tags
-                            tagsList.Add(tag);
-                        }
-                    }
 
-                    tagsList.ForEach(t => postModel.PostTag.Add(new PostTagEntity
-                    {
-                        TagId = t.Id,
-                        PostId = postModel.Id
-                    }));
+                        postModel.PostTag.Add(new PostTagEntity
+                        {
+                            TagId = tag.Id,
+                            PostId = postModel.Id
+                        });
+                    }
                 }
 
                 _postRepository.Add(postModel);
@@ -409,14 +424,14 @@ namespace Moonglade.Core
 
                 ++postModel.PostPublish.Revision;
 
-            // from draft
-            if (!postModel.PostPublish.PubDateUtc.HasValue)
+                // from draft
+                if (!postModel.PostPublish.PubDateUtc.HasValue)
                 {
                     postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
                 }
 
-            // 1. Add new tags to tag lib
-            foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
+                // 1. Add new tags to tag lib
+                foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
                 {
                     _tagRepository.Add(new TagEntity
                     {
@@ -425,8 +440,8 @@ namespace Moonglade.Core
                     });
                 }
 
-            // 2. update tags
-            postModel.PostTag.Clear();
+                // 2. update tags
+                postModel.PostTag.Clear();
                 if (request.Tags.Any())
                 {
                     foreach (var t in request.Tags)
@@ -440,9 +455,9 @@ namespace Moonglade.Core
                     }
                 }
 
-            // 3. update categories
-            postModel.PostCategory.Clear();
-                if (null != request.CategoryIds && request.CategoryIds.Count > 0)
+                // 3. update categories
+                postModel.PostCategory.Clear();
+                if (null != request.CategoryIds && request.CategoryIds.Length > 0)
                 {
                     foreach (var cid in request.CategoryIds)
                     {

@@ -23,7 +23,7 @@ namespace Moonglade.Web.Controllers
             ILogger<CategoryController> logger,
             IOptions<AppSettings> settings,
             CategoryService categoryService,
-            PostService postService, 
+            PostService postService,
             IBlogConfig blogConfig)
             : base(logger, settings)
         {
@@ -59,7 +59,7 @@ namespace Moonglade.Web.Controllers
             ViewBag.CategoryName = cat.Name;
             ViewBag.CategoryDescription = cat.Note;
 
-            var postCount = _postService.CountByCategoryId(cat.Id);
+            var postCount = _postService.CountByCategoryId(cat.Id).Item;
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
             var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pageSize, postCount);

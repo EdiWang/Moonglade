@@ -87,9 +87,14 @@ namespace Moonglade.Core
             }, keyParameter: top);
         }
 
-        public TagEntity GetTag(string normalizedName)
+        public TagInfo GetTag(string normalizedName)
         {
-            var tag = _tagRepository.Get(t => t.NormalizedName == normalizedName);
+            var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new TagInfo()
+            {
+                Id = tg.Id,
+                NormalizedTagName = tg.NormalizedName,
+                TagName = tg.DisplayName
+            });
             return tag;
         }
 

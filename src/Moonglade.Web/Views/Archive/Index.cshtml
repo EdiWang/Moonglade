@@ -2,7 +2,7 @@
     ViewBag.TitlePrefix = "Archive ";
 }
 
-@using System.Globalization
+@using Moonglade.Core
 @model IReadOnlyList<Moonglade.Model.ArchiveItem>
 
 @{
@@ -12,16 +12,6 @@
         yearList = (from item in Model
                     orderby item.Year descending
                     select item.Year).Distinct();
-    }
-
-    string GetMonthNameByNumber(int number)
-    {
-        if (number > 12 || number < 1)
-        {
-            return string.Empty;
-        }
-
-        return CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
     }
 }
 
@@ -69,7 +59,7 @@ else
                     <div class="timeline-panel">
                         <div class="timeline-heading">
                             <h3 class="timeline-title">
-                                <a asp-controller="Archive" asp-action="GetArchive" asp-route-year="@item">@item</a>
+                                <a asp-controller="Archive" asp-action="List" asp-route-year="@item">@item</a>
                             </h3>
                         </div>
                         <div class="timeline-body">
@@ -78,10 +68,10 @@ else
                                 {
                                     <div class="col-md-6 col-sm-6 col-6">
                                         <span class="badge badge-secondary float-right">@(month.Count)</span>
-                                        <a asp-controller="Archive" asp-action="GetArchive"
+                                        <a asp-controller="Archive" asp-action="List"
                                            asp-route-year="@month.Year"
                                            asp-route-month="@month.Month">
-                                            @GetMonthNameByNumber(month.Month)
+                                            @Utils.GetMonthNameByNumber(month.Month)
                                         </a>
                                     </div>
                                 }

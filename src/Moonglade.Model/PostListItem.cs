@@ -13,6 +13,6 @@ namespace Moonglade.Model
 
         public string ContentAbstract { get; set; }
 
-        public List<TagInfo> Tags { get; set; }
+        public IList<TagInfo> Tags { get; set; }
     }
 }

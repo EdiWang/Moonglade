@@ -1,0 +1,46 @@
+﻿@using System.Globalization
+@using Microsoft.Extensions.Options
+@using Moonglade.Model.Settings
+@using Moonglade.Core
+@model Moonglade.Model.PostListItem
+@inject IOptions<AppSettings> Settings
+
+<article class="article-post-summary">
+    <div class="post-date-box d-none d-md-block">
+        <h1 class="post-date-day">@Model.PubDateUtc.Day.ToString("00")</h1>
+        <div class="post-date-month">
+            @Utils.UtcToZoneTime(Model.PubDateUtc, Settings.Value.TimeZone).ToString("MMM", new CultureInfo("en-US")).ToUpper()
+        </div>
+    </div>
+    <div class="post-summary-box">
+        <time datetime="@Model.PubDateUtc.ToString("u")" class="none d-none">
+            @Model.PubDateUtc
+        </time>
+
+        <h4 class="post-summary-title">
+            <a asp-controller="Post" asp-action="Slug"
+               asp-route-year="@Model.PubDateUtc.Year"
+               asp-route-month="@Model.PubDateUtc.Month"
+               asp-route-day="@Model.PubDateUtc.Day"
+               asp-route-slug="@Model.Slug">
+                @Model.Title
+            </a>
+        </h4>
+
+        <p class="post-summary-text">@(Model.ContentAbstract)</p>
+        @if (null != Model.Tags)
+        {
+            <div class="post-summary-tags">
+                @foreach (var tag in Model.Tags)
+                {
+                    <a asp-controller="Tags"
+                       asp-action="List"
+                       asp-route-normalizedName="@tag.NormalizedTagName"
+                       class="post-summary-tag">
+                        @tag.TagName
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</article>

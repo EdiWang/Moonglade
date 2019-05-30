@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -53,6 +52,7 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [HttpPost("manage/create")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
         public IActionResult Create(PostEditViewModel model, 
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
@@ -62,9 +62,9 @@ namespace Moonglade.Web.Controllers
                 if (ModelState.IsValid)
                 {
                     // get tags
-                    List<string> tagList = string.IsNullOrWhiteSpace(model.Tags)
-                        ? new List<string>()
-                        : model.Tags.Split(',').ToList();
+                    string[] tagList = string.IsNullOrWhiteSpace(model.Tags)
+                                             ? new string[] { }
+                                             : model.Tags.Split(',').ToArray();
 
                     var request = new CreatePostRequest
                     {
@@ -77,7 +77,7 @@ namespace Moonglade.Web.Controllers
                         ContentLanguageCode = model.ContentLanguageCode,
                         IsPublished = model.IsPublished,
                         Tags = tagList,
-                        CategoryIds = model.SelectedCategoryIds.ToList()
+                        CategoryIds = model.SelectedCategoryIds
                     };
 
                     var response = _postService.CreateNewPost(request);
@@ -172,6 +172,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
         [HttpPost("manage/edit")]
         public IActionResult Edit(PostEditViewModel model, 
             [FromServices] LinkGenerator linkGenerator,
@@ -179,9 +180,9 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var tagList = string.IsNullOrWhiteSpace(model.Tags)
-                    ? new List<string>()
-                    : model.Tags.Split(',').ToList();
+                string[] tagList = string.IsNullOrWhiteSpace(model.Tags)
+                                         ? new string[] { }
+                                         : model.Tags.Split(',').ToArray();
 
                 var request = new EditPostRequest(model.PostId)
                 {
@@ -194,7 +195,7 @@ namespace Moonglade.Web.Controllers
                     ContentLanguageCode = model.ContentLanguageCode,
                     IsPublished = model.IsPublished,
                     Tags = tagList,
-                    CategoryIds = model.SelectedCategoryIds.ToList()
+                    CategoryIds = model.SelectedCategoryIds
                 };
 
                 var response = _postService.EditPost(request);
@@ -226,6 +227,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
         [HttpPost("manage/restore")]
         public IActionResult Restore(Guid postId)
         {
@@ -235,6 +237,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
         [HttpPost("manage/delete")]
         public IActionResult Delete(Guid postId)
         {
@@ -257,8 +260,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("manage/empty-recycle-bin")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [HttpGet("manage/empty-recycle-bin")]
         public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postService.DeleteRecycledPostsAsync();
