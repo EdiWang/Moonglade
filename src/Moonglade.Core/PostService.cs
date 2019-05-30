@@ -24,6 +24,7 @@ namespace Moonglade.Core
         private readonly IRepository<PostExtensionEntity> _postExtensionRepository;
         private readonly IRepository<PostPublishEntity> _postPublishRepository;
         private readonly IRepository<TagEntity> _tagRepository;
+        private readonly IRepository<PostTagEntity> _postTagRepository;
         private readonly IRepository<CategoryEntity> _categoryRepository;
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
 
@@ -34,6 +35,7 @@ namespace Moonglade.Core
             IRepository<PostEntity> postRepository,
             IRepository<PostExtensionEntity> postExtensionRepository,
             IRepository<TagEntity> tagRepository,
+            IRepository<PostTagEntity> postTagRepository,
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository) : base(logger, settings)
@@ -41,6 +43,7 @@ namespace Moonglade.Core
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
             _tagRepository = tagRepository;
+            _postTagRepository = postTagRepository;
             _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
@@ -215,25 +218,23 @@ namespace Moonglade.Core
             return list;
         }
 
-        public async Task<Response<IReadOnlyList<PostListItem>>> GetPostsByTagAsync(string normalizedName)
+        public async Task<Response<IReadOnlyList<PostListItem>>> GetPostsByTagAsync(int tagId)
         {
             return await TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
             {
-                if (string.IsNullOrWhiteSpace(normalizedName))
+                if (tagId == 0)
                 {
-                    throw new ArgumentNullException(nameof(normalizedName));
+                    throw new ArgumentOutOfRangeException(nameof(tagId));
                 }
 
-                var posts = await _tagRepository.GetAsQueryable()
-                                                .Where(t => t.NormalizedName == normalizedName)
-                                                .SelectMany(p => p.PostTag)
-                                                .Select(p => new PostListItem
-                                                {
-                                                    Title = p.Post.Title,
-                                                    Slug = p.Post.Slug,
-                                                    ContentAbstract = p.Post.ContentAbstract,
-                                                    PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault()
-                                                }).ToListAsync();
+                var posts = await _postTagRepository.SelectAsync(new PostTagSpec(tagId), 
+                    p => new PostListItem
+                    {
+                        Title = p.Post.Title,
+                        Slug = p.Post.Slug,
+                        ContentAbstract = p.Post.ContentAbstract,
+                        PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault()
+                    });
 
                 return new SuccessResponse<IReadOnlyList<PostListItem>>(posts);
             });

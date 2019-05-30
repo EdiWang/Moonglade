@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
 
             var tag = _tagService.GetTag(normalizedName);
 
-            var postResponse = await _postService.GetPostsByTagAsync(normalizedName.ToLower());
+            var postResponse = await _postService.GetPostsByTagAsync(tag.Id);
             if (!postResponse.IsSuccess)
             {
                 return ServerError();
@@ -52,7 +52,7 @@ namespace Moonglade.Web.Controllers
             var posts = postResponse.Item;
             if (posts.Any())
             {
-                ViewBag.TitlePrefix = tag.DisplayName;
+                ViewBag.TitlePrefix = tag.TagName;
                 return View(posts);
             }
             return NotFound();
