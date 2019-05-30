@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Moonglade.Model
 {
@@ -14,13 +13,13 @@ namespace Moonglade.Model
         public bool IsFeedIncluded { get; set; }
         public string ContentLanguageCode { get; set; }
 
-        public IList<string> Tags { get; set; }
-        public IList<Guid> CategoryIds { get; set; }
+        public string[] Tags { get; set; }
+        public Guid[] CategoryIds { get; set; }
 
         public CreatePostRequest()
         {
-            Tags = new List<string>();
-            CategoryIds = new List<Guid>();
+            Tags = new string[] { };
+            CategoryIds = new Guid[] { };
         }
     }
 

@@ -5,6 +5,7 @@ using System.Web;
 using Edi.Blog.Pingback.MvcExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
@@ -21,29 +22,32 @@ namespace Moonglade.Web.Controllers
     {
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
-
         private readonly IBlogConfig _blogConfig;
 
         public PostController(
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
             PostService postService,
-            CategoryService categoryService, 
+            CategoryService categoryService,
             IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
-
         }
 
         [Route(""), Route("/")]
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, [FromServices] IMemoryCache memoryCache = null)
         {
             int pagesize = _blogConfig.ContentSettings.PostListPageSize;
             var postList = await _postService.GetPagedPostsAsync(pagesize, page);
-            var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pagesize, _postService.CountForPublic);
+            int postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCount, entry =>
+            {
+                return _postService.CountVisiblePosts().Item;
+            });
+
+            var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pagesize, postCount);
             return View(postsAsIPagedList);
         }
 

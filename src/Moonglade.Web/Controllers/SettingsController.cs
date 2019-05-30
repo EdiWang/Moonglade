@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,8 +18,8 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Notification;
 using Moonglade.Setup;
+using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
-using Newtonsoft.Json;
 
 namespace Moonglade.Web.Controllers
 {
@@ -364,7 +363,8 @@ namespace Moonglade.Web.Controllers
         #region User Avatar
 
         [HttpPost("set-blogger-avatar")]
-        public async Task<IActionResult> SetBloggerAvatar(string base64Avatar, [FromServices] IMemoryCache cache)
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.Avatar })]
+        public async Task<IActionResult> SetBloggerAvatar(string base64Avatar)
         {
             try
             {
@@ -394,7 +394,6 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
-                cache.Remove(StaticCacheKeys.Avatar);
                 return Json(response);
             }
             catch (Exception e)
