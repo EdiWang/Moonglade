@@ -10,7 +10,7 @@
       ]
     },
     {
-      "library": "tinymce@5.0.5",
+      "library": "tinymce@5.0.6",
       "destination": "wwwroot/lib/tinymce",
       "files": []
     },
@@ -19,7 +19,7 @@
       "destination": "wwwroot/lib/jquery-qrcode"
     },
     {
-      "library": "highlight.js@9.15.6",
+      "library": "highlight.js@9.15.8",
       "destination": "wwwroot/lib/highlight-js",
       "files": [
         "highlight.min.js"
