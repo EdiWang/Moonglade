@@ -58,9 +58,13 @@ namespace Moonglade.Core
             });
         }
 
-        public int CountByCategoryId(Guid catId)
+        public Response<int> CountByCategoryId(Guid catId)
         {
-            return _postCategoryRepository.Count(c => c.CategoryId == catId);
+            return TryExecute(() =>
+            {
+                var count = _postCategoryRepository.Count(c => c.CategoryId == catId);
+                return new SuccessResponse<int>(count);
+            });
         }
 
         public async Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
@@ -227,7 +231,7 @@ namespace Moonglade.Core
                     throw new ArgumentOutOfRangeException(nameof(tagId));
                 }
 
-                var posts = await _postTagRepository.SelectAsync(new PostTagSpec(tagId), 
+                var posts = await _postTagRepository.SelectAsync(new PostTagSpec(tagId),
                     p => new PostListItem
                     {
                         Title = p.Post.Title,
@@ -301,6 +305,11 @@ namespace Moonglade.Core
 
         public string GetPostTitle(Guid postId)
         {
+            if (postId == Guid.Empty)
+            {
+                return string.Empty;
+            }
+
             var spec = new PostSpec(postId, false);
             return _postRepository.SelectFirstOrDefault(spec, p => p.Title);
         }
@@ -364,34 +373,26 @@ namespace Moonglade.Core
                 // add tags
                 if (null != request.Tags && request.Tags.Length > 0)
                 {
-                    var tagsList = new List<TagEntity>();
                     foreach (var item in request.Tags)
                     {
                         var tag = _tagRepository.Get(q => q.DisplayName == item);
                         if (null == tag)
                         {
-                            // for new tags
                             var newTag = new TagEntity
                             {
                                 DisplayName = item,
                                 NormalizedName = Utils.NormalizeTagName(item)
                             };
 
-                            tagsList.Add(newTag);
-                            _tagRepository.Add(newTag);
+                            tag = _tagRepository.Add(newTag);
                         }
-                        else
-                        {
-                            // existing tags
-                            tagsList.Add(tag);
-                        }
-                    }
 
-                    tagsList.ForEach(t => postModel.PostTag.Add(new PostTagEntity
-                    {
-                        TagId = t.Id,
-                        PostId = postModel.Id
-                    }));
+                        postModel.PostTag.Add(new PostTagEntity
+                        {
+                            TagId = tag.Id,
+                            PostId = postModel.Id
+                        });
+                    }
                 }
 
                 _postRepository.Add(postModel);
