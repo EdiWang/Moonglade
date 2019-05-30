@@ -192,7 +192,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<IReadOnlyList<PostArchiveItem>> GetArchivedPostsAsync(int year, int month = 0)
+        public async Task<IReadOnlyList<PostListItem>> GetArchivedPostsAsync(int year, int month = 0)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
@@ -205,11 +205,12 @@ namespace Moonglade.Core
             }
 
             var spec = new PostSpec(year, month);
-            var list = await _postRepository.SelectAsync(spec, p => new PostArchiveItem
+            var list = await _postRepository.SelectAsync(spec, p => new PostListItem
             {
-                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                Title = p.Title,
                 Slug = p.Slug,
-                Title = p.Title
+                ContentAbstract = p.ContentAbstract,
+                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault()
             });
             return list;
         }
@@ -230,6 +231,7 @@ namespace Moonglade.Core
                                                 {
                                                     Title = p.Post.Title,
                                                     Slug = p.Post.Slug,
+                                                    ContentAbstract = p.Post.ContentAbstract,
                                                     PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault()
                                                 }).ToListAsync();
 

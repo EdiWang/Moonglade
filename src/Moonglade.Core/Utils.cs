@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -14,6 +15,17 @@ namespace Moonglade.Core
     {
         public static string AppVersion =>
             Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+
+        public static string GetMonthNameByNumber(int number)
+        {
+            if (number > 12 || number < 1)
+            {
+                return string.Empty;
+            }
+
+            return CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
+        }
 
         public static string RemoveWhiteSpaceFromStylesheets(string body)
         {

@@ -1,24 +1,18 @@
 ﻿@model IReadOnlyList<Moonglade.Model.PostListItem>
 
-@section meta
-{
-    <meta name="robots" content="noindex, nofollow" />
+@{
+    ViewBag.TitlePrefix = $"All Posts in {ViewBag.ArchiveInfo}";
 }
 
-@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
-{
-    <partial name="_ServerErrorMessage" />
-}
-else
-{
-    <h3>
-        Search Result
-    </h3>
-    <hr />
-    if (!Model.Any())
+<h3>
+    @ViewBag.TitlePrefix
+</h3>
+<hr />
+<div>
+    @if (!Model.Any())
     {
-        <div class="alert alert-info">
-            No Matching Result
+        <div class="alert alert-warning">
+            No Posts
         </div>
     }
     else
@@ -30,4 +24,4 @@ else
             <hr class="d-none d-md-block" />
         }
     }
-}
+</div>

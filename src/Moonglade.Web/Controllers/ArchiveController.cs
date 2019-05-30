@@ -34,14 +34,14 @@ namespace Moonglade.Web.Controllers
 
         [HttpGet("{year:int:length(4)}")]
         [HttpGet("{year:int:length(4)}/{month:int:range(1,12)}")]
-        public async Task<IActionResult> GetArchive(int year, int? month)
+        public async Task<IActionResult> List(int year, int? month)
         {
             if (year > DateTime.UtcNow.Year)
             {
                 return NotFound();
             }
 
-            IReadOnlyList<PostArchiveItem> model;
+            IReadOnlyList<PostListItem> model;
 
             if (null != month)
             {
