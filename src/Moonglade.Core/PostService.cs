@@ -123,7 +123,7 @@ namespace Moonglade.Core
 
         public Response<(Guid Id, string Title)> GetPostIdTitle(string url)
         {
-            return TryExecute(() =>
+            return TryExecute<(Guid, string)>(() =>
             {
                 var response = Utils.GetSlugInfoFromPostUrl(url);
                 if (!response.IsSuccess)
@@ -132,14 +132,18 @@ namespace Moonglade.Core
                 }
 
                 var post = _postRepository.Get(p => p.Slug == response.Item.Slug &&
-                                               p.PostPublish.PubDateUtc.GetValueOrDefault().Date ==
-                                               response.Item.PubDate.Date &&
                                                p.PostPublish.IsPublished &&
+                                               p.PostPublish.PubDateUtc.Value.Year == response.Item.PubDate.Year &&
+                                               p.PostPublish.PubDateUtc.Value.Month == response.Item.PubDate.Month &&
+                                               p.PostPublish.PubDateUtc.Value.Day == response.Item.PubDate.Day &&
                                                !p.PostPublish.IsDeleted);
 
-                return null == post
-                    ? new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound)
-                    : new Response<(Guid, string)>((post.Id, post.Title));
+                if (null == post)
+                {
+                    return new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound);
+                }
+                return new SuccessResponse<(Guid, string)>((post.Id, post.Title));
+
             }, keyParameter: url);
         }
 
@@ -345,9 +349,17 @@ namespace Moonglade.Core
                 };
 
                 // check if exist same slug under the same day
+                // linq to sql fix:
+                // cannot write "p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date"
+                // it will not blow up, but can result in select ENTIRE posts and evaluated in memory!!!
+                // - The LINQ expression 'where (Convert([p.PostPublish]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
+                // Why EF Core this diao yang?
                 if (_postRepository.Any(p =>
                     p.Slug == postModel.Slug &&
-                    p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date))
+                    p.PostPublish.PubDateUtc != null && 
+                    p.PostPublish.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
+                    p.PostPublish.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
+                    p.PostPublish.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
                 {
                     var uid = Guid.NewGuid();
                     postModel.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
