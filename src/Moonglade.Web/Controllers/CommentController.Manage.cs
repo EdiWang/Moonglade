@@ -24,21 +24,16 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("set-approval-status")]
-        public async Task<IActionResult> SetApprovalStatus(Guid commentId, bool isApproved)
+        public async Task<IActionResult> SetApprovalStatus(Guid commentId)
         {
-            if (isApproved)
+            var response = await _commentService.ToggleCommentApprovalStatus(new[] { commentId });
+            if (response.IsSuccess)
             {
-                var response = await _commentService.ApproveComments(new[] { commentId });
-                if (response.IsSuccess)
-                {
-                    return Json(commentId);
-                }
-
-                Response.StatusCode = StatusCodes.Status500InternalServerError;
-                return Json(response.ResponseCode);
+                return Json(commentId);
             }
 
-            return await Delete(commentId);
+            Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return Json(response.ResponseCode);
         }
 
         [Authorize]

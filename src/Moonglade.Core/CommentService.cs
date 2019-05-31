@@ -89,7 +89,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> ApproveComments(Guid[] commentIds)
+        public Task<Response> ToggleCommentApprovalStatus(Guid[] commentIds)
         {
             return TryExecuteAsync(async () =>
             {
@@ -102,7 +102,7 @@ namespace Moonglade.Core
                 var comments = await _commentRepository.GetAsync(spec);
                 foreach (var cmt in comments)
                 {
-                    cmt.IsApproved = true;
+                    cmt.IsApproved = !cmt.IsApproved;
                     await _commentRepository.UpdateAsync(cmt);
                 }
 
