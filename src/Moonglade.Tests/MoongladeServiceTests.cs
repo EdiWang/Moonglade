@@ -29,7 +29,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestTryExecuteSuccess()
+        public void TestTryExecute()
         {
             var genericResponse = _moongladeService.TryExecute(() =>
             {
@@ -51,6 +51,35 @@ namespace Moonglade.Tests
             });
             Assert.IsFalse(failedResponse.IsSuccess);
             Assert.AreEqual(1, failedResponse.ResponseCode);
+            Assert.AreEqual("996 is not supported", failedResponse.Message);
+        }
+
+        [Test]
+        public void TestTryExecuteOfType()
+        {
+            var genericResponse = _moongladeService.TryExecute(() =>
+            {
+                return new Response<int>(996);
+            });
+            Assert.IsFalse(genericResponse.IsSuccess);
+            Assert.IsTrue(genericResponse.Message == string.Empty);
+            Assert.AreEqual(996, genericResponse.Item);
+
+            var successResponse = _moongladeService.TryExecute(() =>
+            {
+                return new SuccessResponse<string>("Work 955") { Message = ".NET Rocks!" };
+            });
+            Assert.IsTrue(successResponse.IsSuccess);
+            Assert.IsTrue(successResponse.Message == ".NET Rocks!");
+            Assert.AreEqual("Work 955", successResponse.Item);
+
+            var failedResponse = _moongladeService.TryExecute<int>(() =>
+            {
+                throw new NotSupportedException("996 is not supported");
+            });
+            Assert.IsFalse(failedResponse.IsSuccess);
+            Assert.AreEqual(1, failedResponse.ResponseCode);
+            Assert.AreEqual(0, failedResponse.Item);
             Assert.AreEqual("996 is not supported", failedResponse.Message);
         }
     }
