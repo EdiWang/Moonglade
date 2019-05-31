@@ -87,15 +87,18 @@ namespace Moonglade.Core
             }, keyParameter: top);
         }
 
-        public TagInfo GetTag(string normalizedName)
+        public Response<TagInfo> GetTag(string normalizedName)
         {
-            var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new TagInfo()
+            return TryExecute(() =>
             {
-                Id = tg.Id,
-                NormalizedTagName = tg.NormalizedName,
-                TagName = tg.DisplayName
+                var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new TagInfo()
+                {
+                    Id = tg.Id,
+                    NormalizedTagName = tg.NormalizedName,
+                    TagName = tg.DisplayName
+                });
+                return new SuccessResponse<TagInfo>(tag);
             });
-            return tag;
         }
 
         public async Task<Response<IReadOnlyList<TagInfo>>> GetTagCountListAsync()
