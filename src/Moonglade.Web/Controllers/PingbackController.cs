@@ -25,6 +25,7 @@ namespace Moonglade.Web.Controllers
             _pingbackService = pingbackService;
         }
 
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Index()
         {
             Logger.LogInformation("Receiving Pingback");
