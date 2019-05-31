@@ -1,21 +1,28 @@
 ﻿@model IReadOnlyList<Moonglade.Model.PostListItem>
 
-<h3>
-    @ViewBag.TitlePrefix
-</h3>
-<hr />
-@if (!Model.Any())
+@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
 {
-    <div class="alert alert-warning">
-        No Posts
-    </div>
+    <partial name="_ServerErrorMessage" />
 }
 else
 {
-    foreach (var item in Model.OrderByDescending(s => s.PubDateUtc))
+    <h3>
+        @ViewBag.TitlePrefix
+    </h3>
+    <hr />
+    @if (!Model.Any())
     {
-        <partial name="_PostListItem" model="item" />
-        <div class="mb-4 d-none d-md-block"></div>
-        <hr class="d-none d-md-block" />
+        <div class="alert alert-warning">
+            No Posts
+        </div>
+    }
+    else
+    {
+        foreach (var item in Model.OrderByDescending(s => s.PubDateUtc))
+        {
+            <partial name="_PostListItem" model="item" />
+            <div class="mb-4 d-none d-md-block"></div>
+            <hr class="d-none d-md-block" />
+        }
     }
 }

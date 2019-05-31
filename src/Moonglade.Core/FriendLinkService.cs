@@ -23,27 +23,27 @@ namespace Moonglade.Core
             _friendlinkRepository = friendlinkRepository;
         }
 
-        public async Task<Response<FriendLinkEntity>> GetFriendLinkAsync(Guid id)
+        public Task<Response<FriendLinkEntity>> GetFriendLinkAsync(Guid id)
         {
-            return await TryExecuteAsync<FriendLinkEntity>(async () =>
+            return TryExecuteAsync<FriendLinkEntity>(async () =>
             {
                 var item = await _friendlinkRepository.GetAsync(id);
                 return new SuccessResponse<FriendLinkEntity>(item);
             });
         }
 
-        public async Task<Response<IReadOnlyList<FriendLinkEntity>>> GetAllFriendLinksAsync()
+        public Task<Response<IReadOnlyList<FriendLinkEntity>>> GetAllFriendLinksAsync()
         {
-            return await TryExecuteAsync<IReadOnlyList<FriendLinkEntity>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<FriendLinkEntity>>(async () =>
             {
                 var item = await _friendlinkRepository.GetAsync();
                 return new SuccessResponse<IReadOnlyList<FriendLinkEntity>>(item);
             });
         }
 
-        public async Task<Response> AddFriendLinkAsync(string title, string linkUrl)
+        public Task<Response> AddFriendLinkAsync(string title, string linkUrl)
         {
-            return await TryExecuteAsync(async () =>
+            return TryExecuteAsync(async () =>
             {
                 if (string.IsNullOrWhiteSpace(title))
                 {
@@ -72,18 +72,18 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response> DeleteFriendLinkAsync(Guid id)
+        public Task<Response> DeleteFriendLinkAsync(Guid id)
         {
-            return await TryExecuteAsync(async () =>
+            return TryExecuteAsync(async () =>
             {
                 await _friendlinkRepository.DeleteAsync(id);
                 return new SuccessResponse();
             }, keyParameter: id);
         }
 
-        public async Task<Response> UpdateFriendLinkAsync(Guid id, string newTitle, string newLinkUrl)
+        public Task<Response> UpdateFriendLinkAsync(Guid id, string newTitle, string newLinkUrl)
         {
-            return await TryExecuteAsync(async () =>
+            return TryExecuteAsync(async () =>
             {
                 if (string.IsNullOrWhiteSpace(newTitle))
                 {

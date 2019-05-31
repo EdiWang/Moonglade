@@ -15,51 +15,25 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage(int page = 1)
         {
-            const int pageSize = 20;
+            const int pageSize = 10;
             var commentList = await _commentService.GetPagedCommentAsync(pageSize, page);
             var commentsAsIPagedList =
-                new StaticPagedList<CommentListItem>(commentList, page, pageSize, _commentService.CountForApproved);
+                new StaticPagedList<CommentListItem>(commentList.Item, page, pageSize, _commentService.CountComments());
             return View(commentsAsIPagedList);
         }
 
         [Authorize]
-        [HttpGet("pending-approval")]
-        public IActionResult PendingApproval()
-        {
-            var list = _commentService.GetPendingApprovalComments();
-            return View(list);
-        }
-
-        [Authorize]
-        [HttpPost("approve-comments")]
-        public async Task<IActionResult> ApproveComments(Guid[] commentIds)
-        {
-            var response = await _commentService.ApproveComments(commentIds);
-            if (!response.IsSuccess)
-            {
-                Response.StatusCode = StatusCodes.Status500InternalServerError;
-            }
-            return Json(response);
-        }
-
-        // TODO: Obsolete this action
-        [Authorize]
         [HttpPost("set-approval-status")]
-        public async Task<IActionResult> SetApprovalStatus(Guid commentId, bool isApproved)
+        public async Task<IActionResult> SetApprovalStatus(Guid commentId)
         {
-            if (isApproved)
+            var response = await _commentService.ToggleCommentApprovalStatus(new[] { commentId });
+            if (response.IsSuccess)
             {
-                var response = await _commentService.ApproveComments(new[] { commentId });
-                if (response.IsSuccess)
-                {
-                    return Json(commentId);
-                }
-
-                Response.StatusCode = StatusCodes.Status500InternalServerError;
-                return Json(response.ResponseCode);
+                return Json(commentId);
             }
 
-            return await Delete(commentId);
+            Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return Json(response.ResponseCode);
         }
 
         [Authorize]
@@ -74,7 +48,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("reply")]
         public IActionResult ReplyComment(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
-            var response = _commentService.NewReply(commentId, replyContent,
+            var response = _commentService.AddReply(commentId, replyContent,
                 HttpContext.Connection.RemoteIpAddress.ToString(), GetUserAgent());
 
             if (!response.IsSuccess)

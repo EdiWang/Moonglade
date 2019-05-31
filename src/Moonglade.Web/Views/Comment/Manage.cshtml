@@ -17,7 +17,6 @@
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
-                $(`#span-processing-${cid}`).show();
                 ajaxPostWithCSRFToken("delete", { commentId: cid }, function (data) {
                     $(`#panel-comment-${data}`).slideUp();
                 });
@@ -39,8 +38,28 @@
                         }</span></div><p>${data.replyContent}</p></div>`);
                 });
             });
+
+            $(".btn-approve").click(function () {
+                ajaxPostWithCSRFToken("set-approval-status", { commentId: $(this).data("commentid") }, function (data) {
+                    $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-outline-success');
+                    $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-success');
+                });
+            });
         });
     </script>
+}
+
+@section head{ 
+    <style>
+        .mdrendered-comment-content img{
+            max-width: 720px;
+        }
+
+        .reply-container {
+            padding-left: 10px;
+            border-left: 4px solid #CECECE;
+        }
+    </style>
 }
 
 <h3>
@@ -48,57 +67,45 @@
 </h3>
 <hr />
 
-<ul class="nav nav-tabs">
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link active" asp-controller="Comment" asp-action="Manage">Published</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link" asp-controller="Comment" asp-action="PendingApproval">Pending Approval</a>
-    </li>
-</ul>
-
-<div class="mb-3"></div>
-
 @if (Model.Count == 0)
 {
     <div class="alert alert-info">
         No Comments
     </div>
-    <div class="bor"></div>
 }
 else
 {
     foreach (var item in Model)
     {
         <div id="panel-comment-@item.Id" class="card mb-4">
-            <div class="card-header">
-                <strong>
-                    <i class="fas fa-user"></i>
-                    @item.Username
-                </strong>
-                <span class="text-muted d-none d-sm-inline">@item.IpAddress</span>
-                <a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>
-                <span class="text-muted float-right">@Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span>
-            </div>
             <div class="card-body">
-                @Html.Raw(Utils.MdContentToHtml(item.CommentContent))
-
-                <div>
-                    <strong>
-                        <i class="fas fa-bookmark"></i>
-                        @item.PostTitle
-                    </strong>
-
-                    <div class="float-right">
-                        <span id="span-processing-@item.Id" style="display: none;">Processing...</span>
-
-                        <button class="btn btn-sm btn-primary btn-reply" data-commentid="@item.Id">Reply</button>
-                        <button class="btn btn-sm btn-danger btn-delete" data-commentid="@item.Id">Delete</button>
-                    </div>
+                <div class="float-right">
+                    <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
+                        <i class="fas fa-star"></i>
+                    </a>
+                    <button class="btn btn-sm btn-primary btn-reply" data-commentid="@item.Id">
+                        <i class="fa fa-reply"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger btn-delete" data-commentid="@item.Id">
+                        <i class="fa fa-trash-alt"></i>
+                    </button>
                 </div>
 
-                <div class="reply-ui" style="display: none;">
-                    <hr />
+                <h6>
+                    @item.Username (<a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>)
+                </h6>
+                <div class="mdrendered-comment-content">
+                    @Html.Raw(Utils.MdContentToHtml(item.CommentContent))
+                </div>
+                <div class="text-muted">
+                    @item.PostTitle
+                </div>
+
+                <div class="text-muted">
+                    <span>@Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span> | <span class="text-muted d-none d-sm-inline">@item.IpAddress</span>
+                </div>
+
+                <div class="reply-ui mt-3" style="display: none;">
                     <form>
                         <div class="form-group">
                             <textarea class="form-control"
@@ -112,19 +119,18 @@ else
                         </a>
                     </form>
                 </div>
-
                 <div class="reply-list">
                     @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
                     {
                         <hr />
                         <div class="reply-container">
                             <div>
-                                <strong>Edi Wang</strong>
-                                <span class="float-right text-muted">@Utils.UtcToZoneTime(reply.ReplyTimeUtc, Settings.Value.TimeZone)</span>
+                                <strong>You Replied</strong>
                             </div>
-                            <p>
+                            <div class="mb-2">
                                 @reply.ReplyContent
-                            </p>
+                            </div>
+                            <div class="text-muted">@Utils.UtcToZoneTime(reply.ReplyTimeUtc, Settings.Value.TimeZone)</div>
                         </div>
                     }
                 </div>

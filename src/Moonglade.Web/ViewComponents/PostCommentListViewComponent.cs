@@ -29,7 +29,7 @@ namespace Moonglade.Web.ViewComponents
                     return View("Error");
                 }
 
-                var comments = await _commentService.GetApprovedCommentsOfPostAsync(id);
+                var comments = await _commentService.GetSelectedCommentsOfPostAsync(id);
                 return View(comments);
             }
             catch (Exception e)

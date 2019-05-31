@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult NewComment(PostSlugViewModelWrapper model,
+        public async Task<IActionResult> NewComment(PostSlugViewModelWrapper model,
             [FromServices] ISessionBasedCaptcha captcha)
         {
             try
@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
                     }
 
                     var commentPostModel = model.NewCommentModel;
-                    var response = _commentService.NewComment(new NewCommentRequest
+                    var response = await _commentService.AddCommentAsync(new NewCommentRequest
                     {
                         Username = commentPostModel.Username,
                         Content = commentPostModel.Content,
@@ -78,11 +78,11 @@ namespace Moonglade.Web.Controllers
                         if (_blogConfig.EmailSettings.SendEmailOnNewComment)
                         {
                             var postTitle = _postService.GetPostTitle(commentPostModel.PostId);
-                            Task.Run(async () =>
-                            {
-                                await _notification.SendNewCommentNotificationAsync(response.Item, postTitle, 
-                                    Utils.MdContentToHtml);
-                            });
+                            _ = Task.Run(async () =>
+                              {
+                                  await _notification.SendNewCommentNotificationAsync(response.Item, postTitle,
+                                      Utils.MdContentToHtml);
+                              });
                         }
                         var cResponse = new CommentResponse(true, CommentResponseCode.Success);
                         return Json(cResponse);

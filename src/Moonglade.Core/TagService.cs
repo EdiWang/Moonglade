@@ -29,9 +29,13 @@ namespace Moonglade.Core
             return _tagRepository.GetAsync();
         }
 
-        public Task<IReadOnlyList<string>> GetAllTagNamesAsync()
+        public Task<Response<IReadOnlyList<string>>> GetAllTagNamesAsync()
         {
-            return _tagRepository.SelectAsync(t => t.DisplayName);
+            return TryExecuteAsync<IReadOnlyList<string>>(async () =>
+            {
+                var tagNames = await _tagRepository.SelectAsync(t => t.DisplayName);
+                return new SuccessResponse<IReadOnlyList<string>>(tagNames);
+            });
         }
 
         public Response UpdateTag(int tagId, string newName)
@@ -66,9 +70,9 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response<IReadOnlyList<TagInfo>>> GetHotTagsAsync(int top)
+        public Task<Response<IReadOnlyList<TagInfo>>> GetHotTagsAsync(int top)
         {
-            return await TryExecuteAsync<IReadOnlyList<TagInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<TagInfo>>(async () =>
             {
                 if (_tagRepository.Any())
                 {
@@ -87,20 +91,23 @@ namespace Moonglade.Core
             }, keyParameter: top);
         }
 
-        public TagInfo GetTag(string normalizedName)
+        public Response<TagInfo> GetTag(string normalizedName)
         {
-            var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new TagInfo()
+            return TryExecute(() =>
             {
-                Id = tg.Id,
-                NormalizedTagName = tg.NormalizedName,
-                TagName = tg.DisplayName
+                var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new TagInfo()
+                {
+                    Id = tg.Id,
+                    NormalizedTagName = tg.NormalizedName,
+                    TagName = tg.DisplayName
+                });
+                return new SuccessResponse<TagInfo>(tag);
             });
-            return tag;
         }
 
-        public async Task<Response<IReadOnlyList<TagInfo>>> GetTagCountListAsync()
+        public Task<Response<IReadOnlyList<TagInfo>>> GetTagCountListAsync()
         {
-            return await TryExecuteAsync<IReadOnlyList<TagInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<TagInfo>>(async () =>
             {
                 var list = await _tagRepository.SelectAsync(t => new TagInfo
                 {

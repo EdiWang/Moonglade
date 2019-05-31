@@ -39,30 +39,35 @@ namespace Moonglade.Web.Controllers
         [HttpGet("list/{normalizedName}")]
         public async Task<IActionResult> List(string normalizedName)
         {
-            ViewBag.ErrorMessage = string.Empty;
+            var tagResponse = _tagService.GetTag(normalizedName);
+            if (!tagResponse.IsSuccess)
+            {
+                SetFriendlyErrorMessage();
+                return View();
+            }
 
-            var tag = _tagService.GetTag(normalizedName);
+            if (tagResponse.Item == null)
+            {
+                return NotFound();
+            }
 
-            var postResponse = await _postService.GetPostsByTagAsync(tag.Id);
+            ViewBag.TitlePrefix = tagResponse.Item.TagName;
+            var postResponse = await _postService.GetPostsByTagAsync(tagResponse.Item.Id);
             if (!postResponse.IsSuccess)
             {
-                return ServerError();
+                SetFriendlyErrorMessage();
+                return View();
             }
 
             var posts = postResponse.Item;
-            if (posts.Any())
-            {
-                ViewBag.TitlePrefix = tag.TagName;
-                return View(posts);
-            }
-            return NotFound();
+            return View(posts);
         }
 
         [HttpGet("get-all-tag-names")]
         public async Task<IActionResult> GetAllTagNames()
         {
             var tagNames = await _tagService.GetAllTagNamesAsync();
-            return Json(tagNames);
+            return Json(tagNames.Item);
         }
     }
 }
