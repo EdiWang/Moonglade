@@ -162,8 +162,7 @@ namespace Moonglade.Notification
                                                      .Map("SourceDomain", receivedPingback.Domain)
                                                      .Map(nameof(receivedPingback.SourceIp), receivedPingback.SourceIp)
                                                      .Map(nameof(receivedPingback.SourceTitle), receivedPingback.SourceTitle)
-                                                     .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl)
-                                                     .Map(nameof(receivedPingback.Direction), receivedPingback.Direction);
+                                                     .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl);
 
                 await EmailHelper.ApplyTemplate(MailMesageTypes.BeingPinged.ToString(), pipeline)
                     .SendMailAsync(_blogConfig.EmailSettings.AdminEmail);

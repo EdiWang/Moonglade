@@ -9,9 +9,8 @@ namespace Moonglade.Data.Entities
         public string SourceUrl { get; set; }
         public string SourceTitle { get; set; }
         public string SourceIp { get; set; }
-        public Guid? TargetPostId { get; set; }
+        public Guid TargetPostId { get; set; }
         public string TargetPostTitle { get; set; }
-        public DateTime? PingTimeUtc { get; set; }
-        public string Direction { get; set; }
+        public DateTime PingTimeUtc { get; set; }
     }
 }
