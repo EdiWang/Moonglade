@@ -60,5 +60,40 @@ namespace Moonglade.Tests
             var fdLinkResponse = await svc.AddFriendLinkAsync(title, linkUrl);
             return fdLinkResponse.IsSuccess;
         }
+
+        [Test]
+        public async Task TestAddFriendLinkAsyncValid()
+        {
+            var uid = Guid.NewGuid();
+            var friendLinkEntity = new FriendLinkEntity()
+            {
+                Id = uid,
+                LinkUrl = "https://dot.net",
+                Title = "Choice of 955"
+            };
+            var tcs = new TaskCompletionSource<FriendLinkEntity>();
+            tcs.SetResult(friendLinkEntity);
+
+            var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
+            friendlinkRepositoryMock.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
+
+            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object);
+
+            var fdLinkResponse = await svc.AddFriendLinkAsync("Choice of 955", "https://dot.net");
+            Assert.IsTrue(fdLinkResponse.IsSuccess);
+        }
+
+        [TestCase("", "", ExpectedResult = false)]
+        [TestCase("Java", "", ExpectedResult = false)]
+        [TestCase("", "ICU", ExpectedResult = false)]
+        [TestCase("dotnet", "955", ExpectedResult = false)]
+        public async Task<bool> UpdateFriendLinkAsyncInvalidParameter(string title, string linkUrl)
+        {
+            var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
+            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object);
+
+            var fdLinkResponse = await svc.UpdateFriendLinkAsync(Guid.NewGuid(), title, linkUrl);
+            return fdLinkResponse.IsSuccess;
+        }
     }
 }
