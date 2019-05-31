@@ -41,7 +41,7 @@ namespace Moonglade.Web.Controllers
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
 
-        [HttpGet("uploads/{filename}")]
+        [Route("uploads/{filename}")]
         public async Task<IActionResult> GetImageAsync(string filename, [FromServices] IMemoryCache cache)
         {
             try
@@ -172,7 +172,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [HttpGet("get-captcha-image")]
+        [Route("get-captcha-image")]
         public IActionResult GetCaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
             var s = captcha.GenerateCaptchaImageFileStream(HttpContext.Session,
@@ -181,7 +181,7 @@ namespace Moonglade.Web.Controllers
             return s;
         }
 
-        [HttpGet("avatar")]
+        [Route("avatar")]
         public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
             var fallbackImageFile =

@@ -22,7 +22,7 @@ namespace Moonglade.Web.Controllers
             _syndicationFeedService = syndicationFeedService;
         }
 
-        [HttpGet("rss/{categoryName?}")]
+        [Route("rss/{categoryName?}")]
         public async Task<IActionResult> Rss(string categoryName = null)
         {
             var rssDataFile = string.IsNullOrWhiteSpace(categoryName) ?
@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
             return NotFound();
         }
 
-        [HttpGet("atom")]
+        [Route("atom")]
         public async Task<IActionResult> Atom()
         {
             var atomDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\posts-atom.xml";

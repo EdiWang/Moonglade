@@ -25,7 +25,7 @@ namespace Moonglade.Web.Controllers
             _postService = postService;
         }
 
-        [HttpGet("")]
+        [Route("")]
         public async Task<IActionResult> Index()
         {
             var response = await _tagService.GetTagCountListAsync();
@@ -36,7 +36,7 @@ namespace Moonglade.Web.Controllers
             return View(response.Item);
         }
 
-        [HttpGet("list/{normalizedName}")]
+        [Route("list/{normalizedName}")]
         public async Task<IActionResult> List(string normalizedName)
         {
             var tagResponse = _tagService.GetTag(normalizedName);
@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
             return View(posts);
         }
 
-        [HttpGet("get-all-tag-names")]
+        [Route("get-all-tag-names")]
         public async Task<IActionResult> GetAllTagNames()
         {
             var tagNames = await _tagService.GetAllTagNamesAsync();

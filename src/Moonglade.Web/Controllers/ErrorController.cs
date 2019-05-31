@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,8 @@ namespace Moonglade.Web.Controllers
     public class ErrorController : Controller
     {
         protected readonly ILogger<ErrorController> Logger;
+
+        private static readonly int[] HandledHttpResponseCodes = { 400, 403, 404, 500 };
 
         public ErrorController(ILogger<ErrorController> logger)
         {
@@ -23,8 +26,14 @@ namespace Moonglade.Web.Controllers
         {
             if (statusCode.HasValue)
             {
-                this.HttpContext.Response.StatusCode = statusCode.Value;
-                return File($"~/errorpages/{statusCode}.html", "text/html");
+                HttpContext.Response.StatusCode = statusCode.Value;
+
+                if (HandledHttpResponseCodes.Contains(statusCode.Value))
+                {
+                    return File($"~/errorpages/{statusCode}.html", "text/html");
+                }
+
+                return StatusCode(statusCode.Value);
             }
 
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();

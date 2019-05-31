@@ -32,8 +32,8 @@ namespace Moonglade.Web.Controllers
             return View(response.Item);
         }
 
-        [HttpGet("{year:int:length(4)}")]
-        [HttpGet("{year:int:length(4)}/{month:int:range(1,12)}")]
+        [Route("{year:int:length(4)}")]
+        [Route("{year:int:length(4)}/{month:int:range(1,12)}")]
         public async Task<IActionResult> List(int year, int? month)
         {
             if (year > DateTime.UtcNow.Year)
