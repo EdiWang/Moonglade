@@ -8,7 +8,7 @@ namespace Moonglade.Data.Spec
 {
     public sealed class CommentSepc : BaseSpecification<CommentEntity>
     {
-        public CommentSepc(int pageSize, int pageIndex) : base(c => c.IsApproved)
+        public CommentSepc(int pageSize, int pageIndex) : base(c => true)
         {
             var startRow = (pageIndex - 1) * pageSize;
 

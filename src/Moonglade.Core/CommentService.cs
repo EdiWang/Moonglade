@@ -38,9 +38,12 @@ namespace Moonglade.Core
             _commentReplyRepository = commentReplyRepository;
         }
 
-        public int CountForApproved => _commentRepository.Count(c => c.IsApproved);
+        public int CountComments()
+        {
+            return _commentRepository.Count(c => true);
+        }
 
-        public Task<IReadOnlyList<PostCommentListItem>> GetApprovedCommentsOfPostAsync(Guid postId)
+        public Task<IReadOnlyList<PostCommentListItem>> GetSelectedCommentsOfPostAsync(Guid postId)
         {
             return _commentRepository.SelectAsync(new CommentSepc(postId), c => new PostCommentListItem
             {
@@ -55,44 +58,35 @@ namespace Moonglade.Core
             });
         }
 
-        public IReadOnlyList<PendingApprovalComment> GetPendingApprovalComments()
+        public Task<Response<IReadOnlyList<CommentListItem>>> GetPagedCommentAsync(int pageSize, int pageIndex)
         {
-            return _commentRepository.Select(new PendingApprovalCommentSepc(), p => new PendingApprovalComment
+            return TryExecuteAsync<IReadOnlyList<CommentListItem>>(async () =>
             {
-                Id = p.Id,
-                Username = p.Username,
-                Email = p.Email,
-                IpAddress = p.IPAddress,
-                CommentContent = p.CommentContent,
-                PostTitle = p.Post.Title,
-                CreateOnUtc = p.CreateOnUtc
-            });
-        }
-
-        public async Task<IReadOnlyList<CommentListItem>> GetPagedCommentAsync(int pageSize, int pageIndex)
-        {
-            if (pageSize < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
-            }
-
-            var spec = new CommentSepc(pageSize, pageIndex);
-            var comments = await _commentRepository.SelectAsync(spec, p => new CommentListItem
-            {
-                Id = p.Id,
-                CommentContent = p.CommentContent,
-                CreateOnUtc = p.CreateOnUtc,
-                Email = p.Email,
-                IpAddress = p.IPAddress,
-                Username = p.Username,
-                PostTitle = p.Post.Title,
-                CommentReplies = p.CommentReply.Select(cr => new CommentReplyItem
+                if (pageSize < 1)
                 {
-                    ReplyContent = cr.ReplyContent,
-                    ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
-                }).ToList()
+                    throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
+                }
+
+                var spec = new CommentSepc(pageSize, pageIndex);
+                var comments = await _commentRepository.SelectAsync(spec, p => new CommentListItem
+                {
+                    Id = p.Id,
+                    CommentContent = p.CommentContent,
+                    CreateOnUtc = p.CreateOnUtc,
+                    Email = p.Email,
+                    IpAddress = p.IPAddress,
+                    Username = p.Username,
+                    IsApproved = p.IsApproved,
+                    PostTitle = p.Post.Title,
+                    CommentReplies = p.CommentReply.Select(cr => new CommentReplyItem
+                    {
+                        ReplyContent = cr.ReplyContent,
+                        ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
+                    }).ToList()
+                });
+
+                return new SuccessResponse<IReadOnlyList<CommentListItem>>(comments);
             });
-            return comments;
         }
 
         public Task<Response> ApproveComments(Guid[] commentIds)
@@ -139,9 +133,9 @@ namespace Moonglade.Core
             });
         }
 
-        public Response<CommentEntity> NewComment(NewCommentRequest request)
+        public Task<Response<CommentEntity>> AddCommentAsync(NewCommentRequest request)
         {
-            return TryExecute<CommentEntity>(() =>
+            return TryExecuteAsync<CommentEntity>(async () =>
             {
                 // 1. Check comment enabled or not
                 if (!_blogConfig.ContentSettings.EnableComments)
@@ -185,12 +179,12 @@ namespace Moonglade.Core
                     UserAgent = request.UserAgent
                 };
 
-                _commentRepository.Add(model);
+                await _commentRepository.AddAsync(model);
                 return new SuccessResponse<CommentEntity>(model);
             });
         }
 
-        public Response<CommentReplySummary> NewReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
+        public Response<CommentReplySummary> AddReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
         {
             return TryExecute<CommentReplySummary>(() =>
             {
