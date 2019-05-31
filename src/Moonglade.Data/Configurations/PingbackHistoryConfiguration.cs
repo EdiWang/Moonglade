@@ -9,7 +9,6 @@ namespace Moonglade.Data.Configurations
         public void Configure(EntityTypeBuilder<PingbackHistoryEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
-            builder.Property(e => e.Direction).HasMaxLength(16);
             builder.Property(e => e.Domain).HasMaxLength(256);
             builder.Property(e => e.PingTimeUtc).HasColumnType("datetime");
             builder.Property(e => e.SourceIp).HasMaxLength(64);

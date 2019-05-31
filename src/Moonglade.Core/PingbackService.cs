@@ -96,7 +96,7 @@ namespace Moonglade.Core
         private async Task NotifyAdminForReceivedPing(Guid pingbackId)
         {
             var pingback = _pingbackRepository.Get(pingbackId);
-            var title = _postService.GetPostTitle(pingback.TargetPostId.GetValueOrDefault());
+            var title = _postService.GetPostTitle(pingback.TargetPostId);
             if (!string.IsNullOrWhiteSpace(title)) await _notification.SendPingNotification(pingback, title);
         }
 
@@ -112,8 +112,7 @@ namespace Moonglade.Core
                 SourceTitle = request.SourceTitle,
                 SourceUrl = request.SourceUrl,
                 TargetPostId = request.TargetPostId,
-                TargetPostTitle = request.TargetPostTitle,
-                Direction = "INBOUND"
+                TargetPostTitle = request.TargetPostTitle
             };
 
             _pingbackRepository.Add(rpb);

@@ -46,9 +46,8 @@ CREATE TABLE [PingbackHistory](
 [SourceUrl] [nvarchar](256) NULL,
 [SourceTitle] [nvarchar](256) NULL,
 [SourceIp] [nvarchar](64) NULL,
-[TargetPostId] [uniqueidentifier] NULL,
-[PingTimeUtc] [datetime] NULL,
-[Direction] [nvarchar](16) NULL,
+[TargetPostId] [uniqueidentifier] NOT NULL,
+[PingTimeUtc] [datetime] NOT NULL,
 [TargetPostTitle] [nvarchar](128) NULL)
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'Post')
