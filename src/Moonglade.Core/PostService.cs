@@ -67,9 +67,9 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
+        public Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
         {
-            return await TryExecuteAsync<IReadOnlyList<ArchiveItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<ArchiveItem>>(async () =>
             {
                 if (!_postRepository.Any(p =>
                     p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
@@ -90,9 +90,9 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticTypes statisticTypes)
+        public Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticTypes statisticTypes)
         {
-            return await TryExecuteAsync(async () =>
+            return TryExecuteAsync(async () =>
             {
                 var pp = _postExtensionRepository.Get(postId);
                 if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
@@ -143,9 +143,9 @@ namespace Moonglade.Core
             }, keyParameter: url);
         }
 
-        public async Task<Response<PostEntity>> GetPostAsync(int year, int month, int day, string slug)
+        public Task<Response<PostEntity>> GetPostAsync(int year, int month, int day, string slug)
         {
-            return await TryExecuteAsync<PostEntity>(async () =>
+            return TryExecuteAsync<PostEntity>(async () =>
             {
                 var date = new DateTime(year, month, day);
                 var spec = new PostSpec(date, slug);
@@ -222,9 +222,9 @@ namespace Moonglade.Core
             return list;
         }
 
-        public async Task<Response<IReadOnlyList<PostListItem>>> GetPostsByTagAsync(int tagId)
+        public Task<Response<IReadOnlyList<PostListItem>>> GetPostsByTagAsync(int tagId)
         {
-            return await TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
             {
                 if (tagId == 0)
                 {
@@ -246,9 +246,9 @@ namespace Moonglade.Core
 
         #region Search
 
-        public async Task<Response<IReadOnlyList<PostListItem>>> SearchPostAsync(string keyword)
+        public Task<Response<IReadOnlyList<PostListItem>>> SearchPostAsync(string keyword)
         {
-            return await TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
             {
                 if (string.IsNullOrWhiteSpace(keyword))
                 {
@@ -512,9 +512,9 @@ namespace Moonglade.Core
             }, keyParameter: postId);
         }
 
-        public async Task<Response> DeleteRecycledPostsAsync()
+        public Task<Response> DeleteRecycledPostsAsync()
         {
-            return await TryExecuteAsync(async () =>
+            return TryExecuteAsync(async () =>
             {
                 var spec = new PostSpec(true);
                 var posts = await _postRepository.GetAsync(spec);

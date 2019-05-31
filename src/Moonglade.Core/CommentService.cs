@@ -95,9 +95,9 @@ namespace Moonglade.Core
             return comments;
         }
 
-        public async Task<Response> ApproveComments(Guid[] commentIds)
+        public Task<Response> ApproveComments(Guid[] commentIds)
         {
-            return await TryExecuteAsync(async () =>
+            return TryExecuteAsync(async () =>
             {
                 if (null == commentIds || !commentIds.Any())
                 {
@@ -116,9 +116,9 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response> DeleteComments(Guid[] commentIds)
+        public Task<Response> DeleteComments(Guid[] commentIds)
         {
-            return await TryExecuteAsync(async () =>
+            return TryExecuteAsync(async () =>
             {
                 var spec = new CommentSepc(commentIds);
                 var comments = await _commentRepository.GetAsync(spec);

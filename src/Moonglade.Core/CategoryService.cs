@@ -23,18 +23,18 @@ namespace Moonglade.Core
             _postCategoryRepository = postCategoryRepository;
         }
 
-        public async Task<Response<IReadOnlyList<CategoryEntity>>> GetAllCategoriesAsync()
+        public Task<Response<IReadOnlyList<CategoryEntity>>> GetAllCategoriesAsync()
         {
-            return await TryExecuteAsync<IReadOnlyList<CategoryEntity>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<CategoryEntity>>(async () =>
             {
                 var item = await _categoryRepository.GetAsync();
                 return new SuccessResponse<IReadOnlyList<CategoryEntity>>(item);
             });
         }
 
-        public async Task<Response<CategoryInfo>> GetCategoryAsync(string categoryName)
+        public Task<Response<CategoryInfo>> GetCategoryAsync(string categoryName)
         {
-            return await TryExecuteAsync<CategoryInfo>(async () =>
+            return TryExecuteAsync<CategoryInfo>(async () =>
             {
                 var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
                     new CategorySpec(categoryName), category =>
@@ -50,9 +50,9 @@ namespace Moonglade.Core
             }, keyParameter: categoryName);
         }
 
-        public async Task<Response<CategoryInfo>> GetCategoryAsync(Guid categoryId)
+        public Task<Response<CategoryInfo>> GetCategoryAsync(Guid categoryId)
         {
-            return await TryExecuteAsync<CategoryInfo>(async () =>
+            return TryExecuteAsync<CategoryInfo>(async () =>
             {
                 var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
                     new CategorySpec(categoryId), category =>
@@ -68,9 +68,9 @@ namespace Moonglade.Core
             }, keyParameter: categoryId);
         }
 
-        public async Task<Response<IReadOnlyList<CategoryInfo>>> GetCategoryListAsync()
+        public Task<Response<IReadOnlyList<CategoryInfo>>> GetCategoryListAsync()
         {
-            return await TryExecuteAsync<IReadOnlyList<CategoryInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<CategoryInfo>>(async () =>
             {
                 var list = await _categoryRepository.SelectAsync(c => new CategoryInfo
                 {

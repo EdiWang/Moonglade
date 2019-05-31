@@ -67,7 +67,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> GetAllTagNames()
         {
             var tagNames = await _tagService.GetAllTagNamesAsync();
-            return Json(tagNames);
+            return Json(tagNames.Item);
         }
     }
 }
