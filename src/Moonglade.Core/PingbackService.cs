@@ -38,7 +38,7 @@ namespace Moonglade.Core
         public async Task<PingbackServiceResponse> ProcessReceivedPingback(HttpContext context)
         {
             var response = await _pingbackReceiver.ValidatePingRequest(context);
-            if (response == PingbackServiceResponse.ValidPingRequest)
+            if (response == PingbackValidationResult.ValidPingRequest)
             {
                 Logger.LogInformation($"Pingback Attempt from {context.Connection.RemoteIpAddress} is valid");
 
@@ -69,7 +69,7 @@ namespace Moonglade.Core
                 return PingbackServiceResponse.GenericError;
             }
 
-            return response;
+            return PingbackServiceResponse.InvalidPingRequest;
         }
 
         public Task<IReadOnlyList<PingbackHistoryEntity>> GetReceivedPingbacksAsync()
