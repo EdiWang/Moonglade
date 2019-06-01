@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
-using Edi.Blog.Pingback;
+using Edi.Blog.Pingback.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,11 +24,10 @@ namespace Moonglade.Web.Controllers
             _pingbackService = pingbackService;
         }
 
+        [HttpPost("")]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Index()
         {
-            Logger.LogInformation("Receiving Pingback");
-
             if (!AppSettings.EnablePingBackReceive)
             {
                 Logger.LogInformation("Pingback receive is disabled");
@@ -37,24 +35,8 @@ namespace Moonglade.Web.Controllers
             }
 
             var response = await _pingbackService.ProcessReceivedPingback(HttpContext);
-            Logger.LogInformation($"Pingback Processor Error: {response.ToString()}");
-            switch (response)
-            {
-                case PingbackServiceResponse.Success:
-                    return Content(PingbackReceiver.SuccessResponseString, "text/xml");
-                case PingbackServiceResponse.Error17SourceNotContainTargetUri:
-                    return XmlContent(17, "The source URI does not contain a link to the target URI, and so cannot be used as a source.");
-                case PingbackServiceResponse.Error32TargetUriNotExist:
-                    return XmlContent(32, "The specified target URI does not exist.");
-                case PingbackServiceResponse.Error48PingbackAlreadyRegistered:
-                    return XmlContent(48, "The pingback has already been registered.");
-                case PingbackServiceResponse.SpamDetectedFakeNotFound:
-                    return NotFound();
-                case PingbackServiceResponse.GenericError:
-                    return ServerError();
-                default:
-                    return BadRequest();
-            }
+            Logger.LogInformation($"Pingback Processor Response: {response.ToString()}");
+            return new PingbackResult(response);
         }
 
         [Authorize]
@@ -70,35 +52,6 @@ namespace Moonglade.Web.Controllers
         public IActionResult Delete(Guid pingbackId)
         {
             return _pingbackService.DeleteReceivedPingback(pingbackId).IsSuccess ? Json(pingbackId) : Json(null);
-        }
-
-        private ContentResult XmlContent(int code, string message)
-        {
-            return Content(BuildErrorResponseBody(code, message), "text/xml");
-        }
-
-        private static string BuildErrorResponseBody(int code, string message)
-        {
-            var sb = new StringBuilder();
-            sb.Append("<?xml version=\"1.0\"?>");
-            sb.Append("<methodResponse>");
-            sb.Append("<fault>");
-            sb.Append("<value>");
-            sb.Append("<struct>");
-            sb.Append("<member>");
-            sb.Append("<name>faultCode</name>");
-            sb.AppendFormat("<value><int>{0}</int></value>", code);
-            sb.Append("</member>");
-            sb.Append("<member>");
-            sb.Append("<name>faultString</name>");
-            sb.AppendFormat("<value><string>{0}</string></value>", message);
-            sb.Append("</member>");
-            sb.Append("</struct>");
-            sb.Append("</value>");
-            sb.Append("</fault>");
-            sb.Append("</methodResponse>");
-
-            return sb.ToString();
         }
     }
 }
