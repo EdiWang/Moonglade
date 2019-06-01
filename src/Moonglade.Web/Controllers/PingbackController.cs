@@ -25,11 +25,10 @@ namespace Moonglade.Web.Controllers
             _pingbackService = pingbackService;
         }
 
+        [HttpPost("")]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Index()
         {
-            Logger.LogInformation("Receiving Pingback");
-
             if (!AppSettings.EnablePingBackReceive)
             {
                 Logger.LogInformation("Pingback receive is disabled");
@@ -37,7 +36,7 @@ namespace Moonglade.Web.Controllers
             }
 
             var response = await _pingbackService.ProcessReceivedPingback(HttpContext);
-            Logger.LogInformation($"Pingback Processor Error: {response.ToString()}");
+            Logger.LogInformation($"Pingback Processor Response: {response.ToString()}");
             switch (response)
             {
                 case PingbackServiceResponse.Success:
