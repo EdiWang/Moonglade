@@ -33,5 +33,9 @@
       <match url="^about" />
       <action type="Redirect" url="/page/about" redirectType="Permanent" />
     </rule>
+    <rule name="Redirect favicon" stopProcessing="true">
+      <match url="^favicon/(.*).png$" />
+      <action type="Redirect" url="/{R:1}.png" redirectType="Permanent" />
+    </rule>
   </rules>
 </rewrite>

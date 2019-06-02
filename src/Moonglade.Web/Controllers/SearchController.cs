@@ -62,7 +62,8 @@ namespace Moonglade.Web.Controllers
             {
                 return RedirectToAction(nameof(SearchGet), new { term });
             }
-            return RedirectToAction("Index", "Post");
+
+            return BadRequest();
         }
 
         [HttpGet("search/{term}")]
