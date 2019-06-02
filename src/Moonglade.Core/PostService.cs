@@ -281,9 +281,6 @@ namespace Moonglade.Core
         private IQueryable<PostEntity> SearchPostByKeyword(string keyword)
         {
             var query = _postRepository.GetAsQueryable()
-                                       .Include(p => p.PostPublish)
-                                       .Include(p => p.PostTag)
-                                       .ThenInclude(pt => pt.Tag)
                                        .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished).AsNoTracking();
 
             var str = Regex.Replace(keyword, @"\s+", " ");
