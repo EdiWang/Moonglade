@@ -11,7 +11,7 @@ namespace Moonglade.Web.Filters
     {
         private readonly IMemoryCache _memoryCache;
 
-        private string _cacheKey;
+        private readonly string _cacheKey;
 
         public DeleteMemoryCache(string cacheKey, IMemoryCache memoryCache)
         {
