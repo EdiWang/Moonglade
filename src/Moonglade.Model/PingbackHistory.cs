@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Moonglade.Model
 {
-    public class PingbackHistoryItem
+    public class PingbackHistory
     {
         public Guid Id { get; set; }
         public string Domain { get; set; }

@@ -23,28 +23,28 @@ namespace Moonglade.Core
             _postCategoryRepository = postCategoryRepository;
         }
 
-        public Task<Response<IReadOnlyList<CategoryInfo>>> GetAllCategoriesAsync()
+        public Task<Response<IReadOnlyList<Category>>> GetAllCategoriesAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<CategoryInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<Category>>(async () =>
             {
-                var item = await _categoryRepository.SelectAsync(cat => new CategoryInfo
+                var item = await _categoryRepository.SelectAsync(cat => new Category
                 {
                     Id = cat.Id,
                     DisplayName = cat.DisplayName,
                     Name = cat.Title,
                     Note = cat.Note
                 });
-                return new SuccessResponse<IReadOnlyList<CategoryInfo>>(item);
+                return new SuccessResponse<IReadOnlyList<Category>>(item);
             });
         }
 
-        public Task<Response<CategoryInfo>> GetCategoryAsync(string categoryName)
+        public Task<Response<Category>> GetCategoryAsync(string categoryName)
         {
-            return TryExecuteAsync<CategoryInfo>(async () =>
+            return TryExecuteAsync<Category>(async () =>
             {
                 var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
                     new CategorySpec(categoryName), category =>
-                        new CategoryInfo
+                        new Category
                         {
                             DisplayName = category.DisplayName,
                             Id = category.Id,
@@ -52,17 +52,17 @@ namespace Moonglade.Core
                             Note = category.Note
                         });
 
-                return new SuccessResponse<CategoryInfo>(cat);
+                return new SuccessResponse<Category>(cat);
             }, keyParameter: categoryName);
         }
 
-        public Task<Response<CategoryInfo>> GetCategoryAsync(Guid categoryId)
+        public Task<Response<Category>> GetCategoryAsync(Guid categoryId)
         {
-            return TryExecuteAsync<CategoryInfo>(async () =>
+            return TryExecuteAsync<Category>(async () =>
             {
                 var cat = await _categoryRepository.SelectFirstOrDefaultAsync(
                     new CategorySpec(categoryId), category =>
-                        new CategoryInfo
+                        new Category
                         {
                             DisplayName = category.DisplayName,
                             Id = category.Id,
@@ -70,15 +70,15 @@ namespace Moonglade.Core
                             Note = category.Note
                         });
 
-                return new SuccessResponse<CategoryInfo>(cat);
+                return new SuccessResponse<Category>(cat);
             }, keyParameter: categoryId);
         }
 
-        public Task<Response<IReadOnlyList<CategoryInfo>>> GetCategoryListAsync()
+        public Task<Response<IReadOnlyList<Category>>> GetCategoryListAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<CategoryInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<Category>>(async () =>
             {
-                var list = await _categoryRepository.SelectAsync(c => new CategoryInfo
+                var list = await _categoryRepository.SelectAsync(c => new Category
                 {
                     Id = c.Id,
                     DisplayName = c.DisplayName,
@@ -86,7 +86,7 @@ namespace Moonglade.Core
                     Note = c.Note
                 });
 
-                return new SuccessResponse<IReadOnlyList<CategoryInfo>>(list);
+                return new SuccessResponse<IReadOnlyList<Category>>(list);
             });
         }
 

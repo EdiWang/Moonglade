@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class CommentReplyItem
+    public class CommentReplyDigest
     {
         public DateTime ReplyTimeUtc { get; set; }
 

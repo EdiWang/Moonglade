@@ -50,7 +50,7 @@ namespace Moonglade.Core
                 CommentContent = c.CommentContent,
                 CreateOnUtc = c.CreateOnUtc,
                 Username = c.Username,
-                CommentReplies = c.CommentReply.Select(cr => new CommentReplyItem
+                CommentReplies = c.CommentReply.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
                     ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
@@ -78,7 +78,7 @@ namespace Moonglade.Core
                     Username = p.Username,
                     IsApproved = p.IsApproved,
                     PostTitle = p.Post.Title,
-                    CommentReplies = p.CommentReply.Select(cr => new CommentReplyItem
+                    CommentReplies = p.CommentReply.Select(cr => new CommentReplyDigest
                     {
                         ReplyContent = cr.ReplyContent,
                         ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
@@ -184,20 +184,20 @@ namespace Moonglade.Core
             });
         }
 
-        public Response<CommentReplySummary> AddReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
+        public Response<CommentReplyDetail> AddReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
         {
-            return TryExecute<CommentReplySummary>(() =>
+            return TryExecute<CommentReplyDetail>(() =>
             {
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
-                    return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.CommentDisabled);
+                    return new FailedResponse<CommentReplyDetail>((int)ResponseFailureCode.CommentDisabled);
                 }
 
                 var cmt = _commentRepository.Get(commentId);
 
                 if (null == cmt)
                 {
-                    return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.CommentNotFound);
+                    return new FailedResponse<CommentReplyDetail>((int)ResponseFailureCode.CommentNotFound);
                 }
 
                 var id = Guid.NewGuid();
@@ -213,7 +213,7 @@ namespace Moonglade.Core
 
                 _commentReplyRepository.Add(model);
 
-                var summary = new CommentReplySummary
+                var detail = new CommentReplyDetail
                 {
                     CommentContent = cmt.CommentContent,
                     CommentId = commentId,
@@ -229,7 +229,7 @@ namespace Moonglade.Core
                     UserAgent = model.UserAgent
                 };
 
-                return new SuccessResponse<CommentReplySummary>(summary);
+                return new SuccessResponse<CommentReplyDetail>(detail);
             });
         }
     }

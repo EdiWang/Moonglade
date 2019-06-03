@@ -8,6 +8,6 @@ namespace Moonglade.Model
         public string Username { get; set; }
         public DateTime CreateOnUtc { get; set; }
         public string CommentContent { get; set; }
-        public IReadOnlyList<CommentReplyItem> CommentReplies { get; set; }
+        public IReadOnlyList<CommentReplyDigest> CommentReplies { get; set; }
     }
 }

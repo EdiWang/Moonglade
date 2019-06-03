@@ -160,7 +160,7 @@ namespace Moonglade.Core
                     Abstract = post.ContentAbstract,
                     PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
 
-                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new CategoryInfo
+                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
                     {
                         DisplayName = p.DisplayName,
                         Name = p.Title

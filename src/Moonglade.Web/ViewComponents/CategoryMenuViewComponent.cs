@@ -23,7 +23,7 @@ namespace Moonglade.Web.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var response = await _categoryService.GetCategoryListAsync();
-            return View(response.IsSuccess ? response.Item : new List<CategoryInfo>());
+            return View(response.IsSuccess ? response.Item : new List<Category>());
         }
     }
 }

@@ -72,11 +72,11 @@ namespace Moonglade.Core
             return PingbackServiceResponse.InvalidPingRequest;
         }
 
-        public Task<Response<IReadOnlyList<PingbackHistoryItem>>> GetReceivedPingbacksAsync()
+        public Task<Response<IReadOnlyList<PingbackHistory>>> GetReceivedPingbacksAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<PingbackHistoryItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<PingbackHistory>>(async () =>
             {
-                var list = await _pingbackRepository.SelectAsync(p => new PingbackHistoryItem
+                var list = await _pingbackRepository.SelectAsync(p => new PingbackHistory
                 {
                     Id = p.Id,
                     Domain = p.Domain,
@@ -86,7 +86,7 @@ namespace Moonglade.Core
                     SourceUrl = p.SourceUrl,
                     TargetPostTitle = p.TargetPostTitle
                 });
-                return new SuccessResponse<IReadOnlyList<PingbackHistoryItem>>(list);
+                return new SuccessResponse<IReadOnlyList<PingbackHistory>>(list);
             });
         }
 

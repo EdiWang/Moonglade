@@ -17,7 +17,7 @@ namespace Moonglade.Model
         public int CommentCount { get; set; }
         public bool IsExposedToSiteMap { get; set; }
 
-        public IList<CategoryInfo> Categories { get; set; }
+        public IList<Category> Categories { get; set; }
         public IList<Tag> Tags { get; set; }
     }
 }

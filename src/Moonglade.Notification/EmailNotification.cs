@@ -126,7 +126,7 @@ namespace Moonglade.Notification
             }
         }
 
-        public async Task SendCommentReplyNotificationAsync(CommentReplySummary model, string postLink)
+        public async Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink)
         {
             if (string.IsNullOrWhiteSpace(model.Email))
             {
