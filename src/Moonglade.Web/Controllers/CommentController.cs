@@ -63,11 +63,10 @@ namespace Moonglade.Web.Controllers
                     }
 
                     var commentPostModel = model.NewCommentViewModel;
-                    var response = await _commentService.AddCommentAsync(new NewCommentRequest
+                    var response = await _commentService.AddCommentAsync(new NewCommentRequest(commentPostModel.PostId)
                     {
                         Username = commentPostModel.Username,
                         Content = commentPostModel.Content,
-                        PostId = commentPostModel.PostId,
                         Email = commentPostModel.Email,
                         IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
                         UserAgent = GetUserAgent()
@@ -118,6 +117,29 @@ namespace Moonglade.Web.Controllers
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(new CommentResponse(false, CommentResponseCode.UnknownError));
             }
+        }
+
+        public class CommentResponse
+        {
+            public bool IsSuccess { get; set; }
+
+            public CommentResponseCode ResponseCode { get; set; }
+
+            public CommentResponse(bool isSuccess, CommentResponseCode responseCode)
+            {
+                IsSuccess = isSuccess;
+                ResponseCode = responseCode;
+            }
+        }
+
+        public enum CommentResponseCode
+        {
+            Success,
+            UnknownError,
+            WrongCaptcha,
+            EmailDomainBlocked,
+            CommentDisabled,
+            InvalidModel
         }
     }
 }
