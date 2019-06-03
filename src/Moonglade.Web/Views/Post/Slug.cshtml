@@ -144,9 +144,9 @@
                                 <a class="btn btn-sm btn-outline-success"
                                    asp-controller="Category"
                                    asp-action="List"
-                                   asp-route-categoryName="@item.CategoryRouteName.ToLower()">
+                                   asp-route-categoryName="@item.Name.ToLower()">
                                     <span class="fas fa-archive" aria-hidden="true"></span>
-                                    @item.CategoryDisplayName
+                                    @item.DisplayName
                                 </a>
                             </li>
                         }
@@ -196,21 +196,21 @@
                       data-ajax="true"
                       data-ajax-method="POST">
                     <div class="card-body">
-                        <input type="hidden" asp-for="NewCommentModel.PostId" />
+                        <input type="hidden" asp-for="NewCommentViewModel.PostId" />
                         <div class="row">
                             <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="Your Name" asp-for="NewCommentModel.Username" />
-                                <span asp-validation-for="NewCommentModel.Username" class="text-danger"></span>
+                                <input type="text" class="form-control" placeholder="Your Name" asp-for="NewCommentViewModel.Username" />
+                                <span asp-validation-for="NewCommentViewModel.Username" class="text-danger"></span>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" placeholder="Email" asp-for="NewCommentModel.Email" />
-                                <span asp-validation-for="NewCommentModel.Email" class="text-danger"></span>
+                                <input type="text" class="form-control" placeholder="Email" asp-for="NewCommentViewModel.Email" />
+                                <span asp-validation-for="NewCommentViewModel.Email" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                     <div class="comment-md-content">
-                        <textarea asp-for="NewCommentModel.Content" class="form-control" cols="60" rows="4" placeholder="Say something" maxlength="512"></textarea>
-                        <span asp-validation-for="NewCommentModel.Content" class="text-danger"></span>
+                        <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4" placeholder="Say something" maxlength="512"></textarea>
+                        <span asp-validation-for="NewCommentViewModel.Content" class="text-danger"></span>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -220,14 +220,14 @@
                                         <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Image")" />
                                     </div>
                                     <input type="text"
-                                           asp-for="NewCommentModel.CaptchaCode"
+                                           asp-for="NewCommentViewModel.CaptchaCode"
                                            class="form-control"
                                            placeholder="Captcha Code"
                                            autocomplete="off"
                                            minlength="4"
                                            maxlength="4" />
                                 </div>
-                                <span asp-validation-for="NewCommentModel.CaptchaCode" class="text-danger"></span>
+                                <span asp-validation-for="NewCommentViewModel.CaptchaCode" class="text-danger"></span>
                             </div>
                             <div class="col">
                                 <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">
@@ -265,7 +265,7 @@
     @if (Model.PostModel.CommentCount > 0)
     {
         <section id="comments-list">
-            @await Component.InvokeAsync("PostCommentList", new { postId = @Model.PostModel.PostId })
+            @await Component.InvokeAsync("PostCommentList", new { postId = Model.PostModel.PostId })
         </section>
     }
 </div>

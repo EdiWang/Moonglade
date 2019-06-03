@@ -145,15 +145,47 @@ namespace Moonglade.Core
             }, keyParameter: url);
         }
 
-        public Task<Response<PostEntity>> GetPostAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlugModel>> GetPostAsync(int year, int month, int day, string slug)
         {
-            return TryExecuteAsync<PostEntity>(async () =>
+            return TryExecuteAsync<PostSlugModel>(async () =>
             {
                 var date = new DateTime(year, month, day);
                 var spec = new PostSpec(date, slug);
-                var post = await _postRepository.GetFirstOrDefaultAsync(spec, false);
+                var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugModel
+                {
+                    Title = post.Title,
+                    Abstract = post.ContentAbstract,
+                    PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
 
-                return new SuccessResponse<PostEntity>(post);
+                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new CategoryInfo
+                    {
+                        DisplayName = p.DisplayName,
+                        Name = p.Title
+                    }).ToList(),
+
+                    Content = HttpUtility.HtmlDecode(post.PostContent),
+                    Hits = post.PostExtension.Hits,
+                    Likes = post.PostExtension.Likes,
+
+                    Tags = post.PostTag.Select(pt => pt.Tag)
+                        .Select(p => new Tag
+                        {
+                            NormalizedTagName = p.NormalizedName,
+                            TagName = p.DisplayName
+                        }).ToList(),
+                    PostId = post.Id,
+                    CommentEnabled = post.CommentEnabled,
+                    IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
+                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                    CommentCount = post.Comment.Count(c => c.IsApproved)
+                });
+
+                if (AppSettings.EnableImageLazyLoad)
+                {
+                    postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
+                }
+
+                return new SuccessResponse<PostSlugModel>(postSlugModel);
             });
         }
 
