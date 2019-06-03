@@ -2,7 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@model IReadOnlyList<Moonglade.Data.Entities.FriendLinkEntity>
+@model IReadOnlyList<Moonglade.Model.FriendLink>
 
 <partial name="_SettingsHeader" />
 
@@ -13,11 +13,9 @@
     </a>
 </div>
 
-@if (null != ViewBag.HasError && ViewBag.HasError)
+@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
 {
-    <div class="alert alert-danger">
-        @ViewBag.ErrorMessage
-    </div>
+    <partial name="_ServerErrorMessage" />
 }
 else
 {

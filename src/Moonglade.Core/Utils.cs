@@ -131,9 +131,9 @@ namespace Moonglade.Core
             return utcTime.AddHours(timeZone);
         }
 
-        public static string GetPostAbstract(string rawHtmlContent, int wordCount)
+        public static string GetPostAbstract(string rawHtmlContent, int wordCount, IHtmlCodec htmlCodec = null)
         {
-            var plainText = RemoveTags(rawHtmlContent);
+            var plainText = RemoveTags(rawHtmlContent, false, htmlCodec);
             var result = plainText.Ellipsize(wordCount);
             return result;
         }
@@ -194,7 +194,7 @@ namespace Moonglade.Core
             return sSource.Substring(iLength > sSource.Length ? 0 : sSource.Length - iLength);
         }
 
-        public static string RemoveTags(string html, bool htmlDecode = false)
+        public static string RemoveTags(string html, bool htmlDecode = false, IHtmlCodec htmlCodec = null)
         {
             if (string.IsNullOrEmpty(html))
             {
@@ -227,7 +227,7 @@ namespace Moonglade.Core
 
             if (htmlDecode)
             {
-                stringResult = HttpUtility.HtmlDecode(stringResult);
+                stringResult = htmlCodec?.HtmlDecode(stringResult);
             }
 
             return stringResult;

@@ -43,8 +43,13 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var data = await _pingbackService.GetReceivedPingbacksAsync();
-            return View(data);
+            var response = await _pingbackService.GetReceivedPingbacksAsync();
+            if (response.IsSuccess)
+            {
+                return View(response.Item);
+            }
+
+            return ServerError();
         }
 
         [Authorize]

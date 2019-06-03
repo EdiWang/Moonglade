@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
+using Moonglade.Model;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
@@ -25,14 +26,14 @@ namespace Moonglade.Web.ViewComponents
             try
             {
                 var response = await _friendLinkService.GetAllFriendLinksAsync();
-                return View(response.IsSuccess ? response.Item : new List<Data.Entities.FriendLinkEntity>());
+                return View(response.IsSuccess ? response.Item : new List<FriendLink>());
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Error Reading FriendLink.");
 
                 // should not block website
-                return View(new List<Data.Entities.FriendLinkEntity>());
+                return View(new List<FriendLink>());
             }
         }
     }

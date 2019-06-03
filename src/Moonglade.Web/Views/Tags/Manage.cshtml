@@ -3,13 +3,13 @@
 }
 @Html.AntiForgeryToken()
 
-@model IReadOnlyList<Moonglade.Data.Entities.TagEntity>
+@model IReadOnlyList<Moonglade.Model.Tag>
 
-    @{
+@{
     ViewBag.Title = "Manage Tags";
-    }
+}
 
-    @section scripts{
+@section scripts{
     <script>
         $(".btn-delete").click(function () {
             var tagid = $(this).data("tagid");
@@ -34,25 +34,25 @@
                 },
                 function (data) {
                     $("#li-tag-" + data.tagId).addClass("updated");
-                })
+                });
         });
     </script>
-    }
+}
 
-    <h3>
-        Tags
-    </h3>
-    <hr />
+<h3>
+    Tags
+</h3>
+<hr />
 
-    <ul class="list-unstyled ul-tag-mgr">
-        @foreach (var tag in Model.OrderBy(model => model.DisplayName))
-        {
+<ul class="list-unstyled ul-tag-mgr">
+    @foreach (var tag in Model.OrderBy(model => model.TagName))
+    {
         <li id="li-tag-@tag.Id">
-            <span class="span-tagcontent-editable" contenteditable="true" data-tagid="@tag.Id">@tag.DisplayName</span>
+            <span class="span-tagcontent-editable" contenteditable="true" data-tagid="@tag.Id">@tag.TagName</span>
             <a class="btn-delete" data-tagid="@tag.Id">
                 <i class="fas fa-times"></i>
-                <span class="d-none">@tag.DisplayName</span>
+                <span class="d-none">@tag.TagName</span>
             </a>
         </li>
-        }
-    </ul>
+    }
+</ul>

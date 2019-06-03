@@ -27,7 +27,7 @@ namespace Moonglade.Web.ViewComponents
             try
             {
                 var cats = await _categoryService.GetAllCategoriesAsync();
-                var items = cats.Item.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Title)).ToList();
+                var items = cats.Item.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Name)).ToList();
                 var viewModel = new SubscriptionViewModel
                 {
                     Cats = items

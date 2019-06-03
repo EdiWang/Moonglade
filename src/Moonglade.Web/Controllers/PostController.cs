@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Edi.Blog.Pingback.MvcExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -66,53 +64,11 @@ namespace Moonglade.Web.Controllers
             var post = rsp.Item;
             if (post == null)
             {
-                Logger.LogWarning($"Post not found, parameter {year}/{month}/{day}/{slug}.");
+                Logger.LogWarning($"Post not found, parameter '{year}/{month}/{day}/{slug}'.");
                 return NotFound();
             }
 
-            var viewModel = new PostSlugViewModelWrapper();
-
-            #region Fetch Post Main Model
-
-            var postModel = new PostSlugViewModel
-            {
-                Title = post.Title,
-                Abstract = post.ContentAbstract,
-                PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
-
-                Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new SimpleCategoryInfoViewModel
-                {
-                    CategoryDisplayName = p.DisplayName,
-                    CategoryRouteName = p.Title
-                }).ToList(),
-
-                Content = HttpUtility.HtmlDecode(post.PostContent),
-                Hits = post.PostExtension.Hits,
-                Likes = post.PostExtension.Likes,
-
-                Tags = post.PostTag.Select(pt => pt.Tag)
-                                   .Select(p => new TagInfo
-                                   {
-                                       NormalizedTagName = p.NormalizedName,
-                                       TagName = p.DisplayName
-                                   }).ToList(),
-                PostId = post.Id.ToString(),
-                CommentEnabled = post.CommentEnabled,
-                IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
-                LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
-                CommentCount = post.Comment.Count(c => c.IsApproved)
-            };
-
-            if (AppSettings.EnableImageLazyLoad)
-            {
-                var rawHtmlContent = postModel.Content;
-                postModel.Content = Utils.ReplaceImgSrc(rawHtmlContent);
-            }
-
-            viewModel.PostModel = postModel;
-            viewModel.NewCommentModel.PostId = post.Id;
-
-            #endregion Fetch Post Main Model
+            var viewModel = new PostSlugViewModelWrapper(post);
 
             ViewBag.TitlePrefix = $"{post.Title}";
             return View(viewModel);

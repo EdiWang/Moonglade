@@ -72,9 +72,22 @@ namespace Moonglade.Core
             return PingbackServiceResponse.InvalidPingRequest;
         }
 
-        public Task<IReadOnlyList<PingbackHistoryEntity>> GetReceivedPingbacksAsync()
+        public Task<Response<IReadOnlyList<PingbackHistoryItem>>> GetReceivedPingbacksAsync()
         {
-            return _pingbackRepository.GetAsync();
+            return TryExecuteAsync<IReadOnlyList<PingbackHistoryItem>>(async () =>
+            {
+                var list = await _pingbackRepository.SelectAsync(p => new PingbackHistoryItem
+                {
+                    Id = p.Id,
+                    Domain = p.Domain,
+                    PingTimeUtc = p.PingTimeUtc,
+                    SourceIp = p.SourceIp,
+                    SourceTitle = p.SourceTitle,
+                    SourceUrl = p.SourceUrl,
+                    TargetPostTitle = p.TargetPostTitle
+                });
+                return new SuccessResponse<IReadOnlyList<PingbackHistoryItem>>(list);
+            });
         }
 
         public Response DeleteReceivedPingback(Guid pingbackId)
@@ -86,10 +99,10 @@ namespace Moonglade.Core
                 if (rows == -1)
                 {
                     Logger.LogWarning($"Pingback id {pingbackId} not found, skip delete operation.");
-                    return new FailedResponse((int) ResponseFailureCode.PingbackRecordNotFound);
+                    return new FailedResponse((int)ResponseFailureCode.PingbackRecordNotFound);
                 }
 
-                return new Response {IsSuccess = rows > 0};
+                return new Response { IsSuccess = rows > 0 };
             }, keyParameter: pingbackId);
         }
 

@@ -2,7 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@model IReadOnlyList<Moonglade.Data.Entities.CategoryEntity>
+@model IReadOnlyList<Moonglade.Model.CategoryInfo>
 
 <h3>
     Categories
@@ -27,7 +27,7 @@ else
     <div class="card mb-4">
         <div class="card-body">
             <h6 class="card-title">
-                <a asp-controller="Category" asp-action="List" asp-route-categoryName="@cat.Title" target="_blank">
+                <a asp-controller="Category" asp-action="List" asp-route-categoryName="@cat.Name" target="_blank">
                     @cat.DisplayName
                 </a>
             </h6>
@@ -36,7 +36,7 @@ else
                 @cat.Note
             </p>
 
-            <small class="text-muted">@cat.Title</small>
+            <small class="text-muted">@cat.Name</small>
         </div>
         <div class="card-footer">
             <a asp-controller="Category" asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-primary">Edit</a>

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Models
 {
-    public class NewCommentModel
+    public class NewCommentViewModel
     {
         [HiddenInput]
         public Guid PostId { get; set; }

@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Moonglade.Model
+{
+    public class PingbackHistoryItem
+    {
+        public Guid Id { get; set; }
+        public string Domain { get; set; }
+        public string SourceUrl { get; set; }
+        public string SourceTitle { get; set; }
+        public string SourceIp { get; set; }
+        public string TargetPostTitle { get; set; }
+        public DateTime PingTimeUtc { get; set; }
+    }
+}

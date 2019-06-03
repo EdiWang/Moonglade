@@ -19,17 +19,17 @@ namespace Moonglade.Web.ViewComponents
             _commentService = commentService;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string postId)
+        public async Task<IViewComponentResult> InvokeAsync(Guid postId)
         {
             try
             {
-                if (!Guid.TryParse(postId, out var id))
+                if (postId == Guid.Empty)
                 {
                     Logger.LogWarning($"postId: {postId} is not a valid GUID");
                     return View("Error");
                 }
 
-                var comments = await _commentService.GetSelectedCommentsOfPostAsync(id);
+                var comments = await _commentService.GetSelectedCommentsOfPostAsync(postId);
                 return View(comments);
             }
             catch (Exception e)

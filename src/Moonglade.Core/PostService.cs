@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,6 +17,8 @@ namespace Moonglade.Core
 {
     public class PostService : MoongladeService
     {
+        private readonly IHtmlCodec _htmlCodec;
+
         #region Repository Objects
 
         private readonly IRepository<PostEntity> _postRepository;
@@ -38,7 +39,8 @@ namespace Moonglade.Core
             IRepository<PostTagEntity> postTagRepository,
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostCategoryEntity> postCategoryRepository) : base(logger, settings)
+            IRepository<PostCategoryEntity> postCategoryRepository, 
+            IHtmlCodec htmlCodec) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -47,6 +49,7 @@ namespace Moonglade.Core
             _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
+            _htmlCodec = htmlCodec;
         }
 
         public Response<int> CountVisiblePosts()
@@ -67,26 +70,24 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
+        public Task<Response<IReadOnlyList<Archive>>> GetArchiveListAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<ArchiveItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<Archive>>(async () =>
             {
                 if (!_postRepository.Any(p =>
                     p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
-                    return new SuccessResponse<IReadOnlyList<ArchiveItem>>();
+                    return new SuccessResponse<IReadOnlyList<Archive>>();
 
                 var list = await _postRepository.SelectAsync(post => new
                 {
-                    year = post.PostPublish.PubDateUtc.Value.Year,
-                    month = post.PostPublish.PubDateUtc.Value.Month
-                }, monthList => new ArchiveItem
-                {
-                    Year = monthList.Key.year,
-                    Month = monthList.Key.month,
-                    Count = monthList.Select(p => p.Id).Count()
-                });
+                    post.PostPublish.PubDateUtc.Value.Year,
+                    post.PostPublish.PubDateUtc.Value.Month
+                }, monthList => new Archive(
+                    monthList.Key.Year,
+                    monthList.Key.Month,
+                    monthList.Select(p => p.Id).Count()));
 
-                return new SuccessResponse<IReadOnlyList<ArchiveItem>>(list);
+                return new SuccessResponse<IReadOnlyList<Archive>>(list);
             });
         }
 
@@ -147,15 +148,47 @@ namespace Moonglade.Core
             }, keyParameter: url);
         }
 
-        public Task<Response<PostEntity>> GetPostAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlugModel>> GetPostAsync(int year, int month, int day, string slug)
         {
-            return TryExecuteAsync<PostEntity>(async () =>
+            return TryExecuteAsync<PostSlugModel>(async () =>
             {
                 var date = new DateTime(year, month, day);
                 var spec = new PostSpec(date, slug);
-                var post = await _postRepository.GetFirstOrDefaultAsync(spec, false);
+                var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugModel
+                {
+                    Title = post.Title,
+                    Abstract = post.ContentAbstract,
+                    PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
 
-                return new SuccessResponse<PostEntity>(post);
+                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new CategoryInfo
+                    {
+                        DisplayName = p.DisplayName,
+                        Name = p.Title
+                    }).ToList(),
+
+                    Content = _htmlCodec.HtmlDecode(post.PostContent),
+                    Hits = post.PostExtension.Hits,
+                    Likes = post.PostExtension.Likes,
+
+                    Tags = post.PostTag.Select(pt => pt.Tag)
+                        .Select(p => new Tag
+                        {
+                            NormalizedTagName = p.NormalizedName,
+                            TagName = p.DisplayName
+                        }).ToList(),
+                    PostId = post.Id,
+                    CommentEnabled = post.CommentEnabled,
+                    IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
+                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                    CommentCount = post.Comment.Count(c => c.IsApproved)
+                });
+
+                if (AppSettings.EnableImageLazyLoad)
+                {
+                    postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
+                }
+
+                return new SuccessResponse<PostSlugModel>(postSlugModel);
             });
         }
 
@@ -195,7 +228,7 @@ namespace Moonglade.Core
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                Tags = p.PostTag.Select(pt => new TagInfo
+                Tags = p.PostTag.Select(pt => new Tag
                 {
                     NormalizedTagName = pt.Tag.NormalizedName,
                     TagName = pt.Tag.DisplayName
@@ -267,7 +300,7 @@ namespace Moonglade.Core
                     Slug = p.Slug,
                     ContentAbstract = p.ContentAbstract,
                     PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                    Tags = p.PostTag.Select(pt => new TagInfo
+                    Tags = p.PostTag.Select(pt => new Tag
                     {
                         NormalizedTagName = pt.Tag.NormalizedName,
                         TagName = pt.Tag.DisplayName
@@ -323,7 +356,7 @@ namespace Moonglade.Core
                 {
                     CommentEnabled = request.EnableComment,
                     Id = Guid.NewGuid(),
-                    PostContent = HttpUtility.HtmlEncode(request.HtmlContent),
+                    PostContent = _htmlCodec.HtmlEncode(request.HtmlContent),
                     ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords),
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
@@ -353,7 +386,7 @@ namespace Moonglade.Core
                 // Why EF Core this diao yang?
                 if (_postRepository.Any(p =>
                     p.Slug == postModel.Slug &&
-                    p.PostPublish.PubDateUtc != null && 
+                    p.PostPublish.PubDateUtc != null &&
                     p.PostPublish.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
                     p.PostPublish.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
                     p.PostPublish.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
@@ -421,7 +454,7 @@ namespace Moonglade.Core
                 }
 
                 postModel.CommentEnabled = request.EnableComment;
-                postModel.PostContent = HttpUtility.HtmlEncode(request.HtmlContent);
+                postModel.PostContent = _htmlCodec.HtmlEncode(request.HtmlContent);
                 postModel.ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords);
                 postModel.PostPublish.IsPublished = request.IsPublished;
                 postModel.Slug = request.Slug;

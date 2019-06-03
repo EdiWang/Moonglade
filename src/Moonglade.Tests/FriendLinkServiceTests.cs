@@ -24,30 +24,6 @@ namespace Moonglade.Tests
             _appSettingsMock = new Mock<IOptions<AppSettings>>();
         }
 
-        [Test]
-        public async Task TestGetFriendLinkAsync()
-        {
-            var uid = Guid.NewGuid();
-            var friendLinkEntity = new FriendLinkEntity()
-            {
-                Id = uid,
-                LinkUrl = "https://dot.net",
-                Title = "Test"
-            };
-
-            var tcs = new TaskCompletionSource<FriendLinkEntity>();
-            tcs.SetResult(friendLinkEntity);
-
-            var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
-            friendlinkRepositoryMock.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(tcs.Task);
-
-            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object);
-            var fdLinkResponse = await svc.GetFriendLinkAsync(uid);
-
-            Assert.IsTrue(fdLinkResponse.IsSuccess);
-            Assert.AreEqual(friendLinkEntity, fdLinkResponse.Item);
-        }
-
         [TestCase("", "", ExpectedResult = false)]
         [TestCase("996", "", ExpectedResult = false)]
         [TestCase("", "icu", ExpectedResult = false)]
