@@ -67,26 +67,24 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<ArchiveItem>>> GetArchiveListAsync()
+        public Task<Response<IReadOnlyList<Archive>>> GetArchiveListAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<ArchiveItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<Archive>>(async () =>
             {
                 if (!_postRepository.Any(p =>
                     p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
-                    return new SuccessResponse<IReadOnlyList<ArchiveItem>>();
+                    return new SuccessResponse<IReadOnlyList<Archive>>();
 
                 var list = await _postRepository.SelectAsync(post => new
                 {
-                    year = post.PostPublish.PubDateUtc.Value.Year,
-                    month = post.PostPublish.PubDateUtc.Value.Month
-                }, monthList => new ArchiveItem
-                {
-                    Year = monthList.Key.year,
-                    Month = monthList.Key.month,
-                    Count = monthList.Select(p => p.Id).Count()
-                });
+                    post.PostPublish.PubDateUtc.Value.Year,
+                    post.PostPublish.PubDateUtc.Value.Month
+                }, monthList => new Archive(
+                    monthList.Key.Year,
+                    monthList.Key.Month,
+                    monthList.Select(p => p.Id).Count()));
 
-                return new SuccessResponse<IReadOnlyList<ArchiveItem>>(list);
+                return new SuccessResponse<IReadOnlyList<Archive>>(list);
             });
         }
 
@@ -353,7 +351,7 @@ namespace Moonglade.Core
                 // Why EF Core this diao yang?
                 if (_postRepository.Any(p =>
                     p.Slug == postModel.Slug &&
-                    p.PostPublish.PubDateUtc != null && 
+                    p.PostPublish.PubDateUtc != null &&
                     p.PostPublish.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
                     p.PostPublish.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
                     p.PostPublish.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
