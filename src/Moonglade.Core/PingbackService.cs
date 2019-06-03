@@ -110,7 +110,7 @@ namespace Moonglade.Core
         {
             var pingback = _pingbackRepository.Get(pingbackId);
             var title = _postService.GetPostTitle(pingback.TargetPostId);
-            if (!string.IsNullOrWhiteSpace(title)) await _notification.SendPingNotification(pingback, title);
+            if (!string.IsNullOrWhiteSpace(title)) await _notification.SendPingNotificationAsync(pingback, title);
         }
 
         private async Task SavePingbackRecord(PingbackRequest request)

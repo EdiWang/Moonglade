@@ -126,7 +126,7 @@ namespace Moonglade.Notification
             }
         }
 
-        public async Task SendCommentReplyNotification(CommentReplySummary model, string postLink)
+        public async Task SendCommentReplyNotificationAsync(CommentReplySummary model, string postLink)
         {
             if (string.IsNullOrWhiteSpace(model.Email))
             {
@@ -151,7 +151,7 @@ namespace Moonglade.Notification
             }
         }
 
-        public async Task SendPingNotification(PingbackHistoryEntity receivedPingback, string postTitle)
+        public async Task SendPingNotificationAsync(PingbackHistoryEntity receivedPingback, string postTitle)
         {
             if (IsEnabled)
             {

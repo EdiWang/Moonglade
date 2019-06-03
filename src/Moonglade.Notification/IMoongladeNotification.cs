@@ -15,8 +15,8 @@ namespace Moonglade.Notification
         Task SendNewCommentNotificationAsync(CommentEntity commentEntity, string postTitle,
             Func<string, string> funcCommentContentFormat);
 
-        Task SendCommentReplyNotification(CommentReplySummary model, string postLink);
+        Task SendCommentReplyNotificationAsync(CommentReplySummary model, string postLink);
 
-        Task SendPingNotification(PingbackHistoryEntity receivedPingback, string postTitle);
+        Task SendPingNotificationAsync(PingbackHistoryEntity receivedPingback, string postTitle);
     }
 }
