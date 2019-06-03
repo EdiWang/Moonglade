@@ -98,6 +98,7 @@ namespace Moonglade.Web
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<DeleteSubscriptionCache>();
+            services.AddTransient<IHtmlCodec, HttpUtilityHtmlCodec>();
             services.AddTransient<ISessionBasedCaptcha, BasicLetterCaptcha>();
             services.AddTransient<IMoongladeNotification, EmailNotification>();
             services.AddTransient<IPingbackSender, PingbackSender>();

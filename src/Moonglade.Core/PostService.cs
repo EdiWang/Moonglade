@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,6 +17,8 @@ namespace Moonglade.Core
 {
     public class PostService : MoongladeService
     {
+        private readonly IHtmlCodec _htmlCodec;
+
         #region Repository Objects
 
         private readonly IRepository<PostEntity> _postRepository;
@@ -38,7 +39,8 @@ namespace Moonglade.Core
             IRepository<PostTagEntity> postTagRepository,
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostCategoryEntity> postCategoryRepository) : base(logger, settings)
+            IRepository<PostCategoryEntity> postCategoryRepository, 
+            IHtmlCodec htmlCodec) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -47,6 +49,7 @@ namespace Moonglade.Core
             _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
+            _htmlCodec = htmlCodec;
         }
 
         public Response<int> CountVisiblePosts()
@@ -163,7 +166,7 @@ namespace Moonglade.Core
                         Name = p.Title
                     }).ToList(),
 
-                    Content = HttpUtility.HtmlDecode(post.PostContent),
+                    Content = _htmlCodec.HtmlDecode(post.PostContent),
                     Hits = post.PostExtension.Hits,
                     Likes = post.PostExtension.Likes,
 
@@ -353,7 +356,7 @@ namespace Moonglade.Core
                 {
                     CommentEnabled = request.EnableComment,
                     Id = Guid.NewGuid(),
-                    PostContent = HttpUtility.HtmlEncode(request.HtmlContent),
+                    PostContent = _htmlCodec.HtmlEncode(request.HtmlContent),
                     ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords),
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
@@ -451,7 +454,7 @@ namespace Moonglade.Core
                 }
 
                 postModel.CommentEnabled = request.EnableComment;
-                postModel.PostContent = HttpUtility.HtmlEncode(request.HtmlContent);
+                postModel.PostContent = _htmlCodec.HtmlEncode(request.HtmlContent);
                 postModel.ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords);
                 postModel.PostPublish.IsPublished = request.IsPublished;
                 postModel.Slug = request.Slug;

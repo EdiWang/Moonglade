@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,14 +13,17 @@ namespace Moonglade.Core
 {
     public class CustomPageService : MoongladeService
     {
+        private readonly IHtmlCodec _htmlCodec;
         private readonly IRepository<CustomPageEntity> _customPageRepository;
 
         public CustomPageService(
             ILogger<CustomPageService> logger,
             IOptions<AppSettings> settings,
-            IRepository<CustomPageEntity> customPageRepository) : base(logger, settings)
+            IRepository<CustomPageEntity> customPageRepository,
+            IHtmlCodec htmlCodec) : base(logger, settings)
         {
             _customPageRepository = customPageRepository;
+            _htmlCodec = htmlCodec;
         }
 
         public Task<Response<CustomPage>> GetPageAsync(Guid pageId)
@@ -77,7 +79,7 @@ namespace Moonglade.Core
                     Title = request.Title.Trim(),
                     RouteName = request.RouteName.ToLower().Trim(),
                     CreateOnUtc = DateTime.UtcNow,
-                    HtmlContent = HttpUtility.HtmlEncode(request.HtmlContent),
+                    HtmlContent = _htmlCodec.HtmlEncode(request.HtmlContent),
                     CssContent = request.CssContent,
                     HideSidebar = request.HideSidebar
                 };
@@ -99,7 +101,7 @@ namespace Moonglade.Core
 
                 page.Title = request.Title.Trim();
                 page.RouteName = request.RouteName.ToLower().Trim();
-                page.HtmlContent = HttpUtility.HtmlEncode(request.HtmlContent);
+                page.HtmlContent = _htmlCodec.HtmlEncode(request.HtmlContent);
                 page.CssContent = request.CssContent;
                 page.HideSidebar = request.HideSidebar;
                 page.UpdatedOnUtc = DateTime.UtcNow;
@@ -124,7 +126,7 @@ namespace Moonglade.Core
             });
         }
 
-        private static CustomPage EntityToCustomPage(CustomPageEntity entity)
+        private CustomPage EntityToCustomPage(CustomPageEntity entity)
         {
             if (null == entity)
             {
@@ -137,7 +139,7 @@ namespace Moonglade.Core
                 Title = entity.Title.Trim(),
                 CreateOnUtc = entity.CreateOnUtc,
                 CssContent = entity.CssContent,
-                RawHtmlContent = HttpUtility.HtmlDecode(entity.HtmlContent),
+                RawHtmlContent = _htmlCodec.HtmlDecode(entity.HtmlContent),
                 HideSidebar = entity.HideSidebar,
                 RouteName = entity.RouteName.Trim().ToLower(),
                 UpdatedOnUtc = entity.UpdatedOnUtc

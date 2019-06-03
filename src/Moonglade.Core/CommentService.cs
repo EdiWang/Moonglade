@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Edi.WordFilter;
 using Microsoft.Extensions.Logging;
@@ -20,19 +19,20 @@ namespace Moonglade.Core
     public class CommentService : MoongladeService
     {
         private readonly IBlogConfig _blogConfig;
-
+        private readonly IHtmlCodec _htmlCodec;
         private readonly IRepository<CommentEntity> _commentRepository;
-
         private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
 
         public CommentService(
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
+            IHtmlCodec htmlCodec,
             IRepository<CommentEntity> commentRepository,
             IRepository<CommentReplyEntity> commentReplyRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
+            _htmlCodec = htmlCodec;
 
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
@@ -155,7 +155,7 @@ namespace Moonglade.Core
                 }
 
                 // 3. Encode HTML
-                request.Username = HttpUtility.HtmlEncode(request.Username);
+                request.Username = _htmlCodec.HtmlEncode(request.Username);
 
                 // 4. Harmonize banned keywords
                 if (_blogConfig.ContentSettings.EnableWordFilter)
