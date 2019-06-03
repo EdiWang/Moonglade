@@ -139,7 +139,7 @@ namespace Moonglade.Notification
                 {
                     _logger.LogInformation("Sending AdminReplyNotification mail");
 
-                    var pipeline = new TemplatePipeline().Map("ReplyTime (UTC)", model.ReplyTimeUtc.GetValueOrDefault())
+                    var pipeline = new TemplatePipeline().Map("ReplyTime (UTC)", model.ReplyTimeUtc)
                                                          .Map(nameof(model.ReplyContent), model.ReplyContent)
                                                          .Map("RouteLink", postLink)
                                                          .Map("PostTitle", model.Title)

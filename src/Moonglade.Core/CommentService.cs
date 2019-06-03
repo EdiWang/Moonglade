@@ -53,7 +53,7 @@ namespace Moonglade.Core
                 CommentReplies = c.CommentReply.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
-                    ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
+                    ReplyTimeUtc = cr.ReplyTimeUtc
                 }).ToList()
             });
         }
@@ -81,7 +81,7 @@ namespace Moonglade.Core
                     CommentReplies = p.CommentReply.Select(cr => new CommentReplyDigest
                     {
                         ReplyContent = cr.ReplyContent,
-                        ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
+                        ReplyTimeUtc = cr.ReplyTimeUtc
                     }).ToList()
                 });
 
@@ -221,7 +221,7 @@ namespace Moonglade.Core
                     Id = model.Id,
                     IpAddress = model.IpAddress,
                     PostId = cmt.PostId,
-                    PubDateUtc = cmt.Post.PostPublish.PubDateUtc,
+                    PubDateUtc = cmt.Post.PostPublish.PubDateUtc.GetValueOrDefault(),
                     ReplyContent = model.ReplyContent,
                     ReplyTimeUtc = model.ReplyTimeUtc,
                     Slug = cmt.Post.Slug,
