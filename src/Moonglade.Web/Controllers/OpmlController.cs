@@ -52,7 +52,7 @@ namespace Moonglade.Web.Controllers
                 var catInfos = catResponse.Item.Select(c => new OpmlCategoryInfo
                 {
                     DisplayName = c.DisplayName,
-                    Title = c.Title
+                    Title = c.Name
                 });
 
                 var oi = new OpmlInfo

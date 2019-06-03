@@ -23,12 +23,18 @@ namespace Moonglade.Core
             _postCategoryRepository = postCategoryRepository;
         }
 
-        public Task<Response<IReadOnlyList<CategoryEntity>>> GetAllCategoriesAsync()
+        public Task<Response<IReadOnlyList<CategoryInfo>>> GetAllCategoriesAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<CategoryEntity>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<CategoryInfo>>(async () =>
             {
-                var item = await _categoryRepository.GetAsync();
-                return new SuccessResponse<IReadOnlyList<CategoryEntity>>(item);
+                var item = await _categoryRepository.SelectAsync(cat => new CategoryInfo
+                {
+                    Id = cat.Id,
+                    DisplayName = cat.DisplayName,
+                    Name = cat.Title,
+                    Note = cat.Note
+                });
+                return new SuccessResponse<IReadOnlyList<CategoryInfo>>(item);
             });
         }
 
