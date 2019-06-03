@@ -111,7 +111,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 "AzureStorageSettings": {
   "ConnectionString": "YOUR CONNECTION STRING",
   "ContainerName": "YOUR CONTAINER NAME"
-},
+}
 ```
 
 #### Alternative: File System
