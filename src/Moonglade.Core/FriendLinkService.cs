@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -23,21 +24,32 @@ namespace Moonglade.Core
             _friendlinkRepository = friendlinkRepository;
         }
 
-        public Task<Response<FriendLinkEntity>> GetFriendLinkAsync(Guid id)
+        public Task<Response<FriendLink>> GetFriendLinkAsync(Guid id)
         {
-            return TryExecuteAsync<FriendLinkEntity>(async () =>
+            return TryExecuteAsync<FriendLink>(async () =>
             {
-                var item = await _friendlinkRepository.GetAsync(id);
-                return new SuccessResponse<FriendLinkEntity>(item);
+                var item = await _friendlinkRepository.SelectFirstOrDefaultAsync(
+                    new FriendLinkSepc(id), f => new FriendLink
+                    {
+                        Id = f.Id,
+                        LinkUrl = f.LinkUrl,
+                        Title = f.Title
+                    });
+                return new SuccessResponse<FriendLink>(item);
             });
         }
 
-        public Task<Response<IReadOnlyList<FriendLinkEntity>>> GetAllFriendLinksAsync()
+        public Task<Response<IReadOnlyList<FriendLink>>> GetAllFriendLinksAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<FriendLinkEntity>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<FriendLink>>(async () =>
             {
-                var item = await _friendlinkRepository.GetAsync();
-                return new SuccessResponse<IReadOnlyList<FriendLinkEntity>>(item);
+                var item = await _friendlinkRepository.SelectAsync(f => new FriendLink
+                {
+                    Id = f.Id,
+                    LinkUrl = f.LinkUrl,
+                    Title = f.Title
+                });
+                return new SuccessResponse<IReadOnlyList<FriendLink>>(item);
             });
         }
 

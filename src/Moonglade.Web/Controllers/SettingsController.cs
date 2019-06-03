@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Notification;
@@ -272,9 +270,8 @@ namespace Moonglade.Web.Controllers
                 return View(response.Item);
             }
 
-            ViewBag.HasError = true;
-            ViewBag.ErrorMessage = response.Message;
-            return View(new List<FriendLinkEntity>());
+            SetFriendlyErrorMessage();
+            return View();
         }
 
         [HttpGet("create-friendlink")]
