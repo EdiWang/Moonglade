@@ -105,7 +105,7 @@ namespace Moonglade.Core
         {
             return TryExecute(() =>
             {
-                var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new Tag()
+                var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new Tag
                 {
                     Id = tg.Id,
                     NormalizedTagName = tg.NormalizedName,
