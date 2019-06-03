@@ -91,7 +91,7 @@ namespace Moonglade.Web.Controllers
                 Likes = post.PostExtension.Likes,
 
                 Tags = post.PostTag.Select(pt => pt.Tag)
-                                   .Select(p => new TagInfo
+                                   .Select(p => new Tag
                                    {
                                        NormalizedTagName = p.NormalizedName,
                                        TagName = p.DisplayName

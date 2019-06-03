@@ -24,9 +24,19 @@ namespace Moonglade.Core
             _postTagRepository = postTagRepository;
         }
 
-        public Task<IReadOnlyList<TagEntity>> GetAllTagsAsync()
+        public Task<Response<IReadOnlyList<Tag>>> GetAllTagsAsync()
         {
-            return _tagRepository.GetAsync();
+            return TryExecuteAsync<IReadOnlyList<Tag>>(async () =>
+            {
+                var list = await _tagRepository.SelectAsync(t => new Tag
+                {
+                    Id = t.Id,
+                    NormalizedTagName = t.NormalizedName,
+                    TagName = t.DisplayName
+                });
+
+                return new SuccessResponse<IReadOnlyList<Tag>>(list);
+            });
         }
 
         public Task<Response<IReadOnlyList<string>>> GetAllTagNamesAsync()
@@ -70,53 +80,53 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<TagInfo>>> GetHotTagsAsync(int top)
+        public Task<Response<IReadOnlyList<TagCountInfo>>> GetHotTagsAsync(int top)
         {
-            return TryExecuteAsync<IReadOnlyList<TagInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<TagCountInfo>>(async () =>
             {
                 if (_tagRepository.Any())
                 {
                     var spec = new TagSpec(top);
-                    var hotTags = await _tagRepository.SelectAsync(spec, t => new TagInfo
+                    var hotTags = await _tagRepository.SelectAsync(spec, t => new TagCountInfo
                     {
                         TagCount = t.PostTag.Count,
                         TagName = t.DisplayName,
                         NormalizedTagName = t.NormalizedName
                     });
 
-                    return new SuccessResponse<IReadOnlyList<TagInfo>>(hotTags);
+                    return new SuccessResponse<IReadOnlyList<TagCountInfo>>(hotTags);
                 }
 
-                return new SuccessResponse<IReadOnlyList<TagInfo>>(new List<TagInfo>());
+                return new SuccessResponse<IReadOnlyList<TagCountInfo>>(new List<TagCountInfo>());
             }, keyParameter: top);
         }
 
-        public Response<TagInfo> GetTag(string normalizedName)
+        public Response<Tag> GetTag(string normalizedName)
         {
             return TryExecute(() =>
             {
-                var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new TagInfo()
+                var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new Tag()
                 {
                     Id = tg.Id,
                     NormalizedTagName = tg.NormalizedName,
                     TagName = tg.DisplayName
                 });
-                return new SuccessResponse<TagInfo>(tag);
+                return new SuccessResponse<Tag>(tag);
             });
         }
 
-        public Task<Response<IReadOnlyList<TagInfo>>> GetTagCountListAsync()
+        public Task<Response<IReadOnlyList<TagCountInfo>>> GetTagCountListAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<TagInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<TagCountInfo>>(async () =>
             {
-                var list = await _tagRepository.SelectAsync(t => new TagInfo
+                var list = await _tagRepository.SelectAsync(t => new TagCountInfo
                 {
                     TagName = t.DisplayName,
                     NormalizedTagName = t.NormalizedName,
                     TagCount = t.PostTag.Count
                 });
 
-                return new SuccessResponse<IReadOnlyList<TagInfo>>(list);
+                return new SuccessResponse<IReadOnlyList<TagCountInfo>>(list);
             });
         }
     }

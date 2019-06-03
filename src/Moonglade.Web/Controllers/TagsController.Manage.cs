@@ -11,8 +11,13 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var tags = await _tagService.GetAllTagsAsync();
-            return View(tags);
+            var response = await _tagService.GetAllTagsAsync();
+            if (response.IsSuccess)
+            {
+                return View(response.Item);
+            }
+
+            return ServerError();
         }
 
         [Authorize]

@@ -19,6 +19,6 @@ namespace Moonglade.Web.Models
         public bool IsExposedToSiteMap { get; set; }
 
         public IList<SimpleCategoryInfoViewModel> Categories { get; set; }
-        public IList<TagInfo> Tags { get; set; }
+        public IList<Tag> Tags { get; set; }
     }
 }

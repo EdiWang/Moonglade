@@ -195,7 +195,7 @@ namespace Moonglade.Core
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                Tags = p.PostTag.Select(pt => new TagInfo
+                Tags = p.PostTag.Select(pt => new Tag
                 {
                     NormalizedTagName = pt.Tag.NormalizedName,
                     TagName = pt.Tag.DisplayName
@@ -267,7 +267,7 @@ namespace Moonglade.Core
                     Slug = p.Slug,
                     ContentAbstract = p.ContentAbstract,
                     PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                    Tags = p.PostTag.Select(pt => new TagInfo
+                    Tags = p.PostTag.Select(pt => new Tag
                     {
                         NormalizedTagName = pt.Tag.NormalizedName,
                         TagName = pt.Tag.DisplayName
