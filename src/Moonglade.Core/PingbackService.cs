@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Notification;
 
@@ -20,19 +21,19 @@ namespace Moonglade.Core
 
         private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
 
-        private readonly PostService _postService;
+        private readonly IRepository<PostEntity> _postRepository;
 
         public PingbackService(
             ILogger<PingbackService> logger,
             IMoongladeNotification notification,
-            PostService postService,
             IPingbackReceiver pingbackReceiver,
-            IRepository<PingbackHistoryEntity> pingbackRepository) : base(logger)
+            IRepository<PingbackHistoryEntity> pingbackRepository,
+            IRepository<PostEntity> postRepository) : base(logger)
         {
             _notification = notification;
-            _postService = postService;
             _pingbackReceiver = pingbackReceiver;
             _pingbackRepository = pingbackRepository;
+            _postRepository = postRepository;
         }
 
         public async Task<PingbackServiceResponse> ProcessReceivedPingback(HttpContext context)
@@ -43,29 +44,27 @@ namespace Moonglade.Core
                 Logger.LogInformation($"Pingback Attempt from {context.Connection.RemoteIpAddress} is valid");
 
                 var pingRequest = await _pingbackReceiver.GetPingRequest();
-                var postResponse = _postService.GetPostIdTitle(pingRequest.TargetUrl);
-                if (postResponse.IsSuccess)
+                var postResponse = TryGetPostIdTitle(pingRequest.TargetUrl, out var idTitleTuple);
+                if (postResponse)
                 {
-                    var post = postResponse.Item;
-
                     _pingbackReceiver.OnPingSuccess += async (sender, args) => await SavePingbackRecord(
                         new PingbackRequest
                         {
                             Domain = args.Domain,
                             SourceUrl = args.PingRequest.SourceUrl,
                             SourceTitle = args.PingRequest.SourceDocumentInfo.Title,
-                            TargetPostId = post.Id,
-                            TargetPostTitle = post.Title,
+                            TargetPostId = idTitleTuple.Id,
+                            TargetPostTitle = idTitleTuple.Title,
                             SourceIp = context.Connection.RemoteIpAddress.ToString()
                         });
 
                     return _pingbackReceiver.ProcessReceivedPingback(
                         pingRequest,
                         () => true,
-                        () => HasAlreadyBeenPinged(post.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
+                        () => HasAlreadyBeenPinged(idTitleTuple.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
                 }
 
-                Logger.LogError(postResponse.Exception, postResponse.Message);
+                Logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
                 return PingbackServiceResponse.GenericError;
             }
 
@@ -106,10 +105,39 @@ namespace Moonglade.Core
             }, keyParameter: pingbackId);
         }
 
+        private bool TryGetPostIdTitle(string url, out (Guid Id, string Title) idTitleTuple)
+        {
+            var response = Utils.GetSlugInfoFromPostUrl(url);
+            if (!response.IsSuccess)
+            {
+                idTitleTuple = default((Guid, string));
+                return false;
+            }
+
+            var post = _postRepository.Get(p => p.Slug == response.Item.Slug &&
+                                                p.PostPublish.IsPublished &&
+                                                p.PostPublish.PubDateUtc.Value.Year == response.Item.PubDate.Year &&
+                                                p.PostPublish.PubDateUtc.Value.Month == response.Item.PubDate.Month &&
+                                                p.PostPublish.PubDateUtc.Value.Day == response.Item.PubDate.Day &&
+                                                !p.PostPublish.IsDeleted);
+
+            if (null == post)
+            {
+                idTitleTuple = default((Guid, string));
+                return false;
+            }
+
+            idTitleTuple = (post.Id, post.Title);
+            return true;
+        }
+
         private async Task NotifyAdminForReceivedPing(Guid pingbackId)
         {
             var pingback = _pingbackRepository.Get(pingbackId);
-            var title = _postService.GetPostTitle(pingback.TargetPostId);
+
+            var spec = new PostSpec(pingback.TargetPostId, false);
+            var title = _postRepository.SelectFirstOrDefault(spec, p => p.Title);
+
             if (!string.IsNullOrWhiteSpace(title)) await _notification.SendPingNotificationAsync(pingback, title);
         }
 

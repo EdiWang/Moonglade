@@ -107,18 +107,18 @@ namespace Moonglade.Notification
             }
         }
 
-        public async Task SendNewCommentNotificationAsync(CommentEntity commentEntity, string postTitle, Func<string, string> funcCommentContentFormat)
+        public async Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat)
         {
             if (IsEnabled)
             {
                 _logger.LogInformation("Sending NewCommentNotification mail");
 
-                var pipeline = new TemplatePipeline().Map(nameof(commentEntity.Username), commentEntity.Username)
-                                                     .Map(nameof(commentEntity.Email), commentEntity.Email)
-                                                     .Map(nameof(commentEntity.IPAddress), commentEntity.IPAddress)
-                                                     .Map(nameof(commentEntity.CreateOnUtc), commentEntity.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
-                                                     .Map("Title", postTitle)
-                                                     .Map(nameof(commentEntity.CommentContent), funcCommentContentFormat(commentEntity.CommentContent));
+                var pipeline = new TemplatePipeline().Map(nameof(comment.Username), comment.Username)
+                                                     .Map(nameof(comment.Email), comment.Email)
+                                                     .Map(nameof(comment.IpAddress), comment.IpAddress)
+                                                     .Map(nameof(comment.CreateOnUtc), comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
+                                                     .Map("Title", comment.PostTitle)
+                                                     .Map(nameof(comment.CommentContent), funcCommentContentFormat(comment.CommentContent));
 
 
                 await EmailHelper.ApplyTemplate(MailMesageTypes.NewCommentNotification.ToString(), pipeline)
@@ -133,21 +133,18 @@ namespace Moonglade.Notification
                 return;
             }
 
-            if (model.PubDateUtc != null)
+            if (IsEnabled)
             {
-                if (IsEnabled)
-                {
-                    _logger.LogInformation("Sending AdminReplyNotification mail");
+                _logger.LogInformation("Sending AdminReplyNotification mail");
 
-                    var pipeline = new TemplatePipeline().Map("ReplyTime (UTC)", model.ReplyTimeUtc)
-                                                         .Map(nameof(model.ReplyContent), model.ReplyContent)
-                                                         .Map("RouteLink", postLink)
-                                                         .Map("PostTitle", model.Title)
-                                                         .Map(nameof(model.CommentContent), model.CommentContent);
+                var pipeline = new TemplatePipeline().Map("ReplyTime (UTC)", model.ReplyTimeUtc)
+                                                     .Map(nameof(model.ReplyContent), model.ReplyContent)
+                                                     .Map("RouteLink", postLink)
+                                                     .Map("PostTitle", model.Title)
+                                                     .Map(nameof(model.CommentContent), model.CommentContent);
 
-                    await EmailHelper.ApplyTemplate(MailMesageTypes.AdminReplyNotification.ToString(), pipeline)
-                                     .SendMailAsync(model.Email);
-                }
+                await EmailHelper.ApplyTemplate(MailMesageTypes.AdminReplyNotification.ToString(), pipeline)
+                                 .SendMailAsync(model.Email);
             }
         }
 

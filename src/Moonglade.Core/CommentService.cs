@@ -20,6 +20,8 @@ namespace Moonglade.Core
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IHtmlCodec _htmlCodec;
+
+        private readonly IRepository<PostEntity> _postRepository;
         private readonly IRepository<CommentEntity> _commentRepository;
         private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
 
@@ -29,13 +31,15 @@ namespace Moonglade.Core
             IBlogConfig blogConfig,
             IHtmlCodec htmlCodec,
             IRepository<CommentEntity> commentRepository,
-            IRepository<CommentReplyEntity> commentReplyRepository) : base(logger, settings)
+            IRepository<CommentReplyEntity> commentReplyRepository, 
+            IRepository<PostEntity> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _htmlCodec = htmlCodec;
 
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
+            _postRepository = postRepository;
         }
 
         public int CountComments()
@@ -133,14 +137,14 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<CommentEntity>> AddCommentAsync(NewCommentRequest request)
+        public Task<Response<CommentListItem>> AddCommentAsync(NewCommentRequest request)
         {
-            return TryExecuteAsync<CommentEntity>(async () =>
+            return TryExecuteAsync<CommentListItem>(async () =>
             {
                 // 1. Check comment enabled or not
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
-                    return new FailedResponse<CommentEntity>((int)ResponseFailureCode.CommentDisabled);
+                    return new FailedResponse<CommentListItem>((int)ResponseFailureCode.CommentDisabled);
                 }
 
                 // 2. Check user email domain
@@ -150,7 +154,7 @@ namespace Moonglade.Core
                     var address = new MailAddress(request.Email);
                     if (bannedDomains.Contains(address.Host))
                     {
-                        return new FailedResponse<CommentEntity>((int)ResponseFailureCode.EmailDomainBlocked);
+                        return new FailedResponse<CommentListItem>((int)ResponseFailureCode.EmailDomainBlocked);
                     }
                 }
 
@@ -180,7 +184,23 @@ namespace Moonglade.Core
                 };
 
                 await _commentRepository.AddAsync(model);
-                return new SuccessResponse<CommentEntity>(model);
+
+                var spec = new PostSpec(request.PostId, false);
+                var postTitle = _postRepository.SelectFirstOrDefault(spec, p => p.Title);
+
+                var item = new CommentListItem
+                {
+                    Id = model.Id,
+                    CommentContent = model.CommentContent,
+                    CreateOnUtc = model.CreateOnUtc,
+                    Email = model.Email,
+                    IpAddress = model.IPAddress,
+                    IsApproved = model.IsApproved,
+                    PostTitle = postTitle,
+                    Username = model.Username
+                };
+
+                return new SuccessResponse<CommentListItem>(item);
             });
         }
 

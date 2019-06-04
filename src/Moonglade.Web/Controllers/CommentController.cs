@@ -76,11 +76,9 @@ namespace Moonglade.Web.Controllers
                     {
                         if (_blogConfig.EmailSettings.SendEmailOnNewComment)
                         {
-                            var postTitle = _postService.GetPostTitle(commentPostModel.PostId);
                             _ = Task.Run(async () =>
                               {
-                                  await _notification.SendNewCommentNotificationAsync(response.Item, postTitle,
-                                      Utils.MdContentToHtml);
+                                  await _notification.SendNewCommentNotificationAsync(response.Item, Utils.MdContentToHtml);
                               });
                         }
                         var cResponse = new CommentResponse(true, CommentResponseCode.Success);
