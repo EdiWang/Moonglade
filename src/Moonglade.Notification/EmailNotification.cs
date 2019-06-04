@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -107,59 +106,54 @@ namespace Moonglade.Notification
             }
         }
 
-        public async Task SendNewCommentNotificationAsync(CommentEntity commentEntity, string postTitle, Func<string, string> funcCommentContentFormat)
+        public async Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat)
         {
             if (IsEnabled)
             {
                 _logger.LogInformation("Sending NewCommentNotification mail");
 
-                var pipeline = new TemplatePipeline().Map(nameof(commentEntity.Username), commentEntity.Username)
-                                                     .Map(nameof(commentEntity.Email), commentEntity.Email)
-                                                     .Map(nameof(commentEntity.IPAddress), commentEntity.IPAddress)
-                                                     .Map(nameof(commentEntity.CreateOnUtc), commentEntity.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
-                                                     .Map("Title", postTitle)
-                                                     .Map(nameof(commentEntity.CommentContent), funcCommentContentFormat(commentEntity.CommentContent));
-
+                var pipeline = new TemplatePipeline().Map(nameof(comment.Username), comment.Username)
+                                                     .Map(nameof(comment.Email), comment.Email)
+                                                     .Map(nameof(comment.IpAddress), comment.IpAddress)
+                                                     .Map(nameof(comment.CreateOnUtc), comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
+                                                     .Map(nameof(comment.PostTitle), comment.PostTitle)
+                                                     .Map(nameof(comment.CommentContent), funcCommentContentFormat(comment.CommentContent));
 
                 await EmailHelper.ApplyTemplate(MailMesageTypes.NewCommentNotification.ToString(), pipeline)
                                  .SendMailAsync(_blogConfig.EmailSettings.AdminEmail);
             }
         }
 
-        public async Task SendCommentReplyNotification(CommentReplySummary model, string postLink)
+        public async Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink)
         {
             if (string.IsNullOrWhiteSpace(model.Email))
             {
                 return;
             }
 
-            if (model.PubDateUtc != null)
+            if (IsEnabled)
             {
-                if (IsEnabled)
-                {
-                    _logger.LogInformation("Sending AdminReplyNotification mail");
+                _logger.LogInformation("Sending AdminReplyNotification mail");
 
-                    var pipeline = new TemplatePipeline().Map("ReplyTime (UTC)", model.ReplyTimeUtc.GetValueOrDefault())
-                                                         .Map(nameof(model.ReplyContent), model.ReplyContent)
-                                                         .Map("RouteLink", postLink)
-                                                         .Map("PostTitle", model.Title)
-                                                         .Map(nameof(model.CommentContent), model.CommentContent);
+                var pipeline = new TemplatePipeline().Map(nameof(model.ReplyContent), model.ReplyContent)
+                                                     .Map("RouteLink", postLink)
+                                                     .Map("PostTitle", model.Title)
+                                                     .Map(nameof(model.CommentContent), model.CommentContent);
 
-                    await EmailHelper.ApplyTemplate(MailMesageTypes.AdminReplyNotification.ToString(), pipeline)
-                                     .SendMailAsync(model.Email);
-                }
+                await EmailHelper.ApplyTemplate(MailMesageTypes.AdminReplyNotification.ToString(), pipeline)
+                                 .SendMailAsync(model.Email);
             }
         }
 
-        public async Task SendPingNotification(PingbackHistoryEntity receivedPingback, string postTitle)
+        public async Task SendPingNotificationAsync(PingbackHistory receivedPingback)
         {
             if (IsEnabled)
             {
-                _logger.LogInformation($"Sending BeingPinged mail for post id {receivedPingback.TargetPostId}");
+                _logger.LogInformation($"Sending BeingPinged mail for post '{receivedPingback.TargetPostTitle}'");
 
-                var pipeline = new TemplatePipeline().Map("Title", postTitle)
-                                                     .Map("PingTime", receivedPingback.PingTimeUtc)
-                                                     .Map("SourceDomain", receivedPingback.Domain)
+                var pipeline = new TemplatePipeline().Map(nameof(receivedPingback.TargetPostTitle), receivedPingback.TargetPostTitle)
+                                                     .Map(nameof(receivedPingback.PingTimeUtc), receivedPingback.PingTimeUtc)
+                                                     .Map(nameof(receivedPingback.Domain), receivedPingback.Domain)
                                                      .Map(nameof(receivedPingback.SourceIp), receivedPingback.SourceIp)
                                                      .Map(nameof(receivedPingback.SourceTitle), receivedPingback.SourceTitle)
                                                      .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl);

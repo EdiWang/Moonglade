@@ -122,32 +122,6 @@ namespace Moonglade.Core
             });
         }
 
-        public Response<(Guid Id, string Title)> GetPostIdTitle(string url)
-        {
-            return TryExecute<(Guid, string)>(() =>
-            {
-                var response = Utils.GetSlugInfoFromPostUrl(url);
-                if (!response.IsSuccess)
-                {
-                    return null;
-                }
-
-                var post = _postRepository.Get(p => p.Slug == response.Item.Slug &&
-                                               p.PostPublish.IsPublished &&
-                                               p.PostPublish.PubDateUtc.Value.Year == response.Item.PubDate.Year &&
-                                               p.PostPublish.PubDateUtc.Value.Month == response.Item.PubDate.Month &&
-                                               p.PostPublish.PubDateUtc.Value.Day == response.Item.PubDate.Day &&
-                                               !p.PostPublish.IsDeleted);
-
-                if (null == post)
-                {
-                    return new FailedResponse<(Guid, string)>((int)ResponseFailureCode.PostNotFound);
-                }
-                return new SuccessResponse<(Guid, string)>((post.Id, post.Title));
-
-            }, keyParameter: url);
-        }
-
         public Task<Response<PostSlugModel>> GetPostAsync(int year, int month, int day, string slug)
         {
             return TryExecuteAsync<PostSlugModel>(async () =>
@@ -160,7 +134,7 @@ namespace Moonglade.Core
                     Abstract = post.ContentAbstract,
                     PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
 
-                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new CategoryInfo
+                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
                     {
                         DisplayName = p.DisplayName,
                         Name = p.Title
@@ -336,17 +310,6 @@ namespace Moonglade.Core
         }
 
         #endregion
-
-        public string GetPostTitle(Guid postId)
-        {
-            if (postId == Guid.Empty)
-            {
-                return string.Empty;
-            }
-
-            var spec = new PostSpec(postId, false);
-            return _postRepository.SelectFirstOrDefault(spec, p => p.Title);
-        }
 
         public Response<PostEntity> CreateNewPost(CreatePostRequest request)
         {

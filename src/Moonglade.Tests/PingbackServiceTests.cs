@@ -20,6 +20,7 @@ namespace Moonglade.Tests
         private Mock<ILogger<PingbackService>> _loggerMock;
         private Mock<IMoongladeNotification> _notificationMock;
         private Mock<IRepository<PingbackHistoryEntity>> _pingbackRepositoryMock;
+        private Mock<IRepository<PostEntity>> _postRepositoryMock;
 
         [SetUp]
         public void Setup()
@@ -27,6 +28,7 @@ namespace Moonglade.Tests
             _loggerMock = new Mock<ILogger<PingbackService>>();
             _notificationMock = new Mock<IMoongladeNotification>();
             _pingbackRepositoryMock = new Mock<IRepository<PingbackHistoryEntity>>();
+            _postRepositoryMock = new Mock<IRepository<PostEntity>>();
         }
 
         [TestCase(PingbackValidationResult.GenericError, ExpectedResult = PingbackServiceResponse.InvalidPingRequest)]
@@ -46,9 +48,9 @@ namespace Moonglade.Tests
             var svc = new PingbackService(
                 _loggerMock.Object,
                 _notificationMock.Object,
-                null,
                 pingbackReceiverMock.Object,
-                _pingbackRepositoryMock.Object);
+                _pingbackRepositoryMock.Object,
+                _postRepositoryMock.Object);
 
             return await svc.ProcessReceivedPingback(httpContextMock.Object);
         }
@@ -64,9 +66,9 @@ namespace Moonglade.Tests
             var svc = new PingbackService(
                 _loggerMock.Object,
                 _notificationMock.Object,
-                null,
                 pingbackReceiverMock.Object,
-                _pingbackRepositoryMock.Object);
+                _pingbackRepositoryMock.Object,
+                _postRepositoryMock.Object);
 
             var response = svc.DeleteReceivedPingback(Guid.NewGuid());
             return response.IsSuccess;

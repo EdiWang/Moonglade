@@ -20,6 +20,8 @@ namespace Moonglade.Core
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IHtmlCodec _htmlCodec;
+
+        private readonly IRepository<PostEntity> _postRepository;
         private readonly IRepository<CommentEntity> _commentRepository;
         private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
 
@@ -29,13 +31,15 @@ namespace Moonglade.Core
             IBlogConfig blogConfig,
             IHtmlCodec htmlCodec,
             IRepository<CommentEntity> commentRepository,
-            IRepository<CommentReplyEntity> commentReplyRepository) : base(logger, settings)
+            IRepository<CommentReplyEntity> commentReplyRepository, 
+            IRepository<PostEntity> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _htmlCodec = htmlCodec;
 
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
+            _postRepository = postRepository;
         }
 
         public int CountComments()
@@ -50,10 +54,10 @@ namespace Moonglade.Core
                 CommentContent = c.CommentContent,
                 CreateOnUtc = c.CreateOnUtc,
                 Username = c.Username,
-                CommentReplies = c.CommentReply.Select(cr => new CommentReplyItem
+                CommentReplies = c.CommentReply.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
-                    ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
+                    ReplyTimeUtc = cr.ReplyTimeUtc
                 }).ToList()
             });
         }
@@ -78,10 +82,10 @@ namespace Moonglade.Core
                     Username = p.Username,
                     IsApproved = p.IsApproved,
                     PostTitle = p.Post.Title,
-                    CommentReplies = p.CommentReply.Select(cr => new CommentReplyItem
+                    CommentReplies = p.CommentReply.Select(cr => new CommentReplyDigest
                     {
                         ReplyContent = cr.ReplyContent,
-                        ReplyTimeUtc = cr.ReplyTimeUtc.GetValueOrDefault()
+                        ReplyTimeUtc = cr.ReplyTimeUtc
                     }).ToList()
                 });
 
@@ -133,14 +137,14 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<CommentEntity>> AddCommentAsync(NewCommentRequest request)
+        public Task<Response<CommentListItem>> AddCommentAsync(NewCommentRequest request)
         {
-            return TryExecuteAsync<CommentEntity>(async () =>
+            return TryExecuteAsync<CommentListItem>(async () =>
             {
                 // 1. Check comment enabled or not
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
-                    return new FailedResponse<CommentEntity>((int)ResponseFailureCode.CommentDisabled);
+                    return new FailedResponse<CommentListItem>((int)ResponseFailureCode.CommentDisabled);
                 }
 
                 // 2. Check user email domain
@@ -150,7 +154,7 @@ namespace Moonglade.Core
                     var address = new MailAddress(request.Email);
                     if (bannedDomains.Contains(address.Host))
                     {
-                        return new FailedResponse<CommentEntity>((int)ResponseFailureCode.EmailDomainBlocked);
+                        return new FailedResponse<CommentListItem>((int)ResponseFailureCode.EmailDomainBlocked);
                     }
                 }
 
@@ -180,24 +184,40 @@ namespace Moonglade.Core
                 };
 
                 await _commentRepository.AddAsync(model);
-                return new SuccessResponse<CommentEntity>(model);
+
+                var spec = new PostSpec(request.PostId, false);
+                var postTitle = _postRepository.SelectFirstOrDefault(spec, p => p.Title);
+
+                var item = new CommentListItem
+                {
+                    Id = model.Id,
+                    CommentContent = model.CommentContent,
+                    CreateOnUtc = model.CreateOnUtc,
+                    Email = model.Email,
+                    IpAddress = model.IPAddress,
+                    IsApproved = model.IsApproved,
+                    PostTitle = postTitle,
+                    Username = model.Username
+                };
+
+                return new SuccessResponse<CommentListItem>(item);
             });
         }
 
-        public Response<CommentReplySummary> AddReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
+        public Response<CommentReplyDetail> AddReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
         {
-            return TryExecute<CommentReplySummary>(() =>
+            return TryExecute<CommentReplyDetail>(() =>
             {
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
-                    return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.CommentDisabled);
+                    return new FailedResponse<CommentReplyDetail>((int)ResponseFailureCode.CommentDisabled);
                 }
 
                 var cmt = _commentRepository.Get(commentId);
 
                 if (null == cmt)
                 {
-                    return new FailedResponse<CommentReplySummary>((int)ResponseFailureCode.CommentNotFound);
+                    return new FailedResponse<CommentReplyDetail>((int)ResponseFailureCode.CommentNotFound);
                 }
 
                 var id = Guid.NewGuid();
@@ -213,7 +233,7 @@ namespace Moonglade.Core
 
                 _commentReplyRepository.Add(model);
 
-                var summary = new CommentReplySummary
+                var detail = new CommentReplyDetail
                 {
                     CommentContent = cmt.CommentContent,
                     CommentId = commentId,
@@ -221,7 +241,7 @@ namespace Moonglade.Core
                     Id = model.Id,
                     IpAddress = model.IpAddress,
                     PostId = cmt.PostId,
-                    PubDateUtc = cmt.Post.PostPublish.PubDateUtc,
+                    PubDateUtc = cmt.Post.PostPublish.PubDateUtc.GetValueOrDefault(),
                     ReplyContent = model.ReplyContent,
                     ReplyTimeUtc = model.ReplyTimeUtc,
                     Slug = cmt.Post.Slug,
@@ -229,7 +249,7 @@ namespace Moonglade.Core
                     UserAgent = model.UserAgent
                 };
 
-                return new SuccessResponse<CommentReplySummary>(summary);
+                return new SuccessResponse<CommentReplyDetail>(detail);
             });
         }
     }

@@ -169,6 +169,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("send-test-email")]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> SendTestEmail([FromServices] IMoongladeNotification notification)
         {
             var response = await notification.SendTestNotificationAsync();

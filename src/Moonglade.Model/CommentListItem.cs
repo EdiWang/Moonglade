@@ -13,6 +13,6 @@ namespace Moonglade.Model
         public string PostTitle { get; set; }
         public bool IsApproved { get; set; }
         public DateTime CreateOnUtc { get; set; }
-        public IReadOnlyList<CommentReplyItem> CommentReplies { get; set; }
+        public IReadOnlyList<CommentReplyDigest> CommentReplies { get; set; }
     }
 }

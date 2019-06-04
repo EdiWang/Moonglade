@@ -63,11 +63,10 @@ namespace Moonglade.Web.Controllers
                     }
 
                     var commentPostModel = model.NewCommentViewModel;
-                    var response = await _commentService.AddCommentAsync(new NewCommentRequest
+                    var response = await _commentService.AddCommentAsync(new NewCommentRequest(commentPostModel.PostId)
                     {
                         Username = commentPostModel.Username,
                         Content = commentPostModel.Content,
-                        PostId = commentPostModel.PostId,
                         Email = commentPostModel.Email,
                         IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
                         UserAgent = GetUserAgent()
@@ -77,11 +76,9 @@ namespace Moonglade.Web.Controllers
                     {
                         if (_blogConfig.EmailSettings.SendEmailOnNewComment)
                         {
-                            var postTitle = _postService.GetPostTitle(commentPostModel.PostId);
                             _ = Task.Run(async () =>
                               {
-                                  await _notification.SendNewCommentNotificationAsync(response.Item, postTitle,
-                                      Utils.MdContentToHtml);
+                                  await _notification.SendNewCommentNotificationAsync(response.Item, Utils.MdContentToHtml);
                               });
                         }
                         var cResponse = new CommentResponse(true, CommentResponseCode.Success);
@@ -118,6 +115,29 @@ namespace Moonglade.Web.Controllers
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(new CommentResponse(false, CommentResponseCode.UnknownError));
             }
+        }
+
+        public class CommentResponse
+        {
+            public bool IsSuccess { get; set; }
+
+            public CommentResponseCode ResponseCode { get; set; }
+
+            public CommentResponse(bool isSuccess, CommentResponseCode responseCode)
+            {
+                IsSuccess = isSuccess;
+                ResponseCode = responseCode;
+            }
+        }
+
+        public enum CommentResponseCode
+        {
+            Success,
+            UnknownError,
+            WrongCaptcha,
+            EmailDomainBlocked,
+            CommentDisabled,
+            InvalidModel
         }
     }
 }
