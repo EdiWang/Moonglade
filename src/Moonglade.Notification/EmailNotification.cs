@@ -116,9 +116,8 @@ namespace Moonglade.Notification
                                                      .Map(nameof(comment.Email), comment.Email)
                                                      .Map(nameof(comment.IpAddress), comment.IpAddress)
                                                      .Map(nameof(comment.CreateOnUtc), comment.CreateOnUtc.ToString("MM/dd/yyyy HH:mm"))
-                                                     .Map("Title", comment.PostTitle)
+                                                     .Map(nameof(comment.PostTitle), comment.PostTitle)
                                                      .Map(nameof(comment.CommentContent), funcCommentContentFormat(comment.CommentContent));
-
 
                 await EmailHelper.ApplyTemplate(MailMesageTypes.NewCommentNotification.ToString(), pipeline)
                                  .SendMailAsync(_blogConfig.EmailSettings.AdminEmail);
@@ -136,8 +135,7 @@ namespace Moonglade.Notification
             {
                 _logger.LogInformation("Sending AdminReplyNotification mail");
 
-                var pipeline = new TemplatePipeline().Map("ReplyTime (UTC)", model.ReplyTimeUtc)
-                                                     .Map(nameof(model.ReplyContent), model.ReplyContent)
+                var pipeline = new TemplatePipeline().Map(nameof(model.ReplyContent), model.ReplyContent)
                                                      .Map("RouteLink", postLink)
                                                      .Map("PostTitle", model.Title)
                                                      .Map(nameof(model.CommentContent), model.CommentContent);
@@ -153,9 +151,9 @@ namespace Moonglade.Notification
             {
                 _logger.LogInformation($"Sending BeingPinged mail for post '{receivedPingback.TargetPostTitle}'");
 
-                var pipeline = new TemplatePipeline().Map("Title", receivedPingback.TargetPostTitle)
-                                                     .Map("PingTime", receivedPingback.PingTimeUtc)
-                                                     .Map("SourceDomain", receivedPingback.Domain)
+                var pipeline = new TemplatePipeline().Map(nameof(receivedPingback.TargetPostTitle), receivedPingback.TargetPostTitle)
+                                                     .Map(nameof(receivedPingback.PingTimeUtc), receivedPingback.PingTimeUtc)
+                                                     .Map(nameof(receivedPingback.Domain), receivedPingback.Domain)
                                                      .Map(nameof(receivedPingback.SourceIp), receivedPingback.SourceIp)
                                                      .Map(nameof(receivedPingback.SourceTitle), receivedPingback.SourceTitle)
                                                      .Map(nameof(receivedPingback.SourceUrl), receivedPingback.SourceUrl);
