@@ -133,12 +133,19 @@ namespace Moonglade.Core
 
         private async Task NotifyAdminForReceivedPing(Guid pingbackId)
         {
-            var pingback = _pingbackRepository.Get(pingbackId);
+            var pingback = await _pingbackRepository.SelectFirstOrDefaultAsync(new PingbackHistorySpec(pingbackId),
+                p => new PingbackHistory
+                {
+                    Id = p.Id,
+                    Domain = p.Domain,
+                    PingTimeUtc = p.PingTimeUtc,
+                    SourceIp = p.SourceIp,
+                    SourceTitle = p.SourceTitle,
+                    SourceUrl = p.SourceUrl,
+                    TargetPostTitle = p.TargetPostTitle
+                });
 
-            var spec = new PostSpec(pingback.TargetPostId, false);
-            var title = _postRepository.SelectFirstOrDefault(spec, p => p.Title);
-
-            if (!string.IsNullOrWhiteSpace(title)) await _notification.SendPingNotificationAsync(pingback, title);
+            await _notification.SendPingNotificationAsync(pingback);
         }
 
         private async Task SavePingbackRecord(PingbackRequest request)

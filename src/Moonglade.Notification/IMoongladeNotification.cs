@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
-using Moonglade.Data.Entities;
 using Moonglade.Model;
 
 namespace Moonglade.Notification
@@ -16,6 +15,6 @@ namespace Moonglade.Notification
 
         Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink);
 
-        Task SendPingNotificationAsync(PingbackHistoryEntity receivedPingback, string postTitle);
+        Task SendPingNotificationAsync(PingbackHistory receivedPingback);
     }
 }

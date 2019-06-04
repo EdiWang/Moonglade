@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -148,13 +147,13 @@ namespace Moonglade.Notification
             }
         }
 
-        public async Task SendPingNotificationAsync(PingbackHistoryEntity receivedPingback, string postTitle)
+        public async Task SendPingNotificationAsync(PingbackHistory receivedPingback)
         {
             if (IsEnabled)
             {
-                _logger.LogInformation($"Sending BeingPinged mail for post id {receivedPingback.TargetPostId}");
+                _logger.LogInformation($"Sending BeingPinged mail for post '{receivedPingback.TargetPostTitle}'");
 
-                var pipeline = new TemplatePipeline().Map("Title", postTitle)
+                var pipeline = new TemplatePipeline().Map("Title", receivedPingback.TargetPostTitle)
                                                      .Map("PingTime", receivedPingback.PingTimeUtc)
                                                      .Map("SourceDomain", receivedPingback.Domain)
                                                      .Map(nameof(receivedPingback.SourceIp), receivedPingback.SourceIp)
