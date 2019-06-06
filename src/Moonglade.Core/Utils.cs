@@ -29,6 +29,11 @@ namespace Moonglade.Core
 
         public static string RemoveWhiteSpaceFromStylesheets(string body)
         {
+            if (string.IsNullOrWhiteSpace(body))
+            {
+                return string.Empty;
+            }
+
             body = Regex.Replace(body, @"[a-zA-Z]+#", "#");
             body = Regex.Replace(body, @"[\n\r]+\s*", string.Empty);
             body = Regex.Replace(body, @"\s+", " ");
