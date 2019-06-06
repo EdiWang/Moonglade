@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
@@ -113,7 +114,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("manage/edit")]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id, [FromServices] IHtmlCodec htmlCodec)
         {
             var postResponse = _postService.GetPost(id);
             if (!postResponse.IsSuccess)
@@ -127,22 +128,21 @@ namespace Moonglade.Web.Controllers
                 var editViewModel = new PostEditViewModel
                 {
                     PostId = post.Id,
-                    IsPublished = post.PostPublish.IsPublished,
-                    HtmlContent = HttpUtility.HtmlDecode(post.PostContent),
+                    IsPublished = post.IsPublished,
+                    HtmlContent = htmlCodec.HtmlDecode(post.EncodedHtmlContent),
                     Slug = post.Slug,
                     Title = post.Title,
                     EnableComment = post.CommentEnabled,
-                    ExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
-                    FeedIncluded = post.PostPublish.IsFeedIncluded,
-                    ContentLanguageCode = post.PostPublish.ContentLanguageCode
+                    ExposedToSiteMap = post.ExposedToSiteMap,
+                    FeedIncluded = post.FeedIncluded,
+                    ContentLanguageCode = post.ContentLanguageCode
                 };
 
-                ViewBag.PubDateStr = $"{post.PostPublish.PubDateUtc.GetValueOrDefault():yyyy/M/d}";
+                ViewBag.PubDateStr = $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}";
 
-                var tagStr = post.PostTag
-                    .Select(pt => pt.Tag)
-                    .Select(p => p.DisplayName)
-                    .Aggregate(string.Empty, (current, item) => current + (item + ","));
+                var tagStr = post.Tags
+                                 .Select(p => p.TagName)
+                                 .Aggregate(string.Empty, (current, item) => current + (item + ","));
 
                 tagStr = tagStr.TrimEnd(',');
                 editViewModel.Tags = tagStr;
@@ -160,7 +160,7 @@ namespace Moonglade.Web.Controllers
                         new CheckBoxViewModel(
                             p.DisplayName,
                             p.Id.ToString(),
-                            post.PostCategory.Any(q => q.CategoryId == p.Id))).ToList();
+                            post.Categories.Any(q => q.Id == p.Id))).ToList();
                     editViewModel.CategoryList = cbCatList;
                 }
 
