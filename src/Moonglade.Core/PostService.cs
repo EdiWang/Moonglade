@@ -39,7 +39,7 @@ namespace Moonglade.Core
             IRepository<PostTagEntity> postTagRepository,
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostCategoryEntity> postCategoryRepository, 
+            IRepository<PostCategoryEntity> postCategoryRepository,
             IHtmlCodec htmlCodec) : base(logger, settings)
         {
             _postRepository = postRepository;
@@ -112,13 +112,40 @@ namespace Moonglade.Core
             }, keyParameter: postId);
         }
 
-        public Response<PostEntity> GetPost(Guid id)
+        public Response<Post> GetPost(Guid id)
         {
             return TryExecute(() =>
             {
                 var spec = new PostSpec(id);
-                var post = _postRepository.GetFirstOrDefault(spec);
-                return new SuccessResponse<PostEntity>(post);
+                var post = _postRepository.SelectFirstOrDefault(spec, p => new Post
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Slug = p.Slug,
+                    EncodedHtmlContent = p.PostContent,
+                    ContentAbstract = p.ContentAbstract,
+                    CommentEnabled = p.CommentEnabled,
+                    CreateOnUtc = p.CreateOnUtc,
+                    PubDateUtc = p.PostPublish.PubDateUtc,
+                    IsPublished = p.PostPublish.IsPublished,
+                    ExposedToSiteMap = p.PostPublish.ExposedToSiteMap,
+                    FeedIncluded = p.PostPublish.IsFeedIncluded,
+                    ContentLanguageCode = p.PostPublish.ContentLanguageCode,
+                    Tags = p.PostTag.Select(pt => new Tag
+                    {
+                        Id = pt.TagId,
+                        NormalizedTagName = pt.Tag.NormalizedName,
+                        TagName = pt.Tag.DisplayName
+                    }).ToList(),
+                    Categories = p.PostCategory.Select(pc => new Category
+                    {
+                        Id = pc.CategoryId,
+                        DisplayName = pc.Category.DisplayName,
+                        Name = pc.Category.Title,
+                        Note = pc.Category.Note
+                    }).ToList()
+                });
+                return new SuccessResponse<Post>(post);
             });
         }
 
@@ -177,7 +204,7 @@ namespace Moonglade.Core
                 IsPublished = p.PostPublish.IsPublished,
                 IsDeleted = p.PostPublish.IsDeleted,
                 Revision = p.PostPublish.Revision,
-                CreateOnUtc = p.CreateOnUtc.Value,
+                CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
             });
         }

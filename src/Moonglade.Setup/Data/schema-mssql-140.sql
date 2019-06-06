@@ -57,7 +57,7 @@ CREATE TABLE [Post](
 [Slug] [nvarchar](128) NULL,
 [PostContent] [nvarchar](max) NULL,
 [CommentEnabled] [bit] NOT NULL,
-[CreateOnUtc] [datetime] NULL,
+[CreateOnUtc] [datetime] NOT NULL,
 [ContentAbstract] [nvarchar](1024) NULL) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostCategory')
