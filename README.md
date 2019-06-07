@@ -74,7 +74,7 @@ Register an App in **Azure Active Directory**
 
 ```json
 "Authentication": {
-  "Provider": "aad",
+  "Provider": "AzureAD",
   "AzureAd": {
     "Domain": "{YOUR-VALUE}",
     "TenantId": "{YOUR-VALUE}",
@@ -91,7 +91,7 @@ Set **Authentication:Provider** to **"Local"** and assign a pair of username and
 
 ```json
 "Authentication": {
-  "Provider": "local",
+  "Provider": "Local",
   "Local": {
     "Username": "{YOUR-VALUE}",
     "Password": "{YOUR-VALUE}",
