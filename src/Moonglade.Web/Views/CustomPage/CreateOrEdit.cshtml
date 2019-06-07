@@ -55,7 +55,10 @@
 
     var assignEditorValues = function () {
         var htmlValue = window.htmlContentEditor.getValue();
-        var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : "";
+
+        // Edit Mode, preserve old value when user has not clicked on CSS tab
+        var oldCssValue = $("#CssContent").val();
+        var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
 
         $("#RawHtmlContent").val(htmlValue);
         $("#CssContent").val(cssValue);
