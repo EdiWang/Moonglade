@@ -54,6 +54,7 @@ namespace Moonglade.Core
                 CommentContent = c.CommentContent,
                 CreateOnUtc = c.CreateOnUtc,
                 Username = c.Username,
+                Email = c.Email,
                 CommentReplies = c.CommentReply.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
