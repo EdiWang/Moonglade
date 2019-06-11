@@ -117,19 +117,18 @@ namespace Moonglade.Web.HtmlHelpers
         /// <remarks>Source: http://msdn.microsoft.com/en-us/library/system.security.cryptography.md5.aspx </remarks>
         private static string GetMd5Hash(string input)
         {
-
             // Convert the input string to a byte array and compute the hash.
-            byte[] data = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(input));
+            var data = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(input));
 
             // Create a new Stringbuilder to collect the bytes
             // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
+            var sBuilder = new StringBuilder();
 
             // Loop through each byte of the hashed data
             // and format each one as a hexadecimal string.
-            for (int i = 0; i < data.Length; i++)
+            foreach (var t in data)
             {
-                sBuilder.Append(data[i].ToString("x2"));
+                sBuilder.Append(t.ToString("x2"));
             }
 
             // Return the hexadecimal string.
@@ -144,17 +143,14 @@ namespace Moonglade.Web.HtmlHelpers
         /// <returns></returns>
         private static string GetDescription(this Enum en)
         {
+            var type = en.GetType();
+            var memInfo = type.GetMember(en.ToString());
 
-            Type type = en.GetType();
-            MemberInfo[] memInfo = type.GetMember(en.ToString());
+            if (memInfo == null || memInfo.Length <= 0) return en.ToString();
+            var attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-            if (memInfo != null && memInfo.Length > 0)
-            {
-                var attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-                if (attrs != null && attrs.Count() > 0)
-                    return ((DescriptionAttribute)attrs.First()).Description;
-            }
+            if (attrs != null && attrs.Any())
+                return ((DescriptionAttribute)attrs.First()).Description;
 
             return en.ToString();
         }
