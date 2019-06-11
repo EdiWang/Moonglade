@@ -1,6 +1,7 @@
 ﻿@using Microsoft.Extensions.Options
 @using Moonglade.Core
 @using Moonglade.Model.Settings
+@using Moonglade.Web.HtmlHelpers
 @model IReadOnlyList<Moonglade.Model.PostCommentListItem>
 
 @inject IOptions<AppSettings> Settings
@@ -8,7 +9,7 @@
 @{
     string GetUserAvatarChar(string username)
     {
-        if (string.IsNullOrWhiteSpace(username))    
+        if (string.IsNullOrWhiteSpace(username))
         {
             return "N/A";
         }
@@ -28,9 +29,18 @@
         @foreach (var item in Model.OrderBy(m => m.CreateOnUtc))
         {
             <div class="col-md-1 col-sm-1 col-2 mb-3">
-                <div class="user-avatar-char">
-                    @GetUserAvatarChar(item.Username)
-                </div>
+                @if (Settings.Value.EnableGravatar)
+                {
+                    <div class="user-avatar">
+                        @Html.GravatarImage(item.Email, size: 64)
+                    </div>
+                }
+                else
+                {
+                    <div class="user-avatar-char">
+                        @GetUserAvatarChar(item.Username)
+                    </div>
+                }
             </div>
             <div class="col-md-11 col-sm-11 col-10 mb-3">
                 <div class="card comment-item">
@@ -43,7 +53,7 @@
                         <div>
                             @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
                             {
-                                <hr/>
+                                <hr />
                                 <div class="reply-container">
                                     <div>
                                         <strong>
