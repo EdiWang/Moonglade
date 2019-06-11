@@ -1,5 +1,7 @@
 {
- "name": "App",
+ "short_name": "Edi",
+ "name": "Edi.Wang",
+ "start_url": "/",
  "icons": [
   {
    "src": "\/android-icon-36x36.png",
@@ -37,5 +39,9 @@
    "type": "image\/png",
    "density": "4.0"
   }
- ]
+ ],
+ "background_color": "#2a579a",
+ "theme_color": "#2a579a",
+ "display": "standalone",
+ "orientation": "portrait"
 }
