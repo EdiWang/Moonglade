@@ -45,7 +45,8 @@ namespace Moonglade.Core
             {
                 { "android-icon-", new[] { 36, 48, 72, 96, 144, 192 } },
                 { "favicon", new[] { 16, 32, 96 } },
-                { "apple-icon-", new[] { 57, 60, 72, 76, 114, 120, 144, 152, 180 } }
+                { "apple-icon-", new[] { 57, 60, 72, 76, 114, 120, 144, 152, 180 } },
+                { "ms-icon-", new[] { 70, 144, 150, 310 } }
             };
 
             foreach (var (key, value) in dic)
