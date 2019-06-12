@@ -34,5 +34,6 @@ namespace Moonglade.Web.Models
         public string Src { get; set; }
         public string Sizes { get; set; }
         public string Type { get; set; }
+        public string Density { get; set; }
     }
 }
