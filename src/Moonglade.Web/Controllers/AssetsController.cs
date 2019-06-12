@@ -36,8 +36,8 @@ namespace Moonglade.Web.Controllers
                 {
                     // TODO
                 },
-                // BackgroundColor = "#",
-                // ThemeColor = "#",
+                BackgroundColor = "#2a579a",
+                ThemeColor = "#2a579a",
                 Display = "standalone",
                 Orientation = "portrait"
             };
