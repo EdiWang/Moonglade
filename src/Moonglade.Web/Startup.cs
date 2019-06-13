@@ -76,7 +76,7 @@ namespace Moonglade.Web
             Configuration.Bind(nameof(Authentication), authentication);
             services.AddMoongladeAuthenticaton(authentication);
 
-            services.AddMvc(options => 
+            services.AddMvc(options =>
                             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                     .AddJsonOptions(options =>
@@ -201,6 +201,8 @@ namespace Moonglade.Web
 
             app.UseAuthentication();
 
+            GenerateFavicons(env);
+
             var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
             var setupHelper = new SetupHelper(conn);
 
@@ -248,6 +250,24 @@ namespace Moonglade.Web
 
         #region Private Helpers
 
+        private void GenerateFavicons(IHostingEnvironment env)
+        {
+            // Generate Favicons
+            // Caveat: This requires non-readonly application directory for hosting environment
+            try
+            {
+                IFaviconGenerator faviconGenerator = new MoongladeFaviconGenerator();
+                var userDefinedIconFile = Path.Combine(env.ContentRootPath, @"wwwroot\appicon.png");
+                if (File.Exists(userDefinedIconFile))
+                {
+                    faviconGenerator.GenerateIcons(userDefinedIconFile, Path.Combine(env.ContentRootPath, "wwwroot"));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error generating favicons.");
+            }
+        }
 
         private void AddImageStorage(IServiceCollection services)
         {
