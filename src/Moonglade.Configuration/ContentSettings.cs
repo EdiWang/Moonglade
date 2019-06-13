@@ -16,6 +16,8 @@ namespace Moonglade.Configuration
 
         public int HotTagAmount { get; set; }
 
+        public bool EnableGravatar { get; set; }
+
         public ContentSettings()
         {
             DisharmonyWords = string.Empty;

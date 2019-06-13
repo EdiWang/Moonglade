@@ -49,6 +49,16 @@
                         </div>
                     </li>
                 </ul>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="EnableGravatar" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnableGravatar ? "checked=\"checked\"" : string.Empty) id="EnableGravatar" name="EnableGravatar" type="checkbox" value="true">
+                            <label for="EnableGravatar" class="label-success"></label>
+                            <input name="EnableGravatar" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
                 <div class="card-body">
                     <div class="form-group">
                         <label asp-for="PostListPageSize" class="control-label"></label>
