@@ -162,7 +162,6 @@ EnablePingBackSend | Can blog send pingback to another blog
 EnforceHttps | Force website use HTTPS
 DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
 DNSPrefetchEndpoint | Add HTML head named "dns-prefetch"
-EnableGAvatar | Enable Gravatar for comment list
 
 ### URL Rewrite
 

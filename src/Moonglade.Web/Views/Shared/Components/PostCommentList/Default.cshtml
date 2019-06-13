@@ -1,10 +1,12 @@
 ﻿@using Microsoft.Extensions.Options
 @using Moonglade.Core
 @using Moonglade.Model.Settings
+@using Moonglade.Configuration.Abstraction
 @using Moonglade.Web.HtmlHelpers
 @model IReadOnlyList<Moonglade.Model.PostCommentListItem>
 
 @inject IOptions<AppSettings> Settings
+@inject IBlogConfig BlogConfig
 
 @{
     string GetUserAvatarChar(string username)
@@ -29,10 +31,10 @@
         @foreach (var item in Model.OrderBy(m => m.CreateOnUtc))
         {
             <div class="col-md-1 col-sm-1 col-2 mb-3">
-                @if (Settings.Value.EnableGravatar)
+                @if (BlogConfig.ContentSettings.EnableGravatar)
                 {
                     <div class="user-avatar">
-                        @Html.GravatarImage(item.Email, size: 64)
+                        @Html.GravatarImage(item.Email, size: 58, forceSecureRequest: true)
                     </div>
                 }
                 else

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Models
 {
@@ -34,5 +30,9 @@ namespace Moonglade.Web.Models
         [Display(Name = "How many tags show on sidebar")]
         [Range(1, 50, ErrorMessage = "Page Size can only range from 1-50")]
         public int HotTagAmount { get; set; }
+
+        [Required]
+        [Display(Name = "Enable Gravatar in Comment List")]
+        public bool EnableGravatar { get; set; }
     }
 }
