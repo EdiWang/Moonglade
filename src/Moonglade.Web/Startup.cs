@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using AspNetCoreRateLimit;
 using Edi.Blog.OpmlFileWriter;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
@@ -62,7 +63,20 @@ namespace Moonglade.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDistributedMemoryCache();
+            services.AddOptions();
+            services.AddMemoryCache();
+
+            // Setup document: https://github.com/stefanprodan/AspNetCoreRateLimit/wiki/IpRateLimitMiddleware#setup
+            //load general configuration from appsettings.json
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+
+            //load ip rules from appsettings.json
+            // services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+
+            // inject counter and rules stores
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -83,14 +97,21 @@ namespace Moonglade.Web
                                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     );
 
+            // https://github.com/aspnet/Hosting/issues/793
+            // the IHttpContextAccessor service is not registered by default.
+            // the clientId/clientIp resolvers use it.
+            // services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
+
+            // configuration (resolvers, counter key builders)
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
             services.AddAntiforgery(options =>
             {
                 const string cookieBaseName = "CSRF-TOKEN-MOONGLADE";
                 options.Cookie.Name = $"X-{cookieBaseName}";
                 options.FormFieldName = $"{cookieBaseName}-FORM";
             });
-            services.AddMemoryCache();
-            services.AddHttpContextAccessor();
 
             AddImageStorage(services);
 
@@ -239,6 +260,7 @@ namespace Moonglade.Web
                     }
                 }
 
+                app.UseIpRateLimiting();
                 app.UseMvc(routes =>
                 {
                     routes.MapRoute(
