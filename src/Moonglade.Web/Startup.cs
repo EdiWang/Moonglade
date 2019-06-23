@@ -260,7 +260,15 @@ namespace Moonglade.Web
                     }
                 }
 
+
                 app.UseIpRateLimiting();
+                app.MapWhen(context => context.Request.Path == "/version", builder =>
+                {
+                    builder.Run(async context =>
+                    {
+                        await context.Response.WriteAsync("Moonglade Version: " + Utils.AppVersion, Encoding.UTF8);
+                    });
+                });
                 app.UseMvc(routes =>
                 {
                     routes.MapRoute(
