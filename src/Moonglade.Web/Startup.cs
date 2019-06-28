@@ -437,6 +437,7 @@ namespace Moonglade.Web
                     {
                         var options = new RewriteOptions()
                             .AddRedirect("(.*)/$", "$1")
+                            .AddRedirect("(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)", "/")
                             .AddIISUrlRewrite(sr);
                         app.UseRewriter(options);
                     }
