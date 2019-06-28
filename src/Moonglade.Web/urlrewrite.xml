@@ -1,12 +1,5 @@
 ﻿<rewrite>
   <rules>
-    <rule name="Redirect Misc Homepage URLs to canonical homepage URL" stopProcessing="false">
-      <match url="(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)"/>
-      <conditions logicalGrouping="MatchAll" trackAllCaptures="false">
-        <add input="{REQUEST_METHOD}" pattern="GET"/>
-      </conditions>
-      <action type="Redirect" url="/"/>
-    </rule>
     <rule name="Prevent Image Hotlinking">
       <match url=".*\.(gif|jpg|png)$"/>
       <conditions>
