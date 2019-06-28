@@ -354,7 +354,7 @@ namespace Moonglade.Web
                         var fullPath = Utils.ResolveImageStoragePath(Environment.ContentRootPath, path);
 
                         _logger.LogInformation($"Setting {nameof(FileSystemImageProvider)} to use Path: {fullPath}");
-                        services.AddSingleton(s => new FileSystemImageProviderInfo(path));
+                        services.AddSingleton(s => new FileSystemImageProviderInfo(fullPath));
                         services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
                     }
                     catch (Exception e)
