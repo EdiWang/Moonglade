@@ -184,7 +184,7 @@ namespace Moonglade.Core
                     CommentCount = post.Comment.Count(c => c.IsApproved)
                 });
 
-                if (AppSettings.EnableImageLazyLoad)
+                if (null != postSlugModel && AppSettings.EnableImageLazyLoad)
                 {
                     postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
                 }
