@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "PostAbstractReset": {
-      "commandName": "Project",
-      "commandLineArgs": "-c \"Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;\" -w 400"
-    }
-  }
-}
