@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
+using Dapper;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 
@@ -17,6 +19,12 @@ namespace ImageFileNameReset
 
         [Option('n', Required = true, HelpText = "Container Name")]
         public string AzBlobContainerName { get; set; }
+    }
+
+    class BlogPostInfo
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
     }
 
     class Program
@@ -42,7 +50,7 @@ namespace ImageFileNameReset
                 var blobImages = (from item in blobs.Results
                                   where item.GetType() == typeof(CloudBlockBlob)
                                   select (CloudBlockBlob)item
-                        into blob
+                                  into blob
                                   select new BlobImage(blob.Properties.LastModified, blob.Uri)
                                   {
                                       FileName = blob.Name
@@ -56,13 +64,80 @@ namespace ImageFileNameReset
                 if (imagesToBeRenamed.Any())
                 {
                     WriteMessage($"Found {imagesToBeRenamed.Count} image file(s) with non-standard names.", ConsoleColor.Yellow);
+
+                    using (var conn = new SqlConnection(Options.SqlSeverConnectionString))
+                    {
+                        int itemsRenamed = 0;
+
+                        foreach (var img in imagesToBeRenamed)
+                        {
+                            const string sqlFindInfo = @"SELECT TOP 1 Id, Title FROM Post p
+                                                         WHERE p.PostContent LIKE '%' + @oldFileName + '%'";
+
+                            var pi = await conn.QueryFirstOrDefaultAsync<BlogPostInfo>(sqlFindInfo, new { oldFileName = img.FileName });
+                            if (null != pi)
+                            {
+                                WriteMessage($"Found refrencing post '{pi.Title}' (Id: {pi.Id})");
+
+                                var gen = new GuidFileNameGenerator(Guid.NewGuid());
+                                var newFileName = gen.GetFileName(img.FileName);
+
+                                WriteMessage($"Renaming {img.FileName} to {newFileName}.");
+
+                                try
+                                {
+                                    // 1. Update Database
+                                    const string sqlUpdate = @"UPDATE Post
+                                                               SET PostContent = REPLACE(PostContent, @oldFileName, @newFileName)
+                                                               WHERE Id = @postId";
+                                    int rows = await conn.ExecuteAsync(sqlUpdate,
+                                        new
+                                        {
+                                            oldFileName = img.FileName,
+                                            newFileName,
+                                            postId = pi.Id
+                                        });
+
+                                    if (rows > 0)
+                                    {
+                                        try
+                                        {
+                                            // 2. Update Blob only SQL operation is successful.
+                                            await RenameAsync(container, img.FileName, newFileName);
+                                            itemsRenamed++;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            WriteMessage(e.Message, ConsoleColor.Red);
+
+                                            // Roll back SQL changes
+                                            WriteMessage("Azure Blob renaming blow up, roll back database changes.", ConsoleColor.DarkYellow);
+                                            int rollbackRows = await conn.ExecuteAsync(sqlUpdate, new
+                                            {
+                                                oldFileName = newFileName,
+                                                newFileName = img.FileName,
+                                                postId = pi.Id
+                                            });
+                                            WriteMessage($"{rollbackRows} row(s) updated.");
+                                        }
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    WriteMessage(e.Message, ConsoleColor.Red);
+                                }
+                            }
+                        }
+
+                        WriteMessage($"{itemsRenamed} image file(s) updated. {blobImages.Count - itemsRenamed} skipped.");
+                    }
                 }
 
                 Console.ReadKey();
             }
         }
 
-        public async Task RenameAsync(CloudBlobContainer container, string oldName, string newName)
+        private static async Task RenameAsync(CloudBlobContainer container, string oldName, string newName)
         {
             try
             {
