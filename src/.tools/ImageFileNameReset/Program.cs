@@ -10,10 +10,13 @@ namespace ImageFileNameReset
     class Options
     {
         [Option('c', Required = true, HelpText = "Azure Blob Storage Connection String")]
-        public string ConnectionString { get; set; }
+        public string AzBlobConnectionString { get; set; }
+
+        [Option('s', Required = true, HelpText = "SQL Server Connection String")]
+        public string SqlSeverConnectionString { get; set; }
 
         [Option('n', Required = true, HelpText = "Container Name")]
-        public string ContainerName { get; set; }
+        public string AzBlobContainerName { get; set; }
     }
 
     class Program
@@ -28,11 +31,11 @@ namespace ImageFileNameReset
                 Options = ((Parsed<Options>)parserResult).Value;
                 WriteMessage("Connecting to Azure...");
 
-                var storageAccount = CloudStorageAccount.Parse(Options.ConnectionString);
+                var storageAccount = CloudStorageAccount.Parse(Options.AzBlobConnectionString);
                 var blobClient = storageAccount.CreateCloudBlobClient();
-                var container = blobClient.GetContainerReference(Options.ContainerName);
+                var container = blobClient.GetContainerReference(Options.AzBlobContainerName);
 
-                WriteMessage($"[OK] Connected to Azure Blob Storage '{storageAccount.Credentials.AccountName}' with container '{Options.ContainerName}'.", ConsoleColor.Green);
+                WriteMessage($"[OK] Connected to Azure Blob Storage '{storageAccount.Credentials.AccountName}' with container '{Options.AzBlobContainerName}'.", ConsoleColor.Green);
 
                 WriteMessage("Getting image file list...");
                 var blobs = await container.ListBlobsSegmentedAsync(null);
