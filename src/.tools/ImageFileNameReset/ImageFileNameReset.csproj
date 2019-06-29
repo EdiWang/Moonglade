@@ -5,11 +5,15 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/EdiWang/Moonglade</RepositoryUrl>
+    <PackageProjectUrl>https://edi.wang</PackageProjectUrl>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.60.6" />
+    <PackageReference Include="CommandLineParser" Version="2.5.0" />
     <PackageReference Include="Microsoft.Azure.KeyVault.Core" Version="3.0.3" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="10.0.3" />
   </ItemGroup>
