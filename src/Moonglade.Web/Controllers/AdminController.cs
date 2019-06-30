@@ -139,6 +139,7 @@ namespace Moonglade.Web.Controllers
         #endregion
 
         // Keep session from expire when writing a very long post
+        [IgnoreAntiforgeryToken]
         [Route("keep-alive")]
         public IActionResult KeepAlive(string nonce)
         {
