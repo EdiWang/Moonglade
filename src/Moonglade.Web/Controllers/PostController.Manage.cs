@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
@@ -22,7 +23,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var list = await _postService.GetPostMetaListAsync();
+            var list = await _postService.GetPostMetaListAsync(PostPublishStatus.Published);
             return View(list);
         }
 
@@ -30,7 +31,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/draft")]
         public async Task<IActionResult> Draft()
         {
-            var list = await _postService.GetPostMetaListAsync(false, false);
+            var list = await _postService.GetPostMetaListAsync(PostPublishStatus.Draft);
             return View(list);
         }
 
@@ -38,7 +39,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/recycle-bin")]
         public async Task<IActionResult> RecycleBin()
         {
-            var list = await _postService.GetPostMetaListAsync(true);
+            var list = await _postService.GetPostMetaListAsync(PostPublishStatus.Deleted);
             return View(list);
         }
 
@@ -78,7 +79,8 @@ namespace Moonglade.Web.Controllers
                         ContentLanguageCode = model.ContentLanguageCode,
                         IsPublished = model.IsPublished,
                         Tags = tagList,
-                        CategoryIds = model.SelectedCategoryIds
+                        CategoryIds = model.SelectedCategoryIds,
+                        RequestIp = HttpContext.Connection.RemoteIpAddress.ToString()
                     };
 
                     var response = _postService.CreateNewPost(request);
@@ -138,7 +140,8 @@ namespace Moonglade.Web.Controllers
                     ContentLanguageCode = post.ContentLanguageCode
                 };
 
-                ViewBag.PubDateStr = $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}";
+                ViewBag.PubDateStr = post.PubDateUtc == null ? 
+                                     null : $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}";
 
                 var tagStr = post.Tags
                                  .Select(p => p.TagName)
@@ -195,7 +198,8 @@ namespace Moonglade.Web.Controllers
                     ContentLanguageCode = model.ContentLanguageCode,
                     IsPublished = model.IsPublished,
                     Tags = tagList,
-                    CategoryIds = model.SelectedCategoryIds
+                    CategoryIds = model.SelectedCategoryIds,
+                    RequestIp = HttpContext.Connection.RemoteIpAddress.ToString()
                 };
 
                 var response = _postService.EditPost(request);
