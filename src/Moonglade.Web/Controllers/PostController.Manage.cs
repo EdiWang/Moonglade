@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
+using Moonglade.HtmlCodec;
 using Moonglade.Model;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;

@@ -1,6 +1,6 @@
 ﻿using System.Web;
 
-namespace Moonglade.Core
+namespace Moonglade.HtmlCodec
 {
     public class HttpUtilityHtmlCodec : IHtmlCodec
     {
