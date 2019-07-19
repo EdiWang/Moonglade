@@ -16,6 +16,8 @@ namespace Moonglade.Model
         public string[] Tags { get; set; }
         public Guid[] CategoryIds { get; set; }
 
+        public string RequestIp { get; set; }
+
         public CreatePostRequest()
         {
             Tags = new string[] { };

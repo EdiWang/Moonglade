@@ -6,7 +6,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec
 {
-    public sealed class PostSpec : BaseSpecification<PostEntity>
+    public sealed partial class PostSpec : BaseSpecification<PostEntity>
     {
         public PostSpec(Guid? categoryId, int? top = null) :
             base(p => !p.PostPublish.IsDeleted &&
@@ -74,10 +74,25 @@ namespace Moonglade.Data.Spec
             }
         }
 
-        public PostSpec(bool isDeleted, bool isPublished) :
-            base(p => p.PostPublish.IsDeleted == isDeleted && p.PostPublish.IsPublished == isPublished)
+        public PostSpec(PostPublishStatus status)
         {
-
+            switch (status)
+            {
+                case PostPublishStatus.Draft:
+                    UseCriteria(p => !p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
+                    break;
+                case PostPublishStatus.Published:
+                    UseCriteria(p => p.PostPublish.IsPublished);
+                    break;
+                case PostPublishStatus.Deleted:
+                    UseCriteria(p => p.PostPublish.IsDeleted);
+                    break;
+                case PostPublishStatus.NotSet:
+                    UseCriteria(p => true);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, null);
+            }
         }
 
         public PostSpec(bool isDeleted) :

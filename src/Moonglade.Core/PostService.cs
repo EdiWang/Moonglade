@@ -193,9 +193,9 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostMetaData>> GetPostMetaListAsync(bool isDeleted = false, bool? isPublished = true)
+        public Task<IReadOnlyList<PostMetaData>> GetPostMetaListAsync(PostPublishStatus postPublishStatus)
         {
-            var spec = null != isPublished ? new PostSpec(isDeleted, isPublished.Value) : new PostSpec();
+            var spec = new PostSpec(postPublishStatus);
             return _postRepository.SelectAsync(spec, p => new PostMetaData
             {
                 Id = p.Id,
@@ -359,7 +359,8 @@ namespace Moonglade.Core
                         ExposedToSiteMap = request.ExposedToSiteMap,
                         IsFeedIncluded = request.IsFeedIncluded,
                         Revision = 0,
-                        ContentLanguageCode = request.ContentLanguageCode
+                        ContentLanguageCode = request.ContentLanguageCode,
+                        PublisherIp = request.RequestIp
                     },
                     PostExtension = new PostExtensionEntity
                     {
@@ -459,6 +460,7 @@ namespace Moonglade.Core
                 // from draft
                 if (!postModel.PostPublish.PubDateUtc.HasValue)
                 {
+                    postModel.PostPublish.PublisherIp = request.RequestIp;
                     postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
                 }
 
