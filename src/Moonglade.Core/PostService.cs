@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
+using Moonglade.HtmlCodec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 

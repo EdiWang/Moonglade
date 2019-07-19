@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+    <ProjectReference Include="..\Moonglade.HtmlCodec\Moonglade.HtmlCodec.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
     <ProjectReference Include="..\Moonglade.Notification\Moonglade.Notification.csproj" />
   </ItemGroup>

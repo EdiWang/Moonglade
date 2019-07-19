@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Markdig;
+using Moonglade.HtmlCodec;
 
 namespace Moonglade.Core
 {
