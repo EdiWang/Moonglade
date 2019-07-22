@@ -44,7 +44,7 @@
 <form class="post-edit-form" method="post">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <input type="hidden" asp-for="PostId" />
-
+    <input type="hidden" asp-for="IsPublished" />
     <div class="row">
         <div class="col-md-9 col-xl-10">
             <input type="text" asp-for="Title" class="form-control form-control-lg" placeholder="Title" />
@@ -100,14 +100,6 @@
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="IsPublished" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.IsPublished ? "checked=\"checked\"" : "") id="IsPublished" name="IsPublished" type="checkbox" value="true">
-                            <label for="IsPublished" class="label-success"></label>
-                            <input name="IsPublished" type="hidden" value="false">
-                        </div>
-                    </li>
-                    <li class="list-group-item">
                         <label asp-for="FeedIncluded" class="control-label"></label>
                         <div class="material-switch float-right">
                             <input @(Model.FeedIncluded ? "checked=\"checked\"" : "") id="FeedIncluded" name="FeedIncluded" type="checkbox" value="true">
@@ -157,8 +149,14 @@
 
     <div>
         <button type="submit" class="btn btn-success ediblogeditor-submit" id="btn-submit">
-            Submit
+            Save
         </button>
+        @if (!Model.IsPublished)
+        {
+            <button class="btn btn-secondary ediblogeditor-publish" id="btn-publish">
+                Save and Publish
+            </button>
+        }
         <a asp-controller="Post" asp-action="Manage" class="btn btn-light">Cancel</a>
     </div>
 </form>

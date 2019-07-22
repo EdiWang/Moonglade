@@ -282,7 +282,7 @@ namespace Moonglade.Web.Controllers
             var view = new PostEditViewModel
             {
                 PostId = Guid.NewGuid(),
-                IsPublished = true,
+                IsPublished = false,
                 EnableComment = true,
                 ExposedToSiteMap = true,
                 FeedIncluded = true
