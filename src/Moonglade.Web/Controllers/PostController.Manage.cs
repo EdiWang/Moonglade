@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Edi.Blog.Pingback;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.HtmlCodec;
 using Moonglade.Model;
@@ -53,69 +51,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("manage/create")]
-        [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
-        public IActionResult Create(PostEditViewModel model, 
-            [FromServices] LinkGenerator linkGenerator,
-            [FromServices] IPingbackSender pingbackSender)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    // get tags
-                    string[] tagList = string.IsNullOrWhiteSpace(model.Tags)
-                                             ? new string[] { }
-                                             : model.Tags.Split(',').ToArray();
-
-                    var request = new CreatePostRequest
-                    {
-                        Title = model.Title.Trim(),
-                        Slug = model.Slug.Trim(),
-                        HtmlContent = model.HtmlContent,
-                        EnableComment = model.EnableComment,
-                        ExposedToSiteMap = model.ExposedToSiteMap,
-                        IsFeedIncluded = model.FeedIncluded,
-                        ContentLanguageCode = model.ContentLanguageCode,
-                        IsPublished = model.IsPublished,
-                        Tags = tagList,
-                        CategoryIds = model.SelectedCategoryIds,
-                        RequestIp = HttpContext.Connection.RemoteIpAddress.ToString()
-                    };
-
-                    var response = _postService.CreateNewPost(request);
-                    if (response.IsSuccess)
-                    {
-                        if (!model.IsPublished) return RedirectToAction(nameof(Manage));
-
-                        var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
-                        var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
-
-                        if (AppSettings.EnablePingBackSend)
-                        {
-                            Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
-                        }
-
-                        return RedirectToAction(nameof(Manage));
-                    }
-
-                    ModelState.AddModelError("", response.Message);
-                    return View("CreateOrEdit", model);
-                }
-
-                return View("CreateOrEdit", model);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Error Creating New Post.");
-                ModelState.AddModelError("", ex.Message);
-                return View("CreateOrEdit", model);
-            }
-        }
-
-
-        [Authorize]
         [Route("manage/edit")]
         public async Task<IActionResult> Edit(Guid id, [FromServices] IHtmlCodec htmlCodec)
         {
@@ -141,7 +76,7 @@ namespace Moonglade.Web.Controllers
                     ContentLanguageCode = post.ContentLanguageCode
                 };
 
-                ViewBag.PubDateStr = post.PubDateUtc == null ? 
+                ViewBag.PubDateStr = post.PubDateUtc == null ?
                                      null : $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}";
 
                 var tagStr = post.Tags
@@ -175,59 +110,70 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
+        [HttpPost("manage/createoredit")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
-        [HttpPost("manage/edit")]
-        public IActionResult Edit(PostEditViewModel model, 
+        public IActionResult CreateOrEdit(PostEditViewModel model, 
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
         {
-            if (ModelState.IsValid)
+            try
             {
-                string[] tagList = string.IsNullOrWhiteSpace(model.Tags)
-                                         ? new string[] { }
-                                         : model.Tags.Split(',').ToArray();
-
-                var request = new EditPostRequest(model.PostId)
+                if (ModelState.IsValid)
                 {
-                    Title = model.Title.Trim(),
-                    Slug = model.Slug.Trim(),
-                    HtmlContent = model.HtmlContent,
-                    EnableComment = model.EnableComment,
-                    ExposedToSiteMap = model.ExposedToSiteMap,
-                    IsFeedIncluded = model.FeedIncluded,
-                    ContentLanguageCode = model.ContentLanguageCode,
-                    IsPublished = model.IsPublished,
-                    Tags = tagList,
-                    CategoryIds = model.SelectedCategoryIds,
-                    RequestIp = HttpContext.Connection.RemoteIpAddress.ToString()
-                };
+                    string[] tagList = string.IsNullOrWhiteSpace(model.Tags)
+                                             ? new string[] { }
+                                             : model.Tags.Split(',').ToArray();
 
-                var response = _postService.EditPost(request);
-                if (response.IsSuccess)
-                {
-                    if (model.IsPublished)
+                    var request = new EditPostRequest(model.PostId)
                     {
-                        Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
+                        Title = model.Title.Trim(),
+                        Slug = model.Slug.Trim(),
+                        HtmlContent = model.HtmlContent,
+                        EnableComment = model.EnableComment,
+                        ExposedToSiteMap = model.ExposedToSiteMap,
+                        IsFeedIncluded = model.FeedIncluded,
+                        ContentLanguageCode = model.ContentLanguageCode,
+                        IsPublished = model.IsPublished,
+                        Tags = tagList,
+                        CategoryIds = model.SelectedCategoryIds,
+                        RequestIp = HttpContext.Connection.RemoteIpAddress.ToString()
+                    };
 
-                        var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
-                        var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
+                    var response = model.PostId == Guid.Empty ? 
+                        _postService.CreateNewPost(request) :
+                        _postService.EditPost(request);
 
-                        if (AppSettings.EnablePingBackSend)
+                    if (response.IsSuccess)
+                    {
+                        if (model.IsPublished)
                         {
-                            Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
+                            Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
+
+                            var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
+                            var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
+
+                            if (AppSettings.EnablePingBackSend)
+                            {
+                                Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
+                            }
                         }
+
+                        return RedirectToAction(nameof(Manage));
                     }
 
-                    return RedirectToAction(nameof(Manage));
+                    ModelState.AddModelError("", response.Message);
+                    return View(model);
                 }
 
-                ModelState.AddModelError("", response.Message);
-                return View("CreateOrEdit", model);
-
+                return View(model);
             }
-
-            return View("CreateOrEdit", model);
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error Creating New Post.");
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
         }
 
         [Authorize]
@@ -281,8 +227,8 @@ namespace Moonglade.Web.Controllers
         {
             var view = new PostEditViewModel
             {
-                PostId = Guid.NewGuid(),
-                IsPublished = true,
+                PostId = Guid.Empty,
+                IsPublished = false,
                 EnableComment = true,
                 ExposedToSiteMap = true,
                 FeedIncluded = true

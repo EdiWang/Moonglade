@@ -448,7 +448,15 @@ namespace Moonglade.Core
                 postModel.CommentEnabled = request.EnableComment;
                 postModel.PostContent = _htmlCodec.HtmlEncode(request.HtmlContent);
                 postModel.ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords);
-                postModel.PostPublish.IsPublished = request.IsPublished;
+
+                // Address #221: Do not allow published posts back to draft status
+                // postModel.PostPublish.IsPublished = request.IsPublished;
+                // Edit draft -> save and publish, ignore false case because #221
+                if (request.IsPublished)
+                {
+                    postModel.PostPublish.IsPublished = true;
+                }
+
                 postModel.Slug = request.Slug;
                 postModel.Title = request.Title;
                 postModel.PostPublish.ExposedToSiteMap = request.ExposedToSiteMap;
