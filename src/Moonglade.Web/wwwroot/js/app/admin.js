@@ -58,7 +58,16 @@ var postEditor = {
             }
         });
 
-        $("#btn-submit").click(function (e) {
+        $("#btn-save").click(function (e) {
+            submitForm(e);
+        });
+
+        $("#btn-publish").click(function (e) {
+            $('input[name="IsPublished"]').val("True");
+            submitForm(e);
+        });
+
+        function submitForm(e) {
             window.tinyMCE.triggerSave();
 
             var selectCatCount = 0;
@@ -72,7 +81,7 @@ var postEditor = {
                 e.preventDefault();
                 window.toastr.error('Please select at least one category');
             }
-        });
+        }
 
         $(".post-edit-form").areYouSure({
             message: "You have unsaved changes, are you sure to leave this page?"
