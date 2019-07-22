@@ -82,7 +82,7 @@ namespace Moonglade.Data.Spec
                     UseCriteria(p => !p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
                     break;
                 case PostPublishStatus.Published:
-                    UseCriteria(p => p.PostPublish.IsPublished);
+                    UseCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
                     break;
                 case PostPublishStatus.Deleted:
                     UseCriteria(p => p.PostPublish.IsDeleted);
