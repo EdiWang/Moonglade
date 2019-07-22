@@ -41,7 +41,7 @@
     </script>
 }
 
-<form class="post-edit-form" method="post">
+<form class="post-edit-form" method="post" asp-action="CreateOrEdit">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <input type="hidden" asp-for="PostId" />
     <input type="hidden" asp-for="IsPublished" />
