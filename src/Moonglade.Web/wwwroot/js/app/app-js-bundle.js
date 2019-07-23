@@ -50,21 +50,25 @@ d+"px").css("background-color",a.isDark(e,i)?h.foreground:h.background).appendTo
 //# sourceMappingURL=toastr.js.map
 
 window.toastr.options = {
-    "positionClass": "toast-bottom-center"
+    "positionClass": 'toast-bottom-center'
 };
 
 $(function () {
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
 
-    $(".site-qrcode").qrcode(document.location.origin);
+    $('.site-qrcode').qrcode(document.location.origin);
 
-    $("input#search, #search-mobile")
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        $('div.container').addClass('container-fluid').removeClass('container');
+    }
+
+    $('input#search, #search-mobile')
         .focus(function () {
-            $(this).attr("placeholder", "");
+            $(this).attr('placeholder', '');
         })
         .blur(function () {
-            $(this).attr("placeholder", "Search");
+            $(this).attr('placeholder', 'Search');
         });
 });
 var postSlug = {
