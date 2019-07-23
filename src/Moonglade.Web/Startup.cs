@@ -77,7 +77,7 @@ namespace Moonglade.Web
             // inject counter and rules stores
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-            
+
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -172,11 +172,38 @@ namespace Moonglade.Web
             });
 
             PrepareRuntimePathDependencies(app, env);
+            var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
 
             app.UseSecurityHeaders(new HeaderPolicyCollection()
                 .AddFrameOptionsSameOrigin()
                 .AddXssProtectionEnabled()
                 .AddContentTypeOptionsNoSniff()
+                .AddContentSecurityPolicy(csp =>
+                {
+                    if (enforceHttps)
+                    {
+                        csp.AddUpgradeInsecureRequests();
+                    }
+                    csp.AddFormAction()
+                        .Self();
+                    csp.AddScriptSrc()
+                        .Self()
+                        .UnsafeInline()
+                        .UnsafeEval()
+                        // Whitelist Azure Application Insights
+                        .From("https://*.vo.msecnd.net")
+                        .From("https://*.services.visualstudio.com");
+                })
+                // Microsoft believes privacy is a fundamental human right
+                // So should I
+                .AddFeaturePolicy(builder =>
+                {
+                    builder.AddCamera().None();
+                    builder.AddMicrophone().None();
+                    builder.AddPayment().None();
+                    builder.AddUsb().None();
+                })
+                .RemoveServerHeader()
             );
             app.UseMiddleware<PoweredByMiddleware>();
 
@@ -197,7 +224,6 @@ namespace Moonglade.Web
                 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
             }
 
-            var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
             if (enforceHttps)
             {
                 _logger.LogInformation("HTTPS is enforced.");
