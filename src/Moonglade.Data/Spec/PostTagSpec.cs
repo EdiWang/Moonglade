@@ -5,7 +5,8 @@ namespace Moonglade.Data.Spec
 {
     public sealed class PostTagSpec : BaseSpecification<PostTagEntity>
     {
-        public PostTagSpec(int tagId) : base(pt => pt.TagId == tagId)
+        public PostTagSpec(int tagId) : base(pt => pt.TagId == tagId 
+                                                   && !pt.Post.PostPublish.IsDeleted)
         {
             
         }
