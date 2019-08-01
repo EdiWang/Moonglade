@@ -265,7 +265,7 @@
     @if (Model.PostModel.CommentCount > 0)
     {
         <section id="comments-list">
-            @await Component.InvokeAsync("PostCommentList", new { postId = Model.PostModel.PostId })
+            @await Component.InvokeAsync("CommentList", new { postId = Model.PostModel.PostId })
         </section>
     }
 </div>

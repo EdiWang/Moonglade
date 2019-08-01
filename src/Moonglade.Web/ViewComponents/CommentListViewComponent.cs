@@ -8,12 +8,12 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class PostCommentListViewComponent : MoongladeViewComponent
+    public class CommentListViewComponent : MoongladeViewComponent
     {
         private readonly CommentService _commentService;
 
-        public PostCommentListViewComponent(
-            ILogger<PostCommentListViewComponent> logger,
+        public CommentListViewComponent(
+            ILogger<CommentListViewComponent> logger,
             IOptions<AppSettings> settings, CommentService commentService) : base(logger, settings)
         {
             _commentService = commentService;
