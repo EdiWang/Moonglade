@@ -217,6 +217,7 @@
     font-size: 0.95rem;
     line-height: 1.6rem;
     margin-bottom: 15px;
+    word-wrap: break-word;
 }
 
 .post-content img {
