@@ -124,20 +124,21 @@ namespace Moonglade.Web.Controllers
                         MemoryStream watermarkedStream = null;
                         if (_blogConfig.WatermarkSettings.IsEnabled && ext != ".gif")
                         {
-                            var watermarker = new ImageWatermarker(stream, ext)
+                            using (var watermarker = new ImageWatermarker(stream, ext)
                             {
                                 SkipWatermarkForSmallImages = true,
                                 SmallImagePixelsThreshold = Constants.SmallImagePixelsThreshold
-                            };
+                            })
+                            {
+                                Logger.LogInformation($"Adding watermark onto image {primaryFileName}");
 
-                            Logger.LogInformation($"Adding watermark onto image {primaryFileName}");
-
-                            watermarkedStream = watermarker.AddWatermark(
-                                                _blogConfig.WatermarkSettings.WatermarkText,
-                                                Color.FromArgb(128, 128, 128, 128),
-                                                WatermarkPosition.BottomRight,
-                                                15,
-                                                _blogConfig.WatermarkSettings.FontSize);
+                                watermarkedStream = watermarker.AddWatermark(
+                                    _blogConfig.WatermarkSettings.WatermarkText,
+                                    Color.FromArgb(128, 128, 128, 128),
+                                    WatermarkPosition.BottomRight,
+                                    15,
+                                    _blogConfig.WatermarkSettings.FontSize);
+                            }
                         }
 
                         var response = await _imageStorageProvider.InsertAsync(primaryFileName,

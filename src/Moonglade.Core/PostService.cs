@@ -482,9 +482,9 @@ namespace Moonglade.Core
                 postModel.PostTag.Clear();
                 if (request.Tags.Any())
                 {
-                    foreach (var t in request.Tags)
+                    foreach (var tagName in request.Tags)
                     {
-                        var tag = _tagRepository.Get(_ => _.DisplayName == t);
+                        var tag = _tagRepository.Get(t => t.DisplayName == tagName);
                         if (tag != null) postModel.PostTag.Add(new PostTagEntity
                         {
                             PostId = postModel.Id,
