@@ -100,22 +100,22 @@
         <div class="d-block d-sm-none">
             <div class="post-publish-info bg-light">
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
-                (UTC +8:00)
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Last Edit @Model.PostModel.LastModifyOnUtc.Value.ToString("yyyy/M/d HH:mm"))</span>
+                    <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm"))</span>
                 }
+                | UTC+@Settings.Value.TimeZone:00
             </div>
         </div>
 
         <div class="d-none d-md-block post-publish-info mb-2">
             <strong class="text-muted">
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
-                / UTC +@Settings.Value.TimeZone
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Last Edit @Model.PostModel.LastModifyOnUtc.Value.ToString("yyyy/M/d HH:mm"))</span>
+            <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm"))</span>
                 }
+                | UTC+@Settings.Value.TimeZone:00
             </strong>
             <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits Reads</span>
         </div>
