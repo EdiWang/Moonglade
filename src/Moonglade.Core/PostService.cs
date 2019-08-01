@@ -452,9 +452,11 @@ namespace Moonglade.Core
                 // Address #221: Do not allow published posts back to draft status
                 // postModel.PostPublish.IsPublished = request.IsPublished;
                 // Edit draft -> save and publish, ignore false case because #221
-                if (request.IsPublished)
+                if (request.IsPublished && !postModel.PostPublish.IsPublished)
                 {
                     postModel.PostPublish.IsPublished = true;
+                    postModel.PostPublish.PublisherIp = request.RequestIp;
+                    postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
                 }
 
                 postModel.Slug = request.Slug;
@@ -465,13 +467,6 @@ namespace Moonglade.Core
                 postModel.PostPublish.ContentLanguageCode = request.ContentLanguageCode;
 
                 ++postModel.PostPublish.Revision;
-
-                // from draft
-                if (!postModel.PostPublish.PubDateUtc.HasValue)
-                {
-                    postModel.PostPublish.PublisherIp = request.RequestIp;
-                    postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
-                }
 
                 // 1. Add new tags to tag lib
                 foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
