@@ -190,8 +190,8 @@ namespace Moonglade.Data.Infrastructure
 
         public Task<TResult> SelectFirstOrDefaultAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
         {
-            return asNoTracking ? 
-                ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync() : 
+            return asNoTracking ?
+                ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync() :
                 ApplySpecification(spec).Select(selector).FirstOrDefaultAsync();
         }
 
@@ -205,6 +205,16 @@ namespace Moonglade.Data.Infrastructure
                 return await DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
             }
             return await DbContext.Set<T>().GroupBy(groupExpression).Select(selector).ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(ISpecification<T> spec, Expression<Func<T, TGroup>> groupExpression, Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
+            bool asNoTracking = true)
+        {
+            if (asNoTracking)
+            {
+                return await ApplySpecification(spec).AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
+            }
+            return await ApplySpecification(spec).GroupBy(groupExpression).Select(selector).ToListAsync();
         }
 
         public async Task<T> AddAsync(T entity)

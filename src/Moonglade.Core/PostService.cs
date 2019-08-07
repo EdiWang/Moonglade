@@ -79,7 +79,8 @@ namespace Moonglade.Core
                     p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
                     return new SuccessResponse<IReadOnlyList<Archive>>();
 
-                var list = await _postRepository.SelectAsync(post => new
+                var spec = new PostSpec(PostPublishStatus.Published);
+                var list = await _postRepository.SelectAsync(spec, post => new
                 {
                     post.PostPublish.PubDateUtc.Value.Year,
                     post.PostPublish.PubDateUtc.Value.Month
