@@ -63,8 +63,10 @@ var postEditor = {
         });
 
         $("#btn-publish").click(function (e) {
-            $('input[name="IsPublished"]').val("True");
-            submitForm(e);
+            if ($('form').valid()) {
+                $('input[name="IsPublished"]').val("True");
+                submitForm(e);
+            }
         });
 
         function submitForm(e) {
@@ -80,6 +82,11 @@ var postEditor = {
             if ($('.post-edit-form').valid() && selectCatCount === 0) {
                 e.preventDefault();
                 window.toastr.error('Please select at least one category');
+            }
+            else {
+                if ($('input[name="IsPublished"]').val() == 'True') {
+                    $('#btn-publish').hide();
+                }
             }
         }
 
@@ -154,5 +161,36 @@ var onUpdateSettingsFailed = function (context) {
         window.toastr.error("Server Error: " + msg);
     } else {
         alert("Error Code: " + msg);
+    }
+};
+
+var btnSubmitPost = "#btn-save";
+var onPostCreateEditBegin = function () {
+    $(btnSubmitPost).text("Saving...");
+    $(btnSubmitPost).addClass("disabled");
+    $(btnSubmitPost).attr("disabled", "disabled");
+};
+
+var onPostCreateEditComplete = function () {
+    $(btnSubmitPost).text("Save");
+    $(btnSubmitPost).removeClass("disabled");
+    $(btnSubmitPost).removeAttr("disabled");
+};
+
+var onPostCreateEditSuccess = function (data) {
+    if (data.redirectToManage) {
+        window.location.href = "/post/manage";
+    }
+    else {
+        toastr.success("Post saved successfully.");
+    }
+};
+
+var onPostCreateEditFailed = function (context) {
+    var message = context.responseJSON.message;
+    if (window.toastr) {
+        window.toastr.error(message);
+    } else {
+        alert("Error: " + message);
     }
 };
