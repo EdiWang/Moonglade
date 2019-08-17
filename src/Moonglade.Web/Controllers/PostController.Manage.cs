@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Edi.Blog.Pingback;
+using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -159,20 +161,21 @@ namespace Moonglade.Web.Controllers
                             }
                         }
 
-                        return RedirectToAction(nameof(Manage));
+                        return Json(new { RedirectToManage = false });
                     }
 
-                    ModelState.AddModelError("", response.Message);
-                    return View(model);
+                    Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    return Json(new FailedResponse(response.Message));
                 }
 
-                return View(model);
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new FailedResponse("Invalid ModelState"));
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Error Creating New Post.");
-                ModelState.AddModelError("", ex.Message);
-                return View(model);
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new FailedResponse(ex.Message));
             }
         }
 
