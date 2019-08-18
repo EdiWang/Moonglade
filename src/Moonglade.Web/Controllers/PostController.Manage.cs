@@ -115,7 +115,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/createoredit")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
-        public IActionResult CreateOrEdit(PostEditViewModel model, 
+        public IActionResult CreateOrEdit(PostEditViewModel model,
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
         {
@@ -142,7 +142,7 @@ namespace Moonglade.Web.Controllers
                         RequestIp = HttpContext.Connection.RemoteIpAddress.ToString()
                     };
 
-                    var response = model.PostId == Guid.Empty ? 
+                    var response = model.PostId == Guid.Empty ?
                         _postService.CreateNewPost(request) :
                         _postService.EditPost(request);
 
@@ -161,7 +161,7 @@ namespace Moonglade.Web.Controllers
                             }
                         }
 
-                        return Json(new { RedirectToManage = false });
+                        return Json(new { PostId = response.Item.Id });
                     }
 
                     Response.StatusCode = (int)HttpStatusCode.InternalServerError;
