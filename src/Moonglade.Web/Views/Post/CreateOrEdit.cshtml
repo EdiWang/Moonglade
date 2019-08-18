@@ -159,10 +159,11 @@
         </button>
         @if (!Model.IsPublished)
         {
-            <button type="submit" class="btn btn-secondary ediblogeditor-publish" id="btn-publish">
-                Save and Publish
+            <button type="submit" class="btn btn-primary ediblogeditor-publish" id="btn-publish">
+                Publish
             </button>
-            <a asp-controller="Post" asp-action="DraftPreview" asp-route-postId="@Model.PostId" class="btn btn-light" target="_blank">Preview</a>
+            <a asp-controller="Post" asp-action="DraftPreview" asp-route-postId="@Model.PostId" 
+               class="btn btn-outline-success ediblogeditor-preview" id="btn-preview" target="_blank">Preview</a>
         }
         <a asp-controller="Post" asp-action="Manage" class="btn btn-light">Cancel</a>
     </div>
