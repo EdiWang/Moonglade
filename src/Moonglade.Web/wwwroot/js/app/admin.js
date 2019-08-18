@@ -158,9 +158,9 @@ var onUpdateSettingsSuccess = function (context) {
 var onUpdateSettingsFailed = function (context) {
     var msg = context.responseJSON.message;
     if (window.toastr) {
-        window.toastr.error("Server Error: " + msg);
+        window.toastr.error(`Server Error: ${msg}`);
     } else {
-        alert("Error Code: " + msg);
+        alert(`Error Code: ${msg}`);
     }
 };
 
@@ -178,10 +178,8 @@ var onPostCreateEditComplete = function () {
 };
 
 var onPostCreateEditSuccess = function (data) {
-    if (data.redirectToManage) {
-        window.location.href = "/post/manage";
-    }
-    else {
+    if (data.postId) {
+        $('input[name="PostId"]').val(data.postId);
         toastr.success("Post saved successfully.");
     }
 };
@@ -191,6 +189,6 @@ var onPostCreateEditFailed = function (context) {
     if (window.toastr) {
         window.toastr.error(message);
     } else {
-        alert("Error: " + message);
+        alert(`Error: ${message}`);
     }
 };
