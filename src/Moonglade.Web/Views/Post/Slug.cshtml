@@ -95,7 +95,7 @@
     </script>
 }
 
-@if (ViewBag.ErrorMessage != string.Empty)
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
 {
     <div class="alert alert-danger">
         @ViewBag.ErrorMessage
