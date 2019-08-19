@@ -9,6 +9,8 @@ function slugify(text) {
         .replace(/ +/g, '-');
 }
 
+var isPreviewRequired = false;
+
 var postEditor = {
     loadRichEditor: function (textareaSelector) {
         if (window.tinyMCE !== undefined) {
@@ -58,6 +60,13 @@ var postEditor = {
             }
         });
 
+        $('#btn-preview').click(function(e) {
+            if ($('form').valid()) {
+                submitForm(e);
+                isPreviewRequired = true;
+            }
+        });
+
         $("#btn-save").click(function (e) {
             submitForm(e);
         });
@@ -84,8 +93,9 @@ var postEditor = {
                 window.toastr.error('Please select at least one category');
             }
             else {
-                if ($('input[name="IsPublished"]').val() == 'True') {
+                if ($('input[name="IsPublished"]').val() === 'True') {
                     $('#btn-publish').hide();
+                    $('#btn-preview').hide();
                 }
             }
         }
@@ -181,6 +191,11 @@ var onPostCreateEditSuccess = function (data) {
     if (data.postId) {
         $('input[name="PostId"]').val(data.postId);
         toastr.success("Post saved successfully.");
+
+        if (isPreviewRequired) {
+            isPreviewRequired = false;
+            window.open(`/post/preview/${data.postId}`);
+        }
     }
 };
 
