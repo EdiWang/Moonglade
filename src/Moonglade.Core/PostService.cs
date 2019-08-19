@@ -169,8 +169,6 @@ namespace Moonglade.Core
                     }).ToList(),
 
                     Content = _htmlCodec.HtmlDecode(post.PostContent),
-                    Hits = post.PostExtension.Hits,
-                    Likes = post.PostExtension.Likes,
 
                     Tags = post.PostTag.Select(pt => pt.Tag)
                         .Select(p => new Tag
@@ -179,7 +177,6 @@ namespace Moonglade.Core
                             TagName = p.DisplayName
                         }).ToList(),
                     PostId = post.Id,
-                    CommentEnabled = post.CommentEnabled,
                     IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc
                 });
