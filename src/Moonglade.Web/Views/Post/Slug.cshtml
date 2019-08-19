@@ -37,12 +37,19 @@
     <meta name="author" content="@BlogConfig.BlogOwnerSettings.Name" />
 }
 @section head {
-    <link href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
+    @if (null == ViewBag.IsDraftPreview)
+    {
+        <link href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
+    }
 }
 @section scripts {
     <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/lib/highlight-js/highlight.min.js"></script>
-    <script src="~/lib/simplemde/simplemde.min.js"></script>
+    @if (null == ViewBag.IsDraftPreview)
+    {
+        <script src="~/lib/simplemde/simplemde.min.js"></script>
+    }
+
     @if (Settings.Value.EnableImageLazyLoad)
     {
         <script src="~/js/lazyload.min.js"></script>
@@ -62,31 +69,43 @@
             postSlug.resizeImages();
             postSlug.renderCodeHighlighter();
 
-            $("#img-captcha").click(function () {
-                postSlug.resetCaptchaImage();
-            });
+            @if (null == ViewBag.IsDraftPreview)
+            {
+                <text>
+                    $("#img-captcha").click(function () {
+                        postSlug.resetCaptchaImage();
+                    });
 
-            ajaxPostWithCSRFToken("/post/hit", { postId: pid }, function (data) {
-                console.info("updated post hit");
-            });
+                    ajaxPostWithCSRFToken("/post/hit", { postId: pid }, function (data) {
+                        console.info("updated post hit");
+                    });
 
-            $('#post-qrcode').qrcode(document.URL);
+                    $('#post-qrcode').qrcode(document.URL);
 
-            if (window.SimpleMDE) {
-                var simplemde = new SimpleMDE({
-                    element: $("#NewCommentModel_Content")[0],
-                    spellChecker: false,
-                    status: false
-                });
+                    if (window.SimpleMDE) {
+                        var simplemde = new SimpleMDE({
+                            element: $("#NewCommentModel_Content")[0],
+                            spellChecker: false,
+                            status: false
+                        });
+                    }
+                </text>
             }
         });
     </script>
 }
 
-@if (ViewBag.ErrorMessage != string.Empty)
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
 {
     <div class="alert alert-danger">
         @ViewBag.ErrorMessage
+    </div>
+}
+
+@if (null != ViewBag.IsDraftPreview)
+{
+    <div class="alert alert-info">
+        This is a preview for draft content.
     </div>
 }
 
@@ -113,7 +132,7 @@
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-            <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm"))</span>
+                    <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm"))</span>
                 }
                 | UTC+@Settings.Value.TimeZone:00
             </strong>
@@ -160,7 +179,10 @@
     <section class="post-content clearfix">
         @Html.Raw(Model.PostModel.Content)
     </section>
-    <partial name="_PostSlugActions" />
+    @if (null == ViewBag.IsDraftPreview)
+    {
+        <partial name="_PostSlugActions" />
+    }
 
     <div class="tag-mobile d-block d-sm-none">
         <hr />
@@ -178,94 +200,97 @@
     </div>
 </article>
 
-<div class="hidden-print">
-    @if (BlogConfig.ContentSettings.EnableComments)
-    {
-        if (Model.PostModel.CommentEnabled)
+@if (null == ViewBag.IsDraftPreview)
+{
+    <div class="hidden-print">
+        @if (BlogConfig.ContentSettings.EnableComments)
         {
-            <div class="card bg-light comment-form-containter mb-4">
-                <div class="card-header">
-                    Comments
-                    <span class="badge badge-secondary float-right">@Model.PostModel.CommentCount</span>
-                </div>
-                <form id="form-comment" asp-controller="Comment" asp-action="NewComment"
-                      data-ajax-begin="onCommentBegin"
-                      data-ajax-complete="onCommentComplete"
-                      data-ajax-failure="onCommentFailed"
-                      data-ajax-success="onCommentSuccess"
-                      data-ajax="true"
-                      data-ajax-method="POST">
-                    <div class="card-body">
-                        <input type="hidden" asp-for="NewCommentViewModel.PostId" />
-                        <div class="row">
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="Your Name" asp-for="NewCommentViewModel.Username" />
-                                <span asp-validation-for="NewCommentViewModel.Username" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" placeholder="Email" asp-for="NewCommentViewModel.Email" />
-                                <span asp-validation-for="NewCommentViewModel.Email" class="text-danger"></span>
-                            </div>
-                        </div>
+            if (Model.PostModel.CommentEnabled)
+            {
+                <div class="card bg-light comment-form-containter mb-4">
+                    <div class="card-header">
+                        Comments
+                        <span class="badge badge-secondary float-right">@Model.PostModel.CommentCount</span>
                     </div>
-                    <div class="comment-md-content">
-                        <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4" placeholder="Say something" maxlength="512"></textarea>
-                        <span asp-validation-for="NewCommentViewModel.Content" class="text-danger"></span>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Image")" />
-                                    </div>
-                                    <input type="text"
-                                           asp-for="NewCommentViewModel.CaptchaCode"
-                                           class="form-control"
-                                           placeholder="Captcha Code"
-                                           autocomplete="off"
-                                           minlength="4"
-                                           maxlength="4" />
+                    <form id="form-comment" asp-controller="Comment" asp-action="NewComment"
+                          data-ajax-begin="onCommentBegin"
+                          data-ajax-complete="onCommentComplete"
+                          data-ajax-failure="onCommentFailed"
+                          data-ajax-success="onCommentSuccess"
+                          data-ajax="true"
+                          data-ajax-method="POST">
+                        <div class="card-body">
+                            <input type="hidden" asp-for="NewCommentViewModel.PostId" />
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="Your Name" asp-for="NewCommentViewModel.Username" />
+                                    <span asp-validation-for="NewCommentViewModel.Username" class="text-danger"></span>
                                 </div>
-                                <span asp-validation-for="NewCommentViewModel.CaptchaCode" class="text-danger"></span>
-                            </div>
-                            <div class="col">
-                                <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">
-                                    Submit
-                                </button>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" placeholder="Email" asp-for="NewCommentViewModel.Email" />
+                                    <span asp-validation-for="NewCommentViewModel.Email" class="text-danger"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
+                        <div class="comment-md-content">
+                            <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4" placeholder="Say something" maxlength="512"></textarea>
+                            <span asp-validation-for="NewCommentViewModel.Content" class="text-danger"></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Image")" />
+                                        </div>
+                                        <input type="text"
+                                               asp-for="NewCommentViewModel.CaptchaCode"
+                                               class="form-control"
+                                               placeholder="Captcha Code"
+                                               autocomplete="off"
+                                               minlength="4"
+                                               maxlength="4" />
+                                    </div>
+                                    <span asp-validation-for="NewCommentViewModel.CaptchaCode" class="text-danger"></span>
+                                </div>
+                                <div class="col">
+                                    <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">Comment of this post is disabled.</div>
+            }
         }
         else
         {
-            <div class="alert alert-warning">Comment of this post is disabled.</div>
+            <div class="alert alert-warning">Comment is disabled by blog administrator.</div>
         }
-    }
-    else
-    {
-        <div class="alert alert-warning">Comment is disabled by blog administrator.</div>
-    }
 
-    <div id="loadingIndicator" style="display: none;" class="mb-4">
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                <span class="sr-only">Processing...</span>
+        <div id="loadingIndicator" style="display: none;" class="mb-4">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    <span class="sr-only">Processing...</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
-        Thanks, your comment is pending approval now. <br />
-        It will show up once blog administrator approved your comment.
-    </div>
+        <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
+            Thanks, your comment is pending approval now. <br />
+            It will show up once blog administrator approved your comment.
+        </div>
 
-    @if (Model.PostModel.CommentCount > 0)
-    {
-        <section id="comments-list">
-            @await Component.InvokeAsync("CommentList", new { postId = Model.PostModel.PostId })
-        </section>
-    }
-</div>
+        @if (Model.PostModel.CommentCount > 0)
+        {
+            <section id="comments-list">
+                @await Component.InvokeAsync("CommentList", new { postId = Model.PostModel.PostId })
+            </section>
+        }
+    </div>
+}

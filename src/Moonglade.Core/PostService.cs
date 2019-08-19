@@ -151,6 +151,45 @@ namespace Moonglade.Core
             });
         }
 
+        public Task<Response<PostSlugModel>> GetDraftPreviewAsync(Guid postId)
+        {
+            return TryExecuteAsync<PostSlugModel>(async () =>
+            {
+                var spec = new PostSpec(postId);
+                var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugModel
+                {
+                    Title = post.Title,
+                    Abstract = post.ContentAbstract,
+                    PubDateUtc = DateTime.UtcNow,
+
+                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
+                    {
+                        DisplayName = p.DisplayName,
+                        Name = p.Title
+                    }).ToList(),
+
+                    Content = _htmlCodec.HtmlDecode(post.PostContent),
+
+                    Tags = post.PostTag.Select(pt => pt.Tag)
+                        .Select(p => new Tag
+                        {
+                            NormalizedTagName = p.NormalizedName,
+                            TagName = p.DisplayName
+                        }).ToList(),
+                    PostId = post.Id,
+                    IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
+                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc
+                });
+
+                if (null != postSlugModel && AppSettings.EnableImageLazyLoad)
+                {
+                    postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
+                }
+
+                return new SuccessResponse<PostSlugModel>(postSlugModel);
+            });
+        }
+
         public Task<Response<PostSlugModel>> GetPostAsync(int year, int month, int day, string slug)
         {
             return TryExecuteAsync<PostSlugModel>(async () =>

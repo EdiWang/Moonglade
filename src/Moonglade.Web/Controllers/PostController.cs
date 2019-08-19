@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Edi.Blog.Pingback.MvcExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -72,6 +73,27 @@ namespace Moonglade.Web.Controllers
 
             ViewBag.TitlePrefix = $"{post.Title}";
             return View(viewModel);
+        }
+
+        [Authorize]
+        [Route("preview/{postId}")]
+        public async Task<IActionResult> DraftPreview(Guid postId)
+        {
+            var rsp = await _postService.GetDraftPreviewAsync(postId);
+            if (!rsp.IsSuccess) return ServerError(rsp.Message);
+
+            var post = rsp.Item;
+            if (post == null)
+            {
+                Logger.LogWarning($"Post not found, parameter '{postId}'.");
+                return NotFound();
+            }
+
+            var viewModel = new PostSlugViewModelWrapper(post);
+
+            ViewBag.TitlePrefix = $"{post.Title}";
+            ViewBag.IsDraftPreview = true;
+            return View("Slug", viewModel);
         }
 
         [HttpPost("hit")]

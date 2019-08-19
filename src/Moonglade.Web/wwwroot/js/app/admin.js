@@ -9,30 +9,32 @@ function slugify(text) {
         .replace(/ +/g, '-');
 }
 
+var isPreviewRequired = false;
+
 var postEditor = {
     loadRichEditor: function (textareaSelector) {
         if (window.tinyMCE !== undefined) {
             window.tinyMCE.init({
                 selector: textareaSelector,
-                themes: "silver",
-                skin: "oxide",
+                themes: 'silver',
+                skin: 'oxide',
                 height: 500,
                 relative_urls: false, // avoid image upload fuck up
                 browser_spellcheck: true,
                 branding: false,
-                fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt 36pt",
-                plugins: "advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools",
-                toolbar: "undo redo | formatselect | fontsizeselect | bold italic strikethrough forecolor backcolor | removeformat | link image codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen",
+                fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
+                plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools',
+                toolbar: 'undo redo | formatselect | fontsizeselect | bold italic strikethrough forecolor backcolor | removeformat | link image codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
                 paste_data_images: true,
                 images_upload_url: '/image/upload',
                 images_upload_credentials: true,
-                content_css: "/css/tinymce-editor-bs-bundle.min.css"
+                content_css: '/css/tinymce-editor-bs-bundle.min.css'
             });
         }
     },
     initEvents: function () {
-        $("#Title").change(function () {
-            $("#Slug").val(slugify($(this).val()));
+        $('#Title').change(function () {
+            $('#Slug').val(slugify($(this).val()));
         });
 
         var tagnames = new Bloodhound({
@@ -58,13 +60,20 @@ var postEditor = {
             }
         });
 
-        $("#btn-save").click(function (e) {
+        $('#btn-preview').click(function(e) {
+            if ($('form').valid()) {
+                submitForm(e);
+                isPreviewRequired = true;
+            }
+        });
+
+        $('#btn-save').click(function (e) {
             submitForm(e);
         });
 
-        $("#btn-publish").click(function (e) {
+        $('#btn-publish').click(function (e) {
             if ($('form').valid()) {
-                $('input[name="IsPublished"]').val("True");
+                $('input[name="IsPublished"]').val('True');
                 submitForm(e);
             }
         });
@@ -84,23 +93,24 @@ var postEditor = {
                 window.toastr.error('Please select at least one category');
             }
             else {
-                if ($('input[name="IsPublished"]').val() == 'True') {
+                if ($('input[name="IsPublished"]').val() === 'True') {
                     $('#btn-publish').hide();
+                    $('#btn-preview').hide();
                 }
             }
         }
 
-        $(".post-edit-form").areYouSure({
-            message: "You have unsaved changes, are you sure to leave this page?"
+        $('.post-edit-form').areYouSure({
+            message: 'You have unsaved changes, are you sure to leave this page?'
         });
 
-        $("#Title").focus();
+        $('#Title').focus();
     },
     keepAlive: function () {
         var tid = setInterval(postNonce, 60 * 1000);
         function postNonce() {
             var num = Math.random();
-            $.post("/admin/keep-alive", { nonce: num }, function (data) {
+            $.post('/admin/keep-alive', { nonce: num }, function (data) {
                 console.info(data);
             });
         }
@@ -111,14 +121,14 @@ var postEditor = {
 };
 
 var sendTestEmail = function () {
-    $("#a-send-test-mail").text("Sending...");
-    $("#a-send-test-mail").addClass("disabled");
-    $("#a-send-test-mail").attr("disabled", "disabled");
+    $('#a-send-test-mail').text('Sending...');
+    $('#a-send-test-mail').addClass('disabled');
+    $('#a-send-test-mail').attr('disabled', 'disabled');
 
-    $.post("/admin/settings/send-test-email",
+    $.post('/admin/settings/send-test-email',
         function (data) {
             if (data.isSuccess) {
-                window.toastr.success("Email is sent.");
+                window.toastr.success('Email is sent.');
             } else {
                 window.toastr.error(data.message);
             }
@@ -128,30 +138,30 @@ var sendTestEmail = function () {
             window.toastr.error(responseJson.message);
         })
         .always(function () {
-            $("#a-send-test-mail").text("Send Test Email");
-            $("#a-send-test-mail").removeClass("disabled");
-            $("#a-send-test-mail").removeAttr("disabled");
+            $('#a-send-test-mail').text('Send Test Email');
+            $('#a-send-test-mail').removeClass('disabled');
+            $('#a-send-test-mail').removeAttr('disabled');
         });
 };
 
-var btnSaveSettings = "#btn-save-settings";
+var btnSaveSettings = '#btn-save-settings';
 var onUpdateSettingsBegin = function () {
-    $(btnSaveSettings).text("Processing...");
-    $(btnSaveSettings).addClass("disabled");
-    $(btnSaveSettings).attr("disabled", "disabled");
+    $(btnSaveSettings).text('Processing...');
+    $(btnSaveSettings).addClass('disabled');
+    $(btnSaveSettings).attr('disabled', 'disabled');
 };
 
 var onUpdateSettingsComplete = function () {
-    $(btnSaveSettings).text("Save");
-    $(btnSaveSettings).removeClass("disabled");
-    $(btnSaveSettings).removeAttr("disabled");
+    $(btnSaveSettings).text('Save');
+    $(btnSaveSettings).removeClass('disabled');
+    $(btnSaveSettings).removeAttr('disabled');
 };
 
 var onUpdateSettingsSuccess = function (context) {
     if (window.toastr) {
-        window.toastr.success("Settings Updated");
+        window.toastr.success('Settings Updated');
     } else {
-        alert("Settings Updated");
+        alert('Settings Updated');
     }
 };
 
@@ -164,23 +174,28 @@ var onUpdateSettingsFailed = function (context) {
     }
 };
 
-var btnSubmitPost = "#btn-save";
+var btnSubmitPost = '#btn-save';
 var onPostCreateEditBegin = function () {
-    $(btnSubmitPost).text("Saving...");
-    $(btnSubmitPost).addClass("disabled");
-    $(btnSubmitPost).attr("disabled", "disabled");
+    $(btnSubmitPost).text('Saving...');
+    $(btnSubmitPost).addClass('disabled');
+    $(btnSubmitPost).attr('disabled', 'disabled');
 };
 
 var onPostCreateEditComplete = function () {
-    $(btnSubmitPost).text("Save");
-    $(btnSubmitPost).removeClass("disabled");
-    $(btnSubmitPost).removeAttr("disabled");
+    $(btnSubmitPost).text('Save');
+    $(btnSubmitPost).removeClass('disabled');
+    $(btnSubmitPost).removeAttr('disabled');
 };
 
 var onPostCreateEditSuccess = function (data) {
     if (data.postId) {
         $('input[name="PostId"]').val(data.postId);
-        toastr.success("Post saved successfully.");
+        toastr.success('Post saved successfully.');
+
+        if (isPreviewRequired) {
+            isPreviewRequired = false;
+            window.open(`/post/preview/${data.postId}`);
+        }
     }
 };
 
