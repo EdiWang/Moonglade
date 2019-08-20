@@ -1,8 +1,23 @@
+/*!
+ * Lazy Load - JavaScript plugin for lazy loading images
+ *
+ * Copyright (c) 2007-2019 Mika Tuupola
+ *
+ * Licensed under the MIT license:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *
+ * Project home:
+ *   https://appelsiini.net/projects/lazyload
+ *
+ * Version: 2.0.0-rc.2
+ *
+ */
+
 (function (root, factory) {
     if (typeof exports === "object") {
         module.exports = factory(root);
     } else if (typeof define === "function" && define.amd) {
-        define([], factory(root));
+        define([], factory);
     } else {
         root.LazyLoad = factory(root);
     }
@@ -10,10 +25,17 @@
 
     "use strict";
 
+    if (typeof define === "function" && define.amd){
+        root = window;
+    }
+
     const defaults = {
         src: "data-src",
         srcset: "data-srcset",
-        selector: ".lazyload"
+        selector: ".lazyload",
+        root: null,
+        rootMargin: "0px",
+        threshold: 0
     };
 
     /**
@@ -77,14 +99,14 @@
 
             let self = this;
             let observerConfig = {
-                root: null,
-                rootMargin: "0px",
-                threshold: [0]
+                root: this.settings.root,
+                rootMargin: this.settings.rootMargin,
+                threshold: [this.settings.threshold]
             };
 
             this.observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function (entry) {
-                    if (entry.intersectionRatio > 0) {
+                Array.prototype.forEach.call(entries, function (entry) {
+                    if (entry.isIntersecting) {
                         self.observer.unobserve(entry.target);
                         let src = entry.target.getAttribute(self.settings.src);
                         let srcset = entry.target.getAttribute(self.settings.srcset);
@@ -102,7 +124,7 @@
                 });
             }, observerConfig);
 
-            this.images.forEach(function (image) {
+            Array.prototype.forEach.call(this.images, function (image) {
                 self.observer.observe(image);
             });
         },
@@ -117,7 +139,7 @@
             if (!this.settings) { return; }
 
             let self = this;
-            this.images.forEach(function (image) {
+            Array.prototype.forEach.call(this.images, function (image) {
                 let src = image.getAttribute(self.settings.src);
                 let srcset = image.getAttribute(self.settings.srcset);
                 if ("img" === image.tagName.toLowerCase()) {
@@ -128,7 +150,7 @@
                         image.srcset = srcset;
                     }
                 } else {
-                    image.style.backgroundImage = "url(" + src + ")";
+                    image.style.backgroundImage = "url('" + src + "')";
                 }
             });
         },
