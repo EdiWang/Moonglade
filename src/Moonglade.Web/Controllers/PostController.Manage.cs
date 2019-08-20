@@ -78,9 +78,6 @@ namespace Moonglade.Web.Controllers
                     ContentLanguageCode = post.ContentLanguageCode
                 };
 
-                ViewBag.PubDateStr = post.PubDateUtc == null ?
-                                     null : $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}";
-
                 var tagStr = post.Tags
                                  .Select(p => p.TagName)
                                  .Aggregate(string.Empty, (current, item) => current + (item + ","));
