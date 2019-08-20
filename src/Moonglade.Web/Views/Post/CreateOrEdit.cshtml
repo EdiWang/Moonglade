@@ -57,16 +57,10 @@
             <div>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-
-            <hr />
-
-            <div class="mb-1">
+            <div class="form-group">
                 <div class="form-row">
                     <div class="col-10">
                         <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon3">post/@(ViewBag.PubDateStr ?? @DateTime.UtcNow.ToString("yyyy/M/d"))/</span>
-                            </div>
                             <input type="text" asp-for="Slug" class="form-control form-control-sm" placeholder="Slug" />
                         </div>
                         <div>

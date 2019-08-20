@@ -80,7 +80,7 @@ namespace Moonglade.Tests
         {
             var html = @"<p>Work 996 and have some fu bao!</p><img src=""icu.jpg"" /><video src=""java996.mp4""></video>";
             var result = Utils.ReplaceImgSrc(html);
-            Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img data-src=""icu.jpg"" /><video src=""java996.mp4""></video>");
+            Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img src=""/images/loading.gif"" data-src=""icu.jpg"" /><video src=""java996.mp4""></video>");
         }
 
         [Test]

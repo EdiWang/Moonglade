@@ -18,7 +18,7 @@ var postEditor = {
                 selector: textareaSelector,
                 themes: 'silver',
                 skin: 'oxide',
-                height: 500,
+                height: 650,
                 relative_urls: false, // avoid image upload fuck up
                 browser_spellcheck: true,
                 branding: false,
@@ -28,7 +28,22 @@ var postEditor = {
                 paste_data_images: true,
                 images_upload_url: '/image/upload',
                 images_upload_credentials: true,
-                content_css: '/css/tinymce-editor-bs-bundle.min.css'
+                content_css: '/css/tinymce-editor-bs-bundle.min.css',
+                codesample_languages: [
+                    { text: 'HTML/XML', value: 'markup' },
+                    { text: 'JavaScript', value: 'javascript' },
+                    { text: 'CSS', value: 'css' },
+                    { text: 'PHP', value: 'php' },
+                    { text: 'Ruby', value: 'ruby' },
+                    { text: 'Python', value: 'python' },
+                    { text: 'Java', value: 'java' },
+                    { text: 'C', value: 'c' },
+                    { text: 'C#', value: 'csharp' },
+                    { text: 'C++', value: 'cpp' },
+                    { text: 'Bash', value: 'bash' },
+                    { text: 'Visual Basic', value: 'vb' },
+                    { text: 'PowerShell', value: 'powershell' }
+                ]
             });
         }
     },
