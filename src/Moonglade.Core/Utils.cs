@@ -327,7 +327,8 @@ namespace Moonglade.Core
 
             if (string.IsNullOrWhiteSpace(rawHtmlContent)) return rawHtmlContent;
             var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
-            var newStr = imgSrcRegex.Replace(rawHtmlContent, match => match.Value.Replace("src", "data-src"));
+            var newStr = imgSrcRegex.Replace(rawHtmlContent, match => match.Value.Replace("src",
+                @"src=""/images/loading.gif"" data-src"));
             return newStr;
         }
 
