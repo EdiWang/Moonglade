@@ -33,51 +33,14 @@ namespace Moonglade.Web.Controllers
                 ShortName = _blogConfig.GeneralSettings.SiteTitle,
                 Name = _blogConfig.GeneralSettings.SiteTitle,
                 StartUrl = "/",
-                Icons = new List<ManifestIcon>()
+                Icons = new List<ManifestIcon>
                 {
-                    // TODO: Refact code
-                    new ManifestIcon
-                    {
-                        Src = "/android-icon-36x36.png",
-                        Sizes = "36x36",
-                        Type = "image/png",
-                        Density = "0.75"
-                    },
-                    new ManifestIcon
-                    {
-                        Src = "/android-icon-48x48.png",
-                        Sizes = "48x48",
-                        Type = "image/png",
-                        Density = "1.0"
-                    },
-                    new ManifestIcon
-                    {
-                        Src = "/android-icon-72x72.png",
-                        Sizes = "72x72",
-                        Type = "image/png",
-                        Density = "1.5"
-                    },
-                    new ManifestIcon
-                    {
-                        Src = "/android-icon-96x96.png",
-                        Sizes = "96x96",
-                        Type = "image/png",
-                        Density = "2.0"
-                    },
-                    new ManifestIcon
-                    {
-                        Src = "/android-icon-144x144.png",
-                        Sizes = "144x144",
-                        Type = "image/png",
-                        Density = "3.0"
-                    },
-                    new ManifestIcon
-                    {
-                        Src = "/android-icon-192x192.png",
-                        Sizes = "192x192",
-                        Type = "image/png",
-                        Density = "4.0"
-                    }
+                    new ManifestIcon("/android-icon-{0}.png",36,"0.75"),
+                    new ManifestIcon("/android-icon-{0}.png",48,"1.0"),
+                    new ManifestIcon("/android-icon-{0}.png",72,"1.5"),
+                    new ManifestIcon("/android-icon-{0}.png",96,"2.0"),
+                    new ManifestIcon("/android-icon-{0}.png",144,"3.0"),
+                    new ManifestIcon("/android-icon-{0}.png",192,"4.0")
                 },
                 BackgroundColor = "#2a579a",
                 ThemeColor = "#2a579a",

@@ -35,5 +35,13 @@ namespace Moonglade.Web.Models
         public string Sizes { get; set; }
         public string Type { get; set; }
         public string Density { get; set; }
+
+        public ManifestIcon(string srcTemplate, int sizePixel, string density)
+        {
+            Sizes = $"{sizePixel}x{sizePixel}";
+            Type = "image/png";
+            Density = density;
+            Src = string.Format(srcTemplate, Sizes);
+        }
     }
 }
