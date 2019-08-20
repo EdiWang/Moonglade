@@ -1,5 +1,4 @@
-﻿// CSRF
-var csrfFieldName = "CSRF-TOKEN-MOONGLADE-FORM";
+﻿var csrfFieldName = "CSRF-TOKEN-MOONGLADE-FORM";
 function makeCSRFExtendedData(data) {
     var options = {};
     options[csrfFieldName] = $("input[name=" + csrfFieldName + "]").val();

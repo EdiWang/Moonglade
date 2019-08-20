@@ -49,145 +49,26 @@ d+"px").css("background-color",a.isDark(e,i)?h.foreground:h.background).appendTo
 !function(e){e(["jquery"],function(e){return function(){function t(e,t,n){return g({type:O.error,iconClass:m().iconClasses.error,message:e,optionsOverride:n,title:t})}function n(t,n){return t||(t=m()),v=e("#"+t.containerId),v.length?v:(n&&(v=d(t)),v)}function o(e,t,n){return g({type:O.info,iconClass:m().iconClasses.info,message:e,optionsOverride:n,title:t})}function s(e){C=e}function i(e,t,n){return g({type:O.success,iconClass:m().iconClasses.success,message:e,optionsOverride:n,title:t})}function a(e,t,n){return g({type:O.warning,iconClass:m().iconClasses.warning,message:e,optionsOverride:n,title:t})}function r(e,t){var o=m();v||n(o),u(e,o,t)||l(o)}function c(t){var o=m();return v||n(o),t&&0===e(":focus",t).length?void h(t):void(v.children().length&&v.remove())}function l(t){for(var n=v.children(),o=n.length-1;o>=0;o--)u(e(n[o]),t)}function u(t,n,o){var s=!(!o||!o.force)&&o.force;return!(!t||!s&&0!==e(":focus",t).length)&&(t[n.hideMethod]({duration:n.hideDuration,easing:n.hideEasing,complete:function(){h(t)}}),!0)}function d(t){return v=e("<div/>").attr("id",t.containerId).addClass(t.positionClass),v.appendTo(e(t.target)),v}function p(){return{tapToDismiss:!0,toastClass:"toast",containerId:"toast-container",debug:!1,showMethod:"fadeIn",showDuration:300,showEasing:"swing",onShown:void 0,hideMethod:"fadeOut",hideDuration:1e3,hideEasing:"swing",onHidden:void 0,closeMethod:!1,closeDuration:!1,closeEasing:!1,closeOnHover:!0,extendedTimeOut:1e3,iconClasses:{error:"toast-error",info:"toast-info",success:"toast-success",warning:"toast-warning"},iconClass:"toast-info",positionClass:"toast-top-right",timeOut:5e3,titleClass:"toast-title",messageClass:"toast-message",escapeHtml:!1,target:"body",closeHtml:'<button type="button">&times;</button>',closeClass:"toast-close-button",newestOnTop:!0,preventDuplicates:!1,progressBar:!1,progressClass:"toast-progress",rtl:!1}}function f(e){C&&C(e)}function g(t){function o(e){return null==e&&(e=""),e.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/'/g,"&#39;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function s(){c(),u(),d(),p(),g(),C(),l(),i()}function i(){var e="";switch(t.iconClass){case"toast-success":case"toast-info":e="polite";break;default:e="assertive"}I.attr("aria-live",e)}function a(){E.closeOnHover&&I.hover(H,D),!E.onclick&&E.tapToDismiss&&I.click(b),E.closeButton&&j&&j.click(function(e){e.stopPropagation?e.stopPropagation():void 0!==e.cancelBubble&&e.cancelBubble!==!0&&(e.cancelBubble=!0),E.onCloseClick&&E.onCloseClick(e),b(!0)}),E.onclick&&I.click(function(e){E.onclick(e),b()})}function r(){I.hide(),I[E.showMethod]({duration:E.showDuration,easing:E.showEasing,complete:E.onShown}),E.timeOut>0&&(k=setTimeout(b,E.timeOut),F.maxHideTime=parseFloat(E.timeOut),F.hideEta=(new Date).getTime()+F.maxHideTime,E.progressBar&&(F.intervalId=setInterval(x,10)))}function c(){t.iconClass&&I.addClass(E.toastClass).addClass(y)}function l(){E.newestOnTop?v.prepend(I):v.append(I)}function u(){if(t.title){var e=t.title;E.escapeHtml&&(e=o(t.title)),M.append(e).addClass(E.titleClass),I.append(M)}}function d(){if(t.message){var e=t.message;E.escapeHtml&&(e=o(t.message)),B.append(e).addClass(E.messageClass),I.append(B)}}function p(){E.closeButton&&(j.addClass(E.closeClass).attr("role","button"),I.prepend(j))}function g(){E.progressBar&&(q.addClass(E.progressClass),I.prepend(q))}function C(){E.rtl&&I.addClass("rtl")}function O(e,t){if(e.preventDuplicates){if(t.message===w)return!0;w=t.message}return!1}function b(t){var n=t&&E.closeMethod!==!1?E.closeMethod:E.hideMethod,o=t&&E.closeDuration!==!1?E.closeDuration:E.hideDuration,s=t&&E.closeEasing!==!1?E.closeEasing:E.hideEasing;if(!e(":focus",I).length||t)return clearTimeout(F.intervalId),I[n]({duration:o,easing:s,complete:function(){h(I),clearTimeout(k),E.onHidden&&"hidden"!==P.state&&E.onHidden(),P.state="hidden",P.endTime=new Date,f(P)}})}function D(){(E.timeOut>0||E.extendedTimeOut>0)&&(k=setTimeout(b,E.extendedTimeOut),F.maxHideTime=parseFloat(E.extendedTimeOut),F.hideEta=(new Date).getTime()+F.maxHideTime)}function H(){clearTimeout(k),F.hideEta=0,I.stop(!0,!0)[E.showMethod]({duration:E.showDuration,easing:E.showEasing})}function x(){var e=(F.hideEta-(new Date).getTime())/F.maxHideTime*100;q.width(e+"%")}var E=m(),y=t.iconClass||E.iconClass;if("undefined"!=typeof t.optionsOverride&&(E=e.extend(E,t.optionsOverride),y=t.optionsOverride.iconClass||y),!O(E,t)){T++,v=n(E,!0);var k=null,I=e("<div/>"),M=e("<div/>"),B=e("<div/>"),q=e("<div/>"),j=e(E.closeHtml),F={intervalId:null,hideEta:null,maxHideTime:null},P={toastId:T,state:"visible",startTime:new Date,options:E,map:t};return s(),r(),a(),f(P),E.debug&&console&&console.log(P),I}}function m(){return e.extend({},p(),b.options)}function h(e){v||(v=n()),e.is(":visible")||(e.remove(),e=null,0===v.children().length&&(v.remove(),w=void 0))}var v,C,w,T=0,O={error:"error",info:"info",success:"success",warning:"warning"},b={clear:r,remove:c,error:t,getContainer:n,info:o,options:{},subscribe:s,success:i,version:"2.1.3",warning:a};return b}()})}("function"==typeof define&&define.amd?define:function(e,t){"undefined"!=typeof module&&module.exports?module.exports=t(require("jquery")):window.toastr=t(window.jQuery)});
 //# sourceMappingURL=toastr.js.map
 
-window.toastr.options = {
-    "positionClass": 'toast-bottom-center'
-};
+/*!
+ * Lazy Load - JavaScript plugin for lazy loading images
+ *
+ * Copyright (c) 2007-2019 Mika Tuupola
+ *
+ * Licensed under the MIT license:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *
+ * Project home:
+ *   https://appelsiini.net/projects/lazyload
+ *
+ * Version: 2.0.0-rc.2
+ *
+ */
 
-$(function () {
-    $('[data-toggle="popover"]').popover();
-    $('[data-toggle="tooltip"]').tooltip();
-
-    $('.site-qrcode').qrcode(document.location.origin);
-
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        $('div.container').addClass('container-fluid').removeClass('container');
-    }
-
-    $('input#search, #search-mobile')
-        .focus(function () {
-            $(this).attr('placeholder', '');
-        })
-        .blur(function () {
-            $(this).attr('placeholder', 'Search');
-        });
-});
-var postSlug = {
-    registerRatingButtons: function (pid) {
-        $('.btn-ratings').click(function () {
-            ajaxPostWithCSRFToken('/post/like', { postId: pid }, function (data) {
-                if (data.isSuccess) {
-                    var oldVal = parseInt($('.likehits-num').text(), 10);
-                    $('.likehits-num').html(++oldVal);
-                    $('.btn-ratings').attr('disabled', 'disabled');
-                } else {
-                    window.toastr.warning(data.message);
-                }
-            });
-        });
-    },
-    resetCaptchaImage: function () {
-        d = new Date();
-        $('#img-captcha').attr('src', `/get-captcha-image?${d.getTime()}`);
-    },
-    resizeImages: function () {
-        $('.post-content img').removeAttr('height');
-        $('.post-content img').removeAttr('width');
-        $('.post-content img').addClass('img-fluid img-thumbnail');
-    },
-    renderCodeHighlighter: function () {
-        $('pre').each(function (i, pre) {
-            // Find <pre> that doesn't have a <code> inside it.
-            if ($(pre).find('code')[0] === undefined) {
-                $(pre).wrapInner('<code></code>');
-            }
-
-            // For code that can't be automatically detected, fall back to use XML
-            if ($(pre).hasClass('language-markup')) {
-                $(pre).children('code').addClass('lang-xml');
-            }
-        });
-
-        $('pre code').each(function (i, block) {
-            hljs.highlightBlock(block);
-        });
-    }
-};
-// CSRF
-var csrfFieldName = "CSRF-TOKEN-MOONGLADE-FORM";
-function makeCSRFExtendedData(data) {
-    var options = {};
-    options[csrfFieldName] = $("input[name=" + csrfFieldName + "]").val();
-    var extData = $.extend(data, options);
-    return extData;
-}
-
-function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
-    var options = {
-        type: "POST",
-        url: url,
-        headers: {},
-        data: makeCSRFExtendedData(pData),
-        success: function (data) {
-            funcSuccess(data);
-        },
-        dataType: "json"
-    };
-    options.headers[csrfFieldName] = $("input[name=" + csrfFieldName + "]").val();
-    $.ajax(options);
-}
-// Comments
-var btnSubmitComment = "#btn-submit-comment";
-var onCommentBegin = function () {
-    $("#loadingIndicator").show();
-    $(btnSubmitComment).text("Processing...");
-    $(btnSubmitComment).addClass("disabled");
-    $(btnSubmitComment).attr("disabled", "disabled");
-};
-
-var onCommentComplete = function () {
-    $("#loadingIndicator").hide();
-    $(btnSubmitComment).text("Submit");
-    $(btnSubmitComment).removeClass("disabled");
-    $(btnSubmitComment).removeAttr("disabled");
-};
-
-var onCommentSuccess = function (context) {
-    postSlug.resetCaptchaImage();
-    $("#thx-for-comment").show();
-    $("#form-comment")[0].reset();
-};
-
-var onCommentFailed = function (context) {
-    $("#thx-for-comment").hide();
-    var errorCode = context.responseJSON.responseCode;
-    if (window.toastr) {
-        if (errorCode === 1) {
-            window.toastr.error("Server Error");
-        }
-        if (errorCode === 2) {
-            window.toastr.error("Incorrect Captcha Code");
-            postSlug.resetCaptchaImage();
-            $("#CommentPostModel_CaptchaCode").val("");
-            $("#CommentPostModel_CaptchaCode").focus();
-        }
-        if (errorCode === 3) {
-            window.toastr.error("Your email domain has been blocked due to spam comments.");
-        }
-        if (errorCode === 4) {
-            window.toastr.error("Comment is disabled.");
-        }
-        if (errorCode === 5) {
-            window.toastr.error("Invalid input.");
-        }
-    } else {
-        alert("Error Code: " + errorCode);
-    }
-};
 (function (root, factory) {
     if (typeof exports === "object") {
         module.exports = factory(root);
     } else if (typeof define === "function" && define.amd) {
-        define([], factory(root));
+        define([], factory);
     } else {
         root.LazyLoad = factory(root);
     }
@@ -195,10 +76,17 @@ var onCommentFailed = function (context) {
 
     "use strict";
 
+    if (typeof define === "function" && define.amd){
+        root = window;
+    }
+
     const defaults = {
         src: "data-src",
         srcset: "data-srcset",
-        selector: ".lazyload"
+        selector: ".lazyload",
+        root: null,
+        rootMargin: "0px",
+        threshold: 0
     };
 
     /**
@@ -262,14 +150,14 @@ var onCommentFailed = function (context) {
 
             let self = this;
             let observerConfig = {
-                root: null,
-                rootMargin: "0px",
-                threshold: [0]
+                root: this.settings.root,
+                rootMargin: this.settings.rootMargin,
+                threshold: [this.settings.threshold]
             };
 
             this.observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function (entry) {
-                    if (entry.intersectionRatio > 0) {
+                Array.prototype.forEach.call(entries, function (entry) {
+                    if (entry.isIntersecting) {
                         self.observer.unobserve(entry.target);
                         let src = entry.target.getAttribute(self.settings.src);
                         let srcset = entry.target.getAttribute(self.settings.srcset);
@@ -287,7 +175,7 @@ var onCommentFailed = function (context) {
                 });
             }, observerConfig);
 
-            this.images.forEach(function (image) {
+            Array.prototype.forEach.call(this.images, function (image) {
                 self.observer.observe(image);
             });
         },
@@ -302,7 +190,7 @@ var onCommentFailed = function (context) {
             if (!this.settings) { return; }
 
             let self = this;
-            this.images.forEach(function (image) {
+            Array.prototype.forEach.call(this.images, function (image) {
                 let src = image.getAttribute(self.settings.src);
                 let srcset = image.getAttribute(self.settings.srcset);
                 if ("img" === image.tagName.toLowerCase()) {
@@ -313,7 +201,7 @@ var onCommentFailed = function (context) {
                         image.srcset = srcset;
                     }
                 } else {
-                    image.style.backgroundImage = "url(" + src + ")";
+                    image.style.backgroundImage = "url('" + src + "')";
                 }
             });
         },
@@ -341,3 +229,136 @@ var onCommentFailed = function (context) {
 
     return LazyLoad;
 });
+
+window.toastr.options = {
+    "positionClass": 'toast-bottom-center'
+};
+
+$(function () {
+    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('.site-qrcode').qrcode(document.location.origin);
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        $('div.container').addClass('container-fluid').removeClass('container');
+    }
+
+    $('input#search, #search-mobile')
+        .focus(function () {
+            $(this).attr('placeholder', '');
+        })
+        .blur(function () {
+            $(this).attr('placeholder', 'Search');
+        });
+});
+var postSlug = {
+    registerRatingButtons: function (pid) {
+        $('.btn-ratings').click(function () {
+            ajaxPostWithCSRFToken('/post/like', { postId: pid }, function (data) {
+                if (data.isSuccess) {
+                    var oldVal = parseInt($('.likehits-num').text(), 10);
+                    $('.likehits-num').html(++oldVal);
+                    $('.btn-ratings').attr('disabled', 'disabled');
+                } else {
+                    window.toastr.warning(data.message);
+                }
+            });
+        });
+    },
+    resetCaptchaImage: function () {
+        d = new Date();
+        $('#img-captcha').attr('src', `/get-captcha-image?${d.getTime()}`);
+    },
+    resizeImages: function () {
+        $('.post-content img').removeAttr('height');
+        $('.post-content img').removeAttr('width');
+        $('.post-content img').addClass('img-fluid img-thumbnail');
+    },
+    renderCodeHighlighter: function () {
+        $('pre').each(function (i, pre) {
+            // Find <pre> that doesn't have a <code> inside it.
+            if ($(pre).find('code')[0] === undefined) {
+                $(pre).wrapInner('<code></code>');
+            }
+
+            // For code that can't be automatically detected, fall back to use XML
+            if ($(pre).hasClass('language-markup')) {
+                $(pre).children('code').addClass('lang-xml');
+            }
+        });
+
+        $('pre code').each(function (i, block) {
+            hljs.highlightBlock(block);
+        });
+    }
+};
+var csrfFieldName = "CSRF-TOKEN-MOONGLADE-FORM";
+function makeCSRFExtendedData(data) {
+    var options = {};
+    options[csrfFieldName] = $("input[name=" + csrfFieldName + "]").val();
+    var extData = $.extend(data, options);
+    return extData;
+}
+
+function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
+    var options = {
+        type: "POST",
+        url: url,
+        headers: {},
+        data: makeCSRFExtendedData(pData),
+        success: function (data) {
+            funcSuccess(data);
+        },
+        dataType: "json"
+    };
+    options.headers[csrfFieldName] = $("input[name=" + csrfFieldName + "]").val();
+    $.ajax(options);
+}
+var btnSubmitComment = '#btn-submit-comment';
+var onCommentBegin = function () {
+    $('#loadingIndicator').show();
+    $(btnSubmitComment).text('Processing...');
+    $(btnSubmitComment).addClass('disabled');
+    $(btnSubmitComment).attr('disabled', 'disabled');
+};
+
+var onCommentComplete = function () {
+    $('#loadingIndicator').hide();
+    $(btnSubmitComment).text('Submit');
+    $(btnSubmitComment).removeClass('disabled');
+    $(btnSubmitComment).removeAttr('disabled');
+};
+
+var onCommentSuccess = function (context) {
+    postSlug.resetCaptchaImage();
+    $('#thx-for-comment').show();
+    $('#form-comment')[0].reset();
+};
+
+var onCommentFailed = function (context) {
+    $('#thx-for-comment').hide();
+    var errorCode = context.responseJSON.responseCode;
+    if (window.toastr) {
+        if (errorCode === 1) {
+            window.toastr.error('Server Error');
+        }
+        if (errorCode === 2) {
+            window.toastr.error('Incorrect Captcha Code');
+            postSlug.resetCaptchaImage();
+            $('#CommentPostModel_CaptchaCode').val('');
+            $('#CommentPostModel_CaptchaCode').focus();
+        }
+        if (errorCode === 3) {
+            window.toastr.error('Your email domain has been blocked due to spam comments.');
+        }
+        if (errorCode === 4) {
+            window.toastr.error('Comment is disabled.');
+        }
+        if (errorCode === 5) {
+            window.toastr.error('Invalid input.');
+        }
+    } else {
+        alert(`Error Code: ${errorCode}`);
+    }
+};
