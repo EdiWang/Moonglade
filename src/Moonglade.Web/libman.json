@@ -19,7 +19,7 @@
       "destination": "wwwroot/lib/jquery-qrcode"
     },
     {
-      "library": "highlight.js@9.15.9",
+      "library": "highlight.js@9.15.10",
       "destination": "wwwroot/lib/highlight-js",
       "files": [
         "highlight.min.js"
