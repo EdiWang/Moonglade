@@ -32,7 +32,6 @@ using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Notification;
 using Moonglade.Setup;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;

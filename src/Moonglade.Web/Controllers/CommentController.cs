@@ -9,7 +9,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Notification;
 using Moonglade.Web.Models;
 using Newtonsoft.Json;
 

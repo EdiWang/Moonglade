@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Notification;
 using Moq;
 using NUnit.Framework;
 

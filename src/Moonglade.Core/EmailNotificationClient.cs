@@ -6,12 +6,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Newtonsoft.Json;
 
-namespace Moonglade.Notification
+namespace Moonglade.Core
 {
     public class EmailNotificationClient : IMoongladeNotificationClient
     {

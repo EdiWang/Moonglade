@@ -14,7 +14,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Notification;
 using Moonglade.Setup;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
