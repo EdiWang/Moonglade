@@ -5,7 +5,7 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public interface IMoongladeNotification
+    public interface IMoongladeNotificationClient
     {
         Task<Response> SendTestNotificationAsync();
 

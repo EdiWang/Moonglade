@@ -18,7 +18,7 @@ namespace Moonglade.Tests
     public class PingbackServiceTests
     {
         private Mock<ILogger<PingbackService>> _loggerMock;
-        private Mock<IMoongladeNotification> _notificationMock;
+        private Mock<IMoongladeNotificationClient> _notificationMock;
         private Mock<IRepository<PingbackHistoryEntity>> _pingbackRepositoryMock;
         private Mock<IRepository<PostEntity>> _postRepositoryMock;
 
@@ -26,7 +26,7 @@ namespace Moonglade.Tests
         public void Setup()
         {
             _loggerMock = new Mock<ILogger<PingbackService>>();
-            _notificationMock = new Mock<IMoongladeNotification>();
+            _notificationMock = new Mock<IMoongladeNotificationClient>();
             _pingbackRepositoryMock = new Mock<IRepository<PingbackHistoryEntity>>();
             _postRepositoryMock = new Mock<IRepository<PostEntity>>();
         }

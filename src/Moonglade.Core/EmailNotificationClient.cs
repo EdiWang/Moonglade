@@ -10,16 +10,16 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Notification
 {
-    public class EmailNotification : IMoongladeNotification
+    public class EmailNotificationClient : IMoongladeNotificationClient
     {
         public bool IsEnabled { get; set; }
 
-        private readonly ILogger<EmailNotification> _logger;
+        private readonly ILogger<EmailNotificationClient> _logger;
 
         private readonly IBlogConfig _blogConfig;
 
-        public EmailNotification(
-            ILogger<EmailNotification> logger,
+        public EmailNotificationClient(
+            ILogger<EmailNotificationClient> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig)
         {
