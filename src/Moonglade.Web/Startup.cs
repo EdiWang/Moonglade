@@ -138,10 +138,6 @@ namespace Moonglade.Web
                 }
             }
 
-            var encryption = new Encryption();
-            Configuration.Bind(nameof(Encryption), encryption);
-            services.AddTransient<IAesEncryptionService>(enc => new AesEncryptionService(new KeyInfo(encryption.Key, encryption.IV)));
-
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()
                            .UseSqlServer(Configuration.GetConnectionString(Constants.DbConnectionName), sqlOptions =>
