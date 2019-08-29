@@ -38,6 +38,7 @@ using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.Middleware.RobotsTxt;
 using Newtonsoft.Json;
+using Polly;
 
 namespace Moonglade.Web
 {
@@ -139,7 +140,10 @@ namespace Moonglade.Web
 
             if (bool.Parse(_appSettingsSection["Notification:Enabled"]))
             {
-                services.AddHttpClient<IMoongladeNotificationClient, EmailNotificationClient>();
+                services.AddHttpClient<IMoongladeNotificationClient, EmailNotificationClient>()
+                        .AddTransientHttpErrorPolicy(builder => 
+                                builder.WaitAndRetryAsync(3, retryCount => 
+                                TimeSpan.FromSeconds(Math.Pow(2, retryCount))));
             }
 
             services.AddDbContext<MoongladeDbContext>(options =>

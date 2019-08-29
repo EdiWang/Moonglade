@@ -43,6 +43,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.7.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.6" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.76" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.9.0" />
