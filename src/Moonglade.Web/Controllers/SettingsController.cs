@@ -132,12 +132,8 @@ namespace Moonglade.Web.Controllers
                 BannedMailDomain = ec.BannedMailDomain,
                 EmailDisplayName = ec.EmailDisplayName,
                 EnableEmailSending = ec.EnableEmailSending,
-                EnableSsl = ec.EnableSsl,
                 SendEmailOnCommentReply = ec.SendEmailOnCommentReply,
-                SendEmailOnNewComment = ec.SendEmailOnNewComment,
-                SmtpServer = ec.SmtpServer,
-                SmtpServerPort = ec.SmtpServerPort,
-                SmtpUserName = ec.SmtpUserName
+                SendEmailOnNewComment = ec.SendEmailOnNewComment
             };
             return View(vm);
         }
@@ -152,16 +148,8 @@ namespace Moonglade.Web.Controllers
                 ec.BannedMailDomain = model.BannedMailDomain;
                 ec.EmailDisplayName = model.EmailDisplayName;
                 ec.EnableEmailSending = model.EnableEmailSending;
-                ec.EnableSsl = model.EnableSsl;
                 ec.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
                 ec.SendEmailOnNewComment = model.SendEmailOnNewComment;
-                ec.SmtpServer = model.SmtpServer;
-                ec.SmtpServerPort = model.SmtpServerPort;
-                ec.SmtpUserName = model.SmtpUserName;
-                if (!string.IsNullOrWhiteSpace(model.SmtpClearPassword))
-                {
-                    ec.SmtpPassword = _blogConfig.EncryptPassword(model.SmtpClearPassword);
-                }
 
                 var response = await _blogConfig.SaveConfigurationAsync(ec);
                 _blogConfig.RequireRefresh();

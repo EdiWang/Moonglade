@@ -7,8 +7,6 @@ namespace Moonglade.Notification
 {
     public interface IMoongladeNotification
     {
-        bool IsEnabled { get; set; }
-
         Task<Response> SendTestNotificationAsync();
 
         Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat);

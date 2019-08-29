@@ -21,43 +21,11 @@
                 <div class="card-header">Server Configuration</div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="SmtpServer" class="control-label"></label>
-                        <input asp-for="SmtpServer" class="form-control" />
-                        <span asp-validation-for="SmtpServer" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="SmtpServerPort" class="control-label"></label>
-                        <input asp-for="SmtpServerPort" class="form-control" />
-                        <span asp-validation-for="SmtpServerPort" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="SmtpUserName" class="control-label"></label>
-                        <input asp-for="SmtpUserName" class="form-control" />
-                        <span asp-validation-for="SmtpUserName" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="SmtpClearPassword" class="control-label"></label>
-                        <div class="text-muted">Leave blank if password is unchanged</div>
-                        <input asp-for="SmtpClearPassword" class="form-control" />
-                        <span asp-validation-for="SmtpClearPassword" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
                         <label asp-for="EmailDisplayName" class="control-label"></label>
                         <input asp-for="EmailDisplayName" class="form-control" />
                         <span asp-validation-for="EmailDisplayName" class="text-danger"></span>
                     </div>
                 </div>
-
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <label asp-for="EnableSsl" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.EnableSsl ? "checked=\"checked\"" : "") id="EnableSsl" name="EnableSsl" type="checkbox" value="true">
-                            <label for="EnableSsl" class="label-success"></label>
-                            <input name="EnableSsl" type="hidden" value="false">
-                        </div>
-                    </li>
-                </ul>
 
                 <div class="card-footer">
                     <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-primary">Send Test Email</a>

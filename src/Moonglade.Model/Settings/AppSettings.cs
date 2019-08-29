@@ -9,7 +9,6 @@
         public int PostSummaryWords { get; set; }
         public bool EnablePingBackSend { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
-        public bool DisableEmailSendingInDevelopment { get; set; }
         public string DNSPrefetchEndpoint { get; set; }
 
         public NotificationSettings Notification { get; set; }

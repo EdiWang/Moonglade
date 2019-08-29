@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -19,8 +18,6 @@ namespace Moonglade.Configuration
         private readonly ILogger<BlogConfig> _logger;
 
         private readonly IConfiguration _configuration;
-
-        private readonly IAesEncryptionService _encryptionService;
 
         public BlogOwnerSettings BlogOwnerSettings { get; set; }
 
@@ -38,10 +35,8 @@ namespace Moonglade.Configuration
 
         public BlogConfig(
             ILogger<BlogConfig> logger,
-            IAesEncryptionService encryptionService,
             IConfiguration configuration)
         {
-            _encryptionService = encryptionService;
             _configuration = configuration;
             _logger = logger;
 
@@ -64,13 +59,7 @@ namespace Moonglade.Configuration
                 BlogOwnerSettings = JsonConvert.DeserializeObject<BlogOwnerSettings>(cfgDic[nameof(BlogOwnerSettings)]);
                 GeneralSettings = JsonConvert.DeserializeObject<GeneralSettings>(cfgDic[nameof(GeneralSettings)]);
                 ContentSettings = JsonConvert.DeserializeObject<ContentSettings>(cfgDic[nameof(ContentSettings)]);
-
                 EmailSettings = JsonConvert.DeserializeObject<EmailSettings>(cfgDic[nameof(EmailSettings)]);
-                if (!string.IsNullOrWhiteSpace(EmailSettings.SmtpPassword))
-                {
-                    EmailSettings.SmtpClearPassword = DecryptPassword(EmailSettings.SmtpPassword);
-                }
-
                 FeedSettings = JsonConvert.DeserializeObject<FeedSettings>(cfgDic[nameof(FeedSettings)]);
                 WatermarkSettings = JsonConvert.DeserializeObject<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)]);
 
@@ -106,21 +95,9 @@ namespace Moonglade.Configuration
             }
         }
 
-        public string EncryptPassword(string clearPassword)
-        {
-            var str = _encryptionService.Encrypt(clearPassword);
-            return str;
-        }
-
         public void RequireRefresh()
         {
             _hasInitialized = false;
-        }
-
-        private string DecryptPassword(string encryptedPassword)
-        {
-            var str = _encryptionService.Decrypt(encryptedPassword);
-            return str;
         }
 
         private IDictionary<string, string> GetAllConfigurations()

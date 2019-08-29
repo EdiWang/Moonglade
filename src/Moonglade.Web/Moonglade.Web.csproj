@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="mailConfiguration.xml" CopyToOutputDirectory="Always" />
     <Content Update="nlog.debug.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
