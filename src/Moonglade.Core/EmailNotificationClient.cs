@@ -46,13 +46,26 @@ namespace Moonglade.Core
 
         public async Task<Response> SendTestNotificationAsync()
         {
-            var method = "/test";
-            var requst = new HttpRequestMessage(HttpMethod.Post, method); 
-            // TODO: Add body
-            var response = await _httpClient.SendAsync(requst);
-            var data = await response.Content.ReadAsStringAsync();
-            
-            throw new NotImplementedException();
+            try
+            {
+                var method = "/test";
+                var requst = new HttpRequestMessage(HttpMethod.Post, method);
+                // TODO: Add body
+                var response = await _httpClient.SendAsync(requst);
+
+                //response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsAsync<Response>();
+                    return data;
+                }
+
+                return new FailedResponse((int)ResponseFailureCode.ApiError, response.StatusCode.ToString());
+            }
+            catch (Exception e)
+            {
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+            }
         }
 
         public async Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat)

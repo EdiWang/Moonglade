@@ -6,6 +6,7 @@
         GeneralException = 1,
         InvalidParameter = 3,
         InvalidModelState = 4,
+        ApiError = 5,
 
         // post
         PostNotFound = 100,
