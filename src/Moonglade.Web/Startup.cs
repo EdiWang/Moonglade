@@ -140,13 +140,7 @@ namespace Moonglade.Web
 
             if (bool.Parse(_appSettingsSection["Notification:Enabled"]))
             {
-                services.AddHttpClient("moonglade-notification-api", client =>
-                {
-                    client.BaseAddress = new Uri(_appSettingsSection["Notification:ApiEndpoint"]);
-                    client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-                    client.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Utils.AppVersion}");
-                    client.DefaultRequestHeaders.Add("X-Api-Key", _appSettingsSection["Notification:ApiKey"]);
-                });
+                services.AddHttpClient<IMoongladeNotificationClient, EmailNotificationClient>();
             }
 
             services.AddDbContext<MoongladeDbContext>(options =>
