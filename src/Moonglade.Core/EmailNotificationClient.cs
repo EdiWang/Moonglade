@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,8 @@ namespace Moonglade.Notification
 {
     public class EmailNotificationClient : IMoongladeNotificationClient
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+
         public bool IsEnabled { get; set; }
 
         private readonly ILogger<EmailNotificationClient> _logger;
@@ -21,12 +24,17 @@ namespace Moonglade.Notification
         public EmailNotificationClient(
             ILogger<EmailNotificationClient> logger,
             IOptions<AppSettings> settings,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig,
+            IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _blogConfig = blogConfig;
+            if (settings.Value.Notification.Enabled)
+            {
+                _httpClientFactory = httpClientFactory;
+            }
 
-            IsEnabled = _blogConfig.EmailSettings.EnableEmailSending;
+            IsEnabled = null != _httpClientFactory && _blogConfig.EmailSettings.EnableEmailSending;
         }
 
         public async Task<Response> SendTestNotificationAsync()

@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -135,6 +136,17 @@ namespace Moonglade.Web
                 {
                     services.AddTransient(t, t);
                 }
+            }
+
+            if (bool.Parse(_appSettingsSection["Notification:Enabled"]))
+            {
+                services.AddHttpClient("moonglade-notification-api", client =>
+                {
+                    client.BaseAddress = new Uri(_appSettingsSection["Notification:ApiEndpoint"]);
+                    client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+                    client.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Utils.AppVersion}");
+                    client.DefaultRequestHeaders.Add("X-Api-Key", _appSettingsSection["Notification:ApiKey"]);
+                });
             }
 
             services.AddDbContext<MoongladeDbContext>(options =>
