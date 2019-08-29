@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Moonglade.Model;
 
-namespace Moonglade.Notification
+namespace Moonglade.Core
 {
     public interface IMoongladeNotification
     {

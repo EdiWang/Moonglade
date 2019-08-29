@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -21,11 +21,9 @@ namespace Moonglade.Notification
         public EmailNotification(
             ILogger<EmailNotification> logger,
             IOptions<AppSettings> settings,
-            IHostingEnvironment env,
             IBlogConfig blogConfig)
         {
             _logger = logger;
-
             _blogConfig = blogConfig;
 
             IsEnabled = _blogConfig.EmailSettings.EnableEmailSending;
