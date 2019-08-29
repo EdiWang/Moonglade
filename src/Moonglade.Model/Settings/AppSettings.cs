@@ -11,5 +11,7 @@
         public int ImageCacheSlidingExpirationMinutes { get; set; }
         public bool DisableEmailSendingInDevelopment { get; set; }
         public string DNSPrefetchEndpoint { get; set; }
+
+        public NotificationSettings Notification { get; set; }
     }
 }
