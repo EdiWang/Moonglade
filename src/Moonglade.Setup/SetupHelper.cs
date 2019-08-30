@@ -164,42 +164,6 @@ namespace Moonglade.Setup
             }
         }
 
-        // Caveat: This will require non-readonly for the application directory
-        public static void SetInitialEncryptionKey(IHostingEnvironment env, ILogger logger)
-        {
-            try
-            {
-                var ki = new KeyInfo();
-
-                var appSettingsFilePath = Path.Combine(env.ContentRootPath,
-                    env.EnvironmentName != EnvironmentName.Production ?
-                        $"appsettings.{env.EnvironmentName}.json" :
-                        "appsettings.json");
-
-                if (File.Exists(appSettingsFilePath))
-                {
-                    var json = File.ReadAllText(appSettingsFilePath);
-                    var jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
-                    var encryptionNode = jsonObj["Encryption"];
-                    if (null != encryptionNode)
-                    {
-                        encryptionNode["Key"] = ki.KeyString;
-                        encryptionNode["IV"] = ki.IVString;
-                        var newJson = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
-                        File.WriteAllText(appSettingsFilePath, newJson);
-                    }
-                }
-                else
-                {
-                    throw new FileNotFoundException("Failed to initialize Key and IV for password encryption. Settings file is not found.", appSettingsFilePath);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.LogError("Unable to set initial Key and IV, please do it manually.", e);
-            }
-        }
-
         private static string GetEmbeddedSqlScript(string scriptName)
         {
             var assembly = typeof(SetupHelper).GetTypeInfo().Assembly;

@@ -279,7 +279,6 @@ namespace Moonglade.Web
                 {
                     try
                     {
-                        SetupHelper.SetInitialEncryptionKey(Environment, _logger);
                         setupHelper.SetupDatabase();
                         setupHelper.ResetDefaultConfiguration();
                         setupHelper.InitSampleData();
