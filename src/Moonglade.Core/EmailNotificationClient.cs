@@ -188,29 +188,54 @@ namespace Moonglade.Core
         {
             if (!IsEnabled)
             {
-                _logger.LogWarning("Skipped SendNewCommentNotificationAsync because Email sending is disabled.");
+                _logger.LogWarning($"Skipped {nameof(SendNewCommentNotificationAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
             }
 
-            throw new NotImplementedException();
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
         }
 
         public async Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink)
         {
             if (!IsEnabled)
             {
-                _logger.LogWarning("Skipped SendCommentReplyNotificationAsync because Email sending is disabled.");
+                _logger.LogWarning($"Skipped {nameof(SendCommentReplyNotificationAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
             }
 
-            throw new NotImplementedException();
+            try
+            {
+                var req = BuildNotificationRequest("commentreply", () => new CommentReplyNotificationRequest(
+                    model.Email, 
+                    model.CommentContent, 
+                    model.Title,
+                    model.ReplyContent, 
+                    postLink));
+
+                var response = await _httpClient.SendAsync(req);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Error {nameof(SendPingNotificationAsync)}, response: {response.StatusCode}");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
         }
 
         public async Task SendPingNotificationAsync(PingbackHistory receivedPingback)
         {
             if (!IsEnabled)
             {
-                _logger.LogWarning("Skipped SendPingNotificationAsync because Email sending is disabled.");
+                _logger.LogWarning($"Skipped {nameof(SendPingNotificationAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
             }
 
@@ -223,10 +248,11 @@ namespace Moonglade.Core
                     receivedPingback.SourceIp,
                     receivedPingback.SourceUrl,
                     receivedPingback.SourceTitle));
+
                 var response = await _httpClient.SendAsync(req);
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogError($"Error SendPingNotificationAsync, response: {response.StatusCode}");
+                    _logger.LogError($"Error {nameof(SendPingNotificationAsync)}, response: {response.StatusCode}");
                 }
             }
             catch (Exception e)
