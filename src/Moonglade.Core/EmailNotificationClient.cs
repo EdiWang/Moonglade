@@ -68,6 +68,32 @@ namespace Moonglade.Core
             public string EmailDisplayName { get; set; }
         }
 
+        internal class PingNotificationRequest : NotificationRequest
+        {
+            public PingNotificationRequest(
+                string targetPostTitle, DateTime pingTimeUtc, string domain, string sourceIp, string sourceUrl, string sourceTitle)
+            {
+                TargetPostTitle = targetPostTitle;
+                PingTimeUtc = pingTimeUtc;
+                Domain = domain;
+                SourceIp = sourceIp;
+                SourceUrl = sourceUrl;
+                SourceTitle = sourceTitle;
+            }
+
+            public string TargetPostTitle { get; set; }
+
+            public DateTime PingTimeUtc { get; set; }
+
+            public string Domain { get; set; }
+
+            public string SourceIp { get; set; }
+
+            public string SourceUrl { get; set; }
+
+            public string SourceTitle { get; set; }
+        }
+
         private HttpRequestMessage BuildNotificationRequest(string method, Func<NotificationRequest> request)
         {
             var nf = request();
@@ -104,31 +130,59 @@ namespace Moonglade.Core
             }
             catch (Exception e)
             {
+                _logger.LogError(e, e.Message);
                 return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
             }
         }
 
         public async Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat)
         {
-            if (IsEnabled)
+            if (!IsEnabled)
             {
-                throw new NotImplementedException();
+                _logger.LogWarning("Skipped SendNewCommentNotificationAsync because Email sending is disabled.");
+                await Task.CompletedTask;
             }
+
+            throw new NotImplementedException();
         }
 
         public async Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink)
         {
-            if (IsEnabled)
+            if (!IsEnabled)
             {
-                throw new NotImplementedException();
+                _logger.LogWarning("Skipped SendCommentReplyNotificationAsync because Email sending is disabled.");
+                await Task.CompletedTask;
             }
+
+            throw new NotImplementedException();
         }
 
         public async Task SendPingNotificationAsync(PingbackHistory receivedPingback)
         {
-            if (IsEnabled)
+            if (!IsEnabled)
             {
-                throw new NotImplementedException();
+                _logger.LogWarning("Skipped SendPingNotificationAsync because Email sending is disabled.");
+                await Task.CompletedTask;
+            }
+
+            try
+            {
+                var req = BuildNotificationRequest("ping", () => new PingNotificationRequest(
+                    receivedPingback.TargetPostId.ToString(),
+                    receivedPingback.PingTimeUtc,
+                    receivedPingback.Domain,
+                    receivedPingback.SourceIp,
+                    receivedPingback.SourceUrl,
+                    receivedPingback.SourceTitle));
+                var response = await _httpClient.SendAsync(req);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Error SendPingNotificationAsync, response: {response.StatusCode}");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
             }
         }
     }
