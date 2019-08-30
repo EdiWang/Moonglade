@@ -94,6 +94,55 @@ namespace Moonglade.Core
             public string SourceTitle { get; set; }
         }
 
+        internal class CommentReplyNotificationRequest : NotificationRequest
+        {
+            public CommentReplyNotificationRequest(
+                string email, string commentContent, string title, string replyContent, string postLink)
+            {
+                Email = email;
+                CommentContent = commentContent;
+                Title = title;
+                ReplyContent = replyContent;
+                PostLink = postLink;
+            }
+
+            public string Email { get; set; }
+
+            public string CommentContent { get; set; }
+
+            public string Title { get; set; }
+
+            public string ReplyContent { get; set; }
+
+            public string PostLink { get; set; }
+        }
+
+        internal class NewCommentNotificationRequest : NotificationRequest
+        {
+            public NewCommentNotificationRequest(
+                string username, string email, string ipAddress, string postTitle, string commentContent, DateTime createOnUtc)
+            {
+                Username = username;
+                Email = email;
+                IpAddress = ipAddress;
+                PostTitle = postTitle;
+                CommentContent = commentContent;
+                CreateOnUtc = createOnUtc;
+            }
+
+            public string Username { get; set; }
+
+            public string Email { get; set; }
+
+            public string IpAddress { get; set; }
+
+            public string PostTitle { get; set; }
+
+            public string CommentContent { get; set; }
+
+            public DateTime CreateOnUtc { get; set; }
+        }
+
         private HttpRequestMessage BuildNotificationRequest(string method, Func<NotificationRequest> request)
         {
             var nf = request();
