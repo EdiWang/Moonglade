@@ -135,11 +135,25 @@ If **GetImageByCDNRedirect** is set to **true**, the blog will get images from c
 }
 ```
 
-### Email Password Encryption
+### Email Notification
 
-**Encryption** controls the **IV** and **Key** for encrypted email passwords in database. 
+If you need email notification for new comments, new replies and pingbacks, you have to setup the Moonglade.Notification API first. 
 
-*The blog will try to generate a pair of Key and IV on first run, and write values into appsettings.**[Current Environment]**.json only. This means the application directory **must NOT be read only**. You'll have to set keys manully if you must use a read only deployment.*
+#### Setup Moonglade.Notification API
+
+See https://github.com/EdiWang/Moonglade.Notification for instructions
+
+#### Configure Moonglade
+
+Set values in AppSettings:
+
+```json
+"Notification": {
+  "Enabled": true,
+  "ApiEndpoint": "{PROD-ENV-VARIABLE}",
+  "ApiKey": "{PROD-ENV-VARIABLE}"
+}
+```
 
 ### Robots.txt
 
