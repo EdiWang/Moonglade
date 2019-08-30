@@ -194,7 +194,20 @@ namespace Moonglade.Core
 
             try
             {
+                var req = BuildNotificationRequest("newcomment", () => new NewCommentNotificationRequest(
+                    comment.Username,
+                    comment.Email,
+                    comment.IpAddress,
+                    comment.PostTitle,
+                    funcCommentContentFormat(comment.CommentContent),
+                    comment.CreateOnUtc
+                ));
 
+                var response = await _httpClient.SendAsync(req);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Error {nameof(SendPingNotificationAsync)}, response: {response.StatusCode}");
+                }
             }
             catch (Exception e)
             {
@@ -213,10 +226,10 @@ namespace Moonglade.Core
             try
             {
                 var req = BuildNotificationRequest("commentreply", () => new CommentReplyNotificationRequest(
-                    model.Email, 
-                    model.CommentContent, 
+                    model.Email,
+                    model.CommentContent,
                     model.Title,
-                    model.ReplyContent, 
+                    model.ReplyContent,
                     postLink));
 
                 var response = await _httpClient.SendAsync(req);
