@@ -12,18 +12,18 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core.Notification
 {
-    public class EmailNotificationClient : IMoongladeNotificationClient
+    public class NotificationClient : IMoongladeNotificationClient
     {
         private readonly HttpClient _httpClient;
 
         public bool IsEnabled { get; set; }
 
-        private readonly ILogger<EmailNotificationClient> _logger;
+        private readonly ILogger<NotificationClient> _logger;
 
         private readonly IBlogConfig _blogConfig;
 
-        public EmailNotificationClient(
-            ILogger<EmailNotificationClient> logger,
+        public NotificationClient(
+            ILogger<NotificationClient> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             HttpClient httpClient)

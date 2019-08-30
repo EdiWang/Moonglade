@@ -123,7 +123,7 @@ namespace Moonglade.Web
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddTransient<IHtmlCodec, HttpUtilityHtmlCodec>();
             services.AddTransient<ISessionBasedCaptcha, BasicLetterCaptcha>();
-            services.AddTransient<IMoongladeNotificationClient, EmailNotificationClient>();
+            services.AddTransient<IMoongladeNotificationClient, NotificationClient>();
             services.AddTransient<IPingbackSender, PingbackSender>();
             services.AddTransient<IPingbackReceiver, PingbackReceiver>();
             services.AddTransient<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
@@ -141,7 +141,7 @@ namespace Moonglade.Web
 
             if (bool.Parse(_appSettingsSection["Notification:Enabled"]))
             {
-                services.AddHttpClient<IMoongladeNotificationClient, EmailNotificationClient>()
+                services.AddHttpClient<IMoongladeNotificationClient, NotificationClient>()
                         .AddTransientHttpErrorPolicy(builder => 
                                 builder.WaitAndRetryAsync(3, retryCount => 
                                 TimeSpan.FromSeconds(Math.Pow(2, retryCount)), 
