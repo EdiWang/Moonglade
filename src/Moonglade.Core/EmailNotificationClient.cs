@@ -64,28 +64,33 @@ namespace Moonglade.Core
 
         internal class NotificationRequest
         {
-            public NotificationRequest(string adminEmail, string emailDisplayName)
-            {
-                AdminEmail = adminEmail;
-                EmailDisplayName = emailDisplayName;
-            }
-
             public string AdminEmail { get; set; }
             public string EmailDisplayName { get; set; }
         }
 
+        private HttpRequestMessage BuildNotificationRequest(string method, Func<NotificationRequest> request)
+        {
+            var nf = request();
+            nf.EmailDisplayName = _blogConfig.EmailSettings.EmailDisplayName;
+            nf.AdminEmail = _blogConfig.EmailSettings.AdminEmail;
+
+            var req = new HttpRequestMessage(HttpMethod.Post, method)
+            {
+                Content = new NotificationContent(nf)
+            };
+            return req;
+        }
+
         public async Task<Response> SendTestNotificationAsync()
         {
+            if (!IsEnabled)
+            {
+                return new FailedResponse((int)ResponseFailureCode.EmailSendingDisabled, "Email Sending is disabled.");
+            }
+
             try
             {
-                var method = "test";
-                var req = new HttpRequestMessage(HttpMethod.Post, method)
-                {
-                    Content = new NotificationContent(
-                        new NotificationRequest(
-                            _blogConfig.EmailSettings.AdminEmail,
-                            _blogConfig.EmailSettings.EmailDisplayName))
-                };
+                var req = BuildNotificationRequest("test", () => new NotificationRequest());
                 var response = await _httpClient.SendAsync(req);
 
                 //response.EnsureSuccessStatusCode();
@@ -105,17 +110,26 @@ namespace Moonglade.Core
 
         public async Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat)
         {
-            throw new NotImplementedException();
+            if (IsEnabled)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public async Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink)
         {
-            throw new NotImplementedException();
+            if (IsEnabled)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public async Task SendPingNotificationAsync(PingbackHistory receivedPingback)
         {
-            throw new NotImplementedException();
+            if (IsEnabled)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
