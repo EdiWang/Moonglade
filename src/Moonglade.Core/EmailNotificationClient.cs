@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net.Http;
+using System.Security.Policy;
+using System.Text;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
@@ -8,6 +10,7 @@ using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Newtonsoft.Json;
 
 namespace Moonglade.Core
 {
@@ -31,7 +34,15 @@ namespace Moonglade.Core
             _blogConfig = blogConfig;
             if (settings.Value.Notification.Enabled)
             {
-                httpClient.BaseAddress = new Uri(settings.Value.Notification.ApiEndpoint);
+                if (Uri.IsWellFormedUriString(settings.Value.Notification.ApiEndpoint, UriKind.Absolute))
+                {
+                    if (!settings.Value.Notification.ApiEndpoint.EndsWith("/"))
+                    {
+                        throw new FormatException("ApiEndpoint URL must end with a slash '/'.");
+                    }
+
+                    httpClient.BaseAddress = new Uri(settings.Value.Notification.ApiEndpoint);
+                }
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Utils.AppVersion}");
                 httpClient.DefaultRequestHeaders.Add("X-Api-Key", settings.Value.Notification.ApiKey);
@@ -44,14 +55,38 @@ namespace Moonglade.Core
             }
         }
 
+        internal class NotificationContent : StringContent
+        {
+            public NotificationContent(NotificationRequest req) :
+                base(JsonConvert.SerializeObject(req), Encoding.UTF8, "application/json")
+            { }
+        }
+
+        internal class NotificationRequest
+        {
+            public NotificationRequest(string adminEmail, string emailDisplayName)
+            {
+                AdminEmail = adminEmail;
+                EmailDisplayName = emailDisplayName;
+            }
+
+            public string AdminEmail { get; set; }
+            public string EmailDisplayName { get; set; }
+        }
+
         public async Task<Response> SendTestNotificationAsync()
         {
             try
             {
-                var method = "/test";
-                var requst = new HttpRequestMessage(HttpMethod.Post, method);
-                // TODO: Add body
-                var response = await _httpClient.SendAsync(requst);
+                var method = "test";
+                var req = new HttpRequestMessage(HttpMethod.Post, method)
+                {
+                    Content = new NotificationContent(
+                        new NotificationRequest(
+                            _blogConfig.EmailSettings.AdminEmail,
+                            _blogConfig.EmailSettings.EmailDisplayName))
+                };
+                var response = await _httpClient.SendAsync(req);
 
                 //response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
