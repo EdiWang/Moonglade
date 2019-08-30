@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Moonglade.Model;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.Notification
 {
     public interface IMoongladeNotificationClient
     {
@@ -13,6 +13,6 @@ namespace Moonglade.Core
 
         Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink);
 
-        Task SendPingNotificationAsync(PingbackHistory receivedPingback);
+        Task SendPingNotificationAsync(PingbackHistory model);
     }
 }

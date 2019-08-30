@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Core.Notification;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Setup;

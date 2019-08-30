@@ -24,6 +24,7 @@ using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Core.Notification;
 using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.HtmlCodec;
