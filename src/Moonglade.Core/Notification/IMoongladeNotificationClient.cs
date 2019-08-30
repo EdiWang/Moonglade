@@ -9,7 +9,7 @@ namespace Moonglade.Core.Notification
     {
         Task<Response> SendTestNotificationAsync();
 
-        Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat);
+        Task SendNewCommentNotificationAsync(CommentListItem model, Func<string, string> funcCommentContentFormat);
 
         Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink);
 

@@ -20,7 +20,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;

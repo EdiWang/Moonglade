@@ -81,7 +81,7 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat)
+        public async Task SendNewCommentNotificationAsync(CommentListItem model, Func<string, string> funcCommentContentFormat)
         {
             if (!IsEnabled)
             {
@@ -92,12 +92,12 @@ namespace Moonglade.Core.Notification
             try
             {
                 var req = new NewCommentNotificationRequest(
-                    comment.Username,
-                    comment.Email,
-                    comment.IpAddress,
-                    comment.PostTitle,
-                    funcCommentContentFormat(comment.CommentContent),
-                    comment.CreateOnUtc
+                    model.Username,
+                    model.Email,
+                    model.IpAddress,
+                    model.PostTitle,
+                    funcCommentContentFormat(model.CommentContent),
+                    model.CreateOnUtc
                 );
 
                 await SendNotificationRequest("newcomment", req);
