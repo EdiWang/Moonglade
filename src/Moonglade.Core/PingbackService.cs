@@ -9,13 +9,12 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
-using Moonglade.Notification;
 
 namespace Moonglade.Core
 {
     public class PingbackService : MoongladeService
     {
-        private readonly IMoongladeNotification _notification;
+        private readonly IMoongladeNotificationClient _notificationClient;
 
         private readonly IPingbackReceiver _pingbackReceiver;
 
@@ -25,12 +24,12 @@ namespace Moonglade.Core
 
         public PingbackService(
             ILogger<PingbackService> logger,
-            IMoongladeNotification notification,
+            IMoongladeNotificationClient notificationClient,
             IPingbackReceiver pingbackReceiver,
             IRepository<PingbackHistoryEntity> pingbackRepository,
             IRepository<PostEntity> postRepository) : base(logger)
         {
-            _notification = notification;
+            _notificationClient = notificationClient;
             _pingbackReceiver = pingbackReceiver;
             _pingbackRepository = pingbackRepository;
             _postRepository = postRepository;
@@ -145,7 +144,7 @@ namespace Moonglade.Core
                     TargetPostTitle = p.TargetPostTitle
                 });
 
-            await _notification.SendPingNotificationAsync(pingback);
+            await _notificationClient.SendPingNotificationAsync(pingback);
         }
 
         private async Task SavePingbackRecord(PingbackRequest request)

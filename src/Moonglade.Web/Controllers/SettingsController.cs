@@ -14,7 +14,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Notification;
 using Moonglade.Setup;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
@@ -132,12 +131,8 @@ namespace Moonglade.Web.Controllers
                 BannedMailDomain = ec.BannedMailDomain,
                 EmailDisplayName = ec.EmailDisplayName,
                 EnableEmailSending = ec.EnableEmailSending,
-                EnableSsl = ec.EnableSsl,
                 SendEmailOnCommentReply = ec.SendEmailOnCommentReply,
-                SendEmailOnNewComment = ec.SendEmailOnNewComment,
-                SmtpServer = ec.SmtpServer,
-                SmtpServerPort = ec.SmtpServerPort,
-                SmtpUserName = ec.SmtpUserName
+                SendEmailOnNewComment = ec.SendEmailOnNewComment
             };
             return View(vm);
         }
@@ -152,16 +147,8 @@ namespace Moonglade.Web.Controllers
                 ec.BannedMailDomain = model.BannedMailDomain;
                 ec.EmailDisplayName = model.EmailDisplayName;
                 ec.EnableEmailSending = model.EnableEmailSending;
-                ec.EnableSsl = model.EnableSsl;
                 ec.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
                 ec.SendEmailOnNewComment = model.SendEmailOnNewComment;
-                ec.SmtpServer = model.SmtpServer;
-                ec.SmtpServerPort = model.SmtpServerPort;
-                ec.SmtpUserName = model.SmtpUserName;
-                if (!string.IsNullOrWhiteSpace(model.SmtpClearPassword))
-                {
-                    ec.SmtpPassword = _blogConfig.EncryptPassword(model.SmtpClearPassword);
-                }
 
                 var response = await _blogConfig.SaveConfigurationAsync(ec);
                 _blogConfig.RequireRefresh();
@@ -172,9 +159,9 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("send-test-email")]
         [IgnoreAntiforgeryToken]
-        public async Task<IActionResult> SendTestEmail([FromServices] IMoongladeNotification notification)
+        public async Task<IActionResult> SendTestEmail([FromServices] IMoongladeNotificationClient notificationClient)
         {
-            var response = await notification.SendTestNotificationAsync();
+            var response = await notificationClient.SendTestNotificationAsync();
             if (!response.IsSuccess)
             {
                 Response.StatusCode = StatusCodes.Status500InternalServerError;

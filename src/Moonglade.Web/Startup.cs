@@ -7,7 +7,6 @@ using AspNetCoreRateLimit;
 using Edi.Blog.OpmlFileWriter;
 using Edi.Blog.Pingback;
 using Edi.Captcha;
-using Edi.Net.AesEncryption;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
@@ -21,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -32,13 +32,13 @@ using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Notification;
 using Moonglade.Setup;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.Middleware.RobotsTxt;
 using Newtonsoft.Json;
+using Polly;
 
 namespace Moonglade.Web
 {
@@ -122,7 +122,7 @@ namespace Moonglade.Web
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddTransient<IHtmlCodec, HttpUtilityHtmlCodec>();
             services.AddTransient<ISessionBasedCaptcha, BasicLetterCaptcha>();
-            services.AddTransient<IMoongladeNotification, EmailNotification>();
+            services.AddTransient<IMoongladeNotificationClient, EmailNotificationClient>();
             services.AddTransient<IPingbackSender, PingbackSender>();
             services.AddTransient<IPingbackReceiver, PingbackReceiver>();
             services.AddTransient<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
@@ -138,9 +138,17 @@ namespace Moonglade.Web
                 }
             }
 
-            var encryption = new Encryption();
-            Configuration.Bind(nameof(Encryption), encryption);
-            services.AddTransient<IAesEncryptionService>(enc => new AesEncryptionService(new KeyInfo(encryption.Key, encryption.IV)));
+            if (bool.Parse(_appSettingsSection["Notification:Enabled"]))
+            {
+                services.AddHttpClient<IMoongladeNotificationClient, EmailNotificationClient>()
+                        .AddTransientHttpErrorPolicy(builder => 
+                                builder.WaitAndRetryAsync(3, retryCount => 
+                                TimeSpan.FromSeconds(Math.Pow(2, retryCount)), 
+                                    (result, span, retryCount, context) =>
+                                    {
+                                        _logger.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
+                                    }));
+            }
 
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()
@@ -271,7 +279,6 @@ namespace Moonglade.Web
                 {
                     try
                     {
-                        SetupHelper.SetInitialEncryptionKey(Environment, _logger);
                         setupHelper.SetupDatabase();
                         setupHelper.ResetDefaultConfiguration();
                         setupHelper.InitSampleData();

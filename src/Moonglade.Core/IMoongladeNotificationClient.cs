@@ -3,12 +3,10 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Moonglade.Model;
 
-namespace Moonglade.Notification
+namespace Moonglade.Core
 {
-    public interface IMoongladeNotification
+    public interface IMoongladeNotificationClient
     {
-        bool IsEnabled { get; set; }
-
         Task<Response> SendTestNotificationAsync();
 
         Task SendNewCommentNotificationAsync(CommentListItem comment, Func<string, string> funcCommentContentFormat);

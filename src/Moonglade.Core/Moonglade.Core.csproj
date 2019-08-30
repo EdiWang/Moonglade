@@ -20,7 +20,7 @@
     <PackageReference Include="Edi.Blog.Pingback" Version="10.2.0" />
     <PackageReference Include="Edi.Captcha" Version="1.3.1" />
     <PackageReference Include="Edi.ImageWatermark" Version="1.1.0" />
-    <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.2.0" />
+    <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.0" />
     <PackageReference Include="Edi.SyndicationFeedGenerator" Version="1.1.0" />
     <PackageReference Include="Edi.WordFilter" Version="1.2.0" />
     <PackageReference Include="Markdig" Version="0.17.1" />
@@ -34,7 +34,6 @@
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
     <ProjectReference Include="..\Moonglade.HtmlCodec\Moonglade.HtmlCodec.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
-    <ProjectReference Include="..\Moonglade.Notification\Moonglade.Notification.csproj" />
   </ItemGroup>
 
 </Project>
