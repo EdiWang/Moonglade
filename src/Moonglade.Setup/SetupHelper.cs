@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.IO;
 using System.Reflection;
 using Dapper;
-using Edi.Net.AesEncryption;
 using Edi.Practice.RequestResponseModel;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Microsoft.Data.SqlClient;
 
 namespace Moonglade.Setup
 {

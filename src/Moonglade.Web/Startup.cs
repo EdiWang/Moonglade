@@ -215,12 +215,16 @@ namespace Moonglade.Web
             );
             app.UseMiddleware<PoweredByMiddleware>();
 
-            if (env.IsDevelopment())
+            if (!env.IsProduction())
             {
-                _logger.LogWarning("Application is running under DEBUG mode. Application Insights disabled.");
+                _logger.LogWarning("Running on non-production mode. Application Insights disabled.");
 
                 TelemetryConfiguration.Active.DisableTelemetry = true;
                 TelemetryDebugWriter.IsTracingDisabled = true;
+            }
+
+            if (env.IsDevelopment())
+            {
                 ListAllRegisteredServices(app);
 
                 app.UseDeveloperExceptionPage();
