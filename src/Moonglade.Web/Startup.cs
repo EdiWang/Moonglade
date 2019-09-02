@@ -91,6 +91,11 @@ namespace Moonglade.Web
             Configuration.Bind(nameof(Authentication), authentication);
             services.AddMoongladeAuthenticaton(authentication);
 
+            //if (Environment.IsProduction())
+            //{
+            services.AddApplicationInsightsTelemetry();
+            //}
+
             services.AddMvc(options =>
                             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
@@ -141,9 +146,9 @@ namespace Moonglade.Web
             if (bool.Parse(_appSettingsSection["Notification:Enabled"]))
             {
                 services.AddHttpClient<IMoongladeNotificationClient, NotificationClient>()
-                        .AddTransientHttpErrorPolicy(builder => 
-                                builder.WaitAndRetryAsync(3, retryCount => 
-                                TimeSpan.FromSeconds(Math.Pow(2, retryCount)), 
+                        .AddTransientHttpErrorPolicy(builder =>
+                                builder.WaitAndRetryAsync(3, retryCount =>
+                                TimeSpan.FromSeconds(Math.Pow(2, retryCount)),
                                     (result, span, retryCount, context) =>
                                     {
                                         _logger.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
@@ -197,10 +202,15 @@ namespace Moonglade.Web
                     csp.AddScriptSrc()
                         .Self()
                         .UnsafeInline()
-                        .UnsafeEval()
+                        .UnsafeEval();
+
+                    if (env.IsProduction())
+                    {
                         // Whitelist Azure Application Insights
-                        .From("https://*.vo.msecnd.net")
-                        .From("https://*.services.visualstudio.com");
+                        csp.AddScriptSrc()
+                           .From("https://*.vo.msecnd.net")
+                           .From("https://*.services.visualstudio.com");
+                    }
                 })
                 // Microsoft believes privacy is a fundamental human right
                 // So should I

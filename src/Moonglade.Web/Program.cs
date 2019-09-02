@@ -39,7 +39,6 @@ namespace Moonglade.Web
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .CaptureStartupErrors(true)
-                .UseApplicationInsights()
                 .ConfigureKestrel(c => c.AddServerHeader = false)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
