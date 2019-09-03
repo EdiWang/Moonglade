@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 
 namespace Moonglade.Core.Notification
 {
-    internal class NotificationContent : StringContent
+    internal class NotificationContent<T> : StringContent where T : class
     {
-        public NotificationContent(NotificationRequest req) :
+        public NotificationContent(NotificationRequest<T> req) :
             base(JsonConvert.SerializeObject(req), Encoding.UTF8, "application/json")
         { }
     }

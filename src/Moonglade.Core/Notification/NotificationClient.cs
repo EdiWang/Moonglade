@@ -62,7 +62,8 @@ namespace Moonglade.Core.Notification
 
             try
             {
-                var req = BuildNotificationRequest("test", () => new NotificationRequest());
+                var req = BuildNotificationRequest(() =>
+                    new NotificationRequest<EmptyPayload>(MailMesageTypes.TestMail, EmptyPayload.Default));
                 var response = await _httpClient.SendAsync(req);
 
                 //response.EnsureSuccessStatusCode();
@@ -91,7 +92,7 @@ namespace Moonglade.Core.Notification
 
             try
             {
-                var req = new NewCommentNotificationRequest(
+                var req = new NewCommentNotificationPayload(
                     model.Username,
                     model.Email,
                     model.IpAddress,
@@ -100,7 +101,8 @@ namespace Moonglade.Core.Notification
                     model.CreateOnUtc
                 );
 
-                await SendNotificationRequest("newcomment", req);
+                await SendNotificationRequest(
+                    new NotificationRequest<NewCommentNotificationPayload>(MailMesageTypes.NewCommentNotification, req));
             }
             catch (Exception e)
             {
@@ -118,14 +120,15 @@ namespace Moonglade.Core.Notification
 
             try
             {
-                var req = new CommentReplyNotificationRequest(
+                var req = new CommentReplyNotificationPayload(
                     model.Email,
                     model.CommentContent,
                     model.Title,
                     model.ReplyContent,
                     postLink);
 
-                await SendNotificationRequest("commentreply", req);
+                await SendNotificationRequest(
+                    new NotificationRequest<CommentReplyNotificationPayload>(MailMesageTypes.AdminReplyNotification, req));
             }
             catch (Exception e)
             {
@@ -143,7 +146,7 @@ namespace Moonglade.Core.Notification
 
             try
             {
-                var req = new PingNotificationRequest(
+                var req = new PingNotificationPayload(
                     model.TargetPostId.ToString(),
                     model.PingTimeUtc,
                     model.Domain,
@@ -151,7 +154,7 @@ namespace Moonglade.Core.Notification
                     model.SourceUrl,
                     model.SourceTitle);
 
-                await SendNotificationRequest("ping", req);
+                await SendNotificationRequest(new NotificationRequest<PingNotificationPayload>(MailMesageTypes.BeingPinged, req));
             }
             catch (Exception e)
             {
@@ -159,9 +162,9 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        private async Task SendNotificationRequest(string method, NotificationRequest request, [CallerMemberName] string callerMemberName = "")
+        private async Task SendNotificationRequest<T>(NotificationRequest<T> request, [CallerMemberName] string callerMemberName = "") where T : class
         {
-            var req = BuildNotificationRequest(method, () => request);
+            var req = BuildNotificationRequest(() => request);
             var response = await _httpClient.SendAsync(req);
             if (!response.IsSuccessStatusCode)
             {
@@ -169,15 +172,15 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        private HttpRequestMessage BuildNotificationRequest(string method, Func<NotificationRequest> request)
+        private HttpRequestMessage BuildNotificationRequest<T>(Func<NotificationRequest<T>> request) where T : class
         {
             var nf = request();
             nf.EmailDisplayName = _blogConfig.EmailSettings.EmailDisplayName;
             nf.AdminEmail = _blogConfig.EmailSettings.AdminEmail;
 
-            var req = new HttpRequestMessage(HttpMethod.Post, method)
+            var req = new HttpRequestMessage(HttpMethod.Post, string.Empty)
             {
-                Content = new NotificationContent(nf)
+                Content = new NotificationContent<T>(nf)
             };
             return req;
         }
