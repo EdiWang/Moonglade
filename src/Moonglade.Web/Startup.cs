@@ -202,15 +202,10 @@ namespace Moonglade.Web
                     csp.AddScriptSrc()
                         .Self()
                         .UnsafeInline()
-                        .UnsafeEval();
-
-                    if (env.IsProduction())
-                    {
+                        .UnsafeEval()
                         // Whitelist Azure Application Insights
-                        csp.AddScriptSrc()
-                           .From("https://*.vo.msecnd.net")
-                           .From("https://*.services.visualstudio.com");
-                    }
+                        .From("https://*.vo.msecnd.net")
+                        .From("https://*.services.visualstudio.com");
                 })
                 // Microsoft believes privacy is a fundamental human right
                 // So should I
