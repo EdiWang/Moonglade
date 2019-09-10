@@ -98,10 +98,10 @@ namespace Moonglade.Web
 
             services.AddMvc(options =>
                             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                    .AddJsonOptions(options =>
-                                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    );
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                    //.AddJsonOptions(options =>
+                    //                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    //);
 
             // https://github.com/aspnet/Hosting/issues/793
             // the IHttpContextAccessor service is not registered by default.
@@ -233,7 +233,6 @@ namespace Moonglade.Web
                 ListAllRegisteredServices(app);
 
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
