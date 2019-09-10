@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
@@ -46,19 +47,17 @@ namespace Moonglade.Web
     {
         private IServiceCollection _services;
 
-        private readonly ILogger<Startup> _logger;
+        private ILogger<Startup> _logger;
         private readonly IConfigurationSection _appSettingsSection;
 
         public IConfiguration Configuration { get; }
 
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
 
-        public Startup(IConfiguration configuration, ILogger<Startup> logger, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             Environment = env;
-            _logger = logger;
-
             _appSettingsSection = Configuration.GetSection(nameof(AppSettings));
         }
 
@@ -97,11 +96,7 @@ namespace Moonglade.Web
             //}
 
             services.AddMvc(options =>
-                            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-                    //.AddJsonOptions(options =>
-                    //                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    //);
+                            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
             // https://github.com/aspnet/Hosting/issues/793
             // the IHttpContextAccessor service is not registered by default.
@@ -127,7 +122,6 @@ namespace Moonglade.Web
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddTransient<IHtmlCodec, HttpUtilityHtmlCodec>();
             services.AddTransient<ISessionBasedCaptcha, BasicLetterCaptcha>();
-            services.AddTransient<IMoongladeNotificationClient, NotificationClient>();
             services.AddTransient<IPingbackSender, PingbackSender>();
             services.AddTransient<IPingbackReceiver, PingbackReceiver>();
             services.AddTransient<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
@@ -169,8 +163,15 @@ namespace Moonglade.Web
         }
 
         // ReSharper disable once UnusedMember.Global
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env, 
+            ILogger<Startup> logger, 
+            IHostApplicationLifetime appLifetime, 
+            TelemetryConfiguration configuration)
         {
+            _logger = logger;
+
             appLifetime.ApplicationStarted.Register(() =>
             {
                 _logger.LogInformation("Moonglade started.");
@@ -224,7 +225,7 @@ namespace Moonglade.Web
             {
                 _logger.LogWarning("Running on non-production mode. Application Insights disabled.");
 
-                TelemetryConfiguration.Active.DisableTelemetry = true;
+                configuration.DisableTelemetry = true;
                 TelemetryDebugWriter.IsTracingDisabled = true;
             }
 
@@ -264,6 +265,7 @@ namespace Moonglade.Web
             //);
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             GenerateFavicons(env);
 
@@ -311,18 +313,21 @@ namespace Moonglade.Web
                         await context.Response.WriteAsync("Moonglade Version: " + Utils.AppVersion, Encoding.UTF8);
                     });
                 });
-                app.UseMvc(routes =>
+
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
                 {
-                    routes.MapRoute(
+                    endpoints.MapControllerRoute(
                         name: "default",
-                        template: "{controller=Post}/{action=Index}/{id?}");
+                        pattern: "{controller=Home}/{action=Index}/{id?}");
+                    endpoints.MapRazorPages();
                 });
             }
         }
 
         #region Private Helpers
 
-        private void GenerateFavicons(IHostingEnvironment env)
+        private void GenerateFavicons(IWebHostEnvironment env)
         {
             // Generate Favicons
             // Caveat: This requires non-readonly application directory for hosting environment
@@ -355,7 +360,7 @@ namespace Moonglade.Web
                         $"{nameof(imageStorage.CDNSettings.CDNEndpoint)} must be specified when {nameof(imageStorage.CDNSettings.GetImageByCDNRedirect)} is set to 'true'.");
                 }
 
-                _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
+                // _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
 
                 // Validate endpoint Url to avoid security risks
                 // But it still has risks:
@@ -413,7 +418,7 @@ namespace Moonglade.Web
             }
         }
 
-        private void PrepareRuntimePathDependencies(IApplicationBuilder app, IHostingEnvironment env)
+        private void PrepareRuntimePathDependencies(IApplicationBuilder app, IWebHostEnvironment env)
         {
             void DeleteDataFile(string path)
             {
