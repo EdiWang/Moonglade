@@ -87,7 +87,7 @@ namespace Moonglade.Core
                 }, monthList => new Archive(
                     monthList.Key.Year,
                     monthList.Key.Month,
-                    monthList.Select(p => p.Id).Count()));
+                    monthList.Count()));
 
                 return new SuccessResponse<IReadOnlyList<Archive>>(list);
             });
