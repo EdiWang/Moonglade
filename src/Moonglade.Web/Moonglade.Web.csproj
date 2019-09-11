@@ -47,7 +47,7 @@
     <PackageReference Include="System.Drawing.Common" Version="4.6.0-preview9.19421.4" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.6.0-preview9.19421.4" />
     <PackageReference Include="X.PagedList" Version="7.9.0" />
-    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.9.0" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.9.1" />
   </ItemGroup>
 
   <ItemGroup>
