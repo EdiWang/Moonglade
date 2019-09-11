@@ -121,11 +121,11 @@ namespace Moonglade.Web
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddTransient<IHtmlCodec, HttpUtilityHtmlCodec>();
-            services.AddTransient<ISessionBasedCaptcha>(workaround => new BasicLetterCaptcha());
             services.AddTransient<IPingbackSender, PingbackSender>();
             services.AddTransient<IPingbackReceiver, PingbackReceiver>();
             services.AddTransient<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
             services.AddTransient<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
+            services.AddSessionBasedCaptcha();
 
             var asm = Assembly.GetAssembly(typeof(MoongladeService));
             if (null != asm)
