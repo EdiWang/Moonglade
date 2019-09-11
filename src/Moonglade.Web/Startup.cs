@@ -121,7 +121,7 @@ namespace Moonglade.Web
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddTransient<IHtmlCodec, HttpUtilityHtmlCodec>();
-            services.AddTransient<ISessionBasedCaptcha, BasicLetterCaptcha>();
+            services.AddTransient<ISessionBasedCaptcha>(workaround => new BasicLetterCaptcha());
             services.AddTransient<IPingbackSender, PingbackSender>();
             services.AddTransient<IPingbackReceiver, PingbackReceiver>();
             services.AddTransient<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
