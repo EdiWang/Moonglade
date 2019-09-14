@@ -6,8 +6,6 @@ using Moonglade.Model.Settings;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Moonglade.Tests
 {
@@ -31,24 +29,15 @@ namespace Moonglade.Tests
         [Test]
         public void TestTryExecute()
         {
-            var genericResponse = _moongladeService.TryExecute(() =>
-            {
-                return new Response();
-            });
+            var genericResponse = _moongladeService.TryExecute(() => new Response());
             Assert.IsFalse(genericResponse.IsSuccess);
-            Assert.IsTrue(genericResponse.Message == string.Empty);
+            Assert.IsTrue(genericResponse.Message == null);
 
-            var successResponse = _moongladeService.TryExecute(() =>
-            {
-                return new SuccessResponse() { Message = ".NET Rocks!" };
-            });
+            var successResponse = _moongladeService.TryExecute(() => new SuccessResponse { Message = ".NET Rocks!" });
             Assert.IsTrue(successResponse.IsSuccess);
             Assert.IsTrue(successResponse.Message == ".NET Rocks!");
 
-            var failedResponse = _moongladeService.TryExecute(() =>
-            {
-                throw new NotSupportedException("996 is not supported");
-            });
+            var failedResponse = _moongladeService.TryExecute(() => throw new NotSupportedException("996 is not supported"));
             Assert.IsFalse(failedResponse.IsSuccess);
             Assert.AreEqual(1, failedResponse.ResponseCode);
             Assert.AreEqual("996 is not supported", failedResponse.Message);
@@ -57,26 +46,17 @@ namespace Moonglade.Tests
         [Test]
         public void TestTryExecuteOfType()
         {
-            var genericResponse = _moongladeService.TryExecute(() =>
-            {
-                return new Response<int>(996);
-            });
+            var genericResponse = _moongladeService.TryExecute(() => new Response<int>(996));
             Assert.IsFalse(genericResponse.IsSuccess);
-            Assert.IsTrue(genericResponse.Message == string.Empty);
+            Assert.IsTrue(genericResponse.Message == null);
             Assert.AreEqual(996, genericResponse.Item);
 
-            var successResponse = _moongladeService.TryExecute(() =>
-            {
-                return new SuccessResponse<string>("Work 955") { Message = ".NET Rocks!" };
-            });
+            var successResponse = _moongladeService.TryExecute(() => new SuccessResponse<string>("Work 955") { Message = ".NET Rocks!" });
             Assert.IsTrue(successResponse.IsSuccess);
             Assert.IsTrue(successResponse.Message == ".NET Rocks!");
             Assert.AreEqual("Work 955", successResponse.Item);
 
-            var failedResponse = _moongladeService.TryExecute<int>(() =>
-            {
-                throw new NotSupportedException("996 is not supported");
-            });
+            var failedResponse = _moongladeService.TryExecute<int>(() => throw new NotSupportedException("996 is not supported"));
             Assert.IsFalse(failedResponse.IsSuccess);
             Assert.AreEqual(1, failedResponse.ResponseCode);
             Assert.AreEqual(0, failedResponse.Item);
