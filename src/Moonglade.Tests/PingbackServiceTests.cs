@@ -47,10 +47,10 @@ namespace Moonglade.Tests
 
             var svc = new PingbackService(
                 _loggerMock.Object,
-                _notificationMock.Object,
                 pingbackReceiverMock.Object,
                 _pingbackRepositoryMock.Object,
-                _postRepositoryMock.Object);
+                _postRepositoryMock.Object, 
+                _notificationMock.Object);
 
             return await svc.ProcessReceivedPingback(httpContextMock.Object);
         }
@@ -65,10 +65,10 @@ namespace Moonglade.Tests
 
             var svc = new PingbackService(
                 _loggerMock.Object,
-                _notificationMock.Object,
                 pingbackReceiverMock.Object,
                 _pingbackRepositoryMock.Object,
-                _postRepositoryMock.Object);
+                _postRepositoryMock.Object, 
+                _notificationMock.Object);
 
             var response = svc.DeleteReceivedPingback(Guid.NewGuid());
             return response.IsSuccess;

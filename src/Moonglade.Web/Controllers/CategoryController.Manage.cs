@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Web.Models;
-using Newtonsoft.Json;
 
 namespace Moonglade.Web.Controllers
 {

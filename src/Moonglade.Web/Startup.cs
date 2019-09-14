@@ -38,7 +38,6 @@ using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.Middleware.RobotsTxt;
-using Newtonsoft.Json;
 using Polly;
 
 namespace Moonglade.Web

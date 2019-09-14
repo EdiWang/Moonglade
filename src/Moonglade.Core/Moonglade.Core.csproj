@@ -16,7 +16,6 @@
     <PackageReference Include="Edi.SyndicationFeedGenerator" Version="1.1.0" />
     <PackageReference Include="Edi.WordFilter" Version="1.2.0" />
     <PackageReference Include="Markdig" Version="0.17.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta1" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.5" />
   </ItemGroup>
 
