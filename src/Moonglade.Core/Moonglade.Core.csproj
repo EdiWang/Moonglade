@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
     <AssemblyVersion>10.0.0.0</AssemblyVersion>
@@ -18,14 +18,13 @@
 
   <ItemGroup>
     <PackageReference Include="Edi.Blog.Pingback" Version="10.2.0" />
-    <PackageReference Include="Edi.Captcha" Version="1.3.1" />
+    <PackageReference Include="Edi.Captcha" Version="2.0.0-preview" />
     <PackageReference Include="Edi.ImageWatermark" Version="1.1.0" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.0" />
     <PackageReference Include="Edi.SyndicationFeedGenerator" Version="1.1.0" />
     <PackageReference Include="Edi.WordFilter" Version="1.2.0" />
     <PackageReference Include="Markdig" Version="0.17.1" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta1" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.5" />
   </ItemGroup>
 

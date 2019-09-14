@@ -69,7 +69,8 @@ namespace Moonglade.Core.Notification
                 //response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
-                    var data = await response.Content.ReadAsAsync<Response>();
+                    var dataStr = await response.Content.ReadAsStringAsync();
+                    var data = System.Text.Json.JsonSerializer.Deserialize<Response>(dataStr);
                     return data;
                 }
 

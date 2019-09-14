@@ -47,7 +47,7 @@ namespace Moonglade.Data.Infrastructure
 
         bool Any(Expression<Func<T, bool>> condition = null);
 
-        Task<T> GetAsync(object key);
+        ValueTask<T> GetAsync(object key);
 
         Task<T> GetAsync(Expression<Func<T, bool>> condition);
 

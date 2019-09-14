@@ -135,7 +135,7 @@ namespace Moonglade.Data.Infrastructure
             return null != condition ? DbContext.Set<T>().Any(condition) : DbContext.Set<T>().Any();
         }
 
-        public virtual Task<T> GetAsync(object key)
+        public virtual ValueTask<T> GetAsync(object key)
         {
             return DbContext.Set<T>().FindAsync(key);
         }

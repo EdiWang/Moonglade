@@ -4,10 +4,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
@@ -402,7 +402,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("shutdown")]
-        public IActionResult Shutdown(int nonce, [FromServices] IApplicationLifetime applicationLifetime)
+        public IActionResult Shutdown(int nonce, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
             Logger.LogWarning($"Shutdown is requested. Nonce value: {nonce}");
             applicationLifetime.StopApplication();
@@ -410,7 +410,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("reset")]
-        public IActionResult Reset(int nonce, [FromServices] IConfiguration configuration, [FromServices] IApplicationLifetime applicationLifetime)
+        public IActionResult Reset(int nonce, [FromServices] IConfiguration configuration, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
             Logger.LogWarning($"System reset is requested by {User.Identity.Name}, IP: {HttpContext.Connection.RemoteIpAddress}. Nonce value: {nonce}");
             var conn = configuration.GetConnectionString(Constants.DbConnectionName);
