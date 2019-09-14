@@ -10,25 +10,5 @@
       </conditions>
       <action type="Rewrite" url="/images/no_hotlinking.png"/>
     </rule>
-    <rule name="Migrate Subscription RSS" stopProcessing="true">
-      <match url="subscription/rss" />
-      <action type="Redirect" url="/rss" redirectType="Permanent" />
-    </rule>
-    <rule name="Migrate Subscription ATOM" stopProcessing="true">
-      <match url="subscription/atom" />
-      <action type="Redirect" url="/atom" redirectType="Permanent" />
-    </rule>
-    <rule name="Migrate apps to page-apps" stopProcessing="true">
-      <match url="^apps" />
-      <action type="Redirect" url="/page/apps" redirectType="Permanent" />
-    </rule>
-    <rule name="Migrate about to page-about" stopProcessing="true">
-      <match url="^about" />
-      <action type="Redirect" url="/page/about" redirectType="Permanent" />
-    </rule>
-    <rule name="Redirect favicon" stopProcessing="true">
-      <match url="^favicon/(.*).png$" />
-      <action type="Redirect" url="/{R:1}.png" redirectType="Permanent" />
-    </rule>
   </rules>
 </rewrite>

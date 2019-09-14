@@ -164,10 +164,10 @@ namespace Moonglade.Web
 
         // ReSharper disable once UnusedMember.Global
         public void Configure(
-            IApplicationBuilder app, 
-            IWebHostEnvironment env, 
-            ILogger<Startup> logger, 
-            IHostApplicationLifetime appLifetime, 
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            ILogger<Startup> logger,
+            IHostApplicationLifetime appLifetime,
             TelemetryConfiguration configuration)
         {
             _logger = logger;
@@ -480,14 +480,13 @@ namespace Moonglade.Web
                 var urlRewriteConfigPath = Path.Combine(baseDir, "urlrewrite.xml");
                 if (File.Exists(urlRewriteConfigPath))
                 {
-                    using (var sr = File.OpenText(urlRewriteConfigPath))
-                    {
-                        var options = new RewriteOptions()
-                            .AddRedirect("(.*)/$", "$1")
-                            .AddRedirect("(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)", "/")
-                            .AddIISUrlRewrite(sr);
-                        app.UseRewriter(options);
-                    }
+                    using var sr = File.OpenText(urlRewriteConfigPath);
+                    var options = new RewriteOptions()
+                                    .AddRedirect("(.*)/$", "$1")
+                                    .AddRedirect("(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)", "/")
+                                    .AddRedirect("^favicon/(.*).png$", "/$1.png")
+                                    .AddIISUrlRewrite(sr);
+                    app.UseRewriter(options);
                 }
                 else
                 {
