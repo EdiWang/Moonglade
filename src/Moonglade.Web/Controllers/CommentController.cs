@@ -22,7 +22,6 @@ namespace Moonglade.Web.Controllers
 
         private readonly CommentService _commentService;
         private readonly IMoongladeNotificationClient _notificationClient;
-        private readonly PostService _postService;
         private readonly IBlogConfig _blogConfig;
 
         #endregion
@@ -31,16 +30,14 @@ namespace Moonglade.Web.Controllers
             ILogger<CommentController> logger,
             IOptions<AppSettings> settings,
             CommentService commentService,
-            IMoongladeNotificationClient notificationClient,
-            PostService postService,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig, 
+            IMoongladeNotificationClient notificationClient = null)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
 
             _commentService = commentService;
             _notificationClient = notificationClient;
-            _postService = postService;
         }
 
         [HttpPost]
@@ -74,7 +71,7 @@ namespace Moonglade.Web.Controllers
 
                     if (response.IsSuccess)
                     {
-                        if (_blogConfig.EmailSettings.SendEmailOnNewComment)
+                        if (_blogConfig.EmailSettings.SendEmailOnNewComment && null != _notificationClient)
                         {
                             _ = Task.Run(async () =>
                               {

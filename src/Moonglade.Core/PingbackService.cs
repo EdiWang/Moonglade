@@ -25,10 +25,10 @@ namespace Moonglade.Core
 
         public PingbackService(
             ILogger<PingbackService> logger,
-            IMoongladeNotificationClient notificationClient,
             IPingbackReceiver pingbackReceiver,
             IRepository<PingbackHistoryEntity> pingbackRepository,
-            IRepository<PostEntity> postRepository) : base(logger)
+            IRepository<PostEntity> postRepository,
+            IMoongladeNotificationClient notificationClient = null) : base(logger)
         {
             _notificationClient = notificationClient;
             _pingbackReceiver = pingbackReceiver;
@@ -145,7 +145,10 @@ namespace Moonglade.Core
                     TargetPostTitle = p.TargetPostTitle
                 });
 
-            await _notificationClient.SendPingNotificationAsync(pingback);
+            if (null != _notificationClient)
+            {
+                await _notificationClient.SendPingNotificationAsync(pingback);
+            }
         }
 
         private async Task SavePingbackRecord(PingbackRequest request)
