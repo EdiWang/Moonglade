@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Dapper;
 using Edi.Practice.RequestResponseModel;
@@ -9,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Model;
-using Newtonsoft.Json;
 
 namespace Moonglade.Configuration
 {
@@ -56,12 +56,14 @@ namespace Moonglade.Configuration
             {
                 var cfgDic = GetAllConfigurations();
 
-                BlogOwnerSettings = JsonConvert.DeserializeObject<BlogOwnerSettings>(cfgDic[nameof(BlogOwnerSettings)]);
-                GeneralSettings = JsonConvert.DeserializeObject<GeneralSettings>(cfgDic[nameof(GeneralSettings)]);
-                ContentSettings = JsonConvert.DeserializeObject<ContentSettings>(cfgDic[nameof(ContentSettings)]);
-                EmailSettings = JsonConvert.DeserializeObject<EmailSettings>(cfgDic[nameof(EmailSettings)]);
-                FeedSettings = JsonConvert.DeserializeObject<FeedSettings>(cfgDic[nameof(FeedSettings)]);
-                WatermarkSettings = JsonConvert.DeserializeObject<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)]);
+                var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                BlogOwnerSettings = JsonSerializer.Deserialize<BlogOwnerSettings>(cfgDic[nameof(BlogOwnerSettings)], jsonOptions);
+                GeneralSettings = JsonSerializer.Deserialize<GeneralSettings>(cfgDic[nameof(GeneralSettings)], jsonOptions);
+                ContentSettings = JsonSerializer.Deserialize<ContentSettings>(cfgDic[nameof(ContentSettings)], jsonOptions);
+                EmailSettings = JsonSerializer.Deserialize<EmailSettings>(cfgDic[nameof(EmailSettings)], jsonOptions);
+                FeedSettings = JsonSerializer.Deserialize<FeedSettings>(cfgDic[nameof(FeedSettings)], jsonOptions);
+                WatermarkSettings = JsonSerializer.Deserialize<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)], jsonOptions);
 
                 _hasInitialized = true;
             }

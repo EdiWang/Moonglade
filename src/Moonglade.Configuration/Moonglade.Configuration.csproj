@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview9.19423.4" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="1.0.19249.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta1" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0-preview9.19421.4" />
   </ItemGroup>
 
   <ItemGroup>

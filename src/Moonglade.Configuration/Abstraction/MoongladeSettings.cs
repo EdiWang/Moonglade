@@ -1,17 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace Moonglade.Configuration.Abstraction
 {
     public interface IMoongladeSettings
     {
-        string GetJson(Formatting formatting = Formatting.None);
+        string GetJson();
     }
 
     public class MoongladeSettings : IMoongladeSettings
     {
-        public string GetJson(Formatting formatting = Formatting.None)
+        public string GetJson()
         {
-            return JsonConvert.SerializeObject(this, formatting);
+            return JsonSerializer.Serialize(this);
         }
     }
 }
