@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,6 @@ using Moonglade.Core.Notification;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
-using Newtonsoft.Json;
 
 namespace Moonglade.Web.Controllers
 {
@@ -54,7 +54,7 @@ namespace Moonglade.Web.Controllers
                     // Validate BasicCaptcha Code
                     if (!captcha.ValidateCaptchaCode(model.NewCommentViewModel.CaptchaCode, HttpContext.Session))
                     {
-                        Logger.LogWarning($"Wrong Captcha Code, model: {JsonConvert.SerializeObject(model.NewCommentViewModel)}");
+                        Logger.LogWarning($"Wrong Captcha Code, model: {JsonSerializer.Serialize(model.NewCommentViewModel)}");
                         ModelState.AddModelError(nameof(model.NewCommentViewModel.CaptchaCode), "Wrong Captcha Code");
 
                         Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -89,12 +89,12 @@ namespace Moonglade.Web.Controllers
                     switch (response.ResponseCode)
                     {
                         case (int)ResponseFailureCode.EmailDomainBlocked:
-                            Logger.LogWarning($"User email domain is blocked. model: {JsonConvert.SerializeObject(model)}");
+                            Logger.LogWarning($"User email domain is blocked. model: {JsonSerializer.Serialize(model)}");
                             Response.StatusCode = (int)HttpStatusCode.Forbidden;
                             failedResponse = new CommentResponse(false, CommentResponseCode.EmailDomainBlocked);
                             break;
                         case (int)ResponseFailureCode.CommentDisabled:
-                            Logger.LogWarning($"Comment is disabled in settings, but user somehow called NewComment() method. model: {JsonConvert.SerializeObject(model)}");
+                            Logger.LogWarning($"Comment is disabled in settings, but user somehow called NewComment() method. model: {JsonSerializer.Serialize(model)}");
                             Response.StatusCode = (int)HttpStatusCode.Forbidden;
                             failedResponse = new CommentResponse(false, CommentResponseCode.CommentDisabled);
                             break;

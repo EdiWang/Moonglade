@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Edi.ImageWatermark;
@@ -15,7 +16,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Model;
 using Moonglade.ImageStorage;
 using Moonglade.Model.Settings;
-using Newtonsoft.Json;
 using Moonglade.Core;
 
 namespace Moonglade.Web.Controllers
@@ -100,69 +100,63 @@ namespace Moonglade.Web.Controllers
                     return BadRequest();
                 }
 
-                if (file.Length > 0)
+                if (file.Length <= 0) return BadRequest();
+
+                var name = Path.GetFileName(file.FileName);
+                if (name == null) return BadRequest();
+
+                var ext = Path.GetExtension(name).ToLower();
+                var allowedImageFormats = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" };
+                if (!allowedImageFormats.Contains(ext))
                 {
-                    var name = Path.GetFileName(file.FileName);
-                    if (name == null) return BadRequest();
-
-                    var ext = Path.GetExtension(name).ToLower();
-                    var allowedImageFormats = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" };
-                    if (!allowedImageFormats.Contains(ext))
-                    {
-                        Logger.LogError($"Invalid file extension: {ext}");
-                        return BadRequest();
-                    }
-
-                    var primaryFileName = fileNameGenerator.GetFileName(name);
-                    var secondaryFieName = fileNameGenerator.GetFileName(name, "origin");
-
-                    using (var stream = new MemoryStream())
-                    {
-                        await file.CopyToAsync(stream);
-
-                        // Add watermark
-                        MemoryStream watermarkedStream = null;
-                        if (_blogConfig.WatermarkSettings.IsEnabled && ext != ".gif")
-                        {
-                            using (var watermarker = new ImageWatermarker(stream, ext)
-                            {
-                                SkipWatermarkForSmallImages = true,
-                                SmallImagePixelsThreshold = Constants.SmallImagePixelsThreshold
-                            })
-                            {
-                                Logger.LogInformation($"Adding watermark onto image {primaryFileName}");
-
-                                watermarkedStream = watermarker.AddWatermark(
-                                    _blogConfig.WatermarkSettings.WatermarkText,
-                                    Color.FromArgb(128, 128, 128, 128),
-                                    WatermarkPosition.BottomRight,
-                                    15,
-                                    _blogConfig.WatermarkSettings.FontSize);
-                            }
-                        }
-
-                        var response = await _imageStorageProvider.InsertAsync(primaryFileName,
-                            watermarkedStream != null ?
-                                watermarkedStream.ToArray() :
-                                stream.ToArray());
-
-                        if (_blogConfig.WatermarkSettings.KeepOriginImage)
-                        {
-                            var arr = stream.ToArray();
-                            _ = Task.Run(async () => await _imageStorageProvider.InsertAsync(secondaryFieName, arr));
-                        }
-
-                        Logger.LogInformation("Image Uploaded: " + JsonConvert.SerializeObject(response));
-
-                        if (response.IsSuccess)
-                        {
-                            return Json(new { location = $"/uploads/{response.Item}" });
-                        }
-                        Logger.LogError(response.Message);
-                        return ServerError();
-                    }
+                    Logger.LogError($"Invalid file extension: {ext}");
+                    return BadRequest();
                 }
-                return BadRequest();
+
+                var primaryFileName = fileNameGenerator.GetFileName(name);
+                var secondaryFieName = fileNameGenerator.GetFileName(name, "origin");
+
+                await using var stream = new MemoryStream();
+                await file.CopyToAsync(stream);
+
+                // Add watermark
+                MemoryStream watermarkedStream = null;
+                if (_blogConfig.WatermarkSettings.IsEnabled && ext != ".gif")
+                {
+                    using var watermarker = new ImageWatermarker(stream, ext)
+                    {
+                        SkipWatermarkForSmallImages = true,
+                        SmallImagePixelsThreshold = Constants.SmallImagePixelsThreshold
+                    };
+                    Logger.LogInformation($"Adding watermark onto image {primaryFileName}");
+
+                    watermarkedStream = watermarker.AddWatermark(
+                        _blogConfig.WatermarkSettings.WatermarkText,
+                        Color.FromArgb(128, 128, 128, 128),
+                        WatermarkPosition.BottomRight,
+                        15,
+                        _blogConfig.WatermarkSettings.FontSize);
+                }
+
+                var response = await _imageStorageProvider.InsertAsync(primaryFileName,
+                    watermarkedStream != null ?
+                        watermarkedStream.ToArray() :
+                        stream.ToArray());
+
+                if (_blogConfig.WatermarkSettings.KeepOriginImage)
+                {
+                    var arr = stream.ToArray();
+                    _ = Task.Run(async () => await _imageStorageProvider.InsertAsync(secondaryFieName, arr));
+                }
+
+                Logger.LogInformation("Image Uploaded: " + JsonSerializer.Serialize(response));
+
+                if (response.IsSuccess)
+                {
+                    return Json(new { location = $"/uploads/{response.Item}" });
+                }
+                Logger.LogError(response.Message);
+                return ServerError();
             }
             catch (Exception e)
             {

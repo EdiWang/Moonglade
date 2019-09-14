@@ -61,9 +61,6 @@ namespace Moonglade.Web.Controllers
                         DisplayName = model.DisplayName
                     };
 
-                    var catJson = JsonConvert.SerializeObject(request);
-                    Logger.LogInformation($"Creating new category: {catJson}");
-
                     var response = _categoryService.CreateCategory(request);
                     if (response.IsSuccess)
                     {
