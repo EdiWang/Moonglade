@@ -31,7 +31,7 @@ namespace Moonglade.Tests
         {
             var genericResponse = _moongladeService.TryExecute(() => new Response());
             Assert.IsFalse(genericResponse.IsSuccess);
-            Assert.IsTrue(genericResponse.Message == null);
+            Assert.IsTrue(genericResponse.Message == string.Empty);
 
             var successResponse = _moongladeService.TryExecute(() => new SuccessResponse { Message = ".NET Rocks!" });
             Assert.IsTrue(successResponse.IsSuccess);
@@ -48,7 +48,7 @@ namespace Moonglade.Tests
         {
             var genericResponse = _moongladeService.TryExecute(() => new Response<int>(996));
             Assert.IsFalse(genericResponse.IsSuccess);
-            Assert.IsTrue(genericResponse.Message == null);
+            Assert.IsTrue(genericResponse.Message == string.Empty);
             Assert.AreEqual(996, genericResponse.Item);
 
             var successResponse = _moongladeService.TryExecute(() => new SuccessResponse<string>("Work 955") { Message = ".NET Rocks!" });
