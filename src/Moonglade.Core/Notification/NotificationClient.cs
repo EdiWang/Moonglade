@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
@@ -70,7 +71,10 @@ namespace Moonglade.Core.Notification
                 if (response.IsSuccessStatusCode)
                 {
                     var dataStr = await response.Content.ReadAsStringAsync();
-                    var data = System.Text.Json.JsonSerializer.Deserialize<Response>(dataStr);
+                    var data = JsonSerializer.Deserialize<Response>(dataStr, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
                     return data;
                 }
 
