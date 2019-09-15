@@ -41,6 +41,20 @@ namespace Moonglade.Web.Controllers
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
 
+        [ResponseCache(Duration = 3600)]
+        [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.png)}")]
+        public IActionResult Favicon(string filename)
+        {
+            var faviconDirectory = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\favicons";
+            var iconPath = Path.Combine(faviconDirectory, filename);
+            if (System.IO.File.Exists(iconPath))
+            {
+                return PhysicalFile(iconPath, "image/png");
+            }
+
+            return NotFound();
+        }
+
         [Route("uploads/{filename}")]
         public async Task<IActionResult> GetImageAsync(string filename, [FromServices] IMemoryCache cache)
         {

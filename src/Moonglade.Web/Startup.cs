@@ -303,7 +303,6 @@ namespace Moonglade.Web
                     }
                 }
 
-
                 app.UseIpRateLimiting();
                 app.MapWhen(context => context.Request.Path == "/version", builder =>
                 {
@@ -326,17 +325,16 @@ namespace Moonglade.Web
 
         #region Private Helpers
 
-        private void GenerateFavicons(IWebHostEnvironment env)
+        private void GenerateFavicons(IHostEnvironment env)
         {
-            // Generate Favicons
-            // Caveat: This requires non-readonly application directory for hosting environment
             try
             {
                 IFaviconGenerator faviconGenerator = new MoongladeFaviconGenerator();
                 var userDefinedIconFile = Path.Combine(env.ContentRootPath, @"wwwroot\appicon.png");
                 if (File.Exists(userDefinedIconFile))
                 {
-                    faviconGenerator.GenerateIcons(userDefinedIconFile, Path.Combine(env.ContentRootPath, "wwwroot"));
+                    faviconGenerator.GenerateIcons(userDefinedIconFile, 
+                        Path.Combine(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "favicons"));
                 }
             }
             catch (Exception e)
