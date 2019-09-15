@@ -21,7 +21,11 @@ namespace Moonglade.Core
 
             if (!Directory.Exists(directory))
             {
-                throw new DirectoryNotFoundException("Can not find target directory to save generated favicons");
+                Directory.CreateDirectory(directory);
+                if (!Directory.Exists(directory))
+                {
+                    throw new DirectoryNotFoundException("Can not find target directory to save generated favicons");
+                }
             }
 
             var ext = Path.GetExtension(sourceImagePath);
