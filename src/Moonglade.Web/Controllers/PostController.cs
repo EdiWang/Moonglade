@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Edi.Blog.Pingback.MvcExtensions;
+using Edi.Blog.Pingback.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
