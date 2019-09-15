@@ -27,19 +27,17 @@ namespace Moonglade.Setup
         /// </summary>
         public bool IsFirstRun()
         {
-            using (var conn = new SqlConnection(DatabaseConnectionString))
+            using var conn = new SqlConnection(DatabaseConnectionString);
+            var tableExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
+                                                      "FROM INFORMATION_SCHEMA.TABLES " +
+                                                      "WHERE TABLE_NAME = N'BlogConfiguration'") == 1;
+            if (tableExists)
             {
-                var tableExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
-                                                     "FROM INFORMATION_SCHEMA.TABLES " +
-                                                     "WHERE TABLE_NAME = N'BlogConfiguration'") == 1;
-                if (tableExists)
-                {
-                    var dataExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 FROM BlogConfiguration") == 1;
-                    return !dataExists;
-                }
-
-                return true;
+                var dataExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 FROM BlogConfiguration") == 1;
+                return !dataExists;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -49,16 +47,14 @@ namespace Moonglade.Setup
         {
             try
             {
-                using (var conn = new SqlConnection(DatabaseConnectionString))
+                using var conn = new SqlConnection(DatabaseConnectionString);
+                var sql = GetEmbeddedSqlScript("schema-mssql-140");
+                if (!string.IsNullOrWhiteSpace(sql))
                 {
-                    var sql = GetEmbeddedSqlScript("schema-mssql-140");
-                    if (!string.IsNullOrWhiteSpace(sql))
-                    {
-                        conn.Execute(sql);
-                        return new SuccessResponse();
-                    }
-                    return new FailedResponse("Database Schema Script is empty.");
+                    conn.Execute(sql);
+                    return new SuccessResponse();
                 }
+                return new FailedResponse("Database Schema Script is empty.");
             }
             catch (Exception e)
             {
@@ -73,27 +69,25 @@ namespace Moonglade.Setup
         {
             try
             {
-                using (var conn = new SqlConnection(DatabaseConnectionString))
-                {
-                    // Clear Relation Tables
-                    conn.Execute("DELETE FROM PostTag");
-                    conn.Execute("DELETE FROM PostCategory");
-                    conn.Execute("DELETE FROM CommentReply");
+                using var conn = new SqlConnection(DatabaseConnectionString);
+                // Clear Relation Tables
+                conn.Execute("DELETE FROM PostTag");
+                conn.Execute("DELETE FROM PostCategory");
+                conn.Execute("DELETE FROM CommentReply");
 
-                    // Clear Individual Tables
-                    conn.Execute("DELETE FROM Category");
-                    conn.Execute("DELETE FROM Tag");
-                    conn.Execute("DELETE FROM Comment");
-                    conn.Execute("DELETE FROM FriendLink");
-                    conn.Execute("DELETE FROM PingbackHistory");
-                    conn.Execute("DELETE FROM PostExtension");
-                    conn.Execute("DELETE FROM PostPublish");
-                    conn.Execute("DELETE FROM Post");
+                // Clear Individual Tables
+                conn.Execute("DELETE FROM Category");
+                conn.Execute("DELETE FROM Tag");
+                conn.Execute("DELETE FROM Comment");
+                conn.Execute("DELETE FROM FriendLink");
+                conn.Execute("DELETE FROM PingbackHistory");
+                conn.Execute("DELETE FROM PostExtension");
+                conn.Execute("DELETE FROM PostPublish");
+                conn.Execute("DELETE FROM Post");
 
-                    // Clear Configuration Table
-                    conn.Execute("DELETE FROM BlogConfiguration");
-                    return new SuccessResponse();
-                }
+                // Clear Configuration Table
+                conn.Execute("DELETE FROM BlogConfiguration");
+                return new SuccessResponse();
             }
             catch (Exception e)
             {
@@ -105,16 +99,14 @@ namespace Moonglade.Setup
         {
             try
             {
-                using (var conn = new SqlConnection(DatabaseConnectionString))
+                using var conn = new SqlConnection(DatabaseConnectionString);
+                var sql = GetEmbeddedSqlScript("init-blogconfiguration");
+                if (!string.IsNullOrWhiteSpace(sql))
                 {
-                    var sql = GetEmbeddedSqlScript("init-blogconfiguration");
-                    if (!string.IsNullOrWhiteSpace(sql))
-                    {
-                        conn.Execute(sql);
-                        return new SuccessResponse();
-                    }
-                    return new FailedResponse("SQL Script is empty.");
+                    conn.Execute(sql);
+                    return new SuccessResponse();
                 }
+                return new FailedResponse("SQL Script is empty.");
             }
             catch (Exception e)
             {
@@ -126,16 +118,14 @@ namespace Moonglade.Setup
         {
             try
             {
-                using (var conn = new SqlConnection(DatabaseConnectionString))
+                using var conn = new SqlConnection(DatabaseConnectionString);
+                var sql = GetEmbeddedSqlScript("init-sampledata");
+                if (!string.IsNullOrWhiteSpace(sql))
                 {
-                    var sql = GetEmbeddedSqlScript("init-sampledata");
-                    if (!string.IsNullOrWhiteSpace(sql))
-                    {
-                        conn.Execute(sql);
-                        return new SuccessResponse();
-                    }
-                    return new FailedResponse("SQL Script is empty.");
+                    conn.Execute(sql);
+                    return new SuccessResponse();
                 }
+                return new FailedResponse("SQL Script is empty.");
             }
             catch (Exception e)
             {
@@ -147,11 +137,9 @@ namespace Moonglade.Setup
         {
             try
             {
-                using (var conn = new SqlConnection(DatabaseConnectionString))
-                {
-                    int result = conn.ExecuteScalar<int>("SELECT 1");
-                    return result == 1;
-                }
+                using var conn = new SqlConnection(DatabaseConnectionString);
+                int result = conn.ExecuteScalar<int>("SELECT 1");
+                return result == 1;
             }
             catch (Exception e)
             {
@@ -163,15 +151,11 @@ namespace Moonglade.Setup
         private static string GetEmbeddedSqlScript(string scriptName)
         {
             var assembly = typeof(SetupHelper).GetTypeInfo().Assembly;
-            using (var stream = assembly.GetManifestResourceStream($"Moonglade.Setup.Data.{scriptName}.sql"))
-            {
-                if (stream == null) return null;
-                using (var reader = new StreamReader(stream))
-                {
-                    var sql = reader.ReadToEnd();
-                    return sql;
-                }
-            }
+            using var stream = assembly.GetManifestResourceStream($"Moonglade.Setup.Data.{scriptName}.sql");
+            if (stream == null) return null;
+            using var reader = new StreamReader(stream);
+            var sql = reader.ReadToEnd();
+            return sql;
         }
     }
 }
