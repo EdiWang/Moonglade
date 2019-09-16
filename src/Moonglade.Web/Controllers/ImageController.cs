@@ -42,14 +42,25 @@ namespace Moonglade.Web.Controllers
         }
 
         [ResponseCache(Duration = 3600)]
-        [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.png)}")]
+        [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
         public IActionResult Favicon(string filename)
         {
             var faviconDirectory = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\favicons";
-            var iconPath = Path.Combine(faviconDirectory, filename);
+            var iconPath = Path.Combine(faviconDirectory, filename.ToLower());
             if (System.IO.File.Exists(iconPath))
             {
-                return PhysicalFile(iconPath, "image/png");
+                string contentType = "image/png";
+                var ext = Path.GetExtension(filename);
+                switch (ext)
+                {
+                    case ".png":
+                        contentType = "image/png";
+                        break;
+                    case ".ico":
+                        contentType = "image/x-icon";
+                        break;
+                }
+                return PhysicalFile(iconPath, contentType);
             }
 
             return NotFound();
