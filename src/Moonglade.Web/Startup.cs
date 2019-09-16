@@ -35,6 +35,7 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Setup;
 using Moonglade.Web.Authentication;
+using Moonglade.Web.FaviconGenerator;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.Middleware.RobotsTxt;
@@ -329,7 +330,7 @@ namespace Moonglade.Web
         {
             try
             {
-                IFaviconGenerator faviconGenerator = new MoongladeFaviconGenerator();
+                IFaviconGenerator faviconGenerator = new FileSystemFaviconGenerator();
                 var userDefinedIconFile = Path.Combine(env.ContentRootPath, @"wwwroot\appicon.png");
                 if (File.Exists(userDefinedIconFile))
                 {

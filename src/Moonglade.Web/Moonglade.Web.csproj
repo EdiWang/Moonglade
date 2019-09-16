@@ -60,6 +60,7 @@
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
     <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
     <ProjectReference Include="..\Moonglade.Web.Authentication\Moonglade.Web.Authentication.csproj" />
+    <ProjectReference Include="..\Moonglade.Web.FaviconGenerator\Moonglade.Web.FaviconGenerator.csproj" />
     <ProjectReference Include="..\Moonglade.Web.Middleware\Moonglade.Web.Middleware.csproj" />
   </ItemGroup>
 </Project>
