@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using Edi.Practice.RequestResponseModel;
 using Markdig;
 using Moonglade.HtmlCodec;
@@ -19,30 +15,6 @@ namespace Moonglade.Core
     {
         public static string AppVersion =>
             Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-
-        public static void ResizePngImage(string originImagePath, int toWidth, int toHeight, string savePath)
-        {
-            var fs = new FileStream(originImagePath, FileMode.Open, FileAccess.Read);
-            var resizedImage = ResizeImage(fs, toWidth, toHeight);
-            resizedImage.Save(savePath, ImageFormat.Png);
-        }
-
-        public static Bitmap ResizeImage(Stream originImageStream, int toWidth, int toHeight)
-        {
-            using (originImageStream)
-            using (var image = new Bitmap(originImageStream))
-            {
-                var resized = new Bitmap(toWidth, toHeight);
-                using (var graphics = Graphics.FromImage(resized))
-                {
-                    graphics.CompositingQuality = CompositingQuality.HighQuality;
-                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphics.CompositingMode = CompositingMode.SourceCopy;
-                    graphics.DrawImage(image, 0, 0, toWidth, toHeight);
-                    return resized;
-                }
-            }
-        }
 
         public static string GetMonthNameByNumber(int number)
         {
