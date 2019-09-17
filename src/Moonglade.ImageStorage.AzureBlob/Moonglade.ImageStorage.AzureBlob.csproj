@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.KeyVault.Core" Version="3.0.4" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-rc1.19456.10" />
   </ItemGroup>
 
   <ItemGroup>
