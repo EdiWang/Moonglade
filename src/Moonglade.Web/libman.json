@@ -102,7 +102,7 @@
       ]
     },
     {
-      "library": "monaco-editor@0.17.1",
+      "library": "monaco-editor@0.18.0",
       "destination": "wwwroot/lib/monaco-editor/"
     }
   ]
