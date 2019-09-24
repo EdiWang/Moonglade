@@ -263,10 +263,7 @@ namespace Moonglade.Web
             //               .Allow("/"))
             ////.AddSitemap("https://example.com/sitemap.xml")
             //);
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
+            
             GenerateFavicons(env);
 
             var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
@@ -314,6 +311,10 @@ namespace Moonglade.Web
                 });
 
                 app.UseRouting();
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllerRoute(
