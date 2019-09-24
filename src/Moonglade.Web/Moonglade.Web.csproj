@@ -33,18 +33,18 @@
     <PackageReference Include="AspNetCoreRateLimit" Version="3.0.5" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.0.415" />
     <PackageReference Include="Edi.Blog.OpmlFileWriter" Version="1.1.0" />
-    <PackageReference Include="Edi.Blog.Pingback" Version="10.3.1-preview2" />
-    <PackageReference Include="Edi.Blog.Pingback.Mvc" Version="10.3.1-preview2" />
+    <PackageReference Include="Edi.Blog.Pingback" Version="10.3.1" />
+    <PackageReference Include="Edi.Blog.Pingback.Mvc" Version="10.3.1" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.3" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.0-beta3" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.0.0-rc1.19456.10" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0-rc1-19462-10" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.76" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.9.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.5" />
     <PackageReference Include="NLog" Version="4.6.7" />
-    <PackageReference Include="System.Drawing.Common" Version="4.6.0-rc1.19456.4" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.6.0-rc1.19456.4" />
+    <PackageReference Include="System.Drawing.Common" Version="4.6.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.6.0" />
     <PackageReference Include="X.PagedList" Version="7.9.0" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.9.1" />
   </ItemGroup>

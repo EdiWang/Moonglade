@@ -24,8 +24,7 @@
     <PackageReference Include="Dapper" Version="2.0.4" />
     <PackageReference Include="Edi.Net.AesEncryption" Version="1.1.0" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.6.0-rc1.19456.4" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="1.0.19249.1" />
   </ItemGroup>
 </Project>

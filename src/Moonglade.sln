@@ -50,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Setup", "Moonglad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.HtmlCodec", "Moonglade.HtmlCodec\Moonglade.HtmlCodec.csproj", "{0EFDE319-3BEF-4A00-873A-B9FB1DB9F5AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Web.FaviconGenerator", "Moonglade.Web.FaviconGenerator\Moonglade.Web.FaviconGenerator.csproj", "{569AEA3F-EA60-49E7-8829-0BB59C811EBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.FaviconGenerator", "Moonglade.Web.FaviconGenerator\Moonglade.Web.FaviconGenerator.csproj", "{569AEA3F-EA60-49E7-8829-0BB59C811EBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
