@@ -118,16 +118,11 @@ namespace Moonglade.Core
                 Title = p.Title,
                 PubDateUtc = p.PostPublish.PubDateUtc.Value,
                 Description = p.ContentAbstract,
-                Link = GetPostLink(p.PostPublish.PubDateUtc.Value, p.Slug),
+                Link = $"{_baseUrl}/post/{p.PostPublish.PubDateUtc.Value.Year}/{p.PostPublish.PubDateUtc.Value.Month}/{p.PostPublish.PubDateUtc.Value.Day}/{p.Slug}",
                 Author = _blogConfig.FeedSettings.AuthorName,
                 AuthorEmail = _blogConfig.EmailSettings.AdminEmail,
                 Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToList()
             } : null);
-        }
-
-        private string GetPostLink(DateTime pubDateUtc, string slug)
-        {
-            return $"{_baseUrl}/post/{pubDateUtc.Year}/{pubDateUtc.Month}/{pubDateUtc.Day}/{slug}";
         }
     }
 }
