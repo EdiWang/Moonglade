@@ -5,95 +5,95 @@
 @model CustomPageEditViewModel
 
 @{
-<script>
+    <script>
     var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.CssContent)).ToString().ToLower());
-</script>
+    </script>
 }
 
 @section scripts{
-<script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
-<script src="~/lib/monaco-editor/min/vs/loader.js"></script>
-<script>
-    $("#Title").change(function () {
-        $("#RouteName").val(slugify($(this).val()));
-    });
-
-    var htmlContentEditor = null;
-    var cssContentEditor = null;
-    var hasCssEditorInitialized = false;
-
-    require(['vs/editor/editor.main'], function () {
-        initHtmlEditor();
-    });
-
-    var initHtmlEditor = function () {
-        var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
-        htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
-            language: 'html'
+    <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
+    <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
+    <script>
+        $("#Title").change(function () {
+            $("#RouteName").val(slugify($(this).val()));
         });
-        htmlContentEditor.layout();
 
-        if (needLoadInitValues) {
-            var htmlValue = $("#RawHtmlContent").val();
-            htmlContentEditor.setValue(htmlValue);
-        }
-    }
+        var htmlContentEditor = null;
+        var cssContentEditor = null;
+        var hasCssEditorInitialized = false;
 
-    var initCssEditor = function () {
-        var cssContentEditorDiv = document.getElementById('CssContentEditor');
-        cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
-            language: 'css'
+        require(['vs/editor/editor.main'], function () {
+            initHtmlEditor();
         });
-        cssContentEditor.layout();
-        hasCssEditorInitialized = true;
 
-        if (needLoadInitValues) {
-            var cssValue = $("#CssContent").val();
-            window.cssContentEditor.setValue(cssValue);
-        }
-    }
-
-    var assignEditorValues = function () {
-        var htmlValue = window.htmlContentEditor.getValue();
-
-        // Edit Mode, preserve old value when user has not clicked on CSS tab
-        var oldCssValue = $("#CssContent").val();
-        var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
-
-        $("#RawHtmlContent").val(htmlValue);
-        $("#CssContent").val(cssValue);
-    }
-
-    $("#btn-submit").click(function (e) {
-        assignEditorValues();
-        if (!$(".page-edit-form").valid()) {
-            e.preventDefault();
-        }
-    });
-
-    $(function () {
-        $('a[data-toggle="tab"]').on('shown.bs.tab',
-            function (e) {
-                var isCSSTab = e.target.id === "csscontent-tab";
-                if (isCSSTab && !hasCssEditorInitialized) {
-                    initCssEditor();
-                }
+        var initHtmlEditor = function () {
+            var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
+            htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
+                language: 'html'
             });
-    });
+            htmlContentEditor.layout();
 
-</script>
+            if (needLoadInitValues) {
+                var htmlValue = $("#RawHtmlContent").val();
+                htmlContentEditor.setValue(htmlValue);
+            }
+        }
+
+        var initCssEditor = function () {
+            var cssContentEditorDiv = document.getElementById('CssContentEditor');
+            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
+                language: 'css'
+            });
+            cssContentEditor.layout();
+            hasCssEditorInitialized = true;
+
+            if (needLoadInitValues) {
+                var cssValue = $("#CssContent").val();
+                window.cssContentEditor.setValue(cssValue);
+            }
+        }
+
+        var assignEditorValues = function () {
+            var htmlValue = window.htmlContentEditor.getValue();
+
+            // Edit Mode, preserve old value when user has not clicked on CSS tab
+            var oldCssValue = $("#CssContent").val();
+            var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
+
+            $("#RawHtmlContent").val(htmlValue);
+            $("#CssContent").val(cssValue);
+        }
+
+        $("#btn-submit").click(function (e) {
+            assignEditorValues();
+            if (!$(".page-edit-form").valid()) {
+                e.preventDefault();
+            }
+        });
+
+        $(function () {
+            $('a[data-toggle="tab"]').on('shown.bs.tab',
+                function (e) {
+                    var isCSSTab = e.target.id === "csscontent-tab";
+                    if (isCSSTab && !hasCssEditorInitialized) {
+                        initCssEditor();
+                    }
+                });
+        });
+
+    </script>
 }
 
 @section head{
-<style>
-    .monaco-target {
-        border-left: 1px solid #dee2e6;
-        border-right: 1px solid #dee2e6;
-        border-bottom: 1px solid #dee2e6;
-        width: 100%;
-        min-height: 512px;
-    }
-</style>
+    <style>
+        .monaco-target {
+            border-left: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+            border-bottom: 1px solid #dee2e6;
+            width: 100%;
+            min-height: 512px;
+        }
+    </style>
 }
 
 <form class="page-edit-form" method="post">
@@ -132,9 +132,6 @@
                 <li class="nav-item">
                     <a class="nav-link" id="csscontent-tab" data-toggle="tab" href="#csscontent-editor-box" role="tab" aria-controls="css" aria-selected="true">CSS</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="preview-tab" data-toggle="tab" href="#preview-box" role="tab" aria-controls="preview" aria-selected="true">Preview</a>
-                </li>
             </ul>
 
             <div class="tab-content">
@@ -150,11 +147,6 @@
                     </div>
                     <textarea asp-for="CssContent" class="page-csscontent-textarea d-none"></textarea>
                 </div>
-                <div class="tab-pane" id="preview-box" role="tabpanel" aria-labelledby="preview-tab">
-                    <div class="alert alert-warning mt-3">
-                        Under development.
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -165,7 +157,7 @@
                     <li class="list-group-item">
                         <label asp-for="HideSidebar" class="control-label"></label>
                         <div class="material-switch float-right">
-                            <input @(Model.HideSidebar ? "checked=\" checked\"" : "" ) id="HideSidebar" name="HideSidebar" type="checkbox" value="true">
+                            <input @(Model.HideSidebar ? "checked=\" checked\"" : "") id="HideSidebar" name="HideSidebar" type="checkbox" value="true">
                             <label for="HideSidebar" class="label-success"></label>
                             <input name="HideSidebar" type="hidden" value="false">
                         </div>
