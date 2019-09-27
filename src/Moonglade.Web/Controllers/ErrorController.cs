@@ -24,6 +24,8 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null)
         {
+            var requestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
             if (statusCode.HasValue)
             {
                 HttpContext.Response.StatusCode = statusCode.Value;
@@ -44,9 +46,11 @@ namespace Moonglade.Web.Controllers
 
                 // Get the exception that occurred
                 var exceptionThatOccurred = exceptionFeature.Error;
-                Logger.LogError($"Shit happens: {routeWhereExceptionOccurred}, client IP: {HttpContext.Connection.RemoteIpAddress}", exceptionThatOccurred);
+                Logger.LogError($"Shit happens: {routeWhereExceptionOccurred}, " +
+                                $"client IP: {HttpContext.Connection.RemoteIpAddress}, " +
+                                $"request id: {requestId}", exceptionThatOccurred);
             }
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { RequestId = requestId });
         }
     }
 }
