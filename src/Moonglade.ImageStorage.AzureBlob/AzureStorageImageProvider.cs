@@ -67,7 +67,7 @@ namespace Moonglade.ImageStorage.AzureBlob
                         break;
                 }
 
-                using (var fileStream = new MemoryStream(imageBytes))
+                await using (var fileStream = new MemoryStream(imageBytes))
                 {
                     await blockBlob.UploadFromStreamAsync(fileStream);
                 }
@@ -110,33 +110,31 @@ namespace Moonglade.ImageStorage.AzureBlob
         public async Task<Response<ImageInfo>> GetAsync(string fileName)
         {
             var blockBlob = _container.GetBlockBlobReference(fileName);
-            using (var memoryStream = new MemoryStream())
+            await using var memoryStream = new MemoryStream();
+            var extension = Path.GetExtension(fileName);
+            if (string.IsNullOrWhiteSpace(extension))
             {
-                var extension = Path.GetExtension(fileName);
-                if (string.IsNullOrWhiteSpace(extension))
-                {
-                    return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ExtensionNameIsNull);
-                }
-
-                var exists = await blockBlob.ExistsAsync();
-                if (!exists)
-                {
-                    _logger.LogWarning($"Blob {fileName} not exist.");
-                    return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ImageNotExistInAzureBlob);
-                }
-
-                await blockBlob.DownloadToStreamAsync(memoryStream);
-                var arr = memoryStream.ToArray();
-
-                var fileType = extension.Replace(".", string.Empty);
-                var imageInfo = new ImageInfo
-                {
-                    ImageBytes = arr,
-                    ImageExtensionName = fileType
-                };
-
-                return new SuccessResponse<ImageInfo>(imageInfo);
+                return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ExtensionNameIsNull);
             }
+
+            var exists = await blockBlob.ExistsAsync();
+            if (!exists)
+            {
+                _logger.LogWarning($"Blob {fileName} not exist.");
+                return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ImageNotExistInAzureBlob);
+            }
+
+            await blockBlob.DownloadToStreamAsync(memoryStream);
+            var arr = memoryStream.ToArray();
+
+            var fileType = extension.Replace(".", string.Empty);
+            var imageInfo = new ImageInfo
+            {
+                ImageBytes = arr,
+                ImageExtensionName = fileType
+            };
+
+            return new SuccessResponse<ImageInfo>(imageInfo);
         }
     }
 }

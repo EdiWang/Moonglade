@@ -89,35 +89,33 @@ namespace Moonglade.Web.Controllers
         {
             var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpenSearchFileName}";
 
-            using (var fs = new FileStream(openSearchDataFile, FileMode.Create,
-                FileAccess.Write, FileShare.None, 4096, true))
+            await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
+                FileAccess.Write, FileShare.None, 4096, true);
+            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true };
+            using (var writer = XmlWriter.Create(fs, writerSettings))
             {
-                var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true };
-                using (var writer = XmlWriter.Create(fs, writerSettings))
-                {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("OpenSearchDescription", "http://a9.com/-/spec/opensearch/1.1/");
-                    writer.WriteAttributeString("xmlns", "http://a9.com/-/spec/opensearch/1.1/");
+                writer.WriteStartDocument();
+                writer.WriteStartElement("OpenSearchDescription", "http://a9.com/-/spec/opensearch/1.1/");
+                writer.WriteAttributeString("xmlns", "http://a9.com/-/spec/opensearch/1.1/");
 
-                    writer.WriteElementString("ShortName", _blogConfig.FeedSettings.RssTitle);
-                    writer.WriteElementString("Description", _blogConfig.FeedSettings.RssDescription);
+                writer.WriteElementString("ShortName", _blogConfig.FeedSettings.RssTitle);
+                writer.WriteElementString("Description", _blogConfig.FeedSettings.RssDescription);
 
-                    writer.WriteStartElement("Image");
-                    writer.WriteAttributeString("height", "16");
-                    writer.WriteAttributeString("width", "16");
-                    writer.WriteAttributeString("type", "image/vnd.microsoft.icon");
-                    writer.WriteValue($"{ctx.Request.Scheme}://{ctx.Request.Host}/favicon.ico");
-                    writer.WriteEndElement();
+                writer.WriteStartElement("Image");
+                writer.WriteAttributeString("height", "16");
+                writer.WriteAttributeString("width", "16");
+                writer.WriteAttributeString("type", "image/vnd.microsoft.icon");
+                writer.WriteValue($"{ctx.Request.Scheme}://{ctx.Request.Host}/favicon.ico");
+                writer.WriteEndElement();
 
-                    writer.WriteStartElement("Url");
-                    writer.WriteAttributeString("type", "text/html");
-                    writer.WriteAttributeString("template", $"{ctx.Request.Scheme}://{ctx.Request.Host}/search/{{searchTerms}}");
-                    writer.WriteEndElement();
+                writer.WriteStartElement("Url");
+                writer.WriteAttributeString("type", "text/html");
+                writer.WriteAttributeString("template", $"{ctx.Request.Scheme}://{ctx.Request.Host}/search/{{searchTerms}}");
+                writer.WriteEndElement();
 
-                    writer.WriteEndElement();
-                }
-                await fs.FlushAsync();
+                writer.WriteEndElement();
             }
+            await fs.FlushAsync();
         }
     }
 }

@@ -70,8 +70,8 @@ namespace Moonglade.Web.FaviconGenerator
         {
             var fs = new FileStream(originImagePath, FileMode.Open, FileAccess.Read);
             using (fs)
-            using (var image = new Bitmap(fs))
             {
+                using var image = new Bitmap(fs);
                 var ico = Converter.BitmapToIcon(image);
                 using var icoFs = new FileStream(icoFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 ico.Save(icoFs);
@@ -89,8 +89,8 @@ namespace Moonglade.Web.FaviconGenerator
         private static Bitmap ResizeImage(Stream originImageStream, int toWidth, int toHeight)
         {
             using (originImageStream)
-            using (var image = new Bitmap(originImageStream))
             {
+                using var image = new Bitmap(originImageStream);
                 var resized = new Bitmap(toWidth, toHeight);
                 using var graphics = Graphics.FromImage(resized);
                 graphics.CompositingQuality = CompositingQuality.HighQuality;

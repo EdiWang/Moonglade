@@ -29,22 +29,23 @@ namespace Moonglade.ImageStorage.FileSystem
             {
                 var imagePath = Path.Combine(_path, fileName);
 
-                if (File.Exists(imagePath))
+                if (!File.Exists(imagePath))
                 {
-                    var extension = Path.GetExtension(imagePath);
-
-                    var fileType = extension.Replace(".", string.Empty);
-                    var imageBytes = await ReadFileAsync(imagePath);
-
-                    var imageInfo = new ImageInfo
-                    {
-                        ImageBytes = imageBytes,
-                        ImageExtensionName = fileType
-                    };
-
-                    return new SuccessResponse<ImageInfo>(imageInfo);
+                    return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ImageNotExistInFileSystem);
                 }
-                return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ImageNotExistInFileSystem);
+
+                var extension = Path.GetExtension(imagePath);
+
+                var fileType = extension.Replace(".", string.Empty);
+                var imageBytes = await ReadFileAsync(imagePath);
+
+                var imageInfo = new ImageInfo
+                {
+                    ImageBytes = imageBytes,
+                    ImageExtensionName = fileType
+                };
+
+                return new SuccessResponse<ImageInfo>(imageInfo);
             }
             catch (Exception e)
             {
@@ -83,12 +84,10 @@ namespace Moonglade.ImageStorage.FileSystem
 
         private static async Task<byte[]> ReadFileAsync(string filename)
         {
-            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
-            {
-                byte[] buff = new byte[file.Length];
-                await file.ReadAsync(buff, 0, (int)file.Length);
-                return buff;
-            }
+            await using var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
+            byte[] buff = new byte[file.Length];
+            await file.ReadAsync(buff, 0, (int)file.Length);
+            return buff;
         }
 
         public async Task<Response<string>> InsertAsync(string fileName, byte[] imageBytes)
@@ -97,7 +96,7 @@ namespace Moonglade.ImageStorage.FileSystem
             {
                 var fullPath = Path.Combine(_path, fileName);
 
-                using (var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
+                await using (var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
                     4096, true))
                 {
                     await sourceStream.WriteAsync(imageBytes, 0, imageBytes.Length);

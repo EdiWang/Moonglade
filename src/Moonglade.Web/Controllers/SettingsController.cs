@@ -364,13 +364,11 @@ namespace Moonglade.Web.Controllers
 
                 try
                 {
-                    using (var bmp = new Bitmap(new MemoryStream(base64Chars)))
+                    using var bmp = new Bitmap(new MemoryStream(base64Chars));
+                    if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
                     {
-                        if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
-                        {
-                            // Normal uploaded avatar should be a 300x300 pixel image
-                            return BadRequest();
-                        }
+                        // Normal uploaded avatar should be a 300x300 pixel image
+                        return BadRequest();
                     }
                 }
                 catch (Exception e)
