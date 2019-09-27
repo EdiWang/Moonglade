@@ -10,7 +10,7 @@
       ]
     },
     {
-      "library": "tinymce@5.0.15",
+      "library": "tinymce@5.0.16",
       "destination": "wwwroot/lib/tinymce",
       "files": []
     },
@@ -80,7 +80,7 @@
       "destination": "wwwroot/lib/simplemde/"
     },
     {
-      "library": "font-awesome@5.8.2",
+      "library": "font-awesome@5.11.2",
       "destination": "wwwroot/lib/font-awesome/",
       "files": [
         "css/all.min.css",
