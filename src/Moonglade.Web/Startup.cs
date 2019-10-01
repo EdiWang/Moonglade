@@ -145,7 +145,7 @@ namespace Moonglade.Web
                                 TimeSpan.FromSeconds(Math.Pow(2, retryCount)),
                                     (result, span, retryCount, context) =>
                                     {
-                                        _logger.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
+                                        _logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
                                     }));
             }
 
@@ -241,7 +241,8 @@ namespace Moonglade.Web
 
                 // Workaround .NET Core 3.0 known bug
                 // https://github.com/aspnet/AspNetCore/issues/13715
-                app.Use((context, next) => {
+                app.Use((context, next) =>
+                {
                     context.SetEndpoint(null);
                     return next();
                 });
@@ -269,7 +270,7 @@ namespace Moonglade.Web
             //               .Allow("/"))
             ////.AddSitemap("https://example.com/sitemap.xml")
             //);
-            
+
             GenerateFavicons(env);
 
             var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
@@ -341,7 +342,7 @@ namespace Moonglade.Web
                 var userDefinedIconFile = Path.Combine(env.ContentRootPath, @"wwwroot\appicon.png");
                 if (File.Exists(userDefinedIconFile))
                 {
-                    faviconGenerator.GenerateIcons(userDefinedIconFile, 
+                    faviconGenerator.GenerateIcons(userDefinedIconFile,
                         Path.Combine(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "favicons"));
                 }
             }
@@ -395,30 +396,17 @@ namespace Moonglade.Web
                 case "azurestorage":
                     var conn = imageStorage.AzureStorageSettings.ConnectionString;
                     var container = imageStorage.AzureStorageSettings.ContainerName;
-
                     services.AddSingleton(s => new AzureStorageInfo(conn, container));
                     services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
                     break;
                 case "filesystem":
                     var path = imageStorage.FileSystemSettings.Path;
-                    try
-                    {
-                        var fullPath = Utils.ResolveImageStoragePath(Environment.ContentRootPath, path);
-
-                        _logger.LogInformation($"Setting {nameof(FileSystemImageProvider)} to use Path: {fullPath}");
-                        services.AddSingleton(s => new FileSystemImageProviderInfo(fullPath));
-                        services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogCritical(e, $"Error setting path for {nameof(FileSystemImageProvider)}, raw path: {path}");
-                        throw;
-                    }
-
+                    var fullPath = Utils.ResolveImageStoragePath(Environment.ContentRootPath, path);
+                    services.AddSingleton(s => new FileSystemImageProviderInfo(fullPath));
+                    services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
                     break;
                 default:
                     var msg = $"Provider {imageStorageProvider} is not supported.";
-                    _logger.LogCritical(msg);
                     throw new NotSupportedException(msg);
             }
         }
