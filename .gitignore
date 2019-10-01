@@ -5,6 +5,7 @@
 appsettings.Development.json
 
 ## Auto Generated Files
+app-js-bundle.js
 app-js-bundle.min.js
 bootstrap-tagsinput-bundle.css
 bootstrap-tagsinput-bundle.min.css
