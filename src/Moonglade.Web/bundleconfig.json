@@ -38,8 +38,8 @@
   {
     "outputFileName": "wwwroot/css/errorpages-bundle.css",
     "inputFiles": [
-      "wwwroot/css/src/errorpages.css",
-      "wwwroot/css/src/normalize.css"
+      "wwwroot/css/src/normalize.css",
+      "wwwroot/css/src/errorpages.css"
     ]
   },
   {

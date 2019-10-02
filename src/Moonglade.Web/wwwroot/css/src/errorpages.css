@@ -78,77 +78,11 @@ a {
     text-align: center;
 }
 
-.ic-st0 {
-    opacity: 0.8;
-    fill: #B5B5B5;
-}
-
-.ic-st1 {
-    opacity: 0.9;
-    fill: #B5B5B5;
-}
-
-.ic-st2 {
-    fill: #EAEAEA;
-}
-
-.ic-st3 {
-    opacity: 0.1;
-}
-
-.ic-st4 {
-    opacity: 0.2;
-    fill: #C1C1C1;
-}
-
-.ic-st5 {
-    opacity: 0.2;
-}
-
-.ic-st6 {
-    opacity: 0.2;
-    fill: #B5B5B5;
-}
-
-.ic-st7 {
-    opacity: 0.38;
-}
-
-.ic-st8 {
-    opacity: 0.38;
-    fill: #C1C1C1;
-}
-
-.ic-st9 {
-    opacity: 0.1;
-    fill: #C1C1C1;
-}
-
-.ic-st10 {
-    opacity: 0.38;
-    fill: #B5B5B5;
-}
-
-.ic-st11 {
-    opacity: 0.39;
-}
-
-.ic-st12 {
-    opacity: 0.3;
-}
-
-.ic-st13 {
-    opacity: 0.4;
-}
-
-.ic-st14 {
-    opacity: 0.3;
-    fill: #B5B5B5;
-}
-
-.ic-st15 {
-    opacity: 0.49;
-    fill: #B5B5B5;
+pre.ascii-art {
+    font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    line-height: 1.15;
+    width: 300px;
+    margin: 0 auto;
 }
 
 h1 {
