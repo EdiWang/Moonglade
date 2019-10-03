@@ -114,7 +114,10 @@ namespace Moonglade.Web
                 options.FormFieldName = $"{cookieBaseName}-FORM";
             });
 
-            AddImageStorage(services);
+            var imageStorage = new ImageStorageSettings();
+            Configuration.Bind(nameof(ImageStorage), imageStorage);
+            services.Configure<ImageStorageSettings>(Configuration.GetSection(nameof(ImageStorage)));
+            services.AddMoongladeImageStorage(imageStorage, Environment.ContentRootPath);
 
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -186,6 +189,8 @@ namespace Moonglade.Web
             });
 
             PrepareRuntimePathDependencies(app, env);
+            GenerateFavicons(env);
+
             var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
 
             app.UseSecurityHeaders(new HeaderPolicyCollection()
@@ -271,8 +276,6 @@ namespace Moonglade.Web
             ////.AddSitemap("https://example.com/sitemap.xml")
             //);
 
-            GenerateFavicons(env);
-
             var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
             var setupHelper = new SetupHelper(conn);
 
@@ -349,65 +352,6 @@ namespace Moonglade.Web
             catch (Exception e)
             {
                 _logger.LogError(e, "Error generating favicons.");
-            }
-        }
-
-        private void AddImageStorage(IServiceCollection services)
-        {
-            var imageStorage = new ImageStorageSettings();
-            Configuration.Bind(nameof(ImageStorage), imageStorage);
-            services.Configure<ImageStorageSettings>(Configuration.GetSection(nameof(ImageStorage)));
-
-            if (imageStorage.CDNSettings.GetImageByCDNRedirect)
-            {
-                if (string.IsNullOrWhiteSpace(imageStorage.CDNSettings.CDNEndpoint))
-                {
-                    throw new ArgumentNullException(nameof(imageStorage.CDNSettings.CDNEndpoint),
-                        $"{nameof(imageStorage.CDNSettings.CDNEndpoint)} must be specified when {nameof(imageStorage.CDNSettings.GetImageByCDNRedirect)} is set to 'true'.");
-                }
-
-                // _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
-
-                // Validate endpoint Url to avoid security risks
-                // But it still has risks:
-                // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
-
-                var endpoint = imageStorage.CDNSettings.CDNEndpoint;
-                var isValidEndpoint = endpoint.IsValidUrl(Utils.UrlScheme.Https);
-                if (!isValidEndpoint)
-                {
-                    throw new UriFormatException("CDN Endpoint is not a valid HTTPS Url.");
-                }
-            }
-
-            if (null == imageStorage.Provider)
-            {
-                throw new ArgumentNullException("Provider", "Provider can not be null.");
-            }
-
-            var imageStorageProvider = imageStorage.Provider.ToLower();
-            if (string.IsNullOrWhiteSpace(imageStorageProvider))
-            {
-                throw new ArgumentNullException("Provider", "Provider can not be empty.");
-            }
-
-            switch (imageStorageProvider)
-            {
-                case "azurestorage":
-                    var conn = imageStorage.AzureStorageSettings.ConnectionString;
-                    var container = imageStorage.AzureStorageSettings.ContainerName;
-                    services.AddSingleton(s => new AzureStorageInfo(conn, container));
-                    services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
-                    break;
-                case "filesystem":
-                    var path = imageStorage.FileSystemSettings.Path;
-                    var fullPath = Utils.ResolveImageStoragePath(Environment.ContentRootPath, path);
-                    services.AddSingleton(s => new FileSystemImageProviderInfo(fullPath));
-                    services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
-                    break;
-                default:
-                    var msg = $"Provider {imageStorageProvider} is not supported.";
-                    throw new NotSupportedException(msg);
             }
         }
 
