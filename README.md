@@ -234,8 +234,8 @@ Repository | Nuget
 [main-nuget-7]: https://www.nuget.org/packages/Edi.SyndicationFeedGenerator/
 [main-nuget-badge-7]: https://img.shields.io/nuget/v/Edi.SyndicationFeedGenerator.svg?style=flat-square&label=nuget
 
-[main-nuget-8]: https://www.nuget.org/packages/Edi.TemplateEmail.NetStd/
-[main-nuget-badge-8]: https://img.shields.io/nuget/v/Edi.TemplateEmail.NetStd.svg?style=flat-square&label=nuget
+[main-nuget-8]: https://www.nuget.org/packages/Edi.TemplateEmail/
+[main-nuget-badge-8]: https://img.shields.io/nuget/v/Edi.TemplateEmail.svg?style=flat-square&label=nuget
 
 [main-nuget-9]: https://www.nuget.org/packages/Edi.WordFilter/
 [main-nuget-badge-9]: https://img.shields.io/nuget/v/Edi.WordFilter.svg?style=flat-square&label=nuget
