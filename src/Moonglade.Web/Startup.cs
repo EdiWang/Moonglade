@@ -272,9 +272,7 @@ namespace Moonglade.Web
                 {
                     try
                     {
-                        setupHelper.SetupDatabase();
-                        setupHelper.ResetDefaultConfiguration();
-                        setupHelper.InitSampleData();
+                        setupHelper.InitFirstRun();
                     }
                     catch (Exception e)
                     {

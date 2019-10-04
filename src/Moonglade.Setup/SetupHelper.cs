@@ -21,6 +21,13 @@ namespace Moonglade.Setup
             DatabaseConnectionString = databaseConnectionString;
         }
 
+        public void InitFirstRun()
+        {
+            SetupDatabase();
+            ResetDefaultConfiguration();
+            InitSampleData();
+        }
+
         /// <summary>
         /// Check if the blog system is first run
         /// Either BlogConfiguration table does not exist or it has empty data is treated as first run.
