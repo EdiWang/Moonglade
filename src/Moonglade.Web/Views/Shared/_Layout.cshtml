@@ -43,7 +43,7 @@
     <link href="~/css/mooglade-css-bundle.min.css" rel="stylesheet" asp-append-version="true" />
     <script src="~/js/app/app-js-bundle.min.js" asp-append-version="true"></script>
     @RenderSection("head", false)
-    <environment exclude="Development">
+    <environment include="Production">
         @Html.Raw(JavaScriptSnippet.FullScript)
     </environment>
 </head>

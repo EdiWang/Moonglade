@@ -43,35 +43,35 @@ namespace Moonglade.Web
 {
     public class Startup
     {
-        private IServiceCollection _services;
-
         private ILogger<Startup> _logger;
         private readonly IConfigurationSection _appSettingsSection;
-
-        public IConfiguration Configuration { get; }
-
-        public IWebHostEnvironment Environment { get; }
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            Configuration = configuration;
-            Environment = env;
-            _appSettingsSection = Configuration.GetSection(nameof(AppSettings));
+            _configuration = configuration;
+            _environment = env;
+            _appSettingsSection = _configuration.GetSection(nameof(AppSettings));
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(_appSettingsSection);
+            services.Configure<RobotsTxtOptions>(_configuration.GetSection("RobotsTxt"));
+
+            var authentication = new AuthenticationSettings();
+            _configuration.Bind(nameof(Authentication), authentication);
+
+            var imageStorage = new ImageStorageSettings();
+            _configuration.Bind(nameof(ImageStorage), imageStorage);
+            services.Configure<ImageStorageSettings>(_configuration.GetSection(nameof(ImageStorage)));
+
             services.AddOptions();
             services.AddMemoryCache();
 
             // Setup document: https://github.com/stefanprodan/AspNetCoreRateLimit/wiki/IpRateLimitMiddleware#setup
-            //load general configuration from appsettings.json
-            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
-
-            //load ip rules from appsettings.json
-            // services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
-
-            // inject counter and rules stores
+            services.Configure<IpRateLimitOptions>(_configuration.GetSection("IpRateLimiting"));
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 
@@ -81,18 +81,8 @@ namespace Moonglade.Web
                 options.Cookie.HttpOnly = true;
             });
 
-            services.Configure<AppSettings>(_appSettingsSection);
-            services.Configure<RobotsTxtOptions>(Configuration.GetSection("RobotsTxt"));
-
-            var authentication = new AuthenticationSettings();
-            Configuration.Bind(nameof(Authentication), authentication);
-            services.AddMoongladeAuthenticaton(authentication);
-
-            //if (Environment.IsProduction())
-            //{
             services.AddApplicationInsightsTelemetry();
-            //}
-
+            services.AddMoongladeAuthenticaton(authentication);
             services.AddMvc(options =>
                             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
@@ -101,8 +91,6 @@ namespace Moonglade.Web
             // the clientId/clientIp resolvers use it.
             // services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpContextAccessor();
-
-            // configuration (resolvers, counter key builders)
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             services.AddAntiforgery(options =>
@@ -112,11 +100,7 @@ namespace Moonglade.Web
                 options.FormFieldName = $"{cookieBaseName}-FORM";
             });
 
-            var imageStorage = new ImageStorageSettings();
-            Configuration.Bind(nameof(ImageStorage), imageStorage);
-            services.Configure<ImageStorageSettings>(Configuration.GetSection(nameof(ImageStorage)));
-            services.AddMoongladeImageStorage(imageStorage, Environment.ContentRootPath);
-
+            services.AddMoongladeImageStorage(imageStorage, _environment.ContentRootPath);
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IBlogConfig, BlogConfig>();
@@ -152,21 +136,17 @@ namespace Moonglade.Web
 
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()
-                           .UseSqlServer(Configuration.GetConnectionString(Constants.DbConnectionName), sqlOptions =>
+                           .UseSqlServer(_configuration.GetConnectionString(Constants.DbConnectionName), sqlOptions =>
                                {
                                    sqlOptions.EnableRetryOnFailure(
                                        maxRetryCount: 3,
                                        maxRetryDelay: TimeSpan.FromSeconds(30),
                                        errorNumbersToAdd: null);
                                }));
-
-            _services = services;
         }
 
-        // ReSharper disable once UnusedMember.Global
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env,
             ILogger<Startup> logger,
             IHostApplicationLifetime appLifetime,
             TelemetryConfiguration configuration)
@@ -186,8 +166,8 @@ namespace Moonglade.Web
                 _logger.LogInformation("Moonglade stopped.");
             });
 
-            PrepareRuntimePathDependencies(app, env);
-            GenerateFavicons(env);
+            PrepareRuntimePathDependencies(app, _environment);
+            GenerateFavicons(_environment);
 
             var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
 
@@ -224,7 +204,7 @@ namespace Moonglade.Web
             );
             app.UseMiddleware<PoweredByMiddleware>();
 
-            if (!env.IsProduction())
+            if (!_environment.IsProduction())
             {
                 _logger.LogWarning("Running on non-production mode. Application Insights disabled.");
 
@@ -232,7 +212,7 @@ namespace Moonglade.Web
                 TelemetryDebugWriter.IsTracingDisabled = true;
             }
 
-            if (env.IsDevelopment())
+            if (_environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -263,7 +243,6 @@ namespace Moonglade.Web
             app.UseStaticFiles();
             app.UseSession();
 
-            // robots.txt
             app.UseRobotsTxt();
             //app.UseRobotsTxt(builder =>
             //builder.AddSection(section =>
@@ -273,7 +252,7 @@ namespace Moonglade.Web
             ////.AddSitemap("https://example.com/sitemap.xml")
             //);
 
-            var conn = Configuration.GetConnectionString(Constants.DbConnectionName);
+            var conn = _configuration.GetConnectionString(Constants.DbConnectionName);
             var setupHelper = new SetupHelper(conn);
 
             if (!setupHelper.TestDatabaseConnection(exception =>
@@ -318,7 +297,6 @@ namespace Moonglade.Web
                 });
 
                 app.UseRouting();
-
                 app.UseAuthentication();
                 app.UseAuthorization();
 
@@ -379,7 +357,7 @@ namespace Moonglade.Web
             }
 
             var baseDir = env.ContentRootPath;
-            TryAddUrlRewrite(app, baseDir);
+            TryUseUrlRewrite(app, baseDir);
             AppDomain.CurrentDomain.SetData(Constants.AppBaseDirectory, baseDir);
 
             // Use Temp folder as best practice
@@ -407,7 +385,7 @@ namespace Moonglade.Web
             CleanDataCache();
         }
 
-        private void TryAddUrlRewrite(IApplicationBuilder app, string baseDir)
+        private void TryUseUrlRewrite(IApplicationBuilder app, string baseDir)
         {
             try
             {
@@ -429,8 +407,7 @@ namespace Moonglade.Web
             }
             catch (Exception e)
             {
-                // URL Rewrite is non-fatal error, continue running the application.
-                _logger.LogError(e, nameof(TryAddUrlRewrite));
+                _logger.LogError(e, nameof(TryUseUrlRewrite));
             }
         }
 

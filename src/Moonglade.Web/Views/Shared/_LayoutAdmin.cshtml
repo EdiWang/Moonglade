@@ -31,7 +31,7 @@
     <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/app/admin.js" asp-append-version="true"></script>
     @RenderSection("head", false)
-    <environment exclude="Development">
+    <environment include="Production">
         @Html.Raw(JavaScriptSnippet.FullScript)
     </environment>
 </head>
