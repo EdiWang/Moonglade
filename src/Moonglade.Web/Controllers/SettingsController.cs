@@ -52,7 +52,7 @@ namespace Moonglade.Web.Controllers
                 LogoText = _blogConfig.GeneralSettings.LogoText,
                 MetaKeyword = _blogConfig.GeneralSettings.MetaKeyword,
                 SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
-                Copyright = _blogConfig.GeneralSettings.Copyright.Replace("&copy;", "[c]"),
+                Copyright = _blogConfig.GeneralSettings.Copyright,
                 SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
                 BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
@@ -68,7 +68,7 @@ namespace Moonglade.Web.Controllers
             {
                 _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
                 _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
-                _blogConfig.GeneralSettings.Copyright = model.Copyright.Replace("[c]", "&copy;");
+                _blogConfig.GeneralSettings.Copyright = model.Copyright;
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);

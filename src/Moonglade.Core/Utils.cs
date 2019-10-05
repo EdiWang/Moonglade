@@ -26,6 +26,13 @@ namespace Moonglade.Core
             return CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
         }
 
+        public static string FormatCopyright2Html(string copyrightCode)
+        {
+            var result = copyrightCode.Replace("[c]", "&copy;")
+                                      .Replace("[year]", DateTime.UtcNow.Year.ToString());
+            return result;
+        }
+
         public static string RemoveWhiteSpaceFromStylesheets(string body)
         {
             if (string.IsNullOrWhiteSpace(body))
