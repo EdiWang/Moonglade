@@ -11,7 +11,7 @@
             <div class="col-md-3 col-sm-3">
                 <h4 class="d-none d-sm-block">Copyright</h4>
                 <div>
-                    @Html.Raw(BlogConfig.GeneralSettings.Copyright)
+                    @Html.Raw(Utils.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright))
                 </div>
                 <div class="mb-2">Designed and Developed by Edi Wang</div>
                 <small>
