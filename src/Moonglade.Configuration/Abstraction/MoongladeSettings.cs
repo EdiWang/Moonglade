@@ -1,17 +1,7 @@
-﻿using System.Text.Json;
-
-namespace Moonglade.Configuration.Abstraction
+﻿namespace Moonglade.Configuration.Abstraction
 {
-    public interface IMoongladeSettings
+    public class MoongladeSettings
     {
-        string GetJson();
-    }
-
-    public class MoongladeSettings : IMoongladeSettings
-    {
-        public string GetJson()
-        {
-            return JsonSerializer.Serialize(this);
-        }
+        // Empty base class to restrain SaveConfigurationAsync type
     }
 }
