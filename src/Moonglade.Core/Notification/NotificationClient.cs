@@ -152,7 +152,7 @@ namespace Moonglade.Core.Notification
             try
             {
                 var req = new PingNotificationPayload(
-                    model.TargetPostId.ToString(),
+                    model.TargetPostTitle,
                     model.PingTimeUtc,
                     model.Domain,
                     model.SourceIp,
