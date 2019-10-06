@@ -66,7 +66,7 @@ namespace Moonglade.Web.Controllers
             return NotFound();
         }
 
-        [Route("uploads/{filename}")]
+        [Route(@"uploads/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
         public async Task<IActionResult> GetImageAsync(string filename, [FromServices] IMemoryCache cache)
         {
             try
