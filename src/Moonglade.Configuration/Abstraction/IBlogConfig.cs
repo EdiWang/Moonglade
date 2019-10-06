@@ -11,8 +11,8 @@ namespace Moonglade.Configuration.Abstraction
         EmailSettings EmailSettings { get; set; }
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
-
-        Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : IMoongladeSettings;
+        
+        Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings;
 
         void RequireRefresh();
     }
