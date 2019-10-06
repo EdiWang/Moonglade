@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moonglade.Web.Authentication;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
 namespace Moonglade.Tests.Web
 {
@@ -52,6 +46,18 @@ namespace Moonglade.Tests.Web
             var result = ctl.Error(statusCode);
             Assert.IsInstanceOf(typeof(StatusCodeResult), result);
             return ctl.ControllerContext.HttpContext.Response.StatusCode;
+        }
+
+        [Test]
+        public void TestExceptionHandler()
+        {
+            var ctl = new ErrorController(_loggerMock.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+            };
+
+            var result = ctl.Error();
+            Assert.IsInstanceOf(typeof(ViewResult), result);
         }
     }
 }
