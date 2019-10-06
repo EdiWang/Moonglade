@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Edi.Blog.Pingback;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +10,7 @@ using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Tests.Core
 {
     [TestFixture]
     public class PingbackServiceTests

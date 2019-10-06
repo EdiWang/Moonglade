@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
@@ -8,7 +6,7 @@ using Moonglade.Web.Middleware.PoweredBy;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Tests.Web
 {
     [TestFixture]
     public class PoweredByMiddlewareTests
