@@ -72,7 +72,7 @@ namespace Moonglade.Web.Controllers
             try
             {
                 var invalidChars = Path.GetInvalidFileNameChars();
-                if (filename.IndexOfAny(invalidChars) > 0)
+                if (filename.IndexOfAny(invalidChars) >= 0)
                 {
                     Logger.LogWarning($"Invalid filename attempt '{filename}'.");
                     return BadRequest("invalid filename");

@@ -64,5 +64,22 @@ namespace Moonglade.Tests.Web
                 Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
             }
         }
+
+        [TestCase("<996>.png")]
+        [TestCase(":icu.gif")]
+        [TestCase("|.jpg")]
+        public async Task TestGetImageAsyncInvalidFileNames(string filename)
+        {
+            var ctl = new ImageController(
+                _loggerMock.Object,
+                _appSettingsMock.Object,
+                _imageStorageSettingsMock.Object,
+                _asyncImageStorageProviderMock.Object,
+                _blogConfigMock.Object);
+
+            var memCacheMock = new Mock<IMemoryCache>();
+            var result = await ctl.GetImageAsync(filename, memCacheMock.Object);
+            Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
+        }
     }
 }
