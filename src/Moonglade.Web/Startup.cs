@@ -62,6 +62,7 @@ namespace Moonglade.Web
 
             var authentication = new AuthenticationSettings();
             _configuration.Bind(nameof(Authentication), authentication);
+            services.Configure<AuthenticationSettings>(_configuration.GetSection(nameof(Authentication)));
 
             var imageStorage = new ImageStorageSettings();
             _configuration.Bind(nameof(ImageStorage), imageStorage);

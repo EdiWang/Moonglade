@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Models;
 
@@ -20,10 +21,10 @@ namespace Moonglade.Web.Controllers
     {
         private readonly AuthenticationSettings _authenticationSettings;
 
-        public AdminController(ILogger<AdminController> logger)
+        public AdminController(ILogger<AdminController> logger, IOptions<AuthenticationSettings> authSettings)
             : base(logger)
         {
-            _authenticationSettings = AppDomain.CurrentDomain.GetData(nameof(AuthenticationSettings)) as AuthenticationSettings;
+            _authenticationSettings = authSettings.Value;
         }
 
         [Route("")]

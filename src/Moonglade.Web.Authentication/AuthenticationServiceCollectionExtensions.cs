@@ -10,8 +10,6 @@ namespace Moonglade.Web.Authentication
     {
         public static void AddMoongladeAuthenticaton(this IServiceCollection services, AuthenticationSettings authenticationSettings)
         {
-            AppDomain.CurrentDomain.SetData(nameof(AuthenticationSettings), authenticationSettings);
-
             switch (authenticationSettings.Provider)
             {
                 case AuthenticationProvider.AzureAD:
