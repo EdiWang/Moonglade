@@ -6,3 +6,4 @@ INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (3, 
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (4, 'FeedSettings', '{"RssItemCount":20,"RssCopyright":"(c) {year} Moonglade","RssDescription":"Latest posts from Moonglade","RssGeneratorName":"Moonglade","RssTitle":"Moonglade","AuthorName":"Admin"}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (5, 'GeneralSettings', '{"SiteTitle":"Moonglade","LogoText":"moonglade","MetaKeyword":"moonglade","Copyright":"&copy; 2019","SideBarCustomizedHtmlPitch":""}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (6, 'WatermarkSettings', '{"IsEnabled":true,"KeepOriginImage":false,"FontSize":20,"WatermarkText":"Moonglade"}', GETDATE())
+INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (7, 'FriendLinksSettings', '{"ShowFriendLinksSection":true}', GETDATE())
