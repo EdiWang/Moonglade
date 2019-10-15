@@ -2,9 +2,39 @@
     Layout = "_LayoutAdmin";
 }
 
-@model IReadOnlyList<Moonglade.Model.FriendLink>
+@model FriendLinkSettingsViewModelWrap
 
 <partial name="_SettingsHeader" />
+
+<form id="form-settings" asp-controller="Settings" asp-action="FriendLinkSettings"
+      data-ajax-begin="onUpdateSettingsBegin"
+      data-ajax-complete="onUpdateSettingsComplete"
+      data-ajax-failure="onUpdateSettingsFailed"
+      data-ajax-success="onUpdateSettingsSuccess"
+      data-ajax="true"
+      data-ajax-method="POST">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">Friend Link Options</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="FriendLinkSettingsViewModel.ShowFriendLinksSection" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.FriendLinkSettingsViewModel.ShowFriendLinksSection ? "checked=\"checked\"" : "") id="ShowFriendLinksSection" name="ShowFriendLinksSection" type="checkbox" value="true">
+                            <label for="ShowFriendLinksSection" class="label-success"></label>
+                            <input name="ShowFriendLinksSection" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
+                <div class="card-footer">
+                    <input id="btn-save-settings" type="submit" value="Save" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 <div class="mb-2">
     <a class="btn btn-outline-success" asp-controller="Settings" asp-action="CreateFriendLink">
@@ -34,7 +64,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.OrderBy(m => m.Title))
+            @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
             {
                 <tr>
                     <td>
