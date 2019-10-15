@@ -31,6 +31,8 @@ namespace Moonglade.Configuration
 
         public WatermarkSettings WatermarkSettings { get; set; }
 
+        public FriendLinksSettings FriendLinksSettings { get; set; }
+
         private bool _hasInitialized;
 
         public BlogConfig(
@@ -46,6 +48,7 @@ namespace Moonglade.Configuration
             EmailSettings = new EmailSettings();
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
+            FriendLinksSettings = new FriendLinksSettings();
 
             Initialize();
         }
@@ -64,6 +67,7 @@ namespace Moonglade.Configuration
                 EmailSettings = JsonSerializer.Deserialize<EmailSettings>(cfgDic[nameof(EmailSettings)], jsonOptions);
                 FeedSettings = JsonSerializer.Deserialize<FeedSettings>(cfgDic[nameof(FeedSettings)], jsonOptions);
                 WatermarkSettings = JsonSerializer.Deserialize<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)], jsonOptions);
+                FriendLinksSettings = JsonSerializer.Deserialize<FriendLinksSettings>(cfgDic[nameof(FriendLinksSettings)], jsonOptions);
 
                 _hasInitialized = true;
             }

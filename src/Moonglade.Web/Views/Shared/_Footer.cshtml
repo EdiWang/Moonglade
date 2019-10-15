@@ -38,12 +38,15 @@
                 </a>
             </div>
 
-            <div class="col-md-3 col-sm-3 d-none d-sm-block">
-                <h4>Friend Links</h4>
-                <cache expires-after="@TimeSpan.FromMinutes(60)">
-                    @await Component.InvokeAsync("FriendLink")
-                </cache>
-            </div>
+            @if (BlogConfig.FriendLinksSettings.ShowFriendLinksSection)
+            {
+                <div class="col-md-3 col-sm-3 d-none d-sm-block">
+                    <h4>Friend Links</h4>
+                    <cache expires-after="@TimeSpan.FromMinutes(60)">
+                        @await Component.InvokeAsync("FriendLink")
+                    </cache>
+                </div>
+            }
 
             <div class="col-md-3 col-sm-3">
                 <h4 class="d-none d-sm-block">Follow Me</h4>

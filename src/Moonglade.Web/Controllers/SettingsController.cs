@@ -18,6 +18,7 @@ using Moonglade.Model.Settings;
 using Moonglade.Setup;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
+using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Controllers
 {
@@ -252,13 +253,38 @@ namespace Moonglade.Web.Controllers
 
         #region FriendLinks
 
+        [HttpPost("friendlink-settings")]
+        public async Task<IActionResult> FriendLinkSettings(FriendLinkSettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var fs = _blogConfig.FriendLinksSettings;
+                fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
+
+                var response = await _blogConfig.SaveConfigurationAsync(fs);
+                _blogConfig.RequireRefresh();
+                return Json(response);
+            }
+            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+        }
+
+
         [HttpGet("manage-friendlinks")]
         public async Task<IActionResult> ManageFriendLinks()
         {
             var response = await _friendLinkService.GetAllFriendLinksAsync();
             if (response.IsSuccess)
             {
-                return View(response.Item);
+                var vm = new FriendLinkSettingsViewModelWrap
+                {
+                    FriendLinkSettingsViewModel = new FriendLinkSettingsViewModel
+                    {
+                        ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
+                    },
+                    FriendLinks = response.Item
+                };
+
+                return View(vm);
             }
 
             SetFriendlyErrorMessage();
