@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.Web.Models
+namespace Moonglade.Web.Models.Settings
 {
     public class WatermarkSettingsViewModel
     {
