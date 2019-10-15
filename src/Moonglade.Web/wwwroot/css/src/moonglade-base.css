@@ -792,7 +792,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 .post-date-box {
-    font-family: KlavikaMedium-Plain;
+    font-family: SairaSemiCondensed-Bold;
     position: absolute;
     width: 70px;
     border: 1px solid #2b579a;
@@ -889,7 +889,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 
 .blog-info-desktop-lg h3 {
     color: #fff;
-    font-family: KlavikaMedium-Plain;
+    font-family: SairaSemiCondensed-Bold;
 }
 
 a {
@@ -1086,7 +1086,7 @@ body {
 }
 
 .moonglade-logo {
-    font-family: KlavikaMedium-Plain;
+    font-family: SairaSemiCondensed-Bold;
     font-size: 28px;
     line-height: 1px;
 }
