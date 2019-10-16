@@ -15,7 +15,7 @@
        asp-action="Rss"
        asp-route-categoryName="@(((string)ViewBag.CategoryName).ToLower())" target="_blank"
        title="Subscribe @(ViewBag.CategoryDisplayName)">
-        <i class="fas fa-rss"></i>
+        <span class="icon-rss"></span>
     </a>
     <span>@ViewBag.CategoryDisplayName</span>
     <span class="badge d-inline d-sm-none float-right">@Model.TotalItemCount</span>
