@@ -81,13 +81,13 @@ else
             <div class="card-body">
                 <div class="float-right">
                     <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
-                        <i class="fas fa-star"></i>
+                        <span class="icon-star-full"></span>
                     </a>
                     <button class="btn btn-sm btn-primary btn-reply" data-commentid="@item.Id">
-                        <i class="fa fa-reply"></i>
+                        <span class="icon-undo2"></span>
                     </button>
                     <button class="btn btn-sm btn-danger btn-delete" data-commentid="@item.Id">
-                        <i class="fa fa-trash-alt"></i>
+                        <span class="icon-bin"></span>
                     </button>
                 </div>
 

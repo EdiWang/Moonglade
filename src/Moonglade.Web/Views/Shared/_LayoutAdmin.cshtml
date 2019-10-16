@@ -55,31 +55,31 @@
             <section class="admin-nav-section mt-3 mb-3">
                 <div class="list-group list-group-flush">
                     <a asp-controller="Post" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Post" ? "active" : null)">
-                        <i class="far fa-fw fa-file"></i>
+                        <span class="icon-file-text2"></span>
                         Posts
                     </a>
                     <a asp-controller="Category" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Category" ? "active" : null)">
-                        <i class="fas fa-fw fa-folder"></i>
+                        <span class="icon-folder"></span>
                         Categories
                     </a>
                     <a asp-controller="Tags" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Tags" ? "active" : null)">
-                        <i class="fas fa-tags"></i>
+                        <span class="icon-price-tag"></span>
                         Tags
                     </a>
                     <a asp-controller="Comment" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Comment" ? "active" : null)">
-                        <i class="far fa-fw fa-comments"></i>
+                        <span class="icon-bubbles3"></span>
                         Comments
                     </a>
                     <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
-                        <i class="fas fa-fw fa-globe"></i>
+                        <span class="icon-earth"></span>
                         Pingbacks
                     </a>
                     <a asp-controller="CustomPage" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "CustomPage" ? "active" : null)">
-                        <i class="far fa-fw fa-file"></i>
+                        <span class="icon-file-text2"></span>
                         Pages
                     </a>
                     <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
-                        <i class="fas fa-fw fa-cog"></i>
+                        <span class="icon-cog"></span>
                         Settings
                     </a>
                 </div>
