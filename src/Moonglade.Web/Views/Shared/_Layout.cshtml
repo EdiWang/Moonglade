@@ -63,7 +63,7 @@
                     <ul class="navbar-nav mr-auto">
                         <li id="navbar-dropdown-post" class="nav-item @("Category" == currentController ? "dropdown active" : "dropdown")">
                             <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
-                                <i class="fas fa-book"></i>
+                                <span class="icon-book"></span>
                                 <strong>Categories</strong>
                             </a>
                             <cache expires-after="@TimeSpan.FromMinutes(60)">
@@ -73,20 +73,20 @@
 
                         <li class="nav-item @(string.Compare("Tags", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
                             <a asp-controller="Tags" asp-action="Index" class="nav-link">
-                                <i class="fas fa-tags"></i>
+                                <span class="icon-price-tag"></span>
                                 <strong>Tags</strong>
                             </a>
                         </li>
 
                         <li class="nav-item @(string.Compare("Archive", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
                             <a asp-controller="Archive" asp-action="Index" class="nav-link">
-                                <i class="fas fa-archive"></i>
+                                <span class="icon-folder"></span>
                                 <strong>Archive</strong>
                             </a>
                         </li>
                         <li class="nav-item @(string.Compare("about", customPageRouteName, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
                             <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about" class="nav-link">
-                                <i class="fas fa-star"></i>
+                                <span class="icon-star-full"></span>
                                 <strong>About</strong>
                             </a>
                         </li>
@@ -101,7 +101,7 @@
                                placeholder="Search"
                                name="term"
                                maxlength="30">
-                        <button class="btn btn-outline-light btn-search my-2 my-sm-0 d-none d-md-block" type="submit"><i class="fas fa-search"></i></button>
+                        <button class="btn btn-outline-light btn-search my-2 my-sm-0 d-none d-md-block" type="submit"><span class="icon-search"></span></button>
                         <button class="btn btn-block btn-success d-block d-sm-none mt-1" type="submit"><i class="fas fa-search"></i> Search</button>
                     </form>
                 </div>
