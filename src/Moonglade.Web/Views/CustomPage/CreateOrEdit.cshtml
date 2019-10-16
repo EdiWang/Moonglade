@@ -96,7 +96,13 @@
     </style>
 }
 
-<form class="page-edit-form" method="post">
+<form class="page-edit-form" method="post" asp-action="CreateOrEdit" 
+      data-ajax-begin="onPageCreateEditBegin"
+      data-ajax-complete="onPageCreateEditComplete"
+      data-ajax-failure="onPageCreateEditFailed"
+      data-ajax-success="onPageCreateEditSuccess"
+      data-ajax="true"
+      data-ajax-method="POST">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <input type="hidden" asp-for="Id" />
     <div class="row">
@@ -171,7 +177,7 @@
 
     <div>
         <button type="submit" class="btn btn-success" id="btn-submit">
-            Submit
+            Save
         </button>
         <a asp-controller="CustomPage" asp-action="Manage" class="btn btn-light">Cancel</a>
     </div>

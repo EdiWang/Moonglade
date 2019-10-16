@@ -222,3 +222,32 @@ var onPostCreateEditFailed = function (context) {
         alert(`Error: ${message}`);
     }
 };
+
+var btnSubmitPage = '#btn-submit';
+var onPageCreateEditBegin = function () {
+    $(btnSubmitPage).text('Saving...');
+    $(btnSubmitPage).addClass('disabled');
+    $(btnSubmitPage).attr('disabled', 'disabled');
+};
+
+var onPageCreateEditComplete = function () {
+    $(btnSubmitPage).text('Save');
+    $(btnSubmitPage).removeClass('disabled');
+    $(btnSubmitPage).removeAttr('disabled');
+};
+
+var onPageCreateEditSuccess = function (data) {
+    if (data.pageId) {
+        $('input[name="Id"]').val(data.pageId);
+        toastr.success('Page saved successfully.');
+    }
+};
+
+var onPageCreateEditFailed = function (context) {
+    var message = context.responseJSON.message;
+    if (window.toastr) {
+        window.toastr.error(message);
+    } else {
+        alert(`Error: ${message}`);
+    }
+};
