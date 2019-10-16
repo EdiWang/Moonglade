@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -26,7 +28,7 @@ namespace Moonglade.Web.Controllers
             _customPageService = customPageService;
         }
 
-        public string[] InvalidPageRouteNames => new[] { "index", "manage" };
+        public string[] InvalidPageRouteNames => new[] { "index", "manage", "createoredit", "create", "edit" };
 
         [HttpGet("{routeName}")]
         public async Task<IActionResult> Index(string routeName, [FromServices] IMemoryCache cache)
@@ -68,6 +70,14 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
+        [HttpGet("manage/create")]
+        public IActionResult Create()
+        {
+            var model = new CustomPageEditViewModel();
+            return View("CreateOrEdit", model);
+        }
+
+        [Authorize]
         [HttpGet("manage/edit")]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -95,8 +105,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("manage/edit")]
-        public async Task<IActionResult> Edit(CustomPageEditViewModel model, [FromServices] IMemoryCache cache)
+        [HttpPost("manage/createoredit")]
+        public async Task<IActionResult> CreateOrEdit(CustomPageEditViewModel model, [FromServices] IMemoryCache cache)
         {
             try
             {
@@ -117,75 +127,30 @@ namespace Moonglade.Web.Controllers
                         Title = model.Title
                     };
 
-                    var response = await _customPageService.EditPageAsync(req);
+                    var response = model.Id == Guid.Empty ?
+                        await _customPageService.CreatePageAsync(req) :
+                        await _customPageService.EditPageAsync(req);
+
                     if (response.IsSuccess)
                     {
                         var cacheKey = $"page-{req.RouteName.ToLower()}";
                         cache.Remove(cacheKey);
 
-                        return RedirectToAction("Manage");
+                        return Json(new { PageId = response.Item });
                     }
 
-                    ModelState.AddModelError(string.Empty, response.Message);
-                    return View("CreateOrEdit", model);
+                    Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    return Json(new FailedResponse(response.Message));
                 }
-                return View("CreateOrEdit", model);
+
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new FailedResponse("Invalid ModelState"));
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error Editing CustomPage.");
-                ModelState.AddModelError(string.Empty, e.Message);
-                return View("CreateOrEdit", model);
-            }
-        }
-
-        [Authorize]
-        [HttpGet("manage/create")]
-        public IActionResult Create()
-        {
-            var model = new CustomPageEditViewModel();
-            return View("CreateOrEdit", model);
-        }
-
-        [Authorize]
-        [HttpPost("manage/create")]
-        public async Task<IActionResult> Create(CustomPageEditViewModel model)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    if (InvalidPageRouteNames.Contains(model.RouteName.ToLower()))
-                    {
-                        ModelState.AddModelError(nameof(model.RouteName), "Reserved Route Name.");
-                        return View("CreateOrEdit", model);
-                    }
-
-                    var req = new CreateCustomPageRequest
-                    {
-                        HtmlContent = model.RawHtmlContent,
-                        CssContent = model.CssContent,
-                        HideSidebar = model.HideSidebar,
-                        RouteName = model.RouteName,
-                        Title = model.Title
-                    };
-
-                    var response = await _customPageService.CreatePageAsync(req);
-                    if (response.IsSuccess)
-                    {
-                        return RedirectToAction("Manage");
-                    }
-
-                    ModelState.AddModelError(string.Empty, response.Message);
-                    return View("CreateOrEdit", model);
-                }
-                return View("CreateOrEdit", model);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Creating CustomPage.");
-                ModelState.AddModelError(string.Empty, e.Message);
-                return View("CreateOrEdit", model);
+                Logger.LogError(e, "Error Create or Edit CustomPage.");
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new FailedResponse(e.Message));
             }
         }
 

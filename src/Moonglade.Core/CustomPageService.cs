@@ -90,9 +90,9 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> EditPageAsync(EditCustomPageRequest request)
+        public Task<Response<Guid>> EditPageAsync(EditCustomPageRequest request)
         {
-            return TryExecuteAsync(async () =>
+            return TryExecuteAsync<Guid>(async () =>
             {
                 var page = await _customPageRepository.GetAsync(request.Id);
                 if (null == page)
@@ -108,7 +108,7 @@ namespace Moonglade.Core
                 page.UpdatedOnUtc = DateTime.UtcNow;
 
                 await _customPageRepository.UpdateAsync(page);
-                return new SuccessResponse();
+                return new SuccessResponse<Guid>(page.Id);
             });
         }
 
