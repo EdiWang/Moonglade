@@ -345,46 +345,6 @@ label {
     width: 100%;
 }
 
-.ul-tag-mgr {
-    line-height: 28px;
-    text-align: justify;
-}
-
-    .ul-tag-mgr li {
-        border: 1px solid #bbb;
-        color: #444;
-        display: inline-block;
-        height: 33px;
-        line-height: 33px;
-        margin-bottom: 10px;
-        vertical-align: top;
-    }
-
-        .ul-tag-mgr li.updated {
-            border: 1px solid #398439;
-        }
-
-        .ul-tag-mgr li span {
-            display: inline-block;
-            padding: 0 10px;
-            vertical-align: top;
-        }
-
-        .ul-tag-mgr li a {
-            background-color: #EEE;
-            color: #CCC;
-            cursor: pointer;
-            display: inline-block;
-            font-size: 16px;
-            height: 31px;
-            padding: 0 5px;
-        }
-
-            .ul-tag-mgr li a:hover {
-                background-color: #a94442;
-                color: #FFF;
-            }
-
 .tagCloud {
     line-height: 28px;
     text-align: justify;
@@ -466,13 +426,6 @@ label {
     -webkit-transition: border .2s ease-in-out;
     -o-transition: border .2s ease-in-out;
     transition: border .2s ease-in-out;
-}
-
-
-
-.small-svg-icon svg {
-    fill: #0072c6;
-    width: 24px;
 }
 
 .arch-media-logo svg {
