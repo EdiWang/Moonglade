@@ -283,6 +283,7 @@ namespace Moonglade.Web
                         {
                             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                             await context.Response.WriteAsync("Error initializing first run, please check error log.");
+                            appLifetime.StopApplication();
                         });
                     }
                 }
