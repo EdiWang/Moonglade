@@ -4,103 +4,114 @@
 @Html.AntiForgeryToken()
 
 @section scripts{
-<script>
-    $(function () {
-        $(".btn-restart").click(function () {
-            tryRestartWebsite();
+    <script>
+        $(function () {
+            $(".btn-restart").click(function () {
+                tryRestartWebsite();
+            });
+
+            $(".btn-reset").click(function () {
+                tryResetWebsite();
+            });
         });
 
-        $(".btn-reset").click(function () {
-            tryResetWebsite();
-        });
-    });
+        function tryRestartWebsite() {
+            var nonce = Math.floor((Math.random() * 128) + 1);
+            ajaxPostWithCSRFToken("shutdown", { nonce }, function () { });
+            $(".btn-restart").text("Wait...");
+            $(".btn-restart").addClass("disabled");
+            $(".btn-restart").attr("disabled", "disabled");
+            startTimer(30, $(".btn-restart"));
+            setTimeout(function () {
+                location.href = "/admin/settings";
+            }, 30000);
+        }
 
-    function tryRestartWebsite() {
-        var nonce = Math.floor((Math.random() * 128) + 1);
-        ajaxPostWithCSRFToken("shutdown", { nonce }, function () { });
-        $(".btn-restart").text("Wait...");
-        $(".btn-restart").addClass("disabled");
-        $(".btn-restart").attr("disabled", "disabled");
-        startTimer(30, $(".btn-restart"));
-        setTimeout(function () {
-            location.href = "/admin/settings";
-        }, 30000);
-    }
+        function tryResetWebsite() {
+            var nonce = Math.floor((Math.random() * 128) + 1);
+            ajaxPostWithCSRFToken("reset", { nonce }, function () { });
+            $(".btn-reset").text("Wait...");
+            $(".btn-reset").addClass("disabled");
+            $(".btn-reset").attr("disabled", "disabled");
+            startTimer(30, $(".btn-reset"));
+            setTimeout(function () {
+                location.href = "/";
+            }, 30000);
+        }
 
-    function tryResetWebsite() {
-        var nonce = Math.floor((Math.random() * 128) + 1);
-        ajaxPostWithCSRFToken("reset", { nonce }, function () { });
-        $(".btn-reset").text("Wait...");
-        $(".btn-reset").addClass("disabled");
-        $(".btn-reset").attr("disabled", "disabled");
-        startTimer(30, $(".btn-reset"));
-        setTimeout(function () {
-            location.href = "/";
-        }, 30000);
-    }
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
 
-    function startTimer(duration, display) {
-        var timer = duration, minutes, seconds;
-        setInterval(function () {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
 
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.text(minutes + ":" + seconds);
 
-            display.text(minutes + ":" + seconds);
-
-            if (--timer < 0) {
-                timer = duration;
-            }
-        }, 1000);
-    }
-</script>
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000);
+        }
+    </script>
 }
 
 <partial name="_SettingsHeader" />
 
-<h5>Server Information</h5>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>System</td>
-            <td>@System.Runtime.InteropServices.RuntimeInformation.OSDescription</td>
-        </tr>
-        <tr>
-            <td>Directory</td>
-            <td>@Environment.CurrentDirectory</td>
-        </tr>
-        <tr>
-            <td>x64 Process</td>
-            <td>@Environment.Is64BitProcess</td>
-        </tr>
-        <tr>
-            <td>User Name</td>
-            <td>@Environment.UserName</td>
-        </tr>
-    </tbody>
-</table>
+<div class="card">
+    <div class="card-header">
+        Server Information
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>System</td>
+                <td>@System.Runtime.InteropServices.RuntimeInformation.OSDescription</td>
+            </tr>
+            <tr>
+                <td>Directory</td>
+                <td>@Environment.CurrentDirectory</td>
+            </tr>
+            <tr>
+                <td>x64 Process</td>
+                <td>@Environment.Is64BitProcess</td>
+            </tr>
+            <tr>
+                <td>User Name</td>
+                <td>@Environment.UserName</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-<h5>Restart Website</h5>
-<hr />
+<div class="card mb-4">
+    <div class="card-header">
+        Options
+    </div>
+    <div class="card-body">
+        <h6>Restart Website</h6>
+        <hr />
 
-<div class="alert alert-warning">Try to shutdown and restart the website, this will terminate all current requests.</div>
+        <div class="alert alert-warning">Try to shutdown and restart the website, this will terminate all current requests.</div>
 
-<button class="btn btn-danger" data-toggle="modal" data-target="#restartModal">Restart</button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#restartModal">Restart</button>
 
-<h5 class="mt-4">System Reset</h5>
-<hr />
+        <h6 class="mt-4">System Reset</h6>
+        <hr />
 
-<div class="alert alert-warning">Erase all data and configuration.</div>
+        <div class="alert alert-warning">Erase all data and configuration.</div>
 
-<button class="btn btn-danger" data-toggle="modal" data-target="#resetModal">Reset</button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#resetModal">Reset</button>
+    </div>
+</div>
 
 <div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
