@@ -264,7 +264,8 @@ namespace Moonglade.Web
                 app.Run(async context =>
                 {
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    await context.Response.WriteAsync("Database connection failed. Please see error log, fix it and RESTART this application.");
+                    await context.Response.WriteAsync("Database connection failed. Please see error log. Application has been stopped.");
+                    appLifetime.StopApplication();
                 });
             }
             else
