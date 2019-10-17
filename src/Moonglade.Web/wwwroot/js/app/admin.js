@@ -251,3 +251,44 @@ var onPageCreateEditFailed = function (context) {
         alert(`Error: ${message}`);
     }
 };
+
+function tryRestartWebsite() {
+    var nonce = Math.floor((Math.random() * 128) + 1);
+    ajaxPostWithCSRFToken("shutdown", { nonce }, function () { });
+    $(".btn-restart").text("Wait...");
+    $(".btn-restart").addClass("disabled");
+    $(".btn-restart").attr("disabled", "disabled");
+    startTimer(30, $(".btn-restart"));
+    setTimeout(function () {
+        location.href = "/admin/settings";
+    }, 30000);
+}
+
+function tryResetWebsite() {
+    var nonce = Math.floor((Math.random() * 128) + 1);
+    ajaxPostWithCSRFToken("reset", { nonce }, function () { });
+    $(".btn-reset").text("Wait...");
+    $(".btn-reset").addClass("disabled");
+    $(".btn-reset").attr("disabled", "disabled");
+    startTimer(30, $(".btn-reset"));
+    setTimeout(function () {
+        location.href = "/";
+    }, 30000);
+}
+
+function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.text(minutes + ":" + seconds);
+
+        if (--timer < 0) {
+            timer = duration;
+        }
+    }, 1000);
+}
