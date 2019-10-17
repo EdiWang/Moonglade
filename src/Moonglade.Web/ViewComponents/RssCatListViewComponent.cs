@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.ViewComponents
@@ -16,8 +14,7 @@ namespace Moonglade.Web.ViewComponents
         private readonly CategoryService _categoryService;
 
         public RssCatListViewComponent(
-            ILogger<RssCatListViewComponent> logger,
-            IOptions<AppSettings> settings, CategoryService categoryService) : base(logger, settings)
+            ILogger<RssCatListViewComponent> logger, CategoryService categoryService) : base(logger)
         {
             _categoryService = categoryService;
         }
@@ -39,8 +36,8 @@ namespace Moonglade.Web.ViewComponents
             {
                 Logger.LogError(e, "Error.");
 
-                // should not block website
-                return View(new SubscriptionViewModel());
+                ViewBag.ComponentErrorMessage = e.Message;
+                return View("~/Views/Shared/ComponentError.cshtml");
             }
         }
     }

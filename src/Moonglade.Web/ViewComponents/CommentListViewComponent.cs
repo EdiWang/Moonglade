@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
 {
@@ -13,8 +11,7 @@ namespace Moonglade.Web.ViewComponents
         private readonly CommentService _commentService;
 
         public CommentListViewComponent(
-            ILogger<CommentListViewComponent> logger,
-            IOptions<AppSettings> settings, CommentService commentService) : base(logger, settings)
+            ILogger<CommentListViewComponent> logger, CommentService commentService) : base(logger)
         {
             _commentService = commentService;
         }
@@ -36,8 +33,8 @@ namespace Moonglade.Web.ViewComponents
             {
                 Logger.LogError(e, $"Error reading comments for post id: {postId}");
 
-                // should not block website
-                return View("Error");
+                ViewBag.ComponentErrorMessage = e.Message;
+                return View("~/Views/Shared/ComponentError.cshtml");
             }
         }
     }

@@ -1,10 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
 {
@@ -16,9 +14,8 @@ namespace Moonglade.Web.ViewComponents
 
         public HotTagsViewComponent(
             ILogger<HotTagsViewComponent> logger,
-            IOptions<AppSettings> settings, 
             TagService tagService, 
-            IBlogConfig blogConfig) : base(logger, settings)
+            IBlogConfig blogConfig) : base(logger)
         {
             _tagService = tagService;
             _blogConfig = blogConfig;

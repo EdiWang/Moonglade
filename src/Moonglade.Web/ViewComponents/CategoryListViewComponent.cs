@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
 {
@@ -12,8 +10,7 @@ namespace Moonglade.Web.ViewComponents
         private readonly CategoryService _categoryService;
 
         public CategoryListViewComponent(
-            ILogger<CategoryMenuViewComponent> logger,
-            IOptions<AppSettings> settings, CategoryService categoryService) : base(logger, settings)
+            ILogger<CategoryMenuViewComponent> logger, CategoryService categoryService) : base(logger)
         {
             _categoryService = categoryService;
         }

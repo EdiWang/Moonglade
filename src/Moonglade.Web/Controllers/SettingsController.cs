@@ -45,8 +45,8 @@ namespace Moonglade.Web.Controllers
             _friendLinkService = friendLinkService;
         }
 
-        [HttpGet("general")]
-        public IActionResult General()
+        [HttpGet("general-settings")]
+        public IActionResult GeneralSettings()
         {
             var vm = new GeneralSettingsViewModel
             {
@@ -62,8 +62,8 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("general")]
-        public async Task<IActionResult> General(GeneralSettingsViewModel model)
+        [HttpPost("general-settings")]
+        public async Task<IActionResult> GeneralSettings(GeneralSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {

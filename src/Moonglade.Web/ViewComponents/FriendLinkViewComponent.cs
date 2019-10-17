@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Core;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.ViewComponents
 {
@@ -14,9 +12,9 @@ namespace Moonglade.Web.ViewComponents
     {
         private readonly FriendLinkService _friendLinkService;
 
-        public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger, IOptions<AppSettings> settings,
+        public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger,
             FriendLinkService friendLinkService)
-            : base(logger, settings)
+            : base(logger)
         {
             _friendLinkService = friendLinkService;
         }
@@ -32,8 +30,8 @@ namespace Moonglade.Web.ViewComponents
             {
                 Logger.LogError(e, "Error Reading FriendLink.");
 
-                // should not block website
-                return View(new List<FriendLink>());
+                ViewBag.ComponentErrorMessage = e.Message;
+                return View("~/Views/Shared/ComponentError.cshtml");
             }
         }
     }
