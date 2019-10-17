@@ -10,14 +10,15 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject IOptions<AppSettings> Settings
 @inject IBlogConfig BlogConfig
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>
         @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
-        <environment include="Development">
-            (Debug)
+        <environment exclude="Production">
+            (@WebHostEnvironment.EnvironmentName)
         </environment>
     </title>
     <meta charset="utf-8" />
