@@ -60,6 +60,34 @@
 
 <partial name="_SettingsHeader" />
 
+<h5>Server Information</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>System</td>
+            <td>@System.Runtime.InteropServices.RuntimeInformation.OSDescription</td>
+        </tr>
+        <tr>
+            <td>Directory</td>
+            <td>@Environment.CurrentDirectory</td>
+        </tr>
+        <tr>
+            <td>x64 Process</td>
+            <td>@Environment.Is64BitProcess</td>
+        </tr>
+        <tr>
+            <td>User Name</td>
+            <td>@Environment.UserName</td>
+        </tr>
+    </tbody>
+</table>
+
 <h5>Restart Website</h5>
 <hr />
 
