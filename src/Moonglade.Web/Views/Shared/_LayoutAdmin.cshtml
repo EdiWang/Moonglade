@@ -36,77 +36,76 @@
     </environment>
 </head>
 <body class="admin-body">
-    <div class="admin-wrap d-flex align-items-stretch">
-        <nav class="admin-nav">
-            <div class="admin-avatar d-flex justify-content-center mt-4">
-                <img src="@Url.Action("Avatar", "Image")"
-                     alt="@BlogConfig.BlogOwnerSettings.Name"
-                     class="rounded-circle blogger-head-pic" />
-            </div>
-            <div class="admin-user-info text-center mt-3 mb-3 text-light">
-                <h4>
-                    @BlogConfig.BlogOwnerSettings.Name
-                </h4>
-                <p class="small text-moonglade-dark-secondary">@User.Identity.Name</p>
-            </div>
+    <div class="container-fluid full-height">
+        <div class="row full-height">
+            <aside class="admin-nav full-height col-12 col-sm-3">
+                <div class="admin-avatar d-flex justify-content-center mt-4">
+                    <img src="@Url.Action("Avatar", "Image")"
+                         alt="@BlogConfig.BlogOwnerSettings.Name"
+                         class="rounded-circle blogger-head-pic" />
+                </div>
+                <div class="admin-user-info text-center mt-3 mb-3 text-light">
+                    <h4>
+                        @BlogConfig.BlogOwnerSettings.Name
+                    </h4>
+                    <p class="small text-moonglade-dark-secondary">@User.Identity.Name</p>
+                </div>
 
-            <hr class="admin-nav-divider" />
+                <hr class="admin-nav-divider" />
 
-            <section class="admin-nav-section mt-3 mb-3">
-                <div class="list-group list-group-flush">
-                    <a asp-controller="Post" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Post" ? "active" : null)">
-                        <span class="icon-file-text2"></span>
-                        Posts
+                <section class="admin-nav-section mt-3 mb-3">
+                    <div class="list-group list-group-flush">
+                        <a asp-controller="Post" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Post" ? "active" : null)">
+                            <span class="icon-file-text2"></span>
+                            Posts
+                        </a>
+                        <a asp-controller="Category" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Category" ? "active" : null)">
+                            <span class="icon-folder"></span>
+                            Categories
+                        </a>
+                        <a asp-controller="Tags" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Tags" ? "active" : null)">
+                            <span class="icon-price-tag"></span>
+                            Tags
+                        </a>
+                        <a asp-controller="Comment" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Comment" ? "active" : null)">
+                            <span class="icon-bubbles3"></span>
+                            Comments
+                        </a>
+                        <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
+                            <span class="icon-earth"></span>
+                            Pingbacks
+                        </a>
+                        <a asp-controller="CustomPage" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "CustomPage" ? "active" : null)">
+                            <span class="icon-file-text2"></span>
+                            Pages
+                        </a>
+                        <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
+                            <span class="icon-cog"></span>
+                            Settings
+                        </a>
+                    </div>
+                </section>
+
+                <hr class="admin-nav-divider" />
+
+                <div class="text-center mt-3">
+                    <a href="/" class="btn btn-sm btn-success">
+                        Back to Website
                     </a>
-                    <a asp-controller="Category" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Category" ? "active" : null)">
-                        <span class="icon-folder"></span>
-                        Categories
-                    </a>
-                    <a asp-controller="Tags" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Tags" ? "active" : null)">
-                        <span class="icon-price-tag"></span>
-                        Tags
-                    </a>
-                    <a asp-controller="Comment" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Comment" ? "active" : null)">
-                        <span class="icon-bubbles3"></span>
-                        Comments
-                    </a>
-                    <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
-                        <span class="icon-earth"></span>
-                        Pingbacks
-                    </a>
-                    <a asp-controller="CustomPage" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "CustomPage" ? "active" : null)">
-                        <span class="icon-file-text2"></span>
-                        Pages
-                    </a>
-                    <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
-                        <span class="icon-cog"></span>
-                        Settings
+                    <a asp-controller="Admin" asp-action="SignOut" class="btn btn-sm btn-danger">
+                        Sign Out
                     </a>
                 </div>
-            </section>
-
-            <hr class="admin-nav-divider" />
-
-            <div class="text-center mt-3">
-                <a href="/" class="btn btn-sm btn-success">
-                    Back to Website
-                </a>
-                <a asp-controller="Admin" asp-action="SignOut" class="btn btn-sm btn-danger">
-                    Sign Out
-                </a>
-            </div>
-            <p class="text-moonglade-dark-secondary mt-4 small text-center">
-                @Html.Raw(Utils.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright)) <br />
-                Moonglade @Utils.AppVersion
-            </p>
-        </nav>
-        <div class="admin-main mt-4 mr-2 ml-2">
-            <div class="container-fluid">
+                <p class="text-moonglade-dark-secondary mt-4 small text-center">
+                    @Html.Raw(Utils.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright)) <br />
+                    Moonglade @Utils.AppVersion
+                </p>
+            </aside>
+            <div class="admin-main full-height pt-4 col-sm col-12">
                 @RenderBody()
             </div>
         </div>
     </div>
-
     @RenderSection("scripts", false)
 </body>
 </html>

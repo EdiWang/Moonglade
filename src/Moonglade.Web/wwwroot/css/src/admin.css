@@ -1,20 +1,21 @@
 ﻿/* Admin Portal */
+.full-height {
+    height: 100%;
+}
+
 .admin-body {
     padding-top: 0;
 }
 
-.admin-wrap {
-    height: 100%;
-}
-
 .admin-nav {
-    width: 250px;
+    max-width: 285px;
+    padding-right: 0;
+    padding-left: 0;
     background-color: #124078;
 }
 
 .admin-main {
-    flex: 1;
-    min-height: 512px;
+    overflow-y: scroll;
 }
 
 hr.admin-nav-divider {
