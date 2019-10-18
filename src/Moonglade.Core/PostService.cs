@@ -387,7 +387,7 @@ namespace Moonglade.Core
                 {
                     CommentEnabled = request.EnableComment,
                     Id = Guid.NewGuid(),
-                    PostContent = _htmlCodec.HtmlEncode(request.HtmlContent),
+                    PostContent = _htmlCodec.HtmlEncode(request.HtmlContent, true),
                     ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords),
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
@@ -486,7 +486,7 @@ namespace Moonglade.Core
                 }
 
                 postModel.CommentEnabled = request.EnableComment;
-                postModel.PostContent = _htmlCodec.HtmlEncode(request.HtmlContent);
+                postModel.PostContent = _htmlCodec.HtmlEncode(request.HtmlContent, true);
                 postModel.ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords);
 
                 // Address #221: Do not allow published posts back to draft status
