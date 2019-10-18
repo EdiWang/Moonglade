@@ -42,7 +42,7 @@ else
                         <div class="form-group">
                             <label asp-for="BannedMailDomain" class="control-label"></label>
                             <div class="text-muted">These domains are blocked from posting comments</div>
-                            <input asp-for="BannedMailDomain" class="form-control" />
+                            <textarea asp-for="BannedMailDomain" class="form-control"></textarea>
                             <span asp-validation-for="BannedMailDomain" class="text-danger"></span>
                         </div>
                     </div>
