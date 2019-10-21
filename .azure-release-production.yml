@@ -1,9 +1,0 @@
-steps:
-- task: AzureRmWebAppDeployment@4
-  displayName: 'Deploy Azure App Service'
-  inputs:
-    azureSubscription: '$(Parameters.ConnectedServiceName)'
-    appType: '$(Parameters.WebAppKind)'
-    WebAppName: '$(Parameters.WebAppName)'
-    enableCustomDeployment: true
-    ExcludeFilesFromAppDataFlag: false
