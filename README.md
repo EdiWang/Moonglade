@@ -1,8 +1,8 @@
-﻿# Project "Moonglade"
+﻿# Moonglade
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
-The new blog system for https://edi.wang. Written in C# on [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
+The blog system for https://edi.wang. Written in C# on [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
 
 ![image](https://cdn-blob.edi.wang/web-assets/ediwang-azure-arch-v2.png)
 
@@ -102,7 +102,7 @@ Set **Authentication:Provider** to **"Local"** and assign a pair of username and
 ### Image Storage
 **AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built-in options:
 
-#### Preferred: [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)
+#### [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) (Preferred)
 
 You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with **container level permission**. 
 
@@ -114,7 +114,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 }
 ```
 
-#### Alternative: File System
+#### File System (Alternative)
 
 ```json
 "Provider": "filesystem",
@@ -176,10 +176,6 @@ EnablePingBackSend | Can blog send pingback to another blog
 EnforceHttps | Force website use HTTPS
 DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
 DNSPrefetchEndpoint | Add HTML head named "dns-prefetch"
-
-### URL Rewrite
-
-The only built-in rule is removing trailing slash in URLs. For other rules, you can customize by editing "\src\Moonglade.Web\urlrewrite.xml" according to [IIS URL Rewrite Module configuration](https://www.iis.net/downloads/microsoft/url-rewrite)
 
 ## FAQ
 
