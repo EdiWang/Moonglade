@@ -49,37 +49,11 @@
             }
 
             <div class="col-md-3 col-sm-3">
-                <h4 class="d-none d-sm-block">Follow Me</h4>
-                <div class="qrcode-link">
-                    <a title="QR Code" href="#"
-                       data-toggle="modal" data-target="#qrmodal">
-                        <span class="icon-qrcode"></span>
-                    </a>
-
-                    <a href="https://github.com/EdiWang" target="_blank">
-                        <span class="icon-github"></span>
-                    </a>
-                </div>
+                @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
             </div>
         </div>
     </div>
 </footer>
-
-<div class="modal fade" id="qrmodal" tabindex="-1" role="dialog" aria-labelledby="qrmodalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title" id="qrmodalLabel">QR Code</h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <div class="site-qrcode m-auto"></div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

@@ -13,5 +13,7 @@ namespace Moonglade.Configuration
         public string Copyright { get; set; }
 
         public string SideBarCustomizedHtmlPitch { get; set; }
+
+        public string FooterCustomizedHtmlPitch { get; set; }
     }
 }
