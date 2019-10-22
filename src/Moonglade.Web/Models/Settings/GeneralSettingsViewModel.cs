@@ -37,5 +37,9 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Side Bar Customized Html Pitch")]
         [DataType(DataType.MultilineText)]
         public string SideBarCustomizedHtmlPitch { get; set; }
+
+        [Display(Name = "Footer Customized Html Pitch")]
+        [DataType(DataType.MultilineText)]
+        public string FooterCustomizedHtmlPitch { get; set; }
     }
 }
