@@ -173,6 +173,15 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        public void TestRemoveScriptTagFromHtml()
+        {
+            var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><script>console.info('hey');</script><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
+            var output = Utils.RemoveScriptTagFromHtml(html);
+
+            Assert.IsTrue(output == @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>");
+        }
+
+        [Test]
         public void TestRemoveWhiteSpaceFromStylesheets()
         {
             var css = @"h1 {
