@@ -1,15 +1,26 @@
 ﻿@using Moonglade.Core
+@using Microsoft.Extensions.Options
+@using Moonglade.Model.Settings
+
 @model Moonglade.Model.CustomPage
+@inject IOptions<AppSettings> Settings
 
 @{
     ViewBag.TitlePrefix = Model.Title;
     ViewBag.HideSideBar = Model.HideSidebar;
 }
 
-@section head{ 
+@section head{
     <style>
         @Utils.RemoveWhiteSpaceFromStylesheets(Model.CssContent)
     </style>
 }
 
-@Html.Raw(Model.RawHtmlContent)
+@if (Settings.Value.AllowScriptsInCustomPage)
+{
+    @Html.Raw(Model.RawHtmlContent)
+}
+else
+{
+    @Html.Raw(Utils.RemoveScriptTagFromHtml(Model.RawHtmlContent))
+}
