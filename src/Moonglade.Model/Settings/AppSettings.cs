@@ -10,6 +10,7 @@
         public bool EnablePingBackSend { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
         public string DNSPrefetchEndpoint { get; set; }
+        public bool AllowScriptsInCustomPage { get; set; }
 
         public NotificationSettings Notification { get; set; }
     }
