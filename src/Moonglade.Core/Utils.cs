@@ -51,6 +51,18 @@ namespace Moonglade.Core
             return body;
         }
 
+        public static string RemoveScriptTagFromHtml(string html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                return string.Empty;
+            }
+
+            var regex = new Regex("\\<script(.+?)\\</script\\>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            var result = regex.Replace(html, string.Empty);
+            return result;
+        }
+
         public static string ResolveImageStoragePath(string contentRootPath, string path)
         {
             if (string.IsNullOrWhiteSpace(path))
@@ -235,7 +247,7 @@ namespace Moonglade.Core
             }
 
             var stringResult = new string(result, 0, cursor);
-            
+
             return stringResult.Replace("&nbsp;", " ");
         }
 
