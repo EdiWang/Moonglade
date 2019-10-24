@@ -53,7 +53,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("manage/edit")]
+        [Route("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, [FromServices] IHtmlCodec htmlCodec)
         {
             var postResponse = _postService.GetPost(id);

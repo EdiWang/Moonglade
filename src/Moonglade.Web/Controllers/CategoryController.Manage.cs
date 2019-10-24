@@ -84,7 +84,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("edit")]
+        [HttpGet("edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var r = await _categoryService.GetCategoryAsync(id);
@@ -144,7 +144,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("delete")]
+        [HttpGet("delete/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var r = await _categoryService.GetCategoryAsync(id);
@@ -165,7 +165,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("delete")]
+        [HttpPost("delete/{id:guid}")]
         public IActionResult ConfirmDelete(Guid id)
         {
             try

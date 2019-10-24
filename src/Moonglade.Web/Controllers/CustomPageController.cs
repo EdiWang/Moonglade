@@ -78,7 +78,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("manage/edit")]
+        [HttpGet("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _customPageService.GetPageAsync(id);
