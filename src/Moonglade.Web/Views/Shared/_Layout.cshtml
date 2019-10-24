@@ -110,6 +110,13 @@
         </nav>
     </header>
 
+    @if (BlogConfig.GeneralSettings.ShowCalloutSection)
+    {
+        <section class="call-out">
+            @Html.Raw(BlogConfig.GeneralSettings.CalloutSectionHtmlPitch)
+        </section>
+    }
+
     <div id="page-content" class="content">
         @if (null != ViewBag.ShowBloggerIntroInXS && ViewBag.ShowBloggerIntroInXS)
         {
