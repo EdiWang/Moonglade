@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="3.0.5" />
-    <PackageReference Include="BuildBundlerMinifier" Version="3.1.430" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="Edi.Blog.OpmlFileWriter" Version="1.1.0" />
     <PackageReference Include="Edi.Blog.Pingback" Version="10.3.1" />
     <PackageReference Include="Edi.Blog.Pingback.Mvc" Version="10.3.2" />
