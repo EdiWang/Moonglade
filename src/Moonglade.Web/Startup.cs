@@ -33,6 +33,7 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Setup;
 using Moonglade.Web.Authentication;
+using Moonglade.Web.Extensions;
 using Moonglade.Web.FaviconGenerator;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
@@ -57,6 +58,10 @@ namespace Moonglade.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
+            services.AddMemoryCache();
+            services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
+
             services.Configure<AppSettings>(_appSettingsSection);
             services.Configure<RobotsTxtOptions>(_configuration.GetSection("RobotsTxt"));
 
@@ -68,14 +73,6 @@ namespace Moonglade.Web
             _configuration.Bind(nameof(ImageStorage), imageStorage);
             services.Configure<ImageStorageSettings>(_configuration.GetSection(nameof(ImageStorage)));
 
-            services.AddOptions();
-            services.AddMemoryCache();
-
-            // Setup document: https://github.com/stefanprodan/AspNetCoreRateLimit/wiki/IpRateLimitMiddleware#setup
-            services.Configure<IpRateLimitOptions>(_configuration.GetSection("IpRateLimiting"));
-            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -86,13 +83,6 @@ namespace Moonglade.Web
             services.AddMoongladeAuthenticaton(authentication);
             services.AddMvc(options =>
                             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
-
-            // https://github.com/aspnet/Hosting/issues/793
-            // the IHttpContextAccessor service is not registered by default.
-            // the clientId/clientIp resolvers use it.
-            // services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddHttpContextAccessor();
-            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             services.AddAntiforgery(options =>
             {
