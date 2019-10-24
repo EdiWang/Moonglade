@@ -177,7 +177,22 @@
                         <textarea asp-for="FooterCustomizedHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
                         <span asp-validation-for="FooterCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
+                    <div class="form-group">
+                        <label asp-for="CalloutSectionHtmlPitch" class="control-label"></label>
+                        <textarea asp-for="CalloutSectionHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <span asp-validation-for="CalloutSectionHtmlPitch" class="text-danger"></span>
+                    </div>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="ShowCalloutSection" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.ShowCalloutSection ? "checked=\"checked\"" : "") id="ShowCalloutSection" name="ShowCalloutSection" type="checkbox" value="true">
+                            <label for="ShowCalloutSection" class="label-success"></label>
+                            <input name="ShowCalloutSection" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="col-md-6">

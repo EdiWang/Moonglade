@@ -56,6 +56,8 @@ namespace Moonglade.Web.Controllers
                 Copyright = _blogConfig.GeneralSettings.Copyright,
                 SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
                 FooterCustomizedHtmlPitch = _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch,
+                ShowCalloutSection = _blogConfig.GeneralSettings.ShowCalloutSection,
+                CalloutSectionHtmlPitch = _blogConfig.GeneralSettings.CalloutSectionHtmlPitch,
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
                 BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
                 BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription
@@ -74,6 +76,8 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
                 _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
+                _blogConfig.GeneralSettings.ShowCalloutSection = model.ShowCalloutSection;
+                _blogConfig.GeneralSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
 
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;

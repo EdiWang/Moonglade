@@ -41,5 +41,12 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Footer Customized Html Pitch")]
         [DataType(DataType.MultilineText)]
         public string FooterCustomizedHtmlPitch { get; set; }
+
+        [Display(Name = "Call-out Section Html Pitch")]
+        [DataType(DataType.MultilineText)]
+        public string CalloutSectionHtmlPitch { get; set; }
+
+        [Display(Name = "Show Call-out Section")]
+        public bool ShowCalloutSection { get; set; }
     }
 }
