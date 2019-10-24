@@ -15,5 +15,9 @@ namespace Moonglade.Configuration
         public string SideBarCustomizedHtmlPitch { get; set; }
 
         public string FooterCustomizedHtmlPitch { get; set; }
+
+        public bool ShowCalloutSection { get; set; }
+
+        public string CalloutSectionHtmlPitch { get; set; }
     }
 }
