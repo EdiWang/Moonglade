@@ -197,7 +197,7 @@ namespace Moonglade.Web
 
             if (!_environment.IsProduction())
             {
-                _logger.LogWarning("Running on non-production mode. Application Insights disabled.");
+                _logger.LogWarning($"Running in environment: {_environment.EnvironmentName}. Application Insights disabled.");
 
                 configuration.DisableTelemetry = true;
                 TelemetryDebugWriter.IsTracingDisabled = true;
@@ -205,6 +205,7 @@ namespace Moonglade.Web
 
             if (_environment.IsDevelopment())
             {
+                _logger.LogWarning($"Running in environment: {_environment.EnvironmentName}. Detailed error page enabled.");
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -264,7 +265,9 @@ namespace Moonglade.Web
                 {
                     try
                     {
+                        _logger.LogInformation("Initializing first run configuration...");
                         setupHelper.InitFirstRun();
+                        _logger.LogInformation("Database setup successfully.");
                     }
                     catch (Exception e)
                     {

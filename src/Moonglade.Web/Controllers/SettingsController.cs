@@ -86,6 +86,8 @@ namespace Moonglade.Web.Controllers
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.BlogOwnerSettings);
 
                 _blogConfig.RequireRefresh();
+
+                Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -121,6 +123,8 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
                 _blogConfig.RequireRefresh();
+
+                Logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
                 return Json(response);
 
             }
@@ -160,6 +164,8 @@ namespace Moonglade.Web.Controllers
 
                 var response = await _blogConfig.SaveConfigurationAsync(ec);
                 _blogConfig.RequireRefresh();
+
+                Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -213,6 +219,8 @@ namespace Moonglade.Web.Controllers
 
                 var response = await _blogConfig.SaveConfigurationAsync(fs);
                 _blogConfig.RequireRefresh();
+
+                Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -250,6 +258,8 @@ namespace Moonglade.Web.Controllers
 
                 var response = await _blogConfig.SaveConfigurationAsync(ws);
                 _blogConfig.RequireRefresh();
+
+                Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -313,6 +323,7 @@ namespace Moonglade.Web.Controllers
                     var response = await _friendLinkService.AddFriendLinkAsync(viewModel.Title, viewModel.LinkUrl);
                     if (response.IsSuccess)
                     {
+                        Logger.LogInformation($"User '{User.Identity.Name}' created new friendlink '{viewModel.Title}' to '{viewModel.LinkUrl}'");
                         return RedirectToAction(nameof(ManageFriendLinks));
                     }
                     ModelState.AddModelError(string.Empty, response.Message);
@@ -359,6 +370,8 @@ namespace Moonglade.Web.Controllers
                 var response = await _friendLinkService.UpdateFriendLinkAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
                 if (response.IsSuccess)
                 {
+                    Logger.LogInformation($"User '{User.Identity.Name}' updated friendlink id: '{viewModel.Id}'");
+
                     return RedirectToAction(nameof(ManageFriendLinks));
                 }
                 ModelState.AddModelError(string.Empty, response.Message);
@@ -375,6 +388,8 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> DeleteFriendLink(Guid id)
         {
             var response = await _friendLinkService.DeleteFriendLinkAsync(id);
+            Logger.LogInformation($"User '{User.Identity.Name}' deleting friendlink id: '{id}'");
+
             return response.IsSuccess ? RedirectToAction(nameof(ManageFriendLinks)) : ServerError();
         }
 
@@ -391,6 +406,7 @@ namespace Moonglade.Web.Controllers
                 base64Avatar = base64Avatar.Trim();
                 if (!Utils.TryParseBase64(base64Avatar, out var base64Chars))
                 {
+                    Logger.LogWarning("Bad base64 is used when setting avatar.");
                     return BadRequest();
                 }
 
@@ -399,6 +415,8 @@ namespace Moonglade.Web.Controllers
                     using var bmp = new Bitmap(new MemoryStream(base64Chars));
                     if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
                     {
+                        Logger.LogWarning("Avatar size is not 300x300, rejecting request.");
+
                         // Normal uploaded avatar should be a 300x300 pixel image
                         return BadRequest();
                     }
@@ -412,6 +430,8 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
+
+                Logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");
                 return Json(response);
             }
             catch (Exception e)
@@ -434,7 +454,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("shutdown")]
         public IActionResult Shutdown(int nonce, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
-            Logger.LogWarning($"Shutdown is requested. Nonce value: {nonce}");
+            Logger.LogWarning($"Shutdown is requested by '{User.Identity.Name}'. Nonce value: {nonce}");
             applicationLifetime.StopApplication();
             return Ok();
         }
@@ -442,7 +462,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("reset")]
         public IActionResult Reset(int nonce, [FromServices] IConfiguration configuration, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
-            Logger.LogWarning($"System reset is requested by {User.Identity.Name}, IP: {HttpContext.Connection.RemoteIpAddress}. Nonce value: {nonce}");
+            Logger.LogWarning($"System reset is requested by '{User.Identity.Name}', IP: {HttpContext.Connection.RemoteIpAddress}. Nonce value: {nonce}");
             var conn = configuration.GetConnectionString(Constants.DbConnectionName);
             var setupHelper = new SetupHelper(conn);
             var response = setupHelper.ClearData();
