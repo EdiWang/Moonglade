@@ -282,11 +282,13 @@ namespace Moonglade.Core
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
+                Logger.LogError($"parameter '{nameof(year)}:{year}' is out of range");
                 throw new ArgumentOutOfRangeException(nameof(year));
             }
 
             if (month > 12 || month < 0)
             {
+                Logger.LogError($"parameter '{nameof(month)}:{month}' is out of range");
                 throw new ArgumentOutOfRangeException(nameof(month));
             }
 

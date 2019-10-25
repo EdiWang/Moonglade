@@ -110,6 +110,7 @@ namespace Moonglade.Core
                 {
                     cmt.IsApproved = !cmt.IsApproved;
                     await _commentRepository.UpdateAsync(cmt);
+                    Logger.LogInformation($"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'");
                 }
 
                 return new SuccessResponse();
@@ -129,10 +130,12 @@ namespace Moonglade.Core
                     if (cReplies.Any())
                     {
                         _commentReplyRepository.Delete(cReplies);
+                        Logger.LogInformation($"Deleted comment replies under comment id: '{cmt.Id}'");
                     }
 
                     // 2. Delete comment itself
                     _commentRepository.Delete(cmt);
+                    Logger.LogInformation($"Deleted comment id: '{cmt.Id}'");
                 }
 
                 return new SuccessResponse();
@@ -156,14 +159,12 @@ namespace Moonglade.Core
                     var address = new MailAddress(request.Email);
                     if (bannedDomains.Contains(address.Host))
                     {
+                        Logger.LogWarning($"Email host '{address.Host}' is found in ban list, rejecting comments.");
                         return new FailedResponse<CommentListItem>((int)ResponseFailureCode.EmailDomainBlocked);
                     }
                 }
 
-                // 3. Encode HTML
-                request.Username = _htmlCodec.HtmlEncode(request.Username);
-
-                // 4. Harmonize banned keywords
+                // 3. Harmonize banned keywords
                 if (_blogConfig.ContentSettings.EnableWordFilter)
                 {
                     var dw = _blogConfig.ContentSettings.DisharmonyWords;
