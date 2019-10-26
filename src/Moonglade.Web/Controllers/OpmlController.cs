@@ -36,6 +36,7 @@ namespace Moonglade.Web.Controllers
             if (!Directory.Exists(feedDirectoryPath))
             {
                 Directory.CreateDirectory(feedDirectoryPath);
+                Logger.LogInformation($"Created directory '{feedDirectoryPath}'");
             }
 
             var opmlDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}";

@@ -41,12 +41,14 @@ namespace Moonglade.Core
             var response = await _pingbackReceiver.ValidatePingRequest(context);
             if (response == PingbackValidationResult.ValidPingRequest)
             {
-                Logger.LogInformation($"Pingback Attempt from {context.Connection.RemoteIpAddress} is valid");
+                Logger.LogInformation($"Pingback attempt from '{context.Connection.RemoteIpAddress}' is valid");
 
                 var pingRequest = await _pingbackReceiver.GetPingRequest();
                 var postResponse = TryGetPostIdTitle(pingRequest.TargetUrl, out var idTitleTuple);
                 if (postResponse)
                 {
+                    Logger.LogInformation($"Post '{idTitleTuple.Id}:{idTitleTuple.Title}' is found for ping.");
+
                     _pingbackReceiver.OnPingSuccess += async (sender, args) => await SavePingbackRecord(
                         new PingbackRequest
                         {

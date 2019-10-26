@@ -158,6 +158,8 @@ namespace Moonglade.Web.Controllers
                             }
                         }
 
+                        Logger.LogInformation($"User '{User.Identity.Name}' updated post id '{response.Item.Id}'");
+
                         return Json(new { PostId = response.Item.Id });
                     }
 
@@ -193,6 +195,8 @@ namespace Moonglade.Web.Controllers
         public IActionResult Delete(Guid postId)
         {
             var response = _postService.Delete(postId, true);
+            Logger.LogInformation($"User '{User.Identity.Name}' recycling post id '{postId}'");
+
             return response.IsSuccess ? Json(postId) : ServerError();
         }
 
@@ -204,6 +208,7 @@ namespace Moonglade.Web.Controllers
             var response = _postService.Delete(postId);
             if (response.IsSuccess)
             {
+                Logger.LogInformation($"User '{User.Identity.Name}' deleted post id '{postId}'");
                 return Json(postId);
             }
 
@@ -216,6 +221,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postService.DeleteRecycledPostsAsync();
+            Logger.LogInformation($"User '{User.Identity.Name}' emptied recycle bin");
             return RedirectToAction("RecycleBin");
         }
 

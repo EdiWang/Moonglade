@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using Moonglade.Model;
 using X.PagedList;
 
@@ -29,6 +30,7 @@ namespace Moonglade.Web.Controllers
             var response = await _commentService.ToggleCommentApprovalStatus(new[] { commentId });
             if (response.IsSuccess)
             {
+                Logger.LogInformation($"User '{User.Identity.Name}' updated approval status of comment id '{commentId}'");
                 return Json(commentId);
             }
 
@@ -41,6 +43,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Delete(Guid commentId)
         {
             var response = await _commentService.DeleteComments(new[] { commentId });
+            Logger.LogInformation($"User '{User.Identity.Name}' deleting comment id '{commentId}'");
             return response.IsSuccess ? Json(commentId) : Json(false);
         }
 
@@ -63,6 +66,7 @@ namespace Moonglade.Web.Controllers
                 Task.Run(async () => { await _notificationClient.SendCommentReplyNotificationAsync(response.Item, postLink); });
             }
 
+            Logger.LogInformation($"User '{User.Identity.Name}' replied comment id '{commentId}'");
             return Json(response.Item);
         }
     }

@@ -18,13 +18,20 @@
 </h3>
 <hr />
 
-@if (Model.Any())
+@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
 {
-    <partial name="_PostList" />
+    <partial name="_ServerErrorMessage" />
 }
 else
 {
-    <div class="alert alert-info">
-        No Posts.
-    </div>
+    if (Model.Any())
+    {
+        <partial name="_PostList" />
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No Posts.
+        </div>
+    }
 }

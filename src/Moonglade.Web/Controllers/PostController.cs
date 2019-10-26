@@ -39,12 +39,20 @@ namespace Moonglade.Web.Controllers
         [Route(""), Route("/")]
         public async Task<IActionResult> Index(int page = 1, [FromServices] IMemoryCache memoryCache = null)
         {
-            int pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var postList = await _postService.GetPagedPostsAsync(pagesize, page);
-            int postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCount, entry => _postService.CountVisiblePosts().Item);
+            try
+            {
+                int pagesize = _blogConfig.ContentSettings.PostListPageSize;
+                var postList = await _postService.GetPagedPostsAsync(pagesize, page);
+                int postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCount, entry => _postService.CountVisiblePosts().Item);
 
-            var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pagesize, postCount);
-            return View(postsAsIPagedList);
+                var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pagesize, postCount);
+                return View(postsAsIPagedList);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Error getting post list.");
+                return ServerError("Error getting post list.");
+            }
         }
 
         [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug}")]

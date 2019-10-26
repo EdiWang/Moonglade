@@ -153,7 +153,7 @@ namespace Moonglade.Web.Controllers
                         SkipWatermarkForSmallImages = true,
                         SmallImagePixelsThreshold = Constants.SmallImagePixelsThreshold
                     };
-                    Logger.LogInformation($"Adding watermark onto image {primaryFileName}");
+                    Logger.LogInformation($"Adding watermark onto image '{primaryFileName}'");
 
                     watermarkedStream = watermarker.AddWatermark(
                         _blogConfig.WatermarkSettings.WatermarkText,
@@ -174,7 +174,7 @@ namespace Moonglade.Web.Controllers
                     _ = Task.Run(async () => await _imageStorageProvider.InsertAsync(secondaryFieName, arr));
                 }
 
-                Logger.LogInformation("Image Uploaded: " + JsonSerializer.Serialize(response));
+                Logger.LogInformation($"Image '{primaryFileName}' uloaded.");
 
                 if (response.IsSuccess)
                 {
@@ -223,6 +223,11 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogError($"Error {nameof(Avatar)}(), Invalid Base64 string", e);
                 return PhysicalFile(fallbackImageFile, "image/png");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Error {nameof(Avatar)}()", ex);
+                return new EmptyResult();
             }
         }
     }

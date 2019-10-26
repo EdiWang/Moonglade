@@ -46,7 +46,7 @@ namespace Moonglade.Web.Controllers
 
                 // Get the exception that occurred
                 var exceptionThatOccurred = exceptionFeature.Error;
-                Logger.LogError($"Shit happens: {routeWhereExceptionOccurred}, " +
+                Logger.LogError($"Error: {routeWhereExceptionOccurred}, " +
                                 $"client IP: {HttpContext.Connection.RemoteIpAddress}, " +
                                 $"request id: {requestId}", exceptionThatOccurred);
             }

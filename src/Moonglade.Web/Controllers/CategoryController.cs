@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
             var cat = catResponse.Item;
             if (null == cat)
             {
-                Logger.LogWarning($"{categoryName} is not found.");
+                Logger.LogWarning($"Category '{categoryName}' not found.");
                 return NotFound();
             }
 
