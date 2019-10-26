@@ -96,11 +96,11 @@ namespace Moonglade.Web
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<DeleteSubscriptionCache>();
-            services.AddTransient<IHtmlCodec, HttpUtilityHtmlCodec>();
-            services.AddTransient<IPingbackSender, PingbackSender>();
-            services.AddTransient<IPingbackReceiver, PingbackReceiver>();
-            services.AddTransient<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
-            services.AddTransient<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
+            services.AddScoped<IHtmlCodec, HttpUtilityHtmlCodec>();
+            services.AddScoped<IPingbackSender, PingbackSender>();
+            services.AddScoped<IPingbackReceiver, PingbackReceiver>();
+            services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
+            services.AddScoped<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
             services.AddSessionBasedCaptcha();
 
             var asm = Assembly.GetAssembly(typeof(MoongladeService));
@@ -109,7 +109,7 @@ namespace Moonglade.Web
                 var types = asm.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));
                 foreach (var t in types)
                 {
-                    services.AddTransient(t, t);
+                    services.AddScoped(t, t);
                 }
             }
 
