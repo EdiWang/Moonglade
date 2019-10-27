@@ -11,6 +11,8 @@ namespace Moonglade.Web.Models
 
         public string Name { get; set; }
 
+        public string Description { get; set; }
+
         [JsonPropertyName("start_url")]
         public string StartUrl { get; set; }
 

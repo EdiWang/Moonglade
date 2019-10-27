@@ -29,6 +29,7 @@ namespace Moonglade.Web.Controllers
             {
                 ShortName = _blogConfig.GeneralSettings.SiteTitle,
                 Name = _blogConfig.GeneralSettings.SiteTitle,
+                Description = _blogConfig.GeneralSettings.SiteTitle,
                 StartUrl = "/",
                 Icons = new List<ManifestIcon>
                 {
