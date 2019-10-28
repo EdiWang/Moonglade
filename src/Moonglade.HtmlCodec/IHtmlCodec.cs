@@ -4,6 +4,6 @@
     {
         string HtmlDecode(string encodedHtml);
 
-        string HtmlEncode(string rawHtml, bool attributeEncode = false);
+        string HtmlEncode(string rawHtml);
     }
 }
