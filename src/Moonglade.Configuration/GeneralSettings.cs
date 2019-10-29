@@ -10,6 +10,8 @@ namespace Moonglade.Configuration
 
         public string MetaKeyword { get; set; }
 
+        public string MetaDescription { get; set; }
+
         public string Copyright { get; set; }
 
         public string SideBarCustomizedHtmlPitch { get; set; }
