@@ -162,6 +162,11 @@
                         <span asp-validation-for="MetaKeyword" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="MetaDescription" class="control-label"></label>
+                        <input asp-for="MetaDescription" class="form-control" />
+                        <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="Copyright" class="control-label"></label>
                         <input asp-for="Copyright" class="form-control" />
                         <p class="text-muted">Use [c] for copyright mark: &copy;, [year] for current year.</p>

@@ -52,6 +52,7 @@ namespace Moonglade.Web.Controllers
             {
                 LogoText = _blogConfig.GeneralSettings.LogoText,
                 MetaKeyword = _blogConfig.GeneralSettings.MetaKeyword,
+                MetaDescription = _blogConfig.GeneralSettings.MetaDescription,
                 SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
                 Copyright = _blogConfig.GeneralSettings.Copyright,
                 SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
@@ -71,6 +72,7 @@ namespace Moonglade.Web.Controllers
             if (ModelState.IsValid)
             {
                 _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
+                _blogConfig.GeneralSettings.MetaDescription = model.MetaDescription;
                 _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
                 _blogConfig.GeneralSettings.Copyright = model.Copyright;
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;

@@ -25,17 +25,20 @@
         <meta name="robots" content="noindex, nofollow" />
     }
 
-    @if (Model.PostModel.Tags.Count > 0)
-    {
-        <meta name="description" content="@Model.PostModel.Abstract" />
-    }
-
     <meta name="title" content="@Model.PostModel.Title" />
     <meta name="displaydate" content="@Model.PostModel.PubDateUtc.ToString("u")">
     <meta property="og:site_name" content="@BlogConfig.GeneralSettings.SiteTitle">
     <meta name="copyright" content="(C) 2009 - @DateTime.UtcNow.Year edi.wang">
     <meta name="author" content="@BlogConfig.BlogOwnerSettings.Name" />
 }
+
+@section metadescription{
+    @if (Model.PostModel.Tags.Count > 0)
+    {
+        <meta name="description" content="@Model.PostModel.Abstract" />
+    }
+}
+
 @section head {
     @if (null == ViewBag.IsDraftPreview)
     {
