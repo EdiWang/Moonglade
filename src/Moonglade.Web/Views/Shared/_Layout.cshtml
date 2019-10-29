@@ -32,6 +32,14 @@
         <meta name="keywords" content="@Html.Raw(BlogConfig.GeneralSettings.MetaKeyword)" />
     }
     @RenderSection("meta", false)
+    @if (IsSectionDefined("metadescription"))
+    {
+        @RenderSection("metadescription", false)
+    }
+    else
+    {
+        <meta name="description" content="@BlogConfig.GeneralSettings.MetaDescription" />
+    }
 
     @if (!string.IsNullOrWhiteSpace(Settings.Value.DNSPrefetchEndpoint))
     {
