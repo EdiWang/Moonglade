@@ -9,6 +9,10 @@ namespace Moonglade.Web.Models.Settings
         public string MetaKeyword { get; set; }
 
         [Required]
+        [Display(Name = "Meta Description")]
+        public string MetaDescription { get; set; }
+
+        [Required]
         [Display(Name = "Logo Text")]
         public string LogoText { get; set; }
 
