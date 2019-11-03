@@ -331,15 +331,6 @@ label {
         font-size: 80%;
     }
 
-.tag-thumbnail {
-    display: block;
-    padding: 4px;
-    margin-bottom: 20px;
-    -webkit-transition: border .2s ease-in-out;
-    -o-transition: border .2s ease-in-out;
-    transition: border .2s ease-in-out;
-}
-
 .arch-media-logo svg {
     width: 60px;
 }
