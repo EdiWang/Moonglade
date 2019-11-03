@@ -257,50 +257,6 @@ label {
     text-align: left;
 }
 
-.table .table-item-w10 {
-    width: 10%;
-}
-
-.table .table-item-w20 {
-    width: 20%;
-}
-
-.table .table-item-w30 {
-    width: 30%;
-}
-
-.table .table-item-w40 {
-    width: 40%;
-}
-
-.table .table-item-w50 {
-    width: 50%;
-}
-
-.table .table-item-w60 {
-    width: 60%;
-}
-
-.table .table-item-w70 {
-    width: 70%;
-}
-
-.table .table-item-w80 {
-    width: 80%;
-}
-
-.table .table-item-w85 {
-    width: 85%;
-}
-
-.table .table-item-w90 {
-    width: 90%;
-}
-
-.table .table-item-w100 {
-    width: 100%;
-}
-
 .tagCloud {
     line-height: 28px;
     text-align: justify;
