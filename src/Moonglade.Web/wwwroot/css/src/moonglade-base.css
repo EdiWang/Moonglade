@@ -901,13 +901,6 @@ footer {
     font-size: 100% !important;
 }
 
-.card > .list-group:last-child .list-group-item:last-child, .btn, .card, .form-control, .pre, .dropdown-menu, .nav-tabs .nav-link,
-.page-item:first-child .page-link, .nav-pills .nav-link,
-.page-item:last-child .page-link, .input-group-text,
-.form-control-sm, .input-group-sm > .form-control, .input-group-sm > .input-group-append > .btn, .input-group-sm > .input-group-append > .input-group-text, .input-group-sm > .input-group-prepend > .btn, .input-group-sm > .input-group-prepend > .input-group-text {
-    border-radius: 0;
-}
-
 .nav-item-non-margin {
     margin: 0 0;
 }
