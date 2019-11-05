@@ -102,6 +102,7 @@ namespace Moonglade.Web.Controllers
             {
                 DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
                 EnableComments = _blogConfig.ContentSettings.EnableComments,
+                RequireCommentReview = _blogConfig.ContentSettings.RequireCommentReview,
                 EnableWordFilter = _blogConfig.ContentSettings.EnableWordFilter,
                 UseFriendlyNotFoundImage = _blogConfig.ContentSettings.UseFriendlyNotFoundImage,
                 PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
@@ -118,6 +119,7 @@ namespace Moonglade.Web.Controllers
             {
                 _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
                 _blogConfig.ContentSettings.EnableComments = model.EnableComments;
+                _blogConfig.ContentSettings.RequireCommentReview = model.RequireCommentReview;
                 _blogConfig.ContentSettings.EnableWordFilter = model.EnableWordFilter;
                 _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
                 _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;

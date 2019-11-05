@@ -9,6 +9,10 @@ namespace Moonglade.Web.Models.Settings
         public bool EnableComments { get; set; }
 
         [Required]
+        [Display(Name = "Comments Require Blog Admin Review and Approval")]
+        public bool RequireCommentReview { get; set; }
+
+        [Required]
         [DataType(DataType.MultilineText)]
         [Display(Name = "Blocked Words")]
         public string DisharmonyWords { get; set; }
