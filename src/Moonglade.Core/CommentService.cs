@@ -182,7 +182,7 @@ namespace Moonglade.Core
                     CreateOnUtc = DateTime.UtcNow,
                     Email = request.Email,
                     IPAddress = request.IpAddress,
-                    IsApproved = false,
+                    IsApproved = !_blogConfig.ContentSettings.RequireCommentReview,
                     UserAgent = request.UserAgent
                 };
 

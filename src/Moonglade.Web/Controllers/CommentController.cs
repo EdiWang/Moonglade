@@ -78,7 +78,11 @@ namespace Moonglade.Web.Controllers
                                   await _notificationClient.SendNewCommentNotificationAsync(response.Item, Utils.MdContentToHtml);
                               });
                         }
-                        var cResponse = new CommentResponse(true, CommentResponseCode.Success);
+                        var cResponse = new CommentResponse(true, 
+                            _blogConfig.ContentSettings.RequireCommentReview ? 
+                            CommentResponseCode.Success : 
+                            CommentResponseCode.SuccessNonReview);
+
                         return Json(cResponse);
                     }
 
@@ -129,12 +133,13 @@ namespace Moonglade.Web.Controllers
 
         public enum CommentResponseCode
         {
-            Success,
-            UnknownError,
-            WrongCaptcha,
-            EmailDomainBlocked,
-            CommentDisabled,
-            InvalidModel
+            Success = 100,
+            SuccessNonReview = 101,
+            UnknownError = 200,
+            WrongCaptcha = 300,
+            EmailDomainBlocked = 400,
+            CommentDisabled = 500,
+            InvalidModel = 600
         }
     }
 }
