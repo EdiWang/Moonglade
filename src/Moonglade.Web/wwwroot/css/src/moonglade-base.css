@@ -667,10 +667,14 @@ div.animbrand a:focus, div.animbrand a:hover {
 
 .blog-info-desktop-lg {
     background: #fafafa;
-    border-radius: 5px;
+    border-radius: 3px;
     color: #fff;
     overflow: hidden;
     position: relative;
+}
+
+.btn-profile-about {
+    border-radius: 0 0 3px 3px;
 }
 
 .card-bkimg-container {
@@ -779,6 +783,7 @@ footer {
 
 .search-form {
     background: rgba(255, 255, 255, .2);
+    border-radius: 3px;
 }
 
 .btn-search {
