@@ -15,30 +15,37 @@ var onCommentComplete = function () {
 
 var onCommentSuccess = function (context) {
     postSlug.resetCaptchaImage();
-    $('#thx-for-comment').show();
     $('#form-comment')[0].reset();
+
+    var respCode = context.responseCode;
+    if (respCode === 100) {
+        $('#thx-for-comment').show();
+    }
+    if (respCode === 101) {
+        $('#thx-for-comment-non-review').show();
+    }
 };
 
 var onCommentFailed = function (context) {
     $('#thx-for-comment').hide();
     var errorCode = context.responseJSON.responseCode;
     if (window.toastr) {
-        if (errorCode === 1) {
+        if (errorCode === 200) {
             window.toastr.error('Server Error');
         }
-        if (errorCode === 2) {
+        if (errorCode === 300) {
             window.toastr.error('Incorrect Captcha Code');
             postSlug.resetCaptchaImage();
             $('#CommentPostModel_CaptchaCode').val('');
             $('#CommentPostModel_CaptchaCode').focus();
         }
-        if (errorCode === 3) {
+        if (errorCode === 400) {
             window.toastr.error('Your email domain has been blocked due to spam comments.');
         }
-        if (errorCode === 4) {
+        if (errorCode === 500) {
             window.toastr.error('Comment is disabled.');
         }
-        if (errorCode === 5) {
+        if (errorCode === 600) {
             window.toastr.error('Invalid input.');
         }
     } else {

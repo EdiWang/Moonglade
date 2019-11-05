@@ -8,6 +8,8 @@ namespace Moonglade.Configuration
 
         public bool EnableComments { get; set; }
 
+        public bool RequireCommentReview { get; set; }
+
         public bool EnableWordFilter { get; set; }
 
         public bool UseFriendlyNotFoundImage { get; set; }
