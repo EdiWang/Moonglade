@@ -17,7 +17,7 @@ var onCommentSuccess = function (context) {
     postSlug.resetCaptchaImage();
     $('#form-comment')[0].reset();
 
-    var respCode = context.responseJSON.responseCode;
+    var respCode = context.responseCode;
     if (respCode === 100) {
         $('#thx-for-comment').show();
     }
