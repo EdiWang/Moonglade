@@ -1,15 +1,11 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-@using Microsoft.Extensions.Options
-@using Moonglade.Configuration.Abstraction
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+
 @using Moonglade.Core
-@using Moonglade.Model.Settings
 @{
     var currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
 }
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@inject IOptions<AppSettings> Settings
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
-
 <!DOCTYPE html>
 <html>
 <head>

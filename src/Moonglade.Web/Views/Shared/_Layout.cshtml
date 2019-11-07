@@ -1,15 +1,13 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+
 @using Microsoft.Extensions.Options
-@using Moonglade.Configuration.Abstraction
-@using Moonglade.Model.Settings
 @{
     string currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
     string currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
     string customPageRouteName = ViewContext.RouteData?.Values["routeName"]?.ToString();
 }
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@inject IOptions<AppSettings> Settings
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
 <!DOCTYPE html>
 <html>

@@ -1,11 +1,6 @@
-﻿@using Microsoft.Extensions.Options
-@using Moonglade.Core
-@using Moonglade.Model.Settings
-@using Moonglade.Configuration.Abstraction
+﻿@using Moonglade.Core
 @using Moonglade.Web.HtmlHelpers
 @model IReadOnlyList<Moonglade.Model.PostCommentListItem>
-
-@inject IOptions<AppSettings> Settings
 
 @{
     string GetUserAvatarChar(string username)
