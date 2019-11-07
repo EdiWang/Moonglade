@@ -18,16 +18,8 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">Content</div>
+                <div class="card-header">Comments</div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <label asp-for="UseFriendlyNotFoundImage" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.UseFriendlyNotFoundImage ? "checked=\"checked\"" : string.Empty) id="UseFriendlyNotFoundImage" name="UseFriendlyNotFoundImage" type="checkbox" value="true">
-                            <label for="UseFriendlyNotFoundImage" class="label-success"></label>
-                            <input name="UseFriendlyNotFoundImage" type="hidden" value="false">
-                        </div>
-                    </li>
                     <li class="list-group-item">
                         <label asp-for="EnableComments" class="control-label"></label>
                         <div class="material-switch float-right">
@@ -45,6 +37,14 @@
                         </div>
                     </li>
                     <li class="list-group-item">
+                        <label asp-for="EnableGravatar" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnableGravatar ? "checked=\"checked\"" : string.Empty) id="EnableGravatar" name="EnableGravatar" type="checkbox" value="true">
+                            <label for="EnableGravatar" class="label-success"></label>
+                            <input name="EnableGravatar" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
                         <label asp-for="EnableWordFilter" class="control-label"></label>
                         <div class="material-switch float-right">
                             <input @(Model.EnableWordFilter ? "checked=\"checked\"" : string.Empty) id="EnableWordFilter" name="EnableWordFilter" type="checkbox" value="true">
@@ -52,12 +52,26 @@
                             <input name="EnableWordFilter" type="hidden" value="false">
                         </div>
                     </li>
+                </ul>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="DisharmonyWords" class="control-label"></label>
+                        <textarea asp-for="DisharmonyWords" class="form-control h-300px"></textarea>
+                        <span asp-validation-for="DisharmonyWords" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Blog posts</div>
+                <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <label asp-for="EnableGravatar" class="control-label"></label>
+                        <label asp-for="UseFriendlyNotFoundImage" class="control-label"></label>
                         <div class="material-switch float-right">
-                            <input @(Model.EnableGravatar ? "checked=\"checked\"" : string.Empty) id="EnableGravatar" name="EnableGravatar" type="checkbox" value="true">
-                            <label for="EnableGravatar" class="label-success"></label>
-                            <input name="EnableGravatar" type="hidden" value="false">
+                            <input @(Model.UseFriendlyNotFoundImage ? "checked=\"checked\"" : string.Empty) id="UseFriendlyNotFoundImage" name="UseFriendlyNotFoundImage" type="checkbox" value="true">
+                            <label for="UseFriendlyNotFoundImage" class="label-success"></label>
+                            <input name="UseFriendlyNotFoundImage" type="hidden" value="false">
                         </div>
                     </li>
                 </ul>
@@ -71,11 +85,6 @@
                         <label asp-for="HotTagAmount" class="control-label"></label>
                         <input asp-for="HotTagAmount" class="form-control" />
                         <span asp-validation-for="HotTagAmount" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="DisharmonyWords" class="control-label"></label>
-                        <textarea asp-for="DisharmonyWords" class="form-control h-300px"></textarea>
-                        <span asp-validation-for="DisharmonyWords" class="text-danger"></span>
                     </div>
                 </div>
             </div>
