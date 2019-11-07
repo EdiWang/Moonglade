@@ -149,9 +149,19 @@ namespace Moonglade.Core
             return url.TrimEnd('/') + "/" + path.TrimStart('/');
         }
 
+        public static IReadOnlyList<TimeZoneInfo> GetTimeZones()
+        {
+            return TimeZoneInfo.GetSystemTimeZones();
+        }
+
         public static DateTime UtcToZoneTime(DateTime utcTime, int timeZone)
         {
             return utcTime.AddHours(timeZone);
+        }
+
+        public static DateTime UtcToZoneTime(DateTime utcTime, TimeSpan span)
+        {
+            return utcTime.AddTicks(span.Ticks);
         }
 
         public static string GetPostAbstract(string rawHtmlContent, int wordCount)
