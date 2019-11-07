@@ -154,11 +154,6 @@ namespace Moonglade.Core
             return TimeZoneInfo.GetSystemTimeZones();
         }
 
-        public static DateTime UtcToZoneTime(DateTime utcTime, int timeZone)
-        {
-            return utcTime.AddHours(timeZone);
-        }
-
         public static DateTime UtcToZoneTime(DateTime utcTime, TimeSpan span)
         {
             return utcTime.AddTicks(span.Ticks);

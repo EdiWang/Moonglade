@@ -125,7 +125,7 @@
                 {
                     <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm"))</span>
                 }
-                | UTC+@Settings.Value.TimeZone:00
+                | UTC @Settings.Value.TimeZone
             </div>
         </div>
 
@@ -136,7 +136,7 @@
                 {
                     <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm"))</span>
                 }
-                | UTC+@Settings.Value.TimeZone:00
+                | UTC @Settings.Value.TimeZone
             </strong>
             <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits Reads</span>
         </div>
