@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -48,6 +50,12 @@ namespace Moonglade.Web.Controllers
         [HttpGet("general-settings")]
         public IActionResult GeneralSettings()
         {
+            var tzList = Utils.GetTimeZones().Select(t => new SelectListItem
+            {
+                Text = t.DisplayName,
+                Value = t.BaseUtcOffset.ToString()
+            }).ToList();
+
             var vm = new GeneralSettingsViewModel
             {
                 LogoText = _blogConfig.GeneralSettings.LogoText,
@@ -61,7 +69,9 @@ namespace Moonglade.Web.Controllers
                 CalloutSectionHtmlPitch = _blogConfig.GeneralSettings.CalloutSectionHtmlPitch,
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
                 BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
-                BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription
+                BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription,
+                SelectedUtcOffset = _blogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset,
+                TimeZoneList = tzList
             };
             return View(vm);
         }
@@ -80,6 +90,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
                 _blogConfig.GeneralSettings.ShowCalloutSection = model.ShowCalloutSection;
                 _blogConfig.GeneralSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
+                _blogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset = model.SelectedUtcOffset;
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
 
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
