@@ -1,4 +1,5 @@
 ﻿using Moonglade.Configuration.Abstraction;
+using System;
 
 namespace Moonglade.Configuration
 {
@@ -21,5 +22,7 @@ namespace Moonglade.Configuration
         public bool ShowCalloutSection { get; set; }
 
         public string CalloutSectionHtmlPitch { get; set; }
+
+        public TimeSpan UserTimeZoneBaseUtcOffset { get; set; }
     }
 }

@@ -102,7 +102,7 @@ else
                 </div>
 
                 <div class="text-muted">
-                    <span>@Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-MM-dd HH:mm")</span> | <span class="text-muted d-none d-sm-inline">@item.IpAddress</span>
+                    <span>@Utils.UtcToZoneTime(item.CreateOnUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-MM-dd HH:mm")</span> | <span class="text-muted d-none d-sm-inline">@item.IpAddress</span>
                 </div>
 
                 <div class="reply-ui mt-3" style="display: none;">
@@ -130,7 +130,7 @@ else
                             <div class="mb-2">
                                 @reply.ReplyContent
                             </div>
-                            <div class="text-muted">@Utils.UtcToZoneTime(reply.ReplyTimeUtc, Settings.Value.TimeZone)</div>
+                            <div class="text-muted">@Utils.UtcToZoneTime(reply.ReplyTimeUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset)</div>
                         </div>
                     }
                 </div>
