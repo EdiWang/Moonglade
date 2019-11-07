@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Edi.Practice.RequestResponseModel;
 using Markdig;
@@ -149,13 +150,19 @@ namespace Moonglade.Core
             return url.TrimEnd('/') + "/" + path.TrimStart('/');
         }
 
-        public static IReadOnlyList<TimeZoneInfo> GetTimeZones()
+        public static IEnumerable<TimeZoneInfo> GetTimeZones()
         {
             return TimeZoneInfo.GetSystemTimeZones();
         }
 
         public static DateTime UtcToZoneTime(DateTime utcTime, TimeSpan span)
         {
+            var tz = GetTimeZones().FirstOrDefault(t => t.BaseUtcOffset == span);
+            if (null != tz)
+            {
+                return TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz);
+            }
+
             return utcTime.AddTicks(span.Ticks);
         }
 
