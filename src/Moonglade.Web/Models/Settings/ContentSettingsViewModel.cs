@@ -38,5 +38,9 @@ namespace Moonglade.Web.Models.Settings
         [Required]
         [Display(Name = "Enable Gravatar in Comment List")]
         public bool EnableGravatar { get; set; }
+
+        [Required]
+        [Display(Name = "Enable Image Lazy Load")]
+        public bool EnableImageLazyLoad { get; set; }
     }
 }
