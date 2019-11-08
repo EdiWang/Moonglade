@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Models.Settings
 {
@@ -52,5 +55,11 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Show Call-out Section")]
         public bool ShowCalloutSection { get; set; }
+
+        public TimeSpan SelectedUtcOffset { get; set; }
+
+        public string SelectedTimeZoneId { get; set; }
+
+        public List<SelectListItem> TimeZoneList { get; set; }
     }
 }

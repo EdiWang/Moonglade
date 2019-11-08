@@ -4,10 +4,12 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Edi.Practice.RequestResponseModel;
 using Markdig;
 using Moonglade.HtmlCodec;
+using TimeZoneConverter;
 
 namespace Moonglade.Core
 {
@@ -149,9 +151,32 @@ namespace Moonglade.Core
             return url.TrimEnd('/') + "/" + path.TrimStart('/');
         }
 
-        public static DateTime UtcToZoneTime(DateTime utcTime, int timeZone)
+        public static IEnumerable<TimeZoneInfo> GetTimeZones()
         {
-            return utcTime.AddHours(timeZone);
+            return TimeZoneInfo.GetSystemTimeZones();
+        }
+
+        public static TimeSpan GetTimeSpanByZoneId(string timeZoneId)
+        {
+            if (string.IsNullOrWhiteSpace(timeZoneId))
+            {
+                return TimeSpan.Zero;
+            }
+
+            // Reference: https://devblogs.microsoft.com/dotnet/cross-platform-time-zones-with-net-core/
+            var tz = TZConvert.GetTimeZoneInfo(timeZoneId);
+            return tz.BaseUtcOffset;
+        }
+
+        public static DateTime UtcToZoneTime(DateTime utcTime, TimeSpan span)
+        {
+            var tz = GetTimeZones().FirstOrDefault(t => t.BaseUtcOffset == span);
+            if (null != tz)
+            {
+                return TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz);
+            }
+
+            return utcTime.AddTicks(span.Ticks);
         }
 
         public static string GetPostAbstract(string rawHtmlContent, int wordCount)

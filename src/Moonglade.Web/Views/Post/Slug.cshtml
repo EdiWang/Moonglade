@@ -1,12 +1,7 @@
-﻿@using Microsoft.Extensions.Options
-@using Moonglade.Configuration.Abstraction
-@using Moonglade.Core
-@using Moonglade.Model.Settings
+﻿@using Moonglade.Core
 
 @model PostSlugViewModelWrapper
-@inject IOptions<AppSettings> Settings
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@inject IBlogConfig BlogConfig
 
 @{
     ViewBag.ShowBloggerIntroInXS = true;
@@ -120,23 +115,23 @@
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info bg-light">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm"))</span>
+                    <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm"))</span>
                 }
-                | UTC+@Settings.Value.TimeZone:00
+                | UTC @BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset
             </div>
         </div>
 
         <div class="d-none d-md-block post-publish-info mb-2">
             <strong class="text-muted">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm"))</span>
+                    <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm"))</span>
                 }
-                | UTC+@Settings.Value.TimeZone:00
+                | UTC @BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset
             </strong>
             <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits Reads</span>
         </div>

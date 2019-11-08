@@ -1,12 +1,6 @@
-﻿@using Microsoft.Extensions.Options
-@using Moonglade.Core
-@using Moonglade.Model.Settings
-@using Moonglade.Configuration.Abstraction
+﻿@using Moonglade.Core
 @using Moonglade.Web.HtmlHelpers
 @model IReadOnlyList<Moonglade.Model.PostCommentListItem>
-
-@inject IOptions<AppSettings> Settings
-@inject IBlogConfig BlogConfig
 
 @{
     string GetUserAvatarChar(string username)
@@ -48,7 +42,7 @@
                 <div class="card comment-item">
                     <div class="card-header">
                         <strong>@item.Username</strong>
-                        <span class="text-muted float-right"> @Utils.UtcToZoneTime(item.CreateOnUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</span>
+                        <span class="text-muted float-right"> @Utils.UtcToZoneTime(item.CreateOnUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm")</span>
                     </div>
                     <div class="card-body">
                         @Html.Raw(Utils.MdContentToHtml(item.CommentContent))
@@ -61,7 +55,7 @@
                                         <strong>
                                             Blog Author Replied:
                                         </strong>
-                                        <span class="float-right text-muted">Replied at @Utils.UtcToZoneTime(reply.ReplyTimeUtc, Settings.Value.TimeZone).ToString("yyyy-M-d HH:mm")</span>
+                                        <span class="float-right text-muted">Replied at @Utils.UtcToZoneTime(reply.ReplyTimeUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
                                     <p>
                                         @reply.ReplyContent
