@@ -120,7 +120,8 @@ namespace Moonglade.Web.Controllers
                 UseFriendlyNotFoundImage = _blogConfig.ContentSettings.UseFriendlyNotFoundImage,
                 PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
                 HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
-                EnableGravatar = _blogConfig.ContentSettings.EnableGravatar
+                EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,
+                EnableImageLazyLoad = _blogConfig.ContentSettings.EnableImageLazyLoad
             };
             return View(vm);
         }
@@ -138,6 +139,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
                 _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
                 _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
+                _blogConfig.ContentSettings.EnableImageLazyLoad = model.EnableImageLazyLoad;
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
                 _blogConfig.RequireRefresh();
 

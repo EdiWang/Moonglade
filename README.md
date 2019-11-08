@@ -169,11 +169,9 @@ CaptchaSettings:ImageWidth | Pixel Width of Captcha Image
 CaptchaSettings.ImageHeight | Pixel Height of Captcha Image
 PostSummaryWords | How may words to show in post list summary
 ImageCacheSlidingExpirationMinutes | Time for cached images to expire
-EnableImageLazyLoad | Use lazy load to show images when user scrolls the page
 EnablePingBackReceive | Can blog receive pingback requests
 EnablePingBackSend | Can blog send pingback to another blog
 EnforceHttps | Force website use HTTPS
-DisableEmailSendingInDevelopment | When debugging locally, do not send email for real
 DNSPrefetchEndpoint | Add HTML head named "dns-prefetch"
 AllowScriptsInCustomPage | Allow JavaScript in Page content or not
 

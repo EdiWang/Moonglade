@@ -7,6 +7,7 @@ using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -19,6 +20,7 @@ namespace Moonglade.Core
     public class PostService : MoongladeService
     {
         private readonly IHtmlCodec _htmlCodec;
+        private readonly IBlogConfig _blogConfig;
 
         #region Repository Objects
 
@@ -41,7 +43,8 @@ namespace Moonglade.Core
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
-            IHtmlCodec htmlCodec) : base(logger, settings)
+            IHtmlCodec htmlCodec, 
+            IBlogConfig blogConfig) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -51,6 +54,7 @@ namespace Moonglade.Core
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
             _htmlCodec = htmlCodec;
+            _blogConfig = blogConfig;
         }
 
         public Response<int> CountVisiblePosts()
@@ -181,7 +185,7 @@ namespace Moonglade.Core
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc
                 });
 
-                if (null != postSlugModel && AppSettings.EnableImageLazyLoad)
+                if (null != postSlugModel && _blogConfig.ContentSettings.EnableImageLazyLoad)
                 {
                     postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
                 }
@@ -225,7 +229,7 @@ namespace Moonglade.Core
                     CommentCount = post.Comment.Count(c => c.IsApproved)
                 });
 
-                if (null != postSlugModel && AppSettings.EnableImageLazyLoad)
+                if (null != postSlugModel && _blogConfig.ContentSettings.EnableImageLazyLoad)
                 {
                     postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
                 }
