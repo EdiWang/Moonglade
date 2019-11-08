@@ -166,6 +166,12 @@
                         <input asp-for="MetaDescription" class="form-control" />
                         <span asp-validation-for="MetaDescription" class="text-danger"></span>
                     </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="SelectedUtcOffset">Time Zone</label>
+                        </div>
+                        <select class="custom-select" asp-for="SelectedUtcOffset" asp-items="@Model.TimeZoneList"></select>
+                    </div>
                     <div class="form-group">
                         <label asp-for="Copyright" class="control-label"></label>
                         <input asp-for="Copyright" class="form-control" />
@@ -177,28 +183,11 @@
                         <textarea asp-for="FooterCustomizedHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
                         <span asp-validation-for="FooterCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="CalloutSectionHtmlPitch" class="control-label"></label>
-                        <textarea asp-for="CalloutSectionHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
-                        <span asp-validation-for="CalloutSectionHtmlPitch" class="text-danger"></span>
-                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <label asp-for="ShowCalloutSection" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.ShowCalloutSection ? "checked=\"checked\"" : "") id="ShowCalloutSection" name="ShowCalloutSection" type="checkbox" value="true">
-                            <label for="ShowCalloutSection" class="label-success"></label>
-                            <input name="ShowCalloutSection" type="hidden" value="false">
-                        </div>
-                    </li>
-                </ul>
-
-                <select asp-for="SelectedUtcOffset" asp-items="@Model.TimeZoneList"></select>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">Owner Information</div>
                 <div class="card-body">
                     <div class="form-group">
@@ -232,6 +221,26 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Call-out</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="ShowCalloutSection" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.ShowCalloutSection ? "checked=\"checked\"" : "") id="ShowCalloutSection" name="ShowCalloutSection" type="checkbox" value="true">
+                            <label for="ShowCalloutSection" class="label-success"></label>
+                            <input name="ShowCalloutSection" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="CalloutSectionHtmlPitch" class="control-label"></label>
+                        <textarea asp-for="CalloutSectionHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <span asp-validation-for="CalloutSectionHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
             </div>
