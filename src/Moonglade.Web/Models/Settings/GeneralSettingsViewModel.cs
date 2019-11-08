@@ -56,8 +56,9 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Show Call-out Section")]
         public bool ShowCalloutSection { get; set; }
 
-        [Display(Name = "Time Zone")]
         public TimeSpan SelectedUtcOffset { get; set; }
+
+        public string SelectedTimeZoneId { get; set; }
 
         public List<SelectListItem> TimeZoneList { get; set; }
     }

@@ -53,7 +53,7 @@ namespace Moonglade.Web.Controllers
             var tzList = Utils.GetTimeZones().Select(t => new SelectListItem
             {
                 Text = t.DisplayName,
-                Value = t.BaseUtcOffset.ToString()
+                Value = t.Id
             }).ToList();
 
             var vm = new GeneralSettingsViewModel
@@ -70,7 +70,8 @@ namespace Moonglade.Web.Controllers
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
                 BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
                 BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription,
-                SelectedUtcOffset = _blogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset,
+                SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
+                SelectedUtcOffset = Utils.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
                 TimeZoneList = tzList
             };
             return View(vm);
@@ -90,7 +91,8 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
                 _blogConfig.GeneralSettings.ShowCalloutSection = model.ShowCalloutSection;
                 _blogConfig.GeneralSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
-                _blogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset = model.SelectedUtcOffset;
+                _blogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset = Utils.GetTimeSpanByZoneId(model.SelectedTimeZoneId);
+                _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
 
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;

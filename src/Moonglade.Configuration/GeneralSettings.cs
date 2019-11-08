@@ -24,5 +24,7 @@ namespace Moonglade.Configuration
         public string CalloutSectionHtmlPitch { get; set; }
 
         public TimeSpan UserTimeZoneBaseUtcOffset { get; set; }
+
+        public string TimeZoneId { get; set; }
     }
 }

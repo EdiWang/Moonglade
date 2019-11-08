@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Edi.Practice.RequestResponseModel;
 using Markdig;
 using Moonglade.HtmlCodec;
+using TimeZoneConverter;
 
 namespace Moonglade.Core
 {
@@ -153,6 +154,18 @@ namespace Moonglade.Core
         public static IEnumerable<TimeZoneInfo> GetTimeZones()
         {
             return TimeZoneInfo.GetSystemTimeZones();
+        }
+
+        public static TimeSpan GetTimeSpanByZoneId(string timeZoneId)
+        {
+            if (string.IsNullOrWhiteSpace(timeZoneId))
+            {
+                return TimeSpan.Zero;
+            }
+
+            // Reference: https://devblogs.microsoft.com/dotnet/cross-platform-time-zones-with-net-core/
+            var tz = TZConvert.GetTimeZoneInfo(timeZoneId);
+            return tz.BaseUtcOffset;
         }
 
         public static DateTime UtcToZoneTime(DateTime utcTime, TimeSpan span)
