@@ -43,7 +43,6 @@ namespace Moonglade.Web
                               .UseStartup<Startup>()
                               .ConfigureLogging(logging =>
                               {
-                                  logging.ClearProviders();
                                   logging.SetMinimumLevel(LogLevel.Trace);
                               }).UseNLog();
                 });
