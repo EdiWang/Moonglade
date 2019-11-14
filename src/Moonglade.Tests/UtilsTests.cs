@@ -59,6 +59,21 @@ namespace Moonglade.Tests
             return Utils.NormalizeTagName(str);
         }
 
+        [TestCase("C", ExpectedResult = true)]
+        [TestCase("C++", ExpectedResult = true)]
+        [TestCase("C#", ExpectedResult = true)]
+        [TestCase("Java", ExpectedResult = true)]
+        [TestCase("996", ExpectedResult = true)]
+        [TestCase(".NET", ExpectedResult = true)]
+        [TestCase("C Sharp", ExpectedResult = true)]
+        [TestCase("Cup<T>", ExpectedResult = false)]
+        [TestCase("(1)", ExpectedResult = false)]
+        [TestCase("usr/bin", ExpectedResult = false)]
+        public bool TestValidateTagName(string tagDisplayName)
+        {
+            return Utils.ValidateTagName(tagDisplayName);
+        }
+
         [Test]
         public void TryParseBase64Success()
         {

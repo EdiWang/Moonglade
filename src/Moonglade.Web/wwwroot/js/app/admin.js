@@ -75,6 +75,12 @@ var postEditor = {
             }
         });
 
+        $('#Tags').on('beforeItemAdd', function (event) {
+            console.info(event.item);
+            // event.item: contains the item
+            // event.cancel: set to true to prevent the item getting added
+        });
+
         $('#btn-preview').click(function(e) {
             if ($('form').valid()) {
                 submitForm(e);

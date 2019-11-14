@@ -455,6 +455,11 @@ namespace Moonglade.Core
                 {
                     foreach (var item in request.Tags)
                     {
+                        if (!Utils.ValidateTagName(item))
+                        {
+                            continue;
+                        }
+
                         var tag = _tagRepository.Get(q => q.DisplayName == item);
                         if (null == tag)
                         {
@@ -530,6 +535,11 @@ namespace Moonglade.Core
                 {
                     foreach (var tagName in request.Tags)
                     {
+                        if (!Utils.ValidateTagName(tagName))
+                        {
+                            continue;
+                        }
+
                         var tag = _tagRepository.Get(t => t.DisplayName == tagName);
                         if (tag != null) postModel.PostTag.Add(new PostTagEntity
                         {
