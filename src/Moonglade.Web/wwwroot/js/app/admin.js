@@ -77,10 +77,10 @@ var postEditor = {
 
         $('#Tags').on('beforeItemAdd', function (event) {
             if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
-                console.warn('Invalid tag name: ' + event.item);
+                console.warn(`Invalid tag name: ${event.item}`);
 
                 // Bug: won't cancel the adding event
-                event.cancel;
+                event.cancel();
             }
         });
 
