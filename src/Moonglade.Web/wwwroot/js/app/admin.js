@@ -76,9 +76,12 @@ var postEditor = {
         });
 
         $('#Tags').on('beforeItemAdd', function (event) {
-            console.info(event.item);
-            // event.item: contains the item
-            // event.cancel: set to true to prevent the item getting added
+            if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
+                console.warn('Invalid tag name: ' + event.item);
+
+                // Bug: won't cancel the adding event
+                event.cancel;
+            }
         });
 
         $('#btn-preview').click(function(e) {
