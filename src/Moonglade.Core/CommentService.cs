@@ -11,7 +11,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.HtmlCodec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -20,7 +19,6 @@ namespace Moonglade.Core
     public class CommentService : MoongladeService
     {
         private readonly IBlogConfig _blogConfig;
-        private readonly IHtmlCodec _htmlCodec;
 
         private readonly IRepository<PostEntity> _postRepository;
         private readonly IRepository<CommentEntity> _commentRepository;
@@ -30,13 +28,11 @@ namespace Moonglade.Core
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            IHtmlCodec htmlCodec,
             IRepository<CommentEntity> commentRepository,
             IRepository<CommentReplyEntity> commentReplyRepository, 
             IRepository<PostEntity> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _htmlCodec = htmlCodec;
 
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
