@@ -302,23 +302,26 @@ namespace Moonglade.Core
         {
             Tuple.Create(".", "dot"),
             Tuple.Create("#", "sharp"),
-            Tuple.Create("<", "lt"),
-            Tuple.Create(">", "gt"),
-            Tuple.Create("@", "at"),
-            Tuple.Create("$", "dollar"),
-            Tuple.Create("*", "asterisk"),
-            Tuple.Create("(", "lbrackets"),
-            Tuple.Create(")", "rbrackets"),
-            Tuple.Create("{", "lbraces"),
-            Tuple.Create("}", "rbraces"),
-            Tuple.Create(" ", "-"),
-            Tuple.Create("+", "-and-"),
-            Tuple.Create("=", "-equals-")
+            Tuple.Create(" ", "-")
         };
 
         public static string NormalizeTagName(string orgTagName)
         {
             return ReplaceWithStringBuilder(orgTagName, TagNormalizeSourceTable).ToLower();
+        }
+
+        public static bool ValidateTagName(string tagDisplayName)
+        {
+            if (string.IsNullOrWhiteSpace(tagDisplayName))
+            {
+                return false;
+            }
+
+            // Regex performance best practice
+            // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
+
+            string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
+            return Regex.IsMatch(tagDisplayName, pattern);
         }
 
         private static string ReplaceWithStringBuilder(string value, IEnumerable<Tuple<string, string>> toReplace)
