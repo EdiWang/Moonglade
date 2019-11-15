@@ -72,15 +72,15 @@ var postEditor = {
                 displayKey: 'name',
                 valueKey: 'name',
                 source: tagnames.ttAdapter()
-            }
+            },
+            trimValue: true
         });
 
         $('#Tags').on('beforeItemAdd', function (event) {
             if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
                 console.warn(`Invalid tag name: ${event.item}`);
-
-                // Bug: won't cancel the adding event
-                event.cancel();
+                toastr.warning(`Invalid tag name: ${event.item}`);
+                event.cancel = true;
             }
         });
 
