@@ -115,10 +115,10 @@
         </nav>
     </header>
 
-    @if (BlogConfig.GeneralSettings.ShowCalloutSection)
+    @if (BlogConfig.ContentSettings.ShowCalloutSection)
     {
         <section class="call-out">
-            @Html.Raw(BlogConfig.GeneralSettings.CalloutSectionHtmlPitch)
+            @Html.Raw(BlogConfig.ContentSettings.CalloutSectionHtmlPitch)
         </section>
     }
 

@@ -49,13 +49,6 @@ namespace Moonglade.Web.Models.Settings
         [DataType(DataType.MultilineText)]
         public string FooterCustomizedHtmlPitch { get; set; }
 
-        [Display(Name = "Call-out Section Html Pitch")]
-        [DataType(DataType.MultilineText)]
-        public string CalloutSectionHtmlPitch { get; set; }
-
-        [Display(Name = "Show Call-out Section")]
-        public bool ShowCalloutSection { get; set; }
-
         public TimeSpan SelectedUtcOffset { get; set; }
 
         public string SelectedTimeZoneId { get; set; }

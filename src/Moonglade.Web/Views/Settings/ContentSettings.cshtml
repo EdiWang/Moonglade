@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">Blog posts</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
@@ -93,6 +93,26 @@
                         <label asp-for="HotTagAmount" class="control-label"></label>
                         <input asp-for="HotTagAmount" class="form-control" />
                         <span asp-validation-for="HotTagAmount" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Call-out</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="ShowCalloutSection" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.ShowCalloutSection ? "checked=\"checked\"" : "") id="ShowCalloutSection" name="ShowCalloutSection" type="checkbox" value="true">
+                            <label for="ShowCalloutSection" class="label-success"></label>
+                            <input name="ShowCalloutSection" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="CalloutSectionHtmlPitch" class="control-label"></label>
+                        <textarea asp-for="CalloutSectionHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <span asp-validation-for="CalloutSectionHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
             </div>

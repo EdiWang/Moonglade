@@ -22,6 +22,10 @@ namespace Moonglade.Configuration
 
         public bool EnableImageLazyLoad { get; set; }
 
+        public bool ShowCalloutSection { get; set; }
+
+        public string CalloutSectionHtmlPitch { get; set; }
+
         public ContentSettings()
         {
             DisharmonyWords = string.Empty;

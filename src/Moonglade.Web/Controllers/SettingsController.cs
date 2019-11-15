@@ -65,8 +65,6 @@ namespace Moonglade.Web.Controllers
                 Copyright = _blogConfig.GeneralSettings.Copyright,
                 SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
                 FooterCustomizedHtmlPitch = _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch,
-                ShowCalloutSection = _blogConfig.GeneralSettings.ShowCalloutSection,
-                CalloutSectionHtmlPitch = _blogConfig.GeneralSettings.CalloutSectionHtmlPitch,
                 BloggerName = _blogConfig.BlogOwnerSettings.Name,
                 BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
                 BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription,
@@ -89,8 +87,6 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
                 _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-                _blogConfig.GeneralSettings.ShowCalloutSection = model.ShowCalloutSection;
-                _blogConfig.GeneralSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
                 _blogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset = Utils.GetTimeSpanByZoneId(model.SelectedTimeZoneId);
                 _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
@@ -121,7 +117,9 @@ namespace Moonglade.Web.Controllers
                 PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
                 HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
                 EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,
-                EnableImageLazyLoad = _blogConfig.ContentSettings.EnableImageLazyLoad
+                EnableImageLazyLoad = _blogConfig.ContentSettings.EnableImageLazyLoad,
+                ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
+                CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch
             };
             return View(vm);
         }
@@ -140,6 +138,8 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
                 _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
                 _blogConfig.ContentSettings.EnableImageLazyLoad = model.EnableImageLazyLoad;
+                _blogConfig.ContentSettings.ShowCalloutSection = model.ShowCalloutSection;
+                _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
                 _blogConfig.RequireRefresh();
 

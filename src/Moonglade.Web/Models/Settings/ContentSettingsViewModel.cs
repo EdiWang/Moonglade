@@ -42,5 +42,12 @@ namespace Moonglade.Web.Models.Settings
         [Required]
         [Display(Name = "Enable Image Lazy Load")]
         public bool EnableImageLazyLoad { get; set; }
+
+        [Display(Name = "Call-out Section Html Pitch")]
+        [DataType(DataType.MultilineText)]
+        public string CalloutSectionHtmlPitch { get; set; }
+
+        [Display(Name = "Show Call-out Section")]
+        public bool ShowCalloutSection { get; set; }
     }
 }
