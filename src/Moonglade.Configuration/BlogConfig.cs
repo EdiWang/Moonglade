@@ -33,6 +33,8 @@ namespace Moonglade.Configuration
 
         public FriendLinksSettings FriendLinksSettings { get; set; }
 
+        public AdvancedSettings AdvancedSettings { get; set; }
+
         private bool _hasInitialized;
 
         public BlogConfig(
@@ -49,6 +51,7 @@ namespace Moonglade.Configuration
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
             FriendLinksSettings = new FriendLinksSettings();
+            AdvancedSettings = new AdvancedSettings();
 
             Initialize();
         }
@@ -68,6 +71,7 @@ namespace Moonglade.Configuration
                 FeedSettings = JsonSerializer.Deserialize<FeedSettings>(cfgDic[nameof(FeedSettings)], jsonOptions);
                 WatermarkSettings = JsonSerializer.Deserialize<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)], jsonOptions);
                 FriendLinksSettings = JsonSerializer.Deserialize<FriendLinksSettings>(cfgDic[nameof(FriendLinksSettings)], jsonOptions);
+                AdvancedSettings = JsonSerializer.Deserialize<AdvancedSettings>(cfgDic[nameof(AdvancedSettings)], jsonOptions);
 
                 _hasInitialized = true;
             }

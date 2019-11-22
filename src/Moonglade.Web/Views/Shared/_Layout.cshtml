@@ -38,9 +38,9 @@
         <meta name="description" content="@BlogConfig.GeneralSettings.MetaDescription" />
     }
 
-    @if (!string.IsNullOrWhiteSpace(Settings.Value.DNSPrefetchEndpoint))
+    @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.DNSPrefetchEndpoint))
     {
-        <link rel="dns-prefetch" href="@Settings.Value.DNSPrefetchEndpoint" />
+        <link rel="dns-prefetch" href="@BlogConfig.AdvancedSettings.DNSPrefetchEndpoint" />
     }
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
     <link rel="alternate" type="application/rss+xml" title="@BlogConfig.FeedSettings.RssTitle" href="~/rss" />

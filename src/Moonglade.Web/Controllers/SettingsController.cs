@@ -155,15 +155,15 @@ namespace Moonglade.Web.Controllers
         [HttpGet("email-settings")]
         public IActionResult EmailSettings()
         {
-            var ec = _blogConfig.EmailSettings;
+            var settings = _blogConfig.EmailSettings;
             var vm = new EmailSettingsViewModel
             {
-                AdminEmail = ec.AdminEmail,
-                BannedMailDomain = ec.BannedMailDomain,
-                EmailDisplayName = ec.EmailDisplayName,
-                EnableEmailSending = ec.EnableEmailSending,
-                SendEmailOnCommentReply = ec.SendEmailOnCommentReply,
-                SendEmailOnNewComment = ec.SendEmailOnNewComment
+                AdminEmail = settings.AdminEmail,
+                BannedMailDomain = settings.BannedMailDomain,
+                EmailDisplayName = settings.EmailDisplayName,
+                EnableEmailSending = settings.EnableEmailSending,
+                SendEmailOnCommentReply = settings.SendEmailOnCommentReply,
+                SendEmailOnNewComment = settings.SendEmailOnNewComment
             };
             return View(vm);
         }
@@ -173,15 +173,15 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ec = _blogConfig.EmailSettings;
-                ec.AdminEmail = model.AdminEmail;
-                ec.BannedMailDomain = model.BannedMailDomain;
-                ec.EmailDisplayName = model.EmailDisplayName;
-                ec.EnableEmailSending = model.EnableEmailSending;
-                ec.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
-                ec.SendEmailOnNewComment = model.SendEmailOnNewComment;
+                var settings = _blogConfig.EmailSettings;
+                settings.AdminEmail = model.AdminEmail;
+                settings.BannedMailDomain = model.BannedMailDomain;
+                settings.EmailDisplayName = model.EmailDisplayName;
+                settings.EnableEmailSending = model.EnableEmailSending;
+                settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
+                settings.SendEmailOnNewComment = model.SendEmailOnNewComment;
 
-                var response = await _blogConfig.SaveConfigurationAsync(ec);
+                var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
@@ -209,15 +209,15 @@ namespace Moonglade.Web.Controllers
         [HttpGet("feed-settings")]
         public IActionResult FeedSettings()
         {
-            var fs = _blogConfig.FeedSettings;
+            var settings = _blogConfig.FeedSettings;
             var vm = new FeedSettingsViewModel
             {
-                AuthorName = fs.AuthorName,
-                RssCopyright = fs.RssCopyright,
-                RssDescription = fs.RssDescription,
-                RssGeneratorName = fs.RssGeneratorName,
-                RssItemCount = fs.RssItemCount,
-                RssTitle = fs.RssTitle
+                AuthorName = settings.AuthorName,
+                RssCopyright = settings.RssCopyright,
+                RssDescription = settings.RssDescription,
+                RssGeneratorName = settings.RssGeneratorName,
+                RssItemCount = settings.RssItemCount,
+                RssTitle = settings.RssTitle
             };
 
             return View(vm);
@@ -228,15 +228,15 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var fs = _blogConfig.FeedSettings;
-                fs.AuthorName = model.AuthorName;
-                fs.RssCopyright = model.RssCopyright;
-                fs.RssDescription = model.RssDescription;
-                fs.RssGeneratorName = model.RssGeneratorName;
-                fs.RssItemCount = model.RssItemCount;
-                fs.RssTitle = model.RssTitle;
+                var settings = _blogConfig.FeedSettings;
+                settings.AuthorName = model.AuthorName;
+                settings.RssCopyright = model.RssCopyright;
+                settings.RssDescription = model.RssDescription;
+                settings.RssGeneratorName = model.RssGeneratorName;
+                settings.RssItemCount = model.RssItemCount;
+                settings.RssTitle = model.RssTitle;
 
-                var response = await _blogConfig.SaveConfigurationAsync(fs);
+                var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
@@ -252,13 +252,13 @@ namespace Moonglade.Web.Controllers
         [HttpGet("watermark-settings")]
         public IActionResult WatermarkSettings()
         {
-            var ws = _blogConfig.WatermarkSettings;
+            var settings = _blogConfig.WatermarkSettings;
             var vm = new WatermarkSettingsViewModel
             {
-                IsEnabled = ws.IsEnabled,
-                KeepOriginImage = ws.KeepOriginImage,
-                FontSize = ws.FontSize,
-                WatermarkText = ws.WatermarkText
+                IsEnabled = settings.IsEnabled,
+                KeepOriginImage = settings.KeepOriginImage,
+                FontSize = settings.FontSize,
+                WatermarkText = settings.WatermarkText
             };
 
             return View(vm);
@@ -269,13 +269,13 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ws = _blogConfig.WatermarkSettings;
-                ws.IsEnabled = model.IsEnabled;
-                ws.KeepOriginImage = model.KeepOriginImage;
-                ws.FontSize = model.FontSize;
-                ws.WatermarkText = model.WatermarkText;
+                var settings = _blogConfig.WatermarkSettings;
+                settings.IsEnabled = model.IsEnabled;
+                settings.KeepOriginImage = model.KeepOriginImage;
+                settings.FontSize = model.FontSize;
+                settings.WatermarkText = model.WatermarkText;
 
-                var response = await _blogConfig.SaveConfigurationAsync(ws);
+                var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
@@ -467,7 +467,30 @@ namespace Moonglade.Web.Controllers
         [HttpGet("advanced-settings")]
         public IActionResult AdvancedSettings()
         {
-            return View();
+            var settings = _blogConfig.AdvancedSettings;
+            var vm = new AdvancedSettingsViewModel
+            {
+                DNSPrefetchEndpoint = settings.DNSPrefetchEndpoint
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost("advanced-settings")]
+        public async Task<IActionResult> AdvancedSettings(AdvancedSettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var settings = _blogConfig.AdvancedSettings;
+                settings.DNSPrefetchEndpoint = model.DNSPrefetchEndpoint;
+
+                var response = await _blogConfig.SaveConfigurationAsync(settings);
+                _blogConfig.RequireRefresh();
+
+                Logger.LogInformation($"User '{User.Identity.Name}' updated AdvancedSettings");
+                return Json(response);
+            }
+            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
         }
 
         [HttpPost("shutdown")]

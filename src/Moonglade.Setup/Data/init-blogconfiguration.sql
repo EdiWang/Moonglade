@@ -7,3 +7,4 @@ INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (4, 
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (5, 'GeneralSettings', '{"SiteTitle":"Moonglade","LogoText":"moonglade","MetaKeyword":"moonglade","MetaDescription":"Just another .NET blog system","Copyright":"&copy; 2019","SideBarCustomizedHtmlPitch":"","FooterCustomizedHtmlPitch":"","UserTimeZoneBaseUtcOffset":"8:00:00","TimeZoneId":"China Standard Time"}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (6, 'WatermarkSettings', '{"IsEnabled":true,"KeepOriginImage":false,"FontSize":20,"WatermarkText":"Moonglade"}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (7, 'FriendLinksSettings', '{"ShowFriendLinksSection":true}', GETDATE())
+INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (8, 'AdvancedSettings', '{"DNSPrefetchEndpoint":""}', GETDATE())
