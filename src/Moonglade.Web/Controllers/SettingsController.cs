@@ -514,5 +514,10 @@ namespace Moonglade.Web.Controllers
         }
 
         #endregion
+
+        public IActionResult About()
+        {
+            return View();
+        }
     }
 }
