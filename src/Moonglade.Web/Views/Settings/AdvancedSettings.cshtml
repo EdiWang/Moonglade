@@ -42,6 +42,28 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Options
+                </div>
+                <div class="card-body">
+                    <h6>Restart Website</h6>
+                    <hr />
+
+                    <div class="alert alert-warning">Try to shutdown and restart the website, this will terminate all current requests.</div>
+
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#restartModal">Restart</button>
+
+                    <h6 class="mt-4">System Reset</h6>
+                    <hr />
+
+                    <div class="alert alert-warning">Erase all data and configuration.</div>
+
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#resetModal">Reset</button>
+                </div>
+            </div>
+        </div>
     </div>
     <hr />
     <div class="form-group">
@@ -79,27 +101,6 @@
             </tr>
         </tbody>
     </table>
-</div>
-
-<div class="card">
-    <div class="card-header">
-        Options
-    </div>
-    <div class="card-body">
-        <h6>Restart Website</h6>
-        <hr />
-
-        <div class="alert alert-warning">Try to shutdown and restart the website, this will terminate all current requests.</div>
-
-        <button class="btn btn-danger" data-toggle="modal" data-target="#restartModal">Restart</button>
-
-        <h6 class="mt-4">System Reset</h6>
-        <hr />
-
-        <div class="alert alert-warning">Erase all data and configuration.</div>
-
-        <button class="btn btn-danger" data-toggle="modal" data-target="#resetModal">Reset</button>
-    </div>
 </div>
 
 <div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModalLabel" aria-hidden="true">
