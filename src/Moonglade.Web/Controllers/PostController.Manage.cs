@@ -229,10 +229,16 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/insights")]
         public async Task<IActionResult> Insights()
         {
-            // TODO: Get top read and top commented posts
-            await Task.CompletedTask;
+            var topReadList = await _postService.GetMPostInsightsMetaListAsync(PostInsightsType.TopRead);
+            var topCommentedList = await _postService.GetMPostInsightsMetaListAsync(PostInsightsType.TopCommented);
 
-            return View();
+            var vm = new PostInsightsViewModel()
+            {
+                TopReadPosts = topReadList,
+                TopCommentedPosts = topCommentedList
+            };
+
+            return View(vm);
         }
 
         #endregion

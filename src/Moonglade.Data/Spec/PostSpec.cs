@@ -107,4 +107,32 @@ namespace Moonglade.Data.Spec
 
         }
     }
+
+    public sealed partial class PostInsightsSpec : BaseSpecification<PostEntity>
+    {
+        // TODO: Limit publish date within one year
+
+        public PostInsightsSpec(PostInsightsType insightsType, int top) : base(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished)
+        {
+            switch (insightsType)
+            {
+                case PostInsightsType.TopRead:
+                    ApplyOrderByDescending(p => p.PostExtension.Hits);
+                    break;
+                case PostInsightsType.TopCommented:
+                    ApplyOrderByDescending(p => p.Comment.Count);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(insightsType), insightsType, null);
+            }
+
+            ApplyPaging(0, top);
+        }
+    }
+
+    public enum PostInsightsType
+    {
+        TopRead = 0,
+        TopCommented = 1,
+    }
 }
