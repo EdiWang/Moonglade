@@ -225,6 +225,16 @@ namespace Moonglade.Web.Controllers
             return RedirectToAction("RecycleBin");
         }
 
+        [Authorize]
+        [HttpGet("manage/insights")]
+        public async Task<IActionResult> Insights()
+        {
+            // TODO: Get top read and top commented posts
+            await Task.CompletedTask;
+
+            return View();
+        }
+
         #endregion
 
         #region Helper Methods
