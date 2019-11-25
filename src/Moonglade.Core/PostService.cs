@@ -245,6 +245,7 @@ namespace Moonglade.Core
             {
                 Id = p.Id,
                 Title = p.Title,
+                Slug = p.Slug,
                 PubDateUtc = p.PostPublish.PubDateUtc,
                 IsPublished = p.PostPublish.IsPublished,
                 IsDeleted = p.PostPublish.IsDeleted,
@@ -261,6 +262,7 @@ namespace Moonglade.Core
             {
                 Id = p.Id,
                 Title = p.Title,
+                Slug = p.Slug,
                 PubDateUtc = p.PostPublish.PubDateUtc,
                 IsPublished = p.PostPublish.IsPublished,
                 IsDeleted = p.PostPublish.IsDeleted,

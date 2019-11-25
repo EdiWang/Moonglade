@@ -22,7 +22,15 @@
                     @foreach (var post in Model.TopReadPosts.OrderByDescending(p => p.Hits))
                     {
                         <tr id="tr-@post.Id">
-                            <td>@post.Title</td>
+                            <td>
+                                <a asp-controller="Post" asp-action="Slug"
+                                   asp-route-year="@post.PubDateUtc.Value.Year"
+                                   asp-route-month="@post.PubDateUtc.Value.Month"
+                                   asp-route-day="@post.PubDateUtc.Value.Day"
+                                   asp-route-slug="@post.Slug" target="_blank">
+                                    @post.Title
+                                </a>
+                            </td>
                             <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy")</td>
                             <td>
                                 @post.Hits
@@ -45,7 +53,15 @@
                     @foreach (var post in Model.TopCommentedPosts.OrderByDescending(p => p.PubDateUtc))
                     {
                         <tr id="tr-@post.Id">
-                            <td>@post.Title</td>
+                            <td>
+                                <a asp-controller="Post" asp-action="Slug"
+                                   asp-route-year="@post.PubDateUtc.Value.Year"
+                                   asp-route-month="@post.PubDateUtc.Value.Month"
+                                   asp-route-day="@post.PubDateUtc.Value.Day"
+                                   asp-route-slug="@post.Slug" target="_blank">
+                                    @post.Title
+                                </a>
+                            </td>
                             <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy")</td>
                         </tr>
                     }
