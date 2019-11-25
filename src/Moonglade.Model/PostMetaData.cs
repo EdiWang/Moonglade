@@ -6,6 +6,7 @@ namespace Moonglade.Model
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
+        public string Slug { get; set; }
         public DateTime? PubDateUtc { get; set; }
         public DateTime CreateOnUtc { get; set; }
         public int? Revision { get; set; }

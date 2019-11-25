@@ -225,6 +225,22 @@ namespace Moonglade.Web.Controllers
             return RedirectToAction("RecycleBin");
         }
 
+        [Authorize]
+        [HttpGet("manage/insights")]
+        public async Task<IActionResult> Insights()
+        {
+            var topReadList = await _postService.GetMPostInsightsMetaListAsync(PostInsightsType.TopRead);
+            var topCommentedList = await _postService.GetMPostInsightsMetaListAsync(PostInsightsType.TopCommented);
+
+            var vm = new PostInsightsViewModel()
+            {
+                TopReadPosts = topReadList,
+                TopCommentedPosts = topCommentedList
+            };
+
+            return View(vm);
+        }
+
         #endregion
 
         #region Helper Methods

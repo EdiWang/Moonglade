@@ -245,6 +245,24 @@ namespace Moonglade.Core
             {
                 Id = p.Id,
                 Title = p.Title,
+                Slug = p.Slug,
+                PubDateUtc = p.PostPublish.PubDateUtc,
+                IsPublished = p.PostPublish.IsPublished,
+                IsDeleted = p.PostPublish.IsDeleted,
+                Revision = p.PostPublish.Revision,
+                CreateOnUtc = p.CreateOnUtc,
+                Hits = p.PostExtension.Hits
+            });
+        }
+
+        public Task<IReadOnlyList<PostMetaData>> GetMPostInsightsMetaListAsync(PostInsightsType insightsType)
+        {
+            var spec = new PostInsightsSpec(insightsType, 10);
+            return _postRepository.SelectAsync(spec, p => new PostMetaData
+            {
+                Id = p.Id,
+                Title = p.Title,
+                Slug = p.Slug,
                 PubDateUtc = p.PostPublish.PubDateUtc,
                 IsPublished = p.PostPublish.IsPublished,
                 IsDeleted = p.PostPublish.IsDeleted,

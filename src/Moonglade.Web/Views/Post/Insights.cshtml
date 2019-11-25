@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+@model PostInsightsViewModel
+
+<partial name="_PostManageHeader" />
+
+@if (Model.TopReadPosts.Any() || Model.TopCommentedPosts.Any())
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h6 class="mb-3">Top 10 Read Posts / Past Year</h6>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Created</th>
+                        <th>Reads</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model.TopReadPosts.OrderByDescending(p => p.Hits))
+                    {
+                        <tr id="tr-@post.Id">
+                            <td>
+                                <a asp-controller="Post" asp-action="Slug"
+                                   asp-route-year="@post.PubDateUtc.Value.Year"
+                                   asp-route-month="@post.PubDateUtc.Value.Month"
+                                   asp-route-day="@post.PubDateUtc.Value.Day"
+                                   asp-route-slug="@post.Slug" target="_blank">
+                                    @post.Title
+                                </a>
+                            </td>
+                            <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy")</td>
+                            <td>
+                                @post.Hits
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h6 class="mb-3">Top 10 Commented Posts / Past Year</h6>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model.TopCommentedPosts.OrderByDescending(p => p.PubDateUtc))
+                    {
+                        <tr id="tr-@post.Id">
+                            <td>
+                                <a asp-controller="Post" asp-action="Slug"
+                                   asp-route-year="@post.PubDateUtc.Value.Year"
+                                   asp-route-month="@post.PubDateUtc.Value.Month"
+                                   asp-route-day="@post.PubDateUtc.Value.Day"
+                                   asp-route-slug="@post.Slug" target="_blank">
+                                    @post.Title
+                                </a>
+                            </td>
+                            <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+}
+else
+{
+    <partial name="_NoPosts" />
+}
