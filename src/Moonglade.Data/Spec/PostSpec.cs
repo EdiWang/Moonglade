@@ -110,8 +110,6 @@ namespace Moonglade.Data.Spec
 
     public sealed partial class PostInsightsSpec : BaseSpecification<PostEntity>
     {
-        // TODO: Limit publish date within one year
-
         public PostInsightsSpec(PostInsightsType insightsType, int top) : base(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished)
         {
             switch (insightsType)
@@ -125,6 +123,8 @@ namespace Moonglade.Data.Spec
                 default:
                     throw new ArgumentOutOfRangeException(nameof(insightsType), insightsType, null);
             }
+
+            UseCriteria(p => p.PostPublish.PubDateUtc >= DateTime.UtcNow.AddYears(-1));
 
             ApplyPaging(0, top);
         }
