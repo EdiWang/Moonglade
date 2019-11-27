@@ -40,6 +40,24 @@
                         <span asp-validation-for="DNSPrefetchEndpoint" class="text-danger"></span>
                     </div>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="EnablePingBackSend" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnablePingBackSend ? "checked=\"checked\"" : "") id="EnablePingBackSend" name="EnablePingBackSend" type="checkbox" value="true">
+                            <label for="EnablePingBackSend" class="label-success"></label>
+                            <input name="EnablePingBackSend" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="EnablePingBackReceive" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnablePingBackReceive ? "checked=\"checked\"" : "") id="EnablePingBackReceive" name="EnablePingBackReceive" type="checkbox" value="true">
+                            <label for="EnablePingBackReceive" class="label-success"></label>
+                            <input name="EnablePingBackReceive" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="col-md-6">

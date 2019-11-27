@@ -11,5 +11,11 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "DNS Prefetch Endpoint")]
         [DataType(DataType.Url)]
         public string DNSPrefetchEndpoint { get; set; }
+
+        [Display(Name = "Enable PingBack Send")]
+        public bool EnablePingBackSend { get; set; }
+
+        [Display(Name = "Enable PingBack Receive")]
+        public bool EnablePingBackReceive { get; set; }
     }
 }

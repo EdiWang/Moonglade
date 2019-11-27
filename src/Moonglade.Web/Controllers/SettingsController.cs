@@ -470,7 +470,9 @@ namespace Moonglade.Web.Controllers
             var settings = _blogConfig.AdvancedSettings;
             var vm = new AdvancedSettingsViewModel
             {
-                DNSPrefetchEndpoint = settings.DNSPrefetchEndpoint
+                DNSPrefetchEndpoint = settings.DNSPrefetchEndpoint,
+                EnablePingBackSend = settings.EnablePingBackSend,
+                EnablePingBackReceive = settings.EnablePingBackReceive
             };
 
             return View(vm);
@@ -483,6 +485,8 @@ namespace Moonglade.Web.Controllers
             {
                 var settings = _blogConfig.AdvancedSettings;
                 settings.DNSPrefetchEndpoint = model.DNSPrefetchEndpoint;
+                settings.EnablePingBackSend = model.EnablePingBackSend;
+                settings.EnablePingBackReceive = model.EnablePingBackReceive;
 
                 var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();
