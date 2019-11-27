@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
 
@@ -14,13 +15,16 @@ namespace Moonglade.Web.Controllers
     public class PingbackController : MoongladeController
     {
         private readonly PingbackService _pingbackService;
+        private readonly IBlogConfig _blogConfig;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IOptions<AppSettings> settings,
+            IBlogConfig blogConfig,
             PingbackService pingbackService)
             : base(logger, settings)
         {
+            _blogConfig = blogConfig;
             _pingbackService = pingbackService;
         }
 
@@ -28,7 +32,7 @@ namespace Moonglade.Web.Controllers
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Index()
         {
-            if (!AppSettings.EnablePingBackReceive)
+            if (!_blogConfig.AdvancedSettings.EnablePingBackReceive)
             {
                 Logger.LogInformation("Pingback receive is disabled");
                 return Forbid();

@@ -152,7 +152,7 @@ namespace Moonglade.Web.Controllers
                             var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
                             var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
 
-                            if (AppSettings.EnablePingBackSend)
+                            if (_blogConfig.AdvancedSettings.EnablePingBackSend)
                             {
                                 Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
                             }
