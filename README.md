@@ -169,10 +169,7 @@ CaptchaSettings:ImageWidth | Pixel Width of Captcha Image
 CaptchaSettings.ImageHeight | Pixel Height of Captcha Image
 PostSummaryWords | How may words to show in post list summary
 ImageCacheSlidingExpirationMinutes | Time for cached images to expire
-EnablePingBackReceive | Can blog receive pingback requests
-EnablePingBackSend | Can blog send pingback to another blog
 EnforceHttps | Force website use HTTPS
-DNSPrefetchEndpoint | Add HTML head named "dns-prefetch"
 AllowScriptsInCustomPage | Allow JavaScript in Page content or not
 
 ## FAQ
