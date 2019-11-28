@@ -15,6 +15,7 @@ namespace Moonglade.Web.Models.Settings
         [Required]
         [DataType(DataType.MultilineText)]
         [Display(Name = "Blocked Words")]
+        [MaxLength(2048)]
         public string DisharmonyWords { get; set; }
 
         [Required]
@@ -45,6 +46,7 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Call-out Section Html Pitch")]
         [DataType(DataType.MultilineText)]
+        [MaxLength(2048)]
         public string CalloutSectionHtmlPitch { get; set; }
 
         [Display(Name = "Show Call-out Section")]

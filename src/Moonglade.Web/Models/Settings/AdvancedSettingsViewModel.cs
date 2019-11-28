@@ -10,6 +10,7 @@ namespace Moonglade.Web.Models.Settings
     {
         [Display(Name = "DNS Prefetch Endpoint")]
         [DataType(DataType.Url)]
+        [MaxLength(128)]
         public string DNSPrefetchEndpoint { get; set; }
 
         [Display(Name = "Enable PingBack Send")]

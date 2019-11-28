@@ -10,6 +10,7 @@ namespace Moonglade.Web.Models
         public Guid PostId { get; set; }
 
         [Required]
+        [MaxLength(64)]
         public string Username { get; set; }
 
         [Required]
@@ -17,6 +18,7 @@ namespace Moonglade.Web.Models
         public string Content { get; set; }
 
         [Required]
+        [MaxLength(128)]
         [DataType(DataType.EmailAddress)]
         [EmailAddress]
         public string Email { get; set; }
