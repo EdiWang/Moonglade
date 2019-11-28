@@ -10,11 +10,13 @@ namespace Moonglade.Web.Models
     {
         [Required]
         [Display(Name = "Username")]
+        [MaxLength(32)]
         public string Username { get; set; }
 
         [Required]
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
+        [MaxLength(32)]
         public string Password { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace Moonglade.Web.Models.Settings
 
         [Required]
         [Display(Name = "Watermark Text")]
+        [MaxLength(32)]
         public string WatermarkText { get; set; }
     }
 }
