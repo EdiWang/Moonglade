@@ -278,7 +278,7 @@ namespace Moonglade.Web
                 {
                     builder.Run(async context =>
                     {
-                        await context.Response.WriteAsync("Moonglade Version: " + Utils.AppVersion, Encoding.UTF8);
+                        await context.Response.WriteAsync($"Moonglade Version: {Utils.AppVersion}, .NET Core {Environment.Version}", Encoding.UTF8);
                     });
                 });
 
