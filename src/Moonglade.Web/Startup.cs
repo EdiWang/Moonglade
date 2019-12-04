@@ -212,14 +212,6 @@ namespace Moonglade.Web
             {
                 app.UseExceptionHandler("/error");
                 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
-
-                // Workaround .NET Core 3.0 known bug
-                // https://github.com/aspnet/AspNetCore/issues/13715
-                app.Use((context, next) =>
-                {
-                    context.SetEndpoint(null);
-                    return next();
-                });
             }
 
             if (enforceHttps)

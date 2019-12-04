@@ -22,7 +22,7 @@ This is **NOT a general purpose blog system** like WordPress or other CMS. Curre
 
 Tools | Alternative
 --- | ---
-[.NET Core 3.0 SDK](http://dot.net) | N/A
+[.NET Core 3.1 SDK](http://dot.net) | N/A
 [Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
 [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) | [SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) / LocalDB (Dev Only)
 
