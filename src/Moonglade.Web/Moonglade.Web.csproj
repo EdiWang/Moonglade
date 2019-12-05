@@ -33,8 +33,8 @@
     <PackageReference Include="AspNetCoreRateLimit" Version="3.0.5" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="Edi.Blog.OpmlFileWriter" Version="1.1.0" />
-    <PackageReference Include="Edi.Blog.Pingback" Version="10.3.1" />
-    <PackageReference Include="Edi.Blog.Pingback.Mvc" Version="10.3.2" />
+    <PackageReference Include="Edi.Blog.Pingback" Version="10.4.0" />
+    <PackageReference Include="Edi.Blog.Pingback.Mvc" Version="10.4.0" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.3" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.1.0" />
