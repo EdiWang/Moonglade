@@ -1,12 +1,4 @@
-﻿:root {
-    --moonglade-accent-color1: #2a579a;
-    --moonglade-accent-color2: #1a365f;
-    --moonglade-accent-color3: #96a8c3;
-    --moonglade-accent-color4: #3e6db5;
-    --moonglade-accent-color6: #5678ab;
-}
-
-.comment-md-content .editor-toolbar {
+﻿.comment-md-content .editor-toolbar {
     border-left: 0 none !important;
     border-right: 0 none !important;
     border-top-left-radius: 0 !important;
