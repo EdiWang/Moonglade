@@ -73,7 +73,7 @@ namespace Moonglade.Core
                 {"Excel Green", "excel-green.css"},
                 {"PowerPoint Orange", "powerpoint-orange.css"},
                 {"OneNote Purple", "onenote-purple.css"},
-                //{"Outlook Blue", "outlook-blue.css"}
+                {"Outlook Blue", "outlook-blue.css"}
             };
             return dic;
         }
