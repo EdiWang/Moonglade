@@ -41,7 +41,7 @@ namespace Moonglade.Web.Models.Settings
         [Required]
         [Display(Name = "Blogger Description")]
         [DataType(DataType.MultilineText)]
-        [MaxLength(64)]
+        [MaxLength(256)]
         public string BloggerDescription { get; set; }
 
         [Required]
