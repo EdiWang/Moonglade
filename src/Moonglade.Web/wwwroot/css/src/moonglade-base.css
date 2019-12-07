@@ -661,7 +661,7 @@ div.animbrand a:focus, div.animbrand a:hover {
     }
 
         .post-summary-tags a:hover {
-            background-color: var(--moonglade-accent-color4);
+            background-color: var(--moonglade-accent-color3);
             color: #fff;
         }
 
@@ -736,13 +736,13 @@ a {
 
 footer {
     background-color: var(--moonglade-accent-color2);
-    color: var(--moonglade-accent-color3);
+    color: rgba(255,255,255,0.5);
     padding-bottom: 20px;
     padding-top: 20px;
 }
 
     footer .container h4 {
-        color: var(--moonglade-accent-color3);
+        color: rgba(255,255,255, 0.6);
         font-size: 20px;
         font-weight: lighter;
         margin-bottom: 31px;
@@ -828,13 +828,13 @@ footer {
     }
 
 .navbar .dropdown-item.active, .dropdown-item:hover {
-    background-color: var(--moonglade-accent-color4);
+    background-color: var(--moonglade-accent-color3);
     color: #fff;
     text-decoration: none;
 }
 
 footer a {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.7);
 }
 
     footer a:hover {
@@ -909,6 +909,6 @@ body {
 }
 
     .toptags-list a:hover {
-        background-color: var(--moonglade-accent-color4);
+        background-color: var(--moonglade-accent-color3);
         color: #fff;
     }
