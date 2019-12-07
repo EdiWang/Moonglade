@@ -375,8 +375,10 @@ namespace Moonglade.Web
         {
             try
             {
+                var loadExternalRewriteConfig = bool.Parse(_appSettingsSection["EnableImageHotLinkProtection"]);
                 var urlRewriteConfigPath = Path.Combine(baseDir, "urlrewrite.xml");
-                if (File.Exists(urlRewriteConfigPath))
+                
+                if (loadExternalRewriteConfig && File.Exists(urlRewriteConfigPath))
                 {
                     using var sr = File.OpenText(urlRewriteConfigPath);
                     var options = new RewriteOptions()
