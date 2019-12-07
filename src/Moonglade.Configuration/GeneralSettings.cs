@@ -22,5 +22,12 @@ namespace Moonglade.Configuration
         public TimeSpan UserTimeZoneBaseUtcOffset { get; set; }
 
         public string TimeZoneId { get; set; }
+
+        public string ThemeFileName { get; set; }
+
+        public GeneralSettings()
+        {
+            ThemeFileName = "word-blue.css";
+        }
     }
 }

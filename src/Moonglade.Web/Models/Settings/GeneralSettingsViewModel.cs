@@ -65,5 +65,10 @@ namespace Moonglade.Web.Models.Settings
         public string SelectedTimeZoneId { get; set; }
 
         public List<SelectListItem> TimeZoneList { get; set; }
+
+        [MaxLength(32)]
+        public string SelectedThemeFileName { get; set; }
+
+        public List<SelectListItem> ThemeList { get; set; }
     }
 }

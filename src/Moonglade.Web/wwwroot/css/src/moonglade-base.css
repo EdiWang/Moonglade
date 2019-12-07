@@ -14,8 +14,8 @@
 }
 
 .btn-outline-footer {
-    color: #96a8c3;
-    border-color: #96a8c3;
+    color: rgba(255,255,255,0.5);
+    border-color: rgba(255,255,255,0.5);
 }
 
     .btn-outline-footer:hover {
@@ -102,7 +102,7 @@
 }
 
 .tile-image {
-    background-color: #2B579A;
+    background-color: var(--moonglade-accent-color1);
     color: #FFF;
     float: left;
     font-size: 44px;
@@ -129,7 +129,7 @@
 }
 
 .tilexsm-image {
-    background-color: #2B579A;
+    background-color: var(--moonglade-accent-color1);
     border-radius: 50%;
     color: #FFF;
     float: left;
@@ -249,8 +249,8 @@ label {
 }
 
 .list-group-item.active, .page-item.active .page-link {
-    background-color: #2a579a;
-    border-color: #2a579a;
+    background-color: var(--moonglade-accent-color1);
+    border-color: var(--moonglade-accent-color1);
 }
 
 .table .table-item-title {
@@ -290,8 +290,8 @@ label {
 }
 
     .tagCloud li a:hover {
-        background-color: #2b579a !important;
-        border: 1px solid #2b579a !important;
+        background-color: var(--moonglade-accent-color1) !important;
+        border: 1px solid var(--moonglade-accent-color1) !important;
         color: #FFF !important;
     }
 
@@ -609,11 +609,11 @@ div.animbrand a:focus, div.animbrand a:hover {
     font-family: SairaSemiCondensed-Bold;
     position: absolute;
     width: 70px;
-    border: 1px solid #2b579a;
+    border: 1px solid var(--moonglade-accent-color1);
 }
 
 .post-date-day {
-    color: #2b579a;
+    color: var(--moonglade-accent-color1);
     font-size: 42px;
     height: 58px;
     margin: 0;
@@ -623,7 +623,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 .post-date-month {
-    background-color: #2b579a;
+    background-color: var(--moonglade-accent-color1);
     color: #fff;
     padding: 1px 10px;
     text-align: right;
@@ -651,7 +651,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
     .post-summary-tags a {
-        background-color: #2b579a;
+        background-color: var(--moonglade-accent-color1);
         color: #fff;
         display: inline-block;
         font-size: 0.75rem;
@@ -661,7 +661,7 @@ div.animbrand a:focus, div.animbrand a:hover {
     }
 
         .post-summary-tags a:hover {
-            background-color: #3e6db5;
+            background-color: var(--moonglade-accent-color3);
             color: #fff;
         }
 
@@ -711,18 +711,18 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 a {
-    color: #2B579A;
+    color: var(--moonglade-accent-color1);
     text-decoration: none;
 }
 
     a:hover,
     a:focus {
-        color: #2B579A;
+        color: var(--moonglade-accent-color1);
         text-decoration: none;
     }
 
-.bg-moonglade-blue {
-    background-color: #2a579a !important;
+.bg-moonglade-accent1 {
+    background-color: var(--moonglade-accent-color1);
 }
 
 .navbar {
@@ -735,14 +735,14 @@ a {
 }
 
 footer {
-    background-color: #1a365f;
-    color: #96a8c3;
+    background-color: var(--moonglade-accent-color2);
+    color: rgba(255,255,255,0.5);
     padding-bottom: 20px;
     padding-top: 20px;
 }
 
     footer .container h4 {
-        color: #98abc7;
+        color: rgba(255,255,255, 0.6);
         font-size: 20px;
         font-weight: lighter;
         margin-bottom: 31px;
@@ -777,7 +777,7 @@ footer {
 .form-control#search:focus {
     -ms-box-shadow: none;
     -webkit-box-shadow: none;
-    border-color: #2b579a;
+    border-color: var(--moonglade-accent-color1);
     box-shadow: none;
 }
 
@@ -800,7 +800,7 @@ footer {
 }
 
 .page-link {
-    color: #2b579a;
+    color: var(--moonglade-accent-color1);
 }
 
 .comment-form-containter .badge {
@@ -816,7 +816,7 @@ footer {
 }
 
 .navbar .dropdown-menu {
-    background-color: #2a579a;
+    background-color: var(--moonglade-accent-color1);
     border: 0;
     color: #fff;
     font-size: 0.9rem;
@@ -827,18 +827,14 @@ footer {
         line-height: 1.7rem;
     }
 
-    .navbar .dropdown-menu .dropdown-divider {
-        border-top: 1px solid #5678ab;
-    }
-
 .navbar .dropdown-item.active, .dropdown-item:hover {
-    background-color: #3e6db5;
+    background-color: var(--moonglade-accent-color3);
     color: #fff;
     text-decoration: none;
 }
 
 footer a {
-    color: #96a8c3;
+    color: rgba(255,255,255,0.7);
 }
 
     footer a:hover {
@@ -846,7 +842,7 @@ footer a {
     }
 
 .qrcode-link a {
-    color: #96a8c3;
+    color: rgba(255,255,255,0.5);
     cursor: pointer;
     display: inline-block;
     font-size: 25px;
@@ -904,7 +900,7 @@ body {
 }
 
 .toptags-list a {
-    background-color: #2b579a;
+    background-color: var(--moonglade-accent-color1);
     color: #fff;
     display: inline-block;
     margin-bottom: 10px;
@@ -913,6 +909,6 @@ body {
 }
 
     .toptags-list a:hover {
-        background-color: #3e6db5;
+        background-color: var(--moonglade-accent-color3);
         color: #fff;
     }
