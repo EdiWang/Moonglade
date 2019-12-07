@@ -30,15 +30,17 @@ Tools | Alternative
 
 #### 1. Create Database 
 
-##### For Development (Light Weight, Recommended for Windows)
+##### Development
 
-Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. moonglade-dev
+Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. **moonglade-dev**
 
-##### For Production
+##### Production
 
-[Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. moonglade-dev
+[Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. **moonglade-production**
 
 #### 2. Set Connection String
+
+##### Via configuration file
 
 Update the connection string "**MoongladeDatabase**" in **appsettings.[env].json** according to your database configuration.
 
@@ -49,7 +51,9 @@ Example:
 }
 ```
 
-*The blog will automatically setup datbase schema and initial data in first run*
+##### Via environment variable (Recommend for production)
+
+Set environment variable: ```ConnectionStrings__MoongladeDatabase``` to your connection string. If you are deploying to Azure App Service, you can set the connection string in the Configuration blade.
 
 ### Build Source
 
@@ -171,22 +175,19 @@ PostSummaryWords | How may words to show in post list summary
 ImageCacheSlidingExpirationMinutes | Time for cached images to expire
 EnforceHttps | Force website use HTTPS
 AllowScriptsInCustomPage | Allow JavaScript in Page content or not
+EnableImageHotLinkProtection | Prevent images from being hot link from other sites*
+
+> Due to platform limitation, image hot link prevention requires manually edit file ```src\Moonglade.Web\urlrewrite.xml``` before deployment. 
 
 ## FAQ
 
 ### Does this blog support upgrade from a lower version?
 
-Not yet. Currently it depends on whether the database schema is changed. If the schema is same for a higer version, then the system can be deployed and override old files without problem.
+It depends. If the database schema is same for a higer version, then the system can be deployed and override old files without problem.
 
 ### Does this blog coupled with Microsoft Azure?
 
 No, the system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
-
-## Optional Recommendations
-- [Microsoft Azure DNS Zones](https://azure.microsoft.com/en-us/services/dns/)
-- [Microsoft Azure App Service](https://azure.microsoft.com/en-us/services/app-service/)
-- [Microsoft Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/)
-- [Microsoft Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)
 
 ## Related Projects
 
