@@ -56,6 +56,12 @@ namespace Moonglade.Web.Controllers
                 Value = t.Id
             }).ToList();
 
+            var tmList = Utils.GetThemes().Select(t => new SelectListItem
+            {
+                Text = t.Key,
+                Value = t.Value
+            }).ToList();
+
             var vm = new GeneralSettingsViewModel
             {
                 LogoText = _blogConfig.GeneralSettings.LogoText,
@@ -70,7 +76,9 @@ namespace Moonglade.Web.Controllers
                 BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
                 SelectedUtcOffset = Utils.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
-                TimeZoneList = tzList
+                TimeZoneList = tzList,
+                SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
+                ThemeList = tmList
             };
             return View(vm);
         }
@@ -89,6 +97,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
                 _blogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset = Utils.GetTimeSpanByZoneId(model.SelectedTimeZoneId);
                 _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
+                _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
 
                 _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
