@@ -14,8 +14,8 @@
 }
 
 .btn-outline-footer {
-    color: #96a8c3;
-    border-color: #96a8c3;
+    color: rgba(255,255,255,0.5);
+    border-color: rgba(255,255,255,0.5);
 }
 
     .btn-outline-footer:hover {
@@ -827,10 +827,6 @@ footer {
         line-height: 1.7rem;
     }
 
-    .navbar .dropdown-menu .dropdown-divider {
-        border-top: 1px solid var(--moonglade-accent-color6);
-    }
-
 .navbar .dropdown-item.active, .dropdown-item:hover {
     background-color: var(--moonglade-accent-color4);
     color: #fff;
@@ -838,7 +834,7 @@ footer {
 }
 
 footer a {
-    color: #96a8c3;
+    color: rgba(255,255,255,0.5);
 }
 
     footer a:hover {
@@ -846,7 +842,7 @@ footer a {
     }
 
 .qrcode-link a {
-    color: #96a8c3;
+    color: rgba(255,255,255,0.5);
     cursor: pointer;
     display: inline-block;
     font-size: 25px;
