@@ -124,7 +124,10 @@ namespace Moonglade.Core
 
                 Logger.LogInformation($"Removing Post-Category associations for category id: {id}");
                 var pcs = _postCategoryRepository.Get(pc => pc.CategoryId == id);
-                _postCategoryRepository.Delete(pcs);
+                if (null != pcs)
+                {
+                    _postCategoryRepository.Delete(pcs);
+                }
 
                 Logger.LogInformation($"Removing categoryEntity {id}");
                 _categoryRepository.Delete(id);
