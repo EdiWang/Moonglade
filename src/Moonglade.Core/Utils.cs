@@ -71,7 +71,7 @@ namespace Moonglade.Core
             {
                 {"Word Blue", "word-blue.css"},
                 {"Excel Green", "excel-green.css"},
-                //{"PowerPoint Orange", "powerpoint-orange.css"},
+                {"PowerPoint Orange", "powerpoint-orange.css"},
                 {"OneNote Purple", "onenote-purple.css"},
                 //{"Outlook Blue", "outlook-blue.css"}
             };
