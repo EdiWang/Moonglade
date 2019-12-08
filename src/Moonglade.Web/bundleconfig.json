@@ -26,7 +26,6 @@
     "outputFileName": "wwwroot/css/mooglade-css-bundle.css",
     "inputFiles": [
       "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
-      "wwwroot/lib/font-awesome/css/all.min.css",
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/moonglade-base.css",
       "wwwroot/css/src/moonglade-rwd.css",
