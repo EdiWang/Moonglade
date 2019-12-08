@@ -95,7 +95,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
                 _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-                _blogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset = Utils.GetTimeSpanByZoneId(model.SelectedTimeZoneId);
+                _blogConfig.GeneralSettings.TimeZoneUtcOffset = Utils.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
                 _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
                 _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);

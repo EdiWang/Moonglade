@@ -19,7 +19,9 @@ namespace Moonglade.Configuration
 
         public string FooterCustomizedHtmlPitch { get; set; }
 
-        public TimeSpan UserTimeZoneBaseUtcOffset { get; set; }
+        // Use string instead of TimeSpan as workaround for System.Text.Json issue
+        // https://github.com/EdiWang/Moonglade/issues/310
+        public string TimeZoneUtcOffset { get; set; }
 
         public string TimeZoneId { get; set; }
 

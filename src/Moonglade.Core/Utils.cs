@@ -181,15 +181,22 @@ namespace Moonglade.Core
             return tz.BaseUtcOffset;
         }
 
-        public static DateTime UtcToZoneTime(DateTime utcTime, TimeSpan span)
+        public static DateTime UtcToZoneTime(DateTime utcTime, string timeSpan)
         {
-            var tz = GetTimeZones().FirstOrDefault(t => t.BaseUtcOffset == span);
-            if (null != tz)
+            if (string.IsNullOrWhiteSpace(timeSpan))
             {
-                return TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz);
+                timeSpan = TimeSpan.FromSeconds(0).ToString();
             }
 
-            return utcTime.AddTicks(span.Ticks);
+            // Ugly code for workaround https://github.com/EdiWang/Moonglade/issues/310
+            bool ok = TimeSpan.TryParse(timeSpan, out var span);
+            if (!ok)
+            {
+                throw new FormatException($"{nameof(timeSpan)} is not a valid TimeSpan format");
+            }
+
+            var tz = GetTimeZones().FirstOrDefault(t => t.BaseUtcOffset == span);
+            return null != tz ? TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz) : utcTime.AddTicks(span.Ticks);
         }
 
         public static string GetPostAbstract(string rawHtmlContent, int wordCount)
