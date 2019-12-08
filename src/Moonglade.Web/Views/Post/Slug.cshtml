@@ -37,7 +37,7 @@
 @section head {
     @if (null == ViewBag.IsDraftPreview)
     {
-        <link href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
+        <link id="css-simplemde" href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
     }
 }
 @section scripts {
@@ -88,6 +88,14 @@
                     }
                 </text>
             }
+
+            $('.lightswitch').click(function() {
+                if (postSlug.isDarkMode) {
+                    postSlug.useLightMode();
+                } else {
+                    postSlug.useDarkMode();
+                }
+            });
         });
     </script>
 }
@@ -296,3 +304,7 @@
         }
     </div>
 }
+
+<div class="lightswitch border rounded">
+    <span id="lighticon" class="icon-sun-o"></span>
+</div>
