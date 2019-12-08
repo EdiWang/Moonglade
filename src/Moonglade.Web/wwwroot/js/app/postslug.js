@@ -1,4 +1,5 @@
 ﻿var postSlug = {
+    isDarkMode: false,
     registerRatingButtons: function (pid) {
         $('.btn-ratings').click(function () {
             ajaxPostWithCSRFToken('/post/like', { postId: pid }, function (data) {
@@ -58,6 +59,10 @@
 
         $('.comment-form-containter .form-control').addClass('bg-transparent');
 
+        this.isDarkMode = true;
+        $('.lightswitch').addClass('bg-dark text-light border-secondary');
+        $('#lighticon').removeClass('icon-sun-o');
+        $('#lighticon').addClass('icon-moon-o');
         console.info('Switched to dark mode');
     },
     useLightMode: function () {
@@ -80,6 +85,10 @@
 
         $('.comment-form-containter .form-control').removeClass('bg-transparent');
 
+        this.isDarkMode = false;
+        $('.lightswitch').removeClass('bg-dark text-light border-secondary');
+        $('#lighticon').addClass('icon-sun-o');
+        $('#lighticon').removeClass('icon-moon-o');
         console.info('Switched to light mode');
     }
 };

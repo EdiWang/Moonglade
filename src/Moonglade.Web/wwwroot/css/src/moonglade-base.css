@@ -918,3 +918,18 @@ body {
         background-color: var(--moonglade-accent-color3);
         color: #fff;
     }
+
+.lightswitch {
+    height: 32px;
+    width: 32px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+    text-align: center;
+}
+
+#lighticon {
+    transform: translate(0,50%);
+    display: block;
+}

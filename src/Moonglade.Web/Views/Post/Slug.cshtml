@@ -88,6 +88,14 @@
                     }
                 </text>
             }
+
+            $('.lightswitch').click(function() {
+                if (postSlug.isDarkMode) {
+                    postSlug.useLightMode();
+                } else {
+                    postSlug.useDarkMode();
+                }
+            });
         });
     </script>
 }
@@ -296,3 +304,7 @@
         }
     </div>
 }
+
+<div class="lightswitch border rounded">
+    <span id="lighticon" class="icon-sun-o"></span>
+</div>
