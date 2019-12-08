@@ -27,6 +27,30 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-stack-overflow:before {
+    content: "\f16c";
+}
+
+.icon-sun-o:before {
+    content: "\f185";
+}
+
+.icon-moon-o:before {
+    content: "\f186";
+}
+
+.icon-wechat:before {
+    content: "\f1d7";
+}
+
+.icon-weixin:before {
+    content: "\f1d7";
+}
+
+.icon-facebook-official:before {
+    content: "\f230";
+}
+
 .icon-search:before {
     content: "\f002";
 }
