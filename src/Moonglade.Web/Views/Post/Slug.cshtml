@@ -115,10 +115,10 @@
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info bg-light">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm"))</span>
+                    <span>(Edit on @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
                 | UTC @BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset
             </div>
@@ -126,10 +126,10 @@
 
         <div class="d-none d-md-block post-publish-info mb-2">
             <strong class="text-muted">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Last Edit @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("yyyy-M-d HH:mm"))</span>
+                    <span>(Edit on @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
                 | UTC @BlogConfig.GeneralSettings.UserTimeZoneBaseUtcOffset
             </strong>
