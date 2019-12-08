@@ -725,6 +725,14 @@ a {
     background-color: var(--moonglade-accent-color1);
 }
 
+.bg-moonglade-accent2 {
+    background-color: var(--moonglade-accent-color2);
+}
+
+.bg-moca-dark {
+    background-color: #171717;
+}
+
 .navbar {
     box-shadow: 0 0 8px #666;
     padding: .4rem 1rem
@@ -735,7 +743,6 @@ a {
 }
 
 footer {
-    background-color: var(--moonglade-accent-color2);
     color: rgba(255,255,255,0.5);
     padding-bottom: 20px;
     padding-top: 20px;
@@ -750,7 +757,6 @@ footer {
     }
 
 .form-control#term {
-    background: transparent;
     border-width: 0;
     box-shadow: none;
     color: #fff;
