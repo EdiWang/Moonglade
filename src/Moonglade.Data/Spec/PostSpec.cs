@@ -27,6 +27,9 @@ namespace Moonglade.Data.Spec
             base(p => p.PostPublish.PubDateUtc.Value.Year == year &&
                       (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month))
         {
+            // Fix #313: Filter out unpublished posts
+            UseCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
+
             AddInclude(post => post.Include(p => p.PostPublish));
             ApplyOrderByDescending(p => p.PostPublish.PubDateUtc);
         }
