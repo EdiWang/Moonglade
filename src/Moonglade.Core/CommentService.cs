@@ -29,7 +29,7 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IRepository<CommentEntity> commentRepository,
-            IRepository<CommentReplyEntity> commentReplyRepository, 
+            IRepository<CommentReplyEntity> commentReplyRepository,
             IRepository<PostEntity> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
@@ -149,8 +149,8 @@ namespace Moonglade.Core
                 }
 
                 // 2. Check user email domain
-                var bannedDomains = _blogConfig.EmailSettings.BannedMailDomain;
-                if (bannedDomains.Any())
+                var bannedDomains = _blogConfig.EmailSettings.BannedMailDomain?.Split(",");
+                if (null != bannedDomains && bannedDomains.Any())
                 {
                     var address = new MailAddress(request.Email);
                     if (bannedDomains.Contains(address.Host))
