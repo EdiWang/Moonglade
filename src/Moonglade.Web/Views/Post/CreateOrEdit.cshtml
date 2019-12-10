@@ -26,7 +26,7 @@
     <script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
     <script src="~/lib/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
     @{
-        var ec = (EditorChoice)ViewBag.EditorMode;
+        var ec = Settings.Value.Editor;
         switch (ec)
         {
             case EditorChoice.HTML:
@@ -46,7 +46,7 @@
     <script>
         $(function () {
             postEditor.initEvents();
-            var editorMode = '@ViewBag.EditorMode';
+            var editorMode = '@Settings.Value.Editor';
             if (editorMode == 'HTML') {
                 postEditor.loadRichEditor(".post-content-textarea");
             }
@@ -96,9 +96,9 @@
             </div>
 
             <div class="form-group">
-                <textarea asp-for="HtmlContent" class="post-content-textarea"></textarea>
+                <textarea asp-for="EditorContent" class="post-content-textarea"></textarea>
                 <div>
-                    <span asp-validation-for="HtmlContent" class="text-danger"></span>
+                    <span asp-validation-for="EditorContent" class="text-danger"></span>
                 </div>
             </div>
 

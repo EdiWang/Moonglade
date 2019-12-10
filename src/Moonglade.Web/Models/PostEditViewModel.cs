@@ -33,7 +33,7 @@ namespace Moonglade.Web.Models
         [Required(ErrorMessage = "Please enter content.")]
         [JsonIgnore]
         [DataType(DataType.MultilineText)]
-        public string HtmlContent { get; set; }
+        public string EditorContent { get; set; }
 
         [Required]
         [Display(Name = "Publish Now")]

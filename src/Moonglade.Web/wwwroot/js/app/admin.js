@@ -112,7 +112,9 @@ var postEditor = {
         });
 
         function submitForm(e) {
-            window.tinyMCE.triggerSave();
+            if (window.tinyMCE) {
+                window.tinyMCE.triggerSave();
+            }
 
             var selectCatCount = 0;
             $('input[name="SelectedCategoryIds"]').each(function () {

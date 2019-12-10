@@ -5,6 +5,7 @@
 
 @{
     ViewBag.ShowBloggerIntroInXS = true;
+    var ec = Settings.Value.Editor;
 }
 
 @section keywords {
@@ -182,7 +183,17 @@
         <hr class="post-header-hr" />
     </header>
     <section class="post-content clearfix">
-        @Html.Raw(Model.PostModel.Content)
+        @switch (ec)
+        {
+            case EditorChoice.Markdown:
+                @Html.Raw(Utils.MdContentToHtml(Model.PostModel.Content))
+                break;
+            case EditorChoice.None:
+            case EditorChoice.HTML:
+            default:
+                @Html.Raw(Model.PostModel.Content)
+                break;
+        }
     </section>
     @if (null == ViewBag.IsDraftPreview)
     {

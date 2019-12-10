@@ -6,7 +6,7 @@ namespace Moonglade.Model
     {
         public string Title { get; set; }
         public string Slug { get; set; }
-        public string HtmlContent { get; set; }
+        public string EditorContent { get; set; }
         public bool EnableComment { get; set; }
         public bool IsPublished { get; set; }
         public bool ExposedToSiteMap { get; set; }
