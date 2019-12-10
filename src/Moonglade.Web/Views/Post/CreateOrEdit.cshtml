@@ -12,26 +12,49 @@
             box-shadow: inherit;
         }
 
-        .bootstrap-tagsinput .tag {
-            background: #2a579a;
-            padding: 2px 5px;
-        }
+            .bootstrap-tagsinput .tag {
+                background: #2a579a;
+                padding: 2px 5px;
+            }
 
-        .bootstrap-tagsinput .tag [data-role="remove"]:hover {
-            box-shadow: inherit;
-        }
+                .bootstrap-tagsinput .tag [data-role="remove"]:hover {
+                    box-shadow: inherit;
+                }
     </style>
 }
 @section scripts{
     <script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
     <script src="~/lib/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
-    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    @{
+        var ec = (EditorChoice)ViewBag.EditorMode;
+        switch (ec)
+        {
+            case EditorChoice.HTML:
+                <script src="~/lib/tinymce/tinymce.min.js"></script>
+                break;
+            case EditorChoice.Markdown:
+                <script src="~/lib/simplemde/simplemde.min.js"></script>
+                <link id="css-simplemde" href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
+                break;
+            case EditorChoice.None:
+            default:
+                break;
+        }
+    }
     <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
 
     <script>
         $(function () {
             postEditor.initEvents();
-            postEditor.loadRichEditor(".post-content-textarea");
+            var editorMode = '@ViewBag.EditorMode';
+            if (editorMode == 'HTML') {
+                postEditor.loadRichEditor(".post-content-textarea");
+            }
+            if (editorMode == 'Markdown') {
+                postEditor.loadMdEditor(".post-content-textarea");
+
+            }
+
             postEditor.keepAlive();
         });
     </script>

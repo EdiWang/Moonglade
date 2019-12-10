@@ -47,6 +47,15 @@ var postEditor = {
             });
         }
     },
+    loadMdEditor: function (textareaSelector) {
+        if (window.SimpleMDE) {
+            var simplemde = new SimpleMDE({
+                element: $(textareaSelector)[0],
+                spellChecker: false,
+                status: false
+            });
+        }
+    },
     initEvents: function () {
         $('#Title').change(function () {
             $('#Slug').val(slugify($(this).val()));

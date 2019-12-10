@@ -49,6 +49,8 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Create()
         {
             var view = await GetCreatePostModelAsync();
+            
+            ViewBag.EditorMode = AppSettings.Editor;
             return View("CreateOrEdit", view);
         }
 
@@ -102,6 +104,7 @@ namespace Moonglade.Web.Controllers
                     editViewModel.CategoryList = cbCatList;
                 }
 
+                ViewBag.EditorMode = AppSettings.Editor;
                 return View("CreateOrEdit", editViewModel);
             }
 
