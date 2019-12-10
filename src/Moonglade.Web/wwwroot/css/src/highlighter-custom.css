@@ -2,15 +2,12 @@
     display: block;
     overflow-x: auto;
     padding: 1em;
-}
-
-.post-content.lightmode .hljs {
     border: 1px solid #d3d6db;
     background-color: #f9f9f9;
     color: black;
 }
 
-.post-content.darkmode .hljs {
+.darkmode .hljs {
     border: 1px solid #454545;
     background-color: #2e2e2e;
     color: #e3e3e3;
