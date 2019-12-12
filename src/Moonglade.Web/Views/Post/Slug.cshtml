@@ -23,7 +23,7 @@
     <meta name="title" content="@Model.PostModel.Title" />
     <meta name="displaydate" content="@Model.PostModel.PubDateUtc.ToString("u")">
     <meta property="og:site_name" content="@BlogConfig.GeneralSettings.SiteTitle">
-    <meta name="copyright" content="(C) 2009 - @DateTime.UtcNow.Year edi.wang">
+    <meta name="copyright" content="(C) @Model.PostModel.PubDateUtc.Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@BlogConfig.BlogOwnerSettings.Name" />
 }
 
