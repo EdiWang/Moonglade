@@ -123,23 +123,23 @@
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info bg-light">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("MM/dd/yyyy")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
                     <span>(Edit on @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
-                | UTC @BlogConfig.GeneralSettings.TimeZoneUtcOffset
+                | @BlogConfig.GeneralSettings.TimeZoneId
             </div>
         </div>
 
         <div class="d-none d-md-block post-publish-info mb-2">
             <strong class="text-muted">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("MM/dd/yyyy")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")"  title="GMT @Model.PostModel.PubDateUtc">@Utils.UtcToZoneTime(Model.PostModel.PubDateUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
                     <span>(Edit on @Utils.UtcToZoneTime(Model.PostModel.LastModifyOnUtc.Value, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
-                | UTC @BlogConfig.GeneralSettings.TimeZoneUtcOffset
+                | @BlogConfig.GeneralSettings.TimeZoneId
             </strong>
             <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits Reads</span>
         </div>
