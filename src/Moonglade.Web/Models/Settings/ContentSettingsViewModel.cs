@@ -51,5 +51,11 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Show Call-out Section")]
         public bool ShowCalloutSection { get; set; }
+
+        [Display(Name = "Show customize footer on each post")]
+        public bool ShowPostFooter { get; set; }
+
+        [Display(Name = "Post footer HTML Pitch")]
+        public string PostFooterHtmlPitch { get; set; }
     }
 }
