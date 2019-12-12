@@ -26,6 +26,10 @@ namespace Moonglade.Configuration
 
         public string CalloutSectionHtmlPitch { get; set; }
 
+        public bool ShowPostFooter { get; set; }
+
+        public string PostFooterHtmlPitch { get; set; }
+
         public ContentSettings()
         {
             DisharmonyWords = string.Empty;
