@@ -11,7 +11,7 @@
     max-width: 285px;
     padding-right: 0;
     padding-left: 0;
-    background-color: #124078;
+    background-color: var(--moonglade-accent-color2);
 }
 
 .admin-main {
@@ -19,12 +19,12 @@
 }
 
 hr.admin-nav-divider {
-    border-top: 1px solid #7DA3C6;
+    border-top: 1px solid rgba(255,255,255,0.5);
     margin: 0 20px;
 }
 
 .text-moonglade-dark-secondary {
-    color: #98abc7;
+    color: rgba(255,255,255,0.5);
 }
 
 .admin-nav-section .list-group-item {
@@ -36,7 +36,7 @@ hr.admin-nav-divider {
     .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
         color: #FFF;
-        background-color: #002050;
+        background-color: var(--moonglade-accent-color1);
     }
 
 .admin-nav-link:active {
