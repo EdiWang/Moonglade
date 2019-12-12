@@ -95,6 +95,23 @@
                         <span asp-validation-for="HotTagAmount" class="text-danger"></span>
                     </div>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="ShowPostFooter" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.ShowPostFooter ? "checked=\"checked\"" : "") id="ShowPostFooter" name="ShowPostFooter" type="checkbox" value="true">
+                            <label for="ShowPostFooter" class="label-success"></label>
+                            <input name="ShowPostFooter" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="PostFooterHtmlPitch" class="control-label"></label>
+                        <textarea asp-for="PostFooterHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <span asp-validation-for="PostFooterHtmlPitch" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="card">
                 <div class="card-header">Call-out</div>
