@@ -128,7 +128,9 @@ namespace Moonglade.Web.Controllers
                 EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,
                 EnableImageLazyLoad = _blogConfig.ContentSettings.EnableImageLazyLoad,
                 ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
-                CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch
+                CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
+                ShowPostFooter = _blogConfig.ContentSettings.ShowPostFooter,
+                PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch
             };
             return View(vm);
         }
@@ -149,6 +151,8 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.EnableImageLazyLoad = model.EnableImageLazyLoad;
                 _blogConfig.ContentSettings.ShowCalloutSection = model.ShowCalloutSection;
                 _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
+                _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
+                _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
                 _blogConfig.RequireRefresh();
 
