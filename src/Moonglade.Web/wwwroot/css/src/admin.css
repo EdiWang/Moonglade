@@ -31,6 +31,10 @@ hr.admin-nav-divider {
     min-height: 650px;
 }
 
+.post-edit-form .CodeMirror {
+    height: 620px;
+}
+
 .admin-nav-section .list-group-item {
     background-color: transparent;
     border: 0 none;
