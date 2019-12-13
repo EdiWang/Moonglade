@@ -30,7 +30,7 @@ namespace Moonglade.Web.Controllers
             ILogger<CommentController> logger,
             IOptions<AppSettings> settings,
             CommentService commentService,
-            IBlogConfig blogConfig, 
+            IBlogConfig blogConfig,
             IMoongladeNotificationClient notificationClient = null)
             : base(logger, settings)
         {
@@ -75,12 +75,12 @@ namespace Moonglade.Web.Controllers
                         {
                             _ = Task.Run(async () =>
                               {
-                                  await _notificationClient.SendNewCommentNotificationAsync(response.Item, Utils.MdContentToHtml);
+                                  await _notificationClient.SendNewCommentNotificationAsync(response.Item, s => Utils.MdContentToHtml(s));
                               });
                         }
-                        var cResponse = new CommentResponse(true, 
-                            _blogConfig.ContentSettings.RequireCommentReview ? 
-                            CommentResponseCode.Success : 
+                        var cResponse = new CommentResponse(true,
+                            _blogConfig.ContentSettings.RequireCommentReview ?
+                            CommentResponseCode.Success :
                             CommentResponseCode.SuccessNonReview);
 
                         return Json(cResponse);

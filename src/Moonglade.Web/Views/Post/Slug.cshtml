@@ -186,7 +186,7 @@
         @switch (ec)
         {
             case EditorChoice.Markdown:
-                @Html.Raw(Utils.MdContentToHtml(Model.PostModel.Content))
+                @Html.Raw(Utils.MdContentToHtml(Model.PostModel.Content, false))
                 break;
             case EditorChoice.None:
             case EditorChoice.HTML:

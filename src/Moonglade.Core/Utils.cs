@@ -366,10 +366,18 @@ namespace Moonglade.Core
             return newStr;
         }
 
-        public static string MdContentToHtml(string markdown)
+        public static string MdContentToHtml(string markdown, bool disableHtml = true)
         {
-            var pipeline = new MarkdownPipelineBuilder().DisableHtml().Build();
-            var result = Markdown.ToHtml(markdown, pipeline);
+            var pipeline = new MarkdownPipelineBuilder()
+                               .UsePipeTables()
+                               .UseBootstrap();
+
+            if (disableHtml)
+            {
+                pipeline.DisableHtml();
+            }
+
+            var result = Markdown.ToHtml(markdown, pipeline.Build());
             return result;
         }
 
