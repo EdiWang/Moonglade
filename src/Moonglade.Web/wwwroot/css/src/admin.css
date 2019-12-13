@@ -27,6 +27,10 @@ hr.admin-nav-divider {
     color: #98abc7;
 }
 
+.post-content-textarea {
+    min-height: 650px;
+}
+
 .admin-nav-section .list-group-item {
     background-color: transparent;
     border: 0 none;
