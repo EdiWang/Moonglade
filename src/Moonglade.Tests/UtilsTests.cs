@@ -102,7 +102,7 @@ namespace Moonglade.Tests
         public void TestMdContentToHtml()
         {
             string md = "A quick brown **fox** jumped over the lazy dog.";
-            string result = Utils.MdContentToHtml(md);
+            string result = Utils.ConvertMarkdownContent(md, Utils.MarkdownConvertType.Html);
 
             Assert.IsTrue(result == "<p>A quick brown <strong>fox</strong> jumped over the lazy dog.</p>\n");
         }

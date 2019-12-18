@@ -414,7 +414,10 @@ namespace Moonglade.Core
                     PostContent = AppSettings.Editor == EditorChoice.Markdown ?
                                     request.EditorContent :
                                     _htmlCodec.HtmlEncode(request.EditorContent),
-                    ContentAbstract = Utils.GetPostAbstract(request.EditorContent, AppSettings.PostSummaryWords),
+                    ContentAbstract = Utils.GetPostAbstract(
+                                            request.EditorContent, 
+                                            AppSettings.PostSummaryWords, 
+                                            AppSettings.Editor == EditorChoice.Markdown),
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
                     Title = request.Title.Trim(),
@@ -520,7 +523,10 @@ namespace Moonglade.Core
                 postModel.PostContent = AppSettings.Editor == EditorChoice.Markdown ? 
                                         request.EditorContent : 
                                         _htmlCodec.HtmlEncode(request.EditorContent);
-                postModel.ContentAbstract = Utils.GetPostAbstract(request.EditorContent, AppSettings.PostSummaryWords);
+                postModel.ContentAbstract = Utils.GetPostAbstract(
+                                            request.EditorContent, 
+                                            AppSettings.PostSummaryWords, 
+                                            AppSettings.Editor == EditorChoice.Markdown);
 
                 // Address #221: Do not allow published posts back to draft status
                 // postModel.PostPublish.IsPublished = request.IsPublished;

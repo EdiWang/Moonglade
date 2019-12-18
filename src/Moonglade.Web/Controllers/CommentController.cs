@@ -75,7 +75,7 @@ namespace Moonglade.Web.Controllers
                         {
                             _ = Task.Run(async () =>
                               {
-                                  await _notificationClient.SendNewCommentNotificationAsync(response.Item, s => Utils.MdContentToHtml(s));
+                                  await _notificationClient.SendNewCommentNotificationAsync(response.Item, s => Utils.ConvertMarkdownContent(s, Utils.MarkdownConvertType.Html));
                               });
                         }
                         var cResponse = new CommentResponse(true,

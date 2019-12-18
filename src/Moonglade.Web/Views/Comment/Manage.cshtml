@@ -92,7 +92,7 @@ else
                     @item.Username (<a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>)
                 </h6>
                 <div class="mdrendered-comment-content">
-                    @Html.Raw(Utils.MdContentToHtml(item.CommentContent))
+                    @Html.Raw(Utils.ConvertMarkdownContent(item.CommentContent, Utils.MarkdownConvertType.Html))
                 </div>
                 <div class="text-muted">
                     @item.PostTitle
