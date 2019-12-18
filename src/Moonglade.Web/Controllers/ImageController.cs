@@ -50,15 +50,12 @@ namespace Moonglade.Web.Controllers
             {
                 var contentType = "image/png";
                 var ext = Path.GetExtension(filename);
-                switch (ext)
+                contentType = ext switch
                 {
-                    case ".png":
-                        contentType = "image/png";
-                        break;
-                    case ".ico":
-                        contentType = "image/x-icon";
-                        break;
-                }
+                    ".png" => "image/png",
+                    ".ico" => "image/x-icon",
+                    _ => contentType
+                };
                 return PhysicalFile(iconPath, contentType);
             }
 

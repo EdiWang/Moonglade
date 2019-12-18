@@ -1,12 +1,10 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
-
-@using Microsoft.Extensions.Options
 @{
-    string currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
-    string currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
-    string customPageRouteName = ViewContext.RouteData?.Values["routeName"]?.ToString();
+    var currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
+    var customPageRouteName = ViewContext.RouteData?.Values["routeName"]?.ToString();
 }
 
 <!DOCTYPE html>

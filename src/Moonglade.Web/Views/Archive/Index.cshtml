@@ -34,25 +34,15 @@ else
             {
                 var queryMonth = Model.Where(obj => obj.Year == item);
                 var yearEndChar = item % 10;
-                var badgeClass = string.Empty;
-                switch (yearEndChar % 5)
+                var badgeClass = (yearEndChar % 5) switch
                 {
-                    case 0:
-                        badgeClass = "primary";
-                        break;
-                    case 1:
-                        badgeClass = "success";
-                        break;
-                    case 2:
-                        badgeClass = "info";
-                        break;
-                    case 3:
-                        badgeClass = "warning";
-                        break;
-                    case 4:
-                        badgeClass = "danger";
-                        break;
-                }
+                    0 => "primary",
+                    1 => "success",
+                    2 => "info",
+                    3 => "warning",
+                    4 => "danger",
+                    _ => string.Empty
+                };
 
                 <li class="@(item % 2 == 0 ? "timeline-inverted" : null)">
                     <div class="timeline-badge @badgeClass"><span class="icon-clock"></span></div>

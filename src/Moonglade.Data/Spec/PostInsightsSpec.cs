@@ -29,6 +29,6 @@ namespace Moonglade.Data.Spec
     public enum PostInsightsType
     {
         TopRead = 0,
-        TopCommented = 1,
+        TopCommented = 1
     }
 }

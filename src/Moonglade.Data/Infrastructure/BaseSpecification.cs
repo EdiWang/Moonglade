@@ -25,7 +25,7 @@ namespace Moonglade.Data.Infrastructure
 
         public int Take { get; private set; }
         public int Skip { get; private set; }
-        public bool IsPagingEnabled { get; private set; } = false;
+        public bool IsPagingEnabled { get; private set; }
 
         public void UseCriteria(Expression<Func<T, bool>> criteria)
         {

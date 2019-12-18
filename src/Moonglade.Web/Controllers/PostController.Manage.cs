@@ -122,7 +122,7 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string[] tagList = string.IsNullOrWhiteSpace(model.Tags)
+                    var tagList = string.IsNullOrWhiteSpace(model.Tags)
                                              ? new string[] { }
                                              : model.Tags.Split(',').ToArray();
 

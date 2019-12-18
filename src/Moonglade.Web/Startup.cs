@@ -130,9 +130,9 @@ namespace Moonglade.Web
                            .UseSqlServer(_configuration.GetConnectionString(Constants.DbConnectionName), sqlOptions =>
                                {
                                    sqlOptions.EnableRetryOnFailure(
-                                       maxRetryCount: 3,
-                                       maxRetryDelay: TimeSpan.FromSeconds(30),
-                                       errorNumbersToAdd: null);
+                                       3,
+                                       TimeSpan.FromSeconds(30),
+                                       null);
                                }));
         }
 
@@ -289,8 +289,8 @@ namespace Moonglade.Web
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllerRoute(
-                        name: "default",
-                        pattern: "{controller=Home}/{action=Index}/{id?}");
+                        "default",
+                        "{controller=Home}/{action=Index}/{id?}");
                     endpoints.MapRazorPages();
                 });
             }
@@ -349,9 +349,9 @@ namespace Moonglade.Web
             // Use Temp folder as best practice
             // Do NOT create or modify anything under application directory
             // e.g. Azure Deployment using WEBSITE_RUN_FROM_PACKAGE will make website root directory read only.
-            string tPath = Path.GetTempPath();
+            var tPath = Path.GetTempPath();
             _logger.LogInformation($"Server environment Temp path: {tPath}");
-            string moongladeAppDataPath = Path.Combine(tPath, @"moonglade\App_Data");
+            var moongladeAppDataPath = Path.Combine(tPath, @"moonglade\App_Data");
             if (Directory.Exists(moongladeAppDataPath))
             {
                 Directory.Delete(moongladeAppDataPath, true);

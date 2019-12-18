@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Core;
+using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
 
-namespace Moonglade.ImageStorage
+namespace Moonglade.Web.Extensions
 {
     public static class ImageStorageServiceExtensions
     {

@@ -81,21 +81,19 @@ namespace Moonglade.Configuration
             async Task<int> SetConfiguration(string key, string value)
             {
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-                using (var conn = new SqlConnection(connStr))
-                {
-                    string sql = $"UPDATE {nameof(BlogConfiguration)} " +
-                                 $"SET {nameof(BlogConfiguration.CfgValue)} = @value, " +
-                                 $"{nameof(BlogConfiguration.LastModifiedTimeUtc)} = @lastModifiedTimeUtc " +
-                                 $"WHERE {nameof(BlogConfiguration.CfgKey)} = @key";
+                await using var conn = new SqlConnection(connStr);
+                var sql = $"UPDATE {nameof(BlogConfiguration)} " +
+                          $"SET {nameof(BlogConfiguration.CfgValue)} = @value, " +
+                          $"{nameof(BlogConfiguration.LastModifiedTimeUtc)} = @lastModifiedTimeUtc " +
+                          $"WHERE {nameof(BlogConfiguration.CfgKey)} = @key";
 
-                    return await conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
-                }
+                return await conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
             }
 
             try
             {
                 var json = JsonSerializer.Serialize(moongladeSettings);
-                int rows = await SetConfiguration(typeof(T).Name, json);
+                var rows = await SetConfiguration(typeof(T).Name, json);
                 return new Response(rows > 0);
             }
             catch (Exception e)
@@ -115,16 +113,14 @@ namespace Moonglade.Configuration
             try
             {
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-                using (var conn = new SqlConnection(connStr))
-                {
-                    string sql = $"SELECT {nameof(BlogConfiguration.CfgKey)}, " +
-                                 $"{nameof(BlogConfiguration.CfgValue)} " +
-                                 $"FROM {nameof(BlogConfiguration)}";
+                using var conn = new SqlConnection(connStr);
+                var sql = $"SELECT {nameof(BlogConfiguration.CfgKey)}, " +
+                          $"{nameof(BlogConfiguration.CfgValue)} " +
+                          $"FROM {nameof(BlogConfiguration)}";
 
-                    var data = conn.Query<(string CfgKey, string CfgValue)>(sql);
-                    var dic = data.ToDictionary(c => c.CfgKey, c => c.CfgValue);
-                    return dic;
-                }
+                var data = conn.Query<(string CfgKey, string CfgValue)>(sql);
+                var dic = data.ToDictionary(c => c.CfgKey, c => c.CfgValue);
+                return dic;
             }
             catch (Exception e)
             {

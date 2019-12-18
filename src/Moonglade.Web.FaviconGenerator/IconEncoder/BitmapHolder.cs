@@ -22,7 +22,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 
         public void Open(string filename)
         {
-            this.Open(File.OpenRead(filename));
+            Open(File.OpenRead(filename));
         }
 
         public void Open(Stream stream)
@@ -37,7 +37,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 
         public void Save(string filename)
         {
-            this.Save(File.OpenWrite(filename));
+            Save(File.OpenWrite(filename));
         }
         public void Save(Stream stream)
         {

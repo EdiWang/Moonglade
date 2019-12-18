@@ -1,5 +1,4 @@
 ﻿using Moonglade.Configuration.Abstraction;
-using System;
 
 namespace Moonglade.Configuration
 {

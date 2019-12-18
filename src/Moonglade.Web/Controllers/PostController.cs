@@ -41,9 +41,9 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                int pagesize = _blogConfig.ContentSettings.PostListPageSize;
+                var pagesize = _blogConfig.ContentSettings.PostListPageSize;
                 var postList = await _postService.GetPagedPostsAsync(pagesize, page);
-                int postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCount, entry => _postService.CountVisiblePosts().Item);
+                var postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCount, entry => _postService.CountVisiblePosts().Item);
 
                 var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pagesize, postCount);
                 return View(postsAsIPagedList);

@@ -24,12 +24,12 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
             IconDirectory.Reserved = 0;
             IconDirectory.ResourceType = 1;
             IconDirectory.EntryCount = 1;
-            IconImages = new Iconimage[] { new Iconimage() };
+            IconImages = new[] { new Iconimage() };
         }
 
         public void Open(string filename)
         {
-            this.Open(File.OpenRead(filename));
+            Open(File.OpenRead(filename));
         }
 
         public void Open(Stream stream)
@@ -53,7 +53,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
         public void Save(string filename)
         {
             using var bw = new BinaryWriter(File.OpenWrite(filename));
-            this.Save(bw);
+            Save(bw);
         }
         public void Save(BinaryWriter bw)
         {
@@ -66,7 +66,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
             System.Drawing.Icon newIcon;
             using (var bw = new BinaryWriter(new MemoryStream()))
             {
-                this.Save(bw);
+                Save(bw);
                 bw.BaseStream.Position = 0;
                 newIcon = new System.Drawing.Icon(bw.BaseStream);
             }

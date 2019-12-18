@@ -48,7 +48,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 
         public static IconHolder BitmapToIconHolder(BitmapHolder bmp)
         {
-            var mapColors = (bmp.Info.InfoHeader.BiBitCount <= 24);
+            var mapColors = bmp.Info.InfoHeader.BiBitCount <= 24;
             var maximumColors = 1 << bmp.Info.InfoHeader.BiBitCount;
             //Hashtable uniqueColors = new Hashtable(maximumColors);
             // actual colors is probably nowhere near maximum, so dont try to initialize the hashtable
@@ -135,7 +135,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
             ico.IconDirectory.Entries[0].Width = (byte)bmp.Info.InfoHeader.BiWidth;
             ico.IconDirectory.Entries[0].Height = (byte)bmp.Info.InfoHeader.BiHeight;
             ico.IconDirectory.Entries[0].BitCount = bitCount; // maybe 0?
-            ico.IconDirectory.Entries[0].ColorCount = (uniqueColors.Count > byte.MaxValue) ? (byte)0 : (byte)uniqueColors.Count;
+            ico.IconDirectory.Entries[0].ColorCount = uniqueColors.Count > byte.MaxValue ? (byte)0 : (byte)uniqueColors.Count;
             //HACK: safe to assume that the first imageoffset is always 22
             ico.IconDirectory.Entries[0].ImageOffset = 22;
             ico.IconDirectory.Entries[0].Planes = 0;
@@ -151,7 +151,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
             ico.IconImages[0].Colors = BuildColorTable(uniqueColors, bitCount);
             //BytesInRes = biSize + colors * 4 + XOR + AND
             ico.IconDirectory.Entries[0].BytesInRes = (uint)(ico.IconImages[0].Header.BiSize
-                + (ico.IconImages[0].Colors.Length * 4)
+                + ico.IconImages[0].Colors.Length * 4
                 + ico.IconImages[0].Xor.Length
                 + ico.IconImages[0].And.Length);
 
@@ -171,15 +171,15 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
             {
                 case 1:
                     pixelsPerByte = 8;
-                    shiftCounts = new int[] { 7, 6, 5, 4, 3, 2, 1, 0 };
+                    shiftCounts = new[] { 7, 6, 5, 4, 3, 2, 1, 0 };
                     break;
                 case 4:
                     pixelsPerByte = 2;
-                    shiftCounts = new int[] { 4, 0 };
+                    shiftCounts = new[] { 4, 0 };
                     break;
                 case 8:
                     pixelsPerByte = 1;
-                    shiftCounts = new int[] { 0 };
+                    shiftCounts = new[] { 0 };
                     break;
                 default:
                     throw new NotSupportedException("Bits per pixel must be 1, 4, or 8");

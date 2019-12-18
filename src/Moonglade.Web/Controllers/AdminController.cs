@@ -54,6 +54,8 @@ namespace Moonglade.Web.Controllers
                 case AuthenticationProvider.None:
                     Response.StatusCode = StatusCodes.Status501NotImplemented;
                     return Content("No AuthenticationProvider is set, please check system settings.");
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return View();
@@ -110,7 +112,7 @@ namespace Moonglade.Web.Controllers
             {
                 case AuthenticationProvider.AzureAD:
                 {
-                    var callbackUrl = Url.Action(nameof(SignedOut), "Admin", values: null, protocol: Request.Scheme);
+                    var callbackUrl = Url.Action(nameof(SignedOut), "Admin", null, Request.Scheme);
                     return SignOut(
                         new AuthenticationProperties { RedirectUri = callbackUrl },
                         CookieAuthenticationDefaults.AuthenticationScheme,
@@ -119,6 +121,10 @@ namespace Moonglade.Web.Controllers
                 case AuthenticationProvider.Local:
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     break;
+                case AuthenticationProvider.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return RedirectToAction("Index", "Post");

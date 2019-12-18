@@ -104,13 +104,14 @@ namespace Moonglade.Core
                 var pp = _postExtensionRepository.Get(postId);
                 if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
-                if (statisticTypes == StatisticTypes.Hits)
+                switch (statisticTypes)
                 {
-                    pp.Hits += 1;
-                }
-                if (statisticTypes == StatisticTypes.Likes)
-                {
-                    pp.Likes += 1;
+                    case StatisticTypes.Hits:
+                        pp.Hits += 1;
+                        break;
+                    case StatisticTypes.Likes:
+                        pp.Likes += 1;
+                        break;
                 }
 
                 await _postExtensionRepository.UpdateAsync(pp);

@@ -77,7 +77,7 @@ namespace Moonglade.Tests
         [Test]
         public void TryParseBase64Success()
         {
-            bool ok = Utils.TryParseBase64("xDgItVa0ujLKxGsoMV1+MmxBrpo997mXbeXngqIx13o=", out var base64);
+            var ok = Utils.TryParseBase64("xDgItVa0ujLKxGsoMV1+MmxBrpo997mXbeXngqIx13o=", out var base64);
             Assert.IsTrue(ok);
             Assert.IsNotNull(base64);
         }
@@ -85,7 +85,7 @@ namespace Moonglade.Tests
         [Test]
         public void TryParseBase64Fail()
         {
-            bool ok = Utils.TryParseBase64("Learn Java and work 996!", out var base64);
+            var ok = Utils.TryParseBase64("Learn Java and work 996!", out var base64);
             Assert.IsFalse(ok);
             Assert.IsNull(base64);
         }
@@ -101,8 +101,8 @@ namespace Moonglade.Tests
         [Test]
         public void TestMdContentToHtml()
         {
-            string md = "A quick brown **fox** jumped over the lazy dog.";
-            string result = Utils.ConvertMarkdownContent(md, Utils.MarkdownConvertType.Html);
+            var md = "A quick brown **fox** jumped over the lazy dog.";
+            var result = Utils.ConvertMarkdownContent(md, Utils.MarkdownConvertType.Html);
 
             Assert.IsTrue(result == "<p>A quick brown <strong>fox</strong> jumped over the lazy dog.</p>\n");
         }
@@ -141,10 +141,7 @@ namespace Moonglade.Tests
                 var contentRootPath = @"C:\Moonglade";
                 var path = @"..\${basedir}\Uploads";
 
-                Assert.Catch<NotSupportedException>(() =>
-                {
-                    var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
-                });
+                Assert.Catch<NotSupportedException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
             }
         }
 
@@ -156,10 +153,7 @@ namespace Moonglade.Tests
                 var contentRootPath = @"C:\Moonglade";
                 var path = @"${basedir}\Uploads<>|foo";
 
-                Assert.Catch<InvalidOperationException>(() =>
-                {
-                    var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
-                });
+                Assert.Catch<InvalidOperationException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
             }
         }
 
@@ -171,10 +165,7 @@ namespace Moonglade.Tests
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var contentRootPath = @"C:\Moonglade";
-                Assert.Catch<ArgumentNullException>(() =>
-                {
-                    var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
-                });
+                Assert.Catch<ArgumentNullException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
             }
         }
 

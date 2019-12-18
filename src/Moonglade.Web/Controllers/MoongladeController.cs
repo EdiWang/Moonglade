@@ -45,13 +45,13 @@ namespace Moonglade.Web.Controllers
 
         protected string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)
         {
-            var link = linkGenerator.GetUriByAction(HttpContext, action: "Slug", controller: "Post",
-                values: new
+            var link = linkGenerator.GetUriByAction(HttpContext, "Slug", "Post",
+                new
                 {
                     year = pubDate.Year,
                     month = pubDate.Month,
                     day = pubDate.Day,
-                    slug = slug
+                    slug
                 });
             return link;
         }

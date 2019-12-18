@@ -6,7 +6,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec
 {
-    public sealed partial class PostSpec : BaseSpecification<PostEntity>
+    public sealed class PostSpec : BaseSpecification<PostEntity>
     {
         public PostSpec(Guid? categoryId, int? top = null) :
             base(p => !p.PostPublish.IsDeleted &&

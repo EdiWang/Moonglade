@@ -85,7 +85,7 @@ namespace Moonglade.ImageStorage.FileSystem
         private static async Task<byte[]> ReadFileAsync(string filename)
         {
             await using var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
-            byte[] buff = new byte[file.Length];
+            var buff = new byte[file.Length];
             await file.ReadAsync(buff, 0, (int)file.Length);
             return buff;
         }

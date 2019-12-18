@@ -10,10 +10,6 @@
 
 using System;
 using System.IO;
-using BYTE = System.Byte;
-using WORD = System.UInt16;
-using DWORD = System.UInt32;
-using LONG = System.Int32;
 
 namespace Moonglade.Web.FaviconGenerator.IconEncoder
 {
@@ -30,26 +26,26 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 		/// <summary>
 		/// icXOR: DIB bits for XOR mask
 		/// </summary>
-		public BYTE[]            Xor;
+		public byte[]            Xor;
 		/// <summary>
 		/// icAND: DIB bits for AND mask
 		/// </summary>
-		public BYTE[]            And;
+		public byte[]            And;
 
 		public void Populate(BinaryReader br)
 		{
 			// read in the header
-			this.Header.Populate(br);
-			this.Colors = new Rgbquad[Header.BiClrUsed];
+			Header.Populate(br);
+			Colors = new Rgbquad[Header.BiClrUsed];
 			// read in the color table
-			for(var i=0; i<this.Header.BiClrUsed; ++i)
+			for(var i=0; i<Header.BiClrUsed; ++i)
 			{
-				this.Colors[i].Populate(br);
+				Colors[i].Populate(br);
 			}
 			// read in the XOR mask
-			this.Xor = br.ReadBytes(NumBytesInXor());
+			Xor = br.ReadBytes(NumBytesInXor());
 			// read in the AND mask
-			this.And = br.ReadBytes(NumBytesInAnd());
+			And = br.ReadBytes(NumBytesInAnd());
 		}
 
 		public void Save(BinaryWriter bw)
@@ -65,12 +61,12 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 		public int NumBytesInXor()
 		{
 			// number of bytes per pixel depends on bitcount
-			var bytesPerLine = Convert.ToInt32(Math.Ceiling((Header.BiWidth * Header.BiBitCount) / 8.0));
+			var bytesPerLine = Convert.ToInt32(Math.Ceiling(Header.BiWidth * Header.BiBitCount / 8.0));
 			// If necessary, a scan line must be zero-padded to end on a 32-bit boundary.			
 			// so there will be some padding, if the icon is less than 32 pixels wide
-			var padding = (bytesPerLine % 4);
+			var padding = bytesPerLine % 4;
 			if (padding > 0)
-				bytesPerLine += (4 - padding);
+				bytesPerLine += 4 - padding;
 			return bytesPerLine * (Header.BiHeight >> 1);
 
 		}
@@ -81,9 +77,9 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 			var bytesPerLine = Convert.ToInt32(Math.Ceiling(Header.BiWidth / 8.0));
 			// If necessary, a scan line must be zero-padded to end on a 32-bit boundary.			
 			// so there will be some padding, if the icon is less than 32 pixels wide
-			var padding = (bytesPerLine % 4);
+			var padding = bytesPerLine % 4;
 			if (padding > 0)
-				bytesPerLine += (4 - padding);
+				bytesPerLine += 4 - padding;
 			return bytesPerLine * (Header.BiHeight >> 1);
 		}
 		#endregion
@@ -94,15 +90,15 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 		/// <summary>
 		/// idReserved: Always 0
 		/// </summary>
-		public WORD			Reserved;   // Reserved
+		public ushort			Reserved;   // Reserved
 		/// <summary>
 		/// idType: Resource type (Always 1 for icons)
 		/// </summary>
-		public WORD			ResourceType;
+		public ushort			ResourceType;
 		/// <summary>
 		/// idCount: Number of images in directory
 		/// </summary>
-		public WORD			EntryCount;
+		public ushort			EntryCount;
 		/// <summary>
 		/// idEntries: Directory entries for each image
 		/// </summary>
@@ -122,7 +118,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 			Reserved = br.ReadUInt16();
 			ResourceType = br.ReadUInt16();
 			EntryCount = br.ReadUInt16();
-			Entries = new Icondirentry[this.EntryCount];
+			Entries = new Icondirentry[EntryCount];
 			for (var i=0; i < Entries.Length; i++)
 			{
 				Entries[i].Populate(br);
@@ -135,35 +131,35 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 		/// <summary>
 		/// bWidth: In pixels.  Must be 16, 32, or 64
 		/// </summary>
-		public BYTE	Width;
+		public byte	Width;
 		/// <summary>
 		/// bHeight: In pixels.  Must be 16, 32, or 64
 		/// </summary>
-		public BYTE	Height;
+		public byte	Height;
 		/// <summary>
 		/// bColorCount: Number of colors in image (0 if >=8bpp)
 		/// </summary>
-		public BYTE	ColorCount;
+		public byte	ColorCount;
 		/// <summary>
 		/// bReserved: Must be zero
 		/// </summary>
-		public BYTE	Reserved;
+		public byte	Reserved;
 		/// <summary>
 		/// wPlanes: Number of color planes in the icon bitmap
 		/// </summary>
-		public WORD	Planes;
+		public ushort	Planes;
 		/// <summary>
 		/// wBitCount: Number of bits in each pixel of the icon.  Must be 1,4,8, or 24
 		/// </summary>
-		public WORD	BitCount;
+		public ushort	BitCount;
 		/// <summary>
 		/// dwBytesInRes: Number of bytes in the resource
 		/// </summary>
-		public DWORD BytesInRes;
+		public uint BytesInRes;
 		/// <summary>
 		/// dwImageOffset: Number of bytes from the beginning of the file to the image
 		/// </summary>
-		public DWORD ImageOffset;
+		public uint ImageOffset;
 		
 		public void Save(BinaryWriter bw)
 		{
@@ -193,11 +189,11 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 
 	public struct Bitmapfileheader 
 	{
-		public WORD    Type;
-		public DWORD   Size;
-		public WORD    Reserved1;
-		public WORD    Reserved2;
-		public DWORD   OffBits;
+		public ushort    Type;
+		public uint   Size;
+		public ushort    Reserved1;
+		public ushort    Reserved2;
+		public uint   OffBits;
 
 		public void Populate(BinaryReader br)
 		{
@@ -277,20 +273,20 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 	public struct  Bitmapinfoheader
 	{
 		public const int Size = 40;
-		public DWORD  BiSize;
-		public LONG   BiWidth;
+		public uint  BiSize;
+		public int   BiWidth;
 		/// <summary>
 		/// Height of bitmap.  For icons, this is the height of XOR and AND masks together. Divide by 2 to get true height.
 		/// </summary>
-		public LONG   BiHeight;
-		public WORD   BiPlanes;
-		public WORD   BiBitCount;
-		public DWORD  BiCompression;
-		public DWORD  BiSizeImage;
-		public LONG   BiXPelsPerMeter;
-		public LONG   BiYPelsPerMeter;
-		public DWORD  BiClrUsed;
-		public DWORD  BiClrImportant;
+		public int   BiHeight;
+		public ushort   BiPlanes;
+		public ushort   BiBitCount;
+		public uint  BiCompression;
+		public uint  BiSizeImage;
+		public int   BiXPelsPerMeter;
+		public int   BiYPelsPerMeter;
+		public uint  BiClrUsed;
+		public uint  BiClrImportant;
 
 		public void Save(BinaryWriter bw)
 		{
@@ -327,27 +323,27 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 	public struct Rgbquad
 	{
 		public const int Size = 4;
-		public BYTE Blue;
-		public BYTE Green;
-		public BYTE Red;
-		public BYTE Alpha;
+		public byte Blue;
+		public byte Green;
+		public byte Red;
+		public byte Alpha;
 
-		public Rgbquad(BYTE[] bgr) : this(bgr[0], bgr[1], bgr[2]){}
+		public Rgbquad(byte[] bgr) : this(bgr[0], bgr[1], bgr[2]){}
 
-		public Rgbquad(BYTE blue, BYTE green, BYTE red)
+		public Rgbquad(byte blue, byte green, byte red)
 		{
-			this.Blue = blue;
-			this.Green = green;
-			this.Red = red;
-			this.Alpha = 0;
+			Blue = blue;
+			Green = green;
+			Red = red;
+			Alpha = 0;
 		}
 
-		public Rgbquad(BYTE blue, BYTE green, BYTE red, BYTE alpha) 
+		public Rgbquad(byte blue, byte green, byte red, byte alpha) 
 		{
-			this.Blue = blue;
-			this.Green = green;
-			this.Red = red;
-			this.Alpha = alpha;
+			Blue = blue;
+			Green = green;
+			Red = red;
+			Alpha = alpha;
 		}
 
 		public void Save(BinaryWriter bw)

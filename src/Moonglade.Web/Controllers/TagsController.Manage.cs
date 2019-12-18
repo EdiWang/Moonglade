@@ -12,12 +12,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Manage()
         {
             var response = await _tagService.GetAllTagsAsync();
-            if (response.IsSuccess)
-            {
-                return View(response.Item);
-            }
-
-            return ServerError();
+            return response.IsSuccess ? View(response.Item) : ServerError();
         }
 
         [Authorize]
@@ -26,12 +21,7 @@ namespace Moonglade.Web.Controllers
         {
             Logger.LogInformation($"User '{User.Identity.Name}' updating tag id '{tagId}' with new name '{newTagName}'");
             var response = _tagService.UpdateTag(tagId, newTagName);
-            if (response.IsSuccess)
-            {
-                return Json(new { tagId, newTagName });
-            }
-
-            return ServerError();
+            return response.IsSuccess ? Json(new { tagId, newTagName }) : ServerError();
         }
 
         [Authorize]

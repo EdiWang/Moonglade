@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Edi.Practice.RequestResponseModel;
 using Markdig;
-using Moonglade.HtmlCodec;
 using TimeZoneConverter;
 
 namespace Moonglade.Core
@@ -42,7 +41,7 @@ namespace Moonglade.Core
                 return string.Empty;
             }
 
-            body = Regex.Replace(body, @"[a-zA-Z]+#", "#");
+            body = Regex.Replace(body, "[a-zA-Z]+#", "#");
             body = Regex.Replace(body, @"[\n\r]+\s*", string.Empty);
             body = Regex.Replace(body, @"\s+", " ");
             body = Regex.Replace(body, @"\s?([:,;{}])\s?", "$1");
@@ -129,25 +128,19 @@ namespace Moonglade.Core
 
         public static bool IsValidUrl(this string url, UrlScheme urlScheme = UrlScheme.All)
         {
-            bool isValidUrl = Uri.TryCreate(url, UriKind.Absolute, out var uriResult);
+            var isValidUrl = Uri.TryCreate(url, UriKind.Absolute, out var uriResult);
             if (!isValidUrl)
             {
                 return false;
             }
 
-            switch (urlScheme)
+            isValidUrl &= urlScheme switch
             {
-                case UrlScheme.All:
-                    isValidUrl &= uriResult.Scheme == Uri.UriSchemeHttps || uriResult.Scheme == Uri.UriSchemeHttp;
-                    break;
-                case UrlScheme.Https:
-                    isValidUrl &= uriResult.Scheme == Uri.UriSchemeHttps;
-                    break;
-                case UrlScheme.Http:
-                    isValidUrl &= uriResult.Scheme == Uri.UriSchemeHttp;
-                    break;
-            }
-
+                UrlScheme.All => uriResult.Scheme == Uri.UriSchemeHttps || uriResult.Scheme == Uri.UriSchemeHttp,
+                UrlScheme.Https => uriResult.Scheme == Uri.UriSchemeHttps,
+                UrlScheme.Http => uriResult.Scheme == Uri.UriSchemeHttp,
+                _ => throw new ArgumentOutOfRangeException(nameof(urlScheme), urlScheme, null),
+            };
             return isValidUrl;
         }
 
@@ -378,21 +371,13 @@ namespace Moonglade.Core
                 pipeline.DisableHtml();
             }
 
-            string result;
-            switch (type)
+            var result = type switch
             {
-                case MarkdownConvertType.None:
-                    result = markdown;
-                    break;
-                case MarkdownConvertType.Html:
-                    result = Markdown.ToHtml(markdown, pipeline.Build());
-                    break;
-                case MarkdownConvertType.Text:
-                    result = Markdown.ToPlainText(markdown, pipeline.Build());
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
+                MarkdownConvertType.None => markdown,
+                MarkdownConvertType.Html => Markdown.ToHtml(markdown, pipeline.Build()),
+                MarkdownConvertType.Text => Markdown.ToPlainText(markdown, pipeline.Build()),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
 
             return result;
         }
