@@ -18,7 +18,7 @@ var postEditor = {
                 selector: textareaSelector,
                 themes: 'silver',
                 skin: 'oxide',
-                height: 650,
+                //height: 650,
                 relative_urls: false, // avoid image upload fuck up
                 browser_spellcheck: true,
                 branding: false,
@@ -44,6 +44,15 @@ var postEditor = {
                     { text: 'Visual Basic', value: 'vb' },
                     { text: 'PowerShell', value: 'powershell' }
                 ]
+            });
+        }
+    },
+    loadMdEditor: function (textareaSelector) {
+        if (window.SimpleMDE) {
+            var simplemde = new SimpleMDE({
+                element: $(textareaSelector)[0],
+                spellChecker: false,
+                status: false
             });
         }
     },
@@ -103,7 +112,9 @@ var postEditor = {
         });
 
         function submitForm(e) {
-            window.tinyMCE.triggerSave();
+            if (window.tinyMCE) {
+                window.tinyMCE.triggerSave();
+            }
 
             var selectCatCount = 0;
             $('input[name="SelectedCategoryIds"]').each(function () {

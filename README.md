@@ -169,6 +169,7 @@ To customize robots.txt, modify the configuration under **RobotsTxt** section.
 
 Key | Description
 --- | ---
+Editor | HTML / Markdown
 CaptchaSettings:ImageWidth | Pixel Width of Captcha Image
 CaptchaSettings.ImageHeight | Pixel Height of Captcha Image
 PostSummaryWords | How may words to show in post list summary

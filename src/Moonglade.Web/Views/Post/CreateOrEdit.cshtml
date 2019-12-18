@@ -12,26 +12,49 @@
             box-shadow: inherit;
         }
 
-        .bootstrap-tagsinput .tag {
-            background: #2a579a;
-            padding: 2px 5px;
-        }
+            .bootstrap-tagsinput .tag {
+                background: #2a579a;
+                padding: 2px 5px;
+            }
 
-        .bootstrap-tagsinput .tag [data-role="remove"]:hover {
-            box-shadow: inherit;
-        }
+                .bootstrap-tagsinput .tag [data-role="remove"]:hover {
+                    box-shadow: inherit;
+                }
     </style>
 }
 @section scripts{
     <script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
     <script src="~/lib/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
-    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    @{
+        var ec = Settings.Value.Editor;
+        switch (ec)
+        {
+            case EditorChoice.HTML:
+                <script src="~/lib/tinymce/tinymce.min.js"></script>
+                break;
+            case EditorChoice.Markdown:
+                <script src="~/lib/simplemde/simplemde.min.js"></script>
+                <link id="css-simplemde" href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
+                break;
+            case EditorChoice.None:
+            default:
+                break;
+        }
+    }
     <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
 
     <script>
         $(function () {
             postEditor.initEvents();
-            postEditor.loadRichEditor(".post-content-textarea");
+            var editorMode = '@Settings.Value.Editor';
+            if (editorMode == 'HTML') {
+                postEditor.loadRichEditor(".post-content-textarea");
+            }
+            if (editorMode == 'Markdown') {
+                postEditor.loadMdEditor(".post-content-textarea");
+
+            }
+
             postEditor.keepAlive();
         });
     </script>
@@ -73,9 +96,9 @@
             </div>
 
             <div class="form-group">
-                <textarea asp-for="HtmlContent" class="post-content-textarea"></textarea>
+                <textarea asp-for="EditorContent" class="post-content-textarea"></textarea>
                 <div>
-                    <span asp-validation-for="HtmlContent" class="text-danger"></span>
+                    <span asp-validation-for="EditorContent" class="text-danger"></span>
                 </div>
             </div>
 

@@ -43,7 +43,7 @@ namespace Moonglade.Core
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
-            IHtmlCodec htmlCodec, 
+            IHtmlCodec htmlCodec,
             IBlogConfig blogConfig) : base(logger, settings)
         {
             _postRepository = postRepository;
@@ -128,7 +128,7 @@ namespace Moonglade.Core
                     Id = p.Id,
                     Title = p.Title,
                     Slug = p.Slug,
-                    EncodedHtmlContent = p.PostContent,
+                    RawPostContent = p.PostContent,
                     ContentAbstract = p.ContentAbstract,
                     CommentEnabled = p.CommentEnabled,
                     CreateOnUtc = p.CreateOnUtc,
@@ -411,8 +411,13 @@ namespace Moonglade.Core
                 {
                     CommentEnabled = request.EnableComment,
                     Id = Guid.NewGuid(),
-                    PostContent = _htmlCodec.HtmlEncode(request.HtmlContent),
-                    ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords),
+                    PostContent = AppSettings.Editor == EditorChoice.Markdown ?
+                                    request.EditorContent :
+                                    _htmlCodec.HtmlEncode(request.EditorContent),
+                    ContentAbstract = Utils.GetPostAbstract(
+                                            request.EditorContent, 
+                                            AppSettings.PostSummaryWords, 
+                                            AppSettings.Editor == EditorChoice.Markdown),
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
                     Title = request.Title.Trim(),
@@ -515,8 +520,13 @@ namespace Moonglade.Core
                 }
 
                 postModel.CommentEnabled = request.EnableComment;
-                postModel.PostContent = _htmlCodec.HtmlEncode(request.HtmlContent);
-                postModel.ContentAbstract = Utils.GetPostAbstract(request.HtmlContent, AppSettings.PostSummaryWords);
+                postModel.PostContent = AppSettings.Editor == EditorChoice.Markdown ? 
+                                        request.EditorContent : 
+                                        _htmlCodec.HtmlEncode(request.EditorContent);
+                postModel.ContentAbstract = Utils.GetPostAbstract(
+                                            request.EditorContent, 
+                                            AppSettings.PostSummaryWords, 
+                                            AppSettings.Editor == EditorChoice.Markdown);
 
                 // Address #221: Do not allow published posts back to draft status
                 // postModel.PostPublish.IsPublished = request.IsPublished;

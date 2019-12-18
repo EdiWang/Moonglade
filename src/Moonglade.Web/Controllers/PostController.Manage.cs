@@ -69,7 +69,9 @@ namespace Moonglade.Web.Controllers
                 {
                     PostId = post.Id,
                     IsPublished = post.IsPublished,
-                    HtmlContent = htmlCodec.HtmlDecode(post.EncodedHtmlContent),
+                    EditorContent = AppSettings.Editor == Model.Settings.EditorChoice.Markdown ? 
+                                                        post.RawPostContent : 
+                                                        htmlCodec.HtmlDecode(post.RawPostContent),
                     Slug = post.Slug,
                     Title = post.Title,
                     EnableComment = post.CommentEnabled,
@@ -128,7 +130,7 @@ namespace Moonglade.Web.Controllers
                     {
                         Title = model.Title.Trim(),
                         Slug = model.Slug.Trim(),
-                        HtmlContent = model.HtmlContent,
+                        EditorContent = model.EditorContent,
                         EnableComment = model.EnableComment,
                         ExposedToSiteMap = model.ExposedToSiteMap,
                         IsFeedIncluded = model.FeedIncluded,

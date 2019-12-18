@@ -199,9 +199,12 @@ namespace Moonglade.Core
             return null != tz ? TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz) : utcTime.AddTicks(span.Ticks);
         }
 
-        public static string GetPostAbstract(string rawHtmlContent, int wordCount)
+        public static string GetPostAbstract(string rawContent, int wordCount, bool useMarkdown = false)
         {
-            var plainText = RemoveTags(rawHtmlContent);
+            var plainText = useMarkdown ?
+                            ConvertMarkdownContent(rawContent, MarkdownConvertType.Text) :
+                            RemoveTags(rawContent);
+
             var result = plainText.Ellipsize(wordCount);
             return result;
         }
@@ -366,11 +369,48 @@ namespace Moonglade.Core
             return newStr;
         }
 
-        public static string MdContentToHtml(string markdown)
+        public static string ConvertMarkdownContent(string markdown, MarkdownConvertType type, bool disableHtml = true)
         {
-            var pipeline = new MarkdownPipelineBuilder().DisableHtml().Build();
-            var result = Markdown.ToHtml(markdown, pipeline);
+            var pipeline = GetMoongladeMarkdownPipelineBuilder();
+
+            if (disableHtml)
+            {
+                pipeline.DisableHtml();
+            }
+
+            string result;
+            switch (type)
+            {
+                case MarkdownConvertType.None:
+                    result = markdown;
+                    break;
+                case MarkdownConvertType.Html:
+                    result = Markdown.ToHtml(markdown, pipeline.Build());
+                    break;
+                case MarkdownConvertType.Text:
+                    result = Markdown.ToPlainText(markdown, pipeline.Build());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+
             return result;
+        }
+
+        public enum MarkdownConvertType
+        {
+            None = 0,
+            Html = 1,
+            Text = 2
+        }
+
+        private static MarkdownPipelineBuilder GetMoongladeMarkdownPipelineBuilder()
+        {
+            var pipeline = new MarkdownPipelineBuilder()
+                .UsePipeTables()
+                .UseBootstrap();
+
+            return pipeline;
         }
 
         public static Response<(string Slug, DateTime PubDate)> GetSlugInfoFromPostUrl(string url)

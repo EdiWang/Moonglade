@@ -27,6 +27,14 @@ hr.admin-nav-divider {
     color: rgba(255,255,255,0.5);
 }
 
+.post-content-textarea {
+    min-height: 650px;
+}
+
+.post-edit-form .CodeMirror {
+    height: 620px;
+}
+
 .admin-nav-section .list-group-item {
     background-color: transparent;
     border: 0 none;
