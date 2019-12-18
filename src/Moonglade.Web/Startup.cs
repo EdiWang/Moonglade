@@ -316,7 +316,7 @@ namespace Moonglade.Web
             }
         }
 
-        private void PrepareRuntimePathDependencies(IApplicationBuilder app, IWebHostEnvironment env)
+        private void PrepareRuntimePathDependencies(IApplicationBuilder app, IHostEnvironment env)
         {
             void DeleteDataFile(string path)
             {

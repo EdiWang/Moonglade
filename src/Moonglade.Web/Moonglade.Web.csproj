@@ -9,6 +9,7 @@
     <Version>10.1.0.0</Version>
     <AspNetCoreModuleName>AspNetCoreModuleV2</AspNetCoreModuleName>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

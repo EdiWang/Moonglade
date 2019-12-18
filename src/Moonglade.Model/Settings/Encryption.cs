@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Moonglade.Model.Settings
+﻿namespace Moonglade.Model.Settings
 {
     public class Encryption
     {

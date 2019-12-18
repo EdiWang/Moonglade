@@ -58,23 +58,22 @@ namespace Moonglade.Configuration
 
         private void Initialize()
         {
-            if (!_hasInitialized)
-            {
-                var cfgDic = GetAllConfigurations();
+            if (_hasInitialized) return;
 
-                var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var cfgDic = GetAllConfigurations();
 
-                BlogOwnerSettings = JsonSerializer.Deserialize<BlogOwnerSettings>(cfgDic[nameof(BlogOwnerSettings)], jsonOptions);
-                GeneralSettings = JsonSerializer.Deserialize<GeneralSettings>(cfgDic[nameof(GeneralSettings)], jsonOptions);
-                ContentSettings = JsonSerializer.Deserialize<ContentSettings>(cfgDic[nameof(ContentSettings)], jsonOptions);
-                EmailSettings = JsonSerializer.Deserialize<EmailSettings>(cfgDic[nameof(EmailSettings)], jsonOptions);
-                FeedSettings = JsonSerializer.Deserialize<FeedSettings>(cfgDic[nameof(FeedSettings)], jsonOptions);
-                WatermarkSettings = JsonSerializer.Deserialize<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)], jsonOptions);
-                FriendLinksSettings = JsonSerializer.Deserialize<FriendLinksSettings>(cfgDic[nameof(FriendLinksSettings)], jsonOptions);
-                AdvancedSettings = JsonSerializer.Deserialize<AdvancedSettings>(cfgDic[nameof(AdvancedSettings)], jsonOptions);
+            var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-                _hasInitialized = true;
-            }
+            BlogOwnerSettings = JsonSerializer.Deserialize<BlogOwnerSettings>(cfgDic[nameof(BlogOwnerSettings)], jsonOptions);
+            GeneralSettings = JsonSerializer.Deserialize<GeneralSettings>(cfgDic[nameof(GeneralSettings)], jsonOptions);
+            ContentSettings = JsonSerializer.Deserialize<ContentSettings>(cfgDic[nameof(ContentSettings)], jsonOptions);
+            EmailSettings = JsonSerializer.Deserialize<EmailSettings>(cfgDic[nameof(EmailSettings)], jsonOptions);
+            FeedSettings = JsonSerializer.Deserialize<FeedSettings>(cfgDic[nameof(FeedSettings)], jsonOptions);
+            WatermarkSettings = JsonSerializer.Deserialize<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)], jsonOptions);
+            FriendLinksSettings = JsonSerializer.Deserialize<FriendLinksSettings>(cfgDic[nameof(FriendLinksSettings)], jsonOptions);
+            AdvancedSettings = JsonSerializer.Deserialize<AdvancedSettings>(cfgDic[nameof(AdvancedSettings)], jsonOptions);
+
+            _hasInitialized = true;
         }
 
         public async Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings

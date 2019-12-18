@@ -40,7 +40,7 @@ namespace Moonglade.Tests.Web
         [Test]
         public async Task TestSignOutAAD()
         {
-            _authenticationSettingsMock.Setup(m => m.Value).Returns(new AuthenticationSettings()
+            _authenticationSettingsMock.Setup(m => m.Value).Returns(new AuthenticationSettings
             {
                 Provider = AuthenticationProvider.AzureAD
             });

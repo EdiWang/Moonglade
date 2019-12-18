@@ -13,17 +13,17 @@ namespace Moonglade.Web.Extensions
     {
         public static IServiceCollection AddRateLimit(this IServiceCollection services, IConfigurationSection rateLimitSection)
         {
-            if (!services.Any(s => s.ServiceType == typeof(IOptions<>)))
+            if (services.All(s => s.ServiceType != typeof(IOptions<>)))
             {
                 services.AddOptions();
             }
 
-            if (!services.Any(s => s.ServiceType == typeof(IMemoryCache)))
+            if (services.All(s => s.ServiceType != typeof(IMemoryCache)))
             {
                 services.AddMemoryCache();
             }
 
-            if (!services.Any(s => s.ServiceType == typeof(IHttpContextAccessor)))
+            if (services.All(s => s.ServiceType != typeof(IHttpContextAccessor)))
             {
                 services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             }

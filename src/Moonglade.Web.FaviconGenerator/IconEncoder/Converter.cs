@@ -36,7 +36,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 
         public static IconHolder BitmapToIconHolder(Bitmap b)
         {
-            var bmp = new BitmapHolder(); ;
+            var bmp = new BitmapHolder();
             using (var stream = new MemoryStream())
             {
                 b.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);

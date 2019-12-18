@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Model.Settings
+﻿namespace Moonglade.Model.Settings
 {
     public class AppSettings
     {

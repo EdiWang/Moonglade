@@ -7,9 +7,6 @@ using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Moonglade.Tests.Web
 {
@@ -31,7 +28,7 @@ namespace Moonglade.Tests.Web
         [Test]
         public void TestManifest()
         {
-            _blogConfigMock.Setup(bc => bc.GeneralSettings).Returns(new Configuration.GeneralSettings()
+            _blogConfigMock.Setup(bc => bc.GeneralSettings).Returns(new Configuration.GeneralSettings
             {
                 SiteTitle = "Fake Title"
             });

@@ -9,9 +9,6 @@ using Moonglade.Model.Settings;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Moonglade.Tests.Web
@@ -30,9 +27,9 @@ namespace Moonglade.Tests.Web
         {
             _appSettingsMock = new Mock<IOptions<AppSettings>>();
             _imageStorageSettingsMock = new Mock<IOptions<ImageStorageSettings>>();
-            _imageStorageSettingsMock.Setup(p => p.Value).Returns(new ImageStorageSettings()
+            _imageStorageSettingsMock.Setup(p => p.Value).Returns(new ImageStorageSettings
             {
-                CDNSettings = new CDNSettings()
+                CDNSettings = new CDNSettings
                 {
                     CDNEndpoint = "https://fake-cdn.edi.wang/images",
                     GetImageByCDNRedirect = true

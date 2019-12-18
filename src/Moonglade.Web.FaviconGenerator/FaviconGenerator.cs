@@ -32,7 +32,7 @@ namespace Moonglade.Web.FaviconGenerator
                 throw new FormatException("Source file is not an PNG image.");
             }
 
-            void WriteImageFiles(string prefix, int[] sizes)
+            void WriteImageFiles(string prefix, IEnumerable<int> sizes)
             {
                 foreach (var size in sizes)
                 {

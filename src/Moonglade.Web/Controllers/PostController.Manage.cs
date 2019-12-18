@@ -234,7 +234,7 @@ namespace Moonglade.Web.Controllers
             var topReadList = await _postService.GetMPostInsightsMetaListAsync(PostInsightsType.TopRead);
             var topCommentedList = await _postService.GetMPostInsightsMetaListAsync(PostInsightsType.TopCommented);
 
-            var vm = new PostInsightsViewModel()
+            var vm = new PostInsightsViewModel
             {
                 TopReadPosts = topReadList,
                 TopCommentedPosts = topCommentedList

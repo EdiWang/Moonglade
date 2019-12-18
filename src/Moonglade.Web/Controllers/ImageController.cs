@@ -48,7 +48,7 @@ namespace Moonglade.Web.Controllers
             var iconPath = Path.Combine(faviconDirectory, filename.ToLower());
             if (System.IO.File.Exists(iconPath))
             {
-                string contentType = "image/png";
+                var contentType = "image/png";
                 var ext = Path.GetExtension(filename);
                 switch (ext)
                 {
