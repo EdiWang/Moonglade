@@ -40,7 +40,7 @@
       ]
     },
     {
-      "library": "twitter-bootstrap@4.3.1",
+      "library": "twitter-bootstrap@4.4.1",
       "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
         "js/bootstrap.bundle.min.js",
@@ -80,7 +80,7 @@
       "destination": "wwwroot/lib/simplemde/"
     },
     {
-      "library": "monaco-editor@0.18.0",
+      "library": "monaco-editor@0.18.1",
       "destination": "wwwroot/lib/monaco-editor/"
     }
   ]
