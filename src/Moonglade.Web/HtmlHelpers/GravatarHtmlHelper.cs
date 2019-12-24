@@ -148,13 +148,10 @@ namespace Moonglade.Web.HtmlHelpers
             var type = en.GetType();
             var memInfo = type.GetMember(en.ToString());
 
-            if (memInfo == null || memInfo.Length <= 0) return en.ToString();
+            if (memInfo.Length <= 0) return en.ToString();
             var attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-            if (attrs != null && attrs.Any())
-                return ((DescriptionAttribute)attrs.First()).Description;
-
-            return en.ToString();
+            return attrs.Any() ? ((DescriptionAttribute)attrs.First()).Description : en.ToString();
         }
     }
 }

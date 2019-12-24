@@ -38,7 +38,7 @@ namespace Moonglade.Tests
         [Test]
         public void TestLeft()
         {
-            var str = "Microsoft Rocks!";
+            const string str = "Microsoft Rocks!";
             var left = Utils.Left(str, 9);
             Assert.IsTrue(left == "Microsoft");
         }
@@ -93,7 +93,7 @@ namespace Moonglade.Tests
         [Test]
         public void TestReplaceImgSrc()
         {
-            var html = @"<p>Work 996 and have some fu bao!</p><img src=""icu.jpg"" /><video src=""java996.mp4""></video>";
+            const string html = @"<p>Work 996 and have some fu bao!</p><img src=""icu.jpg"" /><video src=""java996.mp4""></video>";
             var result = Utils.ReplaceImgSrc(html);
             Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img src=""/images/loading.gif"" data-src=""icu.jpg"" /><video src=""java996.mp4""></video>");
         }

@@ -242,11 +242,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
             {
                 return 4;
             }
-            if (uniqueColorCount <= 256)
-            {
-                return 8;
-            }
-            return 24;
+            return uniqueColorCount <= 256 ? (ushort) 8 : (ushort) 24;
         }
 
         private static Rgbquad[] BuildColorTable(Hashtable colors, ushort bpp)

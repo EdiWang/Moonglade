@@ -48,12 +48,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Manage()
         {
             var response = await _pingbackService.GetReceivedPingbacksAsync();
-            if (response.IsSuccess)
-            {
-                return View(response.Item);
-            }
-
-            return ServerError();
+            return response.IsSuccess ? View(response.Item) : ServerError();
         }
 
         [Authorize]

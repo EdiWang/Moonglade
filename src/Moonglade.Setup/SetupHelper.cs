@@ -145,7 +145,7 @@ namespace Moonglade.Setup
             try
             {
                 using var conn = new SqlConnection(DatabaseConnectionString);
-                int result = conn.ExecuteScalar<int>("SELECT 1");
+                var result = conn.ExecuteScalar<int>("SELECT 1");
                 return result == 1;
             }
             catch (Exception e)

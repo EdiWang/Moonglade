@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
                     // Validate BasicCaptcha Code
                     if (!captcha.ValidateCaptchaCode(model.NewCommentViewModel.CaptchaCode, HttpContext.Session))
                     {
-                        Logger.LogWarning($"Wrong Captcha Code");
+                        Logger.LogWarning("Wrong Captcha Code");
                         ModelState.AddModelError(nameof(model.NewCommentViewModel.CaptchaCode), "Wrong Captcha Code");
 
                         Response.StatusCode = (int)HttpStatusCode.BadRequest;

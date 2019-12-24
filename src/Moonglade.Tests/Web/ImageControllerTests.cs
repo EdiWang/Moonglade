@@ -44,7 +44,7 @@ namespace Moonglade.Tests.Web
         [Test]
         public async Task TestGetImageAsyncCDN()
         {
-            string filename = "test.png";
+            const string filename = "test.png";
             var ctl = new ImageController(
                 _loggerMock.Object,
                 _appSettingsMock.Object,

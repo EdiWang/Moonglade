@@ -29,7 +29,7 @@ namespace Moonglade.Tests
         [Test]
         public void TestInstanceCreationGoodConnectionString()
         {
-            var connStr = "Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;";
+            const string connStr = "Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;";
             var helper = new SetupHelper(connStr);
             Assert.IsTrue(helper.DatabaseConnectionString == connStr);
         }

@@ -61,7 +61,7 @@ namespace Moonglade.Core
         {
             return TryExecute(() =>
             {
-                int count = _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
+                var count = _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
                 return new SuccessResponse<int>(count);
             });
         }

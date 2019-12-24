@@ -95,7 +95,7 @@ namespace Moonglade.Web.Controllers
                     Id = r.Item.Id,
                     DisplayName = r.Item.DisplayName,
                     Name = r.Item.Name,
-                    Note = r.Item.Note,
+                    Note = r.Item.Note
                 };
 
                 return View("CreateOrEdit", model);

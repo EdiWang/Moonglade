@@ -24,7 +24,7 @@ namespace Moonglade.Core
 
             if (File.Exists(cssPath))
             {
-                var lines = await System.IO.File.ReadAllLinesAsync(cssPath);
+                var lines = await File.ReadAllLinesAsync(cssPath);
                 var accentColorLine = lines.FirstOrDefault(l => l.Contains("accent-color1"));
                 if (null != accentColorLine)
                 {
@@ -108,7 +108,7 @@ namespace Moonglade.Core
                 throw new ArgumentNullException(nameof(path));
             }
 
-            var basedirStr = "${basedir}"; // Do not use "." because there could be "." in path.
+            const string basedirStr = "${basedir}"; // Do not use "." because there could be "." in path.
             if (path.IndexOf(basedirStr, StringComparison.Ordinal) > 0)
             {
                 throw new NotSupportedException($"{basedirStr} can only be at the beginning.");
@@ -163,7 +163,7 @@ namespace Moonglade.Core
                 UrlScheme.All => uriResult.Scheme == Uri.UriSchemeHttps || uriResult.Scheme == Uri.UriSchemeHttp,
                 UrlScheme.Https => uriResult.Scheme == Uri.UriSchemeHttps,
                 UrlScheme.Http => uriResult.Scheme == Uri.UriSchemeHttp,
-                _ => throw new ArgumentOutOfRangeException(nameof(urlScheme), urlScheme, null),
+                _ => throw new ArgumentOutOfRangeException(nameof(urlScheme), urlScheme, null)
             };
             return isValidUrl;
         }
@@ -206,7 +206,7 @@ namespace Moonglade.Core
             }
 
             // Ugly code for workaround https://github.com/EdiWang/Moonglade/issues/310
-            bool ok = TimeSpan.TryParse(timeSpan, out var span);
+            var ok = TimeSpan.TryParse(timeSpan, out var span);
             if (!ok)
             {
                 throw new FormatException($"{nameof(timeSpan)} is not a valid TimeSpan format");
@@ -264,12 +264,12 @@ namespace Moonglade.Core
 
         public static bool IsLetter(this char c)
         {
-            return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
+            return 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z';
         }
 
         public static bool IsSpace(this char c)
         {
-            return (c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == ' ');
+            return c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == ' ';
         }
 
         public static string Left(string sSource, int iLength)
@@ -360,7 +360,7 @@ namespace Moonglade.Core
             // Regex performance best practice
             // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
 
-            string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
+            const string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
             return Regex.IsMatch(tagDisplayName, pattern);
         }
 
