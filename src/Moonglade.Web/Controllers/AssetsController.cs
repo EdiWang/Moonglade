@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Core;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 
@@ -23,8 +26,10 @@ namespace Moonglade.Web.Controllers
         // Credits: https://github.com/Anduin2017/Blog
         [ResponseCache(Duration = 3600)]
         [Route("/manifest.json")]
-        public IActionResult Manifest()
+        public async Task<IActionResult> Manifest([FromServices]IWebHostEnvironment hostEnvironment)
         {
+            var themeColor = await Utils.GetThemeColorAsync(hostEnvironment.WebRootPath, _blogConfig.GeneralSettings.ThemeFileName);
+
             var model = new ManifestModel
             {
                 ShortName = _blogConfig.GeneralSettings.SiteTitle,
@@ -40,8 +45,8 @@ namespace Moonglade.Web.Controllers
                     new ManifestIcon("/android-icon-{0}.png",144,"3.0"),
                     new ManifestIcon("/android-icon-{0}.png",192,"4.0")
                 },
-                BackgroundColor = "#2a579a",
-                ThemeColor = "#2a579a",
+                BackgroundColor = themeColor,
+                ThemeColor = themeColor,
                 Display = "standalone",
                 Orientation = "portrait"
             };

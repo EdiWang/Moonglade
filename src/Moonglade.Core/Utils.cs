@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Markdig;
 using TimeZoneConverter;
@@ -16,6 +17,29 @@ namespace Moonglade.Core
     {
         public static string AppVersion =>
             Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+        public static async Task<string> GetThemeColorAsync(string webRootPath, string currentTheme)
+        {
+            var cssPath = Path.Combine(webRootPath, "css", "theme", currentTheme);
+
+            if (File.Exists(cssPath))
+            {
+                var lines = await System.IO.File.ReadAllLinesAsync(cssPath);
+                var accentColorLine = lines.FirstOrDefault(l => l.Contains("accent-color1"));
+                if (null != accentColorLine)
+                {
+                    var regex = new Regex("#(?:[0-9a-f]{3}){1,2}");
+                    var match = regex.Match(accentColorLine);
+                    if (match.Success)
+                    {
+                        var colorHex = match.Captures[0].Value;
+                        return colorHex;
+                    }
+                }
+            }
+
+            return "#FFFFFF";
+        }
 
         public static string GetMonthNameByNumber(int number)
         {
