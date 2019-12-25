@@ -25,7 +25,7 @@ namespace Moonglade.Tests.Web
             var httpContextMock = new Mock<HttpContext>();
             httpContextMock.Setup(c => c.Response).Returns(httpResponseMock.Object);
 
-            Task RequestDelegate(HttpContext context) => Task.CompletedTask;
+            static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new PoweredByMiddleware(RequestDelegate);
 
             await middleware.Invoke(httpContextMock.Object);

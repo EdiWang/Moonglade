@@ -243,18 +243,16 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
 				// number of colors is specified
 				return InfoHeader.BiClrUsed;
 			}
-			else
+
+            // number of colors is based on the bitcount
+            return InfoHeader.BiBitCount switch
             {
-                // number of colors is based on the bitcount
-                return InfoHeader.BiBitCount switch
-                {
-                    1 => 2,
-                    4 => 16,
-                    8 => 256,
-                    _ => 0
-                };
-            }
-		}
+                1 => 2,
+                4 => 16,
+                8 => 256,
+                _ => 0
+            };
+        }
 	}
 	
 	/// <summary>

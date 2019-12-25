@@ -3,7 +3,7 @@
 @model IReadOnlyList<Moonglade.Model.PostCommentListItem>
 
 @{
-    string GetUserAvatarChar(string username)
+    static string GetUserAvatarChar(string username)
     {
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -28,7 +28,7 @@
                 @if (BlogConfig.ContentSettings.EnableGravatar)
                 {
                     <div class="user-avatar">
-                        @Html.GravatarImage(item.Email, size: 58, forceSecureRequest: true)
+                        @Html.GravatarImage(item.Email, 58, forceSecureRequest: true)
                     </div>
                 }
                 else

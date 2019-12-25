@@ -51,7 +51,7 @@ namespace Moonglade.Web.Models
 
         [Required(ErrorMessage = "Please enter language code.")]
         [Display(Name = "Content Language")]
-        [RegularExpression(@"^[a-z]{2}-[a-zA-Z]{2}$", ErrorMessage = "Incorrect language code format. e.g. en-us")]
+        [RegularExpression("^[a-z]{2}-[a-zA-Z]{2}$", ErrorMessage = "Incorrect language code format. e.g. en-us")]
         public string ContentLanguageCode { get; set; }
 
         public PostEditViewModel()

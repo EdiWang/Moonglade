@@ -1,5 +1,4 @@
-﻿using Moonglade.Web.Middleware.RobotsTxt.Models;
-using System;
+﻿using System;
 using System.Globalization;
 
 namespace Moonglade.Web.Middleware.RobotsTxt

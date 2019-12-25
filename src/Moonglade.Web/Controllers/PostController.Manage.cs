@@ -82,7 +82,7 @@ namespace Moonglade.Web.Controllers
 
                 var tagStr = post.Tags
                                  .Select(p => p.TagName)
-                                 .Aggregate(string.Empty, (current, item) => current + (item + ","));
+                                 .Aggregate(string.Empty, (current, item) => current + item + ",");
 
                 tagStr = tagStr.TrimEnd(',');
                 editViewModel.Tags = tagStr;

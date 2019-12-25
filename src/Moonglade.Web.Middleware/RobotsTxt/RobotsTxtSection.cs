@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace Moonglade.Web.Middleware.RobotsTxt.Models
+namespace Moonglade.Web.Middleware.RobotsTxt
 {
     public class Rule
     {

@@ -39,6 +39,8 @@ namespace Moonglade.Web.Authentication
                             });
 
                     break;
+                case AuthenticationProvider.None:
+                    break;
                 default:
                     var msg = $"Provider {authenticationSettings.Provider} is not supported.";
                     throw new NotSupportedException(msg);

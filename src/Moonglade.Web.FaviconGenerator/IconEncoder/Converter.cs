@@ -164,7 +164,6 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
             ico.IconImages[0].And[0] = byte.MaxValue;
 
             int pixelsPerByte;
-            int bytesPerRow; // must be a long boundary (multiple of 4)
             int[] shiftCounts;
 
             switch (bitCount)
@@ -184,7 +183,7 @@ namespace Moonglade.Web.FaviconGenerator.IconEncoder
                 default:
                     throw new NotSupportedException("Bits per pixel must be 1, 4, or 8");
             }
-            bytesPerRow = ico.IconDirectory.Entries[0].Width / pixelsPerByte;
+            var bytesPerRow = ico.IconDirectory.Entries[0].Width / pixelsPerByte;
             var padBytes = bytesPerRow % 4;
             if (padBytes > 0)
                 padBytes = 4 - padBytes;

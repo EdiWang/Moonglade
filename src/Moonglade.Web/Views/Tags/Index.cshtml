@@ -55,7 +55,7 @@ else
         <ul class="list-unstyled tagCloud">
             @foreach (var tag in Model.OrderBy(t => t.TagName))
             {
-                var weightPercent = (Convert.ToInt32(tag.TagCount) * 1.0 / Convert.ToInt32(tagMax)) * 100;
+                var weightPercent = Convert.ToInt32(tag.TagCount) * 1.0 / Convert.ToInt32(tagMax) * 100;
                 var weight = Weight(weightPercent);
 
                 if (weight >= 0)
