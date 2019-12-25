@@ -119,12 +119,12 @@ namespace Moonglade.Core
             }, keyParameter: postId);
         }
 
-        public Response<Post> GetPost(Guid id)
+        public Task<Response<Post>> GetPostAsync(Guid id)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync<Post>(async () =>
             {
                 var spec = new PostSpec(id);
-                var post = _postRepository.SelectFirstOrDefault(spec, p => new Post
+                var post = await _postRepository.SelectFirstOrDefaultAsync(spec, p => new Post
                 {
                     Id = p.Id,
                     Title = p.Title,

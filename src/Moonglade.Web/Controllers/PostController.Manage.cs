@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, [FromServices] IHtmlCodec htmlCodec)
         {
-            var postResponse = _postService.GetPost(id);
+            var postResponse = await _postService.GetPostAsync(id);
             if (!postResponse.IsSuccess)
             {
                 return ServerError();
