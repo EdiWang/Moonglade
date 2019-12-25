@@ -6,12 +6,6 @@
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Moonglade.Data.csproj.vspscc" />
-    <None Remove="Moonglade.DataModel.csproj.vspscc" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">
