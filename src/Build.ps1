@@ -15,4 +15,4 @@ taskkill /T /F /IM vbcscompiler.exe
 iisreset /restart
 
 dotnet clean -c Release
-dotnet build -c Release -p:Version=10.0.$days
+dotnet build -c Release -p:Version=10.1.$days
