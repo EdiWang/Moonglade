@@ -196,6 +196,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("avatar")]
+        [ResponseCache(Duration = 300)]
         public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
             var fallbackImageFile =
