@@ -28,7 +28,7 @@ namespace Moonglade.Data.Spec
                       (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month))
         {
             // Fix #313: Filter out unpublished posts
-            UseCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
+            AddCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
 
             AddInclude(post => post.Include(p => p.PostPublish));
             ApplyOrderByDescending(p => p.PostPublish.PubDateUtc);
@@ -66,16 +66,16 @@ namespace Moonglade.Data.Spec
             switch (status)
             {
                 case PostPublishStatus.Draft:
-                    UseCriteria(p => !p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
+                    AddCriteria(p => !p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
                     break;
                 case PostPublishStatus.Published:
-                    UseCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
+                    AddCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
                     break;
                 case PostPublishStatus.Deleted:
-                    UseCriteria(p => p.PostPublish.IsDeleted);
+                    AddCriteria(p => p.PostPublish.IsDeleted);
                     break;
                 case PostPublishStatus.NotSet:
-                    UseCriteria(p => true);
+                    AddCriteria(p => true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, null);

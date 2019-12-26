@@ -20,7 +20,7 @@ namespace Moonglade.Data.Spec
                     throw new ArgumentOutOfRangeException(nameof(insightsType), insightsType, null);
             }
 
-            UseCriteria(p => p.PostPublish.PubDateUtc >= DateTime.UtcNow.AddYears(-1));
+            AddCriteria(p => p.PostPublish.PubDateUtc >= DateTime.UtcNow.AddYears(-1));
 
             ApplyPaging(0, top);
         }
