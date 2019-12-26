@@ -67,8 +67,6 @@ namespace Moonglade.Data.Infrastructure
         }
     }
 
-    // Copy paste from StackOverflow
-    // Can run jiu OK
     // https://stackoverflow.com/questions/457316/combining-two-expressions-expressionfunct-bool
     public static class ExpressionExtentions
     {
@@ -85,7 +83,8 @@ namespace Moonglade.Data.Infrastructure
             var right = rightVisitor.Visit(expr2.Body);
 
             return Expression.Lambda<Func<T, bool>>(
-                Expression.AndAlso(left, right), parameter);
+                Expression.AndAlso(left ?? throw new InvalidOperationException(), 
+                                        right ?? throw new InvalidOperationException()), parameter);
         }
 
         private class ReplaceExpressionVisitor
@@ -102,9 +101,7 @@ namespace Moonglade.Data.Infrastructure
 
             public override Expression Visit(Expression node)
             {
-                if (node == _oldValue)
-                    return _newValue;
-                return base.Visit(node);
+                return node == _oldValue ? _newValue : base.Visit(node);
             }
         }
     }
