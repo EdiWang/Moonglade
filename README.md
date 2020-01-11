@@ -74,6 +74,8 @@ Configure how to sign in to admin portal.
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"**
   - For local debugging, set URL to https://localhost:5001/signin-oidc
+  - Always check the `ID Tokens` switch.
+  ![id tokends](https://anduins-site.aiursoft.io/Untitled.png)
 - Copy "**appId**" to set as **AzureAd:ClientId** in **appsettings.[env].json** file
 
 ```json
