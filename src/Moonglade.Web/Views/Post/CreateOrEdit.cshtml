@@ -34,6 +34,8 @@
                 break;
             case EditorChoice.Markdown:
                 <script src="~/lib/simplemde/simplemde.min.js"></script>
+                <script src="~/js/inline-attachment.js"></script>
+                <script src="~/js/codemirror-4.inline-attachment.js"></script>
                 <link id="css-simplemde" href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
                 break;
             case EditorChoice.None:
@@ -52,7 +54,6 @@
             }
             if (editorMode == 'Markdown') {
                 postEditor.loadMdEditor(".post-content-textarea");
-
             }
 
             postEditor.keepAlive();
