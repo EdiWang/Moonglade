@@ -174,7 +174,11 @@ namespace Moonglade.Web.Controllers
 
                 if (response.IsSuccess)
                 {
-                    return Json(new { location = $"/uploads/{response.Item}" });
+                    return Json(new
+                    {
+                        location = $"/uploads/{response.Item}",
+                        filename = response.Item
+                    });
                 }
                 Logger.LogError(response.Message);
                 return ServerError();
