@@ -343,7 +343,7 @@ namespace Moonglade.Web
             }
 
             var baseDir = env.ContentRootPath;
-            TryUseUrlRewrite(app, baseDir);
+            TryUseUrlRewrite(app);
             AppDomain.CurrentDomain.SetData(Constants.AppBaseDirectory, baseDir);
 
             // Use Temp folder as best practice
@@ -371,27 +371,15 @@ namespace Moonglade.Web
             CleanDataCache();
         }
 
-        private void TryUseUrlRewrite(IApplicationBuilder app, string baseDir)
+        private void TryUseUrlRewrite(IApplicationBuilder app)
         {
             try
             {
-                var loadExternalRewriteConfig = bool.Parse(_appSettingsSection["EnableImageHotLinkProtection"]);
-                var urlRewriteConfigPath = Path.Combine(baseDir, "urlrewrite.xml");
-                
-                if (loadExternalRewriteConfig && File.Exists(urlRewriteConfigPath))
-                {
-                    using var sr = File.OpenText(urlRewriteConfigPath);
-                    var options = new RewriteOptions()
-                                    .AddRedirect("(.*)/$", "$1")
-                                    .AddRedirect("(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)", "/")
-                                    .AddRedirect("^favicon/(.*).png$", "/$1.png")
-                                    .AddIISUrlRewrite(sr);
-                    app.UseRewriter(options);
-                }
-                else
-                {
-                    _logger.LogWarning($"Can not find {urlRewriteConfigPath}, skip adding url rewrite.");
-                }
+                var options = new RewriteOptions()
+                    .AddRedirect("(.*)/$", "$1")
+                    .AddRedirect("(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)", "/");
+
+                app.UseRewriter(options);
             }
             catch (Exception e)
             {
