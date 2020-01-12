@@ -12,10 +12,6 @@ The blog system for https://edi.wang. Written in C# on [**.NET Core**](https://d
 
 **Misc:** Pingback, RSS/Atom/OPML, Open Search, Reader View
 
-## Caveats
-
-This is **NOT a general purpose blog system** like WordPress or other CMS. Currently it contains content "hard coded" for https://edi.wang. To make it yours, you will need to change a certain amount of code.
-
 ## Build and Run
 
 > The following tools are required for development.
@@ -179,9 +175,6 @@ PostSummaryWords | How may words to show in post list summary
 ImageCacheSlidingExpirationMinutes | Time for cached images to expire
 EnforceHttps | Force website use HTTPS
 AllowScriptsInCustomPage | Allow JavaScript in Page content or not
-EnableImageHotLinkProtection | Prevent images from being hot link from other sites*
-
-> Due to platform limitation, image hot link prevention requires manually edit file ```src\Moonglade.Web\urlrewrite.xml``` before deployment. 
 
 ## FAQ
 
