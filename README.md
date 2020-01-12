@@ -73,9 +73,8 @@ Configure how to sign in to admin portal.
 
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"**
-  - For local debugging, set URL to https://localhost:5001/signin-oidc
-  - Always check the `ID Tokens` switch.
-  ![id tokends](https://anduins-site.aiursoft.io/Untitled.png)
+  - For local debugging, add URL to https://localhost:1055/signin-oidc
+- Check `ID Tokens` checkbox under 'Advanced settings'.
 - Copy "**appId**" to set as **AzureAd:ClientId** in **appsettings.[env].json** file
 
 ```json
@@ -133,6 +132,8 @@ The **Path** can be relative or absolute. **"$\{basedir\}"** represents the webs
 #### CDN
 
 If **GetImageByCDNRedirect** is set to **true**, the blog will get images from client browser using a 302 redirect, not by fetching images in backend and put into memory cache. This is especially useful when you have a CDN for your image resources, like what I did on Azure. 
+
+> Note: Azure CDN is extremely slow under China Telecom and China Mobile network, if you are operating in China, please use a local CDN provider.
 
 ```json
 "CDNSettings": {
