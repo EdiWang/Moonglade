@@ -4,7 +4,7 @@
     {
         public EditorChoice Editor { get; set; }
         public CaptchaSettings CaptchaSettings { get; set; }
-        public int PostSummaryWords { get; set; }
+        public int PostAbstractWords { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
         public bool AllowScriptsInCustomPage { get; set; }
 

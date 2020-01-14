@@ -171,7 +171,7 @@ Key | Description
 Editor | HTML / Markdown
 CaptchaSettings:ImageWidth | Pixel Width of Captcha Image
 CaptchaSettings.ImageHeight | Pixel Height of Captcha Image
-PostSummaryWords | How may words to show in post list summary
+PostAbstractWords | How may words to show in post list abstract
 ImageCacheSlidingExpirationMinutes | Time for cached images to expire
 EnforceHttps | Force website use HTTPS
 AllowScriptsInCustomPage | Allow JavaScript in Page content or not
