@@ -25,7 +25,7 @@
         </div>
     </section>
 
-    @if(!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch))
+    @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch))
     {
         @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
     }
@@ -49,4 +49,11 @@
             </cache>
         </div>
     </section>
+
+    @if (Settings.Value.ShowAdminLoginButton)
+    {
+        <div class="text-center">
+            <a asp-action="Index" asp-controller="Admin" class="btn btn-sm btn-light">Admin Login</a>
+        </div>
+    }
 </aside>

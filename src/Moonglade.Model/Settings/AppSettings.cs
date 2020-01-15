@@ -7,6 +7,7 @@
         public int PostAbstractWords { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
         public bool AllowScriptsInCustomPage { get; set; }
+        public bool ShowAdminLoginButton { get; set; }
 
         public NotificationSettings Notification { get; set; }
     }
