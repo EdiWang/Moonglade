@@ -927,6 +927,7 @@ body {
     right: 20px;
     cursor: pointer;
     text-align: center;
+    background: #fff;
 }
 
 #lighticon {
