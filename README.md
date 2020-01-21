@@ -158,12 +158,6 @@ Set values in AppSettings:
 }
 ```
 
-### Robots.txt
-
-This blog generates robots.txt based on configuration. However, if there are a physical file named "robots.txt" under "wwwroot" directory, it will override the configuration based robots.txt generation.
-
-To customize robots.txt, modify the configuration under **RobotsTxt** section.
-
 ### Others
 
 Key | Description

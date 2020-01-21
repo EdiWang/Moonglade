@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,20 @@ namespace Moonglade.Web.Controllers
             IBlogConfig blogConfig) : base(logger, settings)
         {
             _blogConfig = blogConfig;
+        }
+        
+        [ResponseCache(Duration = 3600)]
+        [Route("/robots.txt")]
+        public IActionResult RobotsTxt()
+        {
+            var robotsTxtContent = _blogConfig.AdvancedSettings.RobotsTxtContent;
+            if (string.IsNullOrWhiteSpace(robotsTxtContent))
+            {
+                Logger.LogWarning("No content in robots.txt configuration.");
+                return NotFound();
+            }
+
+            return Content(_blogConfig.AdvancedSettings.RobotsTxtContent, "text/plain", Encoding.UTF8);
         }
 
         // Credits: https://github.com/Anduin2017/Blog

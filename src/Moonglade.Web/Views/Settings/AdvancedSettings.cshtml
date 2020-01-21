@@ -39,6 +39,11 @@
                         <input asp-for="DNSPrefetchEndpoint" class="form-control" />
                         <span asp-validation-for="DNSPrefetchEndpoint" class="text-danger"></span>
                     </div>
+                    <div class="form-group">
+                        <label asp-for="RobotsTxtContent" class="control-label"></label>
+                        <textarea asp-for="RobotsTxtContent" class="form-control" cols="60" rows="10"></textarea>
+                        <span asp-validation-for="RobotsTxtContent" class="text-danger"></span>
+                    </div>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
