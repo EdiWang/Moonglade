@@ -9,6 +9,11 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(128)]
         public string DNSPrefetchEndpoint { get; set; }
 
+        [Display(Name = "robots.txt")]
+        [DataType(DataType.MultilineText)]
+        [MaxLength(1024)]
+        public string RobotsTxtContent { get; set; }
+
         [Display(Name = "Enable PingBack Send")]
         public bool EnablePingBackSend { get; set; }
 
