@@ -55,8 +55,6 @@
         $('.post-content img.img-thumbnail').addClass('bg-dark border-secondary');
         $('.post-content table.table').addClass('table-dark');
 
-        $('#css-simplemde').attr('href', '/css/theme/simplemde-theme-dark.min.css');
-
         $('.comment-form-containter .form-control').addClass('bg-transparent');
 
         this.isDarkMode = true;
@@ -80,8 +78,6 @@
 
         $('.post-content img.img-thumbnail').removeClass('bg-dark border-secondary');
         $('.post-content table.table').removeClass('table-dark');
-
-        $('#css-simplemde').attr('href', '/lib/simplemde/simplemde.min.css');
 
         $('.comment-form-containter .form-control').removeClass('bg-transparent');
 

@@ -35,19 +35,9 @@
     }
 }
 
-@section head {
-    @if (null == ViewBag.IsDraftPreview)
-    {
-        <link id="css-simplemde" href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
-    }
-}
 @section scripts {
     <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/lib/highlight-js/highlight.min.js"></script>
-    @if (null == ViewBag.IsDraftPreview)
-    {
-        <script src="~/lib/simplemde/simplemde.min.js"></script>
-    }
 
     @if (BlogConfig.ContentSettings.EnableImageLazyLoad)
     {
@@ -79,14 +69,6 @@
                     });
 
                     $('#post-qrcode').qrcode(document.URL);
-
-                    if (window.SimpleMDE) {
-                        var simplemde = new SimpleMDE({
-                            element: $("#NewCommentModel_Content")[0],
-                            spellChecker: false,
-                            status: false
-                        });
-                    }
                 </text>
             }
 
@@ -243,7 +225,7 @@
                           data-ajax-method="POST">
                         <div class="card-body">
                             <input type="hidden" asp-for="NewCommentViewModel.PostId" />
-                            <div class="row">
+                            <div class="row form-group">
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" placeholder="Your Name" asp-for="NewCommentViewModel.Username" />
                                     <span asp-validation-for="NewCommentViewModel.Username" class="text-danger"></span>
@@ -253,12 +235,10 @@
                                     <span asp-validation-for="NewCommentViewModel.Email" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="comment-md-content">
-                            <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4" placeholder="Say something" maxlength="512"></textarea>
-                            <span asp-validation-for="NewCommentViewModel.Content" class="text-danger"></span>
-                        </div>
-                        <div class="card-body">
+                            <div class="comment-md-content form-group">
+                                <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4" placeholder="Your comments (Markdown supported)" maxlength="1024"></textarea>
+                                <span asp-validation-for="NewCommentViewModel.Content" class="text-danger"></span>
+                            </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="input-group">
