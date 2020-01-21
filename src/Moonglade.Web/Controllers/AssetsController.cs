@@ -22,6 +22,14 @@ namespace Moonglade.Web.Controllers
         {
             _blogConfig = blogConfig;
         }
+        
+        [ResponseCache(Duration = 3600)]
+        [Route("/robots.txt")]
+        public async Task<IActionResult> RobotsTxt()
+        {
+            await Task.CompletedTask;
+            return new EmptyResult();
+        }
 
         // Credits: https://github.com/Anduin2017/Blog
         [ResponseCache(Duration = 3600)]
