@@ -26,19 +26,6 @@ namespace Moonglade.Web.Controllers
         
         [ResponseCache(Duration = 3600)]
         [Route("/robots.txt")]
-        /* ------------- Sample output -------------
-        # Allow Googlebot
-        User-agent: Googlebot
-        Allow: /
-
-        # Disallow Baidu
-        User-agent: Baiduspider
-        Disallow: /
-
-        # General
-        User-agent: *
-        Disallow: /errorpages/
-        --------------------------------------------*/
         public IActionResult RobotsTxt()
         {
             var robotsTxtContent = _blogConfig.AdvancedSettings.RobotsTxtContent;
