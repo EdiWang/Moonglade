@@ -204,7 +204,7 @@ namespace Moonglade.Web.Controllers
         public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
             var fallbackImageFile =
-                $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\avatar-placeholder.png";
+                $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\default-avatar.png";
 
             if (string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
             {
