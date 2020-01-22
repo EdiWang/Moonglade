@@ -605,23 +605,12 @@ div.animbrand a:focus, div.animbrand a:hover {
     position: relative;
 }
 
-.post-date-xs {
-    border-radius: 3px;
-    background-color: var(--moonglade-accent-color1);
-    width: 60px;
-    text-align: center;
-    font-size: 14px;
-    height: 24px;
-    line-height: 22px;
-    vertical-align: top;
-    color: #FFF;
-}
-
 .post-date-box {
     font-family: SairaSemiCondensed-Bold;
     position: absolute;
     width: 70px;
     border: 1px solid var(--moonglade-accent-color1);
+    border-radius: 3px;
 }
 
 .post-date-day {
@@ -631,7 +620,6 @@ div.animbrand a:focus, div.animbrand a:hover {
     margin: 0;
     padding-right: 7px;
     text-align: right;
-    border-radius: 3px;
 }
 
 .post-date-month {
