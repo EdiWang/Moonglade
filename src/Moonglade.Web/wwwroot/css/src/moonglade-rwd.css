@@ -16,11 +16,6 @@
 
 @media (max-width: 767px) {
 
-    .gdpr-warning-msg {
-        line-height: inherit;
-        margin-bottom: 10px;
-    }
-
     .post-publish-info {
         padding: 5px;
         margin-bottom: 5px;
