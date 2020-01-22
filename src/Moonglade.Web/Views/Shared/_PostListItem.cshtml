@@ -4,13 +4,15 @@
 
 <article class="article-post-summary">
     <div class="post-date-box d-none d-md-block">
-        <h1 class="post-date-day">@Model.PubDateUtc.Day.ToString("00")</h1>
+        <div class="post-date-day">
+            @Utils.UtcToZoneTime(Model.PubDateUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).Day.ToString("00")
+        </div>
         <div class="post-date-month">
             @Utils.UtcToZoneTime(Model.PubDateUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("MMM", new CultureInfo("en-US")).ToUpper()
         </div>
     </div>
     <div class="post-summary-box">
-        <time datetime="@Model.PubDateUtc.ToString("u")" class="none d-none">
+        <time datetime="@Model.PubDateUtc.ToString("u")" class="d-none">
             @Model.PubDateUtc
         </time>
 
