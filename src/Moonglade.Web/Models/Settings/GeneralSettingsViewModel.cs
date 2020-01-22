@@ -49,12 +49,12 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(32)]
         public string BloggerShortDescription { get; set; }
 
-        [Display(Name = "Side Bar Customized Html Pitch")]
+        [Display(Name = "Customized Side Bar Pitch (HTML)")]
         [DataType(DataType.MultilineText)]
         [MaxLength(2048)]
         public string SideBarCustomizedHtmlPitch { get; set; }
 
-        [Display(Name = "Footer Customized Html Pitch")]
+        [Display(Name = "Customized Footer Pitch (HTML)")]
         [DataType(DataType.MultilineText)]
         [MaxLength(4096)]
         public string FooterCustomizedHtmlPitch { get; set; }

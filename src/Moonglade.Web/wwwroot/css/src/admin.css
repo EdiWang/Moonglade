@@ -18,6 +18,11 @@
     overflow-y: scroll;
 }
 
+.textarea-code {
+    font-size: 12px;
+    font-family: 'Consolas';
+}
+
 hr.admin-nav-divider {
     border-top: 1px solid rgba(255,255,255,0.5);
     margin: 0 20px;

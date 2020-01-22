@@ -33,18 +33,6 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header">Advanced Settings</div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label asp-for="DNSPrefetchEndpoint" class="control-label"></label>
-                        <input asp-for="DNSPrefetchEndpoint" class="form-control" />
-                        <span asp-validation-for="DNSPrefetchEndpoint" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="RobotsTxtContent" class="control-label"></label>
-                        <textarea asp-for="RobotsTxtContent" class="form-control" cols="60" rows="10"></textarea>
-                        <span asp-validation-for="RobotsTxtContent" class="text-danger"></span>
-                    </div>
-                </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <label asp-for="EnablePingBackSend" class="control-label"></label>
@@ -63,6 +51,18 @@
                         </div>
                     </li>
                 </ul>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="DNSPrefetchEndpoint" class="control-label"></label>
+                        <input asp-for="DNSPrefetchEndpoint" class="form-control" />
+                        <span asp-validation-for="DNSPrefetchEndpoint" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="RobotsTxtContent" class="control-label"></label>
+                        <textarea asp-for="RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10"></textarea>
+                        <span asp-validation-for="RobotsTxtContent" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-6">

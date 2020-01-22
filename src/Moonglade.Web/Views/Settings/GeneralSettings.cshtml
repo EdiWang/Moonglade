@@ -190,7 +190,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="FooterCustomizedHtmlPitch" class="control-label"></label>
-                        <textarea asp-for="FooterCustomizedHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <textarea asp-for="FooterCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" rows="10" cols="10"></textarea>
                         <span asp-validation-for="FooterCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
@@ -226,7 +226,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="SideBarCustomizedHtmlPitch" class="control-label"></label>
-                                    <textarea asp-for="SideBarCustomizedHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                                    <textarea asp-for="SideBarCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" cols="10" rows="10"></textarea>
                                     <span asp-validation-for="SideBarCustomizedHtmlPitch" class="text-danger"></span>
                                 </div>
                             </div>
@@ -265,6 +265,8 @@
                             <label class="custom-file-label" for="avatarImageFile" aria-describedby="avatarImageFileAddon">.png or .jpg file</label>
                         </div>
                     </div>
+
+                    <p class="small text-muted text-center mt-2">* Image width and height must be equal</p>
                 </div>
             </div>
             <div class="modal-footer">
