@@ -54,6 +54,13 @@ namespace Moonglade.Web.Models
         [RegularExpression("^[a-z]{2}-[a-zA-Z]{2}$", ErrorMessage = "Incorrect language code format. e.g. en-us")]
         public string ContentLanguageCode { get; set; }
 
+        [Display(Name = "Publish Date")]
+        [DataType(DataType.Date)]
+        public DateTime? PublishDate { get; set; }
+
+        [Display(Name = "Change Publish Date")]
+        public bool ChangePublishDate { get; set; }
+
         public PostEditViewModel()
         {
             PostId = Guid.Empty;

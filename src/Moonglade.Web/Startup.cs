@@ -95,6 +95,7 @@ namespace Moonglade.Web
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<IHtmlCodec, MoongladeHtmlCodec>();
+            services.AddScoped<IDateTimeResolver, DateTimeResolver>();
             services.AddScoped<IPingbackSender, PingbackSender>();
             services.AddScoped<IPingbackReceiver, PingbackReceiver>();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();

@@ -19,6 +19,7 @@ namespace Moonglade.Core
     {
         private readonly IHtmlCodec _htmlCodec;
         private readonly IBlogConfig _blogConfig;
+        private readonly IDateTimeResolver _dateTimeResolver;
 
         #region Repository Objects
 
@@ -42,7 +43,8 @@ namespace Moonglade.Core
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
             IHtmlCodec htmlCodec,
-            IBlogConfig blogConfig) : base(logger, settings)
+            IBlogConfig blogConfig, 
+            IDateTimeResolver dateTimeResolver) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -53,6 +55,7 @@ namespace Moonglade.Core
             _postCategoryRepository = postCategoryRepository;
             _htmlCodec = htmlCodec;
             _blogConfig = blogConfig;
+            _dateTimeResolver = dateTimeResolver;
         }
 
         public Response<int> CountVisiblePosts()
@@ -481,6 +484,14 @@ namespace Moonglade.Core
                     postModel.PostPublish.IsPublished = true;
                     postModel.PostPublish.PublisherIp = request.RequestIp;
                     postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
+                }
+
+                // #325: Allow changing publish date for published posts
+                if (request.PublishDate != null && postModel.PostPublish.PubDateUtc.HasValue)
+                {
+                    var tod = postModel.PostPublish.PubDateUtc.Value.TimeOfDay;
+                    var adjustedDate = _dateTimeResolver.GetUtcTimeFromUserTZone(request.PublishDate.Value);
+                    postModel.PostPublish.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
                 }
 
                 postModel.Slug = request.Slug;
