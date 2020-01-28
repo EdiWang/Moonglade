@@ -148,7 +148,7 @@ namespace Moonglade.Web.Controllers
                     };
 
                     var tzDate = _dateTimeResolver.GetNowWithUserTZone();
-                    if (model.PublishDate.HasValue && model.PublishDate <= tzDate)
+                    if (model.ChangePublishDate && model.PublishDate.HasValue && model.PublishDate <= tzDate)
                     {
                         request.PublishDate = model.PublishDate;
                     }

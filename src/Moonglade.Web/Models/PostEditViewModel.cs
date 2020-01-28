@@ -58,6 +58,9 @@ namespace Moonglade.Web.Models
         [DataType(DataType.Date)]
         public DateTime? PublishDate { get; set; }
 
+        [Display(Name = "Change Publish Date")]
+        public bool ChangePublishDate { get; set; }
+
         public PostEditViewModel()
         {
             PostId = Guid.Empty;
