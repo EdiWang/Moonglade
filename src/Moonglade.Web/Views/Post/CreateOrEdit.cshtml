@@ -136,13 +136,16 @@
                         </div>
                     </li>
                 </ul>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label asp-for="PublishDate" class="control-label"></label>
-                        <input asp-for="PublishDate" class="form-control" />
-                        <span asp-validation-for="PublishDate" class="text-danger"></span>
+                @if (Model.PostId != Guid.Empty)
+                {
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="PublishDate" class="control-label"></label>
+                            <input asp-for="PublishDate" class="form-control" />
+                            <span asp-validation-for="PublishDate" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
             <div class="card">
                 <div class="card-header">Categories</div>
