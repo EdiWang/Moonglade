@@ -16,12 +16,17 @@ namespace Moonglade.Core
 
         public DateTime GetNowWithUserTZone()
         {
-            return Utils.UtcToZoneTime(DateTime.Now, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
+            return Utils.UtcToZoneTime(DateTime.UtcNow, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
         }
 
         public DateTime GetDateTimeWithUserTZone(DateTime dt)
         {
             return Utils.UtcToZoneTime(dt, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
+        }
+
+        public DateTime GetUtcTimeFromUserTZone(DateTime dt)
+        {
+            return Utils.ZoneTimeToUtc(dt, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
         }
     }
 }

@@ -200,6 +200,18 @@ namespace Moonglade.Core
 
         public static DateTime UtcToZoneTime(DateTime utcTime, string timeSpan)
         {
+            var span = ParseTimeZone(timeSpan, out var tz);
+            return null != tz ? TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz) : utcTime.AddTicks(span.Ticks);
+        }
+
+        public static DateTime ZoneTimeToUtc(DateTime zoneTime, string timeSpan)
+        {
+            var span = ParseTimeZone(timeSpan, out var tz);
+            return null != tz ? TimeZoneInfo.ConvertTimeToUtc(zoneTime, tz) : zoneTime.AddTicks(-1 * span.Ticks);
+        }
+
+        private static TimeSpan ParseTimeZone(string timeSpan, out TimeZoneInfo tz)
+        {
             if (string.IsNullOrWhiteSpace(timeSpan))
             {
                 timeSpan = TimeSpan.FromSeconds(0).ToString();
@@ -212,9 +224,10 @@ namespace Moonglade.Core
                 throw new FormatException($"{nameof(timeSpan)} is not a valid TimeSpan format");
             }
 
-            var tz = GetTimeZones().FirstOrDefault(t => t.BaseUtcOffset == span);
-            return null != tz ? TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz) : utcTime.AddTicks(span.Ticks);
+            tz = GetTimeZones().FirstOrDefault(t => t.BaseUtcOffset == span);
+            return span;
         }
+
 
         public static string GetPostAbstract(string rawContent, int wordCount, bool useMarkdown = false)
         {

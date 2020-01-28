@@ -6,5 +6,6 @@ namespace Moonglade.Core
     {
         DateTime GetNowWithUserTZone();
         DateTime GetDateTimeWithUserTZone(DateTime dt);
+        DateTime GetUtcTimeFromUserTZone(DateTime dt);
     }
 }
