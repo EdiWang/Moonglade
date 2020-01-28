@@ -487,9 +487,11 @@ namespace Moonglade.Core
                 }
 
                 // #325: Allow changing publish date for published posts
-                if (request.PublishDate != null)
+                if (request.PublishDate != null && postModel.PostPublish.PubDateUtc.HasValue)
                 {
-                    postModel.PostPublish.PubDateUtc = _dateTimeResolver.GetUtcTimeFromUserTZone(request.PublishDate.Value);
+                    var tod = postModel.PostPublish.PubDateUtc.Value.TimeOfDay;
+                    var adjustedDate = _dateTimeResolver.GetUtcTimeFromUserTZone(request.PublishDate.Value);
+                    postModel.PostPublish.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
                 }
 
                 postModel.Slug = request.Slug;
