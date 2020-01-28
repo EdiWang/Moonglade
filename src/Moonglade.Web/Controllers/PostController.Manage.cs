@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.HtmlCodec;
 using Moonglade.Model;
@@ -69,8 +70,8 @@ namespace Moonglade.Web.Controllers
                 {
                     PostId = post.Id,
                     IsPublished = post.IsPublished,
-                    EditorContent = AppSettings.Editor == Model.Settings.EditorChoice.Markdown ? 
-                                                        post.RawPostContent : 
+                    EditorContent = AppSettings.Editor == Model.Settings.EditorChoice.Markdown ?
+                                                        post.RawPostContent :
                                                         htmlCodec.HtmlDecode(post.RawPostContent),
                     Slug = post.Slug,
                     Title = post.Title,
@@ -79,6 +80,11 @@ namespace Moonglade.Web.Controllers
                     FeedIncluded = post.FeedIncluded,
                     ContentLanguageCode = post.ContentLanguageCode
                 };
+
+                if (post.PubDateUtc != null)
+                {
+                    editViewModel.PublishDate = _dateTimeResolver.GetDateTimeWithUserTZone(post.PubDateUtc.GetValueOrDefault());
+                }
 
                 var tagStr = post.Tags
                                  .Select(p => p.TagName)
@@ -140,6 +146,12 @@ namespace Moonglade.Web.Controllers
                         CategoryIds = model.SelectedCategoryIds,
                         RequestIp = HttpContext.Connection.RemoteIpAddress.ToString()
                     };
+
+                    var tzDate = _dateTimeResolver.GetNowWithUserTZone();
+                    if (model.PublishDate.HasValue && model.PublishDate <= tzDate)
+                    {
+                        request.PublishDate = model.PublishDate;
+                    }
 
                     var response = model.PostId == Guid.Empty ?
                         _postService.CreateNewPost(request) :

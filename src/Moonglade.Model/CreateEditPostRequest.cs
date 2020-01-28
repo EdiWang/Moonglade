@@ -18,6 +18,8 @@ namespace Moonglade.Model
 
         public string RequestIp { get; set; }
 
+        public DateTime? PublishDate { get; set; }
+
         public CreatePostRequest()
         {
             Tags = new string[] { };

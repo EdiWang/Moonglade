@@ -22,18 +22,21 @@ namespace Moonglade.Web.Controllers
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
+        private readonly IDateTimeResolver _dateTimeResolver;
 
         public PostController(
             ILogger<PostController> logger,
             IOptions<AppSettings> settings,
             PostService postService,
             CategoryService categoryService,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig, 
+            IDateTimeResolver dateTimeResolver)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
+            _dateTimeResolver = dateTimeResolver;
         }
 
         [Route(""), Route("/")]
