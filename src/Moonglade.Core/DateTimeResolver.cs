@@ -19,14 +19,14 @@ namespace Moonglade.Core
             return Utils.UtcToZoneTime(DateTime.UtcNow, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
         }
 
-        public DateTime GetDateTimeWithUserTZone(DateTime dt)
+        public DateTime GetDateTimeWithUserTZone(DateTime utcDateTime)
         {
-            return Utils.UtcToZoneTime(dt, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
+            return Utils.UtcToZoneTime(utcDateTime, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
         }
 
-        public DateTime GetUtcTimeFromUserTZone(DateTime dt)
+        public DateTime GetUtcTimeFromUserTZone(DateTime userDateTime)
         {
-            return Utils.ZoneTimeToUtc(dt, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
+            return Utils.ZoneTimeToUtc(userDateTime, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
         }
     }
 }

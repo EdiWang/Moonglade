@@ -1,6 +1,7 @@
 ﻿@using Moonglade.Core
 @using Moonglade.Web.HtmlHelpers
 @model IReadOnlyList<Moonglade.Model.PostCommentListItem>
+@inject IDateTimeResolver DateTimeResolver
 
 @{
     static string GetUserAvatarChar(string username)
@@ -42,7 +43,7 @@
                 <div class="card comment-item">
                     <div class="card-header">
                         <strong>@item.Username</strong>
-                        <span class="text-muted float-right"> @Utils.UtcToZoneTime(item.CreateOnUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("yyyy-M-d HH:mm")</span>
+                        <span class="text-muted float-right"> @DateTimeResolver.GetDateTimeWithUserTZone(item.CreateOnUtc).ToString("yyyy-M-d HH:mm")</span>
                     </div>
                     <div class="card-body">
                         @Html.Raw(Utils.ConvertMarkdownContent(item.CommentContent, Utils.MarkdownConvertType.Html))
@@ -55,7 +56,7 @@
                                         <strong>
                                             Blog Author Replied:
                                         </strong>
-                                        <span class="float-right text-muted">Replied at @Utils.UtcToZoneTime(reply.ReplyTimeUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("yyyy-M-d HH:mm")</span>
+                                        <span class="float-right text-muted">Replied at @DateTimeResolver.GetDateTimeWithUserTZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
                                     <p>
                                         @reply.ReplyContent

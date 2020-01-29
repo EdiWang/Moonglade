@@ -5,7 +5,7 @@ namespace Moonglade.Core
     public interface IDateTimeResolver
     {
         DateTime GetNowWithUserTZone();
-        DateTime GetDateTimeWithUserTZone(DateTime dt);
-        DateTime GetUtcTimeFromUserTZone(DateTime dt);
+        DateTime GetDateTimeWithUserTZone(DateTime utcDateTime);
+        DateTime GetUtcTimeFromUserTZone(DateTime userDateTime);
     }
 }

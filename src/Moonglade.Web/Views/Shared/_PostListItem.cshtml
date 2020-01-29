@@ -1,14 +1,15 @@
 ﻿@using System.Globalization
 @using Moonglade.Core
 @model Moonglade.Model.PostListItem
+@inject IDateTimeResolver DateTimeResolver
 
 <article class="article-post-summary">
     <div class="post-date-box d-none d-md-block">
         <div class="post-date-day">
-            @Utils.UtcToZoneTime(Model.PubDateUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).Day.ToString("00")
+            @DateTimeResolver.GetDateTimeWithUserTZone(Model.PubDateUtc).Day.ToString("00")
         </div>
         <div class="post-date-month">
-            @Utils.UtcToZoneTime(Model.PubDateUtc, BlogConfig.GeneralSettings.TimeZoneUtcOffset).ToString("MMM", new CultureInfo("en-US")).ToUpper()
+            @DateTimeResolver.GetDateTimeWithUserTZone(Model.PubDateUtc).ToString("MMM", new CultureInfo("en-US")).ToUpper()
         </div>
     </div>
     <div class="post-summary-box">
