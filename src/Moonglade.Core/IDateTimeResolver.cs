@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Moonglade.Core
 {
@@ -7,5 +8,7 @@ namespace Moonglade.Core
         DateTime GetNowWithUserTZone();
         DateTime GetDateTimeWithUserTZone(DateTime utcDateTime);
         DateTime GetUtcTimeFromUserTZone(DateTime userDateTime);
+        IEnumerable<TimeZoneInfo> GetTimeZones();
+        TimeSpan GetTimeSpanByZoneId(string timeZoneId);
     }
 }

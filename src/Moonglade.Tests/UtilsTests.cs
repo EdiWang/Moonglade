@@ -27,13 +27,13 @@ namespace Moonglade.Tests
             return Utils.GetMonthNameByNumber(number);
         }
 
-        [Test]
-        public void TestUtcToZoneTime()
-        {
-            var utc = new DateTime(2000, 1, 1, 0, 0, 0);
-            var dt = Utils.UtcToZoneTime(utc, "08:00:00");
-            Assert.IsTrue(dt == DateTime.Parse("2000/1/1 8:00:00"));
-        }
+        //[Test]
+        //public void TestUtcToZoneTime()
+        //{
+        //    var utc = new DateTime(2000, 1, 1, 0, 0, 0);
+        //    var dt = Utils.UtcToZoneTime(utc, "08:00:00");
+        //    Assert.IsTrue(dt == DateTime.Parse("2000/1/1 8:00:00"));
+        //}
 
         [Test]
         public void TestLeft()

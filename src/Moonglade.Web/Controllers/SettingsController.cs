@@ -32,6 +32,7 @@ namespace Moonglade.Web.Controllers
 
         private readonly FriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
+        private readonly IDateTimeResolver _dateTimeResolver;
 
         #endregion
 
@@ -39,10 +40,11 @@ namespace Moonglade.Web.Controllers
             ILogger<SettingsController> logger,
             IOptionsSnapshot<AppSettings> settings,
             FriendLinkService friendLinkService,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig, IDateTimeResolver dateTimeResolver)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
+            _dateTimeResolver = dateTimeResolver;
 
             _friendLinkService = friendLinkService;
         }
@@ -50,7 +52,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("general-settings")]
         public IActionResult GeneralSettings()
         {
-            var tzList = Utils.GetTimeZones().Select(t => new SelectListItem
+            var tzList = _dateTimeResolver.GetTimeZones().Select(t => new SelectListItem
             {
                 Text = t.DisplayName,
                 Value = t.Id
@@ -75,7 +77,7 @@ namespace Moonglade.Web.Controllers
                 BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
                 BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
-                SelectedUtcOffset = Utils.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
+                SelectedUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
                 TimeZoneList = tzList,
                 SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
                 ThemeList = tmList
@@ -95,7 +97,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.LogoText = model.LogoText;
                 _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
                 _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-                _blogConfig.GeneralSettings.TimeZoneUtcOffset = Utils.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
+                _blogConfig.GeneralSettings.TimeZoneUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
                 _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
                 _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
