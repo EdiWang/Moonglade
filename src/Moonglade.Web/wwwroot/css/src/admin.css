@@ -8,7 +8,7 @@
 }
 
 .admin-nav {
-    max-width: 285px;
+    max-width: 230px;
     padding-right: 0;
     padding-left: 0;
     background-color: var(--moonglade-accent-color2);
@@ -24,7 +24,7 @@
 }
 
 hr.admin-nav-divider {
-    border-top: 1px solid rgba(255,255,255,0.5);
+    border-top: 1px solid rgba(255,255,255,0.3);
     margin: 0 20px;
 }
 
