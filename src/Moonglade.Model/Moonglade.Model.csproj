@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\MoongladeCommon.props" />
+
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyVersion>10.2.0.0</AssemblyVersion>
-    <Version>10.2.0</Version>
-    <Authors>Edi Wang</Authors>
-    <Company>edi.wang</Company>
   </PropertyGroup>
 </Project>

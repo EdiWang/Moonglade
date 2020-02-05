@@ -1,13 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\MoongladeCommon.props" />
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Authors>Edi Wang</Authors>
-    <Company>edi.wang</Company>
-    <AssemblyVersion>10.2.0.0</AssemblyVersion>
-    <FileVersion>10.2.0.0</FileVersion>
-    <Version>10.2.0</Version>
-    <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

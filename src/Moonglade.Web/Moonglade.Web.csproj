@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <Import Project="..\MoongladeCommon.props" />
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Authors>Edi Wang</Authors>
-    <Company>edi.wang</Company>
-    <Copyright>2020 edi.wang</Copyright>
-    <AssemblyVersion>10.2.0.0</AssemblyVersion>
-    <FileVersion>10.2.0.0</FileVersion>
-    <Version>10.2.0.0</Version>
     <AspNetCoreModuleName>AspNetCoreModuleV2</AspNetCoreModuleName>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
