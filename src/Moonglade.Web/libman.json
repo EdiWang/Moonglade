@@ -10,7 +10,7 @@
       ]
     },
     {
-      "library": "tinymce@5.1.2",
+      "library": "tinymce@5.1.6",
       "destination": "wwwroot/lib/tinymce",
       "files": []
     },
@@ -19,7 +19,7 @@
       "destination": "wwwroot/lib/jquery-qrcode"
     },
     {
-      "library": "highlight.js@9.15.10",
+      "library": "highlight.js@9.18.1",
       "destination": "wwwroot/lib/highlight-js",
       "files": [
         "highlight.min.js"
@@ -80,7 +80,7 @@
       "destination": "wwwroot/lib/simplemde/"
     },
     {
-      "library": "monaco-editor@0.18.1",
+      "library": "monaco-editor@0.19.3",
       "destination": "wwwroot/lib/monaco-editor/"
     }
   ]
