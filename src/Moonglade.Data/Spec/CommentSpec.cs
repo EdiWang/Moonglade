@@ -6,9 +6,9 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec
 {
-    public sealed class CommentSepc : BaseSpecification<CommentEntity>
+    public sealed class CommentSpec : BaseSpecification<CommentEntity>
     {
-        public CommentSepc(int pageSize, int pageIndex) : base(c => true)
+        public CommentSpec(int pageSize, int pageIndex) : base(c => true)
         {
             var startRow = (pageIndex - 1) * pageSize;
 
@@ -19,12 +19,12 @@ namespace Moonglade.Data.Spec
             ApplyPaging(startRow, pageSize);
         }
 
-        public CommentSepc(Guid[] ids) : base(c => ids.Contains(c.Id))
+        public CommentSpec(Guid[] ids) : base(c => ids.Contains(c.Id))
         {
 
         }
 
-        public CommentSepc(Guid postId) : base(c => c.PostId == postId &&
+        public CommentSpec(Guid postId) : base(c => c.PostId == postId &&
                                                           c.IsApproved)
         {
             AddInclude(comments => comments.Include(c => c.CommentReply));
