@@ -29,7 +29,7 @@ namespace Moonglade.Core
             return TryExecuteAsync<FriendLink>(async () =>
             {
                 var item = await _friendlinkRepository.SelectFirstOrDefaultAsync(
-                    new FriendLinkSepc(id), f => new FriendLink
+                    new FriendLinkSpec(id), f => new FriendLink
                     {
                         Id = f.Id,
                         LinkUrl = f.LinkUrl,
