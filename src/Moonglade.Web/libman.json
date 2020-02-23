@@ -19,13 +19,6 @@
       "destination": "wwwroot/lib/jquery-qrcode"
     },
     {
-      "library": "highlight.js@9.18.1",
-      "destination": "wwwroot/lib/highlight-js",
-      "files": [
-        "highlight.min.js"
-      ]
-    },
-    {
       "library": "jquery-validate@1.19.1",
       "destination": "wwwroot/lib/jquery-validate",
       "files": [
