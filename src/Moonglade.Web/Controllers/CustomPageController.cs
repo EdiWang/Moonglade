@@ -30,7 +30,7 @@ namespace Moonglade.Web.Controllers
 
         public string[] InvalidPageRouteNames => new[] { "index", "manage", "createoredit", "create", "edit" };
 
-        [HttpGet("{routeName}")]
+        [HttpGet("{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> Index(string routeName, [FromServices] IMemoryCache cache)
         {
             if (string.IsNullOrWhiteSpace(routeName))
