@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig = blogConfig;
         }
 
-        [Route("list/{categoryName}")]
+        [Route("list/{categoryName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> List(string categoryName, int page = 1)
         {
             if (string.IsNullOrWhiteSpace(categoryName))
