@@ -14,13 +14,13 @@ The blog system for https://edi.wang. Written in C# on [**.NET Core**](https://d
 
 ## Build and Run
 
-> The following tools are required for development.
-
 Tools | Alternative
 --- | ---
 [.NET Core 3.1 SDK](http://dot.net) | N/A
 [Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
 [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) | [SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) / LocalDB (Dev Only)
+
+> If you would like to deploy Moonglade to Azure and use Azure services as much as possible just like my blog, you can use the automation deployment script ```/Azure-Deployment/Deploy.ps1``` to prepare a full Azure environment before deploying code. 
 
 ### Setup Database
 
