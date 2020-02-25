@@ -20,13 +20,14 @@ $sqlServerName = "moongladetestsqlsvr"
 $sqlServerUsername = "moonglade"
 $sqlServerPassword = "DotNetM00n8!@d3"
 $sqlDatabaseName = "moonglade-test-db"
-# TODO: CDN, DNS Zone, Application Insight
+$cdnProfileName = "moonglade-test-cdn"
+# TODO: CDN Endpoint, DNS Zone, Application Insight
 
 # Select Subscription
 az account set --subscription $subscriptionName
 Write-Host "Selected Azure Subscription: " $subscriptionName -ForegroundColor Cyan
 
-# Create Resource Group
+# Resource Group
 Write-Host ""
 Write-Host "Preparing Resource Group" -ForegroundColor Green
 $rsgExists = az group exists -n $rsgName
@@ -35,7 +36,7 @@ if ($rsgExists -eq 'false') {
     az group create -l $regionName -n $rsgName
 }
 
-# Create App Service Plan
+# App Service Plan
 Write-Host ""
 Write-Host "Preparing App Service Plan" -ForegroundColor Green
 $planCheck = az appservice plan list --query "[?name=='$aspName']" | ConvertFrom-Json
@@ -45,7 +46,7 @@ if (!$planExists) {
     az appservice plan create -n $aspName -g $rsgName --sku S1 --location $regionName
 }
 
-# Create Web App
+# Web App
 Write-Host ""
 Write-Host "Preparing Web App" -ForegroundColor Green
 $appCheck = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
@@ -56,7 +57,7 @@ if (!$appExists) {
     az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false
 }
 
-# Create Storage Account
+# Storage Account
 Write-Host ""
 Write-Host "Preparing Storage Account" -ForegroundColor Green
 $storageAccountCheck = az storage account list --query "[?name=='$storageAccountName']" | ConvertFrom-Json
@@ -73,7 +74,7 @@ if (!$storageContainerExists.exists) {
     az storage container create --name $storageContainerName --connection-string $storageConn.connectionString --public-access container
 }
 
-# Create SQL Server
+# Azure SQL
 Write-Host ""
 Write-Host "Preparing Azure SQL" -ForegroundColor Green
 $sqlServerCheck = az sql server list --query "[?name=='$sqlServerName']" | ConvertFrom-Json
@@ -90,4 +91,16 @@ if (!$sqlDbExists) {
     az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0
 }
 
-Read-Host -Prompt "Setup is done, you can now deploy the code and assign API keys, press [ENTER] to exit."
+# CDN
+Write-Host ""
+Write-Host "Preparing CDN" -ForegroundColor Green
+$cdnProfileCheck = az cdn profile list -g $rsgName --query "[?name=='$cdnProfileName']" | ConvertFrom-Json
+$cdnProfileExists = $cdnProfileCheck.Length -gt 0
+if (!$cdnProfileExists) {
+    Write-Host "Creating CDN Profile"
+    az cdn profile create --name $cdnProfileName --resource-group $rsgName --location $regionName --sku Standard_Microsoft
+}
+
+Write-Host "Due to Edi doen't know how to associate CDN Endpoint to Blob Storage in Azure CLI, pleae go to Azure Portal and create an CDN Endpoint yourself..." -ForegroundColor Green
+
+Read-Host -Prompt "Setup is done, you can now deploy the blog code, press [ENTER] to exit."
