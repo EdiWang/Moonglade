@@ -21,14 +21,17 @@ $sqlServerUsername = "moonglade"
 $sqlServerPassword = "DotNetM00n8!@d3"
 $sqlDatabaseName = "moonglade-test-db"
 $cdnProfileName = "moonglade-test-cdn"
-# TODO: CDN Endpoint, DNS Zone, Application Insight
+# TODO: CDN Endpoint, DNS Zone, Application Insight, AAD
+
+# Confirmation
+Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continue."
+Read-Host -Prompt "Press [ENTER] to continue"
 
 # Select Subscription
 az account set --subscription $subscriptionName
 Write-Host "Selected Azure Subscription: " $subscriptionName -ForegroundColor Cyan
 
 # Resource Group
-Write-Host ""
 Write-Host "Preparing Resource Group" -ForegroundColor Green
 $rsgExists = az group exists -n $rsgName
 if ($rsgExists -eq 'false') {
@@ -54,7 +57,7 @@ $appExists = $appCheck.Length -gt 0
 if (!$appExists) {
     Write-Host "Creating Web App"
     az webapp create -g $rsgName -p $aspName -n $webAppName
-    az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false
+    az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false --http20-enabled true
 }
 
 # Storage Account
@@ -99,8 +102,26 @@ $cdnProfileExists = $cdnProfileCheck.Length -gt 0
 if (!$cdnProfileExists) {
     Write-Host "Creating CDN Profile"
     az cdn profile create --name $cdnProfileName --resource-group $rsgName --location $regionName --sku Standard_Microsoft
+
+    # Write-Host "Creating CDN Endpoint"
+    # $storageUrl = az storage blob url --connection-string $storageConn --container-name $storageContainerName --name "dummy"
+    # $storageOrigion = $storageUrl.Replace("https://", "").Replace("/$storageContainerName/dummy", "");
+    # az cdn endpoint create -g $rsgName -n endpoint --profile-name $cdnProfileName --origin-host-header $storageOrigion --enable-compression
 }
 
-Write-Host "Due to Edi doen't know how to associate CDN Endpoint to Blob Storage in Azure CLI, pleae go to Azure Portal and create an CDN Endpoint yourself..." -ForegroundColor Green
+# Configuration Update
+Write-Host ""
+Write-Host "Updating Configuration" -ForegroundColor Green
+
+Write-Host "Setting SQL Database Connection String"
+$sqlConnStrTemplate = az sql db show-connection-string -s $sqlServerName -n $sqlDatabaseName -c ado.net --auth-type SqlPassword
+$sqlConnStr = $sqlConnStrTemplate.Replace("<username>", $sqlServerUsername).Replace("<password>", $sqlServerPassword)
+az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --settings MoongladeDatabase=$sqlConnStr
+
+Write-Host "Adding Blob Storage Connection String"
+az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ConnectionString=$storageConn
+az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ContainerName=$storageContainerName
+
+Write-Host "Due to Edi doen't know how to associate CDN Endpoint to Blob Storage in Azure CLI, pleae go to Azure Portal and create a CDN Endpoint yourself..." -ForegroundColor Green
 
 Read-Host -Prompt "Setup is done, you can now deploy the blog code, press [ENTER] to exit."
