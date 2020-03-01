@@ -35,12 +35,18 @@ namespace Moonglade.Auditing
             try
             {
                 var uname = string.Empty;
-                var ip = string.Empty;
+                var ip = "0.0.0.0";
 
                 if (null != _httpContextAccessor)
                 {
                     uname = _httpContextAccessor.HttpContext.User?.Identity?.Name;
                     ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                }
+
+                if (message.Length > 256)
+                {
+                    // Truncate message so that SQL won't blow up
+                    message = message.Substring(0, 256);
                 }
 
                 var auditEntry = new AuditEntry(eventType, eventId, uname, ip, message);
