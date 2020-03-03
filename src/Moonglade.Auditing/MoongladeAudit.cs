@@ -12,7 +12,15 @@ using Moonglade.Model;
 
 namespace Moonglade.Auditing
 {
-    public class MoongladeAudit
+    public interface IMoongladeAudit
+    {
+        Task<Response> AddAuditEntry(EventType eventType, EventId eventId, string message);
+
+        Task<Response<IReadOnlyList<AuditEntry>>> GetAuditEntries(
+            int skip, int take, EventType? eventType, EventId? eventId, bool orderByTimeDesc = true);
+    }
+
+    public class MoongladeAudit : IMoongladeAudit
     {
         private readonly ILogger<MoongladeAudit> _logger;
 
@@ -54,8 +62,8 @@ namespace Moonglade.Auditing
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 await using var conn = new SqlConnection(connStr);
 
-                // TODO
-                var sql = "";
+                var sql = @"INSERT INTO AuditLog([EventId],[EventType],[EventTimeUtc],[WebUsername],[IpAddressV4],[Message])
+                            VALUES(@EventId, @EventType, @EventTimeUtc, @Username, @IpAddressV4, @Message)";
 
                 int rows = await conn.ExecuteAsync(sql, auditEntry);
                 return new Response(rows > 0);
@@ -70,7 +78,16 @@ namespace Moonglade.Auditing
         public async Task<Response<IReadOnlyList<AuditEntry>>> GetAuditEntries(
             int skip, int take, EventType? eventType, EventId? eventId, bool orderByTimeDesc = true)
         {
-            throw new NotImplementedException();
+            try
+            {
+                throw new NotImplementedException();
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return new FailedResponse<IReadOnlyList<AuditEntry>>((int)ResponseFailureCode.GeneralException, e.Message, e);
+            }
         }
     }
 }
