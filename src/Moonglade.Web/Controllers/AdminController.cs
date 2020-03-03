@@ -10,8 +10,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Models;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -21,15 +23,27 @@ namespace Moonglade.Web.Controllers
     {
         private readonly AuthenticationSettings _authenticationSettings;
 
-        public AdminController(ILogger<AdminController> logger, IOptions<AuthenticationSettings> authSettings)
+        private readonly IMoongladeAudit _moongladeAudit;
+
+        public AdminController(
+            ILogger<AdminController> logger,
+            IOptions<AuthenticationSettings> authSettings,
+            IMoongladeAudit moongladeAudit)
             : base(logger)
         {
+            _moongladeAudit = moongladeAudit;
             _authenticationSettings = authSettings.Value;
         }
 
         [Route("")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (_authenticationSettings.Provider == AuthenticationProvider.AzureAD)
+            {
+                await _moongladeAudit.AddAuditEntry(EventType.Authentication, EventId.LoginSuccessAAD,
+                    $"Authentication success for Azure account '{User.Identity.Name}'");
+            }
+
             return RedirectToAction("Manage", "Post");
         }
 
@@ -42,12 +56,10 @@ namespace Moonglade.Web.Controllers
             switch (_authenticationSettings.Provider)
             {
                 case AuthenticationProvider.AzureAD:
-                    {
-                        var redirectUrl = Url.Action(nameof(PostController.Index), "Post");
-                        return Challenge(
-                            new AuthenticationProperties { RedirectUri = redirectUrl },
-                            OpenIdConnectDefaults.AuthenticationScheme);
-                    }
+                    var redirectUrl = Url.Action(nameof(PostController.Index), "Post");
+                    return Challenge(
+                        new AuthenticationProperties { RedirectUri = redirectUrl },
+                        OpenIdConnectDefaults.AuthenticationScheme);
                 case AuthenticationProvider.Local:
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     break;
@@ -79,8 +91,13 @@ namespace Moonglade.Web.Controllers
                         };
                         var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var p = new ClaimsPrincipal(ci);
+
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
-                        Logger.LogInformation($@"Authentication success for local account ""{model.Username}""");
+
+                        var successMessage = $@"Authentication success for local account ""{model.Username}""";
+
+                        Logger.LogInformation(successMessage);
+                        await _moongladeAudit.AddAuditEntry(EventType.Authentication, EventId.LoginSuccessLocal, successMessage);
 
                         return RedirectToAction("Index");
                     }
@@ -88,7 +105,10 @@ namespace Moonglade.Web.Controllers
                     return View(model);
                 }
 
-                Logger.LogWarning($@"Authentication failed for local account ""{model.Username}""");
+                var failMessage = $@"Authentication failed for local account ""{model.Username}""";
+
+                Logger.LogWarning(failMessage);
+                await _moongladeAudit.AddAuditEntry(EventType.Authentication, EventId.LoginFailedLocal, failMessage);
 
                 Response.StatusCode = StatusCodes.Status400BadRequest;
                 ModelState.AddModelError(string.Empty, "Bad Request.");
@@ -111,13 +131,13 @@ namespace Moonglade.Web.Controllers
             switch (_authenticationSettings.Provider)
             {
                 case AuthenticationProvider.AzureAD:
-                {
-                    var callbackUrl = Url.Action(nameof(SignedOut), "Admin", null, Request.Scheme);
-                    return SignOut(
-                        new AuthenticationProperties { RedirectUri = callbackUrl },
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        OpenIdConnectDefaults.AuthenticationScheme);
-                }
+                    {
+                        var callbackUrl = Url.Action(nameof(SignedOut), "Admin", null, Request.Scheme);
+                        return SignOut(
+                            new AuthenticationProperties { RedirectUri = callbackUrl },
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            OpenIdConnectDefaults.AuthenticationScheme);
+                    }
                 case AuthenticationProvider.Local:
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     break;
