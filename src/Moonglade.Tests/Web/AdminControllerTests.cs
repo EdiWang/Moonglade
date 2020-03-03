@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Controllers;
 using Moq;
@@ -15,6 +16,7 @@ namespace Moonglade.Tests.Web
     public class AdminControllerTests
     {
         private Mock<IOptions<AuthenticationSettings>> _authenticationSettingsMock;
+        private Mock<IMoongladeAudit> _auditMock;
         private Mock<ILogger<AdminController>> _loggerMock;
 
         [SetUp]
@@ -22,13 +24,14 @@ namespace Moonglade.Tests.Web
         {
             _authenticationSettingsMock = new Mock<IOptions<AuthenticationSettings>>();
             _loggerMock = new Mock<ILogger<AdminController>>();
+            _auditMock = new Mock<IMoongladeAudit>();
         }
 
         [Test]
-        public void TestDefaultAction()
+        public async Task TestDefaultAction()
         {
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object);
-            var result = ctl.Index();
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object);
+            var result = await ctl.Index();
             Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
             if (result is RedirectToActionResult rdResult)
             {
@@ -51,7 +54,7 @@ namespace Moonglade.Tests.Web
                 .Verifiable();
 
             var ctx = new DefaultHttpContext();
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object)
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = ctx },
                 Url = mockUrlHelper.Object
@@ -64,7 +67,7 @@ namespace Moonglade.Tests.Web
         [Test]
         public void TestSignedOut()
         {
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object);
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object);
             var result = ctl.SignedOut();
             Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
             if (result is RedirectToActionResult rdResult)
@@ -77,7 +80,7 @@ namespace Moonglade.Tests.Web
         [Test]
         public void TestKeepAlive()
         {
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object);
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object);
             var result = ctl.KeepAlive("996.ICU");
             Assert.IsInstanceOf(typeof(JsonResult), result);
         }
@@ -85,7 +88,7 @@ namespace Moonglade.Tests.Web
         [Test]
         public void TestAccessDenied()
         {
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object)
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
             };
