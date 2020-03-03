@@ -34,14 +34,7 @@ namespace Moonglade.Auditing
         {
             try
             {
-                var uname = string.Empty;
-                var ip = "0.0.0.0";
-
-                if (null != _httpContextAccessor)
-                {
-                    uname = _httpContextAccessor.HttpContext.User?.Identity?.Name;
-                    ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-                }
+                var ui = GetUsernameAndIp();
 
                 if (message.Length > 256)
                 {
@@ -49,7 +42,7 @@ namespace Moonglade.Auditing
                     message = message.Substring(0, 256);
                 }
 
-                var auditEntry = new AuditEntry(eventType, eventId, uname, ip, message);
+                var auditEntry = new AuditEntry(eventType, eventId, ui.Username, ui.Ipv4, message);
 
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 await using var conn = new SqlConnection(connStr);
@@ -73,13 +66,49 @@ namespace Moonglade.Auditing
             try
             {
                 throw new NotImplementedException();
-
             }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
                 return new FailedResponse<IReadOnlyList<AuditEntry>>((int)ResponseFailureCode.GeneralException, e.Message, e);
             }
+        }
+
+        public async Task<Response> ClearAuditLog()
+        {
+            try
+            {
+                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+                await using var conn = new SqlConnection(connStr);
+
+                var sql = "DELETE FROM AuditLog";
+                int rows = await conn.ExecuteAsync(sql);
+
+                // Make sure who ever doing this can't get away with it
+                var ui = GetUsernameAndIp();
+                await AddAuditEntry(EventType.General, EventId.ClearedAuditLog, $"Audit log was cleared by '{ui.Username}' from '{ui.Ipv4}'");
+
+                return new Response(rows > 0);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
+            }
+        }
+
+        private (string Username, string Ipv4) GetUsernameAndIp()
+        {
+            var uname = string.Empty;
+            var ip = "0.0.0.0";
+
+            if (null != _httpContextAccessor)
+            {
+                uname = _httpContextAccessor.HttpContext.User?.Identity?.Name;
+                ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+
+            return (uname, ip);
         }
     }
 }

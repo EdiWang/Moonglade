@@ -7,7 +7,8 @@ namespace Moonglade.Auditing
     public enum EventId
     {
         GeneralOperation = 1,
-        
+        ClearedAuditLog = 2,
+
         LoginSuccessAAD = 1001,
         LoginFailedAAD = 1002,
         LoginSuccessLocal = 1003,
