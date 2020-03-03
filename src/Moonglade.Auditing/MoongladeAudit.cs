@@ -12,14 +12,6 @@ using Moonglade.Model;
 
 namespace Moonglade.Auditing
 {
-    public interface IMoongladeAudit
-    {
-        Task<Response> AddAuditEntry(EventType eventType, EventId eventId, string message);
-
-        Task<Response<IReadOnlyList<AuditEntry>>> GetAuditEntries(
-            int skip, int take, EventType? eventType, EventId? eventId, bool orderByTimeDesc = true);
-    }
-
     public class MoongladeAudit : IMoongladeAudit
     {
         private readonly ILogger<MoongladeAudit> _logger;
