@@ -30,6 +30,12 @@ namespace Moonglade.Tests.Web
         [Test]
         public async Task TestDefaultAction()
         {
+            _authenticationSettingsMock.Setup(c => c.Value)
+                .Returns(new AuthenticationSettings
+                {
+                    Provider = AuthenticationProvider.Local
+                });
+
             var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object);
             var result = await ctl.Index();
             Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
