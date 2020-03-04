@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
 
@@ -12,16 +13,19 @@ namespace Moonglade.Web.Controllers
     {
         private readonly TagService _tagService;
         private readonly PostService _postService;
+        private readonly IMoongladeAudit _moongladeAudit;
 
         public TagsController(
             ILogger<TagsController> logger,
             IOptions<AppSettings> settings,
             TagService tagService,
-            PostService postService)
+            PostService postService, 
+            IMoongladeAudit moongladeAudit)
             : base(logger, settings)
         {
             _tagService = tagService;
             _postService = postService;
+            _moongladeAudit = moongladeAudit;
         }
 
         [Route("")]

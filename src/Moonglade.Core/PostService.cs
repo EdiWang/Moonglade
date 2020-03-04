@@ -446,6 +446,8 @@ namespace Moonglade.Core
                             };
 
                             tag = _tagRepository.Add(newTag);
+                            await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagCreated,
+                                $"Tag '{tag.NormalizedName}' created.");
                         }
 
                         postModel.PostTag.Add(new PostTagEntity
@@ -522,6 +524,9 @@ namespace Moonglade.Core
                         DisplayName = item,
                         NormalizedName = Utils.NormalizeTagName(item)
                     });
+
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagCreated,
+                        $"Tag '{item}' created.");
                 }
 
                 // 2. update tags
