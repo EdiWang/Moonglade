@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Model;
 using Moonglade.Web.Models;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -64,6 +66,8 @@ namespace Moonglade.Web.Controllers
                     if (response.IsSuccess)
                     {
                         DeleteOpmlFile();
+
+                        _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryCreated, $"Category '{request.Title}' is created");
                         return RedirectToAction(nameof(Manage));
                     }
 
@@ -124,6 +128,8 @@ namespace Moonglade.Web.Controllers
                     if (response.IsSuccess)
                     {
                         DeleteOpmlFile();
+
+                        _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryUpdated, $"Category '{model.Id}' is updated");
                         return RedirectToAction(nameof(Manage));
                     }
 
@@ -175,6 +181,8 @@ namespace Moonglade.Web.Controllers
                 if (response.IsSuccess)
                 {
                     DeleteOpmlFile();
+
+                    _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Category '{id}' is deleted.");
                     return RedirectToAction(nameof(Manage));
                 }
 
