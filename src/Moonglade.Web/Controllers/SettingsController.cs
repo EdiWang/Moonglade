@@ -564,6 +564,41 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
+        #region Audit Logs
+
+        [HttpGet("audit-logs")]
+        public async Task<IActionResult> AuditLogs()
+        {
+            try
+            {
+                if (!AppSettings.EnableAudit)
+                {
+                    ViewBag.AuditLogDisabled = true;
+                    return View();
+                }
+
+                // Currently hard code as 64, when I have time I will work 996 and change it to support paging and filtering.
+                var response = await _moongladeAudit.GetAuditEntries(0, 64);
+                if (response.IsSuccess)
+                {
+                    return View(response.Item);
+                }
+
+                SetFriendlyErrorMessage();
+                return View();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
+
+                SetFriendlyErrorMessage();
+                return View();
+            }
+        }
+
+        #endregion
+
+        [HttpGet("settings-about")]
         public IActionResult About()
         {
             return View();

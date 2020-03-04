@@ -6,19 +6,24 @@ namespace Moonglade.Auditing
 {
     public class AuditEntry
     {
-        public EventId EventId { get; }
+        public EventId EventId { get; set; }
 
-        public EventType EventType { get; }
+        public EventType EventType { get; set; }
 
-        public DateTime EventTimeUtc { get; }
+        public DateTime EventTimeUtc { get; set; }
 
-        public string Username { get; }
+        public string Username { get; set; }
 
-        public string IpAddressV4 { get; }
+        public string IpAddressV4 { get; set; }
 
         public string MachineName { get; set; }
 
-        public string Message { get; }
+        public string Message { get; set; }
+
+        public AuditEntry()
+        {
+            // For Dapper Mapping
+        }
 
         public AuditEntry(EventType eventType, EventId eventId, string username, string ipAddressV4, string machineName, string message)
         {

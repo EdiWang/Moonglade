@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
@@ -73,11 +74,38 @@ namespace Moonglade.Auditing
         }
 
         public async Task<Response<IReadOnlyList<AuditEntry>>> GetAuditEntries(
-            int skip, int take, EventType? eventType, EventId? eventId, bool orderByTimeDesc = true)
+            int skip, int take, EventType? eventType = null, EventId? eventId = null, bool orderByTimeDesc = true)
         {
             try
             {
-                throw new NotImplementedException();
+                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+                await using var conn = new SqlConnection(connStr);
+
+                // TODO: Add orderByTimeDesc parameter
+                var sql = @"SELECT al.EventId, 
+                                   al.EventType, 
+                                   al.EventTimeUtc, 
+                                   al.[Message],
+                                   al.WebUsername as [Username], 
+                                   al.IpAddressV4, 
+                                   al.MachineName
+                            FROM AuditLog al 
+                            WITH(NOLOCK)
+                            WHERE 1 = 1 
+                            AND (@EventType IS NULL OR al.EventType = @EventType)
+                            AND (@EventId IS NULL OR al.EventId = @EventId)
+                            ORDER BY al.EventTimeUtc DESC
+                            OFFSET @Skip ROWS
+                            FETCH NEXT @Take ROWS ONLY";
+
+                var entries = await conn.QueryAsync<AuditEntry>(sql, new
+                {
+                    eventType,
+                    eventId,
+                    skip,
+                    take
+                });
+                return new SuccessResponse<IReadOnlyList<AuditEntry>>(entries.ToList());
             }
             catch (Exception e)
             {

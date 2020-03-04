@@ -1,0 +1,70 @@
+﻿@model IReadOnlyList<Moonglade.Auditing.AuditEntry>
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<partial name="_SettingsHeader" />
+
+@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
+{
+    <partial name="_ServerErrorMessage" />
+}
+else
+{
+    if (null != ViewBag.AuditLogDisabled && ViewBag.AuditLogDisabled)
+    {
+        <div class="alert alert-warning">
+            Audit Log is disabled.
+        </div>
+    }
+    else if (Model.Any())
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Event Time (UTC)</th>
+                    <th>Event Type</th>
+                    <th>Event Id</th>
+                    <th>Message</th>
+                    <th>Username</th>
+                    <th>Machine Name</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.EventTimeUtc
+                        </td>
+                        <td>
+                            @item.EventType
+                        </td>
+                        <td>
+                            @item.EventId
+                        </td>
+                        <td>
+                            @item.Message
+                        </td>
+                        <td>
+                            @item.Username
+                        </td>
+                        <td>
+                            @item.MachineName
+                        </td>
+                        <td>
+                            @item.IpAddressV4
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No Audit Logs.
+        </div>
+    }
+}
