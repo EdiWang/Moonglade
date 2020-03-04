@@ -19,7 +19,9 @@ else
     }
     else if (Model.Any())
     {
-        <table class="table table-bordered">
+        <a asp-action="ClearAuditLogs" class="btn btn-danger">Clear Audit Logs</a>
+
+        <table class="table table-bordered mt-3">
             <thead>
                 <tr>
                     <th>Event Time (UTC)</th>
