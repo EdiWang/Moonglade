@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.HtmlCodec;
 using Moonglade.Model;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -120,7 +122,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/createoredit")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
-        public IActionResult CreateOrEdit(PostEditViewModel model,
+        public async Task<IActionResult> CreateOrEdit(PostEditViewModel model,
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
         {
@@ -154,8 +156,8 @@ namespace Moonglade.Web.Controllers
                     }
 
                     var response = model.PostId == Guid.Empty ?
-                        _postService.CreateNewPost(request) :
-                        _postService.EditPost(request);
+                        await _postService.CreateNewPost(request) :
+                        await _postService.EditPost(request);
 
                     if (response.IsSuccess)
                     {
@@ -168,7 +170,7 @@ namespace Moonglade.Web.Controllers
 
                             if (_blogConfig.AdvancedSettings.EnablePingBackSend)
                             {
-                                Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
+                                _ = Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
                             }
                         }
 
@@ -196,9 +198,11 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
         [HttpPost("manage/restore")]
-        public IActionResult Restore(Guid postId)
+        public async Task<IActionResult> Restore(Guid postId)
         {
             var response = _postService.RestoreDeletedPost(postId);
+            await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostRestored, $"Post restored, id: {postId}");
+
             return response.IsSuccess ? Json(postId) : ServerError();
         }
 
@@ -206,10 +210,11 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
         [HttpPost("manage/delete")]
-        public IActionResult Delete(Guid postId)
+        public async Task<IActionResult> Delete(Guid postId)
         {
             var response = _postService.Delete(postId, true);
             Logger.LogInformation($"User '{User.Identity.Name}' recycling post id '{postId}'");
+            await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
 
             return response.IsSuccess ? Json(postId) : ServerError();
         }
@@ -217,12 +222,14 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [HttpPost("manage/delete-from-recycle")]
-        public IActionResult DeleteFromRecycleBin(Guid postId)
+        public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
         {
             var response = _postService.Delete(postId);
             if (response.IsSuccess)
             {
                 Logger.LogInformation($"User '{User.Identity.Name}' deleted post id '{postId}'");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
+
                 return Json(postId);
             }
 
@@ -236,6 +243,8 @@ namespace Moonglade.Web.Controllers
         {
             await _postService.DeleteRecycledPostsAsync();
             Logger.LogInformation($"User '{User.Identity.Name}' emptied recycle bin");
+            await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.EmptyRecycleBin, "Emptied Recycle Bin.");
+
             return RedirectToAction("RecycleBin");
         }
 

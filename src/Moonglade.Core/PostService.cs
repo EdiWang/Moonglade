@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -12,6 +13,7 @@ using Moonglade.Data.Spec;
 using Moonglade.HtmlCodec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -20,6 +22,7 @@ namespace Moonglade.Core
         private readonly IHtmlCodec _htmlCodec;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
+        private readonly IMoongladeAudit _moongladeAudit;
 
         #region Repository Objects
 
@@ -44,7 +47,8 @@ namespace Moonglade.Core
             IRepository<PostCategoryEntity> postCategoryRepository,
             IHtmlCodec htmlCodec,
             IBlogConfig blogConfig, 
-            IDateTimeResolver dateTimeResolver) : base(logger, settings)
+            IDateTimeResolver dateTimeResolver, 
+            IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -56,6 +60,7 @@ namespace Moonglade.Core
             _htmlCodec = htmlCodec;
             _blogConfig = blogConfig;
             _dateTimeResolver = dateTimeResolver;
+            _moongladeAudit = moongladeAudit;
         }
 
         public Response<int> CountVisiblePosts()
@@ -351,9 +356,9 @@ namespace Moonglade.Core
             });
         }
 
-        public Response<PostEntity> CreateNewPost(CreatePostRequest request)
+        public async Task<Response<PostEntity>> CreateNewPost(CreatePostRequest request)
         {
-            return TryExecute(() =>
+            return await TryExecuteAsync<PostEntity>(async () =>
             {
                 var postModel = new PostEntity
                 {
@@ -451,15 +456,18 @@ namespace Moonglade.Core
                     }
                 }
 
-                _postRepository.Add(postModel);
+                await _postRepository.AddAsync(postModel);
+                
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostCreated, $"Post created, id: {postModel.Id}");
+                
                 return new SuccessResponse<PostEntity>(postModel);
             });
         }
 
-        public Response<PostEntity> EditPost(EditPostRequest request)
+        public async Task<Response<PostEntity>> EditPost(EditPostRequest request)
         {
-            return TryExecute<PostEntity>(() =>
+            return await TryExecuteAsync<PostEntity>(async () =>
             {
                 var postModel = _postRepository.Get(request.Id);
                 if (null == postModel)
@@ -479,11 +487,14 @@ namespace Moonglade.Core
                 // Address #221: Do not allow published posts back to draft status
                 // postModel.PostPublish.IsPublished = request.IsPublished;
                 // Edit draft -> save and publish, ignore false case because #221
+                bool isNewPublish = false;
                 if (request.IsPublished && !postModel.PostPublish.IsPublished)
                 {
                     postModel.PostPublish.IsPublished = true;
                     postModel.PostPublish.PublisherIp = request.RequestIp;
                     postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
+
+                    isNewPublish = true;
                 }
 
                 // #325: Allow changing publish date for published posts
@@ -550,7 +561,13 @@ namespace Moonglade.Core
                     }
                 }
 
-                _postRepository.Update(postModel);
+                await _postRepository.UpdateAsync(postModel);
+
+                await _moongladeAudit.AddAuditEntry(
+                    EventType.Content, 
+                    isNewPublish ? EventId.PostPublished : EventId.PostUpdated, 
+                    $"Post updated, id: {postModel.Id}");
+
                 return new SuccessResponse<PostEntity>(postModel);
             });
         }

@@ -26,8 +26,10 @@ namespace Moonglade.Auditing
         PostPublished = 3002,
         PostUpdated = 3003,
         PostRecycled = 3004,
-        PostDeleted = 3005,
-        
+        PostRestored = 3005,
+        PostDeleted = 3006,
+        EmptyRecycleBin = 3007,
+
         TagCreated = 4001,
         TagUpdated = 4002,
         TagDeleted = 4003,
