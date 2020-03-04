@@ -115,7 +115,7 @@ namespace Moonglade.Core
                 page.UpdatedOnUtc = DateTime.UtcNow;
 
                 await _customPageRepository.UpdateAsync(page);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PageUpdated, $"Page '{request.Id}' created.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PageUpdated, $"Page '{request.Id}' updated.");
 
                 return new SuccessResponse<Guid>(page.Id);
             });
