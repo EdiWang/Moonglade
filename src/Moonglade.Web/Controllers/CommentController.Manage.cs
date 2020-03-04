@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
 using Moonglade.Model;
 using X.PagedList;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -40,16 +42,24 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete(Guid commentId)
+        public async Task<IActionResult> Delete(Guid commentId, [FromServices] IMoongladeAudit moongladeAudit)
         {
             var response = await _commentService.DeleteComments(new[] { commentId });
             Logger.LogInformation($"User '{User.Identity.Name}' deleting comment id '{commentId}'");
-            return response.IsSuccess ? Json(commentId) : Json(false);
+            
+            if (response.IsSuccess)
+            {
+                await moongladeAudit.AddAuditEntry(EventType.Content, EventId.CommentDeleted, $"Comment '{commentId}' deleted.");
+                return Json(commentId);
+            }
+            return Json(false);
         }
 
         [Authorize]
         [HttpPost("reply")]
-        public IActionResult ReplyComment(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
+        public async Task<IActionResult> ReplyComment(
+            Guid commentId, string replyContent,
+            [FromServices] LinkGenerator linkGenerator, [FromServices] IMoongladeAudit moongladeAudit)
         {
             var response = _commentService.AddReply(commentId, replyContent,
                 HttpContext.Connection.RemoteIpAddress.ToString(), GetUserAgent());
@@ -63,10 +73,13 @@ namespace Moonglade.Web.Controllers
             if (_blogConfig.EmailSettings.SendEmailOnCommentReply)
             {
                 var postLink = GetPostUrl(linkGenerator, response.Item.PubDateUtc, response.Item.Slug);
-                Task.Run(async () => { await _notificationClient.SendCommentReplyNotificationAsync(response.Item, postLink); });
+                _ = Task.Run(async () => { await _notificationClient.SendCommentReplyNotificationAsync(response.Item, postLink); });
             }
 
-            Logger.LogInformation($"User '{User.Identity.Name}' replied comment id '{commentId}'");
+            var logMessage = $"User '{User.Identity.Name}' replied comment id '{commentId}'";
+            Logger.LogInformation(logMessage);
+            await moongladeAudit.AddAuditEntry(EventType.Content, EventId.CommentReplied, logMessage);
+
             return Json(response.Item);
         }
     }

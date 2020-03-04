@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -19,13 +21,16 @@ namespace Moonglade.Web.Controllers
     public class CustomPageController : MoongladeController
     {
         private readonly CustomPageService _customPageService;
+        private readonly IMoongladeAudit _moongladeAudit;
 
         public CustomPageController(
             ILogger<CustomPageController> logger,
             IOptions<AppSettings> settings,
-            CustomPageService customPageService) : base(logger, settings)
+            CustomPageService customPageService, 
+            IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
             _customPageService = customPageService;
+            _moongladeAudit = moongladeAudit;
         }
 
         public string[] InvalidPageRouteNames => new[] { "index", "manage", "createoredit", "create", "edit" };
@@ -155,7 +160,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/delete")]
-        public IActionResult Delete(Guid pageId, string routeName, [FromServices] IMemoryCache cache)
+        public async Task<IActionResult> Delete(Guid pageId, string routeName, [FromServices] IMemoryCache cache)
         {
             try
             {
@@ -166,6 +171,7 @@ namespace Moonglade.Web.Controllers
                     cache.Remove(cacheKey);
 
                     Logger.LogInformation($"User '{User.Identity.Name}' deleted custom page id: '{pageId}', {nameof(routeName)}: '{routeName}'");
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PageDeleted, $"Page '{pageId}' deleted.");
 
                     return Json(pageId);
                 }

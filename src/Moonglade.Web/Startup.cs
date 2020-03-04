@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -93,6 +94,7 @@ namespace Moonglade.Web
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IBlogConfig, BlogConfig>();
+            services.AddScoped<IMoongladeAudit, MoongladeAudit>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<IHtmlCodec, MoongladeHtmlCodec>();
             services.AddScoped<IDateTimeResolver, DateTimeResolver>();

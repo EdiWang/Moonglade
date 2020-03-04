@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
@@ -14,23 +15,24 @@ namespace Moonglade.Web.Controllers
     public partial class CategoryController : MoongladeController
     {
         private readonly PostService _postService;
-
         private readonly CategoryService _categoryService;
-
         private readonly IBlogConfig _blogConfig;
+        private readonly IMoongladeAudit _moongladeAudit;
 
         public CategoryController(
             ILogger<CategoryController> logger,
             IOptions<AppSettings> settings,
             CategoryService categoryService,
             PostService postService,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig, 
+            IMoongladeAudit moongladeAudit)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
 
             _blogConfig = blogConfig;
+            _moongladeAudit = moongladeAudit;
         }
 
         [Route("list/{categoryName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]

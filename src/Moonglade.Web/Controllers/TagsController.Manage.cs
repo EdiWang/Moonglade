@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -21,6 +23,8 @@ namespace Moonglade.Web.Controllers
         {
             Logger.LogInformation($"User '{User.Identity.Name}' updating tag id '{tagId}' with new name '{newTagName}'");
             var response = _tagService.UpdateTag(tagId, newTagName);
+            _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagUpdated, $"Tag id '{tagId}' is updated.");
+
             return response.IsSuccess ? Json(new { tagId, newTagName }) : ServerError();
         }
 
@@ -32,6 +36,8 @@ namespace Moonglade.Web.Controllers
             if (response.IsSuccess)
             {
                 Logger.LogInformation($"User '{User.Identity.Name}' deleted tag id: '{tagId}'");
+                _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagDeleted, $"Tag id '{tagId}' is deleted");
+
                 return Json(tagId);
             }
 
