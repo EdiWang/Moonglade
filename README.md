@@ -169,6 +169,7 @@ PostAbstractWords | How may words to show in post list abstract
 ImageCacheSlidingExpirationMinutes | Time for cached images to expire
 EnforceHttps | Force website use HTTPS
 AllowScriptsInCustomPage | Allow JavaScript in Page content or not
+EnableAudit | Enable Audit Log or not
 
 ## FAQ
 

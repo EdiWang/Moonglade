@@ -9,6 +9,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Model;
+using Moonglade.Model.Settings;
 
 namespace Moonglade.Auditing
 {
@@ -34,6 +35,11 @@ namespace Moonglade.Auditing
         {
             try
             {
+                if (!IsAuditLogEnabled())
+                {
+                    return new FailedResponse("Audit Log is disabled.");
+                }
+
                 var ui = GetUsernameAndIp();
 
                 if (message.Length > 256)
@@ -78,6 +84,11 @@ namespace Moonglade.Auditing
         {
             try
             {
+                if (!IsAuditLogEnabled())
+                {
+                    return new FailedResponse("Audit Log is disabled.");
+                }
+
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 await using var conn = new SqlConnection(connStr);
 
@@ -109,6 +120,12 @@ namespace Moonglade.Auditing
             }
 
             return (uname, ip);
+        }
+
+        private bool IsAuditLogEnabled()
+        {
+            string enableAuditLogSettings = _configuration[$"{nameof(AppSettings)}:{nameof(AppSettings.EnableAudit)}"];
+            return !string.IsNullOrWhiteSpace(enableAuditLogSettings) && bool.Parse(enableAuditLogSettings);
         }
     }
 }
