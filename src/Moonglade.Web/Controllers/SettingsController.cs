@@ -596,6 +596,27 @@ namespace Moonglade.Web.Controllers
             }
         }
 
+        [HttpGet("clear-audit-logs")]
+        public async Task<IActionResult> ClearAuditLogs()
+        {
+            try
+            {
+                if (!AppSettings.EnableAudit)
+                {
+                    return BadRequest();
+                }
+
+                var response = await _moongladeAudit.ClearAuditLog();
+                return response.IsSuccess ? 
+                    RedirectToAction("AuditLogs") : 
+                    ServerError(response.Message);
+            }
+            catch (Exception e)
+            {
+                return ServerError(e.Message);
+            }
+        }
+
         #endregion
 
         [HttpGet("settings-about")]
