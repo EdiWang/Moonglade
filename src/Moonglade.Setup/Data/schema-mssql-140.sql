@@ -127,6 +127,7 @@ CREATE TABLE [AuditLog](
 	[EventTimeUtc] DATETIME NOT NULL,
 	[WebUsername] NVARCHAR(128) NOT NULL,
 	[IpAddressV4] NVARCHAR(16) NOT NULL,
+	[MachineName] NVARCHAR(32) NOT NULL,
 	[Message] NVARCHAR(256) NOT NULL
 )
 

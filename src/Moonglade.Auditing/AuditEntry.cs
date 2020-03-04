@@ -16,15 +16,18 @@ namespace Moonglade.Auditing
 
         public string IpAddressV4 { get; }
 
+        public string MachineName { get; set; }
+
         public string Message { get; }
 
-        public AuditEntry(EventType eventType, EventId eventId, string username, string ipAddressV4, string message)
+        public AuditEntry(EventType eventType, EventId eventId, string username, string ipAddressV4, string machineName, string message)
         {
             EventId = eventId;
             EventType = eventType;
 
             Username = username;
             Message = message;
+            MachineName = machineName;
             IpAddressV4 = ipAddressV4;
 
             EventTimeUtc = DateTime.UtcNow;

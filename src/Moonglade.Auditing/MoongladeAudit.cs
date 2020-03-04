@@ -42,19 +42,25 @@ namespace Moonglade.Auditing
 
                 var ui = GetUsernameAndIp();
 
+                // Truncate data so that SQL won't blow up
                 if (message.Length > 256)
                 {
-                    // Truncate message so that SQL won't blow up
                     message = message.Substring(0, 256);
                 }
 
-                var auditEntry = new AuditEntry(eventType, eventId, ui.Username, ui.Ipv4, message);
+                string machineName = Environment.MachineName;
+                if (machineName.Length > 32)
+                {
+                    machineName = machineName.Substring(0, 32);
+                }
+
+                var auditEntry = new AuditEntry(eventType, eventId, ui.Username, ui.Ipv4, machineName, message);
 
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 await using var conn = new SqlConnection(connStr);
 
-                var sql = @"INSERT INTO AuditLog([EventId],[EventType],[EventTimeUtc],[WebUsername],[IpAddressV4],[Message])
-                            VALUES(@EventId, @EventType, @EventTimeUtc, @Username, @IpAddressV4, @Message)";
+                var sql = @"INSERT INTO AuditLog([EventId],[EventType],[EventTimeUtc],[WebUsername],[IpAddressV4],[MachineName],[Message])
+                            VALUES(@EventId, @EventType, @EventTimeUtc, @Username, @IpAddressV4, @MachineName, @Message)";
 
                 int rows = await conn.ExecuteAsync(sql, auditEntry);
                 return new Response(rows > 0);
