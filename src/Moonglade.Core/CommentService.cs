@@ -7,12 +7,14 @@ using Edi.Practice.RequestResponseModel;
 using Edi.WordFilter;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -23,6 +25,7 @@ namespace Moonglade.Core
         private readonly IRepository<PostEntity> _postRepository;
         private readonly IRepository<CommentEntity> _commentRepository;
         private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
+        private readonly IMoongladeAudit _moongladeAudit;
 
         public CommentService(
             ILogger<CommentService> logger,
@@ -30,13 +33,15 @@ namespace Moonglade.Core
             IBlogConfig blogConfig,
             IRepository<CommentEntity> commentRepository,
             IRepository<CommentReplyEntity> commentReplyRepository,
-            IRepository<PostEntity> postRepository) : base(logger, settings)
+            IRepository<PostEntity> postRepository,
+            IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
             _blogConfig = blogConfig;
 
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
             _postRepository = postRepository;
+            _moongladeAudit = moongladeAudit;
         }
 
         public int CountComments()
@@ -106,7 +111,11 @@ namespace Moonglade.Core
                 {
                     cmt.IsApproved = !cmt.IsApproved;
                     await _commentRepository.UpdateAsync(cmt);
-                    Logger.LogInformation($"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'");
+
+                    string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
+                    Logger.LogInformation(logMessage);
+                    await _moongladeAudit.AddAuditEntry(
+                        EventType.Content, cmt.IsApproved ? EventId.CommentApproval : EventId.CommentDisapproval, logMessage);
                 }
 
                 return new SuccessResponse();
