@@ -578,6 +578,11 @@ namespace Moonglade.Web.Controllers
                     return View();
                 }
 
+                if (page < 0)
+                {
+                    return BadRequest();
+                }
+
                 var skip = (page - 1) * 20;
 
                 // TODO: Add filtering
