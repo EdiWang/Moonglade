@@ -266,10 +266,11 @@ namespace Moonglade.Web
                 }
 
                 app.UseIpRateLimiting();
-                app.MapWhen(context => context.Request.Path == "/version", builder =>
+                app.MapWhen(context => context.Request.Path == "/ping", builder =>
                 {
                     builder.Run(async context =>
                     {
+                        context.Response.Headers.Add("X-Moonglade-Version", Utils.AppVersion);
                         await context.Response.WriteAsync($"Moonglade Version: {Utils.AppVersion}, .NET Core {Environment.Version}", Encoding.UTF8);
                     });
                 });
