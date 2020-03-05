@@ -8,8 +8,8 @@ namespace Moonglade.Auditing
     {
         Task<Response> AddAuditEntry(EventType eventType, EventId eventId, string message);
 
-        Task<Response<IReadOnlyList<AuditEntry>>> GetAuditEntries(
-            int skip, int take, EventType? eventType = null, EventId? eventId = null, bool orderByTimeDesc = true);
+        Task<Response<(IReadOnlyList<AuditEntry> Entries, int Count)>> GetAuditEntries(
+            int skip, int take, EventType? eventType = null, EventId? eventId = null);
 
         Task<Response> ClearAuditLog();
     }
