@@ -22,6 +22,7 @@ using Moonglade.Setup;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
+using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
@@ -567,7 +568,7 @@ namespace Moonglade.Web.Controllers
         #region Audit Logs
 
         [HttpGet("audit-logs")]
-        public async Task<IActionResult> AuditLogs()
+        public async Task<IActionResult> AuditLogs(int page = 1)
         {
             try
             {
@@ -577,11 +578,19 @@ namespace Moonglade.Web.Controllers
                     return View();
                 }
 
-                // Currently hard code as 64, when I have time I will work 996 and change it to support paging and filtering.
-                var response = await _moongladeAudit.GetAuditEntries(0, 64);
+                if (page < 0)
+                {
+                    return BadRequest();
+                }
+
+                var skip = (page - 1) * 20;
+
+                // TODO: Add filtering
+                var response = await _moongladeAudit.GetAuditEntries(skip, 20);
                 if (response.IsSuccess)
                 {
-                    return View(response.Item);
+                    var auditEntriesAsIPagedList = new StaticPagedList<AuditEntry>(response.Item.Entries, page, 20, response.Item.Count);
+                    return View(auditEntriesAsIPagedList);
                 }
 
                 SetFriendlyErrorMessage();

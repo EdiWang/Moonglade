@@ -73,15 +73,14 @@ namespace Moonglade.Auditing
             }
         }
 
-        public async Task<Response<IReadOnlyList<AuditEntry>>> GetAuditEntries(
-            int skip, int take, EventType? eventType = null, EventId? eventId = null, bool orderByTimeDesc = true)
+        public async Task<Response<(IReadOnlyList<AuditEntry> Entries, int Count)>> GetAuditEntries(
+            int skip, int take, EventType? eventType = null, EventId? eventId = null)
         {
             try
             {
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 await using var conn = new SqlConnection(connStr);
 
-                // TODO: Add orderByTimeDesc parameter
                 var sql = @"SELECT al.EventId, 
                                    al.EventType, 
                                    al.EventTimeUtc, 
@@ -96,21 +95,32 @@ namespace Moonglade.Auditing
                             AND (@EventId IS NULL OR al.EventId = @EventId)
                             ORDER BY al.EventTimeUtc DESC
                             OFFSET @Skip ROWS
-                            FETCH NEXT @Take ROWS ONLY";
+                            FETCH NEXT @Take ROWS ONLY
 
-                var entries = await conn.QueryAsync<AuditEntry>(sql, new
+                            SELECT COUNT(al.Id)
+                            FROM AuditLog al
+                            WHERE 1 = 1
+                            AND(@EventType IS NULL OR al.EventType = @EventType)
+                            AND(@EventId IS NULL OR al.EventId = @EventId);";
+
+                using var multi = await conn.QueryMultipleAsync(sql, new
                 {
                     eventType,
                     eventId,
                     skip,
                     take
                 });
-                return new SuccessResponse<IReadOnlyList<AuditEntry>>(entries.ToList());
+
+                var entries = multi.Read<AuditEntry>().ToList();
+                var count = multi.ReadFirstOrDefault<int>();
+                var returnType = (entries, count);
+
+                return new SuccessResponse<(IReadOnlyList<AuditEntry> Entries, int Count)>(returnType);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse<IReadOnlyList<AuditEntry>>((int)ResponseFailureCode.GeneralException, e.Message, e);
+                return new FailedResponse<(IReadOnlyList<AuditEntry> Entries, int Count)>((int)ResponseFailureCode.GeneralException, e.Message, e);
             }
         }
 
