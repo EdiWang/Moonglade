@@ -21,7 +21,7 @@ else
     }
     else if (Model.Any())
     {
-        <a asp-action="ClearAuditLogs" class="btn btn-danger">Clear Audit Logs</a>
+        <a href="javascript:;" class="btn btn-danger" data-toggle="modal" data-target="#clearauditModal">Clear Audit Logs</a>
 
         <table class="table table-bordered mt-3">
             <thead>
@@ -81,3 +81,23 @@ else
         </div>
     }
 }
+
+<div class="modal fade" id="clearauditModal" tabindex="-1" role="dialog" aria-labelledby="clearauditModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearauditModalLabel">Clear Audit Logs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you ABSOLUTELY sure? ALL audit logs will be erased!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a asp-action="ClearAuditLogs" class="btn btn-danger btn-clear">Clear Now</a>
+            </div>
+        </div>
+    </div>
+</div>
