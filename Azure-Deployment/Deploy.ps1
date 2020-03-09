@@ -23,6 +23,19 @@ $sqlDatabaseName = "moonglade-test-db"
 $cdnProfileName = "moonglade-test-cdn"
 # TODO: CDN Endpoint, DNS Zone, Application Insight, AAD
 
+function Check-Command($cmdname) {
+    return [bool](Get-Command -Name $cmdname -ErrorAction SilentlyContinue)
+}
+
+if(Check-Command -cmdname 'az') {
+    Write-Host "Azure CLI is found on your machine. If something blow up, please check update for Azure CLI." -ForegroundColor Yellow
+    az --version
+}
+else {
+    Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'
+    az login
+}
+
 # Confirmation
 Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continue."
 Read-Host -Prompt "Press [ENTER] to continue"
@@ -85,6 +98,10 @@ $sqlServerExists = $sqlServerCheck.Length -gt 0
 if (!$sqlServerExists) {
     Write-Host "Creating SQL Server"
     az sql server create --name $sqlServerName --resource-group $rsgName --location $regionName --admin-user $sqlServerUsername --admin-password $sqlServerPassword
+
+    Write-Host "Setting Firewall to Allow Azure Connection"
+    # When both starting IP and end IP are set to 0.0.0.0, the firewall is only opened for other Azure resources.
+    az sql server firewall-rule create --resource-group $rsgName --server $sqlServerName --name AllowAllIps --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 }
 
 $sqlDbCheck = az sql db list --resource-group $rsgName --server $sqlServerName --query "[?name=='$sqlDatabaseName']" | ConvertFrom-Json
