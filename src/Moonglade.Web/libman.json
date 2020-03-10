@@ -10,7 +10,7 @@
       ]
     },
     {
-      "library": "tinymce@5.1.6",
+      "library": "tinymce@5.2.0",
       "destination": "wwwroot/lib/tinymce",
       "files": []
     },
@@ -73,7 +73,7 @@
       "destination": "wwwroot/lib/simplemde/"
     },
     {
-      "library": "monaco-editor@0.19.3",
+      "library": "monaco-editor@0.20.0",
       "destination": "wwwroot/lib/monaco-editor/"
     }
   ]
