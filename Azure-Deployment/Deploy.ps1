@@ -21,6 +21,7 @@ $sqlServerUsername = "moonglade"
 $sqlServerPassword = "DotNetM00n8!@d3"
 $sqlDatabaseName = "moonglade-test-db"
 $cdnProfileName = "moonglade-test-cdn"
+[bool] $useLinuxPlanWithDocker = 1
 # TODO: CDN Endpoint, DNS Zone, Application Insight, AAD
 
 function Check-Command($cmdname) {
@@ -69,8 +70,22 @@ $appCheck = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
 $appExists = $appCheck.Length -gt 0
 if (!$appExists) {
     Write-Host "Creating Web App"
-    az webapp create -g $rsgName -p $aspName -n $webAppName
+    if ($useLinuxPlanWithDocker) {
+        Write-Host "Using Linux Plan with Docker image from 'ediwang/moonglade', this deployment will be ready to run."
+        az webapp create -g $rsgName -p $aspName -n $webAppName --deployment-container-image-name ediwang/moonglade
+    }
+    else {
+        Write-Host "Using Windows Plan with deployment method as not set, you need to build and deploy the code yourself."
+        az webapp create -g $rsgName -p $aspName -n $webAppName
+    }
     az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false --http20-enabled true
+}
+
+$createdApp = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
+$createdExists = $createdApp.Length -gt 0
+if ($createdExists) {
+    $webAppUrl = "https://" + $createdApp.defaultHostName
+    Write-Host "Web App URL: $webAppUrl"
 }
 
 # Storage Account
@@ -141,4 +156,9 @@ az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStor
 
 Write-Host "Due to Edi doen't know how to associate CDN Endpoint to Blob Storage in Azure CLI, pleae go to Azure Portal and create a CDN Endpoint yourself..." -ForegroundColor Green
 
-Read-Host -Prompt "Setup is done, you can now deploy the blog code, press [ENTER] to exit."
+if ($useLinuxPlanWithDocker) {
+    Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
+}
+else {
+    Read-Host -Prompt "Setup is done, you can now deploy the code to '$webAppUrl', press [ENTER] to exit."
+}
