@@ -53,9 +53,15 @@ Set environment variable: ```ConnectionStrings__MoongladeDatabase``` to your con
 
 ### Build Source
 
-1. Create an "**appsettings.Development.json**" under "**src\Moonglade.Web**", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
+#### Quick Start
 
-2. Build and run **Moonglade.sln**
+Build and run **Moonglade.sln**
+- Default Admin Username: admin
+- Default Admin Password: admin123
+
+#### For Development:
+
+Create an "**appsettings.Development.json**" under "**src\Moonglade.Web**", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
 
 ## Configuration
 
