@@ -24,10 +24,10 @@ COPY ["Moonglade.Tests/Moonglade.Tests.csproj", "Moonglade.Tests/"]
 RUN dotnet restore "Moonglade.Web/Moonglade.Web.csproj"
 COPY . .
 WORKDIR "/src/Moonglade.Web"
-RUN dotnet build "Moonglade.Web.csproj -p:Version=10.2.0-docker" -c Release -o /app/build
+RUN dotnet build "Moonglade.Web.csproj" -p:Version=10.2.0-docker -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Moonglade.Web.csproj -p:Version=10.2.0-docker" -c Release -o /app/publish
+RUN dotnet publish "Moonglade.Web.csproj" -p:Version=10.2.0-docker -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
