@@ -60,7 +60,12 @@ $planCheck = az appservice plan list --query "[?name=='$aspName']" | ConvertFrom
 $planExists = $planCheck.Length -gt 0
 if (!$planExists) {
     Write-Host "Creating App Service Plan"
-    az appservice plan create -n $aspName -g $rsgName --sku S1 --location $regionName
+    if ($useLinuxPlanWithDocker){
+        az appservice plan create -n $aspName -g $rsgName --is-linux --sku S1 --location $regionName
+    }
+    else {
+        az appservice plan create -n $aspName -g $rsgName --sku S1 --location $regionName
+    }
 }
 
 # Web App
@@ -151,8 +156,15 @@ $sqlConnStr = $sqlConnStrTemplate.Replace("<username>", $sqlServerUsername).Repl
 az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --settings MoongladeDatabase=$sqlConnStr
 
 Write-Host "Adding Blob Storage Connection String"
-az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ConnectionString=$storageConn
-az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ContainerName=$storageContainerName
+if ($useLinuxPlanWithDocker) {
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$storageConn
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName
+}
+else {
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ConnectionString=$storageConn
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ContainerName=$storageContainerName
+}
+
 
 Write-Host "Due to Edi doen't know how to associate CDN Endpoint to Blob Storage in Azure CLI, pleae go to Azure Portal and create a CDN Endpoint yourself..." -ForegroundColor Green
 
