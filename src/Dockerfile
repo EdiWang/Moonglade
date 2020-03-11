@@ -9,7 +9,18 @@ COPY ["Moonglade.Web/Moonglade.Web.csproj", "Moonglade.Web/"]
 COPY ["Moonglade.Web.Authentication/Moonglade.Web.Authentication.csproj", "Moonglade.Web.Authentication/"]
 COPY ["Moonglade.Web.FaviconGenerator/Moonglade.Web.FaviconGenerator.csproj", "Moonglade.Web.FaviconGenerator/"]
 COPY ["Moonglade.Web.Middleware/Moonglade.Web.Middleware.csproj", "Moonglade.Web.Middleware/"]
-# TODO: Copy rest of the projects
+COPY ["Moonglade.HtmlCodec/Moonglade.HtmlCodec.csproj", "Moonglade.HtmlCodec/"]
+COPY ["Moonglade.Model/Moonglade.Model.csproj", "Moonglade.Model/"]
+COPY ["Moonglade.Auditing/Moonglade.Auditing.csproj", "Moonglade.Auditing/"]
+COPY ["Moonglade.Configuration/Moonglade.Configuration.csproj", "Moonglade.Configuration/"]
+COPY ["Moonglade.Core/Moonglade.Core.csproj", "Moonglade.Core/"]
+COPY ["Moonglade.Data/Moonglade.Data.csproj", "Moonglade.Data/"]
+COPY ["Moonglade.Setup/Moonglade.Setup.csproj", "Moonglade.Setup/"]
+COPY ["Moonglade.ImageStorage/Moonglade.ImageStorage.csproj", "Moonglade.ImageStorage/"]
+COPY ["Moonglade.ImageStorage.AzureBlob/Moonglade.ImageStorage.AzureBlob.csproj", "Moonglade.ImageStorage.AzureBlob/"]
+COPY ["Moonglade.ImageStorage.FileSystem/Moonglade.ImageStorage.FileSystem.csproj", "Moonglade.ImageStorage.FileSystem/"]
+COPY ["Moonglade.Tests/Moonglade.Tests.csproj", "Moonglade.Tests/"]
+
 RUN dotnet restore "Moonglade.Web/Moonglade.Web.csproj"
 COPY . .
 WORKDIR "/src/Moonglade.Web"
