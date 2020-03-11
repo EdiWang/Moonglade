@@ -34,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Solution Items", ".Solutio
 		..\.gitattributes = ..\.gitattributes
 		..\.gitignore = ..\.gitignore
 		..\Azure-Deployment\Deploy.ps1 = ..\Azure-Deployment\Deploy.ps1
+		Dockerfile = Dockerfile
 		..\LICENSE = ..\LICENSE
 		MoongladeCommon.props = MoongladeCommon.props
 		..\README.md = ..\README.md
@@ -53,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.HtmlCodec", "Moon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.FaviconGenerator", "Moonglade.Web.FaviconGenerator\Moonglade.Web.FaviconGenerator.csproj", "{569AEA3F-EA60-49E7-8829-0BB59C811EBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Auditing", "Moonglade.Auditing\Moonglade.Auditing.csproj", "{87BA3928-FF17-4881-BFEF-63ED212BB8E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing", "Moonglade.Auditing\Moonglade.Auditing.csproj", "{87BA3928-FF17-4881-BFEF-63ED212BB8E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
