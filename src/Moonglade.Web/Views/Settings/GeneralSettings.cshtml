@@ -146,24 +146,30 @@
             <div class="card mb-3">
                 <div class="card-header">Website</div>
                 <div class="card-body">
-                    <div class="form-group">
-                        <label asp-for="SiteTitle" class="control-label"></label>
-                        <input asp-for="SiteTitle" class="form-control" />
-                        <span asp-validation-for="SiteTitle" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="LogoText" class="control-label"></label>
-                        <input asp-for="LogoText" class="form-control" />
-                        <span asp-validation-for="LogoText" class="text-danger"></span>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="SiteTitle" class="control-label"></label>
+                                <input asp-for="SiteTitle" class="form-control"/>
+                                <span asp-validation-for="SiteTitle" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="LogoText" class="control-label"></label>
+                                <input asp-for="LogoText" class="form-control"/>
+                                <span asp-validation-for="LogoText" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label asp-for="MetaKeyword" class="control-label"></label>
-                        <input asp-for="MetaKeyword" class="form-control" />
+                        <input asp-for="MetaKeyword" class="form-control"/>
                         <span asp-validation-for="MetaKeyword" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="MetaDescription" class="control-label"></label>
-                        <input asp-for="MetaDescription" class="form-control" />
+                        <input asp-for="MetaDescription" class="form-control"/>
                         <span asp-validation-for="MetaDescription" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -184,7 +190,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Copyright" class="control-label"></label>
-                        <input asp-for="Copyright" class="form-control" />
+                        <input asp-for="Copyright" class="form-control"/>
                         <p class="text-muted">Use [c] for copyright mark: &copy;, [year] for current year.</p>
                         <span asp-validation-for="Copyright" class="text-danger"></span>
                     </div>

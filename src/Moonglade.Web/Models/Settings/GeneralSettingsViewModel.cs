@@ -29,7 +29,7 @@ namespace Moonglade.Web.Models.Settings
         public string Copyright { get; set; }
 
         [Required]
-        [Display(Name = "Website Title")]
+        [Display(Name = "Blog Title")]
         [MaxLength(16)]
         public string SiteTitle { get; set; }
 
@@ -49,12 +49,12 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(32)]
         public string BloggerShortDescription { get; set; }
 
-        [Display(Name = "Customized Side Bar Pitch (HTML)")]
+        [Display(Name = "Side Bar Pitch (HTML)")]
         [DataType(DataType.MultilineText)]
         [MaxLength(2048)]
         public string SideBarCustomizedHtmlPitch { get; set; }
 
-        [Display(Name = "Customized Footer Pitch (HTML)")]
+        [Display(Name = "Footer Pitch (HTML)")]
         [DataType(DataType.MultilineText)]
         [MaxLength(4096)]
         public string FooterCustomizedHtmlPitch { get; set; }
