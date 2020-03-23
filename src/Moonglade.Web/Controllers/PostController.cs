@@ -103,10 +103,15 @@ namespace Moonglade.Web.Controllers
             {
                 case "meta":
                     var rspMeta = await _postService.GetPostMetaAsync(year, month, day, slug);
-                    return !rspMeta.IsSuccess ? ServerError(rspMeta.Message) : Json(rspMeta.Item);
+                    return !rspMeta.IsSuccess 
+                        ? ServerError(rspMeta.Message) 
+                        : Json(rspMeta.Item);
+
                 case "content":
                     var rspContent = await _postService.GetPostRawContentAsync(year, month, day, slug);
-                    return !rspContent.IsSuccess ? ServerError(rspContent.Message) : Content(rspContent.Item, "text/plain");
+                    return !rspContent.IsSuccess 
+                        ? ServerError(rspContent.Message) 
+                        : Content(rspContent.Item, "text/plain");
             }
 
             return BadRequest();

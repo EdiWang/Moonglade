@@ -230,13 +230,11 @@ namespace Moonglade.Core
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
 
                     Categories = post.PostCategory
-                                     .Select(pc => pc.Category)
-                                     .Select(p => p.DisplayName)
+                                     .Select(pc => pc.Category.DisplayName)
                                      .ToArray(),
 
                     Tags = post.PostTag
-                               .Select(pt => pt.Tag)
-                               .Select(p => p.NormalizedName)
+                               .Select(pt => pt.Tag.DisplayName)
                                .ToArray()
                 });
 
