@@ -31,8 +31,8 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings,
             PostService postService,
             CategoryService categoryService,
-            IBlogConfig blogConfig, 
-            IDateTimeResolver dateTimeResolver, 
+            IBlogConfig blogConfig,
+            IDateTimeResolver dateTimeResolver,
             IMoongladeAudit moongladeAudit)
             : base(logger, settings)
         {
@@ -88,6 +88,28 @@ namespace Moonglade.Web.Controllers
 
             ViewBag.TitlePrefix = $"{post.Title}";
             return View(viewModel);
+        }
+
+        [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}/{raw:regex(^(meta|content)$)}")]
+        public async Task<IActionResult> Raw(int year, int month, int day, string slug, string raw)
+        {
+            if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug))
+            {
+                Logger.LogWarning($"Invalid parameter year: {year}, slug: {slug}");
+                return NotFound();
+            }
+
+            switch (raw.ToLower())
+            {
+                case "meta":
+                    var rspMeta = await _postService.GetPostMetaAsync(year, month, day, slug);
+                    return !rspMeta.IsSuccess ? ServerError(rspMeta.Message) : Json(rspMeta.Item);
+                case "content":
+                    var rspContent = await _postService.GetPostRawContentAsync(year, month, day, slug);
+                    return !rspContent.IsSuccess ? ServerError(rspContent.Message) : Content(rspContent.Item, "text/plain");
+            }
+
+            return BadRequest();
         }
 
         [Authorize]

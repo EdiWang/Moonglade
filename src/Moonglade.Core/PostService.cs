@@ -46,8 +46,8 @@ namespace Moonglade.Core
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
             IHtmlCodec htmlCodec,
-            IBlogConfig blogConfig, 
-            IDateTimeResolver dateTimeResolver, 
+            IBlogConfig blogConfig,
+            IDateTimeResolver dateTimeResolver,
             IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
             _postRepository = postRepository;
@@ -200,6 +200,47 @@ namespace Moonglade.Core
                 }
 
                 return new SuccessResponse<PostSlugModel>(postSlugModel);
+            });
+        }
+
+        public Task<Response<string>> GetPostRawContentAsync(int year, int month, int day, string slug)
+        {
+            return TryExecuteAsync<string>(async () =>
+            {
+                var date = new DateTime(year, month, day);
+                var spec = new PostSpec(date, slug);
+
+                var model = await _postRepository.SelectFirstOrDefaultAsync(spec, 
+                    post => _htmlCodec.HtmlDecode(post.PostContent));
+                return new SuccessResponse<string>(model);
+            });
+        }
+
+        public Task<Response<PostSlugMetaModel>> GetPostMetaAsync(int year, int month, int day, string slug)
+        {
+            return TryExecuteAsync<PostSlugMetaModel>(async () =>
+            {
+                var date = new DateTime(year, month, day);
+                var spec = new PostSpec(date, slug);
+
+                var model = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugMetaModel
+                {
+                    Title = post.Title,
+                    PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
+                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+
+                    Categories = post.PostCategory
+                                     .Select(pc => pc.Category)
+                                     .Select(p => p.DisplayName)
+                                     .ToArray(),
+
+                    Tags = post.PostTag
+                               .Select(pt => pt.Tag)
+                               .Select(p => p.NormalizedName)
+                               .ToArray()
+                });
+
+                return new SuccessResponse<PostSlugMetaModel>(model);
             });
         }
 
@@ -368,8 +409,8 @@ namespace Moonglade.Core
                                     request.EditorContent :
                                     _htmlCodec.HtmlEncode(request.EditorContent),
                     ContentAbstract = Utils.GetPostAbstract(
-                                            request.EditorContent, 
-                                            AppSettings.PostAbstractWords, 
+                                            request.EditorContent,
+                                            AppSettings.PostAbstractWords,
                                             AppSettings.Editor == EditorChoice.Markdown),
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
@@ -459,10 +500,10 @@ namespace Moonglade.Core
                 }
 
                 await _postRepository.AddAsync(postModel);
-                
+
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
                 await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostCreated, $"Post created, id: {postModel.Id}");
-                
+
                 return new SuccessResponse<PostEntity>(postModel);
             });
         }
@@ -478,12 +519,12 @@ namespace Moonglade.Core
                 }
 
                 postModel.CommentEnabled = request.EnableComment;
-                postModel.PostContent = AppSettings.Editor == EditorChoice.Markdown ? 
-                                        request.EditorContent : 
+                postModel.PostContent = AppSettings.Editor == EditorChoice.Markdown ?
+                                        request.EditorContent :
                                         _htmlCodec.HtmlEncode(request.EditorContent);
                 postModel.ContentAbstract = Utils.GetPostAbstract(
-                                            request.EditorContent, 
-                                            AppSettings.PostAbstractWords, 
+                                            request.EditorContent,
+                                            AppSettings.PostAbstractWords,
                                             AppSettings.Editor == EditorChoice.Markdown);
 
                 // Address #221: Do not allow published posts back to draft status
@@ -569,8 +610,8 @@ namespace Moonglade.Core
                 await _postRepository.UpdateAsync(postModel);
 
                 await _moongladeAudit.AddAuditEntry(
-                    EventType.Content, 
-                    isNewPublish ? EventId.PostPublished : EventId.PostUpdated, 
+                    EventType.Content,
+                    isNewPublish ? EventId.PostPublished : EventId.PostUpdated,
                     $"Post updated, id: {postModel.Id}");
 
                 return new SuccessResponse<PostEntity>(postModel);
