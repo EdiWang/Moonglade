@@ -244,7 +244,8 @@ namespace Moonglade.Web.Controllers
                 RssDescription = settings.RssDescription,
                 RssGeneratorName = settings.RssGeneratorName,
                 RssItemCount = settings.RssItemCount,
-                RssTitle = settings.RssTitle
+                RssTitle = settings.RssTitle,
+                UseFullContent = settings.UseFullContent
             };
 
             return View(vm);
@@ -262,6 +263,7 @@ namespace Moonglade.Web.Controllers
                 settings.RssGeneratorName = model.RssGeneratorName;
                 settings.RssItemCount = model.RssItemCount;
                 settings.RssTitle = model.RssTitle;
+                settings.UseFullContent = model.UseFullContent;
 
                 var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();

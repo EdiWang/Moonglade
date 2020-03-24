@@ -46,6 +46,16 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header">Advanced</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="UseFullContent" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.UseFullContent ? "checked=\"checked\"" : "") id="UseFullContent" name="UseFullContent" type="checkbox" value="true">
+                            <label for="UseFullContent" class="label-success"></label>
+                            <input name="UseFullContent" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
                 <div class="card-body">
                     <div class="form-group">
                         <label asp-for="RssItemCount" class="control-label"></label>

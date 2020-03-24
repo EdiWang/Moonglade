@@ -32,6 +32,9 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(32)]
         public string AuthorName { get; set; }
 
+        [Display(Name = "Use full blog post content instead of abstract")]
+        public bool UseFullContent { get; set; }
+
         public FeedSettingsViewModel()
         {
             RssItemCount = 20;
