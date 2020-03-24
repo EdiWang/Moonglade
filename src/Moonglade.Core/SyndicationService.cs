@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Edi.SyndicationFeedGenerator;
 using Microsoft.AspNetCore.Http;
@@ -124,9 +123,7 @@ namespace Moonglade.Core
                 Id = p.Id.ToString(),
                 Title = p.Title,
                 PubDateUtc = p.PostPublish.PubDateUtc.Value,
-                Description = _blogConfig.FeedSettings.UseFullContent ?
-                    p.PostContent :
-                    p.ContentAbstract,
+                Description = _blogConfig.FeedSettings.UseFullContent ? p.PostContent : p.ContentAbstract,
                 Link = $"{_baseUrl}/post/{p.PostPublish.PubDateUtc.Value.Year}/{p.PostPublish.PubDateUtc.Value.Month}/{p.PostPublish.PubDateUtc.Value.Day}/{p.Slug}",
                 Author = _blogConfig.FeedSettings.AuthorName,
                 AuthorEmail = _blogConfig.EmailSettings.AdminEmail,
@@ -135,9 +132,9 @@ namespace Moonglade.Core
 
             // Workaround EF limitation
             // Man, this is super ugly
-            if (list.Any())
+            if (_blogConfig.FeedSettings.UseFullContent && list.Any())
             {
-                foreach (SimpleFeedItem simpleFeedItem in list)
+                foreach (var simpleFeedItem in list)
                 {
                     simpleFeedItem.Description = GetPostContent(simpleFeedItem.Description);
                 }
@@ -158,10 +155,9 @@ namespace Moonglade.Core
                     var md2Html = Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Html, false);
                     return md2Html;
                 case EditorChoice.None:
+                default:
                     return rawContent;
             }
-
-            return rawContent;
         }
     }
 }
