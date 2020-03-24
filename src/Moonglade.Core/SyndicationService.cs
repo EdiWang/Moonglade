@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Edi.SyndicationFeedGenerator;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
+using Moonglade.HtmlCodec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -25,17 +27,21 @@ namespace Moonglade.Core
 
         private readonly IRepository<PostEntity> _postRepository;
 
+        private readonly IHtmlCodec _htmlCodec;
+
         public SyndicationService(
             ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IHttpContextAccessor httpContextAccessor,
             IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostEntity> postRepository) : base(logger, settings)
+            IRepository<PostEntity> postRepository,
+            IHtmlCodec htmlCodec) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _categoryRepository = categoryRepository;
             _postRepository = postRepository;
+            _htmlCodec = htmlCodec;
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
@@ -101,8 +107,9 @@ namespace Moonglade.Core
             Logger.LogInformation("Finished writing feed for posts.");
         }
 
-        private Task<IReadOnlyList<SimpleFeedItem>> GetPostsAsFeedItemsAsync(Guid? categoryId = null)
+        private async Task<IReadOnlyList<SimpleFeedItem>> GetPostsAsFeedItemsAsync(Guid? categoryId = null)
         {
+
             Logger.LogInformation($"{nameof(GetPostsAsFeedItemsAsync)} - {nameof(categoryId)}: {categoryId}");
 
             int? top = null;
@@ -112,17 +119,49 @@ namespace Moonglade.Core
             }
 
             var postSpec = new PostSpec(categoryId, top);
-            return _postRepository.SelectAsync(postSpec, p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
+            var list = await _postRepository.SelectAsync(postSpec, p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
             {
                 Id = p.Id.ToString(),
                 Title = p.Title,
                 PubDateUtc = p.PostPublish.PubDateUtc.Value,
-                Description = p.ContentAbstract,
+                Description = _blogConfig.FeedSettings.UseFullContent ?
+                    p.PostContent :
+                    p.ContentAbstract,
                 Link = $"{_baseUrl}/post/{p.PostPublish.PubDateUtc.Value.Year}/{p.PostPublish.PubDateUtc.Value.Month}/{p.PostPublish.PubDateUtc.Value.Day}/{p.Slug}",
                 Author = _blogConfig.FeedSettings.AuthorName,
                 AuthorEmail = _blogConfig.EmailSettings.AdminEmail,
                 Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToList()
             } : null);
+
+            // Workaround EF limitation
+            // Man, this is super ugly
+            if (list.Any())
+            {
+                foreach (SimpleFeedItem simpleFeedItem in list)
+                {
+                    simpleFeedItem.Description = GetPostContent(simpleFeedItem.Description);
+                }
+            }
+
+            return list;
+        }
+
+        private string GetPostContent(string rawContent)
+        {
+            var editor = AppSettings.Editor;
+            switch (editor)
+            {
+                case EditorChoice.HTML:
+                    var html = _htmlCodec.HtmlDecode(rawContent);
+                    return html;
+                case EditorChoice.Markdown:
+                    var md2Html = Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Html, false);
+                    return md2Html;
+                case EditorChoice.None:
+                    return rawContent;
+            }
+
+            return rawContent;
         }
     }
 }
