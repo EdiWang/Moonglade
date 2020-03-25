@@ -49,6 +49,11 @@
             });
         </script>
     }
+
+    @if (Settings.Value.AutoDarkLightTheme)
+    {
+        <script src="~/js/app/autodarklighttheme.js"></script>
+    }
     <script>
         $(function () {
             var pid = $("article").data("postid");

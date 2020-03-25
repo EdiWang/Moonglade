@@ -19,8 +19,7 @@
       "wwwroot/js/app/moonglade-base.js",
       "wwwroot/js/app/postslug.js",
       "wwwroot/js/app/csrf.js",
-      "wwwroot/js/app/comments.js",
-      "wwwroot/js/app/darksupport.js"
+      "wwwroot/js/app/comments.js"
     ]
   },
   {
