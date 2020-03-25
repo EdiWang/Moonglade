@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Edi.Blog.Pingback" Version="10.4.3" />
+    <PackageReference Include="Edi.Blog.Pingback" Version="10.4.4" />
     <PackageReference Include="Edi.Captcha" Version="2.2.0" />
     <PackageReference Include="Edi.ImageWatermark" Version="1.2.1" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.4" />
