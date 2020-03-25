@@ -10,5 +10,6 @@ namespace Moonglade.Configuration
         public string RssGeneratorName { get; set; }
         public string RssTitle { get; set; }
         public string AuthorName { get; set; }
+        public bool UseFullContent { get; set; }
     }
 }

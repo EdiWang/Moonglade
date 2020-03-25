@@ -176,6 +176,7 @@ ImageCacheSlidingExpirationMinutes | Time for cached images to expire
 EnforceHttps | Force website use HTTPS
 AllowScriptsInCustomPage | Allow JavaScript in Page content or not
 EnableAudit | Enable Audit Log or not
+EnablePostRawEndpoint | Enable ```/meta``` and ```/content``` endpoint for post URL
 
 ## FAQ
 

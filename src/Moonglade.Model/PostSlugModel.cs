@@ -20,4 +20,13 @@ namespace Moonglade.Model
         public IList<Category> Categories { get; set; }
         public IList<Tag> Tags { get; set; }
     }
+
+    public class PostSlugMetaModel
+    {
+        public string Title { get; set; }
+        public DateTime PubDateUtc { get; set; }
+        public DateTime? LastModifyOnUtc { get; set; }
+        public string[] Categories { get; set; }
+        public string[] Tags { get; set; }
+    }
 }
