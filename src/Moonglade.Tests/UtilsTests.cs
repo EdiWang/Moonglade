@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Moonglade.Core;
 using NUnit.Framework;
@@ -25,6 +26,33 @@ namespace Moonglade.Tests
         public string TestGetMonthNameByNumber(int number)
         {
             return Utils.GetMonthNameByNumber(number);
+        }
+
+        [TestCase(null, ExpectedResult = null)]
+        [TestCase("", ExpectedResult = "")]
+        [TestCase(" ", ExpectedResult = " ")]
+        [TestCase("996", ExpectedResult = "996")]
+        [TestCase("[c] 2020 edi.wang", ExpectedResult = "&copy; 2020 edi.wang")]
+        public string TestFormatCopyright2Html(string copyrightCode)
+        {
+            return Utils.FormatCopyright2Html(copyrightCode);
+        }
+
+        [Test]
+        public void TestFormatCopyright2HtmlHappyPathWithYear()
+        {
+            string org = "[c] 2009 - [year] edi.wang";
+            string exp = $"&copy; 2009 - {DateTime.UtcNow.Year} edi.wang";
+            var result =  Utils.FormatCopyright2Html(org);
+
+            Assert.AreEqual(result, exp);
+        }
+
+        [Test]
+        public void TestGetThemes()
+        {
+            var themes = Utils.GetThemes();
+            Assert.IsTrue(themes.All(t => t.Value.EndsWith(".css")));
         }
 
         [Test]
