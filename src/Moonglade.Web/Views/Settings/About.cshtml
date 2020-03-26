@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Diagnostics
+@{
     Layout = "_LayoutAdmin";
 }
 
@@ -39,6 +40,10 @@
             <tr>
                 <td>.NET Core Version</td>
                 <td>@Environment.Version</td>
+            </tr>
+            <tr>
+                <td>Worker Process</td>
+                <td>@Process.GetCurrentProcess().ProcessName</td>
             </tr>
         </tbody>
     </table>
