@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.HtmlCodec;
+using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using EventId = Moonglade.Auditing.EventId;

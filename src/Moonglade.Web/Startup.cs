@@ -28,7 +28,6 @@ using Moonglade.Core;
 using Moonglade.Core.Notification;
 using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
-using Moonglade.HtmlCodec;
 using Moonglade.HtmlEncoding;
 using Moonglade.ImageStorage;
 using Moonglade.Model;

@@ -1,6 +1,5 @@
 ﻿using System.Text.Encodings.Web;
 using System.Web;
-using Moonglade.HtmlCodec;
 
 namespace Moonglade.HtmlEncoding
 {

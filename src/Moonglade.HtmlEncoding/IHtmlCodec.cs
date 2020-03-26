@@ -1,4 +1,4 @@
-﻿namespace Moonglade.HtmlCodec
+﻿namespace Moonglade.HtmlEncoding
 {
     public interface IHtmlCodec
     {
