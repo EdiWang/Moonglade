@@ -50,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Tests", "Moonglad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Setup", "Moonglade.Setup\Moonglade.Setup.csproj", "{DFA86009-057C-4435-B88D-1A4AB06B26EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.HtmlCodec", "Moonglade.HtmlCodec\Moonglade.HtmlCodec.csproj", "{0EFDE319-3BEF-4A00-873A-B9FB1DB9F5AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.HtmlEncoding", "Moonglade.HtmlCodec\Moonglade.HtmlEncoding.csproj", "{0EFDE319-3BEF-4A00-873A-B9FB1DB9F5AA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.FaviconGenerator", "Moonglade.Web.FaviconGenerator\Moonglade.Web.FaviconGenerator.csproj", "{569AEA3F-EA60-49E7-8829-0BB59C811EBF}"
 EndProject
