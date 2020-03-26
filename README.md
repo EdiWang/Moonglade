@@ -2,7 +2,7 @@
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
-The blog system for https://edi.wang. Written in C# on [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
+The blog system for https://edi.wang. Written in [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v2.png)
 
@@ -20,34 +20,24 @@ Tools | Alternative
 [Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
 [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) | [SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) / LocalDB (Dev Only)
 
-> If you would like to deploy Moonglade to Azure and use Azure services as much as possible just like my blog, you can use the automation deployment script ```/Azure-Deployment/Deploy.ps1``` to prepare a full Azure environment before deploying code. 
-
 ### Setup Database
 
-#### 1. Create Database 
+Development | Production 
+--- | ---
+Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. **moonglade-dev** | [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. **moonglade-production**
 
-##### Development
+##### Update configuration file
 
-Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. **moonglade-dev**
+Update the ```MoongladeDatabase``` as your database connection string in **appsettings.[env].json**
 
-##### Production
-
-[Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. **moonglade-production**
-
-#### 2. Set Connection String
-
-##### Via configuration file
-
-Update the connection string "**MoongladeDatabase**" in **appsettings.[env].json** according to your database configuration.
-
-Example:
+e.g.
 ```json
 "ConnectionStrings": {
   "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;"
 }
 ```
 
-##### Via environment variable (Recommend for production)
+##### Update environment variable (Recommend for production)
 
 Set environment variable: ```ConnectionStrings__MoongladeDatabase``` to your connection string. If you are deploying to Azure App Service, you can set the connection string in the Configuration blade.
 
@@ -59,7 +49,7 @@ Build and run **Moonglade.sln**
 - Default Admin Username: admin
 - Default Admin Password: admin123
 
-#### For Development:
+#### Optional (For Development)
 
 Create an "**appsettings.Development.json**" under "**src\Moonglade.Web**", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
 
@@ -69,15 +59,13 @@ Create an "**appsettings.Development.json**" under "**src\Moonglade.Web**", this
 
 ### Authentication
 
-Configure how to sign in to admin portal.
-
 #### Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))
 
 Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"**
   - For local debugging, add URL to https://localhost:1055/signin-oidc
 - Check `ID Tokens` checkbox under 'Advanced settings'.
-- Copy "**appId**" to set as **AzureAd:ClientId** in **appsettings.[env].json** file
+- Copy ```appId``` to set as ```AzureAd:ClientId``` in **appsettings.[env].json** file
 
 ```json
 "Authentication": {
@@ -92,7 +80,7 @@ Register an App in **Azure Active Directory**
 
 #### Alternative: Local Account
 
-Set **Authentication:Provider** to **"Local"** and assign a pair of username and password. 
+Set ```Authentication:Provider``` to ```"Local"``` and assign a pair of username and password. 
 
 *Currently password is not encrypted, use it at your own risk.*
 
@@ -107,7 +95,7 @@ Set **Authentication:Provider** to **"Local"** and assign a pair of username and
 ```
 
 ### Image Storage
-**AppSettings:ImageStorage** controls how blog post images are stored. There are 2 built-in options:
+```AppSettings:ImageStorage``` controls how blog post images are stored.
 
 #### [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) (Preferred)
 
@@ -129,13 +117,11 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
   "Path": "${basedir}\\UploadedImages"
 }
 ```
-The **Path** can be relative or absolute. **"$\{basedir\}"** represents the website's current directory. Storing images files under website directory is NOT recommended. 
+The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the website's current directory. Storing images files under website directory is **NOT** recommended. 
 
 #### CDN
 
-If **GetImageByCDNRedirect** is set to **true**, the blog will get images from client browser using a 302 redirect, not by fetching images in backend and put into memory cache. This is especially useful when you have a CDN for your image resources, like what I did on Azure. 
-
-> Note: Azure CDN is extremely slow under China Telecom and China Mobile network, if you are operating in China, please use a local CDN provider.
+If ```GetImageByCDNRedirect``` is set to ```true```, the blog will get images from client browser using a 302 redirect. This is especially useful when you have a CDN for your image resources, like what I did on Azure. 
 
 ```json
 "CDNSettings": {
@@ -146,15 +132,9 @@ If **GetImageByCDNRedirect** is set to **true**, the blog will get images from c
 
 ### Email Notification
 
-If you need email notification for new comments, new replies and pingbacks, you have to setup the Moonglade.Notification API first. 
+If you need email notification for new comments, new replies and pingbacks, you have to setup the Moonglade.Notification API first. See https://github.com/EdiWang/Moonglade.Notification for instructions.
 
-#### Setup Moonglade.Notification API
-
-See https://github.com/EdiWang/Moonglade.Notification for instructions
-
-#### Configure Moonglade
-
-Set values in AppSettings:
+Update AppSettings
 
 ```json
 "Notification": {
@@ -164,19 +144,20 @@ Set values in AppSettings:
 }
 ```
 
-### Others
+### Other Setttings
 
-Key | Description
---- | ---
-Editor | HTML / Markdown
-CaptchaSettings:ImageWidth | Pixel Width of Captcha Image
-CaptchaSettings.ImageHeight | Pixel Height of Captcha Image
-PostAbstractWords | How may words to show in post list abstract
-ImageCacheSlidingExpirationMinutes | Time for cached images to expire
-EnforceHttps | Force website use HTTPS
-AllowScriptsInCustomPage | Allow JavaScript in Page content or not
-EnableAudit | Enable Audit Log or not
-EnablePostRawEndpoint | Enable ```/meta``` and ```/content``` endpoint for post URL
+Key | Data Type | Description
+--- | --- | ---
+Editor | ```string``` | HTML / Markdown
+CaptchaSettings:ImageWidth | ```int``` | Pixel Width of Captcha Image
+CaptchaSettings:ImageHeight | ```int``` | Pixel Height of Captcha Image
+PostAbstractWords | ```int``` | How may words to show in post list abstract
+ImageCacheSlidingExpirationMinutes | ```int``` | Time for cached images to expire
+EnforceHttps | ```bool``` | Force website use HTTPS
+AllowScriptsInCustomPage | ```bool``` | Allow JavaScript in Page content or not
+EnableAudit | ```bool``` | Enable Audit Log or not
+EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
+AutoDarkLightTheme | ```bool``` | Automatically switch light or dark theme on post reading screen
 
 ## FAQ
 
