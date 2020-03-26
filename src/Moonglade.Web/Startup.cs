@@ -114,17 +114,14 @@ namespace Moonglade.Web
                 }
             }
 
-            if (bool.Parse(_appSettingsSection["Notification:Enabled"]))
-            {
-                services.AddHttpClient<IMoongladeNotificationClient, NotificationClient>()
-                        .AddTransientHttpErrorPolicy(builder =>
-                                builder.WaitAndRetryAsync(3, retryCount =>
-                                TimeSpan.FromSeconds(Math.Pow(2, retryCount)),
-                                    (result, span, retryCount, context) =>
-                                    {
-                                        _logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
-                                    }));
-            }
+            services.AddHttpClient<IMoongladeNotificationClient, NotificationClient>()
+                    .AddTransientHttpErrorPolicy(builder =>
+                            builder.WaitAndRetryAsync(3, retryCount =>
+                            TimeSpan.FromSeconds(Math.Pow(2, retryCount)),
+                                (result, span, retryCount, context) =>
+                                {
+                                    _logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
+                                }));
 
             services.AddDbContext<MoongladeDbContext>(options =>
                     options.UseLazyLoadingProxies()

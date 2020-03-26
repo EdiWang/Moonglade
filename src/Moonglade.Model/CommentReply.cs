@@ -6,6 +6,7 @@ namespace Moonglade.Model
     {
         public DateTime ReplyTimeUtc { get; set; }
         public string ReplyContent { get; set; }
+        public string ReplyContentHtml { get; set; }
     }
 
     public class CommentReplyDetail : CommentReplyDigest

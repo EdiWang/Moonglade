@@ -93,6 +93,7 @@ namespace Moonglade.Core.Notification
             {
                 _logger.LogWarning($"Skipped {nameof(SendNewCommentNotificationAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
+                return;
             }
 
             try
@@ -121,6 +122,7 @@ namespace Moonglade.Core.Notification
             {
                 _logger.LogWarning($"Skipped {nameof(SendCommentReplyNotificationAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
+                return;
             }
 
             try
@@ -129,7 +131,7 @@ namespace Moonglade.Core.Notification
                     model.Email,
                     model.CommentContent,
                     model.Title,
-                    model.ReplyContent,
+                    model.ReplyContentHtml,
                     postLink);
 
                 await SendNotificationRequest(
@@ -147,6 +149,7 @@ namespace Moonglade.Core.Notification
             {
                 _logger.LogWarning($"Skipped {nameof(SendPingNotificationAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
+                return;
             }
 
             try

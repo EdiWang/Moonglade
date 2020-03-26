@@ -33,7 +33,7 @@
                     $(`#panel-comment-${data.commentId} .reply-ui`).slideUp();
                     $(`#panel-comment-${data.commentId} .reply-list`).prepend(
                         `<hr /><div class="reply-container"><div><strong>Reply</strong><span class="pull-right text-muted">${data.replyTimeUtc
-                        }</span></div><p>${data.replyContent}</p></div>`);
+                        }</span></div><p>${data.replyContentHtml}</p></div>`);
                 });
             });
 
@@ -126,7 +126,7 @@ else
                                 <strong>You Replied</strong>
                             </div>
                             <div class="mb-2">
-                                @reply.ReplyContent
+                                @Html.Raw(Utils.ConvertMarkdownContent(reply.ReplyContent, Utils.MarkdownConvertType.Html))
                             </div>
                             <div class="text-muted">@DateTimeResolver.GetDateTimeWithUserTZone(reply.ReplyTimeUtc)</div>
                         </div>

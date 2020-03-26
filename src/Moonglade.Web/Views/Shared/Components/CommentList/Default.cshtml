@@ -59,7 +59,7 @@
                                         <span class="float-right text-muted">Replied at @DateTimeResolver.GetDateTimeWithUserTZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
                                     <p>
-                                        @reply.ReplyContent
+                                        @Html.Raw(Utils.ConvertMarkdownContent(reply.ReplyContent, Utils.MarkdownConvertType.Html))
                                     </p>
                                 </div>
                             }
