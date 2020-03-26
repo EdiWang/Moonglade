@@ -1,33 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Moonglade.Configuration.Abstraction;
 using TimeZoneConverter;
 
 namespace Moonglade.Core
 {
     public class DateTimeResolver : IDateTimeResolver
     {
-        private readonly IBlogConfig _blogConfig;
+        public string TimeZoneUtcOffset { get; set; }
 
-        public DateTimeResolver(IBlogConfig blogConfig)
+        public DateTimeResolver(string timeZoneUtcOffset)
         {
-            _blogConfig = blogConfig;
+            TimeZoneUtcOffset = timeZoneUtcOffset;
         }
 
         public DateTime GetNowWithUserTZone()
         {
-            return UtcToZoneTime(DateTime.UtcNow, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
+            return UtcToZoneTime(DateTime.UtcNow, TimeZoneUtcOffset);
         }
 
         public DateTime GetDateTimeWithUserTZone(DateTime utcDateTime)
         {
-            return UtcToZoneTime(utcDateTime, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
+            return UtcToZoneTime(utcDateTime, TimeZoneUtcOffset);
         }
 
         public DateTime GetUtcTimeFromUserTZone(DateTime userDateTime)
         {
-            return ZoneTimeToUtc(userDateTime, _blogConfig.GeneralSettings.TimeZoneUtcOffset);
+            return ZoneTimeToUtc(userDateTime, TimeZoneUtcOffset);
         }
 
         public IEnumerable<TimeZoneInfo> GetTimeZones()

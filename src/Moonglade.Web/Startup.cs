@@ -97,7 +97,9 @@ namespace Moonglade.Web
             services.AddScoped<IMoongladeAudit, MoongladeAudit>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<IHtmlCodec, MoongladeHtmlCodec>();
-            services.AddScoped<IDateTimeResolver, DateTimeResolver>();
+            services.AddScoped<IDateTimeResolver>(c => 
+                new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
+
             services.AddScoped<IPingbackSender, PingbackSender>();
             services.AddScoped<IPingbackReceiver, PingbackReceiver>();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
