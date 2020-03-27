@@ -48,10 +48,11 @@ namespace Moonglade.Core
 
         public async Task RefreshRssFilesForCategoryAsync(string categoryName)
         {
-            Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
             var cat = await _categoryRepository.GetAsync(c => c.Title == categoryName);
             if (null != cat)
             {
+                Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
+
                 var itemCollection = await GetPostsAsFeedItemsAsync(cat.Id);
 
                 var rw = new SyndicationFeedGenerator
@@ -68,10 +69,6 @@ namespace Moonglade.Core
 
                 await rw.WriteRss20FileAsync($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\posts-category-{categoryName}.xml");
                 Logger.LogInformation($"Finished refreshing RSS feed for category {categoryName}.");
-            }
-            else
-            {
-                Logger.LogWarning($"Trying to refresh rss feed for category {categoryName} but {categoryName} is not found.");
             }
         }
 
@@ -108,9 +105,6 @@ namespace Moonglade.Core
 
         private async Task<IReadOnlyList<SimpleFeedItem>> GetPostsAsFeedItemsAsync(Guid? categoryId = null)
         {
-
-            Logger.LogInformation($"{nameof(GetPostsAsFeedItemsAsync)} - {nameof(categoryId)}: {categoryId}");
-
             int? top = null;
             if (_blogConfig.FeedSettings.RssItemCount != 0)
             {
