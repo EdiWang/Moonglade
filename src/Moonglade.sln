@@ -56,6 +56,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.FaviconGenera
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing", "Moonglade.Auditing\Moonglade.Auditing.csproj", "{87BA3928-FF17-4881-BFEF-63ED212BB8E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.DateTimeOps", "Moonglade.DateTimeOps\Moonglade.DateTimeOps.csproj", "{0337757F-DAA0-4A63-83B7-EAC35FC33753}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +124,10 @@ Global
 		{87BA3928-FF17-4881-BFEF-63ED212BB8E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87BA3928-FF17-4881-BFEF-63ED212BB8E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87BA3928-FF17-4881-BFEF-63ED212BB8E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0337757F-DAA0-4A63-83B7-EAC35FC33753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0337757F-DAA0-4A63-83B7-EAC35FC33753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0337757F-DAA0-4A63-83B7-EAC35FC33753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0337757F-DAA0-4A63-83B7-EAC35FC33753}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +148,7 @@ Global
 		{0EFDE319-3BEF-4A00-873A-B9FB1DB9F5AA} = {EB748511-FF41-48F3-BC98-0A8BC4408D0E}
 		{569AEA3F-EA60-49E7-8829-0BB59C811EBF} = {9B62AB08-D68E-440E-819C-2C4636FF9C78}
 		{87BA3928-FF17-4881-BFEF-63ED212BB8E8} = {97439361-03B4-46C9-BC06-49F76BA57879}
+		{0337757F-DAA0-4A63-83B7-EAC35FC33753} = {EB748511-FF41-48F3-BC98-0A8BC4408D0E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
