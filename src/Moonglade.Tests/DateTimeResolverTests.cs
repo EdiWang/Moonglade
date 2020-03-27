@@ -1,9 +1,8 @@
 ﻿using System;
-using Moonglade.Core;
 using Moonglade.DateTimeOps;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Core
+namespace Moonglade.Tests
 {
     [TestFixture]
     public class DateTimeResolverTests

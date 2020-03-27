@@ -46,7 +46,6 @@
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
-    <ProjectReference Include="..\Moonglade.DateTimeOps\Moonglade.DateTimeOps.csproj" />
     <ProjectReference Include="..\Moonglade.HtmlEncoding\Moonglade.HtmlEncoding.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage.AzureBlob\Moonglade.ImageStorage.AzureBlob.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage.FileSystem\Moonglade.ImageStorage.FileSystem.csproj" />
