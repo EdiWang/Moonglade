@@ -43,7 +43,7 @@ namespace Moonglade.Tests
         {
             string org = "[c] 2009 - [year] edi.wang";
             string exp = $"&copy; 2009 - {DateTime.UtcNow.Year} edi.wang";
-            var result =  Utils.FormatCopyright2Html(org);
+            var result = Utils.FormatCopyright2Html(org);
 
             Assert.AreEqual(result, exp);
         }
@@ -128,65 +128,55 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathValidAbsolute()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var contentRootPath = @"C:\Moonglade";
-                var path = @"C:\MoongladeData\Uploads";
+            var contentRootPath = @"C:\Moonglade";
+            var path = @"C:\MoongladeData\Uploads";
 
-                var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
-                Assert.IsTrue(finalPath == @"C:\MoongladeData\Uploads");
-            }
+            var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
+            Assert.IsTrue(finalPath == @"C:\MoongladeData\Uploads");
         }
 
         [Test]
+        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathValidRelative()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var contentRootPath = @"C:\Moonglade";
-                var path = @"${basedir}\Uploads";
+            var contentRootPath = @"C:\Moonglade";
+            var path = @"${basedir}\Uploads";
 
-                var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
-                Assert.IsTrue(finalPath == @"C:\Moonglade\Uploads");
-            }
+            var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
+            Assert.IsTrue(finalPath == @"C:\Moonglade\Uploads");
         }
 
         [Test]
+        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathInvalidRelative()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var contentRootPath = @"C:\Moonglade";
-                var path = @"..\${basedir}\Uploads";
+            var contentRootPath = @"C:\Moonglade";
+            var path = @"..\${basedir}\Uploads";
 
-                Assert.Catch<NotSupportedException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
-            }
+            Assert.Catch<NotSupportedException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
         }
 
         [Test]
+        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathInvalidChar()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var contentRootPath = @"C:\Moonglade";
-                var path = @"${basedir}\Uploads<>|foo";
+            var contentRootPath = @"C:\Moonglade";
+            var path = @"${basedir}\Uploads<>|foo";
 
-                Assert.Catch<InvalidOperationException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
-            }
+            Assert.Catch<InvalidOperationException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
         }
 
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
+        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathEmptyParameter(string path)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var contentRootPath = @"C:\Moonglade";
-                Assert.Catch<ArgumentNullException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
-            }
+            var contentRootPath = @"C:\Moonglade";
+            Assert.Catch<ArgumentNullException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
         }
 
         [Test]
