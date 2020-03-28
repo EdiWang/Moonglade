@@ -34,7 +34,6 @@ using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Setup;
-using Moonglade.Syndication;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.FaviconGenerator;
@@ -97,7 +96,6 @@ namespace Moonglade.Web
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<IMoongladeAudit, MoongladeAudit>();
-            services.AddScoped<ISyndicationData, SyndicationData>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<IHtmlCodec, HtmlEncoding.HtmlCodec>();
             services.AddScoped<IDateTimeResolver>(c => 
