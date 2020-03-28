@@ -10,7 +10,6 @@
     <PackageReference Include="Edi.Captcha" Version="2.2.0" />
     <PackageReference Include="Edi.ImageWatermark" Version="1.2.1" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.4" />
-    <PackageReference Include="Edi.SyndicationFeedGenerator" Version="1.1.0" />
     <PackageReference Include="Edi.WordFilter" Version="1.2.3" />
     <PackageReference Include="Markdig" Version="0.18.3" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
@@ -23,6 +22,7 @@
     <ProjectReference Include="..\Moonglade.DateTimeOps\Moonglade.DateTimeOps.csproj" />
     <ProjectReference Include="..\Moonglade.HtmlEncoding\Moonglade.HtmlEncoding.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+    <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
   </ItemGroup>
 
 </Project>

@@ -203,9 +203,6 @@ Repository | Nuget
 [main-nuget-6]: https://www.nuget.org/packages/Edi.Practice.RequestResponseModel/
 [main-nuget-badge-6]: https://img.shields.io/nuget/v/Edi.Practice.RequestResponseModel.svg?style=flat-square&label=nuget
 
-[main-nuget-7]: https://www.nuget.org/packages/Edi.SyndicationFeedGenerator/
-[main-nuget-badge-7]: https://img.shields.io/nuget/v/Edi.SyndicationFeedGenerator.svg?style=flat-square&label=nuget
-
 [main-nuget-8]: https://www.nuget.org/packages/Edi.TemplateEmail/
 [main-nuget-badge-8]: https://img.shields.io/nuget/v/Edi.TemplateEmail.svg?style=flat-square&label=nuget
 
