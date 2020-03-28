@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Edi.SyndicationFeedGenerator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,6 +12,7 @@ using Moonglade.Data.Spec;
 using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Syndication;
 
 namespace Moonglade.Core
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Edi.SyndicationFeedGenerator
+namespace Moonglade.Syndication
 {
     public class SimpleFeedItem
     {

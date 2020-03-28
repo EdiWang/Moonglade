@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Edi.SyndicationFeedGenerator
+namespace Moonglade.Syndication
 {
     public interface ISyndicationFeedGenerator
     {

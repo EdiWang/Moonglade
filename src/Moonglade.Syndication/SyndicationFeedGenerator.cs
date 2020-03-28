@@ -9,7 +9,7 @@ using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
 
-namespace Edi.SyndicationFeedGenerator
+namespace Moonglade.Syndication
 {
     public class SyndicationFeedGenerator : ISyndicationFeedGenerator, IRssSyndicationGenerator, IAtomSyndicationGenerator
     {
@@ -52,7 +52,7 @@ namespace Edi.SyndicationFeedGenerator
                     Title = item.Title,
                     Description = HttpUtility.HtmlDecode(item.Description),
                     LastUpdated = item.PubDateUtc.ToUniversalTime(),
-                    Published = item.PubDateUtc.ToUniversalTime(),
+                    Published = item.PubDateUtc.ToUniversalTime()
                 };
 
                 sItem.AddLink(new SyndicationLink(new Uri(item.Link)));
@@ -86,25 +86,23 @@ namespace Edi.SyndicationFeedGenerator
                 Indent = true
             };
 
-            using (var xmlWriter = XmlWriter.Create(absolutePath, settings))
+            using var xmlWriter = XmlWriter.Create(absolutePath, settings);
+            var writer = new RssFeedWriter(xmlWriter);
+
+            await writer.WriteTitle(HeadTitle);
+            await writer.WriteDescription(HeadDescription);
+            await writer.Write(new SyndicationLink(new Uri(TrackBackUrl)));
+            await writer.WritePubDate(DateTimeOffset.UtcNow);
+            await writer.WriteCopyright(Copyright);
+            await writer.WriteGenerator(Generator);
+
+            foreach (var item in feed)
             {
-                var writer = new RssFeedWriter(xmlWriter);
-
-                await writer.WriteTitle(HeadTitle);
-                await writer.WriteDescription(HeadDescription);
-                await writer.Write(new SyndicationLink(new Uri(TrackBackUrl)));
-                await writer.WritePubDate(DateTimeOffset.UtcNow);
-                await writer.WriteCopyright(Copyright);
-                await writer.WriteGenerator(Generator);
-
-                foreach (var item in feed)
-                {
-                    await writer.Write(item);
-                }
-
-                await xmlWriter.FlushAsync();
-                xmlWriter.Close();
+                await writer.Write(item);
             }
+
+            await xmlWriter.FlushAsync();
+            xmlWriter.Close();
         }
 
         public async Task WriteAtom10FileAsync(string absolutePath)
@@ -117,24 +115,22 @@ namespace Edi.SyndicationFeedGenerator
                 Indent = true
             };
 
-            using (var xmlWriter = XmlWriter.Create(absolutePath, settings))
+            using var xmlWriter = XmlWriter.Create(absolutePath, settings);
+            var writer = new AtomFeedWriter(xmlWriter);
+
+            await writer.WriteTitle(HeadTitle);
+            await writer.WriteSubtitle(HeadDescription);
+            await writer.WriteRights(Copyright);
+            await writer.WriteUpdated(DateTime.UtcNow);
+            await writer.WriteGenerator(Generator, HostUrl, GeneratorVersion);
+
+            foreach (var item in feed)
             {
-                var writer = new AtomFeedWriter(xmlWriter);
-
-                await writer.WriteTitle(HeadTitle);
-                await writer.WriteSubtitle(HeadDescription);
-                await writer.WriteRights(Copyright);
-                await writer.WriteUpdated(DateTime.UtcNow);
-                await writer.WriteGenerator(Generator, HostUrl, GeneratorVersion);
-
-                foreach (var item in feed)
-                {
-                    await writer.Write(item);
-                }
-
-                await xmlWriter.FlushAsync();
-                xmlWriter.Close();
+                await writer.Write(item);
             }
+
+            await xmlWriter.FlushAsync();
+            xmlWriter.Close();
         }
     }
 }

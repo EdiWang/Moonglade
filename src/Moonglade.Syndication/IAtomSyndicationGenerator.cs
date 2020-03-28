@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Edi.SyndicationFeedGenerator
+namespace Moonglade.Syndication
 {
     public interface IAtomSyndicationGenerator
     {
