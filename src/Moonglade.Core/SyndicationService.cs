@@ -22,25 +22,25 @@ namespace Moonglade.Core
 
         private readonly string _baseUrl;
 
-        private readonly IRepository<CategoryEntity> _categoryRepository;
-
         private readonly IRepository<PostEntity> _postRepository;
 
         private readonly IHtmlCodec _htmlCodec;
+
+        private readonly ISyndicationData _syndicationData;
 
         public SyndicationService(
             ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IHttpContextAccessor httpContextAccessor,
-            IRepository<CategoryEntity> categoryRepository,
             IRepository<PostEntity> postRepository,
-            IHtmlCodec htmlCodec) : base(logger, settings)
+            IHtmlCodec htmlCodec, 
+            ISyndicationData syndicationData) : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _categoryRepository = categoryRepository;
             _postRepository = postRepository;
             _htmlCodec = htmlCodec;
+            _syndicationData = syndicationData;
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
@@ -48,12 +48,12 @@ namespace Moonglade.Core
 
         public async Task RefreshRssFilesForCategoryAsync(string categoryName)
         {
-            var cat = await _categoryRepository.GetAsync(c => c.Title == categoryName);
-            if (null != cat)
+            var cid = await _syndicationData.GetCategoryId(categoryName);
+            if (cid != Guid.Empty)
             {
                 Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
 
-                var itemCollection = await GetPostsAsFeedItemsAsync(cat.Id);
+                var itemCollection = await GetPostsAsFeedItemsAsync(cid);
 
                 var rw = new SyndicationFeedGenerator
                 {
