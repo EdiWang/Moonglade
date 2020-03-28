@@ -1,4 +1,4 @@
-﻿# Moonglade
+﻿# 🌕 Moonglade
 
 [![Build status](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_apis/build/status/Moonglade-Master-CI)](https://dev.azure.com/ediwang/EdiWang-GitHub-Builds/_build/latest?definitionId=50)
 
@@ -6,13 +6,13 @@ The blog system for https://edi.wang. Written in [**.NET Core**](https://dotnet.
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v2.png)
 
-## Features
+## 🎉 Features
 
 **Basic:** Post, Comment, Category, Archive, Tag, Page, Friendlink
 
 **Misc:** Pingback, RSS/Atom/OPML, Open Search, Reader View
 
-## Build and Run
+## 🛠 Build and Run
 
 Tools | Alternative
 --- | ---
@@ -53,7 +53,7 @@ Build and run **Moonglade.sln**
 
 Create an "**appsettings.Development.json**" under "**src\Moonglade.Web**", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
 
-## Configuration
+## ⚙ Configuration
 
 > Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
@@ -159,7 +159,7 @@ EnableAudit | ```bool``` | Enable Audit Log or not
 EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
 AutoDarkLightTheme | ```bool``` | Automatically switch light or dark theme on post reading screen
 
-## FAQ
+## 🙄 FAQ
 
 ### Does this blog support upgrade from a lower version?
 
@@ -169,7 +169,7 @@ It depends. If the database schema is same for a higer version, then the system 
 
 No, the system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
 
-## Related Projects
+## 🎁 Related Projects
 
 > Below open source projects are reusable components (NuGet packages) used in my blog, and they can be used in other websites as well. 
 
@@ -181,7 +181,6 @@ Repository | Nuget
 [Edi.ImageWatermark](https://github.com/EdiWang/Edi.ImageWatermark) | [![NuGet][main-nuget-badge-4]][main-nuget-4]
 [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) | [![NuGet][main-nuget-badge-5]][main-nuget-5]
 [Edi.Practice.RequestResponseModel](https://github.com/EdiWang/Edi.Practice.RequestResponseModel) | [![NuGet][main-nuget-badge-6]][main-nuget-6]
-[Edi.SyndicationFeedGenerator](https://github.com/EdiWang/Edi.SyndicationFeedGenerator) | [![NuGet][main-nuget-badge-7]][main-nuget-7]
 [Edi.TemplateEmail](https://github.com/EdiWang/Edi.TemplateEmail) | [![NuGet][main-nuget-badge-8]][main-nuget-8]
 [Edi.WordFilter](https://github.com/EdiWang/Edi.WordFilter) | [![NuGet][main-nuget-badge-9]][main-nuget-9]
 
