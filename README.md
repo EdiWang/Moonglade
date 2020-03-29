@@ -1,6 +1,6 @@
 # 🌕 Moonglade
 
-[![Build status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/Moonglade-CI)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=50)
+[![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master)
 
 The blog system for https://edi.wang. Written in [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
 
