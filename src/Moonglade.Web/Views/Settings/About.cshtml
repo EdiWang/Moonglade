@@ -1,4 +1,5 @@
 ﻿@using System.Diagnostics
+@using Moonglade.Model
 @{
     Layout = "_LayoutAdmin";
 }
@@ -44,6 +45,26 @@
             <tr>
                 <td>Worker Process</td>
                 <td>@Process.GetCurrentProcess().ProcessName</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Moonglade Configuration
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Data Directory</td>
+                <td>@AppDomain.CurrentDomain.GetData(Constants.DataDirectory)</td>
             </tr>
         </tbody>
     </table>
