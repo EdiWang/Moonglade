@@ -98,7 +98,7 @@ namespace Moonglade.Web
             services.AddScoped<IMoongladeAudit, MoongladeAudit>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<IHtmlCodec, HtmlEncoding.HtmlCodec>();
-            services.AddScoped<IDateTimeResolver>(c => 
+            services.AddScoped<IDateTimeResolver>(c =>
                 new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
 
             services.AddScoped<IPingbackSender, PingbackSender>();
@@ -296,11 +296,11 @@ namespace Moonglade.Web
             try
             {
                 IFaviconGenerator faviconGenerator = new FileSystemFaviconGenerator();
-                var userDefinedIconFile = Path.Combine(env.ContentRootPath, @"wwwroot\appicon.png");
+                var userDefinedIconFile = Path.Join(env.ContentRootPath, "wwwroot", "appicon.png");
                 if (File.Exists(userDefinedIconFile))
                 {
                     faviconGenerator.GenerateIcons(userDefinedIconFile,
-                        Path.Combine(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "favicons"));
+                        Path.Join(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "favicons"));
                 }
             }
             catch (Exception e)
@@ -328,8 +328,8 @@ namespace Moonglade.Web
 
             void CleanDataCache()
             {
-                var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpenSearchFileName}";
-                var opmlDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}";
+                var openSearchDataFile = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpenSearchFileName}");
+                var opmlDataFile = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpmlFileName}");
 
                 DeleteDataFile(openSearchDataFile);
                 DeleteDataFile(opmlDataFile);
@@ -344,7 +344,7 @@ namespace Moonglade.Web
             // e.g. Azure Deployment using WEBSITE_RUN_FROM_PACKAGE will make website root directory read only.
             var tPath = Path.GetTempPath();
             _logger.LogInformation($"Server environment Temp path: {tPath}");
-            var moongladeAppDataPath = Path.Combine(tPath, @"moonglade\App_Data");
+            var moongladeAppDataPath = Path.Join(tPath, "moonglade", "App_Data");
             if (Directory.Exists(moongladeAppDataPath))
             {
                 Directory.Delete(moongladeAppDataPath, true);
@@ -354,7 +354,7 @@ namespace Moonglade.Web
             AppDomain.CurrentDomain.SetData(Constants.DataDirectory, moongladeAppDataPath);
             _logger.LogInformation($"Created Application Data path: {moongladeAppDataPath}");
 
-            var feedDirectoryPath = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed";
+            var feedDirectoryPath = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed");
             if (!Directory.Exists(feedDirectoryPath))
             {
                 Directory.CreateDirectory(feedDirectoryPath);

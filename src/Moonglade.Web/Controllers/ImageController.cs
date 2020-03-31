@@ -44,8 +44,10 @@ namespace Moonglade.Web.Controllers
         [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
         public IActionResult Favicon(string filename)
         {
-            var faviconDirectory = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\favicons";
-            var iconPath = Path.Combine(faviconDirectory, filename.ToLower());
+            var faviconDirectory = 
+                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "favicons");
+
+            var iconPath = Path.Join(faviconDirectory, filename.ToLower());
             if (System.IO.File.Exists(iconPath))
             {
                 var contentType = "image/png";
@@ -204,7 +206,7 @@ namespace Moonglade.Web.Controllers
         public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
             var fallbackImageFile =
-                $@"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}\wwwroot\images\default-avatar.png";
+                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}", "wwwroot", "images", "default-avatar.png");
 
             if (string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
             {

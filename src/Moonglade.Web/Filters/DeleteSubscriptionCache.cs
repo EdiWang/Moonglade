@@ -25,7 +25,7 @@ namespace Moonglade.Web.Filters
         {
             try
             {
-                var path = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\";
+                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed");
                 var files = Directory.GetFiles(path);
                 foreach (var file in files)
                 {

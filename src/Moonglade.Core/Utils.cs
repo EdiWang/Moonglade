@@ -19,7 +19,7 @@ namespace Moonglade.Core
 
         public static async Task<string> GetThemeColorAsync(string webRootPath, string currentTheme)
         {
-            var cssPath = Path.Combine(webRootPath, "css", "theme", currentTheme);
+            var cssPath = Path.Join(webRootPath, "css", "theme", currentTheme);
 
             if (File.Exists(cssPath))
             {
