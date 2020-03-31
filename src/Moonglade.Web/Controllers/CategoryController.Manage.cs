@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -201,7 +202,8 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                System.IO.File.Delete($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpmlFileName}");
+                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpmlFileName}");
+                System.IO.File.Delete(path);
                 Logger.LogInformation("OPML file is deleted.");
             }
             catch (Exception e)

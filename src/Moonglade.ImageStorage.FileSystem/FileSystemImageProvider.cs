@@ -27,7 +27,7 @@ namespace Moonglade.ImageStorage.FileSystem
         {
             try
             {
-                var imagePath = Path.Combine(_path, fileName);
+                var imagePath = Path.Join(_path, fileName);
 
                 if (!File.Exists(imagePath))
                 {
@@ -63,7 +63,7 @@ namespace Moonglade.ImageStorage.FileSystem
             try
             {
                 await Task.CompletedTask;
-                var imagePath = Path.Combine(_path, fileName);
+                var imagePath = Path.Join(_path, fileName);
                 if (File.Exists(imagePath))
                 {
                     File.Delete(imagePath);
@@ -94,7 +94,7 @@ namespace Moonglade.ImageStorage.FileSystem
         {
             try
             {
-                var fullPath = Path.Combine(_path, fileName);
+                var fullPath = Path.Join(_path, fileName);
 
                 await using (var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
                     4096, true))

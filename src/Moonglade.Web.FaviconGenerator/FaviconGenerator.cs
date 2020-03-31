@@ -37,7 +37,7 @@ namespace Moonglade.Web.FaviconGenerator
                 foreach (var size in sizes)
                 {
                     var destFileName = $"{prefix}{size}x{size}.png";
-                    var destPath = Path.Combine(directory, destFileName);
+                    var destPath = Path.Join(directory, destFileName);
                     ResizeImageToFile(sourceImagePath, size, size, destPath, ImageFormat.Png);
                 }
             }
@@ -57,13 +57,13 @@ namespace Moonglade.Web.FaviconGenerator
             }
 
             // Here comes the extras, Apple, always so special!
-            ResizeImageToFile(sourceImagePath, 192, 192, Path.Combine(directory, "apple-icon.png"), ImageFormat.Png);
-            ResizeImageToFile(sourceImagePath, 192, 192, Path.Combine(directory, "apple-icon-precomposed.png"), ImageFormat.Png);
+            ResizeImageToFile(sourceImagePath, 192, 192, Path.Join(directory, "apple-icon.png"), ImageFormat.Png);
+            ResizeImageToFile(sourceImagePath, 192, 192, Path.Join(directory, "apple-icon-precomposed.png"), ImageFormat.Png);
             
             // This will save actually a PNG file.
-            // ResizeImageToFile(sourceImagePath, 16, 16, Path.Combine(directory, "favicon.ico"), ImageFormat.Icon);
+            // ResizeImageToFile(sourceImagePath, 16, 16, Path.Join(directory, "favicon.ico"), ImageFormat.Icon);
             // Must use this:
-            GenerateStandardFaviconIco(Path.Combine(directory, "favicon-16x16.png"), Path.Combine(directory, "favicon.ico"));
+            GenerateStandardFaviconIco(Path.Join(directory, "favicon-16x16.png"), Path.Join(directory, "favicon.ico"));
         }
 
         private static void GenerateStandardFaviconIco(string originImagePath, string icoFilePath)

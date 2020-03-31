@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -67,7 +68,9 @@ namespace Moonglade.Core
                     MaxContentLength = 0
                 };
 
-                await rw.WriteRss20FileAsync($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\posts-category-{categoryName}.xml");
+                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", $"posts-category-{categoryName}.xml");
+
+                await rw.WriteRss20FileAsync(path);
                 Logger.LogInformation($"Finished refreshing RSS feed for category {categoryName}.");
             }
         }
@@ -92,12 +95,17 @@ namespace Moonglade.Core
             if (isAtom)
             {
                 Logger.LogInformation("Writing ATOM file.");
-                await rw.WriteAtom10FileAsync($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\posts-atom.xml");
+
+                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", "posts-atom.xml");
+                await rw.WriteAtom10FileAsync(path);
             }
             else
             {
                 Logger.LogInformation("Writing RSS file.");
-                await rw.WriteRss20FileAsync($@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\feed\posts.xml");
+
+                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed",
+                    "posts.xml");
+                await rw.WriteRss20FileAsync(path);
             }
 
             Logger.LogInformation("Finished writing feed for posts.");

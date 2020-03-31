@@ -34,7 +34,7 @@ namespace Moonglade.Web.Controllers
         [Route("opensearch")]
         public async Task<IActionResult> OpenSearch()
         {
-            var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpenSearchFileName}";
+            var openSearchDataFile = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpenSearchFileName}");
             if (!System.IO.File.Exists(openSearchDataFile))
             {
                 Logger.LogInformation($"OpenSearch file not found, writing new file on {openSearchDataFile}");
@@ -87,7 +87,7 @@ namespace Moonglade.Web.Controllers
 
         private async Task WriteOpenSearchFileAsync(HttpContext ctx)
         {
-            var openSearchDataFile = $@"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}\{Constants.OpenSearchFileName}";
+            var openSearchDataFile = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpenSearchFileName}");
 
             await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
                 FileAccess.Write, FileShare.None, 4096, true);
