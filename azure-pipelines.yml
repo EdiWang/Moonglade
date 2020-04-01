@@ -6,9 +6,6 @@
 trigger:
 - master
 
-pr:
-- master
-
 jobs:
 - job: ASPNETCore
   pool:
