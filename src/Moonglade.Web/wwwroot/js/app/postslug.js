@@ -41,10 +41,10 @@
     },
     useDarkMode: function () {
         $('#moonglade-nav').removeClass('bg-moonglade-accent1');
-        $('#moonglade-nav').addClass('bg-dark');
+        $('#moonglade-nav, #moonglade-footer, .post-publish-info').addClass('bg-dark');
 
         $('#moonglade-footer').removeClass('bg-moonglade-accent2');
-        $('#moonglade-footer').addClass('bg-dark');
+        $('').addClass('bg-dark');
 
         $('.post-content').addClass('darkmode');
 
@@ -65,10 +65,9 @@
     },
     useLightMode: function () {
         $('#moonglade-nav').addClass('bg-moonglade-accent1');
-        $('#moonglade-nav').removeClass('bg-dark');
+        $('#moonglade-nav, #moonglade-footer, .post-publish-info').removeClass('bg-dark');
 
         $('#moonglade-footer').addClass('bg-moonglade-accent2');
-        $('#moonglade-footer').removeClass('bg-dark');
 
         $('.post-content').removeClass('darkmode');
 
