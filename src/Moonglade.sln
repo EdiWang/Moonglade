@@ -33,6 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Solution Items", ".Solutio
 	ProjectSection(SolutionItems) = preProject
 		..\.gitattributes = ..\.gitattributes
 		..\.gitignore = ..\.gitignore
+		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		..\Azure-Deployment\Deploy.ps1 = ..\Azure-Deployment\Deploy.ps1
 		Dockerfile = Dockerfile
 		..\LICENSE = ..\LICENSE
@@ -58,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing", "Moong
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.DateTimeOps", "Moonglade.DateTimeOps\Moonglade.DateTimeOps.csproj", "{0337757F-DAA0-4A63-83B7-EAC35FC33753}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Syndication", "Moonglade.Syndication\Moonglade.Syndication.csproj", "{3675CD24-B29D-4F1E-AB8E-9B563B000338}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Syndication", "Moonglade.Syndication\Moonglade.Syndication.csproj", "{3675CD24-B29D-4F1E-AB8E-9B563B000338}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

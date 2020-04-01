@@ -24,6 +24,13 @@ jobs:
       arguments: '--configuration Release -p:Version=10.2.$(Build.BuildId)-official'
 
   - task: DotNetCoreCLI@2
+    displayName: Test
+    inputs:
+      command: test
+      projects: '**/*Tests/*.csproj'
+      arguments: '--configuration Release'
+
+  - task: DotNetCoreCLI@2
     inputs:
       command: publish
       publishWebProjects: True
