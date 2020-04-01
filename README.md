@@ -46,8 +46,8 @@ Set environment variable: ```ConnectionStrings__MoongladeDatabase``` to your con
 #### Quick Start
 
 Build and run **Moonglade.sln**
-- Default Admin Username: admin
-- Default Admin Password: admin123
+- Default Admin Username: ```admin```
+- Default Admin Password: ```admin123```
 
 #### Optional (For Development)
 
