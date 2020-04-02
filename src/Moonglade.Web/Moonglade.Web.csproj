@@ -3,25 +3,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AspNetCoreModuleName>AspNetCoreModuleV2</AspNetCoreModuleName>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="bundleconfig.json" />
-    <Content Remove="compilerconfig.json" />
-    <Content Remove="web.config" />
-    <None Include="bundleconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="nlog.debug.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Update="nlog.debug.config" CopyToOutputDirectory="Always" />
     <Content Update="nlog.config" CopyToOutputDirectory="Always" />
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
-    <Content Update="libman.json" CopyToPublishDirectory="Never" />
-    <Content Update="bundleconfig.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>
