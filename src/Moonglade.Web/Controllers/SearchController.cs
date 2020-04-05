@@ -18,16 +18,16 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IBlogConfig _blogConfig;
 
-        private readonly PostSearchService _postSearchService;
+        private readonly SearchService _searchService;
 
         public SearchController(
             ILogger<OpmlController> logger,
             IOptions<AppSettings> settings,
-            PostSearchService postSearchService,
+            SearchService searchService,
             IBlogConfig blogConfig)
             : base(logger, settings)
         {
-            _postSearchService = postSearchService;
+            _searchService = searchService;
             _blogConfig = blogConfig;
         }
 
@@ -75,7 +75,7 @@ namespace Moonglade.Web.Controllers
 
                 ViewBag.TitlePrefix = term;
 
-                var response = await _postSearchService.SearchPostAsync(term);
+                var response = await _searchService.SearchPostAsync(term);
                 if (!response.IsSuccess)
                 {
                     SetFriendlyErrorMessage();

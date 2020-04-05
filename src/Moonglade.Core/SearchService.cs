@@ -14,11 +14,11 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class PostSearchService : MoongladeService
+    public class SearchService : MoongladeService
     {
         private readonly IRepository<PostEntity> _postRepository;
 
-        public PostSearchService(
+        public SearchService(
             ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepository) : base(logger, settings)
