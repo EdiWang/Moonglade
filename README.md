@@ -176,7 +176,6 @@ No, the system design does not couple with Azure, but the blog works best on Azu
 Repository | Nuget
 --- | ---
 [Edi.Blog.Pingback](https://github.com/EdiWang/Edi.Blog.Pingback) | [![NuGet][main-nuget-badge-1]][main-nuget-1]
-[Edi.Blog.OpmlFileWriter](https://github.com/EdiWang/Edi.Blog.OpmlFileWriter) | [![NuGet][main-nuget-badge-2]][main-nuget-2]
 [Edi.Captcha.AspNetCore](https://github.com/EdiWang/Edi.Captcha.AspNetCore) | [![NuGet][main-nuget-badge-3]][main-nuget-3]
 [Edi.ImageWatermark](https://github.com/EdiWang/Edi.ImageWatermark) | [![NuGet][main-nuget-badge-4]][main-nuget-4]
 [Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) | [![NuGet][main-nuget-badge-5]][main-nuget-5]
@@ -186,9 +185,6 @@ Repository | Nuget
 
 [main-nuget-1]: https://www.nuget.org/packages/Edi.Blog.Pingback/
 [main-nuget-badge-1]: https://img.shields.io/nuget/v/Edi.Blog.Pingback.svg?style=flat-square&label=nuget
-
-[main-nuget-2]: https://www.nuget.org/packages/Edi.Blog.OpmlFileWriter/
-[main-nuget-badge-2]: https://img.shields.io/nuget/v/Edi.Blog.OpmlFileWriter.svg?style=flat-square&label=nuget
 
 [main-nuget-3]: https://www.nuget.org/packages/Edi.Captcha/
 [main-nuget-badge-3]: https://img.shields.io/nuget/v/Edi.Captcha.svg?style=flat-square&label=nuget
