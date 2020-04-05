@@ -105,12 +105,12 @@ namespace Moonglade.Web.Controllers
                 writer.WriteAttributeString("height", "16");
                 writer.WriteAttributeString("width", "16");
                 writer.WriteAttributeString("type", "image/vnd.microsoft.icon");
-                writer.WriteValue($"{ctx.Request.Scheme}://{ctx.Request.Host}/favicon.ico");
+                writer.WriteValue($"{SiteRootUrl}/favicon.ico");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("Url");
                 writer.WriteAttributeString("type", "text/html");
-                writer.WriteAttributeString("template", $"{ctx.Request.Scheme}://{ctx.Request.Host}/search/{{searchTerms}}");
+                writer.WriteAttributeString("template", $"{SiteRootUrl}/search/{{searchTerms}}");
                 writer.WriteEndElement();
 
                 writer.WriteEndElement();

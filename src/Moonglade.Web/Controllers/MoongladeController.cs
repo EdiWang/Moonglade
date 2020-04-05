@@ -14,6 +14,8 @@ namespace Moonglade.Web.Controllers
 
         protected AppSettings AppSettings { get; set; }
 
+        protected string SiteRootUrl => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+
         public MoongladeController(
             ILogger<ControllerBase> logger,
             IOptions<AppSettings> settings = null)

@@ -60,10 +60,10 @@ namespace Moonglade.Web.Controllers
                 {
                     SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
                     CategoryInfo = catInfos,
-                    HtmlUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/post",
-                    XmlUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/rss",
-                    CategoryXmlUrlTemplate = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/rss/category/[catTitle]",
-                    CategoryHtmlUrlTemplate = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/category/list/[catTitle]"
+                    HtmlUrl = $"{SiteRootUrl}/post",
+                    XmlUrl = $"{SiteRootUrl}/rss",
+                    CategoryXmlUrlTemplate = $"{SiteRootUrl}/rss/category/[catTitle]",
+                    CategoryHtmlUrlTemplate = $"{SiteRootUrl}/category/list/[catTitle]"
                 };
 
                 var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}",
