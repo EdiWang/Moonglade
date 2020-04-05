@@ -24,34 +24,22 @@ Tools | Alternative
 
 Development | Production 
 --- | ---
-Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. **moonglade-dev** | [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. **moonglade-production**
+Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. ```moonglade-dev``` | [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. ```moonglade-production```
+Update the ```MoongladeDatabase``` as your database connection string in **appsettings.Development.json** | Set environment variable: ```ConnectionStrings__MoongladeDatabase``` as your connection string. 
 
-##### Update configuration file
+##### Connection String Example
 
-Update the ```MoongladeDatabase``` as your database connection string in **appsettings.[env].json**
+*If you are deploying to Azure App Service, you can set the connection string in the Configuration blade.*
 
-e.g.
 ```json
-"ConnectionStrings": {
-  "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;"
-}
+"MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;"
 ```
-
-##### Update environment variable (Recommend for production)
-
-Set environment variable: ```ConnectionStrings__MoongladeDatabase``` to your connection string. If you are deploying to Azure App Service, you can set the connection string in the Configuration blade.
 
 ### Build Source
 
-#### Quick Start
-
-Build and run **Moonglade.sln**
-- Default Admin Username: admin
-- Default Admin Password: admin123
-
-#### Optional (For Development)
-
-Create an "**appsettings.Development.json**" under "**src\Moonglade.Web**", this file defines development time settings such as accounts, db connections, keys, etc. It is by default ignored by git, so you will need to manange it on your own.
+Build and run ```./src/Moonglade.sln```
+- Default Admin Username: ```admin```
+- Default Admin Password: ```admin123```
 
 ## ⚙ Configuration
 
@@ -144,7 +132,7 @@ Update AppSettings
 }
 ```
 
-### Other Setttings
+### System Setttings
 
 Key | Data Type | Description
 --- | --- | ---
@@ -160,10 +148,6 @@ EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpo
 AutoDarkLightTheme | ```bool``` | Automatically switch light or dark theme on post reading screen
 
 ## 🙄 FAQ
-
-### Does this blog support upgrade from a lower version?
-
-It depends. If the database schema is same for a higer version, then the system can be deployed and override old files without problem.
 
 ### Does this blog coupled with Microsoft Azure?
 
