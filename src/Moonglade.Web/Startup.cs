@@ -296,7 +296,7 @@ namespace Moonglade.Web
             try
             {
                 IFaviconGenerator faviconGenerator = new FileSystemFaviconGenerator();
-                var userDefinedIconFile = Path.Join(env.ContentRootPath, "wwwroot", "appicon.png");
+                var userDefinedIconFile = Path.Join(env.ContentRootPath, "wwwroot", "siteicon-default.png");
                 if (File.Exists(userDefinedIconFile))
                 {
                     faviconGenerator.GenerateIcons(userDefinedIconFile,
