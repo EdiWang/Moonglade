@@ -97,7 +97,8 @@ namespace Moonglade.Web
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<IMoongladeAudit, MoongladeAudit>();
             services.AddScoped<DeleteSubscriptionCache>();
-            services.AddScoped<IHtmlCodec, HtmlEncoding.HtmlCodec>();
+            services.AddScoped<IHtmlCodec, HtmlCodec>();
+            services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
             services.AddScoped<IDateTimeResolver>(c =>
                 new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
 
@@ -159,7 +160,6 @@ namespace Moonglade.Web
             });
 
             PrepareRuntimePathDependencies(app, _environment);
-            GenerateSiteIcons(_environment);
 
             var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
 
@@ -290,24 +290,6 @@ namespace Moonglade.Web
         }
 
         #region Private Helpers
-
-        private void GenerateSiteIcons(IHostEnvironment env)
-        {
-            try
-            {
-                ISiteIconGenerator siteIconGenerator = new FileSystemSiteIconGenerator();
-                var userDefinedIconFile = Path.Join(env.ContentRootPath, "wwwroot", "siteicon-default.png");
-                if (File.Exists(userDefinedIconFile))
-                {
-                    siteIconGenerator.GenerateIcons(userDefinedIconFile,
-                        Path.Join(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "siteicons"));
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error generating favicons.");
-            }
-        }
 
         private void PrepareRuntimePathDependencies(IApplicationBuilder app, IHostEnvironment env)
         {
