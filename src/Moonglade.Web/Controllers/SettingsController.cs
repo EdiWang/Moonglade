@@ -534,6 +534,11 @@ namespace Moonglade.Web.Controllers
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
                 _blogConfig.RequireRefresh();
 
+                if (Directory.Exists(SiteIconDirectory))
+                {
+                    Directory.Delete(SiteIconDirectory, true);
+                }
+
                 Logger.LogInformation($"User '{User.Identity.Name}' updated site icon.");
                 await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedGeneral, "Site icon updated.");
 

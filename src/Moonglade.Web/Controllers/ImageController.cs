@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Edi.ImageWatermark;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -30,8 +28,6 @@ namespace Moonglade.Web.Controllers
 
         private readonly ISiteIconGenerator _siteIconGenerator;
 
-        private readonly IWebHostEnvironment _environment;
-
         private readonly CDNSettings _cdnSettings;
 
         public ImageController(
@@ -40,13 +36,11 @@ namespace Moonglade.Web.Controllers
             IOptions<ImageStorageSettings> imageStorageSettings,
             IAsyncImageStorageProvider imageStorageProvider,
             IBlogConfig blogConfig,
-            ISiteIconGenerator siteIconGenerator, 
-            IWebHostEnvironment environment)
+            ISiteIconGenerator siteIconGenerator)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _siteIconGenerator = siteIconGenerator;
-            _environment = environment;
             _imageStorageProvider = imageStorageProvider;
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
@@ -55,12 +49,12 @@ namespace Moonglade.Web.Controllers
         [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
         public IActionResult SiteIcon(string filename)
         {
-            RefreshSiteIconCache();
+            if (!Directory.Exists(SiteIconDirectory) || !Directory.GetFiles(SiteIconDirectory).Any())
+            {
+                RefreshSiteIconCache();
+            }
 
-            var iconDirectory =
-                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "siteicons");
-
-            var iconPath = Path.Join(iconDirectory, filename.ToLower());
+            var iconPath = Path.Join(SiteIconDirectory, filename.ToLower());
             if (System.IO.File.Exists(iconPath))
             {
                 var contentType = "image/png";
@@ -218,9 +212,7 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 300)]
         public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
-            var fallbackImageFile =
-                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}", "wwwroot", "images", "default-avatar.png");
-
+            var fallbackImageFile = Path.Join($"{SiteRootDirectory}", "wwwroot", "images", "default-avatar.png");
             if (string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
             {
                 return PhysicalFile(fallbackImageFile, "image/png");
@@ -251,8 +243,7 @@ namespace Moonglade.Web.Controllers
         [Route("siteicon")]
         public IActionResult SiteIconOrigin()
         {
-            var fallbackImageFile =
-                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}", "wwwroot", "siteicon-default.png");
+            var fallbackImageFile = Path.Join($"{SiteRootDirectory}", "wwwroot", "siteicon-default.png");
             if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.SiteIconBase64))
             {
                 return PhysicalFile(fallbackImageFile, "image/png");
@@ -296,12 +287,10 @@ namespace Moonglade.Web.Controllers
                             }
                         }
 
-                        var siteiconsDir =
-                            Path.Join(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "siteicons");
-                        var p = Path.Join(siteiconsDir, "siteicon.png");
-                        if (!Directory.Exists(siteiconsDir))
+                        var p = Path.Join(SiteIconDirectory, "siteicon.png");
+                        if (!Directory.Exists(SiteIconDirectory))
                         {
-                            Directory.CreateDirectory(siteiconsDir);
+                            Directory.CreateDirectory(SiteIconDirectory);
                         }
 
                         System.IO.File.WriteAllBytes(p, siteIconBytes);
@@ -316,13 +305,12 @@ namespace Moonglade.Web.Controllers
                 if (string.IsNullOrWhiteSpace(iconTemplatPath))
                 {
                     Logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
-                    iconTemplatPath = Path.Join(_environment.ContentRootPath, "wwwroot", "siteicon-default.png");
+                    iconTemplatPath = Path.Join($"{SiteRootDirectory}", "wwwroot", "siteicon-default.png");
                 }
 
                 if (System.IO.File.Exists(iconTemplatPath))
                 {
-                    _siteIconGenerator.GenerateIcons(iconTemplatPath,
-                        Path.Join(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "siteicons"));
+                    _siteIconGenerator.GenerateIcons(iconTemplatPath, SiteIconDirectory);
                 }
             }
             catch (Exception ex)

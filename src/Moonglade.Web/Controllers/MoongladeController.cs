@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Model;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
@@ -15,6 +17,12 @@ namespace Moonglade.Web.Controllers
         protected AppSettings AppSettings { get; set; }
 
         protected string SiteRootUrl => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+
+        protected string SiteRootDirectory => AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory).ToString();
+
+        protected string SiteDataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString();
+
+        protected string SiteIconDirectory => Path.Join(SiteDataDirectory, "siteicons");
 
         public MoongladeController(
             ILogger<ControllerBase> logger,
