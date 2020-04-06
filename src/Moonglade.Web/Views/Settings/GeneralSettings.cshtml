@@ -144,53 +144,96 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-3">
-                <div class="card-header">Website</div>
+                <div class="card-header">Blog Identity</div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col">
+                        <div class="col-2">
+                            <div class="mb-2">
+                                <img src="@Url.Action("SiteIconOrigin", "Image" )" class="img-thumbnail img-fluid blogadmin-siteicon" />
+                            </div>
+                            <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#siteiconmodal">New Icon</a>
+                        </div>
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label asp-for="SiteTitle" class="control-label"></label>
+                                        <input asp-for="SiteTitle" class="form-control" />
+                                        <span asp-validation-for="SiteTitle" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label asp-for="LogoText" class="control-label"></label>
+                                        <input asp-for="LogoText" class="form-control" />
+                                        <span asp-validation-for="LogoText" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
-                                <label asp-for="SiteTitle" class="control-label"></label>
-                                <input asp-for="SiteTitle" class="form-control"/>
-                                <span asp-validation-for="SiteTitle" class="text-danger"></span>
+                                <label asp-for="MetaKeyword" class="control-label"></label>
+                                <input asp-for="MetaKeyword" class="form-control" />
+                                <span asp-validation-for="MetaKeyword" class="text-danger"></span>
                             </div>
-                        </div>
-                        <div class="col">
                             <div class="form-group">
-                                <label asp-for="LogoText" class="control-label"></label>
-                                <input asp-for="LogoText" class="form-control"/>
-                                <span asp-validation-for="LogoText" class="text-danger"></span>
+                                <label asp-for="MetaDescription" class="control-label"></label>
+                                <input asp-for="MetaDescription" class="form-control" />
+                                <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="SelectedThemeFileName">Theme</label>
+                                    </div>
+                                    <select class="custom-select" asp-for="SelectedThemeFileName" asp-items="@Model.ThemeList"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="SelectedUtcOffset">Time Zone</label>
+                                    </div>
+                                    <select class="custom-select" asp-for="SelectedTimeZoneId" asp-items="@Model.TimeZoneList"></select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="MetaKeyword" class="control-label"></label>
-                        <input asp-for="MetaKeyword" class="form-control"/>
-                        <span asp-validation-for="MetaKeyword" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="MetaDescription" class="control-label"></label>
-                        <input asp-for="MetaDescription" class="form-control"/>
-                        <span asp-validation-for="MetaDescription" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="SelectedThemeFileName">Theme</label>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-2 col-sm-4">
+                            <div class="mb-2">
+                                <img src="@Url.Action("Avatar", "Image" )" class="img-thumbnail img-fluid blogadmin-avatar" />
                             </div>
-                            <select class="custom-select" asp-for="SelectedThemeFileName" asp-items="@Model.ThemeList"></select>
+                            <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#avatarmodal">New Avatar</a>
+                        </div>
+                        <div class="col-md-10 col-sm-8">
+                            <div class="form-group">
+                                <label asp-for="BloggerName" class="control-label"></label>
+                                <input asp-for="BloggerName" class="form-control" />
+                                <span asp-validation-for="BloggerName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="BloggerDescription" class="control-label"></label>
+                                <textarea asp-for="BloggerDescription" class="form-control"></textarea>
+                                <span asp-validation-for="BloggerDescription" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="BloggerShortDescription" class="control-label"></label>
+                                <input asp-for="BloggerShortDescription" class="form-control" />
+                                <span asp-validation-for="BloggerShortDescription" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="SelectedUtcOffset">Time Zone</label>
-                            </div>
-                            <select class="custom-select" asp-for="SelectedTimeZoneId" asp-items="@Model.TimeZoneList"></select>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">HTML Pitch</div>
+                <div class="card-body">
                     <div class="form-group">
                         <label asp-for="Copyright" class="control-label"></label>
-                        <input asp-for="Copyright" class="form-control"/>
+                        <input asp-for="Copyright" class="form-control" />
                         <p class="text-muted">Use [c] for copyright mark: &copy;, [year] for current year.</p>
                         <span asp-validation-for="Copyright" class="text-danger"></span>
                     </div>
@@ -199,44 +242,10 @@
                         <textarea asp-for="FooterCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" rows="10" cols="10"></textarea>
                         <span asp-validation-for="FooterCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-header">Owner Information</div>
-                <div class="card-body">
                     <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-3 col-sm-4">
-                                <div class="mb-2">
-                                    <img src="@Url.Action("Avatar", "Image" )" class="img-thumbnail img-fluid blogadmin-avatar" />
-                                </div>
-                                <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#avatarmodal">Change Avatar</a>
-                            </div>
-                            <div class="col-md-9 col-sm-8">
-                                <div class="form-group">
-                                    <label asp-for="BloggerName" class="control-label"></label>
-                                    <input asp-for="BloggerName" class="form-control" />
-                                    <span asp-validation-for="BloggerName" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="BloggerDescription" class="control-label"></label>
-                                    <textarea asp-for="BloggerDescription" class="form-control"></textarea>
-                                    <span asp-validation-for="BloggerDescription" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="BloggerShortDescription" class="control-label"></label>
-                                    <input asp-for="BloggerShortDescription" class="form-control" />
-                                    <span asp-validation-for="BloggerShortDescription" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="SideBarCustomizedHtmlPitch" class="control-label"></label>
-                                    <textarea asp-for="SideBarCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" cols="10" rows="10"></textarea>
-                                    <span asp-validation-for="SideBarCustomizedHtmlPitch" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+                        <label asp-for="SideBarCustomizedHtmlPitch" class="control-label"></label>
+                        <textarea asp-for="SideBarCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" cols="10" rows="10"></textarea>
+                        <span asp-validation-for="SideBarCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -277,6 +286,39 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success disabled" id="btn-upload-avatar" disabled="disabled">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="siteiconmodal" tabindex="-1" role="dialog" aria-labelledby="siteiconLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="siteiconmodalLabel">Change Site Icon</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <div id="siteiconDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
+                        Drag and drop image file here
+                    </div>
+
+                    <div class="input-group mt-2">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="siteiconImageFile" name="siteiconImageFile">
+                            <label class="custom-file-label" for="siteiconImageFile" aria-describedby="siteiconImageFileAddon">.png file</label>
+                        </div>
+                    </div>
+
+                    <p class="small text-muted text-center mt-2">* Image width and height must be equal</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success disabled" id="btn-upload-siteicon" disabled="disabled">Upload</button>
             </div>
         </div>
     </div>

@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
         [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
         public IActionResult Favicon(string filename)
         {
-            var faviconDirectory = 
+            var faviconDirectory =
                 Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "favicons");
 
             var iconPath = Path.Join(faviconDirectory, filename.ToLower());
@@ -230,6 +230,34 @@ namespace Moonglade.Web.Controllers
             catch (Exception ex)
             {
                 Logger.LogError($"Error {nameof(Avatar)}()", ex);
+                return new EmptyResult();
+            }
+        }
+
+        [Route("site-icon-origin")]
+        [Authorize]
+        public IActionResult SiteIconOrigin()
+        {
+            var fallbackImageFile =
+                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}", "wwwroot", "siteicon-default.png");
+            if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.SiteIconBase64))
+            {
+                return PhysicalFile(fallbackImageFile, "image/png");
+            }
+
+            try
+            {
+                var siteIconBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);
+                return File(siteIconBytes, "image/png");
+            }
+            catch (FormatException e)
+            {
+                Logger.LogError($"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string", e);
+                return PhysicalFile(fallbackImageFile, "image/png");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Error {nameof(SiteIconOrigin)}()", ex);
                 return new EmptyResult();
             }
         }
