@@ -159,7 +159,7 @@ namespace Moonglade.Web
             });
 
             PrepareRuntimePathDependencies(app, _environment);
-            GenerateFavicons(_environment);
+            GenerateSiteIcons(_environment);
 
             var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
 
@@ -291,7 +291,7 @@ namespace Moonglade.Web
 
         #region Private Helpers
 
-        private void GenerateFavicons(IHostEnvironment env)
+        private void GenerateSiteIcons(IHostEnvironment env)
         {
             try
             {
@@ -300,7 +300,7 @@ namespace Moonglade.Web
                 if (File.Exists(userDefinedIconFile))
                 {
                     siteIconGenerator.GenerateIcons(userDefinedIconFile,
-                        Path.Join(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "favicons"));
+                        Path.Join(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "siteicons"));
                 }
             }
             catch (Exception e)
