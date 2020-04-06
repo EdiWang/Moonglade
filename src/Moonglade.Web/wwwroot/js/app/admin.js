@@ -12,15 +12,35 @@ function slugify(text) {
 function ImageUploader(targetName, hw, imgMimeType) {
     var imgDataUrl = '';
 
-    this.enableUploadButton = function () {
-        $(`#btn-upload-${targetName}`).removeClass('disabled');
-        $(`#btn-upload-${targetName}`).removeAttr('disabled');
-    };
+    this.uploadImage = function (uploadUrl) {
+        if (imgDataUrl) {
+            $(`#btn-upload-${targetName}`).addClass('disabled');
+            $(`#btn-upload-${targetName}`).attr('disabled', 'disabled');
 
-    this.disableUploadButton = function () {
-        $(`#btn-upload-${targetName}`).addClass('disabled');
-        $(`#btn-upload-${targetName}`).attr('disabled', 'disabled');
-    };
+            var rawData = { base64Img: imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '') };
+            $.ajax({
+                type: 'POST',
+                headers: { csrfFieldName: $(`input[name=${csrfFieldName}]`).val() },
+                url: uploadUrl,
+                data: makeCSRFExtendedData(rawData),
+                success: function (data) {
+                    console.info(data);
+                    $(`#${targetName}modal`).modal('hide');
+                    toastr.success('Updated');
+                    d = new Date();
+                    $(`.blogadmin-${targetName}`).attr('src', `/${targetName}?${d.getTime()}`);
+                },
+                error: function (xhr, status, err) {
+                    console.error(err);
+                    toastr.error('Upload failed.');
+                    $(`#btn-upload-${targetName}`).removeClass('disabled');
+                    $(`#btn-upload-${targetName}`).removeAttr('disabled');
+                }
+            });
+        } else {
+            toastr.error('Please select an image');
+        }
+    }
 
     this.fileSelect = function (evt) {
         evt.stopPropagation();

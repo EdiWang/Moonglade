@@ -456,12 +456,12 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("set-blogger-avatar")]
         [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.Avatar })]
-        public async Task<IActionResult> SetBloggerAvatar(string base64Avatar)
+        public async Task<IActionResult> SetBloggerAvatar(string base64Img)
         {
             try
             {
-                base64Avatar = base64Avatar.Trim();
-                if (!Utils.TryParseBase64(base64Avatar, out var base64Chars))
+                base64Img = base64Img.Trim();
+                if (!Utils.TryParseBase64(base64Img, out var base64Chars))
                 {
                     Logger.LogWarning("Bad base64 is used when setting avatar.");
                     return BadRequest();
@@ -480,11 +480,11 @@ namespace Moonglade.Web.Controllers
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError("Invalid base64Avatar Image", e);
+                    Logger.LogError("Invalid base64img Image", e);
                     return BadRequest();
                 }
 
-                _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Avatar;
+                _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Img;
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.BlogOwnerSettings);
                 _blogConfig.RequireRefresh();
 

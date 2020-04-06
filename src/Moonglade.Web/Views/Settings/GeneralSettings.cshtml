@@ -7,43 +7,15 @@
 @section scripts{
     <script src="~/js/bs-custom-file-input.min.js"></script>
     <script>
-        $(document).ready(function () {
-            bsCustomFileInput.init();
-            $("#btn-upload-avatar").click(function () {
-                uploadImage();
-            });
-        });
-
         var avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
         avatarUploader.bindEvents();
 
-        function uploadImage() {
-            if (avatarUploader.getDataUrl()) {
-                avatarUploader.disableUploadButton();
-                var rawData = { base64avatar: avatarUploader.getDataUrl().replace(/^data:image\/(png|jpeg|jpg);base64,/, "") };
-
-                $.ajax({
-                    type: 'POST',
-                    headers: { csrfFieldName: $(`input[name=${csrfFieldName}]`).val() },
-                    url: '/admin/settings/set-blogger-avatar',
-                    data: makeCSRFExtendedData(rawData),
-                    success: function (data) {
-                        console.info(data);
-                        $("#avatarmodal").modal('hide');
-                        toastr.success('Avatar updated');
-                        d = new Date();
-                        $(".blogadmin-avatar").attr("src", `/avatar?${d.getTime()}`);
-                    },
-                    error: function (xhr, status, err) {
-                        console.error(err);
-                        toastr.error('Upload avatar failed.');
-                        avatarUploader.enableUploadButton();
-                    }
-                });
-            } else {
-                toastr.error('Please select an avatar image');
-            }
-        }
+        $(document).ready(function () {
+            bsCustomFileInput.init();
+            $("#btn-upload-avatar").click(function () {
+                avatarUploader.uploadImage('/admin/settings/set-blogger-avatar');
+            });
+        });
     </script>
 }
 
