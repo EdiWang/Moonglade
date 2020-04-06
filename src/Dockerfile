@@ -8,7 +8,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Moonglade.Web/Moonglade.Web.csproj", "Moonglade.Web/"]
 COPY ["Moonglade.Web.Authentication/Moonglade.Web.Authentication.csproj", "Moonglade.Web.Authentication/"]
-COPY ["Moonglade.Web.FaviconGenerator/Moonglade.Web.FaviconGenerator.csproj", "Moonglade.Web.FaviconGenerator/"]
+COPY ["Moonglade.Web.SiteIconGenerator/Moonglade.Web.SiteIconGenerator.csproj", "Moonglade.Web.SiteIconGenerator/"]
 COPY ["Moonglade.Web.Middleware/Moonglade.Web.Middleware.csproj", "Moonglade.Web.Middleware/"]
 COPY ["Moonglade.DateTimeOps/Moonglade.DateTimeOps.csproj", "Moonglade.DateTimeOps/"]
 COPY ["Moonglade.HtmlEncoding/Moonglade.HtmlEncoding.csproj", "Moonglade.HtmlEncoding/"]

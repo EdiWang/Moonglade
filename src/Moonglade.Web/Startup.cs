@@ -36,9 +36,9 @@ using Moonglade.OpmlFileWriter;
 using Moonglade.Setup;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
-using Moonglade.Web.FaviconGenerator;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
+using Moonglade.Web.SiteIconGenerator;
 using Polly;
 
 namespace Moonglade.Web
@@ -295,11 +295,11 @@ namespace Moonglade.Web
         {
             try
             {
-                IFaviconGenerator faviconGenerator = new FileSystemFaviconGenerator();
+                ISiteIconGenerator siteIconGenerator = new FileSystemSiteIconGenerator();
                 var userDefinedIconFile = Path.Join(env.ContentRootPath, "wwwroot", "siteicon-default.png");
                 if (File.Exists(userDefinedIconFile))
                 {
-                    faviconGenerator.GenerateIcons(userDefinedIconFile,
+                    siteIconGenerator.GenerateIcons(userDefinedIconFile,
                         Path.Join(AppDomain.CurrentDomain.GetData(Constants.DataDirectory).ToString(), "favicons"));
                 }
             }
