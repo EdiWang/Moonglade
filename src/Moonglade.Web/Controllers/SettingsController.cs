@@ -489,7 +489,53 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedGeneral, "Blog Owner Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedGeneral, "Avatar updated.");
+
+                return Json(response);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Error uploading avatar image.");
+                return ServerError();
+            }
+        }
+
+        #endregion
+
+        #region Site Icon
+
+        [HttpPost("set-siteicon")]
+        public async Task<IActionResult> SetSiteIcon(string base64Img)
+        {
+            try
+            {
+                base64Img = base64Img.Trim();
+                if (!Utils.TryParseBase64(base64Img, out var base64Chars))
+                {
+                    Logger.LogWarning("Bad base64 is used when setting site icon.");
+                    return BadRequest();
+                }
+
+                try
+                {
+                    using var bmp = new Bitmap(new MemoryStream(base64Chars));
+                    if (bmp.Height != bmp.Width)
+                    {
+                        return BadRequest();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError("Invalid base64img Image", e);
+                    return BadRequest();
+                }
+
+                _blogConfig.GeneralSettings.SiteIconBase64 = base64Img;
+                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
+                _blogConfig.RequireRefresh();
+
+                Logger.LogInformation($"User '{User.Identity.Name}' updated site icon.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedGeneral, "Site icon updated.");
 
                 return Json(response);
             }
@@ -619,8 +665,8 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var response = await _moongladeAudit.ClearAuditLog();
-                return response.IsSuccess ? 
-                    RedirectToAction("AuditLogs") : 
+                return response.IsSuccess ?
+                    RedirectToAction("AuditLogs") :
                     ServerError(response.Message);
             }
             catch (Exception e)

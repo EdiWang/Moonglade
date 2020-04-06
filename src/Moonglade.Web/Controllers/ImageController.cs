@@ -234,7 +234,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [Route("site-icon-origin")]
+        [Route("siteicon")]
         [Authorize]
         public IActionResult SiteIconOrigin()
         {
@@ -247,7 +247,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                var siteIconBytes = Convert.FromBase64String(_blogConfig.BlogOwnerSettings.AvatarBase64);
+                var siteIconBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.SiteIconBase64);
                 return File(siteIconBytes, "image/png");
             }
             catch (FormatException e)
