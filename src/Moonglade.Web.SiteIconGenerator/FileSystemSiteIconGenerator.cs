@@ -4,11 +4,11 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using Moonglade.Web.FaviconGenerator.IconEncoder;
+using Moonglade.Web.SiteIconGenerator.IconEncoder;
 
-namespace Moonglade.Web.FaviconGenerator
+namespace Moonglade.Web.SiteIconGenerator
 {
-    public class FileSystemFaviconGenerator : IFaviconGenerator
+    public class FileSystemSiteIconGenerator : ISiteIconGenerator
     {
         public void GenerateIcons(string sourceImagePath, string directory)
         {

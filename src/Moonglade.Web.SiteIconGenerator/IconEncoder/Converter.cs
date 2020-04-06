@@ -13,7 +13,7 @@ using System.Collections;
 using System.Drawing;
 using System.IO;
 
-namespace Moonglade.Web.FaviconGenerator.IconEncoder
+namespace Moonglade.Web.SiteIconGenerator.IconEncoder
 {
     /// <summary>
     /// Provides methods for converting between the bitmap and icon formats

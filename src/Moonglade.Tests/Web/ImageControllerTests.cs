@@ -10,6 +10,7 @@ using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using Moonglade.Web.SiteIconGenerator;
 
 namespace Moonglade.Tests.Web
 {
@@ -21,6 +22,7 @@ namespace Moonglade.Tests.Web
         private Mock<ILogger<ImageController>> _loggerMock;
         private Mock<IAsyncImageStorageProvider> _asyncImageStorageProviderMock;
         private Mock<IBlogConfig> _blogConfigMock;
+        private Mock<ISiteIconGenerator> _siteIconGeneratorMock;
 
         [SetUp]
         public void Setup()
@@ -39,6 +41,7 @@ namespace Moonglade.Tests.Web
             _loggerMock = new Mock<ILogger<ImageController>>();
             _asyncImageStorageProviderMock = new Mock<IAsyncImageStorageProvider>();
             _blogConfigMock = new Mock<IBlogConfig>();
+            _siteIconGeneratorMock = new Mock<ISiteIconGenerator>();
         }
 
         [Test]
@@ -50,7 +53,8 @@ namespace Moonglade.Tests.Web
                 _appSettingsMock.Object,
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object);
+                _blogConfigMock.Object,
+                _siteIconGeneratorMock.Object);
 
             var memCacheMock = new Mock<IMemoryCache>();
             var result = await ctl.GetImageAsync(filename, memCacheMock.Object);
@@ -72,7 +76,8 @@ namespace Moonglade.Tests.Web
                 _appSettingsMock.Object,
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object);
+                _blogConfigMock.Object,
+                _siteIconGeneratorMock.Object);
 
             var memCacheMock = new Mock<IMemoryCache>();
             var result = await ctl.GetImageAsync(filename, memCacheMock.Object);

@@ -1,6 +1,6 @@
-﻿namespace Moonglade.Web.FaviconGenerator
+﻿namespace Moonglade.Web.SiteIconGenerator
 {
-    public interface IFaviconGenerator
+    public interface ISiteIconGenerator
     {
         void GenerateIcons(string sourceImagePath, string directory);
     }

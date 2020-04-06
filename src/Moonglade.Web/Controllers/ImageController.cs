@@ -16,6 +16,7 @@ using Moonglade.Model;
 using Moonglade.ImageStorage;
 using Moonglade.Model.Settings;
 using Moonglade.Core;
+using Moonglade.Web.SiteIconGenerator;
 
 namespace Moonglade.Web.Controllers
 {
@@ -25,6 +26,8 @@ namespace Moonglade.Web.Controllers
 
         private readonly IBlogConfig _blogConfig;
 
+        private readonly ISiteIconGenerator _siteIconGenerator;
+
         private readonly CDNSettings _cdnSettings;
 
         public ImageController(
@@ -32,22 +35,26 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings,
             IOptions<ImageStorageSettings> imageStorageSettings,
             IAsyncImageStorageProvider imageStorageProvider,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig,
+            ISiteIconGenerator siteIconGenerator)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
+            _siteIconGenerator = siteIconGenerator;
             _imageStorageProvider = imageStorageProvider;
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
 
         [ResponseCache(Duration = 3600)]
         [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
-        public IActionResult Favicon(string filename)
+        public IActionResult SiteIcon(string filename)
         {
-            var faviconDirectory = 
-                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "favicons");
+            if (!Directory.Exists(SiteIconDirectory) || !Directory.GetFiles(SiteIconDirectory).Any())
+            {
+                RefreshSiteIconCache();
+            }
 
-            var iconPath = Path.Join(faviconDirectory, filename.ToLower());
+            var iconPath = Path.Join(SiteIconDirectory, filename.ToLower());
             if (System.IO.File.Exists(iconPath))
             {
                 var contentType = "image/png";
@@ -205,9 +212,7 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 300)]
         public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
-            var fallbackImageFile =
-                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)}", "wwwroot", "images", "default-avatar.png");
-
+            var fallbackImageFile = Path.Join($"{SiteRootDirectory}", "wwwroot", "images", "default-avatar.png");
             if (string.IsNullOrWhiteSpace(_blogConfig.BlogOwnerSettings.AvatarBase64))
             {
                 return PhysicalFile(fallbackImageFile, "image/png");
@@ -231,6 +236,86 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogError($"Error {nameof(Avatar)}()", ex);
                 return new EmptyResult();
+            }
+        }
+
+        [Authorize]
+        [Route("siteicon")]
+        public IActionResult SiteIconOrigin()
+        {
+            var fallbackImageFile = Path.Join($"{SiteRootDirectory}", "wwwroot", "siteicon-default.png");
+            if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.SiteIconBase64))
+            {
+                return PhysicalFile(fallbackImageFile, "image/png");
+            }
+
+            try
+            {
+                var siteIconBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.SiteIconBase64);
+                return File(siteIconBytes, "image/png");
+            }
+            catch (FormatException e)
+            {
+                Logger.LogError($"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string", e);
+                return PhysicalFile(fallbackImageFile, "image/png");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Error {nameof(SiteIconOrigin)}()", ex);
+                return new EmptyResult();
+            }
+        }
+
+        private void RefreshSiteIconCache()
+        {
+            try
+            {
+                string iconTemplatPath = string.Empty;
+
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.SiteIconBase64))
+                    {
+                        var siteIconBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.SiteIconBase64);
+
+                        using (var ms = new MemoryStream(siteIconBytes))
+                        {
+                            var image = Image.FromStream(ms);
+                            if (image.Height != image.Width)
+                            {
+                                throw new InvalidOperationException("Invalid Site Icon Data");
+                            }
+                        }
+
+                        var p = Path.Join(SiteIconDirectory, "siteicon.png");
+                        if (!Directory.Exists(SiteIconDirectory))
+                        {
+                            Directory.CreateDirectory(SiteIconDirectory);
+                        }
+
+                        System.IO.File.WriteAllBytes(p, siteIconBytes);
+                        iconTemplatPath = p;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError($"Error {nameof(RefreshSiteIconCache)}()", e);
+                }
+
+                if (string.IsNullOrWhiteSpace(iconTemplatPath))
+                {
+                    Logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
+                    iconTemplatPath = Path.Join($"{SiteRootDirectory}", "wwwroot", "siteicon-default.png");
+                }
+
+                if (System.IO.File.Exists(iconTemplatPath))
+                {
+                    _siteIconGenerator.GenerateIcons(iconTemplatPath, SiteIconDirectory);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Error {nameof(RefreshSiteIconCache)}()", ex);
             }
         }
     }

@@ -53,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Setup", "Moonglad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.HtmlEncoding", "Moonglade.HtmlEncoding\Moonglade.HtmlEncoding.csproj", "{0EFDE319-3BEF-4A00-873A-B9FB1DB9F5AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.FaviconGenerator", "Moonglade.Web.FaviconGenerator\Moonglade.Web.FaviconGenerator.csproj", "{569AEA3F-EA60-49E7-8829-0BB59C811EBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.SiteIconGenerator", "Moonglade.Web.SiteIconGenerator\Moonglade.Web.SiteIconGenerator.csproj", "{569AEA3F-EA60-49E7-8829-0BB59C811EBF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing", "Moonglade.Auditing\Moonglade.Auditing.csproj", "{87BA3928-FF17-4881-BFEF-63ED212BB8E8}"
 EndProject
@@ -61,7 +61,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.DateTimeOps", "Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Syndication", "Moonglade.Syndication\Moonglade.Syndication.csproj", "{3675CD24-B29D-4F1E-AB8E-9B563B000338}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.OpmlFileWriter", "Moonglade.OpmlFileWriter\Moonglade.OpmlFileWriter.csproj", "{810CF0EF-359E-411F-9812-C3004B7894A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.OpmlFileWriter", "Moonglade.OpmlFileWriter\Moonglade.OpmlFileWriter.csproj", "{810CF0EF-359E-411F-9812-C3004B7894A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
