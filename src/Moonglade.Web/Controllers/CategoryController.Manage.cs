@@ -202,7 +202,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpmlFileName}");
+                var path = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
                 System.IO.File.Delete(path);
                 Logger.LogInformation("OPML file is deleted.");
             }

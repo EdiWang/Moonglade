@@ -1,11 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
@@ -27,8 +25,8 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Rss(string categoryName = null)
         {
             var rssDataFile = string.IsNullOrWhiteSpace(categoryName) ?
-                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", "posts.xml") :
-                Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", $"posts-category-{categoryName}.xml");
+                Path.Join($"{SiteDataDirectory}", "feed", "posts.xml") :
+                Path.Join($"{SiteDataDirectory}", "feed", $"posts-category-{categoryName}.xml");
 
             if (!System.IO.File.Exists(rssDataFile))
             {
@@ -60,7 +58,7 @@ namespace Moonglade.Web.Controllers
         [Route("atom")]
         public async Task<IActionResult> Atom()
         {
-            var atomDataFile = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", "posts-atom.xml");
+            var atomDataFile = Path.Join($"{SiteDataDirectory}", "feed", "posts-atom.xml");
             if (!System.IO.File.Exists(atomDataFile))
             {
                 Logger.LogInformation($"Atom file not found, writing new file on {atomDataFile}");

@@ -32,14 +32,14 @@ namespace Moonglade.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var feedDirectoryPath = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed");
+            var feedDirectoryPath = Path.Join($"{SiteDataDirectory}", "feed");
             if (!Directory.Exists(feedDirectoryPath))
             {
                 Directory.CreateDirectory(feedDirectoryPath);
                 Logger.LogInformation($"Created directory '{feedDirectoryPath}'");
             }
 
-            var opmlDataFile = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpmlFileName}");
+            var opmlDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
             if (!System.IO.File.Exists(opmlDataFile))
             {
                 Logger.LogInformation($"OPML file not found, writing new file on {opmlDataFile}");
@@ -66,8 +66,7 @@ namespace Moonglade.Web.Controllers
                     CategoryHtmlUrlTemplate = $"{SiteRootUrl}/category/list/[catTitle]"
                 };
 
-                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}",
-                    $"{Constants.OpmlFileName}");
+                var path = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
                 await _fileSystemOpmlWriter.WriteOpmlFileAsync(path, oi);
                 Logger.LogInformation("OPML file write completed.");
 
