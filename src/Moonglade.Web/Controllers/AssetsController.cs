@@ -45,31 +45,7 @@ namespace Moonglade.Web.Controllers
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
 
-        [ResponseCache(Duration = 3600)]
-        [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
-        public IActionResult SiteIcon(string filename)
-        {
-            if (!Directory.Exists(SiteIconDirectory) || !Directory.GetFiles(SiteIconDirectory).Any())
-            {
-                RefreshSiteIconCache();
-            }
-
-            var iconPath = Path.Join(SiteIconDirectory, filename.ToLower());
-            if (System.IO.File.Exists(iconPath))
-            {
-                var contentType = "image/png";
-                var ext = Path.GetExtension(filename);
-                contentType = ext switch
-                {
-                    ".png" => "image/png",
-                    ".ico" => "image/x-icon",
-                    _ => contentType
-                };
-                return PhysicalFile(iconPath, contentType);
-            }
-
-            return NotFound();
-        }
+        #region Blog Post Images
 
         [Route(@"uploads/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
         public async Task<IActionResult> GetImageAsync(string filename, [FromServices] IMemoryCache cache)
@@ -199,6 +175,8 @@ namespace Moonglade.Web.Controllers
             }
         }
 
+        #endregion
+
         [Route("get-captcha-image")]
         public IActionResult GetCaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
@@ -237,6 +215,34 @@ namespace Moonglade.Web.Controllers
                 Logger.LogError($"Error {nameof(Avatar)}()", ex);
                 return new EmptyResult();
             }
+        }
+
+        #region Site Icon
+
+        [ResponseCache(Duration = 3600)]
+        [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
+        public IActionResult SiteIcon(string filename)
+        {
+            if (!Directory.Exists(SiteIconDirectory) || !Directory.GetFiles(SiteIconDirectory).Any())
+            {
+                RefreshSiteIconCache();
+            }
+
+            var iconPath = Path.Join(SiteIconDirectory, filename.ToLower());
+            if (System.IO.File.Exists(iconPath))
+            {
+                var contentType = "image/png";
+                var ext = Path.GetExtension(filename);
+                contentType = ext switch
+                {
+                    ".png" => "image/png",
+                    ".ico" => "image/x-icon",
+                    _ => contentType
+                };
+                return PhysicalFile(iconPath, contentType);
+            }
+
+            return NotFound();
         }
 
         [Authorize]
@@ -318,6 +324,8 @@ namespace Moonglade.Web.Controllers
                 Logger.LogError($"Error {nameof(RefreshSiteIconCache)}()", ex);
             }
         }
+
+        #endregion
 
         [ResponseCache(Duration = 3600)]
         [Route("/robots.txt")]
