@@ -28,10 +28,19 @@ namespace Moonglade.Configuration
 
         public string SiteIconBase64 { get; set; }
 
+        public string OwnerName { get; set; }
+
+        public string Description { get; set; }
+
+        public string ShortDescription { get; set; }
+
+        public string AvatarBase64 { get; set; }
+
         public GeneralSettings()
         {
             ThemeFileName = "word-blue.css";
             SiteIconBase64 = string.Empty;
+            AvatarBase64 = string.Empty;
         }
     }
 }

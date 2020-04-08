@@ -19,8 +19,6 @@ namespace Moonglade.Configuration
 
         private readonly IConfiguration _configuration;
 
-        public BlogOwnerSettings BlogOwnerSettings { get; set; }
-
         public GeneralSettings GeneralSettings { get; set; }
 
         public ContentSettings ContentSettings { get; set; }
@@ -44,7 +42,6 @@ namespace Moonglade.Configuration
             _configuration = configuration;
             _logger = logger;
 
-            BlogOwnerSettings = new BlogOwnerSettings();
             ContentSettings = new ContentSettings();
             GeneralSettings = new GeneralSettings();
             EmailSettings = new EmailSettings();
@@ -64,7 +61,6 @@ namespace Moonglade.Configuration
 
             var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            BlogOwnerSettings = JsonSerializer.Deserialize<BlogOwnerSettings>(cfgDic[nameof(BlogOwnerSettings)], jsonOptions);
             GeneralSettings = JsonSerializer.Deserialize<GeneralSettings>(cfgDic[nameof(GeneralSettings)], jsonOptions);
             ContentSettings = JsonSerializer.Deserialize<ContentSettings>(cfgDic[nameof(ContentSettings)], jsonOptions);
             EmailSettings = JsonSerializer.Deserialize<EmailSettings>(cfgDic[nameof(EmailSettings)], jsonOptions);
