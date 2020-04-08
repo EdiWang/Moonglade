@@ -21,7 +21,7 @@ jobs:
     inputs:
       command: build
       projects: '**/*.sln'
-      arguments: '--configuration Release -p:Version=10.2.$(Build.BuildId)-official'
+      arguments: '--configuration Release -p:Version=10.3.$(Build.BuildId)-official'
 
   - task: DotNetCoreCLI@2
     displayName: Test
@@ -34,7 +34,7 @@ jobs:
     inputs:
       command: publish
       publishWebProjects: True
-      arguments: '--configuration Release -p:Version=10.2.$(Build.BuildId)-official --output $(Build.ArtifactStagingDirectory)'
+      arguments: '--configuration Release -p:Version=10.3.$(Build.BuildId)-official --output $(Build.ArtifactStagingDirectory)'
       zipAfterPublish: True
 
   - task: PublishBuildArtifacts@1
