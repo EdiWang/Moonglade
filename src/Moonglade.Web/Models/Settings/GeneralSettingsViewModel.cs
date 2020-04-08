@@ -36,18 +36,18 @@ namespace Moonglade.Web.Models.Settings
         [Required]
         [Display(Name = "Blogger Name")]
         [MaxLength(32)]
-        public string BloggerName { get; set; }
+        public string OwnerName { get; set; }
 
         [Required]
         [Display(Name = "Blogger Description")]
         [DataType(DataType.MultilineText)]
         [MaxLength(256)]
-        public string BloggerDescription { get; set; }
+        public string OwnerDescription { get; set; }
 
         [Required]
         [Display(Name = "Blogger Short Description")]
         [MaxLength(32)]
-        public string BloggerShortDescription { get; set; }
+        public string OwnerShortDescription { get; set; }
 
         [Display(Name = "Side Bar Pitch (HTML)")]
         [DataType(DataType.MultilineText)]

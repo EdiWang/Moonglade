@@ -133,13 +133,13 @@
                         <div class="col-3">
                             <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about">
                                 <img src="@Url.Action("Avatar", "Assets")"
-                                     alt="@BlogConfig.BlogOwnerSettings.Name"
+                                     alt="@BlogConfig.GeneralSettings.OwnerName"
                                      class="rounded-circle blogger-head-pic" />
                             </a>
                         </div>
                         <div class="col-9">
                             <h4 class="text-center">
-                                @BlogConfig.BlogOwnerSettings.ShortDescription
+                                @BlogConfig.GeneralSettings.ShortDescription
                             </h4>
                         </div>
                     </div>

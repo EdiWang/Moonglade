@@ -6,15 +6,15 @@
         <div class="blog-info-photo-text text-center">
             <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about">
                 <img src="@Url.Action("Avatar", "Assets")"
-                     alt="@BlogConfig.BlogOwnerSettings.Name"
+                     alt="@BlogConfig.GeneralSettings.OwnerName"
                      class="rounded-circle blogger-head-pic" />
             </a>
             <div>
                 <h3 class="mt-3">
-                    @BlogConfig.BlogOwnerSettings.Name
+                    @BlogConfig.GeneralSettings.OwnerName
                 </h3>
                 <p class="mr-3 ml-3">
-                    @BlogConfig.BlogOwnerSettings.Description
+                    @BlogConfig.GeneralSettings.Description
                 </p>
             </div>
         </div>

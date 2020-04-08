@@ -80,9 +80,9 @@ namespace Moonglade.Web.Controllers
                 Copyright = _blogConfig.GeneralSettings.Copyright,
                 SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
                 FooterCustomizedHtmlPitch = _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch,
-                BloggerName = _blogConfig.BlogOwnerSettings.Name,
-                BloggerDescription = _blogConfig.BlogOwnerSettings.Description,
-                BloggerShortDescription = _blogConfig.BlogOwnerSettings.ShortDescription,
+                OwnerName = _blogConfig.GeneralSettings.OwnerName,
+                OwnerDescription = _blogConfig.GeneralSettings.Description,
+                OwnerShortDescription = _blogConfig.GeneralSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
                 SelectedUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
                 TimeZoneList = tzList,
@@ -107,12 +107,10 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.TimeZoneUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
                 _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
                 _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
-                await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
-
-                _blogConfig.BlogOwnerSettings.Name = model.BloggerName;
-                _blogConfig.BlogOwnerSettings.Description = model.BloggerDescription;
-                _blogConfig.BlogOwnerSettings.ShortDescription = model.BloggerShortDescription;
-                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.BlogOwnerSettings);
+                _blogConfig.GeneralSettings.OwnerName = model.OwnerName;
+                _blogConfig.GeneralSettings.Description = model.OwnerDescription;
+                _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
+                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
 
                 _blogConfig.RequireRefresh();
 
@@ -484,8 +482,8 @@ namespace Moonglade.Web.Controllers
                     return BadRequest();
                 }
 
-                _blogConfig.BlogOwnerSettings.AvatarBase64 = base64Img;
-                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.BlogOwnerSettings);
+                _blogConfig.GeneralSettings.AvatarBase64 = base64Img;
+                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");

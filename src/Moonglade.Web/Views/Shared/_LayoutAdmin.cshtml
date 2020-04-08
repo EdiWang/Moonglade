@@ -38,12 +38,12 @@
             <aside class="admin-nav full-height col-12 col-sm-3">
                 <div class="admin-avatar d-flex justify-content-center mt-4">
                     <img src="@Url.Action("Avatar", "Assets")"
-                         alt="@BlogConfig.BlogOwnerSettings.Name"
+                         alt="@BlogConfig.GeneralSettings.OwnerName"
                          class="rounded-circle blogger-head-pic" />
                 </div>
                 <div class="admin-user-info text-center mt-3 mb-3 text-light">
                     <h4>
-                        @BlogConfig.BlogOwnerSettings.Name
+                        @BlogConfig.GeneralSettings.OwnerName
                     </h4>
                     <p class="small text-moonglade-dark-secondary">@User.Identity.Name</p>
                 </div>
