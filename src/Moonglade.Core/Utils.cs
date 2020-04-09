@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Markdig;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Core
 {
@@ -42,7 +43,61 @@ namespace Moonglade.Core
 
         public static string SterilizeMenuLink(string rawUrl)
         {
-            // TODO: Disallow dangerous link or local link
+            bool IsUnderLocalSlash()
+            {
+                // Allows "/" or "/foo" but not "//" or "/\".
+                if (rawUrl[0] == '/')
+                {
+                    // url is exactly "/"
+                    if (rawUrl.Length == 1)
+                    {
+                        return true;
+                    }
+
+                    // url doesn't start with "//" or "/\"
+                    if (rawUrl[1] != '/' && rawUrl[1] != '\\')
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                return false;
+            }
+            
+            string invalidReturn = "#";
+            if (string.IsNullOrWhiteSpace(rawUrl))
+            {
+                return invalidReturn;
+            }
+
+            if (!rawUrl.IsValidUrl())
+            {
+                if (IsUnderLocalSlash())
+                {
+                    return rawUrl;
+                }
+                return invalidReturn;
+            }
+            
+            var uri = new Uri(rawUrl);
+            if (uri.IsLoopback)
+            {
+                // localhost, 127.0.0.1
+                return invalidReturn;
+            }
+
+            if (uri.HostNameType == UriHostNameType.IPv4)
+            {
+                // Disallow LAN IP (e.g. 192.168.0.1, 10.0.0.1)
+                var ip = uri.Host;
+                if (Regex.IsMatch(ip, @"(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)"))
+                {
+                    return invalidReturn;
+                }
+            }
+
             return rawUrl;
         }
 
