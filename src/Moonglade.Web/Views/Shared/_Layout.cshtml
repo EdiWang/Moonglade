@@ -85,12 +85,13 @@
                         </li>
 
                         <!-- Customize Nav Menu -->
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about" class="nav-link">
                                 <span class="icon-star-full"></span>
                                 <strong>About</strong>
                             </a>
-                        </li>
+                        </li>*@
+                        @await Component.InvokeAsync("Menu")
                     </ul>
                     <form class="form-inline search-form my-2 my-lg-0" asp-controller="Search" asp-action="Index">
                         <input id="term"

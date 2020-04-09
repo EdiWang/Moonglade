@@ -40,6 +40,12 @@ namespace Moonglade.Core
             return "#FFFFFF";
         }
 
+        public static string SterilizeMenuLink(string rawUrl)
+        {
+            // TODO: Disallow dangerous link or local link
+            return rawUrl;
+        }
+
         public static string GetMonthNameByNumber(int number)
         {
             if (number > 12 || number < 1)
