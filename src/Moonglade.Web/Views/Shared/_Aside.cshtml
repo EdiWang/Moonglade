@@ -37,6 +37,8 @@
                 <cache expires-after="@TimeSpan.FromMinutes(60)">
                     @await Component.InvokeAsync("HotTags")
                 </cache>
+                <hr />
+                <a asp-controller="Tags" asp-action="Index" class="card-link">All Tags</a>
             </div>
         </div>
     </section>
