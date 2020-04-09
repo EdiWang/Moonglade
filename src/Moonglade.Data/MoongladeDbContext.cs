@@ -27,6 +27,7 @@ namespace Moonglade.Data
         public virtual DbSet<TagEntity> Tag { get; set; }
         public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
         public virtual DbSet<CustomPageEntity> CustomPage { get; set; }
+        public virtual DbSet<MenuEntity> Menu { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +45,7 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
             modelBuilder.ApplyConfiguration(new CustomPageConfiguration());
+            modelBuilder.ApplyConfiguration(new MenuConfiguration());
         }
     }
 }
