@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
@@ -100,6 +101,17 @@ namespace Moonglade.Core
 
             return rawUrl;
         }
+
+        // Regex.IsMatch(ip, @"(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)")
+        // Regex has bad performance, this is better
+        public static bool IsPrivateIP(string ip) => IPAddress.Parse(ip).GetAddressBytes() switch
+        {
+            var x when x[0] == 192 && x[1] == 168 => true,
+            var x when x[0] == 10 => true,
+            var x when x[0] == 127 => true,
+            var x when x[0] == 172 => true, // TODO: check 16-19, 20-29, 30-31
+            _ => false
+        };
 
         public static string GetMonthNameByNumber(int number)
         {
