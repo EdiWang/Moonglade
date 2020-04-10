@@ -62,35 +62,39 @@
                 <div class="collapse navbar-collapse" id="moonglade-navbar-content">
                     <ul class="navbar-nav mr-auto">
                         <!-- System Nav Menu -->
-                        <li id="navbar-dropdown-post" class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
-                                <span class="icon-book"></span>
-                                <strong>Categories</strong>
-                            </a>
-                            <cache expires-after="@TimeSpan.FromMinutes(60)">
-                                @await Component.InvokeAsync("CategoryMenu")
-                            </cache>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="Tags" asp-action="Index" class="nav-link">
-                                <span class="icon-price-tag"></span>
-                                <strong>Tags</strong>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="Archive" asp-action="Index" class="nav-link">
-                                <span class="icon-folder"></span>
-                                <strong>Archive</strong>
-                            </a>
-                        </li>
+                        @if (Settings.Value.SystemNavMenus.Categories)
+                        {
+                            <li id="navbar-dropdown-post" class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
+                                    <span class="icon-book"></span>
+                                    <strong>Categories</strong>
+                                </a>
+                                <cache expires-after="@TimeSpan.FromMinutes(60)">
+                                    @await Component.InvokeAsync("CategoryMenu")
+                                </cache>
+                            </li>
+                        }
 
-                        <!-- Customize Nav Menu -->
-                        @*<li class="nav-item">
-                            <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about" class="nav-link">
-                                <span class="icon-star-full"></span>
-                                <strong>About</strong>
-                            </a>
-                        </li>*@
+                        @if (Settings.Value.SystemNavMenus.Tags)
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Tags" asp-action="Index" class="nav-link">
+                                    <span class="icon-price-tag"></span>
+                                    <strong>Tags</strong>
+                                </a>
+                            </li>
+                        }
+
+                        @if (Settings.Value.SystemNavMenus.Archive)
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Archive" asp-action="Index" class="nav-link">
+                                    <span class="icon-folder"></span>
+                                    <strong>Archive</strong>
+                                </a>
+                            </li>
+                        }
+
                         @await Component.InvokeAsync("Menu")
                     </ul>
                     <form class="form-inline search-form my-2 my-lg-0" asp-controller="Search" asp-action="Index">
