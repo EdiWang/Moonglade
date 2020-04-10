@@ -680,6 +680,12 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
+        [HttpGet("navmenu-settings")]
+        public IActionResult NavMenuSettings()
+        {
+            return View();
+        }
+
         [HttpGet("settings-about")]
         public IActionResult About()
         {
