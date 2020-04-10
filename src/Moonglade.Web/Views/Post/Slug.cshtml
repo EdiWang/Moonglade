@@ -111,7 +111,7 @@
         <hr class="d-none d-md-block post-header-hr" />
 
         <div class="d-block d-sm-none">
-            <div class="post-publish-info bg-light">
+            <div class="post-publish-info post-publish-info-mobile bg-light">
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {

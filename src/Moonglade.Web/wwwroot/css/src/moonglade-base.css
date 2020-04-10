@@ -733,10 +733,15 @@ a {
     background-color: #171717;
 }
 
-.navbar {
-    box-shadow: 0 0 8px #666;
-    padding: .4rem 1rem
-}
+    .bg-moca-dark .list-group-item-action:focus,
+    .bg-moca-dark .list-group-item-action:hover {
+        background-color: #1d2124 !important;
+    }
+
+    .navbar {
+        box-shadow: 0 0 8px #666;
+        padding: .4rem 1rem
+    }
 
 .nav-item {
     margin: 0 1rem 0 0;
@@ -898,6 +903,12 @@ body {
 .nav-link strong {
     font-weight: 500;
 }
+
+.hr-dark {
+    border-top: 1px solid rgba(255,255,255,.15) !important;
+}
+
+
 
 .moonglade-logo {
     font-family: SairaSemiCondensed-Bold;
