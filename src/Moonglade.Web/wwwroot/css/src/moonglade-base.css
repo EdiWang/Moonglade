@@ -928,6 +928,7 @@ body {
     cursor: pointer;
     text-align: center;
     background: #fff;
+    z-index: 996;
 }
 
 #lighticon {
