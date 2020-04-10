@@ -92,8 +92,7 @@ namespace Moonglade.Core
             if (uri.HostNameType == UriHostNameType.IPv4)
             {
                 // Disallow LAN IP (e.g. 192.168.0.1, 10.0.0.1)
-                var ip = uri.Host;
-                if (Regex.IsMatch(ip, @"(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)"))
+                if (IsPrivateIP(uri.Host))
                 {
                     return invalidReturn;
                 }
@@ -109,7 +108,7 @@ namespace Moonglade.Core
             var x when x[0] == 192 && x[1] == 168 => true,
             var x when x[0] == 10 => true,
             var x when x[0] == 127 => true,
-            var x when x[0] == 172 => true, // TODO: check 16-19, 20-29, 30-31
+            var x when x[0] == 172 && x[1] >= 16 && x[1] <= 31 => true,
             _ => false
         };
 

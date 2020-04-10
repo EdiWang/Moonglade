@@ -75,6 +75,19 @@ namespace Moonglade.Tests
             return Utils.SterilizeMenuLink(rawUrl);
         }
 
+        [TestCase("127.0.0.1", ExpectedResult = true)]
+        [TestCase("192.168.0.1", ExpectedResult = true)]
+        [TestCase("10.0.0.1", ExpectedResult = true)]
+        [TestCase("172.16.0.1", ExpectedResult = true)]
+        [TestCase("172.31.0.1", ExpectedResult = true)]
+        [TestCase("172.22.0.1", ExpectedResult = true)]
+        [TestCase("172.251.0.1", ExpectedResult = false)]
+        [TestCase("4.2.2.1", ExpectedResult = false)]
+        public bool TestIsPrivateIP(string ip)
+        {
+            return Utils.IsPrivateIP(ip);
+        }
+
         [Test]
         public void TestFormatCopyright2HtmlHappyPathWithYear()
         {
