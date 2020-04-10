@@ -11,8 +11,17 @@
         public bool EnableAudit { get; set; }
         public bool EnablePostRawEndpoint { get; set; }
         public bool AutoDarkLightTheme { get; set; }
-
+        public SystemNavMenus SystemNavMenus { get; set; }
         public NotificationSettings Notification { get; set; }
+    }
+
+    public class SystemNavMenus
+    {
+        public bool Categories { get; set; }
+
+        public bool Tags { get; set; }
+
+        public bool Archive { get; set; }
     }
 
     public enum EditorChoice
