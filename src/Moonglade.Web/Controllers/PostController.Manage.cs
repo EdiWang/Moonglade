@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Edi.Blog.Pingback;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +11,7 @@ using Moonglade.Auditing;
 using Moonglade.Data.Spec;
 using Moonglade.HtmlEncoding;
 using Moonglade.Model;
+using Moonglade.Pingback;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using EventId = Moonglade.Auditing.EventId;

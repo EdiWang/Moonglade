@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Edi.Blog.Pingback
+namespace Moonglade.Pingback
 {
     public class PingSuccessEventArgs : EventArgs
     {

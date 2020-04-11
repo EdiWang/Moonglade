@@ -1,4 +1,4 @@
-﻿namespace Edi.Blog.Pingback
+﻿namespace Moonglade.Pingback
 {
     public class PingRequest
     {

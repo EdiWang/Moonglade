@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,8 +8,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
+using Microsoft.Extensions.Logging;
 
-namespace Edi.Blog.Pingback
+namespace Moonglade.Pingback
 {
     public class PingbackSender : IPingbackSender
     {

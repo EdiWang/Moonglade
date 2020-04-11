@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Edi.Blog.Pingback;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 using Moonglade.Core.Notification;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Pingback;
 using Moq;
 using NUnit.Framework;
 

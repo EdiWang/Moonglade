@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Edi.Blog.Pingback
+namespace Moonglade.Pingback
 {
     public interface IPingbackSender
     {

@@ -9,7 +9,7 @@ using System.Xml;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Edi.Blog.Pingback
+namespace Moonglade.Pingback
 {
     public class PingbackReceiver : IPingbackReceiver
     {
