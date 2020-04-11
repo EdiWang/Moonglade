@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using Edi.Blog.Pingback;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Edi.Blog.Pingback.Mvc
+namespace Moonglade.Web.Extensions
 {
     public class PingbackResult : IActionResult
     {

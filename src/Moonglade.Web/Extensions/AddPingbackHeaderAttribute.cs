@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Edi.Blog.Pingback.Mvc
+namespace Moonglade.Web.Extensions
 {
     public class AddPingbackHeaderAttribute : ResultFilterAttribute
     {

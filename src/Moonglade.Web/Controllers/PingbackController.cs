@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Edi.Blog.Pingback.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,6 +8,7 @@ using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
+using Moonglade.Web.Extensions;
 using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
