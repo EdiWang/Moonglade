@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Edi.Blog.Pingback.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +12,7 @@ using Moonglade.Core;
 using Moonglade.DateTimeOps;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Web.Extensions;
 using Moonglade.Web.Models;
 using X.PagedList;
 

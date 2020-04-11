@@ -63,6 +63,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Syndication", "Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.OpmlFileWriter", "Moonglade.OpmlFileWriter\Moonglade.OpmlFileWriter.csproj", "{810CF0EF-359E-411F-9812-C3004B7894A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Pingback", "Moonglade.Pingback\Moonglade.Pingback.csproj", "{DB2020AF-391A-4D5F-8037-541462DAEEE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,10 @@ Global
 		{810CF0EF-359E-411F-9812-C3004B7894A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{810CF0EF-359E-411F-9812-C3004B7894A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{810CF0EF-359E-411F-9812-C3004B7894A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB2020AF-391A-4D5F-8037-541462DAEEE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB2020AF-391A-4D5F-8037-541462DAEEE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB2020AF-391A-4D5F-8037-541462DAEEE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB2020AF-391A-4D5F-8037-541462DAEEE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -164,6 +170,7 @@ Global
 		{0337757F-DAA0-4A63-83B7-EAC35FC33753} = {EB748511-FF41-48F3-BC98-0A8BC4408D0E}
 		{3675CD24-B29D-4F1E-AB8E-9B563B000338} = {EB748511-FF41-48F3-BC98-0A8BC4408D0E}
 		{810CF0EF-359E-411F-9812-C3004B7894A7} = {EB748511-FF41-48F3-BC98-0A8BC4408D0E}
+		{DB2020AF-391A-4D5F-8037-541462DAEEE8} = {EB748511-FF41-48F3-BC98-0A8BC4408D0E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}

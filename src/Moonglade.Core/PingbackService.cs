@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Edi.Blog.Pingback;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -10,6 +9,7 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
+using Moonglade.Pingback;
 
 namespace Moonglade.Core
 {
