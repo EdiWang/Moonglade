@@ -21,6 +21,32 @@
                 $("#card-" + data).hide();
             });
         }
+
+        $(".btn-submit").click(function () {
+            if ($("#edit-form").valid()) {
+                var action = '';
+                var catId = $("#CategoryEditViewModel_Id").val();
+                if (catId == '00000000-0000-0000-0000-000000000000') {
+                    action = "create";
+                }
+                else {
+                    action = "edit";
+                }
+
+                ajaxPostWithCSRFToken(`manage/${action}`,
+                    {
+                        "Id": $("#CategoryEditViewModel_Id").val(),
+                        "Name": $("#CategoryEditViewModel_Name").val(),
+                        "DisplayName": $("#CategoryEditViewModel_DisplayName").val(),
+                        "Note": $("#CategoryEditViewModel_Note").val()
+                    },
+                    function (data) {
+                        $("#edit-form")[0].reset();
+                        $("#editCatModal").modal('hide');
+                        toastr.success('Operation succeed');
+                    });
+            }
+        });
     </script>
 }
 
@@ -85,14 +111,14 @@ else
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <input type="hidden" asp-for="CategoryEditViewModel.Id" />
                     <div class="form-group">
-                        <label asp-for="CategoryEditViewModel.Name" class="control-label"></label>
-                        <input asp-for="CategoryEditViewModel.Name" class="form-control" />
-                        <span asp-validation-for="CategoryEditViewModel.Name" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
                         <label asp-for="CategoryEditViewModel.DisplayName" class="control-label"></label>
                         <input asp-for="CategoryEditViewModel.DisplayName" class="form-control" />
                         <span asp-validation-for="CategoryEditViewModel.DisplayName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryEditViewModel.Name" class="control-label"></label>
+                        <input asp-for="CategoryEditViewModel.Name" class="form-control" />
+                        <span asp-validation-for="CategoryEditViewModel.Name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="CategoryEditViewModel.Note" class="control-label"></label>

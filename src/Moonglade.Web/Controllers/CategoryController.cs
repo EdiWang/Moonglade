@@ -101,15 +101,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("create")]
-        public IActionResult Create()
-        {
-            var model = new CategoryEditViewModel();
-            return View("CreateOrEdit", model);
-        }
-
-        [Authorize]
-        [HttpPost("create")]
+        [HttpPost("manage/create")]
         public IActionResult Create(CategoryEditViewModel model)
         {
             try
@@ -129,22 +121,22 @@ namespace Moonglade.Web.Controllers
                         DeleteOpmlFile();
 
                         _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryCreated, $"Category '{request.Title}' is created");
-                        return RedirectToAction(nameof(Manage));
+                        return Json(response);
                     }
 
                     Logger.LogError($"Create category failed: {response.Message}");
                     ModelState.AddModelError("", response.Message);
-                    return View("CreateOrEdit", model);
+                    return BadRequest("Invalid ModelState");
                 }
 
-                return View("CreateOrEdit", model);
+                return BadRequest("Invalid ModelState");
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Error Create Category.");
 
                 ModelState.AddModelError("", e.Message);
-                return View("CreateOrEdit", model);
+                return ServerError(e.Message);
             }
         }
 
