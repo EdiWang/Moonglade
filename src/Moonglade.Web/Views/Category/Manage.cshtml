@@ -4,6 +4,26 @@
 
 @model IReadOnlyList<Moonglade.Model.Category>
 
+@section scripts{
+    <script>
+        $(function () {
+            $(".btn-delete").click(function () {
+                var cfm = confirm("Delete Confirmation?");
+                if (cfm) {
+                    deleteCat($(this).data("catid"));
+                }
+            });
+        });
+
+        function deleteCat(catid) {
+            $("#span-processing-" + catid).show();
+            ajaxPostWithCSRFToken("manage/delete", { id: catid }, function (data) {
+                $("#card-" + data).hide();
+            });
+        }
+    </script>
+}
+
 <h3>
     Categories
     <a class="btn btn-outline-success float-right" asp-controller="Category" asp-action="Create">
@@ -15,34 +35,37 @@
 
 @if (null != ViewBag.HasError && ViewBag.HasError)
 {
-<div class="alert alert-danger">
-    @ViewBag.ErrorMessage
-</div>
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
 }
 else
 {
-<div class="card-columns card-columns-categories">
-    @foreach (var cat in Model.OrderBy(m => m.DisplayName))
-    {
-    <div class="card mb-4">
-        <div class="card-body">
-            <h6 class="card-title">
-                <a asp-controller="Category" asp-action="List" asp-route-categoryName="@cat.Name" target="_blank">
-                    @cat.DisplayName
-                </a>
-            </h6>
+    @Html.AntiForgeryToken()
 
-            <p class="mt-2 h-30px">
-                @cat.Note
-            </p>
+    <div class="card-columns card-columns-categories">
+        @foreach (var cat in Model.OrderBy(m => m.DisplayName))
+        {
+            <div class="card mb-4" id="card-@cat.Id">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a asp-controller="Category" asp-action="List" asp-route-categoryName="@cat.Name" target="_blank">
+                            @cat.DisplayName
+                        </a>
+                    </h6>
 
-            <small class="text-muted">@cat.Name</small>
-        </div>
-        <div class="card-footer">
-            <a asp-controller="Category" asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-primary">Edit</a>
-            <a asp-controller="Category" asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-sm btn-danger">Delete</a>
-        </div>
+                    <p class="mt-2 h-30px">
+                        @cat.Note
+                    </p>
+
+                    <small class="text-muted">@cat.Name</small>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Category" asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-danger btn-delete">Delete</a>
+                    <span id="span-processing-@cat.Id" style="display: none">...</span>
+                </div>
+            </div>
+        }
     </div>
-    }
-</div>
 }

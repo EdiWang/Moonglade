@@ -151,29 +151,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("delete/{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            var r = await _categoryService.GetCategoryAsync(id);
-            if (r.IsSuccess && null != r.Item)
-            {
-                var model = new CategoryEditViewModel
-                {
-                    Id = r.Item.Id,
-                    DisplayName = r.Item.DisplayName,
-                    Name = r.Item.Name,
-                    Note = r.Item.Note
-                };
-
-                return View(model);
-            }
-
-            return NotFound();
-        }
-
-        [Authorize]
-        [HttpPost("delete/{id:guid}")]
-        public IActionResult ConfirmDelete(Guid id)
+        [HttpPost("manage/delete")]
+        public IActionResult Delete(Guid id)
         {
             try
             {
@@ -184,17 +163,16 @@ namespace Moonglade.Web.Controllers
                     DeleteOpmlFile();
 
                     _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Category '{id}' is deleted.");
-                    return RedirectToAction(nameof(Manage));
+                    return Json(id);
                 }
 
                 Logger.LogError(response.Message);
-
-                return Content(response.Message);
+                return ServerError();
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Error Delete Category.");
-                return Content(e.Message);
+                return ServerError();
             }
         }
 
