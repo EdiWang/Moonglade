@@ -12,6 +12,7 @@ using Moonglade.Core;
 using Moonglade.DateTimeOps;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Pingback.Mvc;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Models;
 using X.PagedList;

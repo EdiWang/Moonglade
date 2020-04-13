@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Moonglade.Web.Extensions
+namespace Moonglade.Pingback.Mvc
 {
     public class AddPingbackHeaderAttribute : ResultFilterAttribute
     {

@@ -8,6 +8,7 @@ using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
+using Moonglade.Pingback.Mvc;
 using Moonglade.Web.Extensions;
 using EventId = Moonglade.Auditing.EventId;
 

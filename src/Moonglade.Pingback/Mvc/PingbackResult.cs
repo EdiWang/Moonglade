@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moonglade.Pingback;
 
-namespace Moonglade.Web.Extensions
+namespace Moonglade.Pingback.Mvc
 {
     public class PingbackResult : IActionResult
     {
