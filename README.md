@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master)
 
-The blog system for https://edi.wang. Written in [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
+The blog system for [edi.wang](https://edi.wang). Written in [**.NET Core**](https://dotnet.microsoft.com/) and runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/).
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v2.png)
 
