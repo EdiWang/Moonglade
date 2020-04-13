@@ -13,12 +13,31 @@
                     deleteCat($(this).data("catid"));
                 }
             });
+
+            $(".btn-edit").click(function () {
+                editCat($(this).data("catid"));
+            });
         });
 
         function deleteCat(catid) {
             $("#span-processing-" + catid).show();
             ajaxPostWithCSRFToken("manage/delete", { id: catid }, function (data) {
                 $("#card-" + data).hide();
+            });
+        }
+
+        function initCreateCategory() {
+            $("#edit-form")[0].reset();
+            $('#editCatModal').modal();
+        }
+
+        function editCat(id) {
+            $.get(`manage/edit/${id}`, function (data) {
+                $("#CategoryEditViewModel_Id").val(data.id);
+                $("#CategoryEditViewModel_Name").val(data.name);
+                $("#CategoryEditViewModel_DisplayName").val(data.displayName);
+                $("#CategoryEditViewModel_Note").val(data.note);
+                $("#editCatModal").modal();
             });
         }
 
@@ -43,7 +62,7 @@
                     function (data) {
                         $("#edit-form")[0].reset();
                         $("#editCatModal").modal('hide');
-                        toastr.success('Operation succeed');
+                        toastr.success('Operation succeed, please refresh page.');
                     });
             }
         });
@@ -52,7 +71,7 @@
 
 <h3>
     Categories
-    <a class="btn btn-outline-success float-right" href="javascript:$('#editCatModal').modal();">
+    <a class="btn btn-outline-success float-right" href="javascript:initCreateCategory();">
         <span class="icon-plus"></span>
         Create
     </a>
@@ -87,7 +106,7 @@ else
                     <small class="text-muted">@cat.Name</small>
                 </div>
                 <div class="card-footer">
-                    <a asp-controller="Category" asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-primary btn-edit">Edit</a>
                     <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-danger btn-delete">Delete</a>
                     <span id="span-processing-@cat.Id" style="display: none">...</span>
                 </div>

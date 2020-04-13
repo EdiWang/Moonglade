@@ -141,7 +141,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("edit/{id:guid}")]
+        [HttpGet("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var r = await _categoryService.GetCategoryAsync(id);
@@ -155,14 +155,14 @@ namespace Moonglade.Web.Controllers
                     Note = r.Item.Note
                 };
 
-                return View("CreateOrEdit", model);
+                return Json(model);
             }
 
             return NotFound();
         }
 
         [Authorize]
-        [HttpPost("edit")]
+        [HttpPost("manage/edit")]
         public IActionResult Edit(CategoryEditViewModel model)
         {
             try
@@ -183,22 +183,22 @@ namespace Moonglade.Web.Controllers
                         DeleteOpmlFile();
 
                         _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryUpdated, $"Category '{model.Id}' is updated");
-                        return RedirectToAction(nameof(Manage));
+                        return Json(response);
                     }
 
                     Logger.LogError($"Edit category failed: {response.Message}");
                     ModelState.AddModelError("", response.Message);
-                    return View("CreateOrEdit", model);
+                    return BadRequest();
                 }
 
-                return View("CreateOrEdit", model);
+                return BadRequest();
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Error Create Category.");
 
                 ModelState.AddModelError("", e.Message);
-                return View("CreateOrEdit", model);
+                return ServerError();
             }
         }
 
