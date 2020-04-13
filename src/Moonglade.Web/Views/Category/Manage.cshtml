@@ -2,11 +2,76 @@
     Layout = "_LayoutAdmin";
 }
 
-@model IReadOnlyList<Moonglade.Model.Category>
+@model CategoryManageModel
+
+@section scripts{
+    <script>
+        $(function () {
+            $(".btn-delete").click(function () {
+                var cfm = confirm("Delete Confirmation?");
+                if (cfm) {
+                    deleteCat($(this).data("catid"));
+                }
+            });
+
+            $(".btn-edit").click(function () {
+                editCat($(this).data("catid"));
+            });
+        });
+
+        function deleteCat(catid) {
+            $("#span-processing-" + catid).show();
+            ajaxPostWithCSRFToken("manage/delete", { id: catid }, function (data) {
+                $("#card-" + data).hide();
+            });
+        }
+
+        function initCreateCategory() {
+            $("#edit-form")[0].reset();
+            $('#editCatModal').modal();
+        }
+
+        function editCat(id) {
+            $.get(`manage/edit/${id}`, function (data) {
+                $("#CategoryEditViewModel_Id").val(data.id);
+                $("#CategoryEditViewModel_Name").val(data.name);
+                $("#CategoryEditViewModel_DisplayName").val(data.displayName);
+                $("#CategoryEditViewModel_Note").val(data.note);
+                $("#editCatModal").modal();
+            });
+        }
+
+        $(".btn-submit").click(function () {
+            if ($("#edit-form").valid()) {
+                var action = '';
+                var catId = $("#CategoryEditViewModel_Id").val();
+                if (catId == '00000000-0000-0000-0000-000000000000') {
+                    action = "create";
+                }
+                else {
+                    action = "edit";
+                }
+
+                ajaxPostWithCSRFToken(`manage/${action}`,
+                    {
+                        "Id": $("#CategoryEditViewModel_Id").val(),
+                        "Name": $("#CategoryEditViewModel_Name").val(),
+                        "DisplayName": $("#CategoryEditViewModel_DisplayName").val(),
+                        "Note": $("#CategoryEditViewModel_Note").val()
+                    },
+                    function (data) {
+                        $("#edit-form")[0].reset();
+                        $("#editCatModal").modal('hide');
+                        toastr.success('Operation succeed, please refresh page.');
+                    });
+            }
+        });
+    </script>
+}
 
 <h3>
     Categories
-    <a class="btn btn-outline-success float-right" asp-controller="Category" asp-action="Create">
+    <a class="btn btn-outline-success float-right" href="javascript:initCreateCategory();">
         <span class="icon-plus"></span>
         Create
     </a>
@@ -15,34 +80,76 @@
 
 @if (null != ViewBag.HasError && ViewBag.HasError)
 {
-<div class="alert alert-danger">
-    @ViewBag.ErrorMessage
-</div>
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
 }
 else
 {
-<div class="card-columns card-columns-categories">
-    @foreach (var cat in Model.OrderBy(m => m.DisplayName))
-    {
-    <div class="card mb-4">
-        <div class="card-body">
-            <h6 class="card-title">
-                <a asp-controller="Category" asp-action="List" asp-route-categoryName="@cat.Name" target="_blank">
-                    @cat.DisplayName
-                </a>
-            </h6>
+    @Html.AntiForgeryToken()
 
-            <p class="mt-2 h-30px">
-                @cat.Note
-            </p>
+    <div class="card-columns card-columns-categories">
+        @foreach (var cat in Model.Categories.OrderBy(m => m.DisplayName))
+        {
+            <div class="card mb-4" id="card-@cat.Id">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a asp-controller="Category" asp-action="List" asp-route-categoryName="@cat.Name" target="_blank">
+                            @cat.DisplayName
+                        </a>
+                    </h6>
 
-            <small class="text-muted">@cat.Name</small>
-        </div>
-        <div class="card-footer">
-            <a asp-controller="Category" asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-primary">Edit</a>
-            <a asp-controller="Category" asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-sm btn-danger">Delete</a>
+                    <p class="mt-2 h-30px">
+                        @cat.Note
+                    </p>
+
+                    <small class="text-muted">@cat.Name</small>
+                </div>
+                <div class="card-footer">
+                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-primary btn-edit">Edit</a>
+                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-danger btn-delete">Delete</a>
+                    <span id="span-processing-@cat.Id" style="display: none">...</span>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<div class="modal fade" id="editCatModal" tabindex="-1" role="dialog" aria-labelledby="editCatModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCatModalLabel">Category Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="edit-form" method="post">
+                <div class="modal-body">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="CategoryEditViewModel.Id" />
+                    <div class="form-group">
+                        <label asp-for="CategoryEditViewModel.DisplayName" class="control-label"></label>
+                        <input asp-for="CategoryEditViewModel.DisplayName" class="form-control" />
+                        <span asp-validation-for="CategoryEditViewModel.DisplayName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryEditViewModel.Name" class="control-label"></label>
+                        <input asp-for="CategoryEditViewModel.Name" class="form-control" />
+                        <span asp-validation-for="CategoryEditViewModel.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryEditViewModel.Note" class="control-label"></label>
+                        <input asp-for="CategoryEditViewModel.Note" class="form-control" />
+                        <span asp-validation-for="CategoryEditViewModel.Note" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-submit">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
-    }
 </div>
-}
