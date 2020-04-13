@@ -86,9 +86,9 @@ namespace Moonglade.Web.Controllers
                 {
                     ViewBag.HasError = true;
                     ViewBag.ErrorMessage = allCats.Message;
-                    return View(new List<CategoryEntity>());
+                    return View(new CategoryManageModel());
                 }
-                return View(allCats.Item);
+                return View(new CategoryManageModel { Categories = allCats.Item });
             }
             catch (Exception e)
             {
@@ -96,7 +96,7 @@ namespace Moonglade.Web.Controllers
 
                 ViewBag.HasError = true;
                 ViewBag.ErrorMessage = e.Message;
-                return View(new List<CategoryEntity>());
+                return View(new CategoryManageModel());
             }
         }
 

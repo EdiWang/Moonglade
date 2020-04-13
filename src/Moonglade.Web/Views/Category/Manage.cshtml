@@ -2,7 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@model IReadOnlyList<Moonglade.Model.Category>
+@model CategoryManageModel
 
 @section scripts{
     <script>
@@ -26,7 +26,7 @@
 
 <h3>
     Categories
-    <a class="btn btn-outline-success float-right" asp-controller="Category" asp-action="Create">
+    <a class="btn btn-outline-success float-right" href="javascript:$('#editCatModal').modal();">
         <span class="icon-plus"></span>
         Create
     </a>
@@ -44,7 +44,7 @@ else
     @Html.AntiForgeryToken()
 
     <div class="card-columns card-columns-categories">
-        @foreach (var cat in Model.OrderBy(m => m.DisplayName))
+        @foreach (var cat in Model.Categories.OrderBy(m => m.DisplayName))
         {
             <div class="card mb-4" id="card-@cat.Id">
                 <div class="card-body">
@@ -69,3 +69,42 @@ else
         }
     </div>
 }
+
+<div class="modal fade" id="editCatModal" tabindex="-1" role="dialog" aria-labelledby="editCatModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCatModalLabel">Category Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="edit-form" method="post">
+                <div class="modal-body">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="CategoryEditViewModel.Id" />
+                    <div class="form-group">
+                        <label asp-for="CategoryEditViewModel.Name" class="control-label"></label>
+                        <input asp-for="CategoryEditViewModel.Name" class="form-control" />
+                        <span asp-validation-for="CategoryEditViewModel.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryEditViewModel.DisplayName" class="control-label"></label>
+                        <input asp-for="CategoryEditViewModel.DisplayName" class="form-control" />
+                        <span asp-validation-for="CategoryEditViewModel.DisplayName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryEditViewModel.Note" class="control-label"></label>
+                        <input asp-for="CategoryEditViewModel.Note" class="form-control" />
+                        <span asp-validation-for="CategoryEditViewModel.Note" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-submit">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
