@@ -18,7 +18,7 @@
         function deletePage(pageid, routename) {
             $("#span-processing-" + pageid).show();
             ajaxPostWithCSRFToken("manage/delete", { pageid: pageid, routename: routename }, function (data) {
-                $("#tr-" + data).hide();
+                $("#card-" + data).hide();
             });
         }
     </script>
@@ -38,37 +38,31 @@
 {
     @Html.AntiForgeryToken()
 
-    <table id="pages-table" class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Route Name</th>
-                <th class="table-item-w20">Created</th>
-                <th class="table-item-w20">Options</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var customPage in Model.OrderByDescending(p => p.CreateOnUtc))
-            {
-                <tr id="tr-@customPage.Id">
-                    <td>@customPage.Title</td>
-                    <td>@customPage.RouteName</td>
-                    <td data-sort="@customPage.CreateOnUtc.ToString("yyyyMMddHHmmss")">
+    <div class="card-columns card-columns-pages">
+        @foreach (var customPage in Model.OrderByDescending(p => p.CreateOnUtc))
+        {
+            <div class="card mb-4" id="card-@customPage.Id">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        @customPage.Title
+                    </h6>
+                    <p class="mt-2 h-30px">@customPage.RouteName</p>
+                    <small class="text-muted">
                         @customPage.CreateOnUtc
-                    </td>
-                    <td>
-                        <a class="btn btn-primary btn-sm btn-edit" asp-controller="CustomPage" asp-action="Edit" asp-route-id="@customPage.Id">
-                            Edit
-                        </a>
-                        <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" data-routename="@customPage.RouteName" href="javascript:;">
-                            Delete
-                        </a>
-                        <span id="span-processing-@customPage.Id" style="display: none">...</span>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </small>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary btn-sm btn-edit" asp-controller="CustomPage" asp-action="Edit" asp-route-id="@customPage.Id">
+                        Edit
+                    </a>
+                    <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" data-routename="@customPage.RouteName" href="javascript:;">
+                        Delete
+                    </a>
+                    <span id="span-processing-@customPage.Id" style="display: none">...</span>
+                </div>
+            </div>
+        }
+    </div>
 }
 else
 {
