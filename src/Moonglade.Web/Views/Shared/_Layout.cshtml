@@ -1,11 +1,6 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
-@{
-    var currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
-    var currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
-    var customPageRouteName = ViewContext.RouteData?.Values["routeName"]?.ToString();
-}
 
 <!DOCTYPE html>
 <html>
@@ -66,35 +61,41 @@
                 </button>
                 <div class="collapse navbar-collapse" id="moonglade-navbar-content">
                     <ul class="navbar-nav mr-auto">
-                        <li id="navbar-dropdown-post" class="nav-item @("Category" == currentController ? "dropdown active" : "dropdown")">
-                            <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
-                                <span class="icon-book"></span>
-                                <strong>Categories</strong>
-                            </a>
-                            <cache expires-after="@TimeSpan.FromMinutes(60)">
-                                @await Component.InvokeAsync("CategoryMenu")
-                            </cache>
-                        </li>
+                        <!-- System Nav Menu -->
+                        @if (Settings.Value.SystemNavMenus.Categories)
+                        {
+                            <li id="navbar-dropdown-post" class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
+                                    <span class="icon-book"></span>
+                                    <strong>Categories</strong>
+                                </a>
+                                <cache expires-after="@TimeSpan.FromMinutes(60)">
+                                    @await Component.InvokeAsync("CategoryMenu")
+                                </cache>
+                            </li>
+                        }
 
-                        <li class="nav-item @(string.Compare("Tags", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
-                            <a asp-controller="Tags" asp-action="Index" class="nav-link">
-                                <span class="icon-price-tag"></span>
-                                <strong>Tags</strong>
-                            </a>
-                        </li>
+                        @if (Settings.Value.SystemNavMenus.Tags)
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Tags" asp-action="Index" class="nav-link">
+                                    <span class="icon-price-tag"></span>
+                                    <strong>Tags</strong>
+                                </a>
+                            </li>
+                        }
 
-                        <li class="nav-item @(string.Compare("Archive", currentController, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
-                            <a asp-controller="Archive" asp-action="Index" class="nav-link">
-                                <span class="icon-folder"></span>
-                                <strong>Archive</strong>
-                            </a>
-                        </li>
-                        <li class="nav-item @(string.Compare("about", customPageRouteName, StringComparison.OrdinalIgnoreCase) == 0 ? "active" : null)">
-                            <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about" class="nav-link">
-                                <span class="icon-star-full"></span>
-                                <strong>About</strong>
-                            </a>
-                        </li>
+                        @if (Settings.Value.SystemNavMenus.Archive)
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Archive" asp-action="Index" class="nav-link">
+                                    <span class="icon-folder"></span>
+                                    <strong>Archive</strong>
+                                </a>
+                            </li>
+                        }
+
+                        @await Component.InvokeAsync("Menu")
                     </ul>
                     <form class="form-inline search-form my-2 my-lg-0" asp-controller="Search" asp-action="Index">
                         <input id="term"

@@ -38,6 +38,56 @@ namespace Moonglade.Tests
             return Utils.FormatCopyright2Html(copyrightCode);
         }
 
+        // Valid Urls
+        [TestCase("http://996.icu", ExpectedResult = "http://996.icu")]
+        [TestCase("https://996.icu", ExpectedResult = "https://996.icu")]
+        [TestCase("https://996.icu/", ExpectedResult = "https://996.icu/")]
+        [TestCase("https://996.icu/work996", ExpectedResult = "https://996.icu/work996")]
+        [TestCase("https://996.icu/#", ExpectedResult = "https://996.icu/#")]
+        [TestCase("https://996.icu/#icu", ExpectedResult = "https://996.icu/#icu")]
+        [TestCase("https://996.icu/996#icu", ExpectedResult = "https://996.icu/996#icu")]
+        [TestCase("https://996.icu/why?reason=fubao", ExpectedResult = "https://996.icu/why?reason=fubao")]
+        [TestCase("https://13.107.21.200", ExpectedResult = "https://13.107.21.200")]
+        [TestCase("/", ExpectedResult = "/")]
+        [TestCase("/996/icu", ExpectedResult = "/996/icu")]
+        [TestCase("/996/icu?reason=fubao", ExpectedResult = "/996/icu?reason=fubao")]
+        [TestCase("https://internalsystem/996/icu", ExpectedResult = "https://internalsystem/996/icu")]
+        // Invalid Urls
+        [TestCase("https://localhost", ExpectedResult = "#")]
+        [TestCase("https://localhost:996", ExpectedResult = "#")]
+        [TestCase("http://localhost/icu", ExpectedResult = "#")]
+        [TestCase("https://192.168.0.1", ExpectedResult = "#")]
+        [TestCase("https://127.0.0.1", ExpectedResult = "#")]
+        [TestCase("https://10.0.0.1", ExpectedResult = "#")]
+        [TestCase("192.168.0.1", ExpectedResult = "#")]
+        [TestCase("../", ExpectedResult = "#")]
+        [TestCase("./", ExpectedResult = "#")]
+        [TestCase("//", ExpectedResult = "#")]
+        [TestCase(@"/\", ExpectedResult = "#")]
+        [TestCase("", ExpectedResult = "#")]
+        [TestCase(" ", ExpectedResult = "#")]
+        [TestCase(null, ExpectedResult = "#")]
+        [TestCase("javascript:;", ExpectedResult = "#")]
+        [TestCase("javascript:while(true){alert('fuck')};", ExpectedResult = "#")]
+        [TestCase("blob:https://996.icu/fubao", ExpectedResult = "#")]
+        public string TestSterilizeMenuLink(string rawUrl)
+        {
+            return Utils.SterilizeMenuLink(rawUrl);
+        }
+
+        [TestCase("127.0.0.1", ExpectedResult = true)]
+        [TestCase("192.168.0.1", ExpectedResult = true)]
+        [TestCase("10.0.0.1", ExpectedResult = true)]
+        [TestCase("172.16.0.1", ExpectedResult = true)]
+        [TestCase("172.31.0.1", ExpectedResult = true)]
+        [TestCase("172.22.0.1", ExpectedResult = true)]
+        [TestCase("172.251.0.1", ExpectedResult = false)]
+        [TestCase("4.2.2.1", ExpectedResult = false)]
+        public bool TestIsPrivateIP(string ip)
+        {
+            return Utils.IsPrivateIP(ip);
+        }
+
         [Test]
         public void TestFormatCopyright2HtmlHappyPathWithYear()
         {

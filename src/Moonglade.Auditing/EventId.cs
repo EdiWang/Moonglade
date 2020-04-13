@@ -47,6 +47,10 @@ namespace Moonglade.Auditing
         PageUpdated = 7002,
         PageDeleted = 7003,
 
-        PingbackDeleted = 8001
+        PingbackDeleted = 8001,
+
+        MenuCreated = 9001,
+        MenuUpdated = 9002,
+        MenuDeleted = 9003
     }
 }
