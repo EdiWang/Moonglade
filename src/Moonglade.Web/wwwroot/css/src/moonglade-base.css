@@ -203,6 +203,7 @@
 .post-content img {
     min-width: 4px;
     min-height: 4px;
+    cursor: pointer;
 }
 
 #img-captcha {
@@ -908,7 +909,15 @@ body {
     border-top: 1px solid rgba(255,255,255,.15) !important;
 }
 
+#imgzoom {
+    width: max-content;
+    height: max-content;
+    margin: 0 auto;
+}
 
+.modal-imgzoom {
+    display: table;
+}
 
 .moonglade-logo {
     font-family: SairaSemiCondensed-Bold;

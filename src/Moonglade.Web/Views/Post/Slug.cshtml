@@ -61,6 +61,7 @@
 
             postSlug.registerRatingButtons(pid);
             postSlug.resizeImages();
+            postSlug.applyImageZooming();
             postSlug.renderCodeHighlighter();
 
             @if (null == ViewBag.IsDraftPreview)
@@ -310,4 +311,12 @@
 
 <div class="lightswitch border rounded">
     <span id="lighticon" class="icon-sun-o"></span>
+</div>
+
+<div class="modal fade" id="imgzoomModal" tabindex="-1" role="dialog" aria-labelledby="imgzoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-imgzoom" role="document">
+        <div class="modal-content">
+            <img id="imgzoom" alt="imgzoom" />
+        </div>
+    </div>
 </div>
