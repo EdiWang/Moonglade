@@ -203,6 +203,7 @@
 .post-content img {
     min-width: 4px;
     min-height: 4px;
+    cursor: pointer;
 }
 
 #img-captcha {
