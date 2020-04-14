@@ -15,6 +15,9 @@
 }
 
 @media (max-width: 767px) {
+    .post-content img {
+        cursor: inherit;
+    }
 
     .post-publish-info {
         padding: 5px;

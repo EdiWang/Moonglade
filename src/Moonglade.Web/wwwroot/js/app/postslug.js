@@ -22,12 +22,14 @@
         $('.post-content img').removeAttr('width');
         $('.post-content img').addClass('img-fluid img-thumbnail');
     },
-    applyImageZooming: function() {
-        $('.post-content img').click(function(e) {
-            var src = $(this).attr('src');
-            $('#imgzoom').attr('src', src);
-            $('#imgzoomModal').modal();
-        });
+    applyImageZooming: function () {
+        if (getResponsiveBreakpoint() !== 'xs') {
+            $('.post-content img').click(function (e) {
+                var src = $(this).attr('src');
+                $('#imgzoom').attr('src', src);
+                $('#imgzoomModal').modal();
+            });
+        }
     },
     renderCodeHighlighter: function () {
         $('pre').each(function (i, pre) {
