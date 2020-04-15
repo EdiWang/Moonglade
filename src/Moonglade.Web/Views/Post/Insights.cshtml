@@ -14,7 +14,7 @@
                 <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Created</th>
+                        <th>Published</th>
                         <th>Reads</th>
                     </tr>
                 </thead>
@@ -31,7 +31,7 @@
                                     @post.Title
                                 </a>
                             </td>
-                            <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy")</td>
+                            <td class="text-muted">@post.PubDateUtc.GetValueOrDefault().ToString("MM/dd/yyyy")</td>
                             <td>
                                 @post.Hits
                             </td>

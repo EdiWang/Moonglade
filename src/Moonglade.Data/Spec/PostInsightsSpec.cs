@@ -6,7 +6,10 @@ namespace Moonglade.Data.Spec
 {
     public sealed class PostInsightsSpec : BaseSpecification<PostEntity>
     {
-        public PostInsightsSpec(PostInsightsType insightsType, int top) : base(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished)
+        public PostInsightsSpec(PostInsightsType insightsType, int top) : 
+            base(p => !p.PostPublish.IsDeleted 
+                      && p.PostPublish.IsPublished 
+                      && p.PostPublish.PubDateUtc >= DateTime.UtcNow.AddYears(-1))
         {
             switch (insightsType)
             {
@@ -19,8 +22,6 @@ namespace Moonglade.Data.Spec
                 default:
                     throw new ArgumentOutOfRangeException(nameof(insightsType), insightsType, null);
             }
-
-            AddCriteria(p => p.PostPublish.PubDateUtc >= DateTime.UtcNow.AddYears(-1));
 
             ApplyPaging(0, top);
         }
