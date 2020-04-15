@@ -45,13 +45,14 @@ Build and run ```./src/Moonglade.sln```
 
 > Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
+**For production, it is strongly recommended to use Environment Variables over appsetting.json file.**
+
 ### Authentication
 
-#### Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))
+#### [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/)) (Preferred)
 
-Register an App in **Azure Active Directory**
-- Set Redirection URI to **"https://yourdomain/signin-oidc"**
-  - For local debugging, add URL to https://localhost:1055/signin-oidc
+- Register an App in **Azure Active Directory**
+- Set Redirection URI to **"https://yourdomain/signin-oidc"** (For local debugging, also add URL to https://localhost:1055/signin-oidc)
 - Check `ID Tokens` checkbox under 'Advanced settings'.
 - Copy ```appId``` to set as ```AzureAd:ClientId``` in **appsettings.[env].json** file
 
@@ -66,18 +67,18 @@ Register an App in **Azure Active Directory**
 }
 ```
 
-#### Alternative: Local Account
+#### Local Account (Alternative)
 
 Set ```Authentication:Provider``` to ```"Local"``` and assign a pair of username and password. 
 
-*Currently password is not encrypted, use it at your own risk.*
+*Password is not encrypted, use it at your own risk.*
 
 ```json
 "Authentication": {
   "Provider": "Local",
   "Local": {
-    "Username": "{YOUR-VALUE}",
-    "Password": "{YOUR-VALUE}",
+    "Username": "admin",
+    "Password": "admin123",
   }
 }
 ```
@@ -122,8 +123,6 @@ If ```GetImageByCDNRedirect``` is set to ```true```, the blog will get images fr
 
 If you need email notification for new comments, new replies and pingbacks, you have to setup the Moonglade.Notification API first. See https://github.com/EdiWang/Moonglade.Notification for instructions.
 
-Update AppSettings
-
 ```json
 "Notification": {
   "Enabled": true,
@@ -152,34 +151,3 @@ AutoDarkLightTheme | ```bool``` | Automatically switch light or dark theme on po
 ### Does this blog coupled with Microsoft Azure?
 
 No, the system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
-
-## 🎁 Related Projects
-
-> Below open source projects are reusable components (NuGet packages) used in my blog, and they can be used in other websites as well. 
-
-Repository | Nuget
---- | ---
-[Edi.Captcha.AspNetCore](https://github.com/EdiWang/Edi.Captcha.AspNetCore) | [![NuGet][main-nuget-badge-3]][main-nuget-3]
-[Edi.ImageWatermark](https://github.com/EdiWang/Edi.ImageWatermark) | [![NuGet][main-nuget-badge-4]][main-nuget-4]
-[Edi.Net.AesEncryption](https://github.com/EdiWang/Edi.Net.AesEncryption) | [![NuGet][main-nuget-badge-5]][main-nuget-5]
-[Edi.Practice.RequestResponseModel](https://github.com/EdiWang/Edi.Practice.RequestResponseModel) | [![NuGet][main-nuget-badge-6]][main-nuget-6]
-[Edi.TemplateEmail](https://github.com/EdiWang/Edi.TemplateEmail) | [![NuGet][main-nuget-badge-8]][main-nuget-8]
-[Edi.WordFilter](https://github.com/EdiWang/Edi.WordFilter) | [![NuGet][main-nuget-badge-9]][main-nuget-9]
-
-[main-nuget-3]: https://www.nuget.org/packages/Edi.Captcha/
-[main-nuget-badge-3]: https://img.shields.io/nuget/v/Edi.Captcha.svg?style=flat-square&label=nuget
-
-[main-nuget-4]: https://www.nuget.org/packages/Edi.ImageWatermark/
-[main-nuget-badge-4]: https://img.shields.io/nuget/v/Edi.ImageWatermark.svg?style=flat-square&label=nuget
-
-[main-nuget-5]: https://www.nuget.org/packages/Edi.Net.AesEncryption/
-[main-nuget-badge-5]: https://img.shields.io/nuget/v/Edi.Net.AesEncryption.svg?style=flat-square&label=nuget
-
-[main-nuget-6]: https://www.nuget.org/packages/Edi.Practice.RequestResponseModel/
-[main-nuget-badge-6]: https://img.shields.io/nuget/v/Edi.Practice.RequestResponseModel.svg?style=flat-square&label=nuget
-
-[main-nuget-8]: https://www.nuget.org/packages/Edi.TemplateEmail/
-[main-nuget-badge-8]: https://img.shields.io/nuget/v/Edi.TemplateEmail.svg?style=flat-square&label=nuget
-
-[main-nuget-9]: https://www.nuget.org/packages/Edi.WordFilter/
-[main-nuget-badge-9]: https://img.shields.io/nuget/v/Edi.WordFilter.svg?style=flat-square&label=nuget
