@@ -31,6 +31,7 @@ namespace Moonglade.Data.Infrastructure
         {
             if (null != Criteria)
             {
+                // TODO: Check if this never gets called because the child class constructor didn't finish executing while invoking AddCriteria()
                 Criteria.AndAlso(criteria);
             }
             else
