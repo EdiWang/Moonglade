@@ -20,7 +20,7 @@ Tools | Alternative
 [Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
 [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) | [SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) / LocalDB (Dev Only)
 
-### Setup Database
+###  Setup Database
 
 Development | Production 
 --- | ---
@@ -35,7 +35,7 @@ Update the ```MoongladeDatabase``` as your database connection string in **appse
 "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;"
 ```
 
-### Build Source
+### 🔨 Build Source
 
 Build and run ```./src/Moonglade.sln```
 - Default Admin Username: ```admin```
@@ -45,7 +45,7 @@ Build and run ```./src/Moonglade.sln```
 
 > Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
-### Authentication
+### 🛡 Authentication
 
 #### Preferred: [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/))
 
@@ -82,7 +82,7 @@ Set ```Authentication:Provider``` to ```"Local"``` and assign a pair of username
 }
 ```
 
-### Image Storage
+### 🖼 Image Storage
 ```AppSettings:ImageStorage``` controls how blog post images are stored.
 
 #### [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) (Preferred)
@@ -97,7 +97,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 }
 ```
 
-#### File System (Alternative)
+#### 📂 File System (Alternative)
 
 ```json
 "Provider": "filesystem",
@@ -107,7 +107,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 ```
 The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the website's current directory. Storing images files under website directory is **NOT** recommended. 
 
-#### CDN
+#### ☁ CDN
 
 If ```GetImageByCDNRedirect``` is set to ```true```, the blog will get images from client browser using a 302 redirect. This is especially useful when you have a CDN for your image resources, like what I did on Azure. 
 
@@ -118,7 +118,7 @@ If ```GetImageByCDNRedirect``` is set to ```true```, the blog will get images fr
 }
 ```
 
-### Email Notification
+### 📧 Email Notification
 
 If you need email notification for new comments, new replies and pingbacks, you have to setup the Moonglade.Notification API first. See https://github.com/EdiWang/Moonglade.Notification for instructions.
 
@@ -132,7 +132,7 @@ Update AppSettings
 }
 ```
 
-### System Setttings
+### 🖥 System Setttings
 
 Key | Data Type | Description
 --- | --- | ---
