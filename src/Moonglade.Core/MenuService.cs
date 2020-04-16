@@ -24,6 +24,16 @@ namespace Moonglade.Core
             _menuRepository = menuRepository;
         }
 
+        public Task<Response<MenuModel>> GetMenuAsync(Guid id)
+        {
+            return TryExecuteAsync<MenuModel>(async () =>
+            {
+                var entity = await _menuRepository.GetAsync(id);
+                var item = EntityToMenuModel(entity);
+                return new SuccessResponse<MenuModel>(item);
+            });
+        }
+
         public Task<Response<IReadOnlyList<MenuModel>>> GetAllMenus()
         {
             return TryExecuteAsync<IReadOnlyList<MenuModel>>(async () =>
@@ -53,6 +63,23 @@ namespace Moonglade.Core
                 _menuRepository.Delete(id);
                 return new SuccessResponse();
             });
+        }
+
+        private MenuModel EntityToMenuModel(MenuEntity entity)
+        {
+            if (null == entity)
+            {
+                return null;
+            }
+
+            return new MenuModel
+            {
+                Id = entity.Id,
+                Title = entity.Title.Trim(),
+                DisplayOrder = entity.DisplayOrder,
+                Icon = entity.Icon.Trim(),
+                Url = entity.Url.Trim()
+            };
         }
     }
 }
