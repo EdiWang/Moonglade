@@ -13,13 +13,13 @@
     <script>
         $(".btn-delete").click(function () {
             var tagid = $(this).data("tagid");
-            var cfm = confirm("Confirm to delete tag: " + $(this).text().trim());
+            var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
             if (cfm) {
                 ajaxPostWithCSRFToken("delete",
                     {
                         tagId: tagid
                     }, function (data) {
-                        $("#li-tag-" + data).hide();
+                        $(`#li-tag-${data}`).hide();
                     });
             }
         });
@@ -33,7 +33,7 @@
                     newTagName: newTagName
                 },
                 function (data) {
-                    $("#li-tag-" + data.tagId).addClass("updated");
+                    $(`#li-tag-${data.tagId}`).addClass("updated");
                 });
         });
     </script>
