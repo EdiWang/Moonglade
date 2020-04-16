@@ -3,11 +3,25 @@
 }
 @model NavMenuManageViewModel
 
+@section scripts{
+    <script>
+        function initCreateMenu() {
+            $("#edit-form")[0].reset();
+            $('#editMenuModal').modal();
+        }
+    </script>
+}
+
 <partial name="_SettingsHeader" />
 
 <div class="alert alert-info">
     To turn on / off system navigation items (Categories / Tags / Archive), edit appsettings.json or override with environment variables.
 </div>
+
+<a class="btn btn-outline-success" href="javascript:initCreateMenu();">
+    <span class="icon-plus"></span>
+    Create
+</a>
 
 @if (null != Model.MenuItems && Model.MenuItems.Any())
 {
@@ -37,3 +51,47 @@ else
 {
     <div class="alert alert-info">No Customized Menus</div>
 }
+
+<div class="modal fade" id="editMenuModal" tabindex="-1" role="dialog" aria-labelledby="editMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMenuModalLabel">Menu Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="edit-form" method="post">
+                <div class="modal-body">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="NavMenuEditViewModel.Id" />
+                    <div class="form-group">
+                        <label asp-for="NavMenuEditViewModel.Title" class="control-label"></label>
+                        <input asp-for="NavMenuEditViewModel.Title" class="form-control" />
+                        <span asp-validation-for="NavMenuEditViewModel.Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="NavMenuEditViewModel.Url" class="control-label"></label>
+                        <input asp-for="NavMenuEditViewModel.Url" class="form-control" />
+                        <span asp-validation-for="NavMenuEditViewModel.Url" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="NavMenuEditViewModel.Icon" class="control-label"></label>
+                        <input asp-for="NavMenuEditViewModel.Icon" class="form-control" />
+                        <span asp-validation-for="NavMenuEditViewModel.Icon" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="NavMenuEditViewModel.DisplayOrder" class="control-label"></label>
+                        <input asp-for="NavMenuEditViewModel.DisplayOrder" class="form-control" />
+                        <span asp-validation-for="NavMenuEditViewModel.DisplayOrder" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-submit">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
