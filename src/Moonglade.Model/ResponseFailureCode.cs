@@ -10,9 +10,6 @@
 
         // post
         PostNotFound = 100,
-        ExtensionNameIsNull = 101,
-        ImageNotExistInAzureBlob = 102,
-        ImageNotExistInFileSystem = 103,
 
         // comment
         CommentDisabled = 200,

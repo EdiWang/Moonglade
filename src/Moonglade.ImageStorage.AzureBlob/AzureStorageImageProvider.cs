@@ -5,7 +5,6 @@ using Edi.Practice.RequestResponseModel;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
-using Moonglade.Model;
 
 namespace Moonglade.ImageStorage.AzureBlob
 {
@@ -73,7 +72,7 @@ namespace Moonglade.ImageStorage.AzureBlob
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error uploading file {fileName} to Azure, it must be my problem, not Microsoft.");
-                return new FailedResponse<string>((int)ResponseFailureCode.GeneralException, e.Message, e);
+                return new FailedResponse<string>((int)ImageResponseCode.GeneralException, e.Message, e);
             }
         }
 
@@ -86,12 +85,12 @@ namespace Moonglade.ImageStorage.AzureBlob
                 {
                     return new SuccessResponse();
                 }
-                return new FailedResponse((int)ResponseFailureCode.ImageNotExistInAzureBlob);
+                return new FailedResponse((int)ImageResponseCode.ImageNotExistInAzureBlob);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error deleting file {fileName} on Azure, it must be my problem, not Microsoft.");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException)
+                return new FailedResponse((int)ImageResponseCode.GeneralException)
                 {
                     Exception = e,
                     Message = e.Message
@@ -106,7 +105,7 @@ namespace Moonglade.ImageStorage.AzureBlob
             var extension = Path.GetExtension(fileName);
             if (string.IsNullOrWhiteSpace(extension))
             {
-                return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ExtensionNameIsNull);
+                return new FailedResponse<ImageInfo>((int)ImageResponseCode.ExtensionNameIsNull);
             }
 
             // This needs to try-catch 404 status now :(
@@ -115,7 +114,7 @@ namespace Moonglade.ImageStorage.AzureBlob
             //if (!exists)
             //{
             //    _logger.LogWarning($"Blob {fileName} not exist.");
-            //    return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ImageNotExistInAzureBlob);
+            //    return new FailedResponse<ImageInfo>((int)ImageResponseCode.ImageNotExistInAzureBlob);
             //}
 
             try
@@ -136,7 +135,7 @@ namespace Moonglade.ImageStorage.AzureBlob
             {
                 if (e.Status == 404)
                 {
-                    return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ImageNotExistInAzureBlob);
+                    return new FailedResponse<ImageInfo>((int)ImageResponseCode.ImageNotExistInAzureBlob);
                 }
 
                 throw;

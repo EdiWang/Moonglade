@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
-using Moonglade.Model;
 
 namespace Moonglade.ImageStorage.FileSystem
 {
@@ -31,7 +30,7 @@ namespace Moonglade.ImageStorage.FileSystem
 
                 if (!File.Exists(imagePath))
                 {
-                    return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ImageNotExistInFileSystem);
+                    return new FailedResponse<ImageInfo>((int)ImageResponseCode.ImageNotExistInFileSystem);
                 }
 
                 var extension = Path.GetExtension(imagePath);
@@ -50,7 +49,7 @@ namespace Moonglade.ImageStorage.FileSystem
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting image file {fileName}");
-                return new FailedResponse<ImageInfo>((int)ResponseFailureCode.GeneralException)
+                return new FailedResponse<ImageInfo>((int)ImageResponseCode.GeneralException)
                 {
                     Exception = e,
                     Message = e.Message
@@ -69,12 +68,12 @@ namespace Moonglade.ImageStorage.FileSystem
                     File.Delete(imagePath);
                     return new SuccessResponse();
                 }
-                return new FailedResponse<ImageInfo>((int)ResponseFailureCode.ImageNotExistInFileSystem);
+                return new FailedResponse<ImageInfo>((int)ImageResponseCode.ImageNotExistInFileSystem);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error deleting image file {fileName}");
-                return new FailedResponse<ImageInfo>((int)ResponseFailureCode.GeneralException)
+                return new FailedResponse<ImageInfo>((int)ImageResponseCode.GeneralException)
                 {
                     Exception = e,
                     Message = e.Message
@@ -107,7 +106,7 @@ namespace Moonglade.ImageStorage.FileSystem
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error writing image file {fileName}");
-                return new FailedResponse<string>((int)ResponseFailureCode.GeneralException)
+                return new FailedResponse<string>((int)ImageResponseCode.GeneralException)
                 {
                     Exception = e,
                     Message = e.Message

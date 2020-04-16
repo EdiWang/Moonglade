@@ -12,6 +12,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
-    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
   </ItemGroup>
 </Project>
