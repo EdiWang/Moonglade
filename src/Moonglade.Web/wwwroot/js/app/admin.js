@@ -139,17 +139,17 @@ var postEditor = {
                 images_upload_credentials: true,
                 content_css: '/css/tinymce-editor-bs-bundle.min.css',
                 codesample_languages: [
+                    { text: 'C#', value: 'csharp' },
+                    { text: 'Bash', value: 'bash' },
                     { text: 'HTML/XML', value: 'markup' },
                     { text: 'JavaScript', value: 'javascript' },
                     { text: 'CSS', value: 'css' },
                     { text: 'PHP', value: 'php' },
                     { text: 'Ruby', value: 'ruby' },
                     { text: 'Python', value: 'python' },
-                    { text: 'Java', value: 'java' },
+                    { text: 'Json', value: 'json' },
                     { text: 'C', value: 'c' },
-                    { text: 'C#', value: 'csharp' },
                     { text: 'C++', value: 'cpp' },
-                    { text: 'Bash', value: 'bash' },
                     { text: 'Visual Basic', value: 'vb' },
                     { text: 'PowerShell', value: 'powershell' }
                 ]
