@@ -146,6 +146,7 @@ var postEditor = {
                     { text: 'Ruby', value: 'ruby' },
                     { text: 'Python', value: 'python' },
                     { text: 'Java', value: 'java' },
+                    { text: 'Json', value: 'json' },
                     { text: 'C', value: 'c' },
                     { text: 'C#', value: 'csharp' },
                     { text: 'C++', value: 'cpp' },
