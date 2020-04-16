@@ -39,5 +39,20 @@ namespace Moonglade.Core
                 return new SuccessResponse<IReadOnlyList<MenuModel>>(list);
             });
         }
+
+        public Response DeleteMenu(Guid id)
+        {
+            return TryExecute(() =>
+            {
+                var menu = _menuRepository.Get(id);
+                if (null == menu)
+                {
+                    throw new InvalidOperationException($"MenuEntity with Id '{id}' is not found.");
+                }
+
+                _menuRepository.Delete(id);
+                return new SuccessResponse();
+            });
+        }
     }
 }
