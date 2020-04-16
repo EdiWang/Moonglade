@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
@@ -15,13 +16,16 @@ namespace Moonglade.Core
     public class MenuService : MoongladeService
     {
         private readonly IRepository<MenuEntity> _menuRepository;
+        private readonly IMoongladeAudit _moongladeAudit;
 
         public MenuService(
             ILogger<MenuService> logger,
             IOptions<AppSettings> settings, 
-            IRepository<MenuEntity> menuRepository) : base(logger, settings)
+            IRepository<MenuEntity> menuRepository, 
+            IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
             _menuRepository = menuRepository;
+            _moongladeAudit = moongladeAudit;
         }
 
         public Task<Response<MenuModel>> GetMenuAsync(Guid id)
