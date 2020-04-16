@@ -76,6 +76,31 @@ namespace Moonglade.Core
             });
         }
 
+        public Task<Response<Guid>> EditMenuAsync(EditMenuRequest request)
+        {
+            return TryExecuteAsync<Guid>(async () =>
+            {
+                var menu = await _menuRepository.GetAsync(request.Id);
+                if (null == menu)
+                {
+                    throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' is not found.");
+                }
+
+                var sUrl = Utils.SterilizeMenuLink(request.Url.Trim());
+                Logger.LogInformation($"Sterilized URL from '{request.Url}' to '{sUrl}'");
+
+                menu.Title = request.Title.Trim();
+                menu.Url = sUrl;
+                menu.DisplayOrder = request.DisplayOrder;
+                menu.Icon = request.Icon;
+
+                await _menuRepository.UpdateAsync(menu);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.MenuUpdated, $"Menu '{request.Id}' updated.");
+
+                return new SuccessResponse<Guid>(menu.Id);
+            });
+        }
+
         public Response DeleteMenu(Guid id)
         {
             return TryExecute(() =>
