@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Models.Settings
+namespace Moonglade.Model
 {
     public class CreateMenuRequest
     {
