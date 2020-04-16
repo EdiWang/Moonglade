@@ -20,9 +20,9 @@
         });
 
         function deleteCat(catid) {
-            $("#span-processing-" + catid).show();
+            $(`#span-processing-${catid}`).show();
             ajaxPostWithCSRFToken("manage/delete", { id: catid }, function (data) {
-                $("#card-" + data).hide();
+                $(`#card-${data}`).hide();
             });
         }
 
@@ -62,7 +62,7 @@
                     function (data) {
                         $("#edit-form")[0].reset();
                         $("#editCatModal").modal('hide');
-                        toastr.success('Operation succeed, please refresh page.');
+                        window.location.reload();
                     });
             }
         });
