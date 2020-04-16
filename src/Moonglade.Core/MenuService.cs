@@ -10,6 +10,7 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -20,8 +21,8 @@ namespace Moonglade.Core
 
         public MenuService(
             ILogger<MenuService> logger,
-            IOptions<AppSettings> settings, 
-            IRepository<MenuEntity> menuRepository, 
+            IOptions<AppSettings> settings,
+            IRepository<MenuEntity> menuRepository,
             IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
             _menuRepository = menuRepository;
@@ -51,6 +52,27 @@ namespace Moonglade.Core
                     Url = p.Url
                 });
                 return new SuccessResponse<IReadOnlyList<MenuModel>>(list);
+            });
+        }
+
+        public Task<Response<Guid>> CreateMenuAsync(CreateMenuRequest request)
+        {
+            return TryExecuteAsync<Guid>(async () =>
+            {
+                var uid = Guid.NewGuid();
+                var menu = new MenuEntity
+                {
+                    Id = uid,
+                    Title = request.Title.Trim(),
+                    DisplayOrder = request.DisplayOrder,
+                    Icon = request.Icon,
+                    Url = request.Url
+                };
+
+                await _menuRepository.AddAsync(menu);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.MenuCreated, $"Menu '{menu.Id}' created.");
+
+                return new SuccessResponse<Guid>(uid);
             });
         }
 
