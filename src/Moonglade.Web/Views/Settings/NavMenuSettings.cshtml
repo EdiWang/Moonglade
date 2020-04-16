@@ -8,3 +8,32 @@
 <div class="alert alert-info">
     To turn on / off system navigation items (Categories / Tags / Archive), edit appsettings.json or override with environment variables.
 </div>
+
+@if (null != Model.MenuItems && Model.MenuItems.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>URL</th>
+                <th>Icon</th>
+                <th>Order</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.MenuItems.OrderBy(p => p.DisplayOrder))
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Url</td>
+                    <td>@item.Icon</td>
+                    <td>@item.DisplayOrder</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">No Customized Menus</div>
+}
