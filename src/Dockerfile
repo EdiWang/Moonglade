@@ -24,6 +24,7 @@ COPY ["Moonglade.Configuration/Moonglade.Configuration.csproj", "Moonglade.Confi
 COPY ["Moonglade.Core/Moonglade.Core.csproj", "Moonglade.Core/"]
 # Data
 COPY ["Moonglade.Data/Moonglade.Data.csproj", "Moonglade.Data/"]
+COPY ["Moonglade.Data/Moonglade.Data.Entities.csproj", "Moonglade.Data.Entities/"]
 COPY ["Moonglade.Setup/Moonglade.Setup.csproj", "Moonglade.Setup/"]
 # ImageStorage
 COPY ["Moonglade.ImageStorage/Moonglade.ImageStorage.csproj", "Moonglade.ImageStorage/"]
