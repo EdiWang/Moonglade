@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Net;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Edi.Captcha;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
@@ -12,6 +14,7 @@ using Moonglade.Core.Notification;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
+using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
@@ -90,12 +93,12 @@ namespace Moonglade.Web.Controllers
                     switch (response.ResponseCode)
                     {
                         case (int)ResponseFailureCode.EmailDomainBlocked:
-                            Logger.LogWarning($"User email domain is blocked. model: {JsonSerializer.Serialize(model)}");
+                            Logger.LogWarning("User email domain is blocked.");
                             Response.StatusCode = (int)HttpStatusCode.Forbidden;
                             failedResponse = new CommentResponse(false, CommentResponseCode.EmailDomainBlocked);
                             break;
                         case (int)ResponseFailureCode.CommentDisabled:
-                            Logger.LogWarning($"Comment is disabled in settings, but user somehow called NewComment() method. model: {JsonSerializer.Serialize(model)}");
+                            Logger.LogWarning("Comment is disabled in settings, but user somehow called NewComment() method.");
                             Response.StatusCode = (int)HttpStatusCode.Forbidden;
                             failedResponse = new CommentResponse(false, CommentResponseCode.CommentDisabled);
                             break;
@@ -118,28 +121,72 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        public class CommentResponse
+        #region Management
+
+        [Authorize]
+        [Route("manage")]
+        public async Task<IActionResult> Manage(int page = 1)
         {
-            public bool IsSuccess { get; set; }
+            const int pageSize = 10;
+            var commentList = await _commentService.GetPagedCommentAsync(pageSize, page);
+            var commentsAsIPagedList =
+                new StaticPagedList<CommentListItem>(commentList.Item, page, pageSize, _commentService.CountComments());
+            return View(commentsAsIPagedList);
+        }
 
-            public CommentResponseCode ResponseCode { get; set; }
-
-            public CommentResponse(bool isSuccess, CommentResponseCode responseCode)
+        [Authorize]
+        [HttpPost("set-approval-status")]
+        public async Task<IActionResult> SetApprovalStatus(Guid commentId)
+        {
+            var response = await _commentService.ToggleApprovalStatusAsync(new[] { commentId });
+            if (response.IsSuccess)
             {
-                IsSuccess = isSuccess;
-                ResponseCode = responseCode;
+                Logger.LogInformation($"User '{User.Identity.Name}' updated approval status of comment id '{commentId}'");
+                return Json(commentId);
             }
+
+            Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return Json(response.ResponseCode);
         }
 
-        public enum CommentResponseCode
+        [Authorize]
+        [HttpPost("delete")]
+        public async Task<IActionResult> Delete(Guid commentId)
         {
-            Success = 100,
-            SuccessNonReview = 101,
-            UnknownError = 200,
-            WrongCaptcha = 300,
-            EmailDomainBlocked = 400,
-            CommentDisabled = 500,
-            InvalidModel = 600
+            var response = await _commentService.DeleteCommentsAsync(new[] { commentId });
+            Logger.LogInformation($"User '{User.Identity.Name}' deleting comment id '{commentId}'");
+
+            return response.IsSuccess ? Json(commentId) : Json(false);
         }
+
+        [Authorize]
+        [HttpPost("reply")]
+        public async Task<IActionResult> Reply(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
+        {
+            var response = await _commentService.AddReply(
+                commentId,
+                replyContent,
+                HttpContext.Connection.RemoteIpAddress.ToString(),
+                GetUserAgent());
+
+            if (!response.IsSuccess)
+            {
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
+                return Json(response);
+            }
+
+            if (_blogConfig.EmailSettings.SendEmailOnCommentReply)
+            {
+                var postLink = GetPostUrl(linkGenerator, response.Item.PubDateUtc, response.Item.Slug);
+                _ = Task.Run(async () =>
+                {
+                    await _notificationClient.SendCommentReplyNotificationAsync(response.Item, postLink);
+                });
+            }
+
+            return Json(response.Item);
+        }
+
+        #endregion
     }
 }
