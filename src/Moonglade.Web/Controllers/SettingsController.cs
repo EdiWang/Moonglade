@@ -680,8 +680,6 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        #region NavMenu
-
         [HttpGet("navmenu-settings")]
         public async Task<IActionResult> NavMenuSettings([FromServices] MenuService menuService)
         {
@@ -698,87 +696,6 @@ namespace Moonglade.Web.Controllers
 
             return ServerError(menuItemsResp.Message);
         }
-
-        [HttpPost("navmenu/create")]
-        public async Task<IActionResult> CreateNavMenu(NavMenuEditViewModel model, [FromServices] MenuService menuService)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var request = new CreateMenuRequest
-                    {
-                        DisplayOrder = model.DisplayOrder,
-                        Icon = model.Icon,
-                        Title = model.Title,
-                        Url = model.Url
-                    };
-
-                    var response = await menuService.CreateMenuAsync(request);
-                    if (response.IsSuccess)
-                    {
-                        return Json(response);
-                    }
-
-                    Logger.LogError($"Create menu failed: {response.Message}");
-                    ModelState.AddModelError("", response.Message);
-                    return BadRequest("Create Menu Failed.");
-                }
-                return BadRequest("Invalid ModelState");
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Create Nav Menu.");
-
-                ModelState.AddModelError("", e.Message);
-                return ServerError(e.Message);
-            }
-        }
-
-        [HttpPost("navmenu/delete")]
-        public async Task<IActionResult> DeleteNavMenu(Guid id, [FromServices] MenuService menuService)
-        {
-            try
-            {
-                Logger.LogInformation($"Deleting Menu id: {id}");
-                var response = await menuService.DeleteMenu(id);
-                if (response.IsSuccess)
-                {
-                    return Json(id);
-                }
-
-                Logger.LogError(response.Message);
-                return ServerError();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Delete Menu.");
-                return ServerError();
-            }
-        }
-
-        [HttpGet("navmenu/edit/{id:guid}")]
-        public async Task<IActionResult> EditNavMenu(Guid id, [FromServices] MenuService menuService)
-        {
-            var r = await menuService.GetMenuAsync(id);
-            if (r.IsSuccess && null != r.Item)
-            {
-                var model = new NavMenuEditViewModel
-                {
-                    Id = r.Item.Id,
-                    DisplayOrder = r.Item.DisplayOrder,
-                    Icon = r.Item.Icon,
-                    Title = r.Item.Title,
-                    Url = r.Item.Url
-                };
-
-                return Json(model);
-            }
-
-            return NotFound();
-        }
-
-        #endregion
 
         [HttpGet("settings-about")]
         public IActionResult About()
