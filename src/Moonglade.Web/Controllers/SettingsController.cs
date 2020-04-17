@@ -697,42 +697,6 @@ namespace Moonglade.Web.Controllers
             return ServerError(menuItemsResp.Message);
         }
 
-        [HttpPost("navmenu/create")]
-        public async Task<IActionResult> CreateNavMenu(NavMenuEditViewModel model, [FromServices] MenuService menuService)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var request = new CreateMenuRequest
-                    {
-                        DisplayOrder = model.DisplayOrder,
-                        Icon = model.Icon,
-                        Title = model.Title,
-                        Url = model.Url
-                    };
-
-                    var response = await menuService.CreateMenuAsync(request);
-                    if (response.IsSuccess)
-                    {
-                        return Json(response);
-                    }
-
-                    Logger.LogError($"Create menu failed: {response.Message}");
-                    ModelState.AddModelError("", response.Message);
-                    return BadRequest("Create Menu Failed.");
-                }
-                return BadRequest("Invalid ModelState");
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Create Nav Menu.");
-
-                ModelState.AddModelError("", e.Message);
-                return ServerError(e.Message);
-            }
-        }
-
         [HttpGet("settings-about")]
         public IActionResult About()
         {

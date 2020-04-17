@@ -5,18 +5,72 @@
 
 @section scripts{
     <script>
+        $(function () {
+            $(".btn-delete").click(function () {
+                var cfm = confirm("Delete Confirmation?");
+                if (cfm) {
+                    deleteMenu($(this).data("menuid"));
+                }
+            });
+
+            $(".btn-edit").click(function () {
+                editMenu($(this).data("menuid"));
+            });
+        });
+
+        function deleteMenu(menuid) {
+            $(`#span-processing-${menuid}`).show();
+            ajaxPostWithCSRFToken("/navmenu/delete", { id: menuid }, function (data) {
+                $(`#tr-${data}`).hide();
+            });
+        }
+
         function initCreateMenu() {
             $("#edit-form")[0].reset();
             $('#editMenuModal').modal();
         }
+
+        function editMenu(id) {
+            $.get(`/navmenu/edit/${id}`, function (data) {
+                $("#NavMenuEditViewModel_Id").val(data.id);
+                $("#NavMenuEditViewModel_Title").val(data.title);
+                $("#NavMenuEditViewModel_Url").val(data.url);
+                $("#NavMenuEditViewModel_Icon").val(data.icon);
+                $("#NavMenuEditViewModel_DisplayOrder").val(data.displayOrder);
+                $("#editMenuModal").modal();
+            });
+        }
+
+        $(".btn-submit").click(function () {
+            if ($("#edit-form").valid()) {
+                var action = '';
+                var menuId = $("#NavMenuEditViewModel_Id").val();
+                if (menuId == '00000000-0000-0000-0000-000000000000') {
+                    action = "create";
+                }
+                else {
+                    action = "edit";
+                }
+
+                ajaxPostWithCSRFToken(`/navmenu/${action}`,
+                    {
+                        "Id": $("#NavMenuEditViewModel_Id").val(),
+                        "Title": $("#NavMenuEditViewModel_Title").val(),
+                        "Url": $("#NavMenuEditViewModel_Url").val(),
+                        "Icon": $("#NavMenuEditViewModel_Icon").val(),
+                        "DisplayOrder": $("#NavMenuEditViewModel_DisplayOrder").val()
+                    },
+                    function (data) {
+                        $("#edit-form")[0].reset();
+                        $("#editMenuModal").modal('hide');
+                        window.location.reload();
+                    });
+            }
+        });
     </script>
 }
 
 <partial name="_SettingsHeader" />
-
-<div class="alert alert-warning">
-    [Work in Progress] This page is not finished yet, if you see this message, I guess you get the code from `master` branch :)
-</div>
 
 <div class="alert alert-info">
     To turn on / off system navigation items (Categories / Tags / Archive), edit appsettings.json or override with environment variables.
@@ -36,16 +90,22 @@
                 <th>URL</th>
                 <th>Icon</th>
                 <th>Order</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.MenuItems.OrderBy(p => p.DisplayOrder))
             {
-                <tr>
+                <tr id="tr-@item.Id">
                     <td>@item.Title</td>
                     <td>@item.Url</td>
                     <td>@item.Icon</td>
                     <td>@item.DisplayOrder</td>
+                    <td>
+                        <a href="javascript:;" data-menuid="@item.Id" class="btn btn-sm btn-primary btn-edit">Edit</a>
+                        <a href="javascript:;" data-menuid="@item.Id" class="btn btn-sm btn-danger btn-delete">Delete</a>
+                        <span id="span-processing-@item.Id" style="display: none">...</span>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -84,6 +144,7 @@ else
                         <label asp-for="NavMenuEditViewModel.Icon" class="control-label"></label>
                         <input asp-for="NavMenuEditViewModel.Icon" class="form-control" />
                         <span asp-validation-for="NavMenuEditViewModel.Icon" class="text-danger"></span>
+                        <p class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</p>
                     </div>
                     <div class="form-group">
                         <label asp-for="NavMenuEditViewModel.DisplayOrder" class="control-label"></label>

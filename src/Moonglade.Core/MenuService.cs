@@ -101,17 +101,19 @@ namespace Moonglade.Core
             });
         }
 
-        public Response DeleteMenu(Guid id)
+        public Task<Response> DeleteMenu(Guid id)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
                 var menu = _menuRepository.Get(id);
                 if (null == menu)
                 {
                     throw new InvalidOperationException($"MenuEntity with Id '{id}' is not found.");
                 }
-
+                
                 _menuRepository.Delete(id);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Menu '{id}' is deleted.");
+                
                 return new SuccessResponse();
             });
         }
