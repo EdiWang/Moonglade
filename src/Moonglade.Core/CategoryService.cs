@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -15,13 +16,16 @@ namespace Moonglade.Core
     {
         private readonly IRepository<CategoryEntity> _categoryRepository;
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
+        private readonly IMoongladeAudit _moongladeAudit;
 
         public CategoryService(ILogger<CategoryService> logger,
             IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostCategoryEntity> postCategoryRepository) : base(logger)
+            IRepository<PostCategoryEntity> postCategoryRepository, 
+            IMoongladeAudit moongladeAudit) : base(logger)
         {
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
+            _moongladeAudit = moongladeAudit;
         }
 
         public Task<Response<IReadOnlyList<Category>>> GetAllCategoriesAsync()
@@ -75,7 +79,7 @@ namespace Moonglade.Core
             }, keyParameter: categoryId);
         }
 
-        public Task<Response<IReadOnlyList<Category>>> GetCategoryListAsync()
+        public Task<Response<IReadOnlyList<Category>>> GetCategoriesAsync()
         {
             return TryExecuteAsync<IReadOnlyList<Category>>(async () =>
             {
@@ -91,63 +95,66 @@ namespace Moonglade.Core
             });
         }
 
-        public Response CreateCategory(CreateCategoryRequest createCategoryRequest)
+        public Task<Response> CreateCategoryAsync(CreateCategoryRequest createCategoryRequest)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
                 var exists = _categoryRepository.Any(c => c.Title == createCategoryRequest.Title);
                 if (exists)
                 {
-                    return new Response { Message = $"CategoryEntity titled {createCategoryRequest.Title} already exists." };
+                    return new Response { Message = $"CategoryEntity titled '{createCategoryRequest.Title}' already exist." };
                 }
 
                 var category = new CategoryEntity
                 {
                     Id = Guid.NewGuid(),
-                    Title = createCategoryRequest.Title,
-                    Note = createCategoryRequest.Note,
-                    DisplayName = createCategoryRequest.DisplayName
+                    Title = createCategoryRequest.Title.Trim(),
+                    Note = createCategoryRequest.Note.Trim(),
+                    DisplayName = createCategoryRequest.DisplayName.Trim()
                 };
 
-                Logger.LogInformation($"Adding new categoryEntity to database: {JsonSerializer.Serialize(category)}");
-                _categoryRepository.Add(category);
+                await _categoryRepository.AddAsync(category);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryCreated, $"Category '{category.Title}' created");
+
                 return new SuccessResponse();
             });
         }
 
-        public Response Delete(Guid id)
+        public Task<Response> DeleteAsync(Guid id)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
                 var exists = _categoryRepository.Any(c => c.Id == id);
-                if (!exists) return new Response { Message = $"CategoryEntity ID {id} not exists." };
+                if (!exists) return new Response { Message = $"CategoryEntity '{id}' not exist." };
 
-                Logger.LogInformation($"Removing Post-Category associations for category id: {id}");
                 var pcs = _postCategoryRepository.Get(pc => pc.CategoryId == id);
                 if (null != pcs)
                 {
-                    _postCategoryRepository.Delete(pcs);
+                    await _postCategoryRepository.DeleteAsync(pcs);
                 }
 
-                Logger.LogInformation($"Removing categoryEntity {id}");
                 _categoryRepository.Delete(id);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Category '{id}' deleted.");
+
                 return new SuccessResponse();
             });
         }
 
-        public Response UpdateCategory(EditCategoryRequest editCategoryRequest)
+        public Task<Response> UpdateCategoryAsync(EditCategoryRequest editCategoryRequest)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
                 var cat = _categoryRepository.Get(editCategoryRequest.Id);
-                if (null == cat) return new Response { Message = $"CategoryEntity id {editCategoryRequest.Id} not found." };
+                if (null == cat) return new Response { Message = $"CategoryEntity id '{editCategoryRequest.Id}' not found." };
 
-                cat.Title = editCategoryRequest.Title;
-                cat.DisplayName = editCategoryRequest.DisplayName;
-                cat.Note = editCategoryRequest.Note;
+                cat.Title = editCategoryRequest.Title.Trim();
+                cat.DisplayName = editCategoryRequest.DisplayName.Trim();
+                cat.Note = editCategoryRequest.Note.Trim();
 
-                var rows = _categoryRepository.Update(cat);
-                return new Response(rows > 0);
+                await _categoryRepository.UpdateAsync(cat);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryUpdated, $"Category '{editCategoryRequest.Id}' updated.");
+
+                return new SuccessResponse();
             });
         }
     }

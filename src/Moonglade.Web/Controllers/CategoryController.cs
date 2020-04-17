@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 using X.PagedList;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -22,22 +20,19 @@ namespace Moonglade.Web.Controllers
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
-        private readonly IMoongladeAudit _moongladeAudit;
 
         public CategoryController(
             ILogger<CategoryController> logger,
             IOptions<AppSettings> settings,
             CategoryService categoryService,
             PostService postService,
-            IBlogConfig blogConfig,
-            IMoongladeAudit moongladeAudit)
+            IBlogConfig blogConfig)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
 
             _blogConfig = blogConfig;
-            _moongladeAudit = moongladeAudit;
         }
 
         [Route("list/{categoryName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
@@ -100,7 +95,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/create")]
-        public IActionResult Create(CategoryEditViewModel model)
+        public async Task<IActionResult> Create(CategoryEditViewModel model)
         {
             try
             {
@@ -113,18 +108,16 @@ namespace Moonglade.Web.Controllers
                         DisplayName = model.DisplayName
                     };
 
-                    var response = _categoryService.CreateCategory(request);
+                    var response = await _categoryService.CreateCategoryAsync(request);
                     if (response.IsSuccess)
                     {
                         DeleteOpmlFile();
-
-                        _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryCreated, $"Category '{request.Title}' is created");
                         return Json(response);
                     }
 
                     Logger.LogError($"Create category failed: {response.Message}");
                     ModelState.AddModelError("", response.Message);
-                    return BadRequest("Invalid ModelState");
+                    return BadRequest("Create category failed");
                 }
 
                 return BadRequest("Invalid ModelState");
@@ -161,7 +154,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/edit")]
-        public IActionResult Edit(CategoryEditViewModel model)
+        public async Task<IActionResult> Edit(CategoryEditViewModel model)
         {
             try
             {
@@ -174,13 +167,11 @@ namespace Moonglade.Web.Controllers
                         DisplayName = model.DisplayName
                     };
 
-                    var response = _categoryService.UpdateCategory(request);
+                    var response = await _categoryService.UpdateCategoryAsync(request);
 
                     if (response.IsSuccess)
                     {
                         DeleteOpmlFile();
-
-                        _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryUpdated, $"Category '{model.Id}' is updated");
                         return Json(response);
                     }
 
@@ -202,17 +193,15 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/delete")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
                 Logger.LogInformation($"Deleting category id: {id}");
-                var response = _categoryService.Delete(id);
+                var response = await _categoryService.DeleteAsync(id);
                 if (response.IsSuccess)
                 {
                     DeleteOpmlFile();
-
-                    _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Category '{id}' is deleted.");
                     return Json(id);
                 }
 
