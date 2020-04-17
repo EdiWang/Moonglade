@@ -28,7 +28,6 @@ namespace Moonglade.Web.Models.Settings
         public string Title { get; set; }
 
         [Display(Name = "Url")]
-        [DataType(DataType.Url)]
         public string Url { get; set; }
 
         [Display(Name = "Icon")]

@@ -107,7 +107,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("manage/edit")]
+        [HttpPost("edit")]
         public async Task<IActionResult> Edit(NavMenuEditViewModel model)
         {
             try
@@ -144,6 +144,5 @@ namespace Moonglade.Web.Controllers
                 return ServerError();
             }
         }
-
     }
 }
