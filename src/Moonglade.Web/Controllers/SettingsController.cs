@@ -680,6 +680,8 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
+        #region NavMenu
+
         [HttpGet("navmenu-settings")]
         public async Task<IActionResult> NavMenuSettings([FromServices] MenuService menuService)
         {
@@ -754,6 +756,29 @@ namespace Moonglade.Web.Controllers
                 return ServerError();
             }
         }
+
+        [HttpGet("navmenu/edit/{id:guid}")]
+        public async Task<IActionResult> EditNavMenu(Guid id, [FromServices] MenuService menuService)
+        {
+            var r = await menuService.GetMenuAsync(id);
+            if (r.IsSuccess && null != r.Item)
+            {
+                var model = new NavMenuEditViewModel
+                {
+                    Id = r.Item.Id,
+                    DisplayOrder = r.Item.DisplayOrder,
+                    Icon = r.Item.Icon,
+                    Title = r.Item.Title,
+                    Url = r.Item.Url
+                };
+
+                return Json(model);
+            }
+
+            return NotFound();
+        }
+
+        #endregion
 
         [HttpGet("settings-about")]
         public IActionResult About()
