@@ -122,7 +122,7 @@ namespace Moonglade.Web.Controllers
                         Url = model.Url
                     };
 
-                    var response = await _menuService.EditMenuAsync(request);
+                    var response = await _menuService.UpdateMenuAsync(request);
 
                     if (response.IsSuccess)
                     {

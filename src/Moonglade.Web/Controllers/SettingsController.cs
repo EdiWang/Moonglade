@@ -582,9 +582,7 @@ namespace Moonglade.Web.Controllers
                 var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();
 
-                Logger.LogInformation($"User '{User.Identity.Name}' updated AdvancedSettings");
                 await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedAdvanced, "Advanced Settings updated.");
-
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -683,7 +681,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("navmenu-settings")]
         public async Task<IActionResult> NavMenuSettings([FromServices] MenuService menuService)
         {
-            var menuItemsResp = await menuService.GetAllMenus();
+            var menuItemsResp = await menuService.GetAllMenusAsync();
             if (menuItemsResp.IsSuccess)
             {
                 var model = new NavMenuManageViewModel

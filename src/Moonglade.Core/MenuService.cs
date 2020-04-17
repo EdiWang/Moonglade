@@ -39,7 +39,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<MenuModel>>> GetAllMenus()
+        public Task<Response<IReadOnlyList<MenuModel>>> GetAllMenusAsync()
         {
             return TryExecuteAsync<IReadOnlyList<MenuModel>>(async () =>
             {
@@ -76,14 +76,14 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<Guid>> EditMenuAsync(EditMenuRequest request)
+        public Task<Response<Guid>> UpdateMenuAsync(EditMenuRequest request)
         {
             return TryExecuteAsync<Guid>(async () =>
             {
                 var menu = await _menuRepository.GetAsync(request.Id);
                 if (null == menu)
                 {
-                    throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' is not found.");
+                    throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
                 }
 
                 var sUrl = Utils.SterilizeMenuLink(request.Url.Trim());
@@ -105,20 +105,20 @@ namespace Moonglade.Core
         {
             return TryExecuteAsync(async () =>
             {
-                var menu = _menuRepository.Get(id);
+                var menu = await _menuRepository.GetAsync(id);
                 if (null == menu)
                 {
-                    throw new InvalidOperationException($"MenuEntity with Id '{id}' is not found.");
+                    throw new InvalidOperationException($"MenuEntity with Id '{id}' not found.");
                 }
                 
                 _menuRepository.Delete(id);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Menu '{id}' is deleted.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Menu '{id}' deleted.");
                 
                 return new SuccessResponse();
             });
         }
 
-        private MenuModel EntityToMenuModel(MenuEntity entity)
+        private static MenuModel EntityToMenuModel(MenuEntity entity)
         {
             if (null == entity)
             {

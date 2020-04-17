@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
@@ -20,7 +17,7 @@ namespace Moonglade.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var response = await _menuService.GetAllMenus();
+            var response = await _menuService.GetAllMenusAsync();
             if (response.IsSuccess)
             {
                 return View(response.Item);
