@@ -95,7 +95,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("image/upload"), IgnoreAntiforgeryToken]
+        [HttpPost("upload-image"), IgnoreAntiforgeryToken]
         public async Task<IActionResult> UploadImageAsync(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
         {
             try

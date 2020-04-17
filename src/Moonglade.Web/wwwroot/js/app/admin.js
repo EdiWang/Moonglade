@@ -135,7 +135,7 @@ var postEditor = {
                 plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools',
                 toolbar: 'undo redo | formatselect | fontsizeselect | bold italic strikethrough forecolor backcolor | removeformat | link image codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
                 paste_data_images: true,
-                images_upload_url: '/image/upload',
+                images_upload_url: '/upload-image',
                 images_upload_credentials: true,
                 content_css: '/css/tinymce-editor-bs-bundle.min.css',
                 codesample_languages: [
@@ -165,7 +165,7 @@ var postEditor = {
             });
 
             inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, {
-                uploadUrl: '/image/upload',
+                uploadUrl: '/upload-image',
                 urlText: '![file](/uploads/{filename})',
                 onFileUploadResponse: function (xhr) {
                     var result = JSON.parse(xhr.responseText),
