@@ -105,5 +105,45 @@ namespace Moonglade.Web.Controllers
 
             return NotFound();
         }
+
+        [Authorize]
+        [HttpPost("manage/edit")]
+        public async Task<IActionResult> Edit(NavMenuEditViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var request = new EditMenuRequest(model.Id)
+                    {
+                        Title = model.Title,
+                        DisplayOrder = model.DisplayOrder,
+                        Icon = model.Icon,
+                        Url = model.Url
+                    };
+
+                    var response = await _menuService.EditMenuAsync(request);
+
+                    if (response.IsSuccess)
+                    {
+                        return Json(response);
+                    }
+
+                    Logger.LogError($"Edit menu failed: {response.Message}");
+                    ModelState.AddModelError("", response.Message);
+                    return BadRequest();
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Error Editing Menu.");
+
+                ModelState.AddModelError("", e.Message);
+                return ServerError();
+            }
+        }
+
     }
 }
