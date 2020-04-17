@@ -733,6 +733,28 @@ namespace Moonglade.Web.Controllers
             }
         }
 
+        [HttpPost("navmenu/delete")]
+        public async Task<IActionResult> DeleteNavMenu(Guid id, [FromServices] MenuService menuService)
+        {
+            try
+            {
+                Logger.LogInformation($"Deleting Menu id: {id}");
+                var response = await menuService.DeleteMenu(id);
+                if (response.IsSuccess)
+                {
+                    return Json(id);
+                }
+
+                Logger.LogError(response.Message);
+                return ServerError();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Error Delete Menu.");
+                return ServerError();
+            }
+        }
+
         [HttpGet("settings-about")]
         public IActionResult About()
         {
