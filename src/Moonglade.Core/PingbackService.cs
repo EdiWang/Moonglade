@@ -16,11 +16,8 @@ namespace Moonglade.Core
     public class PingbackService : MoongladeService
     {
         private readonly IMoongladeNotificationClient _notificationClient;
-
         private readonly IPingbackReceiver _pingbackReceiver;
-
         private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
-
         private readonly IRepository<PostEntity> _postRepository;
 
         public PingbackService(
@@ -36,7 +33,7 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public async Task<PingbackServiceResponse> ProcessReceivedPingback(HttpContext context)
+        public async Task<PingbackServiceResponse> ProcessReceivedPingbackAsync(HttpContext context)
         {
             var response = await _pingbackReceiver.ValidatePingRequest(context);
             if (response == PingbackValidationResult.ValidPingRequest)
@@ -49,7 +46,7 @@ namespace Moonglade.Core
                 {
                     Logger.LogInformation($"Post '{idTitleTuple.Id}:{idTitleTuple.Title}' is found for ping.");
 
-                    _pingbackReceiver.OnPingSuccess += async (sender, args) => await SavePingbackRecord(
+                    _pingbackReceiver.OnPingSuccess += async (sender, args) => await SavePingbackRecordAsync(
                         new PingbackRequest
                         {
                             Domain = args.Domain,
@@ -133,7 +130,7 @@ namespace Moonglade.Core
             return true;
         }
 
-        private async Task NotifyAdminForReceivedPing(Guid pingbackId)
+        private async Task NotifyAdminAsync(Guid pingbackId)
         {
             var pingback = await _pingbackRepository.SelectFirstOrDefaultAsync(new PingbackHistorySpec(pingbackId),
                 p => new PingbackHistory
@@ -153,7 +150,7 @@ namespace Moonglade.Core
             }
         }
 
-        private async Task SavePingbackRecord(PingbackRequest request)
+        private async Task SavePingbackRecordAsync(PingbackRequest request)
         {
             var pid = Guid.NewGuid();
             var rpb = new PingbackHistoryEntity
@@ -170,7 +167,7 @@ namespace Moonglade.Core
 
             _pingbackRepository.Add(rpb);
 
-            await NotifyAdminForReceivedPing(pid);
+            await NotifyAdminAsync(pid);
         }
 
         private bool HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp)

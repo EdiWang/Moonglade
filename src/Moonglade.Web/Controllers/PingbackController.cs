@@ -9,7 +9,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback.Mvc;
-using Moonglade.Web.Extensions;
 using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
@@ -41,7 +40,7 @@ namespace Moonglade.Web.Controllers
                 return Forbid();
             }
 
-            var response = await _pingbackService.ProcessReceivedPingback(HttpContext);
+            var response = await _pingbackService.ProcessReceivedPingbackAsync(HttpContext);
             Logger.LogInformation($"Pingback Processor Response: {response.ToString()}");
             return new PingbackResult(response);
         }

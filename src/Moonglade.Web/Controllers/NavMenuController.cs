@@ -69,7 +69,7 @@ namespace Moonglade.Web.Controllers
             try
             {
                 Logger.LogInformation($"Deleting Menu id: {id}");
-                var response = await _menuService.DeleteMenu(id);
+                var response = await _menuService.DeleteAsync(id);
                 if (response.IsSuccess)
                 {
                     return Json(id);

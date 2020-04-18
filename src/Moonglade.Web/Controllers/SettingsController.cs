@@ -371,12 +371,9 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var response = await _friendLinkService.AddFriendLinkAsync(viewModel.Title, viewModel.LinkUrl);
+                    var response = await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
                     if (response.IsSuccess)
                     {
-                        Logger.LogInformation($"User '{User.Identity.Name}' created new friendlink '{viewModel.Title}' to '{viewModel.LinkUrl}'");
-                        await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
-
                         return RedirectToAction(nameof(ManageFriendLinks));
                     }
                     ModelState.AddModelError(string.Empty, response.Message);
@@ -420,12 +417,9 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                var response = await _friendLinkService.UpdateFriendLinkAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
+                var response = await _friendLinkService.UpdateAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
                 if (response.IsSuccess)
                 {
-                    Logger.LogInformation($"User '{User.Identity.Name}' updated friendlink id: '{viewModel.Id}'");
-                    await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
-
                     return RedirectToAction(nameof(ManageFriendLinks));
                 }
                 ModelState.AddModelError(string.Empty, response.Message);
@@ -441,10 +435,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("delete-friendlink")]
         public async Task<IActionResult> DeleteFriendLink(Guid id)
         {
-            var response = await _friendLinkService.DeleteFriendLinkAsync(id);
-            Logger.LogInformation($"User '{User.Identity.Name}' deleting friendlink id: '{id}'");
-            await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
-
+            var response = await _friendLinkService.DeleteAsync(id);
             return response.IsSuccess ? RedirectToAction(nameof(ManageFriendLinks)) : ServerError();
         }
 

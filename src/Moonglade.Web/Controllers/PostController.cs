@@ -13,7 +13,6 @@ using Moonglade.DateTimeOps;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback.Mvc;
-using Moonglade.Web.Extensions;
 using Moonglade.Web.Models;
 using X.PagedList;
 
@@ -109,13 +108,13 @@ namespace Moonglade.Web.Controllers
             switch (raw.ToLower())
             {
                 case "meta":
-                    var rspMeta = await _postService.GetPostMetaAsync(year, month, day, slug);
+                    var rspMeta = await _postService.GetMetaAsync(year, month, day, slug);
                     return !rspMeta.IsSuccess 
                         ? ServerError(rspMeta.Message) 
                         : Json(rspMeta.Item);
 
                 case "content":
-                    var rspContent = await _postService.GetPostRawContentAsync(year, month, day, slug);
+                    var rspContent = await _postService.GetRawContentAsync(year, month, day, slug);
                     return !rspContent.IsSuccess 
                         ? ServerError(rspContent.Message) 
                         : Content(rspContent.Item, "text/plain");
@@ -153,7 +152,7 @@ namespace Moonglade.Web.Controllers
                 return new EmptyResult();
             }
 
-            var response = await _postService.UpdatePostStatisticAsync(postId, StatisticTypes.Hits);
+            var response = await _postService.UpdateStatisticAsync(postId, StatisticTypes.Hits);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
@@ -174,7 +173,7 @@ namespace Moonglade.Web.Controllers
                 });
             }
 
-            var response = await _postService.UpdatePostStatisticAsync(postId, StatisticTypes.Likes);
+            var response = await _postService.UpdateStatisticAsync(postId, StatisticTypes.Likes);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Liked, postId.ToString());

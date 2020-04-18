@@ -7,14 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Moonglade.Auditing;
 using Moonglade.Data.Spec;
 using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Pingback;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -26,7 +24,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var list = await _postService.GetPostMetaListAsync(PostPublishStatus.Published);
+            var list = await _postService.GetMetaListAsync(PostPublishStatus.Published);
             return View(list);
         }
 
@@ -34,7 +32,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/draft")]
         public async Task<IActionResult> Draft()
         {
-            var list = await _postService.GetPostMetaListAsync(PostPublishStatus.Draft);
+            var list = await _postService.GetMetaListAsync(PostPublishStatus.Draft);
             return View(list);
         }
 
@@ -42,7 +40,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/recycle-bin")]
         public async Task<IActionResult> RecycleBin()
         {
-            var list = await _postService.GetPostMetaListAsync(PostPublishStatus.Deleted);
+            var list = await _postService.GetMetaListAsync(PostPublishStatus.Deleted);
             return View(list);
         }
 
@@ -149,9 +147,9 @@ namespace Moonglade.Web.Controllers
                     };
 
                     var tzDate = _dateTimeResolver.GetNowWithUserTZone();
-                    if (model.ChangePublishDate && 
-                        model.PublishDate.HasValue && 
-                        model.PublishDate <= tzDate && 
+                    if (model.ChangePublishDate &&
+                        model.PublishDate.HasValue &&
+                        model.PublishDate <= tzDate &&
                         model.PublishDate.GetValueOrDefault().Year >= 1975)
                     {
                         request.PublishDate = model.PublishDate;
@@ -175,8 +173,6 @@ namespace Moonglade.Web.Controllers
                                 _ = Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
                             }
                         }
-
-                        Logger.LogInformation($"User '{User.Identity.Name}' updated post id '{response.Item.Id}'");
 
                         return Json(new { PostId = response.Item.Id });
                     }
@@ -202,9 +198,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/restore")]
         public async Task<IActionResult> Restore(Guid postId)
         {
-            var response = _postService.RestoreDeletedPost(postId);
-            await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostRestored, $"Post restored, id: {postId}");
-
+            var response = await _postService.RestoreDeletedPostAsync(postId);
             return response.IsSuccess ? Json(postId) : ServerError();
         }
 
@@ -214,9 +208,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/delete")]
         public async Task<IActionResult> Delete(Guid postId)
         {
-            var response = _postService.Delete(postId, true);
-            Logger.LogInformation($"User '{User.Identity.Name}' recycling post id '{postId}'");
-            await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
+            var response = await _postService.DeleteAsync(postId, true);
 
             return response.IsSuccess ? Json(postId) : ServerError();
         }
@@ -226,16 +218,8 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/delete-from-recycle")]
         public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
         {
-            var response = _postService.Delete(postId);
-            if (response.IsSuccess)
-            {
-                Logger.LogInformation($"User '{User.Identity.Name}' deleted post id '{postId}'");
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
-
-                return Json(postId);
-            }
-
-            return ServerError();
+            var response = await _postService.DeleteAsync(postId);
+            return response.IsSuccess ? Json(postId) : ServerError();
         }
 
         [Authorize]
@@ -244,9 +228,6 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postService.DeleteRecycledPostsAsync();
-            Logger.LogInformation($"User '{User.Identity.Name}' emptied recycle bin");
-            await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.EmptyRecycleBin, "Emptied Recycle Bin.");
-
             return RedirectToAction("RecycleBin");
         }
 
@@ -254,8 +235,8 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/insights")]
         public async Task<IActionResult> Insights()
         {
-            var topReadList = await _postService.GetMPostInsightsMetaListAsync(PostInsightsType.TopRead);
-            var topCommentedList = await _postService.GetMPostInsightsMetaListAsync(PostInsightsType.TopCommented);
+            var topReadList = await _postService.GetInsightsAsync(PostInsightsType.TopRead);
+            var topCommentedList = await _postService.GetInsightsAsync(PostInsightsType.TopCommented);
 
             var vm = new PostInsightsViewModel
             {

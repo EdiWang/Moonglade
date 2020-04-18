@@ -101,7 +101,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> DeleteMenu(Guid id)
+        public Task<Response> DeleteAsync(Guid id)
         {
             return TryExecuteAsync(async () =>
             {

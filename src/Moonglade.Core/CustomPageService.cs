@@ -58,7 +58,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<CustomPageMetaData>>> GetPagesMetaDataListAsync()
+        public Task<Response<IReadOnlyList<CustomPageMetaData>>> GetPagesMetaAsync()
         {
             return TryExecuteAsync<IReadOnlyList<CustomPageMetaData>>(async () =>
             {
@@ -104,7 +104,7 @@ namespace Moonglade.Core
                 var page = await _customPageRepository.GetAsync(request.Id);
                 if (null == page)
                 {
-                    throw new InvalidOperationException($"CustomPageEntity with Id '{request.Id}' is not found.");
+                    throw new InvalidOperationException($"CustomPageEntity with Id '{request.Id}' not found.");
                 }
 
                 page.Title = request.Title.Trim();
@@ -121,17 +121,19 @@ namespace Moonglade.Core
             });
         }
 
-        public Response DeletePage(Guid pageId)
+        public Task<Response> DeletePageAsync(Guid pageId)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
-                var page = _customPageRepository.Get(pageId);
+                var page = await _customPageRepository.GetAsync(pageId);
                 if (null == page)
                 {
-                    throw new InvalidOperationException($"CustomPageEntity with Id '{pageId}' is not found.");
+                    throw new InvalidOperationException($"CustomPageEntity with Id '{pageId}' not found.");
                 }
 
-                _customPageRepository.Delete(pageId);
+                await _customPageRepository.DeleteAsync(pageId);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PageDeleted, $"Page '{pageId}' deleted.");
+
                 return new SuccessResponse();
             });
         }

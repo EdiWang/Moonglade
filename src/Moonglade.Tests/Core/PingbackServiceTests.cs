@@ -50,7 +50,7 @@ namespace Moonglade.Tests.Core
                 _postRepositoryMock.Object, 
                 _notificationMock.Object);
 
-            return await svc.ProcessReceivedPingback(httpContextMock.Object);
+            return await svc.ProcessReceivedPingbackAsync(httpContextMock.Object);
         }
 
         [TestCase(-1, ExpectedResult = false)]

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -16,12 +17,14 @@ namespace Moonglade.Tests.Core
     {
         private Mock<ILogger<FriendLinkService>> _loggerMock;
         private Mock<IOptions<AppSettings>> _appSettingsMock;
+        private Mock<IMoongladeAudit> _auditMock;
 
         [SetUp]
         public void Setup()
         {
             _loggerMock = new Mock<ILogger<FriendLinkService>>();
             _appSettingsMock = new Mock<IOptions<AppSettings>>();
+            _auditMock = new Mock<IMoongladeAudit>();
         }
 
         [TestCase("", "", ExpectedResult = false)]
@@ -31,9 +34,9 @@ namespace Moonglade.Tests.Core
         public async Task<bool> TestAddFriendLinkAsyncInvalidParameter(string title, string linkUrl)
         {
             var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
-            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object);
+            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object, _auditMock.Object);
 
-            var fdLinkResponse = await svc.AddFriendLinkAsync(title, linkUrl);
+            var fdLinkResponse = await svc.AddAsync(title, linkUrl);
             return fdLinkResponse.IsSuccess;
         }
 
@@ -53,9 +56,9 @@ namespace Moonglade.Tests.Core
             var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
             friendlinkRepositoryMock.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
 
-            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object);
+            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object, _auditMock.Object);
 
-            var fdLinkResponse = await svc.AddFriendLinkAsync("Choice of 955", "https://dot.net");
+            var fdLinkResponse = await svc.AddAsync("Choice of 955", "https://dot.net");
             Assert.IsTrue(fdLinkResponse.IsSuccess);
         }
 
@@ -66,9 +69,9 @@ namespace Moonglade.Tests.Core
         public async Task<bool> UpdateFriendLinkAsyncInvalidParameter(string title, string linkUrl)
         {
             var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
-            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object);
+            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object, _auditMock.Object);
 
-            var fdLinkResponse = await svc.UpdateFriendLinkAsync(Guid.NewGuid(), title, linkUrl);
+            var fdLinkResponse = await svc.UpdateAsync(Guid.NewGuid(), title, linkUrl);
             return fdLinkResponse.IsSuccess;
         }
     }

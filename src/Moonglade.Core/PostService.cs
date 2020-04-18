@@ -104,7 +104,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> UpdatePostStatisticAsync(Guid postId, StatisticTypes statisticTypes)
+        public Task<Response> UpdateStatisticAsync(Guid postId, StatisticTypes statisticTypes)
         {
             return TryExecuteAsync(async () =>
             {
@@ -204,20 +204,20 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<string>> GetPostRawContentAsync(int year, int month, int day, string slug)
+        public Task<Response<string>> GetRawContentAsync(int year, int month, int day, string slug)
         {
             return TryExecuteAsync<string>(async () =>
             {
                 var date = new DateTime(year, month, day);
                 var spec = new PostSpec(date, slug);
 
-                var model = await _postRepository.SelectFirstOrDefaultAsync(spec, 
+                var model = await _postRepository.SelectFirstOrDefaultAsync(spec,
                     post => _htmlCodec.HtmlDecode(post.PostContent));
                 return new SuccessResponse<string>(model);
             });
         }
 
-        public Task<Response<PostSlugMetaModel>> GetPostMetaAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlugMetaModel>> GetMetaAsync(int year, int month, int day, string slug)
         {
             return TryExecuteAsync<PostSlugMetaModel>(async () =>
             {
@@ -287,7 +287,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostMetaData>> GetPostMetaListAsync(PostPublishStatus postPublishStatus)
+        public Task<IReadOnlyList<PostMetaData>> GetMetaListAsync(PostPublishStatus postPublishStatus)
         {
             var spec = new PostSpec(postPublishStatus);
             return _postRepository.SelectAsync(spec, p => new PostMetaData
@@ -304,7 +304,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostMetaData>> GetMPostInsightsMetaListAsync(PostInsightsType insightsType)
+        public Task<IReadOnlyList<PostMetaData>> GetInsightsAsync(PostInsightsType insightsType)
         {
             var spec = new PostInsightsSpec(insightsType, 10);
             return _postRepository.SelectAsync(spec, p => new PostMetaData
@@ -617,38 +617,41 @@ namespace Moonglade.Core
             });
         }
 
-        public Response RestoreDeletedPost(Guid postId)
+        public Task<Response> RestoreDeletedPostAsync(Guid postId)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
-                var pp = _postPublishRepository.Get(postId);
+                var pp = await _postPublishRepository.GetAsync(postId);
                 if (null == pp) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
                 pp.IsDeleted = false;
-                var rows = _postPublishRepository.Update(pp);
-                return new Response(rows > 0);
+                await _postPublishRepository.UpdateAsync(pp);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostRestored, $"Post restored, id: {postId}");
+
+                return new SuccessResponse();
             }, keyParameter: postId);
         }
 
-        public Response Delete(Guid postId, bool isRecycle = false)
+        public Task<Response> DeleteAsync(Guid postId, bool isRecycle = false)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
-                var post = _postRepository.Get(postId);
+                var post = await _postRepository.GetAsync(postId);
                 if (null == post) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
-                int rows;
                 if (isRecycle)
                 {
                     post.PostPublish.IsDeleted = true;
-                    rows = _postRepository.Update(post);
+                    await _postRepository.UpdateAsync(post);
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
                 }
                 else
                 {
-                    rows = _postRepository.Delete(post);
+                    await _postRepository.DeleteAsync(post);
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
                 }
 
-                return new Response(rows > 0);
+                return new SuccessResponse();
             }, keyParameter: postId);
         }
 
@@ -659,6 +662,7 @@ namespace Moonglade.Core
                 var spec = new PostSpec(true);
                 var posts = await _postRepository.GetAsync(spec);
                 await _postRepository.DeleteAsync(posts);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.EmptyRecycleBin, "Emptied Recycle Bin.");
 
                 return new SuccessResponse();
             });
