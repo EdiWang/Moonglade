@@ -27,7 +27,7 @@
         }
 
         function initCreateFriendLink() {
-            $("#FriendLinkEditViewModel_Id").val('00000000-0000-0000-0000-000000000000');
+            $("#FriendLinkEditViewModel_Id").val(emptyGuid);
             $("#edit-form")[0].reset();
             $('#editFriendlinkModal').modal();
         }
@@ -45,7 +45,7 @@
             if ($("#edit-form").valid()) {
                 var action = '';
                 var friendlinkId = $("#FriendLinkEditViewModel_Id").val();
-                if (friendlinkId == '00000000-0000-0000-0000-000000000000') {
+                if (friendlinkId == emptyGuid) {
                     action = "create";
                 }
                 else {

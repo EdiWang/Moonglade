@@ -26,7 +26,7 @@
         }
 
         function initCreateMenu() {
-            $("#NavMenuEditViewModel_Id").val('00000000-0000-0000-0000-000000000000');
+            $("#NavMenuEditViewModel_Id").val(emptyGuid);
             $("#edit-form")[0].reset();
             $('#editMenuModal').modal();
         }
@@ -46,7 +46,7 @@
             if ($("#edit-form").valid()) {
                 var action = '';
                 var menuId = $("#NavMenuEditViewModel_Id").val();
-                if (menuId == '00000000-0000-0000-0000-000000000000') {
+                if (menuId == emptyGuid) {
                     action = "create";
                 }
                 else {

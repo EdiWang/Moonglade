@@ -16,9 +16,9 @@
         });
 
         function deletePage(pageid, routename) {
-            $("#span-processing-" + pageid).show();
+            $(`#span-processing-${pageid}`).show();
             ajaxPostWithCSRFToken("manage/delete", { pageid: pageid, routename: routename }, function (data) {
-                $("#card-" + data).hide();
+                $(`#card-${data}`).hide();
             });
         }
     </script>

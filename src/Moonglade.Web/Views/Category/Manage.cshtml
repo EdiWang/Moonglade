@@ -27,7 +27,7 @@
         }
 
         function initCreateCategory() {
-            $("#CategoryEditViewModel_Id").val('00000000-0000-0000-0000-000000000000');
+            $("#CategoryEditViewModel_Id").val(emptyGuid);
             $("#edit-form")[0].reset();
             $('#editCatModal').modal();
         }
@@ -46,7 +46,7 @@
             if ($("#edit-form").valid()) {
                 var action = '';
                 var catId = $("#CategoryEditViewModel_Id").val();
-                if (catId == '00000000-0000-0000-0000-000000000000') {
+                if (catId == emptyGuid) {
                     action = "create";
                 }
                 else {
