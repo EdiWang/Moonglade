@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.DateTimeOps;
@@ -25,7 +24,6 @@ namespace Moonglade.Web.Controllers
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
-        private readonly IMoongladeAudit _moongladeAudit;
 
         public PostController(
             ILogger<PostController> logger,
@@ -33,15 +31,13 @@ namespace Moonglade.Web.Controllers
             PostService postService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
-            IDateTimeResolver dateTimeResolver,
-            IMoongladeAudit moongladeAudit)
+            IDateTimeResolver dateTimeResolver)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
             _dateTimeResolver = dateTimeResolver;
-            _moongladeAudit = moongladeAudit;
         }
 
         [Route(""), Route("/")]
