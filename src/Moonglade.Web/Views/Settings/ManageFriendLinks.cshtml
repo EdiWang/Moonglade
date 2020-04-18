@@ -4,6 +4,70 @@
 
 @model FriendLinkSettingsViewModelWrap
 
+@section scripts{
+    <script>
+        $(function () {
+            $(".btn-delete").click(function () {
+                var cfm = confirm("Delete Confirmation?");
+                if (cfm) {
+                    deleteFriendLink($(this).data("friendlinkid"));
+                }
+            });
+
+            $(".btn-edit").click(function () {
+                editFriendLink($(this).data("friendlinkid"));
+            });
+        });
+
+        function deleteFriendLink(friendlinkid) {
+            $(`#span-processing-${friendlinkid}`).show();
+            ajaxPostWithCSRFToken("friendlink/delete", { id: friendlinkid }, function (data) {
+                $(`#tr-${data}`).hide();
+            });
+        }
+
+        function initCreateFriendLink() {
+            $("#FriendLinkEditViewModel_Id").val('00000000-0000-0000-0000-000000000000');
+            $("#edit-form")[0].reset();
+            $('#editFriendlinkModal').modal();
+        }
+
+        function editFriendLink(id) {
+            $.get(`friendlink/edit/${id}`, function (data) {
+                $("#FriendLinkEditViewModel_Id").val(data.id);
+                $("#FriendLinkEditViewModel_Title").val(data.title);
+                $("#FriendLinkEditViewModel_LinkUrl").val(data.linkUrl);
+                $("#editFriendlinkModal").modal();
+            });
+        }
+
+        $(".btn-submit").click(function () {
+            if ($("#edit-form").valid()) {
+                var action = '';
+                var friendlinkId = $("#FriendLinkEditViewModel_Id").val();
+                if (friendlinkId == '00000000-0000-0000-0000-000000000000') {
+                    action = "create";
+                }
+                else {
+                    action = "edit";
+                }
+
+                ajaxPostWithCSRFToken(`friendlink/${action}`,
+                    {
+                        "Id": $("#FriendLinkEditViewModel_Id").val(),
+                        "Title": $("#FriendLinkEditViewModel_Title").val(),
+                        "LinkUrl": $("#FriendLinkEditViewModel_LinkUrl").val()
+                    },
+                    function (data) {
+                        $("#edit-form")[0].reset();
+                        $("#editFriendlinkModal").modal('hide');
+                        window.location.reload();
+                    });
+            }
+        });
+    </script>
+}
+
 <partial name="_SettingsHeader" />
 
 <form id="form-settings" asp-controller="Settings" asp-action="FriendLinkSettings"
@@ -37,7 +101,7 @@
 </form>
 
 <div class="mb-2">
-    <a class="btn btn-outline-success" asp-controller="Settings" asp-action="CreateFriendLink">
+    <a class="btn btn-outline-success" href="javascript:initCreateFriendLink();">
         <span class="icon-plus"></span>
         New
     </a>
@@ -49,6 +113,8 @@
 }
 else
 {
+    @Html.AntiForgeryToken()
+
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -66,7 +132,7 @@ else
         <tbody>
             @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
             {
-                <tr>
+                <tr id="tr-@item.Id">
                     <td>
                         @item.Title
                     </td>
@@ -74,11 +140,46 @@ else
                         @item.LinkUrl
                     </td>
                     <td>
-                        <a asp-controller="Settings" asp-action="EditFriendLink" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <a asp-controller="Settings" asp-action="DeleteFriendLink" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-primary btn-edit">Edit</a>
+                        <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-danger btn-delete">Delete</a>
+                        <span id="span-processing-@item.Id" style="display: none">...</span>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 }
+
+<div class="modal fade" id="editFriendlinkModal" tabindex="-1" role="dialog" aria-labelledby="editFriendlinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editFriendlinkModalLabel">Friend Link Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="edit-form" method="post">
+                <div class="modal-body">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="FriendLinkEditViewModel.Id" />
+                    <div class="form-group">
+                        <label asp-for="FriendLinkEditViewModel.Title" class="control-label"></label>
+                        <input asp-for="FriendLinkEditViewModel.Title" class="form-control" />
+                        <span asp-validation-for="FriendLinkEditViewModel.Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FriendLinkEditViewModel.LinkUrl" class="control-label"></label>
+                        <input asp-for="FriendLinkEditViewModel.LinkUrl" class="form-control" />
+                        <span asp-validation-for="FriendLinkEditViewModel.LinkUrl" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-submit">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
