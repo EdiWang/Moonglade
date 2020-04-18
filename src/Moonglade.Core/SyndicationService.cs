@@ -19,14 +19,11 @@ namespace Moonglade.Core
 {
     public class SyndicationService : MoongladeService
     {
-        private readonly IBlogConfig _blogConfig;
-
         private readonly string _baseUrl;
 
+        private readonly IBlogConfig _blogConfig;
         private readonly IRepository<CategoryEntity> _categoryRepository;
-
         private readonly IRepository<PostEntity> _postRepository;
-
         private readonly IHtmlCodec _htmlCodec;
 
         public SyndicationService(

@@ -2,10 +2,12 @@
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
+using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -13,14 +15,17 @@ namespace Moonglade.Core
     {
         private readonly IRepository<TagEntity> _tagRepository;
         private readonly IRepository<PostTagEntity> _postTagRepository;
+        private readonly IMoongladeAudit _moongladeAudit;
 
         public TagService(
             ILogger<TagService> logger,
             IRepository<TagEntity> tagRepository,
-            IRepository<PostTagEntity> postTagRepository) : base(logger)
+            IRepository<PostTagEntity> postTagRepository,
+            IMoongladeAudit moongladeAudit) : base(logger)
         {
             _tagRepository = tagRepository;
             _postTagRepository = postTagRepository;
+            _moongladeAudit = moongladeAudit;
         }
 
         public Task<Response<IReadOnlyList<Tag>>> GetAllTagsAsync()
@@ -47,35 +52,39 @@ namespace Moonglade.Core
             });
         }
 
-        public Response UpdateTag(int tagId, string newName)
+        public Task<Response> UpdateTagAsync(int tagId, string newName)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
                 Logger.LogInformation($"Updating tag {tagId} with new name {newName}");
-                var tag = _tagRepository.Get(tagId);
+                var tag = await _tagRepository.GetAsync(tagId);
                 if (null != tag)
                 {
                     tag.DisplayName = newName;
                     tag.NormalizedName = Utils.NormalizeTagName(newName);
-                    var rows = _tagRepository.Update(tag);
-                    return new Response(rows > 0);
+                    await _tagRepository.UpdateAsync(tag);
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagUpdated, $"Tag id '{tagId}' is updated.");
+
+                    return new SuccessResponse();
                 }
 
                 return new FailedResponse((int)ResponseFailureCode.TagNotFound);
             });
         }
 
-        public Response Delete(int tagId)
+        public Task<Response> DeleteAsync(int tagId)
         {
-            return TryExecute(() =>
+            return TryExecuteAsync(async () =>
             {
                 // 1. Delete Post-Tag Association
-                var postTags = _postTagRepository.Get(new PostTagSpec(tagId));
-                _postTagRepository.Delete(postTags);
+                var postTags = await _postTagRepository.GetAsync(new PostTagSpec(tagId));
+                await _postTagRepository.DeleteAsync(postTags);
 
                 // 2. Delte Tag itslef
-                var rows = _tagRepository.Delete(tagId);
-                return new Response(rows > 0);
+                await _tagRepository.DeleteAsync(tagId);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagDeleted, $"Tag id '{tagId}' is deleted");
+
+                return new SuccessResponse();
             });
         }
 

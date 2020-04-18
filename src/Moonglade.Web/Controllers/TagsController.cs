@@ -1,31 +1,28 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
     [Route("tags")]
-    public partial class TagsController : MoongladeController
+    public class TagsController : MoongladeController
     {
         private readonly TagService _tagService;
         private readonly PostService _postService;
-        private readonly IMoongladeAudit _moongladeAudit;
 
         public TagsController(
             ILogger<TagsController> logger,
             IOptions<AppSettings> settings,
             TagService tagService,
-            PostService postService, 
-            IMoongladeAudit moongladeAudit)
+            PostService postService)
             : base(logger, settings)
         {
             _tagService = tagService;
             _postService = postService;
-            _moongladeAudit = moongladeAudit;
         }
 
         [Route("")]
@@ -71,6 +68,30 @@ namespace Moonglade.Web.Controllers
         {
             var tagNames = await _tagService.GetAllTagNamesAsync();
             return Json(tagNames.Item);
+        }
+
+        [Authorize]
+        [Route("manage")]
+        public async Task<IActionResult> Manage()
+        {
+            var response = await _tagService.GetAllTagsAsync();
+            return response.IsSuccess ? View(response.Item) : ServerError();
+        }
+
+        [Authorize]
+        [HttpPost("update")]
+        public async Task<IActionResult> Update(int tagId, string newTagName)
+        {
+            var response = await _tagService.UpdateTagAsync(tagId, newTagName);
+            return response.IsSuccess ? Json(new { tagId, newTagName }) : ServerError();
+        }
+
+        [Authorize]
+        [HttpPost("delete")]
+        public async Task<IActionResult> Delete(int tagId)
+        {
+            var response = await _tagService.DeleteAsync(tagId);
+            return response.IsSuccess ? Json(tagId) : ServerError();
         }
     }
 }
