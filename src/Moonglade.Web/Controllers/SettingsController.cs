@@ -320,23 +320,8 @@ namespace Moonglade.Web.Controllers
 
         #region FriendLinks
 
-        [HttpPost("friendlink-settings")]
-        public async Task<IActionResult> FriendLinkSettings(FriendLinkSettingsViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var fs = _blogConfig.FriendLinksSettings;
-                fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
-
-                var response = await _blogConfig.SaveConfigurationAsync(fs);
-                _blogConfig.RequireRefresh();
-                return Json(response);
-            }
-            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
-        }
-
-        [HttpGet("manage-friendlinks")]
-        public async Task<IActionResult> ManageFriendLinks()
+        [HttpGet("friendlink-settings")]
+        public async Task<IActionResult> FriendLinkSettings()
         {
             var response = await _friendLinkService.GetAllFriendLinksAsync();
             if (response.IsSuccess)
@@ -355,6 +340,21 @@ namespace Moonglade.Web.Controllers
 
             SetFriendlyErrorMessage();
             return View();
+        }
+
+        [HttpPost("friendlink-settings")]
+        public async Task<IActionResult> FriendLinkSettings(FriendLinkSettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var fs = _blogConfig.FriendLinksSettings;
+                fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
+
+                var response = await _blogConfig.SaveConfigurationAsync(fs);
+                _blogConfig.RequireRefresh();
+                return Json(response);
+            }
+            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
         }
 
         [HttpPost("friendlink/create")]
