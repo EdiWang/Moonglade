@@ -39,6 +39,9 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Display Order")]
         public int DisplayOrder { get; set; }
 
+        [Display(Name = "Open in New Tab")]
+        public bool IsOpenInNewTab { get; set; }
+
         public NavMenuEditViewModel()
         {
             Icon = "icon-file-text2";

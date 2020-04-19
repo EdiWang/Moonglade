@@ -137,7 +137,8 @@ CREATE TABLE [Menu](
 	[Title] [nvarchar](64) NOT NULL,
 	[Url] [nvarchar](256) NOT NULL,
 	[Icon] [nvarchar](64) NULL,
-	[DisplayOrder] INT NOT NULL
+	[DisplayOrder] INT NOT NULL,
+	[IsOpenInNewTab] [bit] NOT NULL
 )
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = N'FK_Comment_Post')
