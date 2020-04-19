@@ -11,6 +11,8 @@ namespace Moonglade.Model
         public string Icon { get; set; }
 
         public int DisplayOrder { get; set; }
+
+        public bool IsOpenInNewTab { get; set; }
     }
 
     public class EditMenuRequest : CreateMenuRequest

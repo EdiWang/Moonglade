@@ -49,7 +49,8 @@ namespace Moonglade.Core
                     DisplayOrder = p.DisplayOrder,
                     Icon = p.Icon,
                     Title = p.Title,
-                    Url = p.Url
+                    Url = p.Url,
+                    IsOpenInNewTab = p.IsOpenInNewTab
                 });
                 return new SuccessResponse<IReadOnlyList<MenuModel>>(list);
             });
@@ -66,7 +67,8 @@ namespace Moonglade.Core
                     Title = request.Title.Trim(),
                     DisplayOrder = request.DisplayOrder,
                     Icon = request.Icon,
-                    Url = request.Url
+                    Url = request.Url,
+                    IsOpenInNewTab = request.IsOpenInNewTab
                 };
 
                 await _menuRepository.AddAsync(menu);
@@ -93,6 +95,7 @@ namespace Moonglade.Core
                 menu.Url = sUrl;
                 menu.DisplayOrder = request.DisplayOrder;
                 menu.Icon = request.Icon;
+                menu.IsOpenInNewTab = request.IsOpenInNewTab;
 
                 await _menuRepository.UpdateAsync(menu);
                 await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.MenuUpdated, $"Menu '{request.Id}' updated.");
@@ -131,7 +134,8 @@ namespace Moonglade.Core
                 Title = entity.Title.Trim(),
                 DisplayOrder = entity.DisplayOrder,
                 Icon = entity.Icon.Trim(),
-                Url = entity.Url.Trim()
+                Url = entity.Url.Trim(),
+                IsOpenInNewTab = entity.IsOpenInNewTab
             };
         }
     }

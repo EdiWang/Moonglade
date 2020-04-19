@@ -16,6 +16,8 @@ namespace Moonglade.Model
 
         public int DisplayOrder { get; set; }
 
+        public bool IsOpenInNewTab { get; set; }
+
         public MenuModel()
         {
             Icon = "icon-file-text2";

@@ -37,7 +37,8 @@ namespace Moonglade.Web.Controllers
                         DisplayOrder = model.DisplayOrder,
                         Icon = model.Icon,
                         Title = model.Title,
-                        Url = model.Url
+                        Url = model.Url,
+                        IsOpenInNewTab = model.IsOpenInNewTab
                     };
 
                     var response = await _menuService.CreateMenuAsync(request);
@@ -95,7 +96,8 @@ namespace Moonglade.Web.Controllers
                     DisplayOrder = r.Item.DisplayOrder,
                     Icon = r.Item.Icon,
                     Title = r.Item.Title,
-                    Url = r.Item.Url
+                    Url = r.Item.Url,
+                    IsOpenInNewTab = r.Item.IsOpenInNewTab
                 };
 
                 return Json(model);
@@ -117,7 +119,8 @@ namespace Moonglade.Web.Controllers
                         Title = model.Title,
                         DisplayOrder = model.DisplayOrder,
                         Icon = model.Icon,
-                        Url = model.Url
+                        Url = model.Url,
+                        IsOpenInNewTab = model.IsOpenInNewTab
                     };
 
                     var response = await _menuService.UpdateMenuAsync(request);

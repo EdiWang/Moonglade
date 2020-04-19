@@ -15,5 +15,7 @@ namespace Moonglade.Data.Entities
         public string Icon { get; set; }
 
         public int DisplayOrder { get; set; }
+
+        public bool IsOpenInNewTab { get; set; }
     }
 }
