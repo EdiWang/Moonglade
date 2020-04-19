@@ -6,7 +6,10 @@
     foreach (var menuModel in Model.OrderBy(m => m.DisplayOrder))
     {
         <li id="menu-li-@menuModel.Id" class="nav-item">
-            <a id="menu-a-@menuModel.Id" href="@Utils.SterilizeMenuLink(menuModel.Url)" class="nav-link" @(menuModel.IsOpenInNewTab ? "target=\"_blank\"" : null)>
+            <a id="menu-a-@menuModel.Id" 
+               href="@Utils.SterilizeMenuLink(menuModel.Url)" 
+               class="nav-link" 
+               target="@(menuModel.IsOpenInNewTab ? "_blank" : null)">
                 <span class="@menuModel.Icon"></span>
                 <strong>@menuModel.Title</strong>
             </a>
