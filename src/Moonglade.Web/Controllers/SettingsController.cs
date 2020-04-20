@@ -87,6 +87,7 @@ namespace Moonglade.Web.Controllers
                 SelectedUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
                 TimeZoneList = tzList,
                 SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
+                AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme,
                 ThemeList = tmList
             };
             return View(vm);
@@ -110,6 +111,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.GeneralSettings.OwnerName = model.OwnerName;
                 _blogConfig.GeneralSettings.Description = model.OwnerDescription;
                 _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
+                _blogConfig.GeneralSettings.AutoDarkLightTheme = model.AutoDarkLightTheme;
                 var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
 
                 _blogConfig.RequireRefresh();
