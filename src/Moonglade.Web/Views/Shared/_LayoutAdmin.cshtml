@@ -1,5 +1,4 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
 @using Moonglade.Core
@@ -27,9 +26,6 @@
     <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/app/admin.js" asp-append-version="true"></script>
     @RenderSection("head", false)
-    <environment include="Production">
-        @Html.Raw(JavaScriptSnippet.FullScript)
-    </environment>
     <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
 </head>
 <body class="admin-body">
