@@ -10,7 +10,7 @@
     <PackageReference Include="Edi.ImageWatermark" Version="1.2.1" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.4" />
     <PackageReference Include="Edi.WordFilter" Version="1.2.3" />
-    <PackageReference Include="Markdig" Version="0.18.3" />
+    <PackageReference Include="Markdig" Version="0.20.0" />
   </ItemGroup>
 
   <ItemGroup>
