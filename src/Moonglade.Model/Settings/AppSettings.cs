@@ -10,7 +10,6 @@
         public bool ShowAdminLoginButton { get; set; }
         public bool EnableAudit { get; set; }
         public bool EnablePostRawEndpoint { get; set; }
-        public bool AutoDarkLightTheme { get; set; }
         public SystemNavMenus SystemNavMenus { get; set; }
         public NotificationSettings Notification { get; set; }
     }

@@ -65,6 +65,9 @@ namespace Moonglade.Web.Models.Settings
         public string SelectedTimeZoneId { get; set; }
 
         public List<SelectListItem> TimeZoneList { get; set; }
+        
+        [Display(Name = "Auto Light / Dark theme regarding client system settings")]
+        public bool AutoDarkLightTheme { get; set; }
 
         [MaxLength(32)]
         public string SelectedThemeFileName { get; set; }

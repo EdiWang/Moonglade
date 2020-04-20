@@ -36,6 +36,8 @@ namespace Moonglade.Configuration
 
         public string AvatarBase64 { get; set; }
 
+        public bool AutoDarkLightTheme { get; set; }
+
         public GeneralSettings()
         {
             ThemeFileName = "word-blue.css";
