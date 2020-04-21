@@ -53,10 +53,10 @@
                 </div>
                 <div class="card-footer">
                     <a class="btn btn-primary btn-sm btn-edit" asp-controller="CustomPage" asp-action="Edit" asp-route-id="@customPage.Id">
-                        Edit
+                        <span class="icon-pencil"></span>
                     </a>
                     <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" data-routename="@customPage.RouteName" href="javascript:;">
-                        Delete
+                        <span class="icon-bin"></span>
                     </a>
                     <span id="span-processing-@customPage.Id" style="display: none">...</span>
                 </div>
