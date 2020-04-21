@@ -59,10 +59,10 @@
                     <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy HH:mm")</td>
                     <td>
                         <a class="btn btn-sm btn-primary btn-restore" data-postid="@post.Id" href="javascript:;">
-                            Restore
+                            <span class="icon-undo2"></span> Restore
                         </a>
                         <a class="btn btn-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                            Delete
+                            <span class="icon-bin"></span> Delete
                         </a>
                         <span id="span-processing-@post.Id" style="display: none">...</span>
                     </td>

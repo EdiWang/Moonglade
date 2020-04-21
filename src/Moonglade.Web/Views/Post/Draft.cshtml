@@ -44,10 +44,10 @@
                     <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy HH:mm")</td>
                     <td>
                         <a class="btn btn-primary btn-sm btn-edit" asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id">
-                            Edit
+                            <span class="icon-pencil"></span>
                         </a>
                         <a class="btn btn-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                            Delete
+                            <span class="icon-bin"></span>
                         </a>
                         <span id="span-processing-@post.Id" style="display: none">...</span>
                     </td>
