@@ -739,10 +739,10 @@ a {
         background-color: #1d2124 !important;
     }
 
-    .navbar {
-        box-shadow: 0 0 8px #666;
-        padding: .4rem 1rem
-    }
+.navbar {
+    box-shadow: 0 0 8px #666;
+    padding: .4rem 1rem
+}
 
 .nav-item {
     margin: 0 1rem 0 0;
@@ -844,6 +844,14 @@ footer {
     color: #fff;
     text-decoration: none;
 }
+
+a.link-transparent {
+    color: rgba(255,255,255,0.7);
+}
+
+    a.link-transparent:hover {
+        color: #FFF;
+    }
 
 footer a {
     color: rgba(255,255,255,0.7);
