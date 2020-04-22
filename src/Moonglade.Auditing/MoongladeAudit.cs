@@ -159,7 +159,7 @@ namespace Moonglade.Auditing
 
             if (null != _httpContextAccessor)
             {
-                uname = _httpContextAccessor.HttpContext.User?.Identity?.Name;
+                uname = _httpContextAccessor.HttpContext.User?.Identity?.Name ?? "N/A";
                 ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             }
 
