@@ -2,7 +2,6 @@
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -38,7 +37,7 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogInformation($"OpenSearch file not found, writing new file on {openSearchDataFile}");
 
-                await WriteOpenSearchFileAsync(HttpContext);
+                await WriteOpenSearchFileAsync();
                 if (!System.IO.File.Exists(openSearchDataFile))
                 {
                     Logger.LogError("OpenSearch file still not found, what the heck?!");
@@ -84,7 +83,7 @@ namespace Moonglade.Web.Controllers
             return RedirectToAction("Index", "Post");
         }
 
-        private async Task WriteOpenSearchFileAsync(HttpContext ctx)
+        private async Task WriteOpenSearchFileAsync()
         {
             var openSearchDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpenSearchFileName}");
 
