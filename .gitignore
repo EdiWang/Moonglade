@@ -16,7 +16,7 @@ mooglade-css-bundle.min.css
 tinymce-editor-bs-bundle.css
 tinymce-editor-bs-bundle.min.css
 
-## Libman Restore on dotnet build (non-bundle part)
+## Libman Restore on dotnet build
 simplemde/
 highlight-js/
 typeahead.js/
