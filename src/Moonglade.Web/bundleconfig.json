@@ -15,7 +15,6 @@
       "wwwroot/lib/twitter-bootstrap/js/bootstrap.bundle.min.js",
       "wwwroot/lib/jquery-qrcode/jquery.qrcode.min.js",
       "wwwroot/lib/toastr.js/toastr.min.js",
-      "wwwroot/js/lazyload.js",
       "wwwroot/js/app/moonglade-base.js",
       "wwwroot/js/app/postslug.js",
       "wwwroot/js/app/csrf.js",

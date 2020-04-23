@@ -74,14 +74,6 @@
                             <input name="UseFriendlyNotFoundImage" type="hidden" value="false">
                         </div>
                     </li>
-                    <li class="list-group-item">
-                        <label asp-for="EnableImageLazyLoad" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.EnableImageLazyLoad ? "checked=\"checked\"" : string.Empty) id="EnableImageLazyLoad" name="EnableImageLazyLoad" type="checkbox" value="true">
-                            <label for="EnableImageLazyLoad" class="label-success"></label>
-                            <input name="EnableImageLazyLoad" type="hidden" value="false">
-                        </div>
-                    </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
