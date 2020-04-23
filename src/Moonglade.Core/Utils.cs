@@ -74,11 +74,7 @@ namespace Moonglade.Core
 
             if (!rawUrl.IsValidUrl())
             {
-                if (IsUnderLocalSlash())
-                {
-                    return rawUrl;
-                }
-                return invalidReturn;
+                return IsUnderLocalSlash() ? rawUrl : invalidReturn;
             }
             
             var uri = new Uri(rawUrl);
