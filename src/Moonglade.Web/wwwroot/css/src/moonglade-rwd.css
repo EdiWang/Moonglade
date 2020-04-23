@@ -20,8 +20,8 @@
     }
 
     .post-publish-info {
-        padding: 5px;
         margin-bottom: 5px;
+        padding: 5px;
     }
 
     .blogger-intro-mobile {
@@ -33,9 +33,9 @@
     }
 
     .card-bkimg {
-        min-width: 141% !important;
         margin-left: -63px !important;
         margin-top: -124px !important;
+        min-width: 141% !important;
     }
 
     .blogger-head-pic {
@@ -44,20 +44,20 @@
     }
 
     .blogger-intro-content {
-        position: absolute;
-        top: 0;
         color: #FFF;
         padding: 15px;
+        position: absolute;
+        top: 0;
         width: 100%;
     }
 
         .blogger-intro-content h4 {
-            color: #fff;
-            text-shadow: 2px 0 2px #000;
-            background-color: rgba(255,255,255,.2);
-            padding: 5px;
+            background-color: rgba(255, 255, 255, .2);
             border-radius: 5px;
+            color: #fff;
             font-size: 1rem;
+            padding: 5px;
+            text-shadow: 2px 0 2px #000;
             transform: translate(0, 50%);
         }
 
@@ -79,8 +79,8 @@
     }
 
     .post-summary-text {
-        line-height: 22px;
         color: #555;
+        line-height: 22px;
     }
 
     .post-summary-box {
@@ -89,8 +89,8 @@
 
     .article-post-summary {
         border-bottom: 1px solid #EEE;
-        padding-bottom: 15px;
         margin-bottom: 15px;
+        padding-bottom: 15px;
     }
 
     .img-timeline {
@@ -108,12 +108,12 @@
     }
 
     ul.timeline > li > .timeline-badge {
+        height: 45px;
         left: 0;
+        line-height: 45px;
         margin-left: 0;
         top: 16px;
         width: 45px;
-        height: 45px;
-        line-height: 45px;
     }
 
     ul.timeline > li > .timeline-panel {

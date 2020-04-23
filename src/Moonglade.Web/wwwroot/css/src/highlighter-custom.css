@@ -1,15 +1,15 @@
 .hljs {
+    background-color: #f9f9f9;
+    border: 1px solid #d3d6db;
+    color: black;
     display: block;
     overflow-x: auto;
     padding: 1em;
-    border: 1px solid #d3d6db;
-    background-color: #f9f9f9;
-    color: black;
 }
 
 .darkmode .hljs {
-    border: 1px solid #454545;
     background-color: #2e2e2e;
+    border: 1px solid #454545;
     color: #e3e3e3;
 }
 
@@ -26,7 +26,7 @@
 }
 
 .hljs-string .hljs-subst {
-    color: hsla(0,0%,9%,1);
+    color: hsla(0, 0%, 9%, 1);
 }
 
     .hljs-code, .hljs-deletion, .hljs-section, .hljs-string, .hljs-string .hljs-subst .hljs-string, .hljs-template-tag, .hljs-template-variable {
@@ -90,7 +90,7 @@
 }
 
 .darkmode .hljs-string .hljs-subst {
-    color: hsla(0,0%,9%,1);
+    color: hsla(0, 0%, 9%, 1);
 }
 
     .darkmode .hljs-attribute, .darkmode .hljs-code, .darkmode .hljs-deletion, .darkmode .hljs-section, .darkmode .hljs-string, .darkmode .hljs-string .hljs-subst .hljs-string, .darkmode .hljs-template-tag, .darkmode .hljs-template-variable, .darkmode .hljs-type {

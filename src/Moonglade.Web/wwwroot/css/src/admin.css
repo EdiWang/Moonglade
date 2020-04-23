@@ -1,5 +1,4 @@
-﻿/* Admin Portal */
-.full-height {
+﻿.full-height {
     height: 100%;
 }
 
@@ -8,10 +7,10 @@
 }
 
 .admin-nav {
-    max-width: 230px;
-    padding-right: 0;
-    padding-left: 0;
     background-color: var(--moonglade-accent-color2);
+    max-width: 230px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .admin-main {
@@ -19,17 +18,17 @@
 }
 
 .textarea-code {
-    font-size: 12px;
     font-family: 'Consolas';
+    font-size: 12px;
 }
 
 hr.admin-nav-divider {
-    border-top: 1px solid rgba(255,255,255,0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
     margin: 0 20px;
 }
 
 .text-moonglade-dark-secondary {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .post-content-textarea {
@@ -43,13 +42,13 @@ hr.admin-nav-divider {
 .admin-nav-section .list-group-item {
     background-color: transparent;
     border: 0 none;
-    color: rgba(255,255,255,.5);
+    color: rgba(255, 255, 255, .5);
 }
 
     .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
-        color: #FFF;
         background-color: var(--moonglade-accent-color1);
+        color: #FFF;
     }
 
 .admin-nav-link:active {
@@ -61,14 +60,14 @@ hr.admin-nav-divider {
 }
 
 .admin-main .catlist ul {
-    margin: 0;
     list-style-type: none;
+    margin: 0;
     padding: 0;
 }
 
     .admin-main .catlist ul li {
-        width: 175px;
         display: inline-block;
+        width: 175px;
     }
 
         .admin-main .catlist ul li label {

@@ -7,25 +7,25 @@
 
 .comment-md-content .CodeMirror {
     border-bottom: 1px solid #ddd !important;
-    border-left: 0 none !important;
-    border-right: 0 none !important;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
+    border-left: 0 none !important;
+    border-right: 0 none !important;
 }
 
 .btn-outline-footer {
-    color: rgba(255,255,255,0.5);
-    border-color: rgba(255,255,255,0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
     .btn-outline-footer:hover {
-        color: #fff;
         border-color: #fff;
+        color: #fff;
     }
 
 .navbar .container-fluid {
-    padding-right: 0;
     padding-left: 0;
+    padding-right: 0;
 }
 
 .field-validation-error {
@@ -37,8 +37,8 @@
 }
 
 .input-validation-error {
-    border: 1px solid #ff0000;
     background-color: #ffeeee;
+    border: 1px solid #ff0000;
 }
 
 .validation-summary-errors {
@@ -55,8 +55,8 @@
 }
 
 .sec {
-    padding-top: 50px;
     padding-bottom: 50px;
+    padding-top: 50px;
 }
 
 .h-30px {
@@ -76,11 +76,11 @@
 }
 
 .title-box {
-    position: relative;
+    background-position: center 0;
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center 0;
     box-shadow: 0 0 9px #000;
+    position: relative;
 }
 
     .title-box h1 {
@@ -201,9 +201,9 @@
 }
 
 .post-content img {
-    min-width: 4px;
-    min-height: 4px;
     cursor: pointer;
+    min-height: 4px;
+    min-width: 4px;
 }
 
 #img-captcha {
@@ -233,8 +233,8 @@ h3 small {
 }
 
 .textarea-banned-keywords {
-    font-size: 14px;
     border: none;
+    font-size: 14px;
     height: 150px !important;
 }
 
@@ -244,9 +244,9 @@ h3 small {
 
 label {
     display: inline-block;
-    max-width: 100%;
-    margin-bottom: 5px;
     font-weight: bold;
+    margin-bottom: 5px;
+    max-width: 100%;
 }
 
 .list-group-item.active, .page-item.active .page-link {
@@ -386,6 +386,7 @@ label {
 
 .user-avatar-char {
     background-color: #804998;
+    border-radius: 55px;
     color: #FFF;
     font-size: 30px;
     font-weight: 100;
@@ -393,7 +394,6 @@ label {
     padding-top: 5px;
     text-align: center;
     width: 55px;
-    border-radius: 55px;
 }
 
 .ul-archive-item li {
@@ -607,11 +607,11 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 .post-date-box {
+    border: 1px solid var(--moonglade-accent-color1);
+    border-radius: 3px;
     font-family: SairaSemiCondensed-Bold;
     position: absolute;
     width: 70px;
-    border: 1px solid var(--moonglade-accent-color1);
-    border-radius: 3px;
 }
 
 .post-date-day {
@@ -631,8 +631,8 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 .post-summary-title {
-    margin-bottom: 15px;
     font-size: 18px;
+    margin-bottom: 15px;
 }
 
 .post-summary-box {
@@ -693,7 +693,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 .blogger-head-pic {
-    border: 5px solid rgba(255,255,255,.5);
+    border: 5px solid rgba(255, 255, 255, .5);
     height: 110px;
     width: 110px;
 }
@@ -749,13 +749,13 @@ a {
 }
 
 footer {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
     padding-bottom: 20px;
     padding-top: 20px;
 }
 
     footer .container h4 {
-        color: rgba(255,255,255, 0.6);
+        color: rgba(255, 255, 255, 0.6);
         font-size: 20px;
         font-weight: lighter;
         margin-bottom: 31px;
@@ -846,7 +846,7 @@ footer {
 }
 
 a.link-transparent {
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.7);
 }
 
     a.link-transparent:hover {
@@ -854,7 +854,7 @@ a.link-transparent {
     }
 
 footer a {
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.7);
 }
 
     footer a:hover {
@@ -862,7 +862,7 @@ footer a {
     }
 
 .qrcode-link a {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     display: inline-block;
     font-size: 25px;
@@ -902,7 +902,7 @@ body {
 }
 
 .navbar-dark .navbar-nav .nav-link {
-    color: rgba(255,255,255,.7);
+    color: rgba(255, 255, 255, .7);
 }
 
     .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
@@ -914,13 +914,13 @@ body {
 }
 
 .hr-dark {
-    border-top: 1px solid rgba(255,255,255,.15) !important;
+    border-top: 1px solid rgba(255, 255, 255, .15) !important;
 }
 
 #imgzoom {
-    width: max-content;
     height: max-content;
     margin: 0 auto;
+    width: max-content;
 }
 
 .modal-imgzoom {
@@ -948,18 +948,18 @@ body {
     }
 
 .lightswitch {
-    height: 32px;
-    width: 32px;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    cursor: pointer;
-    text-align: center;
     background: #fff;
+    bottom: 20px;
+    cursor: pointer;
+    height: 32px;
+    position: fixed;
+    right: 20px;
+    text-align: center;
+    width: 32px;
     z-index: 996;
 }
 
 #lighticon {
-    transform: translate(0,50%);
     display: block;
+    transform: translate(0, 50%);
 }
