@@ -23,6 +23,7 @@ typeahead.js/
 jquery.AreYouSure/
 tinymce/
 monaco-editor/
+jquery-qrcode/
 
 # User-specific files
 *.suo
