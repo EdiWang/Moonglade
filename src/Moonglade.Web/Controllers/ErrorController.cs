@@ -12,7 +12,7 @@ namespace Moonglade.Web.Controllers
     {
         protected readonly ILogger<ErrorController> Logger;
 
-        private static readonly int[] HandledHttpResponseCodes = { 400, 403, 404, 500 };
+        private static readonly int[] HandledHttpResponseCodes = { 403, 404, 500 };
 
         public ErrorController(ILogger<ErrorController> logger)
         {
