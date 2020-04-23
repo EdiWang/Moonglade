@@ -25,6 +25,7 @@ tinymce/
 monaco-editor/
 jquery-qrcode/
 toastr.js/
+bootstrap-tagsinput/
 
 # User-specific files
 *.suo
