@@ -75,6 +75,13 @@
     {
       "library": "monaco-editor@0.20.0",
       "destination": "wwwroot/lib/monaco-editor/"
+    },
+    {
+      "library": "normalize@8.0.1",
+      "destination": "wwwroot/lib/normalize/",
+      "files": [
+        "normalize.min.css"
+      ]
     }
   ]
 }

@@ -26,6 +26,7 @@ monaco-editor/
 jquery-qrcode/
 toastr.js/
 bootstrap-tagsinput/
+normalize/
 
 # User-specific files
 *.suo

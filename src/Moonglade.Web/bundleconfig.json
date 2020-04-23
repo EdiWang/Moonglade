@@ -37,7 +37,7 @@
   {
     "outputFileName": "wwwroot/css/errorpages-bundle.css",
     "inputFiles": [
-      "wwwroot/css/src/normalize.css",
+      "wwwroot/lib/normalize/normalize.min.css",
       "wwwroot/css/src/errorpages.css"
     ]
   },
