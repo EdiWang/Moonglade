@@ -20,8 +20,6 @@ namespace Moonglade.Configuration
 
         public bool EnableGravatar { get; set; }
 
-        public bool EnableImageLazyLoad { get; set; }
-
         public bool ShowCalloutSection { get; set; }
 
         public string CalloutSectionHtmlPitch { get; set; }

@@ -154,7 +154,14 @@ var postEditor = {
                     { text: 'C++', value: 'cpp' },
                     { text: 'Visual Basic', value: 'vb' },
                     { text: 'PowerShell', value: 'powershell' }
-                ]
+                ],
+                setup: function (editor) {
+                    editor.on('NodeChange', function (e) {
+                        if (e.element.tagName === "IMG") {
+                            e.element.setAttribute("loading", "lazy");
+                        }
+                    });
+                }
             });
         }
     },

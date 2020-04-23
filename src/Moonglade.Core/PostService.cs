@@ -195,9 +195,9 @@ namespace Moonglade.Core
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc
                 });
 
-                if (null != postSlugModel && _blogConfig.ContentSettings.EnableImageLazyLoad)
+                if (null != postSlugModel)
                 {
-                    postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
+                    postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
                 }
 
                 return new SuccessResponse<PostSlugModel>(postSlugModel);
@@ -278,9 +278,9 @@ namespace Moonglade.Core
                     CommentCount = post.Comment.Count(c => c.IsApproved)
                 });
 
-                if (null != postSlugModel && _blogConfig.ContentSettings.EnableImageLazyLoad)
+                if (null != postSlugModel)
                 {
-                    postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
+                    postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
                 }
 
                 return new SuccessResponse<PostSlugModel>(postSlugModel);

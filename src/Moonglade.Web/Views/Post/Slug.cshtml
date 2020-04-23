@@ -40,17 +40,6 @@
     <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/highlight.pack.js"></script>
 
-    @if (BlogConfig.ContentSettings.EnableImageLazyLoad)
-    {
-        <script>
-            $(function () {
-                $("img").lazyload({
-                    effect: "fadeIn"
-                });
-            });
-        </script>
-    }
-
     @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
     {
         <script src="~/js/app/autodarklighttheme.js"></script>

@@ -137,7 +137,6 @@ namespace Moonglade.Web.Controllers
                 PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
                 HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
                 EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,
-                EnableImageLazyLoad = _blogConfig.ContentSettings.EnableImageLazyLoad,
                 ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
                 CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
                 ShowPostFooter = _blogConfig.ContentSettings.ShowPostFooter,
@@ -159,7 +158,6 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
                 _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
                 _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
-                _blogConfig.ContentSettings.EnableImageLazyLoad = model.EnableImageLazyLoad;
                 _blogConfig.ContentSettings.ShowCalloutSection = model.ShowCalloutSection;
                 _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
                 _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
