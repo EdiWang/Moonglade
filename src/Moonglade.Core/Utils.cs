@@ -410,15 +410,23 @@ namespace Moonglade.Core
             return result.ToString();
         }
 
-        public static string ReplaceImgSrc(string rawHtmlContent)
+        public static string AddLazyLoadToImgTag(string rawHtmlContent)
         {
             // Replace ONLY IMG tag's src to data-src
             // Otherwise embedded videos will blow up
 
             if (string.IsNullOrWhiteSpace(rawHtmlContent)) return rawHtmlContent;
             var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
-            var newStr = imgSrcRegex.Replace(rawHtmlContent, match => match.Value.Replace("src",
-                @"loading=""lazy"" src"));
+            var newStr = imgSrcRegex.Replace(rawHtmlContent, match =>
+            {
+                if (!match.Value.Contains("loading"))
+                {
+                    return match.Value.Replace("src",
+                        @"loading=""lazy"" src");
+                }
+
+                return match.Value;
+            });
             return newStr;
         }
 

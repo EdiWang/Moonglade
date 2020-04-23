@@ -161,10 +161,18 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestReplaceImgSrc()
+        public void TestLazyLoadToImgTag()
         {
             const string html = @"<p>Work 996 and have some fu bao!</p><img src=""icu.jpg"" /><video src=""java996.mp4""></video>";
-            var result = Utils.ReplaceImgSrc(html);
+            var result = Utils.AddLazyLoadToImgTag(html);
+            Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>");
+        }
+
+        [Test]
+        public void TestLazyLoadToImgTagExistLoading()
+        {
+            const string html = @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>";
+            var result = Utils.AddLazyLoadToImgTag(html);
             Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>");
         }
 

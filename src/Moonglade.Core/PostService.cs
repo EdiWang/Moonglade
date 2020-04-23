@@ -197,7 +197,7 @@ namespace Moonglade.Core
 
                 if (null != postSlugModel)
                 {
-                    postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
+                    postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
                 }
 
                 return new SuccessResponse<PostSlugModel>(postSlugModel);
@@ -280,7 +280,7 @@ namespace Moonglade.Core
 
                 if (null != postSlugModel)
                 {
-                    postSlugModel.Content = Utils.ReplaceImgSrc(postSlugModel.Content);
+                    postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
                 }
 
                 return new SuccessResponse<PostSlugModel>(postSlugModel);
