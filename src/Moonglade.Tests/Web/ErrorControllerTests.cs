@@ -18,7 +18,6 @@ namespace Moonglade.Tests.Web
             _loggerMock = new Mock<ILogger<ErrorController>>();
         }
 
-        [TestCase(400, ExpectedResult = 400)]
         [TestCase(403, ExpectedResult = 403)]
         [TestCase(404, ExpectedResult = 404)]
         [TestCase(500, ExpectedResult = 500)]
