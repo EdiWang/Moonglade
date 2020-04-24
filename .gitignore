@@ -17,6 +17,7 @@ tinymce-editor-bs-bundle.css
 tinymce-editor-bs-bundle.min.css
 
 ## Libman Restore on dotnet build
+bootstrap/
 simplemde/
 highlight-js/
 typeahead.js/
@@ -26,7 +27,11 @@ monaco-editor/
 jquery-qrcode/
 toastr.js/
 bootstrap-tagsinput/
-normalize/
+normalize.css/
+jquery-ajax-unobtrusive/
+inline-attachment/
+bs-custom-file-input/
+jquery-validation-unobtrusive/
 
 # User-specific files
 *.suo

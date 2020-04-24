@@ -2,7 +2,7 @@
   {
     "outputFileName": "wwwroot/css/tinymce-editor-bs-bundle.css",
     "inputFiles": [
-      "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
+      "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
       "wwwroot/css/src/tinymce-editor-content.css"
     ]
   },
@@ -11,8 +11,8 @@
     "inputFiles": [
       "wwwroot/lib/jquery/jquery.min.js",
       "wwwroot/lib/jquery-validate/jquery.validate.min.js",
-      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
-      "wwwroot/lib/twitter-bootstrap/js/bootstrap.bundle.min.js",
+      "wwwroot/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js",
+      "wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
       "wwwroot/lib/jquery-qrcode/jquery.qrcode.min.js",
       "wwwroot/lib/toastr.js/toastr.min.js",
       "wwwroot/js/app/moonglade-base.js",
@@ -24,7 +24,7 @@
   {
     "outputFileName": "wwwroot/css/mooglade-css-bundle.css",
     "inputFiles": [
-      "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
+      "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/moonglade-base.css",
       "wwwroot/css/src/moonglade-rwd.css",
@@ -36,7 +36,7 @@
   {
     "outputFileName": "wwwroot/css/errorpages-bundle.css",
     "inputFiles": [
-      "wwwroot/lib/normalize/normalize.min.css",
+      "wwwroot/lib/normalize.css/normalize.css",
       "wwwroot/css/src/errorpages.css"
     ]
   },
