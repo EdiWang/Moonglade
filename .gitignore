@@ -32,6 +32,7 @@ jquery-ajax-unobtrusive/
 inline-attachment/
 bs-custom-file-input/
 jquery-validation-unobtrusive/
+jquery-validate/
 
 # User-specific files
 *.suo

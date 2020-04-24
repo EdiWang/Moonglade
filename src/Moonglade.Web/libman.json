@@ -19,20 +19,6 @@
       "destination": "wwwroot/lib/jquery-qrcode"
     },
     {
-      "library": "jquery-validate@1.19.1",
-      "destination": "wwwroot/lib/jquery-validate",
-      "files": [
-        "jquery.validate.min.js"
-      ]
-    },
-    //{
-    //  "library": "jquery-validation-unobtrusive@3.2.11",
-    //  "destination": "wwwroot/lib/jquery-validation-unobtrusive",
-    //  "files": [
-    //    "jquery.validate.unobtrusive.min.js"
-    //  ]
-    //},
-    {
       "library": "toastr.js@2.1.4",
       "destination": "wwwroot/lib/toastr.js/",
       "files": [
@@ -116,6 +102,15 @@
       "files": [
         "dist/jquery.validate.unobtrusive.js",
         "dist/jquery.validate.unobtrusive.min.js"
+      ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "jquery-validation@1.19.1",
+      "destination": "wwwroot/lib/jquery-validation/",
+      "files": [
+        "dist/jquery.validate.js",
+        "dist/jquery.validate.min.js"
       ]
     }
   ]
