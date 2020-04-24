@@ -17,6 +17,7 @@ tinymce-editor-bs-bundle.css
 tinymce-editor-bs-bundle.min.css
 
 ## Libman Restore on dotnet build
+jquery/
 bootstrap/
 simplemde/
 highlight-js/
