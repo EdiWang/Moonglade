@@ -249,7 +249,7 @@ namespace Moonglade.Web.Controllers
         [Route("siteicon")]
         public IActionResult SiteIconOrigin()
         {
-            var fallbackImageFile = Path.Join($"{SiteRootDirectory}", "wwwroot", "siteicon-default.png");
+            var fallbackImageFile = Path.Join($"{SiteRootDirectory}", "wwwroot", "images", "siteicon-default.png");
             if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.SiteIconBase64))
             {
                 return PhysicalFile(fallbackImageFile, "image/png");
@@ -311,7 +311,7 @@ namespace Moonglade.Web.Controllers
                 if (string.IsNullOrWhiteSpace(iconTemplatPath))
                 {
                     Logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
-                    iconTemplatPath = Path.Join($"{SiteRootDirectory}", "wwwroot", "siteicon-default.png");
+                    iconTemplatPath = Path.Join($"{SiteRootDirectory}", "wwwroot", "images", "siteicon-default.png");
                 }
 
                 if (System.IO.File.Exists(iconTemplatPath))
