@@ -126,7 +126,7 @@ namespace Moonglade.Web.Controllers
             var commentList = await _commentService.GetPagedCommentAsync(pageSize, page);
             var commentsAsIPagedList =
                 new StaticPagedList<CommentListItem>(commentList.Item, page, pageSize, _commentService.CountComments());
-            return View(commentsAsIPagedList);
+            return View("~/Views/Admin/ManageComments.cshtml", commentsAsIPagedList);
         }
 
         [Authorize]
