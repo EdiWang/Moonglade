@@ -40,7 +40,7 @@
     <link type="application/opensearchdescription+xml" rel="search" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/opensearch" />
     <partial name="_Favicons" />
     <link href="~/css/mooglade-css-bundle.min.css" rel="stylesheet" asp-append-version="true" />
-    <script src="~/js/app/app-js-bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/dist/app-js-bundle.min.js" asp-append-version="true"></script>
     @RenderSection("head", false)
     <environment include="Production">
         @Html.Raw(JavaScriptSnippet.FullScript)
