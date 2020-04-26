@@ -161,19 +161,7 @@ namespace Moonglade.Core
                     return new FailedResponse<CommentListItem>((int)ResponseFailureCode.CommentDisabled);
                 }
 
-                // 2. Check user email domain
-                var bannedDomains = _blogConfig.EmailSettings.BannedMailDomain?.Split(",");
-                if (null != bannedDomains && bannedDomains.Any())
-                {
-                    var address = new MailAddress(request.Email);
-                    if (bannedDomains.Contains(address.Host))
-                    {
-                        Logger.LogWarning($"Email host '{address.Host}' is found in ban list, rejecting comments.");
-                        return new FailedResponse<CommentListItem>((int)ResponseFailureCode.EmailDomainBlocked);
-                    }
-                }
-
-                // 3. Harmonize banned keywords
+                // 2. Harmonize banned keywords
                 if (_blogConfig.ContentSettings.EnableWordFilter)
                 {
                     var dw = _blogConfig.ContentSettings.DisharmonyWords;

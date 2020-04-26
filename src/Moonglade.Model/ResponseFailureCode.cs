@@ -14,8 +14,7 @@
         // comment
         CommentDisabled = 200,
         CommentNotFound = 201,
-        EmailDomainBlocked = 202,
-
+        
         // tag
         TagNotFound = 300,
 

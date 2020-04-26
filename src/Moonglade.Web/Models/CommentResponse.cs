@@ -19,7 +19,6 @@
         SuccessNonReview = 101,
         UnknownError = 200,
         WrongCaptcha = 300,
-        EmailDomainBlocked = 400,
         CommentDisabled = 500,
         InvalidModel = 600
     }

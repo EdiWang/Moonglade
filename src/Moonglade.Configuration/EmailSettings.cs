@@ -9,6 +9,5 @@ namespace Moonglade.Configuration
         public bool SendEmailOnNewComment { get; set; }
         public string AdminEmail { get; set; }
         public string EmailDisplayName { get; set; }
-        public string BannedMailDomain { get; set; }
     }
 }
