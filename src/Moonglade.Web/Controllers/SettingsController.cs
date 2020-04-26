@@ -183,7 +183,6 @@ namespace Moonglade.Web.Controllers
             var vm = new EmailSettingsViewModel
             {
                 AdminEmail = settings.AdminEmail,
-                BannedMailDomain = settings.BannedMailDomain,
                 EmailDisplayName = settings.EmailDisplayName,
                 EnableEmailSending = settings.EnableEmailSending,
                 SendEmailOnCommentReply = settings.SendEmailOnCommentReply,
@@ -199,7 +198,6 @@ namespace Moonglade.Web.Controllers
             {
                 var settings = _blogConfig.EmailSettings;
                 settings.AdminEmail = model.AdminEmail;
-                settings.BannedMailDomain = model.BannedMailDomain;
                 settings.EmailDisplayName = model.EmailDisplayName;
                 settings.EnableEmailSending = model.EnableEmailSending;
                 settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;

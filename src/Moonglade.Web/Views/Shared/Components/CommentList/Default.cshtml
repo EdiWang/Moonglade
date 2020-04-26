@@ -27,7 +27,7 @@
         @foreach (var item in Model.OrderBy(m => m.CreateOnUtc))
         {
             <div class="col-md-1 col-sm-1 col-2 mb-3">
-                @if (BlogConfig.ContentSettings.EnableGravatar)
+                @if (BlogConfig.ContentSettings.EnableGravatar && !string.IsNullOrWhiteSpace(item.Email))
                 {
                     <div class="user-avatar">
                         @Html.GravatarImage(item.Email, 58, forceSecureRequest: true)

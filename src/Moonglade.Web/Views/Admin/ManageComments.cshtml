@@ -91,7 +91,13 @@ else
                 </div>
 
                 <h6>
-                    @item.Username (<a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>)
+                    @item.Username
+                    @if (!string.IsNullOrWhiteSpace(item.Email))
+                    {
+                        <text>
+                            (<a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>)
+                        </text>
+                    }
                 </h6>
                 <div class="mdrendered-comment-content">
                     @Html.Raw(Utils.ConvertMarkdownContent(item.CommentContent, Utils.MarkdownConvertType.Html))

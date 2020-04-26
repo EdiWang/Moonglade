@@ -92,11 +92,6 @@ namespace Moonglade.Web.Controllers
                     CommentResponse failedResponse;
                     switch (response.ResponseCode)
                     {
-                        case (int)ResponseFailureCode.EmailDomainBlocked:
-                            Logger.LogWarning("User email domain is blocked.");
-                            Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                            failedResponse = new CommentResponse(false, CommentResponseCode.EmailDomainBlocked);
-                            break;
                         case (int)ResponseFailureCode.CommentDisabled:
                             Logger.LogWarning("Comment is disabled in settings, but user somehow called NewComment() method.");
                             Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -131,7 +126,7 @@ namespace Moonglade.Web.Controllers
             var commentList = await _commentService.GetPagedCommentAsync(pageSize, page);
             var commentsAsIPagedList =
                 new StaticPagedList<CommentListItem>(commentList.Item, page, pageSize, _commentService.CountComments());
-            return View(commentsAsIPagedList);
+            return View("~/Views/Admin/ManageComments.cshtml", commentsAsIPagedList);
         }
 
         [Authorize]
@@ -175,7 +170,7 @@ namespace Moonglade.Web.Controllers
                 return Json(response);
             }
 
-            if (_blogConfig.EmailSettings.SendEmailOnCommentReply)
+            if (_blogConfig.EmailSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(response.Item.Email))
             {
                 var postLink = GetPostUrl(linkGenerator, response.Item.PubDateUtc, response.Item.Slug);
                 _ = Task.Run(async () =>

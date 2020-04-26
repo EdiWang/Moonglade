@@ -227,7 +227,7 @@
                                     <span asp-validation-for="NewCommentViewModel.Username" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="Email" asp-for="NewCommentViewModel.Email" />
+                                    <input type="text" class="form-control" placeholder="Email (Optional)" asp-for="NewCommentViewModel.Email" data-toggle="tooltip" data-placement="top" title="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." />
                                     <span asp-validation-for="NewCommentViewModel.Email" class="text-danger"></span>
                                 </div>
                             </div>
