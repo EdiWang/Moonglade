@@ -227,13 +227,10 @@
                                     <span asp-validation-for="NewCommentViewModel.Username" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="Email (Optional)" asp-for="NewCommentViewModel.Email" />
+                                    <input type="text" class="form-control" placeholder="Email (Optional)" asp-for="NewCommentViewModel.Email" data-toggle="tooltip" data-placement="top" title="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." />
                                     <span asp-validation-for="NewCommentViewModel.Email" class="text-danger"></span>
                                 </div>
                             </div>
-                            <p class="small text-muted">
-                                * Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one.
-                            </p>
                             <div class="comment-md-content form-group">
                                 <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4" placeholder="Your comments (Markdown supported)" maxlength="1024"></textarea>
                                 <span asp-validation-for="NewCommentViewModel.Content" class="text-danger"></span>
