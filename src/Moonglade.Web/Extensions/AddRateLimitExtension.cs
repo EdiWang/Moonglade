@@ -9,7 +9,7 @@ using System.Linq;
 namespace Moonglade.Web.Extensions
 {
     // Setup document: https://github.com/stefanprodan/AspNetCoreRateLimit/wiki/IpRateLimitMiddleware#setup
-    public static class AddRateLimitServiceCollectionExtension
+    public static class AddRateLimitExtension
     {
         public static IServiceCollection AddRateLimit(this IServiceCollection services, IConfigurationSection rateLimitSection)
         {

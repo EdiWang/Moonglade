@@ -7,7 +7,7 @@ using Moonglade.ImageStorage.FileSystem;
 
 namespace Moonglade.Web.Extensions
 {
-    public static class ImageStorageServiceExtensions
+    public static class ImageStorageExtension
     {
         public static void AddMoongladeImageStorage(this IServiceCollection services, ImageStorageSettings imageStorage, string contentRootPath)
         {
