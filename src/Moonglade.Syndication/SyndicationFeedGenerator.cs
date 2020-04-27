@@ -40,7 +40,7 @@ namespace Moonglade.Syndication
 
         #endregion
 
-        private IEnumerable<SyndicationItem> GetSyndicationItemCollection(IEnumerable<SimpleFeedItem> itemCollection)
+        private static IEnumerable<SyndicationItem> GetSyndicationItemCollection(IEnumerable<SimpleFeedItem> itemCollection)
         {
             var synItemCollection = new List<SyndicationItem>();
             foreach (var item in itemCollection)

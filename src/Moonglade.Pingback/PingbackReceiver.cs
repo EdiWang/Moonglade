@@ -133,33 +133,31 @@ namespace Moonglade.Pingback
                 var regexTitle = new Regex(
                     @"(?<=<title.*>)([\s\S]*)(?=</title>)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-                using (var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(RemoteTimeout) })
+                using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(RemoteTimeout) };
+                var html = await httpClient.GetStringAsync(_sourceUrl);
+                var title = regexTitle.Match(html).Value.Trim();
+                Logger.LogInformation($"ExamineSourceAsync:title: {title}");
+
+                var containsHtml = regexHtml.IsMatch(title);
+                Logger.LogInformation($"ExamineSourceAsync:containsHtml: {containsHtml}");
+
+                var sourceHasLink = html.ToUpperInvariant().Contains(_targetUrl.ToUpperInvariant());
+                Logger.LogInformation($"ExamineSourceAsync:sourceHasLink: {sourceHasLink}");
+
+                var pingRequest = new PingRequest
                 {
-                    var html = await httpClient.GetStringAsync(_sourceUrl);
-                    var title = regexTitle.Match(html).Value.Trim();
-                    Logger.LogInformation($"ExamineSourceAsync:title: {title}");
-
-                    var containsHtml = regexHtml.IsMatch(title);
-                    Logger.LogInformation($"ExamineSourceAsync:containsHtml: {containsHtml}");
-
-                    var sourceHasLink = html.ToUpperInvariant().Contains(_targetUrl.ToUpperInvariant());
-                    Logger.LogInformation($"ExamineSourceAsync:sourceHasLink: {sourceHasLink}");
-
-                    var pingRequest = new PingRequest
+                    SourceDocumentInfo = new SourceDocumentInfo
                     {
-                        SourceDocumentInfo = new SourceDocumentInfo
-                        {
-                            Title = title,
-                            ContainsHtml = containsHtml,
-                            SourceHasLink = sourceHasLink
-                        },
-                        TargetUrl = _targetUrl,
-                        SourceUrl = _sourceUrl,
-                        SourceIpAddress = _remoteIpAddress
-                    };
+                        Title = title,
+                        ContainsHtml = containsHtml,
+                        SourceHasLink = sourceHasLink
+                    },
+                    TargetUrl = _targetUrl,
+                    SourceUrl = _sourceUrl,
+                    SourceIpAddress = _remoteIpAddress
+                };
 
-                    return pingRequest;
-                }
+                return pingRequest;
             }
             catch (WebException ex)
             {

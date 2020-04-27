@@ -65,16 +65,16 @@ namespace Moonglade.Pingback
                 using var httpClient = new HttpClient(handler);
                 var response = await httpClient.GetAsync(targetUrl);
 
-                var pingbackHeader = response.Headers.FirstOrDefault(
+                (string key, IEnumerable<string> value) = response.Headers.FirstOrDefault(
                     h => h.Key.ToLower() == "x-pingback" || h.Key.ToLower() == "pingback");
 
-                if (pingbackHeader.Key == null || pingbackHeader.Value == null)
+                if (key == null || value == null)
                 {
                     Logger?.LogInformation($"Pingback endpoint is not found for URL '{targetUrl}', ping request is terminated.");
                     return;
                 }
 
-                var pingUrl = pingbackHeader.Value.FirstOrDefault();
+                var pingUrl = value.FirstOrDefault();
 
                 if (null != pingUrl)
                 {
@@ -106,7 +106,7 @@ namespace Moonglade.Pingback
             }
         }
 
-        private void AddXmlToRequest(Uri sourceUrl, Uri targetUrl, WebRequest webreqPing)
+        private static void AddXmlToRequest(Uri sourceUrl, Uri targetUrl, WebRequest webreqPing)
         {
             var stream = webreqPing.GetRequestStream();
             using var writer = new XmlTextWriter(stream, Encoding.ASCII);

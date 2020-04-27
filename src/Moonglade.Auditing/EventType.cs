@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Moonglade.Auditing
+﻿namespace Moonglade.Auditing
 {
     public enum EventType
     {

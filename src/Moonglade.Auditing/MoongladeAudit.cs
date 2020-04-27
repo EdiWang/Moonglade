@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Edi.Practice.RequestResponseModel;
@@ -41,7 +40,7 @@ namespace Moonglade.Auditing
                     return new FailedResponse("Audit Log is disabled.");
                 }
 
-                var ui = GetUsernameAndIp();
+                (string username, string ipv4) = GetUsernameAndIp();
 
                 // Truncate data so that SQL won't blow up
                 if (message.Length > 256)
@@ -55,7 +54,7 @@ namespace Moonglade.Auditing
                     machineName = machineName.Substring(0, 32);
                 }
 
-                var auditEntry = new AuditEntry(eventType, eventId, ui.Username, ui.Ipv4, machineName, message);
+                var auditEntry = new AuditEntry(eventType, eventId, username, ipv4, machineName, message);
 
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 await using var conn = new SqlConnection(connStr);
@@ -140,8 +139,8 @@ namespace Moonglade.Auditing
                 int rows = await conn.ExecuteAsync(sql);
 
                 // Make sure who ever doing this can't get away with it
-                var ui = GetUsernameAndIp();
-                await AddAuditEntry(EventType.General, EventId.ClearedAuditLog, $"Audit log was cleared by '{ui.Username}' from '{ui.Ipv4}'");
+                (string username, string ipv4) = GetUsernameAndIp();
+                await AddAuditEntry(EventType.General, EventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
 
                 return new Response(rows > 0);
             }

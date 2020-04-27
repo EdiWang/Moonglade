@@ -63,15 +63,12 @@ namespace Moonglade.Pingback.Mvc
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (null == actionResult)
+            actionResult ??= new ContentResult
             {
-                actionResult = new ContentResult
-                {
-                    Content = content,
-                    ContentType = "text/xml",
-                    StatusCode = statusCode
-                };
-            }
+                Content = content,
+                ContentType = "text/xml",
+                StatusCode = statusCode
+            };
 
             return actionResult.ExecuteResultAsync(context);
         }
