@@ -21,7 +21,6 @@ namespace Moonglade.Core
     public class PostService : MoongladeService
     {
         private readonly IHtmlCodec _htmlCodec;
-        private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IMoongladeAudit _moongladeAudit;
 
@@ -47,7 +46,6 @@ namespace Moonglade.Core
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
             IHtmlCodec htmlCodec,
-            IBlogConfig blogConfig,
             IDateTimeResolver dateTimeResolver,
             IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
@@ -59,7 +57,6 @@ namespace Moonglade.Core
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
             _htmlCodec = htmlCodec;
-            _blogConfig = blogConfig;
             _dateTimeResolver = dateTimeResolver;
             _moongladeAudit = moongladeAudit;
         }
@@ -108,7 +105,7 @@ namespace Moonglade.Core
         {
             return TryExecuteAsync(async () =>
             {
-                var pp = _postExtensionRepository.Get(postId);
+                var pp = await _postExtensionRepository.GetAsync(postId);
                 if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
 
                 switch (statisticTypes)
@@ -476,7 +473,7 @@ namespace Moonglade.Core
                             continue;
                         }
 
-                        var tag = _tagRepository.Get(q => q.DisplayName == item);
+                        var tag = await _tagRepository.GetAsync(q => q.DisplayName == item);
                         if (null == tag)
                         {
                             var newTag = new TagEntity
@@ -485,7 +482,7 @@ namespace Moonglade.Core
                                 NormalizedName = Utils.NormalizeTagName(item)
                             };
 
-                            tag = _tagRepository.Add(newTag);
+                            tag = await _tagRepository.AddAsync(newTag);
                             await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagCreated,
                                 $"Tag '{tag.NormalizedName}' created.");
                         }
@@ -511,7 +508,7 @@ namespace Moonglade.Core
         {
             return await TryExecuteAsync<PostEntity>(async () =>
             {
-                var postModel = _postRepository.Get(request.Id);
+                var postModel = await _postRepository.GetAsync(request.Id);
                 if (null == postModel)
                 {
                     return new FailedResponse<PostEntity>((int)ResponseFailureCode.PostNotFound);
@@ -559,7 +556,7 @@ namespace Moonglade.Core
                 // 1. Add new tags to tag lib
                 foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
                 {
-                    _tagRepository.Add(new TagEntity
+                    await _tagRepository.AddAsync(new TagEntity
                     {
                         DisplayName = item,
                         NormalizedName = Utils.NormalizeTagName(item)
@@ -580,7 +577,7 @@ namespace Moonglade.Core
                             continue;
                         }
 
-                        var tag = _tagRepository.Get(t => t.DisplayName == tagName);
+                        var tag = await _tagRepository.GetAsync(t => t.DisplayName == tagName);
                         if (tag != null) postModel.PostTag.Add(new PostTagEntity
                         {
                             PostId = postModel.Id,

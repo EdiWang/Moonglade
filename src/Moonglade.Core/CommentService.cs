@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Edi.WordFilter;
@@ -213,7 +212,7 @@ namespace Moonglade.Core
                     return new FailedResponse<CommentReplyDetail>((int)ResponseFailureCode.CommentDisabled);
                 }
 
-                var cmt = _commentRepository.Get(commentId);
+                var cmt = await _commentRepository.GetAsync(commentId);
 
                 if (null == cmt)
                 {
@@ -231,7 +230,7 @@ namespace Moonglade.Core
                     CommentId = commentId
                 };
 
-                _commentReplyRepository.Add(model);
+                await _commentReplyRepository.AddAsync(model);
 
                 var detail = new CommentReplyDetail
                 {

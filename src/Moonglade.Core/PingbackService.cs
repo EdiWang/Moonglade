@@ -165,7 +165,7 @@ namespace Moonglade.Core
                 TargetPostTitle = request.TargetPostTitle
             };
 
-            _pingbackRepository.Add(rpb);
+            await _pingbackRepository.AddAsync(rpb);
 
             await NotifyAdminAsync(pid);
         }

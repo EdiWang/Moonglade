@@ -127,7 +127,7 @@ namespace Moonglade.Core
                 var exists = _categoryRepository.Any(c => c.Id == id);
                 if (!exists) return new Response { Message = $"CategoryEntity '{id}' not exist." };
 
-                var pcs = _postCategoryRepository.Get(pc => pc.CategoryId == id);
+                var pcs = await _postCategoryRepository.GetAsync(pc => pc.CategoryId == id);
                 if (null != pcs)
                 {
                     await _postCategoryRepository.DeleteAsync(pcs);
@@ -144,7 +144,7 @@ namespace Moonglade.Core
         {
             return TryExecuteAsync(async () =>
             {
-                var cat = _categoryRepository.Get(editCategoryRequest.Id);
+                var cat = await _categoryRepository.GetAsync(editCategoryRequest.Id);
                 if (null == cat) return new Response { Message = $"CategoryEntity id '{editCategoryRequest.Id}' not found." };
 
                 cat.Title = editCategoryRequest.Title.Trim();
