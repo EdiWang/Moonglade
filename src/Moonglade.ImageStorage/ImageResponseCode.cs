@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Moonglade.ImageStorage
+﻿namespace Moonglade.ImageStorage
 {
     public enum ImageResponseCode
     {

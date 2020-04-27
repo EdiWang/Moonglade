@@ -92,7 +92,7 @@ namespace Moonglade.Web.Controllers
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true };
             using (var writer = XmlWriter.Create(fs, writerSettings))
             {
-                writer.WriteStartDocument();
+                await writer.WriteStartDocumentAsync();
                 writer.WriteStartElement("OpenSearchDescription", "http://a9.com/-/spec/opensearch/1.1/");
                 writer.WriteAttributeString("xmlns", "http://a9.com/-/spec/opensearch/1.1/");
 
@@ -104,14 +104,14 @@ namespace Moonglade.Web.Controllers
                 writer.WriteAttributeString("width", "16");
                 writer.WriteAttributeString("type", "image/vnd.microsoft.icon");
                 writer.WriteValue($"{SiteRootUrl}/favicon.ico");
-                writer.WriteEndElement();
+                await writer.WriteEndElementAsync();
 
                 writer.WriteStartElement("Url");
                 writer.WriteAttributeString("type", "text/html");
                 writer.WriteAttributeString("template", $"{SiteRootUrl}/search/{{searchTerms}}");
-                writer.WriteEndElement();
+                await writer.WriteEndElementAsync();
 
-                writer.WriteEndElement();
+                await writer.WriteEndElementAsync();
             }
             await fs.FlushAsync();
         }

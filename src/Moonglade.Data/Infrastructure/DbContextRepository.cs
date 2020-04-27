@@ -219,7 +219,7 @@ namespace Moonglade.Data.Infrastructure
 
         public async Task<T> AddAsync(T entity)
         {
-            DbContext.Set<T>().Add(entity);
+            await DbContext.Set<T>().AddAsync(entity);
             await DbContext.SaveChangesAsync();
 
             return entity;
