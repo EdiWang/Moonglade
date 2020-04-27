@@ -239,7 +239,7 @@
                                 <div class="col">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Assets")" />
+                                            <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Assets")" data-toggle="tooltip" data-placement="top" title="Can't read? Click to change another image." />
                                         </div>
                                         <input type="text"
                                                asp-for="NewCommentViewModel.CaptchaCode"
