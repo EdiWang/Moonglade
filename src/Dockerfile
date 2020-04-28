@@ -7,7 +7,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 
-COPY src/*/*.csproj ./
+COPY ./src/*/*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done
 
 RUN dotnet restore "Moonglade.Web/Moonglade.Web.csproj"
