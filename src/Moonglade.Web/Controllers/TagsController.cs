@@ -75,7 +75,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Manage()
         {
             var response = await _tagService.GetAllTagsAsync();
-            return response.IsSuccess ? View(response.Item) : ServerError();
+            return response.IsSuccess ? View("~/Views/Admin/ManageTags.cshtml", response.Item) : ServerError();
         }
 
         [Authorize]
