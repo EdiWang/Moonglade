@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -55,6 +54,8 @@ namespace Moonglade.Web
             _configuration = configuration;
             _environment = env;
             _appSettingsSection = _configuration.GetSection(nameof(AppSettings));
+
+            AppDomain.CurrentDomain.SetData(Constants.AppBaseDirectory, env.ContentRootPath);
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -159,7 +160,7 @@ namespace Moonglade.Web
                 _logger.LogInformation("Moonglade stopped.");
             });
 
-            PrepareRuntimePathDependencies(app, _environment);
+            TryUseUrlRewrite(app);
 
             var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
 
@@ -290,61 +291,6 @@ namespace Moonglade.Web
         }
 
         #region Private Helpers
-
-        private void PrepareRuntimePathDependencies(IApplicationBuilder app, IHostEnvironment env)
-        {
-            void DeleteDataFile(string path)
-            {
-                try
-                {
-                    if (File.Exists(path))
-                    {
-                        File.Delete(path);
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, $"Error Deleting file {path}");
-                }
-            }
-
-            void CleanDataCache()
-            {
-                var openSearchDataFile = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpenSearchFileName}");
-                var opmlDataFile = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", $"{Constants.OpmlFileName}");
-
-                DeleteDataFile(openSearchDataFile);
-                DeleteDataFile(opmlDataFile);
-            }
-
-            var baseDir = env.ContentRootPath;
-            TryUseUrlRewrite(app);
-            AppDomain.CurrentDomain.SetData(Constants.AppBaseDirectory, baseDir);
-
-            // Use Temp folder as best practice
-            // Do NOT create or modify anything under application directory
-            // e.g. Azure Deployment using WEBSITE_RUN_FROM_PACKAGE will make website root directory read only.
-            var tPath = Path.GetTempPath();
-            _logger.LogInformation($"Server environment Temp path: {tPath}");
-            var moongladeAppDataPath = Path.Join(tPath, "moonglade", "App_Data");
-            if (Directory.Exists(moongladeAppDataPath))
-            {
-                Directory.Delete(moongladeAppDataPath, true);
-            }
-
-            Directory.CreateDirectory(moongladeAppDataPath);
-            AppDomain.CurrentDomain.SetData(Constants.DataDirectory, moongladeAppDataPath);
-            _logger.LogInformation($"Created Application Data path: {moongladeAppDataPath}");
-
-            var feedDirectoryPath = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed");
-            if (!Directory.Exists(feedDirectoryPath))
-            {
-                Directory.CreateDirectory(feedDirectoryPath);
-                _logger.LogInformation($"Created feed path: {feedDirectoryPath}");
-            }
-
-            CleanDataCache();
-        }
 
         private void TryUseUrlRewrite(IApplicationBuilder app)
         {
