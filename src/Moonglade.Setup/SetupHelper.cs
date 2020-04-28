@@ -91,9 +91,13 @@ namespace Moonglade.Setup
                 conn.Execute("DELETE FROM PostExtension");
                 conn.Execute("DELETE FROM PostPublish");
                 conn.Execute("DELETE FROM Post");
+                conn.Execute("DELETE FROM Menu");
 
                 // Clear Configuration Table
                 conn.Execute("DELETE FROM BlogConfiguration");
+
+                // Clear AuditLog Table
+                conn.Execute("DELETE FROM AuditLog");
                 return new SuccessResponse();
             }
             catch (Exception e)

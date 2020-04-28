@@ -74,7 +74,8 @@ namespace Moonglade.Web
                 }
                 catch
                 {
-                    // Pretent nothing happened to prevent crash
+                    // Code blow up le what to do?
+                    // try catch cover it bu jiu OK le!
                 }
             }
 
