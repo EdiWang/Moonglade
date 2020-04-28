@@ -89,7 +89,7 @@ namespace Moonglade.Web.Controllers
 
             await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
                 FileAccess.Write, FileShare.None, 4096, true);
-            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true };
+            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
             using (var writer = XmlWriter.Create(fs, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
