@@ -147,6 +147,14 @@ namespace Moonglade.Web
         {
             _logger = logger;
 
+            if (!_environment.IsProduction())
+            {
+                _logger.LogWarning($"Running in environment: {_environment.EnvironmentName}. Application Insights disabled.");
+
+                configuration.DisableTelemetry = true;
+                TelemetryDebugWriter.IsTracingDisabled = true;
+            }
+
             appLifetime.ApplicationStarted.Register(() =>
             {
                 _logger.LogInformation("Moonglade started.");
@@ -196,14 +204,6 @@ namespace Moonglade.Web
                 .RemoveServerHeader()
             );
             app.UseMiddleware<PoweredByMiddleware>();
-
-            if (!_environment.IsProduction())
-            {
-                _logger.LogWarning($"Running in environment: {_environment.EnvironmentName}. Application Insights disabled.");
-
-                configuration.DisableTelemetry = true;
-                TelemetryDebugWriter.IsTracingDisabled = true;
-            }
 
             if (_environment.IsDevelopment())
             {
@@ -267,21 +267,18 @@ namespace Moonglade.Web
                 }
 
                 app.UseIpRateLimiting();
-                app.MapWhen(context => context.Request.Path == "/ping", builder =>
-                {
-                    builder.Run(async context =>
-                    {
-                        context.Response.Headers.Add("X-Moonglade-Version", Utils.AppVersion);
-                        await context.Response.WriteAsync($"Moonglade Version: {Utils.AppVersion}, .NET Core {Environment.Version}", Encoding.UTF8);
-                    });
-                });
-
                 app.UseRouting();
                 app.UseAuthentication();
                 app.UseAuthorization();
 
                 app.UseEndpoints(endpoints =>
                 {
+                    endpoints.MapGet("/ping", async context =>
+                    {
+                        context.Response.Headers.Add("X-Moonglade-Version", Utils.AppVersion);
+                        await context.Response.WriteAsync(
+                            $"Moonglade Version: {Utils.AppVersion}, .NET Core {Environment.Version}", Encoding.UTF8);
+                    });
                     endpoints.MapControllerRoute(
                         "default",
                         "{controller=Home}/{action=Index}/{id?}");
