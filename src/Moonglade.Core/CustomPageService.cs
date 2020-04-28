@@ -10,7 +10,6 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -91,7 +90,7 @@ namespace Moonglade.Core
                 };
 
                 await _customPageRepository.AddAsync(customPage);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PageCreated, $"Page '{customPage.Id}' created.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PageCreated, $"Page '{customPage.Id}' created.");
 
                 return new SuccessResponse<Guid>(uid);
             });
@@ -115,7 +114,7 @@ namespace Moonglade.Core
                 page.UpdatedOnUtc = DateTime.UtcNow;
 
                 await _customPageRepository.UpdateAsync(page);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PageUpdated, $"Page '{request.Id}' updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, $"Page '{request.Id}' updated.");
 
                 return new SuccessResponse<Guid>(page.Id);
             });
@@ -132,7 +131,7 @@ namespace Moonglade.Core
                 }
 
                 await _customPageRepository.DeleteAsync(pageId);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PageDeleted, $"Page '{pageId}' deleted.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PageDeleted, $"Page '{pageId}' deleted.");
 
                 return new SuccessResponse();
             });

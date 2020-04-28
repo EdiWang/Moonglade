@@ -4,7 +4,7 @@ namespace Moonglade.Auditing
 {
     public class AuditEntry
     {
-        public EventId EventId { get; set; }
+        public AuditEventId EventId { get; set; }
 
         public EventType EventType { get; set; }
 
@@ -23,9 +23,9 @@ namespace Moonglade.Auditing
             // For Dapper Mapping
         }
 
-        public AuditEntry(EventType eventType, EventId eventId, string username, string ipAddressV4, string machineName, string message)
+        public AuditEntry(EventType eventType, AuditEventId auditEventId, string username, string ipAddressV4, string machineName, string message)
         {
-            EventId = eventId;
+            EventId = auditEventId;
             EventType = eventType;
 
             Username = username;

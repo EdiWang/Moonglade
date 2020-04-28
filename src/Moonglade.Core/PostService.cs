@@ -6,7 +6,6 @@ using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -14,7 +13,6 @@ using Moonglade.DateTimeOps;
 using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -483,7 +481,7 @@ namespace Moonglade.Core
                             };
 
                             tag = await _tagRepository.AddAsync(newTag);
-                            await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagCreated,
+                            await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
                                 $"Tag '{tag.NormalizedName}' created.");
                         }
 
@@ -498,7 +496,7 @@ namespace Moonglade.Core
                 await _postRepository.AddAsync(postModel);
 
                 Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostCreated, $"Post created, id: {postModel.Id}");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostCreated, $"Post created, id: {postModel.Id}");
 
                 return new SuccessResponse<PostEntity>(postModel);
             });
@@ -562,7 +560,7 @@ namespace Moonglade.Core
                         NormalizedName = Utils.NormalizeTagName(item)
                     });
 
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagCreated,
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
                         $"Tag '{item}' created.");
                 }
 
@@ -607,7 +605,7 @@ namespace Moonglade.Core
 
                 await _moongladeAudit.AddAuditEntry(
                     EventType.Content,
-                    isNewPublish ? EventId.PostPublished : EventId.PostUpdated,
+                    isNewPublish ? AuditEventId.PostPublished : AuditEventId.PostUpdated,
                     $"Post updated, id: {postModel.Id}");
 
                 return new SuccessResponse<PostEntity>(postModel);
@@ -623,7 +621,7 @@ namespace Moonglade.Core
 
                 pp.IsDeleted = false;
                 await _postPublishRepository.UpdateAsync(pp);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostRestored, $"Post restored, id: {postId}");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
 
                 return new SuccessResponse();
             }, keyParameter: postId);
@@ -640,12 +638,12 @@ namespace Moonglade.Core
                 {
                     post.PostPublish.IsDeleted = true;
                     await _postRepository.UpdateAsync(post);
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
                 }
                 else
                 {
                     await _postRepository.DeleteAsync(post);
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
                 }
 
                 return new SuccessResponse();
@@ -659,7 +657,7 @@ namespace Moonglade.Core
                 var spec = new PostSpec(true);
                 var posts = await _postRepository.GetAsync(spec);
                 await _postRepository.DeleteAsync(posts);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.EmptyRecycleBin, "Emptied Recycle Bin.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.EmptyRecycleBin, "Emptied Recycle Bin.");
 
                 return new SuccessResponse();
             });

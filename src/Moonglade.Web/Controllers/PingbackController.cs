@@ -9,7 +9,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback.Mvc;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -59,7 +58,7 @@ namespace Moonglade.Web.Controllers
         {
             if (_pingbackService.DeleteReceivedPingback(pingbackId).IsSuccess)
             {
-                await moongladeAudit.AddAuditEntry(EventType.Content, EventId.PingbackDeleted,
+                await moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PingbackDeleted,
                     $"Pingback '{pingbackId}' deleted.");
                 return Json(pingbackId);
             }

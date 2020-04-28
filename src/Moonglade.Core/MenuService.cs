@@ -9,7 +9,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -71,7 +70,7 @@ namespace Moonglade.Core
                 };
 
                 await _menuRepository.AddAsync(menu);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.MenuCreated, $"Menu '{menu.Id}' created.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, $"Menu '{menu.Id}' created.");
 
                 return new SuccessResponse<Guid>(uid);
             });
@@ -97,7 +96,7 @@ namespace Moonglade.Core
                 menu.IsOpenInNewTab = request.IsOpenInNewTab;
 
                 await _menuRepository.UpdateAsync(menu);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.MenuUpdated, $"Menu '{request.Id}' updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
 
                 return new SuccessResponse<Guid>(menu.Id);
             });
@@ -114,7 +113,7 @@ namespace Moonglade.Core
                 }
                 
                 _menuRepository.Delete(id);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Menu '{id}' deleted.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Menu '{id}' deleted.");
                 
                 return new SuccessResponse();
             });

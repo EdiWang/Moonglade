@@ -16,9 +16,7 @@ namespace Moonglade.Auditing
     public class MoongladeAudit : IMoongladeAudit
     {
         private readonly ILogger<MoongladeAudit> _logger;
-
         private readonly IConfiguration _configuration;
-
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public MoongladeAudit(
@@ -31,7 +29,7 @@ namespace Moonglade.Auditing
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<Response> AddAuditEntry(EventType eventType, EventId eventId, string message)
+        public async Task<Response> AddAuditEntry(EventType eventType, AuditEventId auditEventId, string message)
         {
             try
             {
@@ -54,7 +52,7 @@ namespace Moonglade.Auditing
                     machineName = machineName.Substring(0, 32);
                 }
 
-                var auditEntry = new AuditEntry(eventType, eventId, username, ipv4, machineName, message);
+                var auditEntry = new AuditEntry(eventType, auditEventId, username, ipv4, machineName, message);
 
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 await using var conn = new SqlConnection(connStr);
@@ -73,7 +71,7 @@ namespace Moonglade.Auditing
         }
 
         public async Task<Response<(IReadOnlyList<AuditEntry> Entries, int Count)>> GetAuditEntries(
-            int skip, int take, EventType? eventType = null, EventId? eventId = null)
+            int skip, int take, EventType? eventType = null, AuditEventId? eventId = null)
         {
             try
             {
@@ -140,7 +138,7 @@ namespace Moonglade.Auditing
 
                 // Make sure who ever doing this can't get away with it
                 (string username, string ipv4) = GetUsernameAndIp();
-                await AddAuditEntry(EventType.General, EventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
+                await AddAuditEntry(EventType.General, AuditEventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
 
                 return new Response(rows > 0);
             }

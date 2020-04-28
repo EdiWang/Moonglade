@@ -13,7 +13,6 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -114,7 +113,7 @@ namespace Moonglade.Core
                     string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
                     Logger.LogInformation(logMessage);
                     await _moongladeAudit.AddAuditEntry(
-                        EventType.Content, cmt.IsApproved ? EventId.CommentApproval : EventId.CommentDisapproval, logMessage);
+                        EventType.Content, cmt.IsApproved ? AuditEventId.CommentApproval : AuditEventId.CommentDisapproval, logMessage);
                 }
 
                 return new SuccessResponse();
@@ -143,7 +142,7 @@ namespace Moonglade.Core
 
                     // 2. Delete comment itself
                     _commentRepository.Delete(cmt);
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
                 }
 
                 return new SuccessResponse();
@@ -249,7 +248,7 @@ namespace Moonglade.Core
                     UserAgent = model.UserAgent
                 };
 
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CommentReplied, $"Replied comment id '{commentId}'");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
                 return new SuccessResponse<CommentReplyDetail>(detail);
             });
         }

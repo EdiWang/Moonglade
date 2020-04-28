@@ -13,7 +13,6 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Models;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Web.Controllers
 {
@@ -40,7 +39,7 @@ namespace Moonglade.Web.Controllers
         {
             if (_authenticationSettings.Provider == AuthenticationProvider.AzureAD)
             {
-                await _moongladeAudit.AddAuditEntry(EventType.Authentication, EventId.LoginSuccessAAD,
+                await _moongladeAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginSuccessAAD,
                     $"Authentication success for Azure account '{User.Identity.Name}'");
             }
 
@@ -97,7 +96,7 @@ namespace Moonglade.Web.Controllers
                         var successMessage = $@"Authentication success for local account ""{model.Username}""";
 
                         Logger.LogInformation(successMessage);
-                        await _moongladeAudit.AddAuditEntry(EventType.Authentication, EventId.LoginSuccessLocal, successMessage);
+                        await _moongladeAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginSuccessLocal, successMessage);
 
                         return RedirectToAction("Index");
                     }
@@ -108,7 +107,7 @@ namespace Moonglade.Web.Controllers
                 var failMessage = $@"Authentication failed for local account ""{model.Username}""";
 
                 Logger.LogWarning(failMessage);
-                await _moongladeAudit.AddAuditEntry(EventType.Authentication, EventId.LoginFailedLocal, failMessage);
+                await _moongladeAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginFailedLocal, failMessage);
 
                 Response.StatusCode = StatusCodes.Status400BadRequest;
                 ModelState.AddModelError(string.Empty, "Bad Request.");

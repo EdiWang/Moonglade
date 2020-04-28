@@ -7,7 +7,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -63,7 +62,7 @@ namespace Moonglade.Core
                     tag.DisplayName = newName;
                     tag.NormalizedName = Utils.NormalizeTagName(newName);
                     await _tagRepository.UpdateAsync(tag);
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagUpdated, $"Tag id '{tagId}' is updated.");
+                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
 
                     return new SuccessResponse();
                 }
@@ -82,7 +81,7 @@ namespace Moonglade.Core
 
                 // 2. Delte Tag itslef
                 await _tagRepository.DeleteAsync(tagId);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.TagDeleted, $"Tag id '{tagId}' is deleted");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagDeleted, $"Tag id '{tagId}' is deleted");
 
                 return new SuccessResponse();
             });

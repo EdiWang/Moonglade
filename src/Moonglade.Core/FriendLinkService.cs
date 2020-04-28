@@ -10,7 +10,6 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -85,7 +84,7 @@ namespace Moonglade.Core
                 };
 
                 await _friendlinkRepository.AddAsync(fdLink);
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, EventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
 
                 return new SuccessResponse();
             });
@@ -96,7 +95,7 @@ namespace Moonglade.Core
             return TryExecuteAsync(async () =>
             {
                 await _friendlinkRepository.DeleteAsync(id);
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, EventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
 
                 return new SuccessResponse();
             }, keyParameter: id);
@@ -128,7 +127,7 @@ namespace Moonglade.Core
                     fdlink.LinkUrl = newLinkUrl;
 
                     await _friendlinkRepository.UpdateAsync(fdlink);
-                    await _moongladeAudit.AddAuditEntry(EventType.Settings, EventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+                    await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
 
                     return new SuccessResponse();
                 }

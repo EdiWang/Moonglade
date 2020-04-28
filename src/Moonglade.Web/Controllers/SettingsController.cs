@@ -117,7 +117,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedGeneral, "General Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedGeneral, "General Settings updated.");
 
                 return Json(response);
             }
@@ -166,7 +166,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedContent, "Content Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedContent, "Content Settings updated.");
 
                 return Json(response);
 
@@ -207,7 +207,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedNotification, "Notification Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
 
                 return Json(response);
             }
@@ -266,7 +266,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedSubscription, "Subscription Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
                 return Json(response);
             }
@@ -307,7 +307,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedWatermark, "Watermark Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
                 return Json(response);
             }
@@ -472,7 +472,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedGeneral, "Avatar updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedGeneral, "Avatar updated.");
 
                 return Json(response);
             }
@@ -523,7 +523,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated site icon.");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedGeneral, "Site icon updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedGeneral, "Site icon updated.");
 
                 return Json(response);
             }
@@ -567,7 +567,7 @@ namespace Moonglade.Web.Controllers
                 var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();
 
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedAdvanced, "Advanced Settings updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
                 return Json(response);
             }
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
@@ -592,7 +592,7 @@ namespace Moonglade.Web.Controllers
 
             if (!response.IsSuccess) return ServerError(response.Message);
 
-            await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.EventId.SettingsSavedAdvanced, "System reset.");
+            await _moongladeAudit.AddAuditEntry(EventType.Settings, Auditing.AuditEventId.SettingsSavedAdvanced, "System reset.");
 
             applicationLifetime.StopApplication();
             return Ok();

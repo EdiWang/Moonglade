@@ -8,7 +8,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
-using EventId = Moonglade.Auditing.EventId;
 
 namespace Moonglade.Core
 {
@@ -114,7 +113,7 @@ namespace Moonglade.Core
                 };
 
                 await _categoryRepository.AddAsync(category);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryCreated, $"Category '{category.Title}' created");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryCreated, $"Category '{category.Title}' created");
 
                 return new SuccessResponse();
             });
@@ -134,7 +133,7 @@ namespace Moonglade.Core
                 }
 
                 _categoryRepository.Delete(id);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryDeleted, $"Category '{id}' deleted.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Category '{id}' deleted.");
 
                 return new SuccessResponse();
             });
@@ -152,7 +151,7 @@ namespace Moonglade.Core
                 cat.Note = editCategoryRequest.Note.Trim();
 
                 await _categoryRepository.UpdateAsync(cat);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, EventId.CategoryUpdated, $"Category '{editCategoryRequest.Id}' updated.");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryUpdated, $"Category '{editCategoryRequest.Id}' updated.");
 
                 return new SuccessResponse();
             });
