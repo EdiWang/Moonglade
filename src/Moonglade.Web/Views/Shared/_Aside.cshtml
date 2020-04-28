@@ -4,11 +4,9 @@
             <img class="card-bkimg" alt="" src="@Url.Action("Avatar", "Assets")" />
         </div>
         <div class="blog-info-photo-text text-center">
-            <a asp-controller="CustomPage" asp-action="Index" asp-route-routeName="about">
-                <img src="@Url.Action("Avatar", "Assets")"
-                     alt="@BlogConfig.GeneralSettings.OwnerName"
-                     class="rounded-circle blogger-head-pic" />
-            </a>
+            <img src="@Url.Action("Avatar", "Assets")"
+                 alt="@BlogConfig.GeneralSettings.OwnerName"
+                 class="rounded-circle blogger-head-pic" />
             <div>
                 <h3 class="mt-3">
                     @BlogConfig.GeneralSettings.OwnerName
