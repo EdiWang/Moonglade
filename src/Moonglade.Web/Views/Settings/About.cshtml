@@ -1,5 +1,7 @@
 ﻿@using System.Diagnostics
 @using Moonglade.Model
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+
 @{
     Layout = "_LayoutAdmin";
 }
@@ -68,7 +70,7 @@
             </tr>
             <tr>
                 <td>App Base Directory</td>
-                <td>@AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)</td>
+                <td>@WebHostEnvironment.ContentRootPath</td>
             </tr>
             <tr>
                 <td>Editor</td>

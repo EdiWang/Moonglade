@@ -54,8 +54,6 @@ namespace Moonglade.Web
             _configuration = configuration;
             _environment = env;
             _appSettingsSection = _configuration.GetSection(nameof(AppSettings));
-
-            AppDomain.CurrentDomain.SetData(Constants.AppBaseDirectory, env.ContentRootPath);
         }
 
         public void ConfigureServices(IServiceCollection services)

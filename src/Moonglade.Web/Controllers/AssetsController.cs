@@ -29,6 +29,7 @@ namespace Moonglade.Web.Controllers
         private readonly IBlogConfig _blogConfig;
         private readonly IAsyncImageStorageProvider _imageStorageProvider;
         private readonly ISiteIconGenerator _siteIconGenerator;
+        private readonly IWebHostEnvironment _env;
         private readonly CDNSettings _cdnSettings;
 
         public AssetsController(
@@ -37,10 +38,12 @@ namespace Moonglade.Web.Controllers
             IOptions<ImageStorageSettings> imageStorageSettings,
             IAsyncImageStorageProvider imageStorageProvider,
             IBlogConfig blogConfig,
-            ISiteIconGenerator siteIconGenerator) : base(logger, settings)
+            ISiteIconGenerator siteIconGenerator, 
+            IWebHostEnvironment env) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _siteIconGenerator = siteIconGenerator;
+            _env = env;
             _imageStorageProvider = imageStorageProvider;
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
@@ -190,7 +193,7 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 300)]
         public IActionResult Avatar([FromServices] IMemoryCache cache)
         {
-            var fallbackImageFile = Path.Join($"{SiteRootDirectory}", "wwwroot", "images", "default-avatar.png");
+            var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
             if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.AvatarBase64))
             {
                 return PhysicalFile(fallbackImageFile, "image/png");
@@ -249,7 +252,7 @@ namespace Moonglade.Web.Controllers
         [Route("siteicon")]
         public IActionResult SiteIconOrigin()
         {
-            var fallbackImageFile = Path.Join($"{SiteRootDirectory}", "wwwroot", "images", "siteicon-default.png");
+            var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
             if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.SiteIconBase64))
             {
                 return PhysicalFile(fallbackImageFile, "image/png");
@@ -311,7 +314,7 @@ namespace Moonglade.Web.Controllers
                 if (string.IsNullOrWhiteSpace(iconTemplatPath))
                 {
                     Logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
-                    iconTemplatPath = Path.Join($"{SiteRootDirectory}", "wwwroot", "images", "siteicon-default.png");
+                    iconTemplatPath = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
                 }
 
                 if (System.IO.File.Exists(iconTemplatPath))

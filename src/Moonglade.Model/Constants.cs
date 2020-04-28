@@ -6,8 +6,6 @@
 
         public static string DataDirectory = "DataDirectory";
 
-        public static string AppBaseDirectory = "AppBaseDirectory";
-
         public static int SmallImagePixelsThreshold = 200 * 200;
 
         public static string OpenSearchFileName = "opensearch.xml";

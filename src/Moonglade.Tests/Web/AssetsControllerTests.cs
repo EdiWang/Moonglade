@@ -57,7 +57,8 @@ namespace Moonglade.Tests.Web
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
                 _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object);
+                _siteIconGeneratorMock.Object, 
+                _webHostEnvMock.Object);
 
             var memCacheMock = new Mock<IMemoryCache>();
             var result = await ctl.GetImageAsync(filename, memCacheMock.Object);
@@ -80,7 +81,8 @@ namespace Moonglade.Tests.Web
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
                 _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object);
+                _siteIconGeneratorMock.Object,
+                _webHostEnvMock.Object);
 
             var memCacheMock = new Mock<IMemoryCache>();
             var result = await ctl.GetImageAsync(filename, memCacheMock.Object);
@@ -101,7 +103,8 @@ namespace Moonglade.Tests.Web
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
                 _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object);
+                _siteIconGeneratorMock.Object,
+                _webHostEnvMock.Object);
 
             var result = ctl.RobotsTxt();
             Assert.IsInstanceOf(typeof(NotFoundResult), result);
@@ -121,7 +124,8 @@ namespace Moonglade.Tests.Web
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
                 _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object);
+                _siteIconGeneratorMock.Object, 
+                _webHostEnvMock.Object);
 
             var result = ctl.RobotsTxt();
             Assert.IsInstanceOf(typeof(ContentResult), result);
@@ -143,7 +147,8 @@ namespace Moonglade.Tests.Web
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
                 _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object);
+                _siteIconGeneratorMock.Object, 
+                _webHostEnvMock.Object);
 
             var result = await ctl.Manifest(_webHostEnvMock.Object);
             Assert.IsInstanceOf(typeof(JsonResult), result);

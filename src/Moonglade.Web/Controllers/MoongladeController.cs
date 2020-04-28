@@ -18,8 +18,6 @@ namespace Moonglade.Web.Controllers
 
         protected string SiteRootUrl => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-        protected string SiteRootDirectory => AppDomain.CurrentDomain.GetData(Constants.AppBaseDirectory)?.ToString();
-
         protected string SiteDataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
 
         protected string SiteIconDirectory => Path.Join(SiteDataDirectory, "siteicons");
