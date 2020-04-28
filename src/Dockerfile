@@ -10,6 +10,9 @@ WORKDIR /src
 COPY /*/*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p /${file%.*}/ && mv $file /${file%.*}/; done
 
+# Try debug
+RUN ls -l
+
 RUN dotnet restore "Moonglade.Web/Moonglade.Web.csproj"
 COPY . .
 WORKDIR "/src/Moonglade.Web"
