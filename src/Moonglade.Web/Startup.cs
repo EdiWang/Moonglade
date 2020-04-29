@@ -37,6 +37,7 @@ using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
+using Moonglade.Web.Middleware.RouteDebugger;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
 
@@ -205,6 +206,7 @@ namespace Moonglade.Web
 
             if (_environment.IsDevelopment())
             {
+                app.UseMiddleware<RouteDebuggerMiddleware>();
                 _logger.LogWarning($"Running in environment: {_environment.EnvironmentName}. Detailed error page enabled.");
                 app.UseDeveloperExceptionPage();
             }
