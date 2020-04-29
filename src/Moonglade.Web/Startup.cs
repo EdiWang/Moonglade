@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
+using Edi.RouteDebugger;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
@@ -37,7 +38,6 @@ using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.PoweredBy;
-using Moonglade.Web.Middleware.RouteDebugger;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
 
