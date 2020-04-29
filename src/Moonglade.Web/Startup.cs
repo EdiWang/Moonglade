@@ -206,7 +206,7 @@ namespace Moonglade.Web
 
             if (_environment.IsDevelopment())
             {
-                app.UseMiddleware<RouteDebuggerMiddleware>();
+                app.UseRouteDebugger();
                 _logger.LogWarning($"Running in environment: {_environment.EnvironmentName}. Detailed error page enabled.");
                 app.UseDeveloperExceptionPage();
             }
