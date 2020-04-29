@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
+using Edi.RouteDebugger;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
@@ -205,6 +206,7 @@ namespace Moonglade.Web
 
             if (_environment.IsDevelopment())
             {
+                app.UseRouteDebugger();
                 _logger.LogWarning($"Running in environment: {_environment.EnvironmentName}. Detailed error page enabled.");
                 app.UseDeveloperExceptionPage();
             }
