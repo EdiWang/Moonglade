@@ -37,6 +37,7 @@ using Moonglade.Setup;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Filters;
+using Moonglade.Web.Middleware.DNT;
 using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
@@ -145,6 +146,10 @@ namespace Moonglade.Web
             TelemetryConfiguration configuration)
         {
             _logger = logger;
+            var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
+
+            // Support Chinese contents
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             if (!_environment.IsProduction())
             {
@@ -168,8 +173,6 @@ namespace Moonglade.Web
             });
 
             TryUseUrlRewrite(app);
-
-            var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
 
             app.UseSecurityHeaders(new HeaderPolicyCollection()
                 .AddFrameOptionsSameOrigin()
@@ -203,6 +206,7 @@ namespace Moonglade.Web
                 .RemoveServerHeader()
             );
             app.UseMiddleware<PoweredByMiddleware>();
+            app.UseMiddleware<DNTMiddleware>();
 
             if (_environment.IsDevelopment())
             {
@@ -222,9 +226,6 @@ namespace Moonglade.Web
                 app.UseHttpsRedirection();
                 app.UseHsts();
             }
-
-            // Support Chinese contents
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             app.UseStaticFiles();
             app.UseSession();

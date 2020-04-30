@@ -22,6 +22,8 @@ namespace Moonglade.Web.Controllers
 
         protected string SiteIconDirectory => Path.Join(SiteDataDirectory, "siteicons");
 
+        protected bool DNT => (bool) HttpContext.Items["DNT"];
+
         public MoongladeController(
             ILogger<ControllerBase> logger,
             IOptions<AppSettings> settings = null)
