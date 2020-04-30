@@ -39,6 +39,7 @@ using Moonglade.Web.Extensions;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.DNT;
 using Moonglade.Web.Middleware.PoweredBy;
+using Moonglade.Web.Middleware.RobotsTxt;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
 
@@ -172,7 +173,6 @@ namespace Moonglade.Web
                 _logger.LogInformation("Moonglade stopped.");
             });
 
-            TryUseUrlRewrite(app);
 
             app.UseSecurityHeaders(new HeaderPolicyCollection()
                 .AddFrameOptionsSameOrigin()
@@ -205,6 +205,10 @@ namespace Moonglade.Web
                 })
                 .RemoveServerHeader()
             );
+
+            app.UseRobotsTxt();
+
+            TryUseUrlRewrite(app);
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
 

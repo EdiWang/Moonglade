@@ -90,48 +90,6 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public void TestRobotsTxtEmpty()
-        {
-            _blogConfigMock.Setup(bc => bc.AdvancedSettings).Returns(new Configuration.AdvancedSettings
-            {
-                RobotsTxtContent = string.Empty
-            });
-
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object,
-                _webHostEnvMock.Object);
-
-            var result = ctl.RobotsTxt();
-            Assert.IsInstanceOf(typeof(NotFoundResult), result);
-        }
-
-        [Test]
-        public void TestRobotsTxtContent()
-        {
-            _blogConfigMock.Setup(bc => bc.AdvancedSettings).Returns(new Configuration.AdvancedSettings
-            {
-                RobotsTxtContent = "996"
-            });
-
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object, 
-                _webHostEnvMock.Object);
-
-            var result = ctl.RobotsTxt();
-            Assert.IsInstanceOf(typeof(ContentResult), result);
-        }
-
-        [Test]
         public async Task TestManifest()
         {
             _blogConfigMock.Setup(bc => bc.GeneralSettings).Returns(new Configuration.GeneralSettings
