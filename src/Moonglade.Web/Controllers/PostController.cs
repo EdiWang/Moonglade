@@ -143,6 +143,12 @@ namespace Moonglade.Web.Controllers
         [HttpPost("hit")]
         public async Task<IActionResult> Hit([FromForm] Guid postId)
         {
+            if (DNT)
+            {
+                await Task.CompletedTask;
+                return Ok();
+            }
+
             if (HasCookie(CookieNames.Hit, postId.ToString()))
             {
                 return new EmptyResult();
@@ -160,6 +166,12 @@ namespace Moonglade.Web.Controllers
         [HttpPost("like")]
         public async Task<IActionResult> Like([FromForm] Guid postId)
         {
+            if (DNT)
+            {
+                await Task.CompletedTask;
+                return Ok();
+            }
+
             if (HasCookie(CookieNames.Liked, postId.ToString()))
             {
                 return Json(new
