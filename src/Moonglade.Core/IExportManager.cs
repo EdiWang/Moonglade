@@ -9,5 +9,7 @@ namespace Moonglade.Core
     public interface IExportManager
     {
         Task<string> ExportTagsAsJson();
+
+        Task<string> ExportCatsAsJson();
     }
 }
