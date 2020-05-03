@@ -44,8 +44,6 @@
 </h3>
 <hr />
 
-<a asp-action="Export" asp-controller="Tags" class="btn btn-outline-success">Export Data</a>
-
 <ul class="list-unstyled ul-tag-mgr">
     @foreach (var tag in Model.OrderBy(model => model.TagName))
     {

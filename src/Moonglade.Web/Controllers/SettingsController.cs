@@ -685,5 +685,15 @@ namespace Moonglade.Web.Controllers
         {
             return View();
         }
+
+        #region DataPorting
+
+        [HttpGet("data-porting")]
+        public IActionResult DataPorting()
+        {
+            return View();
+        }
+
+        #endregion
     }
 }
