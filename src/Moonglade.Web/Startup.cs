@@ -104,6 +104,7 @@ namespace Moonglade.Web
             services.AddScoped<IDateTimeResolver>(c =>
                 new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
 
+            services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IPingbackSender, PingbackSender>();
             services.AddScoped<IPingbackReceiver, PingbackReceiver>();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
