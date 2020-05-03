@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
@@ -692,6 +693,32 @@ namespace Moonglade.Web.Controllers
         public IActionResult DataPorting()
         {
             return View();
+        }
+
+        [Authorize]
+        [HttpGet("export-tags")]
+        public async Task<IActionResult> ExportTags([FromServices] IExportManager expman)
+        {
+            var json = await expman.ExportTagsAsJson();
+            var bytes = Encoding.UTF8.GetBytes(json);
+
+            return new FileContentResult(bytes, "application/octet-stream")
+            {
+                FileDownloadName = $"moonglade-tags-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
+            };
+        }
+
+        [Authorize]
+        [HttpGet("export-cats")]
+        public async Task<IActionResult> ExportCats([FromServices] IExportManager expman)
+        {
+            var json = await expman.ExportCatsAsJson();
+            var bytes = Encoding.UTF8.GetBytes(json);
+
+            return new FileContentResult(bytes, "application/octet-stream")
+            {
+                FileDownloadName = $"moonglade-categories-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
+            };
         }
 
         #endregion

@@ -95,18 +95,5 @@ namespace Moonglade.Web.Controllers
             var response = await _tagService.DeleteAsync(tagId);
             return response.IsSuccess ? Json(tagId) : ServerError();
         }
-
-        [Authorize]
-        [HttpGet("export")]
-        public async Task<IActionResult> Export([FromServices] IExportManager expman)
-        {
-            var json = await expman.ExportTagsAsJson();
-            var bytes = Encoding.UTF8.GetBytes(json);
-            
-            return new FileContentResult(bytes, "application/octet-stream")
-            {
-                FileDownloadName = $"moonglade-tags-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
-            };
-        }
     }
 }
