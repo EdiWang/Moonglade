@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Model;
 
 namespace Moonglade.DataPorting
 {
-    // TODO: Redesign this spaghetti code
     public class ExportManager : IExportManager
     {
+        // TODO: Can these be automated into IExporter types with DI?
+
         private readonly IRepository<TagEntity> _tagRepository;
         private readonly IRepository<CategoryEntity> _catRepository;
         private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
@@ -80,7 +75,8 @@ namespace Moonglade.DataPorting
                     return pbExportData;
 
                 case ExportDataType.Pages:
-                    var pages = await _pageRepository.SelectAsync(p => new
+                    var pgExp = new ZippedJsonExporter<CustomPageEntity>(_pageRepository, "moonglade-pages");
+                    var pgExportData = await pgExp.ExportData(p => new
                     {
                         p.Title,
                         p.CreateOnUtc,
@@ -91,57 +87,12 @@ namespace Moonglade.DataPorting
                         p.UpdatedOnUtc
                     });
 
-                    var result = await ToZippedJsonResult(pages, "moonglade-pages");
-                    return result;
+                    return pgExportData;
                 case ExportDataType.Posts:
-                    // TODO: Zip json files
+                    // TODO: Complete this
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
-            }
-
-            return null;
-        }
-
-        private static async Task<ExportResult> ToZippedJsonResult<T>(IEnumerable<T> list, string fileNamePrefix) where T : class
-        {
-            var tempId = Guid.NewGuid().ToString();
-            string exportDirectory = CreateExportDirectory(tempId);
-            foreach (var item in list)
-            {
-                var json = JsonSerializer.Serialize(item);
-                await SaveJsonToDirectory(json, Path.Join(exportDirectory, tempId), $"{Guid.NewGuid()}.json");
-            }
-
-            var distPath = Path.Join(exportDirectory, $"{fileNamePrefix}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.zip");
-            ZipFile.CreateFromDirectory(Path.Join(exportDirectory, tempId), distPath);
-
-            return new ExportResult
-            {
-                ExportFormat = ExportFormat.ZippedJsonFiles,
-                ZipFilePath = distPath
-            };
-        }
-
-        private static async Task SaveJsonToDirectory(string json, string directory, string filename)
-        {
-            var path = Path.Join(directory, filename);
-            await File.WriteAllTextAsync(path, json, Encoding.UTF8);
-        }
-
-        private static string CreateExportDirectory(string subDirName)
-        {
-            var dataDir = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
-            if (null != dataDir)
-            {
-                var path = Path.Join(dataDir, "export", subDirName);
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path);
-                }
-
-                Directory.CreateDirectory(path);
-                return Path.Join(dataDir, "export");
             }
 
             return null;
