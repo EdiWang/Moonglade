@@ -39,29 +39,36 @@ namespace Moonglade.DataPorting
             switch (dataType)
             {
                 case ExportDataType.Tags:
-                    var tags = await _tagRepository.SelectAsync(p => new
+                    var tagExp = new SingeJsonExporter<TagEntity>(_tagRepository);
+                    var tagExportData = await tagExp.ExportData(p => new
                     {
                         NormalizedTagName = p.NormalizedName,
                         TagName = p.DisplayName
                     });
-                    return ToSingleJsonResult(tags);
+                    return tagExportData;
+
                 case ExportDataType.Categories:
-                    var cats = await _catRepository.SelectAsync(p => new
+                    var catExp = new SingeJsonExporter<CategoryEntity>(_catRepository);
+                    var catExportData = await catExp.ExportData(p => new
                     {
                         p.DisplayName,
                         Route = p.Title,
                         p.Note
                     });
-                    return ToSingleJsonResult(cats);
+                    return catExportData;
+
                 case ExportDataType.FriendLinks:
-                    var links = await _friendlinkRepository.SelectAsync(p => new
+                    var fdExp = new SingeJsonExporter<FriendLinkEntity>(_friendlinkRepository);
+                    var fdExportData = await fdExp.ExportData(p => new
                     {
                         p.Title,
                         p.LinkUrl
                     });
-                    return ToSingleJsonResult(links);
+                    return fdExportData;
+
                 case ExportDataType.Pingbacks:
-                    var pbs = await _pingbackRepository.SelectAsync(p => new
+                    var pbExp = new SingeJsonExporter<PingbackHistoryEntity>(_pingbackRepository);
+                    var pbExportData = await pbExp.ExportData(p => new
                     {
                         p.Domain,
                         p.PingTimeUtc,
@@ -70,7 +77,8 @@ namespace Moonglade.DataPorting
                         p.SourceUrl,
                         p.TargetPostTitle
                     });
-                    return ToSingleJsonResult(pbs);
+                    return pbExportData;
+
                 case ExportDataType.Pages:
                     var pages = await _pageRepository.SelectAsync(p => new
                     {
@@ -112,17 +120,6 @@ namespace Moonglade.DataPorting
             {
                 ExportFormat = ExportFormat.ZippedJsonFiles,
                 ZipFilePath = distPath
-            };
-        }
-
-        private static ExportResult ToSingleJsonResult<T>(IEnumerable<T> list) where T : class
-        {
-            var json = JsonSerializer.Serialize(list);
-
-            return new ExportResult
-            {
-                ExportFormat = ExportFormat.SingleJsonFile,
-                JsonContent = json
             };
         }
 
