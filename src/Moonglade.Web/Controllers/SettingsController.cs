@@ -700,7 +700,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("export/{type}")]
         public async Task<IActionResult> Export4Download([FromServices] IExportManager expman, ExportDataType type)
         {
-            var exportResult = await expman.ExportAsJson(type);
+            var exportResult = await expman.ExportData(type);
             switch (exportResult.ExportFormat)
             {
                 case ExportFormat.SingleJsonFile:

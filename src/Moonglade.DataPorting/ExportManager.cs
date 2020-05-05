@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Moonglade.Data.Entities;
@@ -26,7 +27,7 @@ namespace Moonglade.DataPorting
             _pingbackRepository = pingbackRepository;
         }
 
-        public async Task<ExportResult> ExportAsJson(ExportDataType dataType)
+        public async Task<ExportResult> ExportData(ExportDataType dataType)
         {
             switch (dataType)
             {
@@ -40,9 +41,9 @@ namespace Moonglade.DataPorting
                 case ExportDataType.Categories:
                     var cats = await _catRepository.SelectAsync(c => new
                     {
-                        DisplayName = c.DisplayName,
+                        c.DisplayName,
                         Route = c.Title,
-                        Note = c.Note
+                        c.Note
                     });
                     return ToSingleJsonResult(cats);
                 case ExportDataType.FriendLinks:
@@ -65,9 +66,11 @@ namespace Moonglade.DataPorting
                     return ToSingleJsonResult(pbs);
                 case ExportDataType.Pages:
                     // TODO: Zip json files
+                    CreateExportDirectory("pages");
                     break;
                 case ExportDataType.Posts:
                     // TODO: Zip json files
+                    CreateExportDirectory("posts");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
@@ -76,13 +79,28 @@ namespace Moonglade.DataPorting
             return null;
         }
 
+        private static void CreateExportDirectory(string subDirName)
+        {
+            var dataDir = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString();
+            if (null != dataDir)
+            {
+                var path = Path.Join(dataDir, "export", subDirName);
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path);
+                }
+
+                Directory.CreateDirectory(path);
+            }
+        }
+
         private static string List2Json<T>(IEnumerable<T> list) where T : class
         {
             var json = JsonSerializer.Serialize(list);
             return json;
         }
 
-        private ExportResult ToSingleJsonResult<T>(IEnumerable<T> list) where T : class
+        private static ExportResult ToSingleJsonResult<T>(IEnumerable<T> list) where T : class
         {
             return new ExportResult
             {
