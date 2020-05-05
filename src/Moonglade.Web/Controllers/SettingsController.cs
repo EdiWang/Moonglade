@@ -696,28 +696,15 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("export-tags")]
-        public async Task<IActionResult> ExportTags([FromServices] IExportManager expman)
+        [HttpGet("export-json/{type}")]
+        public async Task<IActionResult> ExportJsonForDownload([FromServices] IExportManager expman, ExportDataType type)
         {
-            var json = await expman.ExportTagsAsJson();
+            var json = await expman.ExportAsJson(type);
             var bytes = Encoding.UTF8.GetBytes(json);
 
             return new FileContentResult(bytes, "application/octet-stream")
             {
-                FileDownloadName = $"moonglade-tags-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
-            };
-        }
-
-        [Authorize]
-        [HttpGet("export-cats")]
-        public async Task<IActionResult> ExportCats([FromServices] IExportManager expman)
-        {
-            var json = await expman.ExportCatsAsJson();
-            var bytes = Encoding.UTF8.GetBytes(json);
-
-            return new FileContentResult(bytes, "application/octet-stream")
-            {
-                FileDownloadName = $"moonglade-categories-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
+                FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
             };
         }
 

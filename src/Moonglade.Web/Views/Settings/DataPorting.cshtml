@@ -8,6 +8,8 @@
     This feature is under development, you may experience huge changes or unexpected code boom boom.
 </div>
 
-<a asp-action="ExportTags" asp-controller="Settings" class="btn btn-outline-success" target="_blank">Export Tags Data</a>
+<a asp-action="ExportJsonForDownload" asp-controller="Settings" asp-route-type="Tags" class="btn btn-outline-success" target="_blank">Export Tags Data</a>
 
-<a asp-action="ExportCats" asp-controller="Settings" class="btn btn-outline-success" target="_blank">Export Categories Data</a>
+<a asp-action="ExportJsonForDownload" asp-controller="Settings" asp-route-type="Categories" class="btn btn-outline-success" target="_blank">Export Categories Data</a>
+
+<a asp-action="ExportJsonForDownload" asp-controller="Settings" asp-route-type="FriendLinks" class="btn btn-outline-success" target="_blank">Export Friend Links Data</a>
