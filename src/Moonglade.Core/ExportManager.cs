@@ -11,7 +11,8 @@ namespace Moonglade.Core
     {
         Tags,
         Categories,
-        FriendLinks
+        FriendLinks,
+        Pingbacks
     }
 
     public class ExportManager : IExportManager
@@ -19,15 +20,18 @@ namespace Moonglade.Core
         private readonly IRepository<TagEntity> _tagRepository;
         private readonly IRepository<CategoryEntity> _catRepository;
         private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
+        private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
 
         public ExportManager(
             IRepository<TagEntity> tagRepository,
             IRepository<CategoryEntity> catRepository,
-            IRepository<FriendLinkEntity> friendlinkRepository)
+            IRepository<FriendLinkEntity> friendlinkRepository,
+            IRepository<PingbackHistoryEntity> pingbackRepository)
         {
             _tagRepository = tagRepository;
             _catRepository = catRepository;
             _friendlinkRepository = friendlinkRepository;
+            _pingbackRepository = pingbackRepository;
         }
 
         public async Task<string> ExportAsJson(ExportDataType dataType)
@@ -56,6 +60,17 @@ namespace Moonglade.Core
                         p.LinkUrl
                     });
                     return List2Json(links);
+                case ExportDataType.Pingbacks:
+                    var pbs = await _pingbackRepository.SelectAsync(p => new
+                    {
+                        p.Domain,
+                        p.PingTimeUtc,
+                        p.SourceIp,
+                        p.SourceTitle,
+                        p.SourceUrl,
+                        p.TargetPostTitle
+                    });
+                    return List2Json(pbs);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
             }
