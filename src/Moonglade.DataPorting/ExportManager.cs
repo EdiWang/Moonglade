@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Core
+namespace Moonglade.DataPorting
 {
     public enum ExportDataType
     {
