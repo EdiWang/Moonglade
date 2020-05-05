@@ -39,18 +39,18 @@ namespace Moonglade.DataPorting
             switch (dataType)
             {
                 case ExportDataType.Tags:
-                    var tags = await _tagRepository.SelectAsync(tg => new
+                    var tags = await _tagRepository.SelectAsync(p => new
                     {
-                        NormalizedTagName = tg.NormalizedName,
-                        TagName = tg.DisplayName
+                        NormalizedTagName = p.NormalizedName,
+                        TagName = p.DisplayName
                     });
                     return ToSingleJsonResult(tags);
                 case ExportDataType.Categories:
-                    var cats = await _catRepository.SelectAsync(c => new
+                    var cats = await _catRepository.SelectAsync(p => new
                     {
-                        c.DisplayName,
-                        Route = c.Title,
-                        c.Note
+                        p.DisplayName,
+                        Route = p.Title,
+                        p.Note
                     });
                     return ToSingleJsonResult(cats);
                 case ExportDataType.FriendLinks:
@@ -72,7 +72,6 @@ namespace Moonglade.DataPorting
                     });
                     return ToSingleJsonResult(pbs);
                 case ExportDataType.Pages:
-                    string exportDirectory = CreateExportDirectory("pages");
                     var pages = await _pageRepository.SelectAsync(p => new
                     {
                         p.Title,
@@ -83,29 +82,48 @@ namespace Moonglade.DataPorting
                         p.RouteName,
                         p.UpdatedOnUtc
                     });
-                    foreach (var page in pages)
-                    {
-                        var json = JsonSerializer.Serialize(page);
-                        await SaveJsonToDirectory(json, Path.Join(exportDirectory, "pages"), $"{page.RouteName}.json");
-                    }
 
-                    var distPath = Path.Join(exportDirectory, $"moonglade-pages-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.zip");
-                    ZipFile.CreateFromDirectory(Path.Join(exportDirectory, "pages"), distPath);
-
-                    return new ExportResult
-                    {
-                        ExportFormat = ExportFormat.ZippedJsonFiles,
-                        ZipFilePath = distPath
-                    };
+                    var result = await ToZippedJsonResult(pages, "moonglade-pages");
+                    return result;
                 case ExportDataType.Posts:
                     // TODO: Zip json files
-                    CreateExportDirectory("posts");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
             }
 
             return null;
+        }
+
+        private static async Task<ExportResult> ToZippedJsonResult<T>(IEnumerable<T> list, string fileNamePrefix) where T : class
+        {
+            var tempId = Guid.NewGuid().ToString();
+            string exportDirectory = CreateExportDirectory(tempId);
+            foreach (var item in list)
+            {
+                var json = JsonSerializer.Serialize(item);
+                await SaveJsonToDirectory(json, Path.Join(exportDirectory, tempId), $"{Guid.NewGuid()}.json");
+            }
+
+            var distPath = Path.Join(exportDirectory, $"{fileNamePrefix}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.zip");
+            ZipFile.CreateFromDirectory(Path.Join(exportDirectory, tempId), distPath);
+
+            return new ExportResult
+            {
+                ExportFormat = ExportFormat.ZippedJsonFiles,
+                ZipFilePath = distPath
+            };
+        }
+
+        private static ExportResult ToSingleJsonResult<T>(IEnumerable<T> list) where T : class
+        {
+            var json = JsonSerializer.Serialize(list);
+
+            return new ExportResult
+            {
+                ExportFormat = ExportFormat.SingleJsonFile,
+                JsonContent = json
+            };
         }
 
         private static async Task SaveJsonToDirectory(string json, string directory, string filename)
@@ -130,21 +148,6 @@ namespace Moonglade.DataPorting
             }
 
             return null;
-        }
-
-        private static string List2Json<T>(IEnumerable<T> list) where T : class
-        {
-            var json = JsonSerializer.Serialize(list);
-            return json;
-        }
-
-        private static ExportResult ToSingleJsonResult<T>(IEnumerable<T> list) where T : class
-        {
-            return new ExportResult
-            {
-                ExportFormat = ExportFormat.SingleJsonFile,
-                JsonContent = List2Json(list)
-            };
         }
     }
 }
