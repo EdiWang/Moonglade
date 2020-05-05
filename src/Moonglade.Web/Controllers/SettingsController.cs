@@ -697,16 +697,27 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("export-json/{type}")]
-        public async Task<IActionResult> ExportJsonForDownload([FromServices] IExportManager expman, ExportDataType type)
+        [HttpGet("export/{type}")]
+        public async Task<IActionResult> Export4Download([FromServices] IExportManager expman, ExportDataType type)
         {
-            var json = await expman.ExportAsJson(type);
-            var bytes = Encoding.UTF8.GetBytes(json);
-
-            return new FileContentResult(bytes, "application/octet-stream")
+            var exportResult = await expman.ExportAsJson(type);
+            switch (exportResult.ExportFormat)
             {
-                FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
-            };
+                case ExportFormat.SingleJsonFile:
+                {
+                    var bytes = Encoding.UTF8.GetBytes(exportResult.JsonContent);
+
+                    return new FileContentResult(bytes, "application/octet-stream")
+                    {
+                        FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
+                    };
+                }
+                default:
+                    // TODO: Output File Result
+                    break;
+            }
+
+            return BadRequest();
         }
 
         #endregion

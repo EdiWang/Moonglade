@@ -7,14 +7,6 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.DataPorting
 {
-    public enum ExportDataType
-    {
-        Tags,
-        Categories,
-        FriendLinks,
-        Pingbacks
-    }
-
     public class ExportManager : IExportManager
     {
         private readonly IRepository<TagEntity> _tagRepository;
@@ -34,7 +26,7 @@ namespace Moonglade.DataPorting
             _pingbackRepository = pingbackRepository;
         }
 
-        public async Task<string> ExportAsJson(ExportDataType dataType)
+        public async Task<ExportResult> ExportAsJson(ExportDataType dataType)
         {
             switch (dataType)
             {
@@ -44,7 +36,7 @@ namespace Moonglade.DataPorting
                         NormalizedTagName = tg.NormalizedName,
                         TagName = tg.DisplayName
                     });
-                    return List2Json(tags);
+                    return ToSingleJsonResult(tags);
                 case ExportDataType.Categories:
                     var cats = await _catRepository.SelectAsync(c => new
                     {
@@ -52,14 +44,14 @@ namespace Moonglade.DataPorting
                         Route = c.Title,
                         Note = c.Note
                     });
-                    return List2Json(cats);
+                    return ToSingleJsonResult(cats);
                 case ExportDataType.FriendLinks:
                     var links = await _friendlinkRepository.SelectAsync(p => new
                     {
                         p.Title,
                         p.LinkUrl
                     });
-                    return List2Json(links);
+                    return ToSingleJsonResult(links);
                 case ExportDataType.Pingbacks:
                     var pbs = await _pingbackRepository.SelectAsync(p => new
                     {
@@ -70,16 +62,33 @@ namespace Moonglade.DataPorting
                         p.SourceUrl,
                         p.TargetPostTitle
                     });
-                    return List2Json(pbs);
+                    return ToSingleJsonResult(pbs);
+                case ExportDataType.Pages:
+                    // TODO: Zip json files
+                    break;
+                case ExportDataType.Posts:
+                    // TODO: Zip json files
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
             }
+
+            return null;
         }
 
         private static string List2Json<T>(IEnumerable<T> list) where T : class
         {
             var json = JsonSerializer.Serialize(list);
             return json;
+        }
+
+        private ExportResult ToSingleJsonResult<T>(IEnumerable<T> list) where T : class
+        {
+            return new ExportResult
+            {
+                ExportFormat = ExportFormat.SingleJsonFile,
+                JsonContent = List2Json(list)
+            };
         }
     }
 }
