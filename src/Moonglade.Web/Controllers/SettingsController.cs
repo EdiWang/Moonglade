@@ -704,17 +704,14 @@ namespace Moonglade.Web.Controllers
             switch (exportResult.ExportFormat)
             {
                 case ExportFormat.SingleJsonFile:
-                {
                     var bytes = Encoding.UTF8.GetBytes(exportResult.JsonContent);
 
                     return new FileContentResult(bytes, "application/octet-stream")
                     {
                         FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
                     };
-                }
-                default:
-                    // TODO: Output File Result
-                    break;
+                case ExportFormat.ZippedJsonFiles:
+                    return PhysicalFile(exportResult.ZipFilePath, "application/zip", Path.GetFileName(exportResult.ZipFilePath));
             }
 
             return BadRequest();

@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Data.Entities\Moonglade.Data.Entities.csproj" />
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
   </ItemGroup>
 
 </Project>
