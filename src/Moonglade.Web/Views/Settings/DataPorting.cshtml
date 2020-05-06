@@ -4,16 +4,49 @@
 
 <partial name="_SettingsHeader" />
 
-<div class="alert alert-warning mb-4">
-    This feature is under development, you may experience huge changes or unexpected code boom boom.
+<div class="alert alert-info mb-3">
+    You can export data in this blog to Json or Zip archive from here. You may then use the data on another Moonglade blog or other systems.
 </div>
 
-<a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Tags" class="btn btn-outline-success" target="_blank">Export Tags Data</a>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Export Data
+            </div>
+            <div class="card-body">
+                <strong>Main Data</strong>
+                <hr />
 
-<a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Categories" class="btn btn-outline-success" target="_blank">Export Categories Data</a>
+                <div class="mb-3">
+                    <a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Posts" class="btn btn-outline-success" target="_blank">Posts</a>
 
-<a asp-action="Export4Download" asp-controller="Settings" asp-route-type="FriendLinks" class="btn btn-outline-success" target="_blank">Export Friend Links Data</a>
+                    <a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Pages" class="btn btn-outline-success" target="_blank">Pages</a>
 
-<a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Pingbacks" class="btn btn-outline-success" target="_blank">Export Pingback Data</a>
+                    <a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Tags" class="btn btn-outline-success" target="_blank">Tags</a>
 
-<a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Pages" class="btn btn-outline-success" target="_blank">Export Pages Data</a>
+                    <a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Categories" class="btn btn-outline-success" target="_blank">Categories</a>
+                </div>
+
+                <strong>Secondary Data</strong>
+                <hr />
+
+                <div>
+                    <a asp-action="Export4Download" asp-controller="Settings" asp-route-type="FriendLinks" class="btn btn-outline-success" target="_blank">Friend Links</a>
+
+                    <a asp-action="Export4Download" asp-controller="Settings" asp-route-type="Pingbacks" class="btn btn-outline-success" target="_blank">Pingback</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Import Data</div>
+            <div class="card-body">
+                Coming soon...
+            </div>
+        </div>
+    </div>
+</div>
+
+<p class="text-muted mt-4">* Note: This isn't cloning database, not everything would be exported. Although content would be same, object IDs would be different across systems.</p>
