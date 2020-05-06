@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
+using Newtonsoft.Json;
 
 namespace Moonglade.DataPorting
 {
@@ -18,7 +19,7 @@ namespace Moonglade.DataPorting
         public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector)
         {
             var data = await _repository.SelectAsync(selector);
-            var json = JsonSerializer.Serialize(data);
+            var json = JsonConvert.SerializeObject(data, Formatting.Indented); //JsonSerializer.Serialize(data);
 
             return new ExportResult
             {

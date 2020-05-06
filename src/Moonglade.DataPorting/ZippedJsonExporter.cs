@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
+using Newtonsoft.Json;
 
 namespace Moonglade.DataPorting
 {
@@ -35,7 +36,7 @@ namespace Moonglade.DataPorting
             string exportDirectory = CreateExportDirectory(tempId);
             foreach (var item in list)
             {
-                var json = JsonSerializer.Serialize(item);
+                var json = JsonConvert.SerializeObject(item, Formatting.Indented); // JsonSerializer.Serialize(item);
                 await SaveJsonToDirectory(json, Path.Join(exportDirectory, tempId), $"{Guid.NewGuid()}.json");
             }
 
