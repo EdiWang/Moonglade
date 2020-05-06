@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
@@ -189,6 +190,15 @@ namespace Moonglade.Core
                 // Use relative path
                 // Warning: Write data under application directory may blow up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.
                 path = path.Replace(basedirStr, contentRootPath);
+            }
+
+            // Handle Path for non-Windows environment #412
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || Path.DirectorySeparatorChar != '\\')
+            {
+                if (path.IndexOf('\\') > 0)
+                {
+                    path = path.Replace('\\', Path.DirectorySeparatorChar);
+                }
             }
 
             // IsPathFullyQualified can't check if path is valid, e.g.:
