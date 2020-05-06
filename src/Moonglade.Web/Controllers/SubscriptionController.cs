@@ -21,24 +21,24 @@ namespace Moonglade.Web.Controllers
             _syndicationFeedService = syndicationFeedService;
         }
 
-        [Route("rss/{categoryName?}")]
-        public async Task<IActionResult> Rss(string categoryName = null)
+        [Route("rss/{routeName?}")]
+        public async Task<IActionResult> Rss(string routeName = null)
         {
-            var rssDataFile = string.IsNullOrWhiteSpace(categoryName) ?
+            var rssDataFile = string.IsNullOrWhiteSpace(routeName) ?
                 Path.Join($"{SiteDataDirectory}", "feed", "posts.xml") :
-                Path.Join($"{SiteDataDirectory}", "feed", $"posts-category-{categoryName}.xml");
+                Path.Join($"{SiteDataDirectory}", "feed", $"posts-category-{routeName}.xml");
 
             if (!System.IO.File.Exists(rssDataFile))
             {
                 Logger.LogInformation($"RSS file not found, writing new file on {rssDataFile}");
 
-                if (string.IsNullOrWhiteSpace(categoryName))
+                if (string.IsNullOrWhiteSpace(routeName))
                 {
                     await _syndicationFeedService.RefreshFeedFileForPostAsync(false);
                 }
                 else
                 {
-                    await _syndicationFeedService.RefreshRssFilesForCategoryAsync(categoryName.ToLower());
+                    await _syndicationFeedService.RefreshRssFilesForCategoryAsync(routeName.ToLower());
                 }
 
                 if (!System.IO.File.Exists(rssDataFile))

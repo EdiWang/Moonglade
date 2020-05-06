@@ -35,7 +35,7 @@
         function editCat(id) {
             $.get(`manage/edit/${id}`, function (data) {
                 $("#CategoryEditViewModel_Id").val(data.id);
-                $("#CategoryEditViewModel_Name").val(data.name);
+                $("#CategoryEditViewModel_RouteName").val(data.routeName);
                 $("#CategoryEditViewModel_DisplayName").val(data.displayName);
                 $("#CategoryEditViewModel_Note").val(data.note);
                 $("#editCatModal").modal();
@@ -56,7 +56,7 @@
                 ajaxPostWithCSRFToken(`manage/${action}`,
                     {
                         "Id": $("#CategoryEditViewModel_Id").val(),
-                        "Name": $("#CategoryEditViewModel_Name").val(),
+                        "RouteName": $("#CategoryEditViewModel_RouteName").val(),
                         "DisplayName": $("#CategoryEditViewModel_DisplayName").val(),
                         "Note": $("#CategoryEditViewModel_Note").val()
                     },
@@ -95,7 +95,7 @@ else
             <div class="card mb-4" id="card-@cat.Id">
                 <div class="card-body">
                     <h6 class="card-title">
-                        <a asp-controller="Category" asp-action="List" asp-route-categoryName="@cat.Name" target="_blank">
+                        <a asp-controller="Category" asp-action="List" asp-route-routeName="@cat.RouteName" target="_blank">
                             @cat.DisplayName
                         </a>
                     </h6>
@@ -104,7 +104,7 @@ else
                         @cat.Note
                     </p>
 
-                    <small class="text-muted">@cat.Name</small>
+                    <small class="text-muted">@cat.RouteName</small>
                 </div>
                 <div class="card-footer">
                     <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-primary btn-edit"><span class="icon-pencil"></span></a>
@@ -136,9 +136,9 @@ else
                         <span asp-validation-for="CategoryEditViewModel.DisplayName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="CategoryEditViewModel.Name" class="control-label"></label>
-                        <input asp-for="CategoryEditViewModel.Name" class="form-control" />
-                        <span asp-validation-for="CategoryEditViewModel.Name" class="text-danger"></span>
+                        <label asp-for="CategoryEditViewModel.RouteName" class="control-label"></label>
+                        <input asp-for="CategoryEditViewModel.RouteName" class="form-control" />
+                        <span asp-validation-for="CategoryEditViewModel.RouteName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="CategoryEditViewModel.Note" class="control-label"></label>

@@ -35,16 +35,16 @@ namespace Moonglade.Web.Controllers
             _blogConfig = blogConfig;
         }
 
-        [Route("list/{categoryName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> List(string categoryName, int page = 1)
+        [Route("list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        public async Task<IActionResult> List(string routeName, int page = 1)
         {
-            if (string.IsNullOrWhiteSpace(categoryName))
+            if (string.IsNullOrWhiteSpace(routeName))
             {
                 return NotFound();
             }
 
             var pageSize = _blogConfig.ContentSettings.PostListPageSize;
-            var catResponse = await _categoryService.GetCategoryAsync(categoryName);
+            var catResponse = await _categoryService.GetCategoryAsync(routeName);
             if (!catResponse.IsSuccess)
             {
                 return ServerError($"Unsuccessful response: {catResponse.Message}");
@@ -53,12 +53,12 @@ namespace Moonglade.Web.Controllers
             var cat = catResponse.Item;
             if (null == cat)
             {
-                Logger.LogWarning($"Category '{categoryName}' not found.");
+                Logger.LogWarning($"Category '{routeName}' not found.");
                 return NotFound();
             }
 
             ViewBag.CategoryDisplayName = cat.DisplayName;
-            ViewBag.CategoryName = cat.Name;
+            ViewBag.CategoryRouteName = cat.RouteName;
             ViewBag.CategoryDescription = cat.Note;
 
             var postCount = _postService.CountByCategoryId(cat.Id).Item;
@@ -105,7 +105,7 @@ namespace Moonglade.Web.Controllers
                 {
                     var request = new CreateCategoryRequest
                     {
-                        Title = model.Name,
+                        RouteName = model.RouteName,
                         Note = model.Note,
                         DisplayName = model.DisplayName
                     };
@@ -144,7 +144,7 @@ namespace Moonglade.Web.Controllers
                 {
                     Id = r.Item.Id,
                     DisplayName = r.Item.DisplayName,
-                    Name = r.Item.Name,
+                    RouteName = r.Item.RouteName,
                     Note = r.Item.Note
                 };
 
@@ -164,7 +164,7 @@ namespace Moonglade.Web.Controllers
                 {
                     var request = new EditCategoryRequest(model.Id)
                     {
-                        Title = model.Name,
+                        RouteName = model.RouteName,
                         Note = model.Note,
                         DisplayName = model.DisplayName
                     };

@@ -10,7 +10,7 @@
     <a class="float-right d-none d-md-block"
        asp-controller="Subscription"
        asp-action="Rss"
-       asp-route-categoryName="@(((string)ViewBag.CategoryName).ToLower())" target="_blank"
+       asp-route-routeName="@(((string)ViewBag.CategoryRouteName).ToLower())" target="_blank"
        title="Subscribe @(ViewBag.CategoryDisplayName)">
         <span class="icon-rss"></span>
     </a>

@@ -8,7 +8,7 @@
         <a class="list-group-item list-group-item-action" 
            asp-controller="Category" 
            asp-action="List" 
-           asp-route-categoryName="@item.Name.ToLower()" 
+           asp-route-routeName="@item.RouteName.ToLower()" 
            title="@item.Note">
             @item.DisplayName
         </a>

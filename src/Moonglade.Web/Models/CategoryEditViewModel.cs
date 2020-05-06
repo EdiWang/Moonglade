@@ -18,7 +18,7 @@ namespace Moonglade.Web.Models
         [Display(Name = "Route Name")]
         [RegularExpression("(?!-)([a-z0-9-]+)", ErrorMessage = "Route Name can only accept lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle.")]
         [MaxLength(64)]
-        public string Name { get; set; }
+        public string RouteName { get; set; }
 
         [Required]
         [Display(Name = "Description")]

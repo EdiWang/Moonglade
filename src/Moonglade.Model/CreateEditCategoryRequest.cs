@@ -4,7 +4,7 @@ namespace Moonglade.Model
 {
     public class CreateCategoryRequest
     {
-        public string Title { get; set; }
+        public string RouteName { get; set; }
         public string DisplayName { get; set; }
         public string Note { get; set; }
     }

@@ -152,7 +152,7 @@ namespace Moonglade.Core
                     {
                         Id = pc.CategoryId,
                         DisplayName = pc.Category.DisplayName,
-                        Name = pc.Category.Title,
+                        RouteName = pc.Category.Title,
                         Note = pc.Category.Note
                     }).ToList()
                 });
@@ -174,7 +174,7 @@ namespace Moonglade.Core
                     Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
                     {
                         DisplayName = p.DisplayName,
-                        Name = p.Title
+                        RouteName = p.Title
                     }).ToList(),
 
                     Content = _htmlCodec.HtmlDecode(post.PostContent),
@@ -253,7 +253,7 @@ namespace Moonglade.Core
                     Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
                     {
                         DisplayName = p.DisplayName,
-                        Name = p.Title
+                        RouteName = p.Title
                     }).ToList(),
 
                     Content = _htmlCodec.HtmlDecode(post.PostContent),
