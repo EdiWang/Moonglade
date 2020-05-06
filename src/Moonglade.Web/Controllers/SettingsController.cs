@@ -665,23 +665,6 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        [HttpGet("navmenu-settings")]
-        public async Task<IActionResult> NavMenuSettings([FromServices] MenuService menuService)
-        {
-            var menuItemsResp = await menuService.GetAllMenusAsync();
-            if (menuItemsResp.IsSuccess)
-            {
-                var model = new NavMenuManageViewModel
-                {
-                    MenuItems = menuItemsResp.Item
-                };
-
-                return View(model);
-            }
-
-            return ServerError(menuItemsResp.Message);
-        }
-
         [HttpGet("settings-about")]
         public IActionResult About()
         {

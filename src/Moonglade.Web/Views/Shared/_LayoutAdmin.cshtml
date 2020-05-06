@@ -65,12 +65,16 @@
                             Tags
                         </a>
                         <a asp-controller="CustomPage" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "CustomPage" ? "active" : null)">
-                            <span class="icon-file-text2"></span>
+                            <span class="icon-file-empty"></span>
                             Pages
                         </a>
                         <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
                             <span class="icon-earth"></span>
                             Pingbacks
+                        </a>
+                        <a asp-controller="NavMenu" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "NavMenu" ? "active" : null)">
+                            <span class="icon-link"></span>
+                            Menus
                         </a>
                         <a asp-controller="Settings" asp-action="GeneralSettings" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
                             <span class="icon-cog"></span>

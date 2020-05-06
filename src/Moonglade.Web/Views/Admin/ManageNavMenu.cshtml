@@ -75,16 +75,18 @@
     </script>
 }
 
-<partial name="_SettingsHeader" />
+<h3>
+    Navigation Menus
+    <a class="btn btn-outline-success float-right" href="javascript:initCreateMenu();">
+        <span class="icon-plus"></span>
+        Create
+    </a>
+</h3>
+<hr />
 
 <div class="alert alert-info">
-    To turn on / off system navigation items (Categories / Tags / Archive), edit appsettings.json or override with environment variables.
+    To turn on / off system navigation items (Categories / Tags / Archive), edit <code>appsettings.json</code> or override with environment variables.
 </div>
-
-<a class="btn btn-outline-success" href="javascript:initCreateMenu();">
-    <span class="icon-plus"></span>
-    Create
-</a>
 
 @if (null != Model.MenuItems && Model.MenuItems.Any())
 {
