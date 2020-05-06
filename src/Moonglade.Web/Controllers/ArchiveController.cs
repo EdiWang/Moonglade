@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
         {
             if (year > DateTime.UtcNow.Year)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             IReadOnlyList<PostListItem> model;

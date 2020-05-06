@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
 
                     Logger.LogError($"Create menu failed: {response.Message}");
                     ModelState.AddModelError("", response.Message);
-                    return BadRequest("Create Menu Failed.");
+                    return Conflict(ModelState);
                 }
                 return BadRequest("Invalid ModelState");
             }
@@ -132,7 +132,7 @@ namespace Moonglade.Web.Controllers
 
                     Logger.LogError($"Edit menu failed: {response.Message}");
                     ModelState.AddModelError("", response.Message);
-                    return BadRequest();
+                    return Conflict(ModelState);
                 }
 
                 return BadRequest();
