@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -14,19 +15,22 @@ namespace Moonglade.DataPorting
         private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
         private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
         private readonly IRepository<CustomPageEntity> _pageRepository;
+        private readonly IRepository<PostEntity> _postRepository;
 
         public ExportManager(
             IRepository<TagEntity> tagRepository,
             IRepository<CategoryEntity> catRepository,
             IRepository<FriendLinkEntity> friendlinkRepository,
             IRepository<PingbackHistoryEntity> pingbackRepository,
-            IRepository<CustomPageEntity> pageRepository)
+            IRepository<CustomPageEntity> pageRepository, 
+            IRepository<PostEntity> postRepository)
         {
             _tagRepository = tagRepository;
             _catRepository = catRepository;
             _friendlinkRepository = friendlinkRepository;
             _pingbackRepository = pingbackRepository;
             _pageRepository = pageRepository;
+            _postRepository = postRepository;
         }
 
         public async Task<ExportResult> ExportData(ExportDataType dataType)
@@ -89,13 +93,32 @@ namespace Moonglade.DataPorting
 
                     return pgExportData;
                 case ExportDataType.Posts:
-                    // TODO: Complete this
-                    break;
+                    var poExp = new ZippedJsonExporter<PostEntity>(_postRepository, "moonglade-posts");
+                    var poExportData = await poExp.ExportData(p => new
+                    {
+                        p.Title,
+                        p.Slug,
+                        p.ContentAbstract,
+                        p.PostContent,
+                        p.CreateOnUtc,
+                        p.CommentEnabled,
+                        p.PostExtension.Hits,
+                        p.PostExtension.Likes,
+                        p.PostPublish.PubDateUtc,
+                        p.PostPublish.ContentLanguageCode,
+                        p.PostPublish.ExposedToSiteMap,
+                        p.PostPublish.IsDeleted,
+                        p.PostPublish.IsFeedIncluded,
+                        p.PostPublish.IsPublished,
+                        p.PostPublish.PublisherIp,
+                        Categories = p.PostCategory.Select(pc => pc.Category.DisplayName),
+                        Tags = p.PostTag.Select(pt => pt.Tag.DisplayName)
+                    });
+
+                    return poExportData;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
             }
-
-            return null;
         }
     }
 }
