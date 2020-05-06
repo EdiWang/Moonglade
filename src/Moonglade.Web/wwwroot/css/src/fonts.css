@@ -207,6 +207,26 @@
     content: "\eac9";
 }
 
+.icon-user:before {
+    content: "\e971";
+}
+
+.icon-list:before {
+    content: "\e9ba";
+}
+
+.icon-download3:before {
+    content: "\e9c7";
+}
+
+.icon-upload3:before {
+    content: "\e9c8";
+}
+
+.icon-exit:before {
+    content: "\ea14";
+}
+
 .icon-stack-overflow:before {
     content: "\f16c";
 }
