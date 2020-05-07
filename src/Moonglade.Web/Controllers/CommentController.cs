@@ -74,7 +74,7 @@ namespace Moonglade.Web.Controllers
 
                     if (response.IsSuccess)
                     {
-                        if (_blogConfig.EmailSettings.SendEmailOnNewComment && null != _notificationClient)
+                        if (_blogConfig.NotificationSettings.SendEmailOnNewComment && null != _notificationClient)
                         {
                             _ = Task.Run(async () =>
                               {
@@ -170,7 +170,7 @@ namespace Moonglade.Web.Controllers
                 return Json(response);
             }
 
-            if (_blogConfig.EmailSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(response.Item.Email))
+            if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(response.Item.Email))
             {
                 var postLink = GetPostUrl(linkGenerator, response.Item.PubDateUtc, response.Item.Slug);
                 _ = Task.Run(async () =>

@@ -125,7 +125,7 @@ namespace Moonglade.Core
                 Description = _blogConfig.FeedSettings.UseFullContent ? p.PostContent : p.ContentAbstract,
                 Link = $"{_baseUrl}/post/{p.PostPublish.PubDateUtc.Value.Year}/{p.PostPublish.PubDateUtc.Value.Month}/{p.PostPublish.PubDateUtc.Value.Day}/{p.Slug}",
                 Author = _blogConfig.FeedSettings.AuthorName,
-                AuthorEmail = _blogConfig.EmailSettings.AdminEmail,
+                AuthorEmail = _blogConfig.NotificationSettings.AdminEmail,
                 Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToList()
             } : null);
 

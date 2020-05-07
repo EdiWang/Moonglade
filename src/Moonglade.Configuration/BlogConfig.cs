@@ -23,7 +23,7 @@ namespace Moonglade.Configuration
 
         public ContentSettings ContentSettings { get; set; }
 
-        public EmailSettings EmailSettings { get; set; }
+        public NotificationSettings NotificationSettings { get; set; }
 
         public FeedSettings FeedSettings { get; set; }
 
@@ -44,7 +44,7 @@ namespace Moonglade.Configuration
 
             ContentSettings = new ContentSettings();
             GeneralSettings = new GeneralSettings();
-            EmailSettings = new EmailSettings();
+            NotificationSettings = new NotificationSettings();
             FeedSettings = new FeedSettings();
             WatermarkSettings = new WatermarkSettings();
             FriendLinksSettings = new FriendLinksSettings();
@@ -63,7 +63,7 @@ namespace Moonglade.Configuration
 
             GeneralSettings = JsonSerializer.Deserialize<GeneralSettings>(cfgDic[nameof(GeneralSettings)], jsonOptions);
             ContentSettings = JsonSerializer.Deserialize<ContentSettings>(cfgDic[nameof(ContentSettings)], jsonOptions);
-            EmailSettings = JsonSerializer.Deserialize<EmailSettings>(cfgDic[nameof(EmailSettings)], jsonOptions);
+            NotificationSettings = JsonSerializer.Deserialize<NotificationSettings>(cfgDic[nameof(NotificationSettings)], jsonOptions);
             FeedSettings = JsonSerializer.Deserialize<FeedSettings>(cfgDic[nameof(FeedSettings)], jsonOptions);
             WatermarkSettings = JsonSerializer.Deserialize<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)], jsonOptions);
             FriendLinksSettings = JsonSerializer.Deserialize<FriendLinksSettings>(cfgDic[nameof(FriendLinksSettings)], jsonOptions);

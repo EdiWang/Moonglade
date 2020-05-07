@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class EmailSettings : MoongladeSettings
+    public class NotificationSettings : MoongladeSettings
     {
         public bool EnableEmailSending { get; set; }
         public bool SendEmailOnCommentReply { get; set; }

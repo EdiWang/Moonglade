@@ -7,7 +7,7 @@ namespace Moonglade.Configuration.Abstraction
     {
         GeneralSettings GeneralSettings { get; set; }
         ContentSettings ContentSettings { get; set; }
-        EmailSettings EmailSettings { get; set; }
+        NotificationSettings NotificationSettings { get; set; }
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
         FriendLinksSettings FriendLinksSettings { get; set; }

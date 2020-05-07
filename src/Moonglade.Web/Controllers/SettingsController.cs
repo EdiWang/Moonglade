@@ -181,7 +181,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("notification-settings")]
         public IActionResult NotificationSettings()
         {
-            var settings = _blogConfig.EmailSettings;
+            var settings = _blogConfig.NotificationSettings;
             var vm = new EmailSettingsViewModel
             {
                 AdminEmail = settings.AdminEmail,
@@ -198,7 +198,7 @@ namespace Moonglade.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var settings = _blogConfig.EmailSettings;
+                var settings = _blogConfig.NotificationSettings;
                 settings.AdminEmail = model.AdminEmail;
                 settings.EmailDisplayName = model.EmailDisplayName;
                 settings.EnableEmailSending = model.EnableEmailSending;
