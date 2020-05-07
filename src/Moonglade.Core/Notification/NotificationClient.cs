@@ -47,7 +47,7 @@ namespace Moonglade.Core.Notification
                 httpClient.DefaultRequestHeaders.Add("X-Api-Key", settings.Value.Notification.ApiKey);
                 _httpClient = httpClient;
 
-                if (_blogConfig.EmailSettings.EnableEmailSending)
+                if (_blogConfig.NotificationSettings.EnableEmailSending)
                 {
                     IsEnabled = true;
                 }
@@ -183,8 +183,8 @@ namespace Moonglade.Core.Notification
         private HttpRequestMessage BuildNotificationRequest<T>(Func<NotificationRequest<T>> request) where T : class
         {
             var nf = request();
-            nf.EmailDisplayName = _blogConfig.EmailSettings.EmailDisplayName;
-            nf.AdminEmail = _blogConfig.EmailSettings.AdminEmail;
+            nf.EmailDisplayName = _blogConfig.NotificationSettings.EmailDisplayName;
+            nf.AdminEmail = _blogConfig.NotificationSettings.AdminEmail;
 
             var req = new HttpRequestMessage(HttpMethod.Post, string.Empty)
             {

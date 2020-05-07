@@ -8,7 +8,7 @@ CREATE TABLE [BlogConfiguration](
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'Category')
 CREATE TABLE [Category](
 [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
-[Title] [nvarchar](64) NULL,
+[RouteName] [nvarchar](64) NULL,
 [DisplayName] [nvarchar](64) NULL,
 [Note] [nvarchar](128) NULL) 
 

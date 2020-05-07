@@ -51,7 +51,7 @@ namespace Moonglade.DataPorting
                     var catExportData = await catExp.ExportData(p => new
                     {
                         p.DisplayName,
-                        Route = p.Title,
+                        Route = p.RouteName,
                         p.Note
                     });
                     return catExportData;
