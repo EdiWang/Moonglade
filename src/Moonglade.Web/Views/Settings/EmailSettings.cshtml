@@ -12,6 +12,10 @@
 }
 else
 {
+    <div class="alert alert-info">
+        Current Endpoint: @Settings.Value.Notification.ApiEndpoint
+    </div>
+
     <form id="form-settings" asp-controller="Settings" asp-action="EmailSettings"
           data-ajax-begin="onUpdateSettingsBegin"
           data-ajax-complete="onUpdateSettingsComplete"
