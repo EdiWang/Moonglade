@@ -11,7 +11,7 @@ namespace Moonglade.Data.Configurations
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.DisplayName).HasMaxLength(64);
             builder.Property(e => e.Note).HasMaxLength(128);
-            builder.Property(e => e.Title).HasMaxLength(64);
+            builder.Property(e => e.RouteName).HasMaxLength(64);
         }
     }
 }

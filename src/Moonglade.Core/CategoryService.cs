@@ -35,7 +35,7 @@ namespace Moonglade.Core
                 {
                     Id = cat.Id,
                     DisplayName = cat.DisplayName,
-                    RouteName = cat.Title,
+                    RouteName = cat.RouteName,
                     Note = cat.Note
                 });
                 return new SuccessResponse<IReadOnlyList<Category>>(item);
@@ -52,7 +52,7 @@ namespace Moonglade.Core
                         {
                             DisplayName = category.DisplayName,
                             Id = category.Id,
-                            RouteName = category.Title,
+                            RouteName = category.RouteName,
                             Note = category.Note
                         });
 
@@ -70,7 +70,7 @@ namespace Moonglade.Core
                         {
                             DisplayName = category.DisplayName,
                             Id = category.Id,
-                            RouteName = category.Title,
+                            RouteName = category.RouteName,
                             Note = category.Note
                         });
 
@@ -86,7 +86,7 @@ namespace Moonglade.Core
                 {
                     Id = c.Id,
                     DisplayName = c.DisplayName,
-                    RouteName = c.Title,
+                    RouteName = c.RouteName,
                     Note = c.Note
                 });
 
@@ -98,7 +98,7 @@ namespace Moonglade.Core
         {
             return TryExecuteAsync(async () =>
             {
-                var exists = _categoryRepository.Any(c => c.Title == createCategoryRequest.RouteName);
+                var exists = _categoryRepository.Any(c => c.RouteName == createCategoryRequest.RouteName);
                 if (exists)
                 {
                     return new Response { Message = $"CategoryEntity titled '{createCategoryRequest.RouteName}' already exist." };
@@ -107,13 +107,13 @@ namespace Moonglade.Core
                 var category = new CategoryEntity
                 {
                     Id = Guid.NewGuid(),
-                    Title = createCategoryRequest.RouteName.Trim(),
+                    RouteName = createCategoryRequest.RouteName.Trim(),
                     Note = createCategoryRequest.Note.Trim(),
                     DisplayName = createCategoryRequest.DisplayName.Trim()
                 };
 
                 await _categoryRepository.AddAsync(category);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryCreated, $"Category '{category.Title}' created");
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryCreated, $"Category '{category.RouteName}' created");
 
                 return new SuccessResponse();
             });
@@ -146,7 +146,7 @@ namespace Moonglade.Core
                 var cat = await _categoryRepository.GetAsync(editCategoryRequest.Id);
                 if (null == cat) return new Response { Message = $"CategoryEntity id '{editCategoryRequest.Id}' not found." };
 
-                cat.Title = editCategoryRequest.RouteName.Trim();
+                cat.RouteName = editCategoryRequest.RouteName.Trim();
                 cat.DisplayName = editCategoryRequest.DisplayName.Trim();
                 cat.Note = editCategoryRequest.Note.Trim();
 

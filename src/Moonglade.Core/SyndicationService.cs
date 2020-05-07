@@ -46,7 +46,7 @@ namespace Moonglade.Core
 
         public async Task RefreshRssFilesForCategoryAsync(string categoryName)
         {
-            var cat = await _categoryRepository.GetAsync(c => c.Title == categoryName);
+            var cat = await _categoryRepository.GetAsync(c => c.RouteName == categoryName);
             if (null != cat)
             {
                 Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
