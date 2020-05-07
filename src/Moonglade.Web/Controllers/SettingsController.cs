@@ -178,8 +178,8 @@ namespace Moonglade.Web.Controllers
 
         #region Email Settings
 
-        [HttpGet("email-settings")]
-        public IActionResult EmailSettings()
+        [HttpGet("notification-settings")]
+        public IActionResult NotificationSettings()
         {
             var settings = _blogConfig.EmailSettings;
             var vm = new EmailSettingsViewModel
@@ -193,8 +193,8 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("email-settings")]
-        public async Task<IActionResult> EmailSettings(EmailSettingsViewModel model)
+        [HttpPost("notification-settings")]
+        public async Task<IActionResult> NotificationSettings(EmailSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
