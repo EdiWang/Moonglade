@@ -14,6 +14,8 @@ The [**.NET Core**](https://dotnet.microsoft.com/) blog system of [**edi.wang**]
 
 ## 🛠 Build and Run
 
+> The system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
+
 Tools | Alternative
 --- | ---
 [.NET Core 3.1 SDK](http://dot.net) | N/A
@@ -110,12 +112,12 @@ The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the 
 
 #### ☁ CDN
 
-If ```GetImageByCDNRedirect``` is set to ```true```, the blog will get images from client browser using a 302 redirect. This is especially useful when you have a CDN for your image resources, like what I did on Azure. 
+If ```GetImageByCDNRedirect``` is set to ```true```, the blog will get images from client browser using a 302 redirect. This is especially useful when you have a CDN for your image resources. 
 
 ```json
 "CDNSettings": {
     "GetImageByCDNRedirect": true,
-    "CDNEndpoint": "https://ews.azureedge.net/ediwang-images"
+    "CDNEndpoint": "https://yourendpoint.azureedge.net/moonglade-images"
 }
 ```
 
@@ -144,9 +146,3 @@ EnforceHttps | ```bool``` | Force website use HTTPS
 AllowScriptsInCustomPage | ```bool``` | Allow JavaScript in Page content or not
 EnableAudit | ```bool``` | Enable Audit Log or not
 EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
-
-## 🙄 FAQ
-
-### Does this blog coupled with Microsoft Azure?
-
-No, the system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
