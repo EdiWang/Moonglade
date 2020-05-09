@@ -155,5 +155,6 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 - [zchwei](https://zchwei.com/)
 - [yycoding](https://www.yycoding.xyz/)
 - [51azure](https://www.51azure.cloud/)
+- [Zhuangkh](https://zhuangkh.com/)
 
 *Just Submit PR or issue if you want your blog to be listed here*
