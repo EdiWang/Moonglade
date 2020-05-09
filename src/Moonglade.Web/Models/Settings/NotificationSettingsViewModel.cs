@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Models.Settings
 {
-    public class EmailSettingsViewModel
+    public class NotificationSettingsViewModel
     {
         [Display(Name = "Enable Email Sending")]
         public bool EnableEmailSending { get; set; }

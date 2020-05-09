@@ -179,7 +179,7 @@ namespace Moonglade.Web.Controllers
 
                     Logger.LogError($"Edit category failed: {response.Message}");
                     ModelState.AddModelError("", response.Message);
-                    return BadRequest();
+                    return Conflict(ModelState);
                 }
 
                 return BadRequest();

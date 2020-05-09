@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
-@model EmailSettingsViewModel
+@model NotificationSettingsViewModel
 @inject IOptionsSnapshot<AppSettings> Settings
 
 <partial name="_SettingsHeader" />
@@ -16,7 +16,7 @@ else
         Current Endpoint: @Settings.Value.Notification.ApiEndpoint
     </div>
 
-    <form id="form-settings" asp-controller="Settings" asp-action="NotificationSettings"
+    <form id="form-settings" asp-controller="Settings" asp-action="Notification"
           data-ajax-begin="onUpdateSettingsBegin"
           data-ajax-complete="onUpdateSettingsComplete"
           data-ajax-failure="onUpdateSettingsFailed"

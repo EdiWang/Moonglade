@@ -9,25 +9,25 @@
 
 <ul class="nav nav-tabs">
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "GeneralSettings" ? "active" : null)" asp-controller="Settings" asp-action="GeneralSettings">General</a>
+        <a class="nav-link @(currentAction == "General" ? "active" : null)" asp-controller="Settings" asp-action="General">General</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "ContentSettings" ? "active" : null)" asp-controller="Settings" asp-action="ContentSettings">Content</a>
+        <a class="nav-link @(currentAction == "Content" ? "active" : null)" asp-controller="Settings" asp-action="Content">Content</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "NotificationSettings" ? "active" : null)" asp-controller="Settings" asp-action="NotificationSettings">Notifications</a>
+        <a class="nav-link @(currentAction == "Notification" ? "active" : null)" asp-controller="Settings" asp-action="Notification">Notification</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "FeedSettings" ? "active" : null)" asp-controller="Settings" asp-action="FeedSettings">RSS/Atom Feed</a>
+        <a class="nav-link @(currentAction == "Feed" ? "active" : null)" asp-controller="Settings" asp-action="Feed">Feed</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "WatermarkSettings" ? "active" : null)" asp-controller="Settings" asp-action="WatermarkSettings">Watermark</a>
+        <a class="nav-link @(currentAction == "Watermark" ? "active" : null)" asp-controller="Settings" asp-action="Watermark">Watermark</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "FriendLinkSettings" ? "active" : null)" asp-controller="Settings" asp-action="FriendLinkSettings">Friend Links</a>
+        <a class="nav-link @(currentAction == "FriendLink" ? "active" : null)" asp-controller="Settings" asp-action="FriendLink">Friend Links</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "AdvancedSettings" ? "active" : null)" asp-controller="Settings" asp-action="AdvancedSettings">Advanced</a>
+        <a class="nav-link @(currentAction == "Advanced" ? "active" : null)" asp-controller="Settings" asp-action="Advanced">Advanced</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
         <a class="nav-link @(currentAction == "AuditLogs" ? "active" : null)" asp-controller="Settings" asp-action="AuditLogs">Audit Logs</a>

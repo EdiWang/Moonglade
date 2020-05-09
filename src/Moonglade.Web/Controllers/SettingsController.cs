@@ -59,7 +59,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("general-settings")]
-        public IActionResult GeneralSettings()
+        public IActionResult General()
         {
             var tzList = _dateTimeResolver.GetTimeZones().Select(t => new SelectListItem
             {
@@ -96,7 +96,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("general-settings")]
-        public async Task<IActionResult> GeneralSettings(GeneralSettingsViewModel model)
+        public async Task<IActionResult> General(GeneralSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -126,8 +126,8 @@ namespace Moonglade.Web.Controllers
             return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
         }
 
-        [HttpGet("content-settings")]
-        public IActionResult ContentSettings()
+        [HttpGet("content")]
+        public IActionResult Content()
         {
             var vm = new ContentSettingsViewModel
             {
@@ -147,8 +147,8 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("content-settings")]
-        public async Task<IActionResult> ContentSettings(ContentSettingsViewModel model)
+        [HttpPost("content")]
+        public async Task<IActionResult> Content(ContentSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -178,11 +178,11 @@ namespace Moonglade.Web.Controllers
 
         #region Email Settings
 
-        [HttpGet("notification-settings")]
-        public IActionResult NotificationSettings()
+        [HttpGet("notification")]
+        public IActionResult Notification()
         {
             var settings = _blogConfig.NotificationSettings;
-            var vm = new EmailSettingsViewModel
+            var vm = new NotificationSettingsViewModel
             {
                 AdminEmail = settings.AdminEmail,
                 EmailDisplayName = settings.EmailDisplayName,
@@ -193,8 +193,8 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("notification-settings")]
-        public async Task<IActionResult> NotificationSettings(EmailSettingsViewModel model)
+        [HttpPost("notification")]
+        public async Task<IActionResult> Notification(NotificationSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -232,8 +232,8 @@ namespace Moonglade.Web.Controllers
 
         #region Feed Settings
 
-        [HttpGet("feed-settings")]
-        public IActionResult FeedSettings()
+        [HttpGet("feed")]
+        public IActionResult Feed()
         {
             var settings = _blogConfig.FeedSettings;
             var vm = new FeedSettingsViewModel
@@ -250,8 +250,8 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("feed-settings")]
-        public async Task<IActionResult> FeedSettings(FeedSettingsViewModel model)
+        [HttpPost("feed")]
+        public async Task<IActionResult> Feed(FeedSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -279,8 +279,8 @@ namespace Moonglade.Web.Controllers
 
         #region Watermark Settings
 
-        [HttpGet("watermark-settings")]
-        public IActionResult WatermarkSettings()
+        [HttpGet("watermark")]
+        public IActionResult Watermark()
         {
             var settings = _blogConfig.WatermarkSettings;
             var vm = new WatermarkSettingsViewModel
@@ -294,8 +294,8 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("watermark-settings")]
-        public async Task<IActionResult> WatermarkSettings(WatermarkSettingsViewModel model)
+        [HttpPost("watermark")]
+        public async Task<IActionResult> Watermark(WatermarkSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -320,8 +320,8 @@ namespace Moonglade.Web.Controllers
 
         #region FriendLinks
 
-        [HttpGet("friendlink-settings")]
-        public async Task<IActionResult> FriendLinkSettings()
+        [HttpGet("friendlink")]
+        public async Task<IActionResult> FriendLink()
         {
             var response = await _friendLinkService.GetAllFriendLinksAsync();
             if (response.IsSuccess)
@@ -342,8 +342,8 @@ namespace Moonglade.Web.Controllers
             return View();
         }
 
-        [HttpPost("friendlink-settings")]
-        public async Task<IActionResult> FriendLinkSettings(FriendLinkSettingsViewModel model)
+        [HttpPost("friendlink")]
+        public async Task<IActionResult> FriendLink(FriendLinkSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -540,8 +540,8 @@ namespace Moonglade.Web.Controllers
 
         #region Advanced Settings
 
-        [HttpGet("advanced-settings")]
-        public IActionResult AdvancedSettings()
+        [HttpGet("advanced")]
+        public IActionResult Advanced()
         {
             var settings = _blogConfig.AdvancedSettings;
             var vm = new AdvancedSettingsViewModel
@@ -555,8 +555,8 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("advanced-settings")]
-        public async Task<IActionResult> AdvancedSettings(AdvancedSettingsViewModel model)
+        [HttpPost("advanced")]
+        public async Task<IActionResult> Advanced(AdvancedSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -604,7 +604,7 @@ namespace Moonglade.Web.Controllers
 
         #region Audit Logs
 
-        [HttpGet("audit-logs")]
+        [HttpGet("auditlogs")]
         public async Task<IActionResult> AuditLogs(int page = 1)
         {
             try
@@ -642,7 +642,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [HttpGet("clear-audit-logs")]
+        [HttpGet("clear-auditlogs")]
         public async Task<IActionResult> ClearAuditLogs()
         {
             try
@@ -695,9 +695,9 @@ namespace Moonglade.Web.Controllers
                     };
                 case ExportFormat.ZippedJsonFiles:
                     return PhysicalFile(exportResult.ZipFilePath, "application/zip", Path.GetFileName(exportResult.ZipFilePath));
+                default:
+                    return BadRequest();
             }
-
-            return BadRequest();
         }
 
         #endregion
