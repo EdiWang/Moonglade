@@ -146,3 +146,13 @@ EnforceHttps | ```bool``` | Force website use HTTPS
 AllowScriptsInCustomPage | ```bool``` | Allow JavaScript in Page content or not
 EnableAudit | ```bool``` | Enable Audit Log or not
 EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
+
+### 🐵 Customers
+
+There are a few individuals already setup thier blogs using Moonglade on Azure (Global or China), Alibaba Cloud, Tencent Cloud, etc.
+
+- [Anduin Xue](https://anduin.aiursoft.com/)
+- [zchwei](https://zchwei.com/)
+- [yycoding](https://www.yycoding.xyz/)
+
+*Just Submit PR or issue if you want your blog to be listed here*
