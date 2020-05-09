@@ -143,6 +143,7 @@ CaptchaSettings:ImageHeight | ```int``` | Pixel Height of Captcha Image
 PostAbstractWords | ```int``` | How may words to show in post list abstract
 ImageCacheSlidingExpirationMinutes | ```int``` | Time for cached images to expire
 EnforceHttps | ```bool``` | Force website use HTTPS
+AllowExternalScripts | ```bool``` | If CSP should enable external JavaScript links
 AllowScriptsInCustomPage | ```bool``` | Allow JavaScript in Page content or not
 EnableAudit | ```bool``` | Enable Audit Log or not
 EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL

@@ -1,10 +1,11 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
-using Edi.RouteDebugger;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
@@ -43,6 +44,8 @@ using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.Middleware.RobotsTxt;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
+
+#endregion
 
 namespace Moonglade.Web
 {
@@ -150,6 +153,7 @@ namespace Moonglade.Web
         {
             _logger = logger;
             var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
+            var allowExtScripts = bool.Parse(_appSettingsSection["AllowExternalScripts"]);
 
             // Support Chinese contents
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -188,13 +192,17 @@ namespace Moonglade.Web
                     }
                     csp.AddFormAction()
                         .Self();
-                    csp.AddScriptSrc()
-                        .Self()
-                        .UnsafeInline()
-                        .UnsafeEval()
-                        // Whitelist Azure Application Insights
-                        .From("https://*.vo.msecnd.net")
-                        .From("https://*.services.visualstudio.com");
+
+                    if (!allowExtScripts)
+                    {
+                        csp.AddScriptSrc()
+                            .Self()
+                            .UnsafeInline()
+                            .UnsafeEval()
+                            // Whitelist Azure Application Insights
+                            .From("https://*.vo.msecnd.net")
+                            .From("https://*.services.visualstudio.com");
+                    }
                 })
                 // Microsoft believes privacy is a fundamental human right
                 // So should I

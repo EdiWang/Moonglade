@@ -6,6 +6,7 @@
         public CaptchaSettings CaptchaSettings { get; set; }
         public int PostAbstractWords { get; set; }
         public int ImageCacheSlidingExpirationMinutes { get; set; }
+        public bool AllowExternalScripts { get; set; }
         public bool AllowScriptsInCustomPage { get; set; }
         public bool ShowAdminLoginButton { get; set; }
         public bool EnableAudit { get; set; }
