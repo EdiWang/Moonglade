@@ -2,15 +2,9 @@
 
 [![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master)
 
-The [**.NET Core**](https://dotnet.microsoft.com/) blog system of [**edi.wang**](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/)
+The [**.NET Core**](https://dotnet.microsoft.com/) blog system of [**edi.wang**](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enable most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v2.png)
-
-## 🎉 Features
-
-**Basic:** Post, Comment, Category, Archive, Tag, Page, Friendlink
-
-**Misc:** Pingback, RSS/Atom/OPML, Open Search, Reader View
 
 ## 🛠 Build and Run
 
@@ -148,7 +142,23 @@ AllowScriptsInCustomPage | ```bool``` | Allow JavaScript in Page content or not
 EnableAudit | ```bool``` | Enable Audit Log or not
 EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
 
-### 🐵 Customers
+
+## 🎉 Blog Protocols or Standards
+
+Name | Support
+--- | ---
+RSS | Yes
+Atom | Yes
+OPML | Yes
+APML | No
+Open Search | Yes
+Pingback | Yes
+Trackback | No
+RSD | No
+MetaWeblog | No
+Reader View | Yes
+
+## 🐵 Customers
 
 There are a few individuals already setup thier blogs using Moonglade on Azure (Global or China), Alibaba Cloud, Tencent Cloud, etc.
 
