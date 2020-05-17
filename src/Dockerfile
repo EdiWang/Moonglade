@@ -14,10 +14,10 @@ RUN for file in $(ls *.csproj); do mkdir -p ./${file%.*}/ && mv $file ./${file%.
 RUN dotnet restore "Moonglade.Web/Moonglade.Web.csproj"
 COPY . .
 WORKDIR "/src/Moonglade.Web"
-RUN dotnet build "Moonglade.Web.csproj" -p:Version=10.3.0-docker -c Release -o /app/build
+RUN dotnet build "Moonglade.Web.csproj" -p:Version=10.4.0-docker -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Moonglade.Web.csproj" -p:Version=10.3.0-docker -c Release -o /app/publish
+RUN dotnet publish "Moonglade.Web.csproj" -p:Version=10.4.0-docker -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
