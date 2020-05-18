@@ -20,7 +20,7 @@ Tools | Alternative
 
 Development | Production 
 --- | ---
-Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. ```moonglade-dev``` | [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. ```moonglade-production```
+Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. ```moonglade``` | [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. ```moonglade-production```
 Update the ```MoongladeDatabase``` as your database connection string in **appsettings.Development.json** | Set environment variable: ```ConnectionStrings__MoongladeDatabase``` as your connection string. 
 
 ##### Connection String Example
