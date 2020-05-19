@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.Spec;
-using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Pingback;
 using Moonglade.Web.Filters;
@@ -54,7 +53,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("manage/edit/{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id, [FromServices] IHtmlCodec htmlCodec)
+        public async Task<IActionResult> Edit(Guid id)
         {
             var postResponse = await _postService.GetPostAsync(id);
             if (!postResponse.IsSuccess)
@@ -69,9 +68,7 @@ namespace Moonglade.Web.Controllers
                 {
                     PostId = post.Id,
                     IsPublished = post.IsPublished,
-                    EditorContent = AppSettings.Editor == Model.Settings.EditorChoice.Markdown ?
-                                                        post.RawPostContent :
-                                                        htmlCodec.HtmlDecode(post.RawPostContent),
+                    EditorContent = post.RawPostContent,
                     Slug = post.Slug,
                     Title = post.Title,
                     EnableComment = post.CommentEnabled,

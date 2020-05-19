@@ -12,10 +12,5 @@ namespace Moonglade.HtmlEncoding
         {
             return HttpUtility.HtmlDecode(encodedHtml);
         }
-
-        public string HtmlEncode(string rawHtml)
-        {
-            return HtmlEncoder.Default.Encode(rawHtml);
-        }
     }
 }
