@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -15,7 +14,6 @@ namespace Moonglade.Core
 {
     public class CustomPageService : MoongladeService
     {
-        private readonly IHtmlCodec _htmlCodec;
         private readonly IRepository<CustomPageEntity> _customPageRepository;
         private readonly IMoongladeAudit _moongladeAudit;
 
@@ -23,11 +21,9 @@ namespace Moonglade.Core
             ILogger<CustomPageService> logger,
             IOptions<AppSettings> settings,
             IRepository<CustomPageEntity> customPageRepository,
-            IHtmlCodec htmlCodec,
             IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
             _customPageRepository = customPageRepository;
-            _htmlCodec = htmlCodec;
             _moongladeAudit = moongladeAudit;
         }
 
@@ -84,7 +80,7 @@ namespace Moonglade.Core
                     Title = request.Title.Trim(),
                     RouteName = request.RouteName.ToLower().Trim(),
                     CreateOnUtc = DateTime.UtcNow,
-                    HtmlContent = _htmlCodec.HtmlEncode(request.HtmlContent),
+                    HtmlContent = request.HtmlContent,
                     CssContent = request.CssContent,
                     HideSidebar = request.HideSidebar
                 };
@@ -108,7 +104,7 @@ namespace Moonglade.Core
 
                 page.Title = request.Title.Trim();
                 page.RouteName = request.RouteName.ToLower().Trim();
-                page.HtmlContent = _htmlCodec.HtmlEncode(request.HtmlContent);
+                page.HtmlContent = request.HtmlContent;
                 page.CssContent = request.CssContent;
                 page.HideSidebar = request.HideSidebar;
                 page.UpdatedOnUtc = DateTime.UtcNow;
@@ -150,7 +146,7 @@ namespace Moonglade.Core
                 Title = entity.Title.Trim(),
                 CreateOnUtc = entity.CreateOnUtc,
                 CssContent = entity.CssContent,
-                RawHtmlContent = _htmlCodec.HtmlDecode(entity.HtmlContent),
+                RawHtmlContent = entity.HtmlContent,
                 HideSidebar = entity.HideSidebar,
                 RouteName = entity.RouteName.Trim().ToLower(),
                 UpdatedOnUtc = entity.UpdatedOnUtc
