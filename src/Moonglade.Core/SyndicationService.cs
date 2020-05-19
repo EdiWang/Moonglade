@@ -140,17 +140,9 @@ namespace Moonglade.Core
 
         private string GetPostContent(string rawContent)
         {
-            var editor = AppSettings.Editor;
-            switch (editor)
-            {
-                case EditorChoice.Markdown:
-                    var md2Html = Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Html, false);
-                    return md2Html;
-                case EditorChoice.HTML:
-                case EditorChoice.None:
-                default:
-                    return rawContent;
-            }
+            return AppSettings.Editor == EditorChoice.Markdown ? 
+                Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Html, false) : 
+                rawContent;
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Xml;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
@@ -50,7 +49,7 @@ namespace Moonglade.Syndication
                 {
                     Id = item.Id,
                     Title = item.Title,
-                    Description = HttpUtility.HtmlDecode(item.Description),
+                    Description = item.Description,
                     LastUpdated = item.PubDateUtc.ToUniversalTime(),
                     Published = item.PubDateUtc.ToUniversalTime()
                 };
