@@ -399,9 +399,7 @@ namespace Moonglade.Core
                 {
                     CommentEnabled = request.EnableComment,
                     Id = Guid.NewGuid(),
-                    PostContent = AppSettings.Editor == EditorChoice.Markdown ?
-                                    request.EditorContent :
-                                    _htmlCodec.HtmlEncode(request.EditorContent),
+                    PostContent = request.EditorContent,
                     ContentAbstract = Utils.GetPostAbstract(
                                             request.EditorContent,
                                             AppSettings.PostAbstractWords,
@@ -513,9 +511,7 @@ namespace Moonglade.Core
                 }
 
                 postModel.CommentEnabled = request.EnableComment;
-                postModel.PostContent = AppSettings.Editor == EditorChoice.Markdown ?
-                                        request.EditorContent :
-                                        _htmlCodec.HtmlEncode(request.EditorContent);
+                postModel.PostContent = request.EditorContent;
                 postModel.ContentAbstract = Utils.GetPostAbstract(
                                             request.EditorContent,
                                             AppSettings.PostAbstractWords,
