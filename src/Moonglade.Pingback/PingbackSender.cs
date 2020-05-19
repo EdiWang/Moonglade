@@ -141,8 +141,6 @@ namespace Moonglade.Pingback
                 throw new ArgumentNullException(content);
             }
 
-            content = HttpUtility.HtmlDecode(content);
-
             var urlsList = new List<Uri>();
             foreach (var url in
                 UrlsRegex.Matches(content).Select(myMatch => myMatch.Groups["url"].ToString().Trim()))
