@@ -10,7 +10,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.DateTimeOps;
-using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -18,7 +17,6 @@ namespace Moonglade.Core
 {
     public class PostService : MoongladeService
     {
-        private readonly IHtmlCodec _htmlCodec;
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IMoongladeAudit _moongladeAudit;
 
@@ -43,7 +41,6 @@ namespace Moonglade.Core
             IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
-            IHtmlCodec htmlCodec,
             IDateTimeResolver dateTimeResolver,
             IMoongladeAudit moongladeAudit) : base(logger, settings)
         {
@@ -54,7 +51,6 @@ namespace Moonglade.Core
             _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
-            _htmlCodec = htmlCodec;
             _dateTimeResolver = dateTimeResolver;
             _moongladeAudit = moongladeAudit;
         }
@@ -177,7 +173,7 @@ namespace Moonglade.Core
                         RouteName = p.RouteName
                     }).ToList(),
 
-                    Content = _htmlCodec.HtmlDecode(post.PostContent),
+                    Content = post.PostContent,
 
                     Tags = post.PostTag.Select(pt => pt.Tag)
                         .Select(p => new Tag
@@ -207,7 +203,7 @@ namespace Moonglade.Core
                 var spec = new PostSpec(date, slug);
 
                 var model = await _postRepository.SelectFirstOrDefaultAsync(spec,
-                    post => _htmlCodec.HtmlDecode(post.PostContent));
+                    post => post.PostContent);
                 return new SuccessResponse<string>(model);
             });
         }
@@ -256,7 +252,7 @@ namespace Moonglade.Core
                         RouteName = p.RouteName
                     }).ToList(),
 
-                    Content = _htmlCodec.HtmlDecode(post.PostContent),
+                    Content = post.PostContent,
                     Hits = post.PostExtension.Hits,
                     Likes = post.PostExtension.Likes,
 

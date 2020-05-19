@@ -29,7 +29,6 @@ using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
-using Moonglade.HtmlEncoding;
 using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
@@ -103,7 +102,6 @@ namespace Moonglade.Web
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<IMoongladeAudit, MoongladeAudit>();
             services.AddScoped<DeleteSubscriptionCache>();
-            services.AddScoped<IHtmlCodec, HtmlCodec>();
             services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
             services.AddScoped<IDateTimeResolver>(c =>
                 new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));

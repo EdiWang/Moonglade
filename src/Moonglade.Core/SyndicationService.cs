@@ -10,7 +10,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.HtmlEncoding;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
@@ -24,7 +23,6 @@ namespace Moonglade.Core
         private readonly IBlogConfig _blogConfig;
         private readonly IRepository<CategoryEntity> _categoryRepository;
         private readonly IRepository<PostEntity> _postRepository;
-        private readonly IHtmlCodec _htmlCodec;
 
         public SyndicationService(
             ILogger<SyndicationService> logger,
@@ -32,13 +30,11 @@ namespace Moonglade.Core
             IBlogConfig blogConfig,
             IHttpContextAccessor httpContextAccessor,
             IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostEntity> postRepository,
-            IHtmlCodec htmlCodec) : base(logger, settings)
+            IRepository<PostEntity> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _categoryRepository = categoryRepository;
             _postRepository = postRepository;
-            _htmlCodec = htmlCodec;
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
@@ -147,12 +143,10 @@ namespace Moonglade.Core
             var editor = AppSettings.Editor;
             switch (editor)
             {
-                case EditorChoice.HTML:
-                    var html = _htmlCodec.HtmlDecode(rawContent);
-                    return html;
                 case EditorChoice.Markdown:
                     var md2Html = Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Html, false);
                     return md2Html;
+                case EditorChoice.HTML:
                 case EditorChoice.None:
                 default:
                     return rawContent;
