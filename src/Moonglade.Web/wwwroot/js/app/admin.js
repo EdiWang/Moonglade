@@ -349,6 +349,36 @@ var onUpdateSettingsFailed = function (context) {
     }
 };
 
+var btnClearCache = '.btn-clearcache';
+var onClearCacheBegin = function () {
+    $(btnClearCache).text('Processing...');
+    $(btnClearCache).addClass('disabled');
+    $(btnClearCache).attr('disabled', 'disabled');
+};
+
+var onClearCacheComplete = function () {
+    $(btnClearCache).text('Clear');
+    $(btnClearCache).removeClass('disabled');
+    $(btnClearCache).removeAttr('disabled');
+};
+
+var onClearCacheSuccess = function (context) {
+    if (window.toastr) {
+        window.toastr.success('Cleared Cache');
+    } else {
+        alert('Cleared Cache');
+    }
+};
+
+var onClearCacheFailed = function (context) {
+    var msg = context.responseJSON.message;
+    if (window.toastr) {
+        window.toastr.error(`Server Error: ${msg}`);
+    } else {
+        alert(`Error Code: ${msg}`);
+    }
+};
+
 var btnSubmitPost = '#btn-save';
 var onPostCreateEditBegin = function () {
     $(btnSubmitPost).text('Saving...');

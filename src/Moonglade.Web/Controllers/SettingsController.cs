@@ -701,7 +701,7 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        [HttpPost]
+        [HttpPost("clear-data-cache")]
         public IActionResult ClearDataCache(string[] cachedObjectValues)
         {
             try
