@@ -708,7 +708,11 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // TODO: Research if Keys can be refacted with enum flags
+                    if (cachedObjectValues.Contains("MCO_IMEM"))
+                    {
+                        // TODO: Clear memeory cache    
+                    }
+
                     if (cachedObjectValues.Contains("MCO_OPML"))
                     {
                         var opmlDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
