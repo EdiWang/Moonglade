@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -679,7 +680,6 @@ namespace Moonglade.Web.Controllers
             return View();
         }
 
-        [Authorize]
         [HttpGet("export/{type}")]
         public async Task<IActionResult> Export4Download([FromServices] IExportManager expman, ExportDataType type)
         {
@@ -701,5 +701,67 @@ namespace Moonglade.Web.Controllers
         }
 
         #endregion
+
+        [HttpPost("clear-data-cache")]
+        public IActionResult ClearDataCache(string[] cachedObjectValues, [FromServices] IMemoryCache cache)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (cachedObjectValues.Contains("MCO_IMEM"))
+                    {
+                        cache.Remove(StaticCacheKeys.Avatar);
+                        cache.Remove(StaticCacheKeys.PostCount);
+
+                        // Per this thread, it is not possible to get all cache keys in ASP.NET Core in order to clear them
+                        // https://stackoverflow.com/questions/45597057/how-to-retrieve-a-list-of-memory-cache-keys-in-asp-net-core
+                    }
+
+                    if (cachedObjectValues.Contains("MCO_OPML"))
+                    {
+                        var opmlDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
+                        if (System.IO.File.Exists(opmlDataFile))
+                        {
+                            System.IO.File.Delete(opmlDataFile);
+                        }
+                    }
+
+                    if (cachedObjectValues.Contains("MCO_FEED"))
+                    {
+                        var feedDir = Path.Join($"{SiteDataDirectory}", "feed");
+                        if (Directory.Exists(feedDir))
+                        {
+                            Directory.Delete(feedDir);
+                        }
+                    }
+
+                    if (cachedObjectValues.Contains("MCO_OPSH"))
+                    {
+                        var openSearchDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpenSearchFileName}");
+                        if (System.IO.File.Exists(openSearchDataFile))
+                        {
+                            System.IO.File.Delete(openSearchDataFile);
+                        }
+                    }
+
+                    if (cachedObjectValues.Contains("MCO_SICO"))
+                    {
+                        if (Directory.Exists(SiteIconDirectory))
+                        {
+                            Directory.Delete(SiteIconDirectory);
+                        }
+                    }
+
+                    return Ok();
+                }
+
+                return Conflict(ModelState);
+            }
+            catch (Exception e)
+            {
+                return ServerError(e.Message);
+            }
+        }
     }
 }

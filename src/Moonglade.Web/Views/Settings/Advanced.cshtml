@@ -71,19 +71,24 @@
                     Options
                 </div>
                 <div class="card-body">
-                    <h6>Restart Website</h6>
+                    <h6>Clear Data Cache</h6>
+                    <hr />
+                    <div class="alert alert-warning">Delete cached objects both in memory and on disk</div>
+                    <a href="javascript:;" class="btn btn-danger" data-toggle="modal" data-target="#cacheModal">Clear</a>
+
+                    <h6 class="mt-4">Restart Website</h6>
                     <hr />
 
                     <div class="alert alert-warning">Try to shutdown and restart the website, this will terminate all current requests.</div>
 
-                    <button class="btn btn-danger" data-toggle="modal" data-target="#restartModal">Restart</button>
+                    <a href="javascript:;" class="btn btn-danger" data-toggle="modal" data-target="#restartModal">Restart</a>
 
                     <h6 class="mt-4">System Reset</h6>
                     <hr />
 
                     <div class="alert alert-warning">Erase all data and configuration.</div>
 
-                    <button class="btn btn-danger" data-toggle="modal" data-target="#resetModal">Reset</button>
+                    <a href="javascript:;" class="btn btn-danger" data-toggle="modal" data-target="#resetModal">Reset</a>
                 </div>
             </div>
         </div>
@@ -93,6 +98,65 @@
         <input id="btn-save-settings" type="submit" value="Save" class="btn btn-success" />
     </div>
 </form>
+
+<div class="modal fade" id="cacheModal" tabindex="-1" role="dialog" aria-labelledby="cacheModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cacheModalLabel">Clear Data Cache</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form-clearcache" asp-controller="Settings" asp-action="ClearDataCache"
+                  data-ajax-begin="onClearCacheBegin"
+                  data-ajax-complete="onClearCacheComplete"
+                  data-ajax-failure="onClearCacheFailed"
+                  data-ajax-success="onClearCacheSuccess"
+                  data-ajax="true"
+                  data-ajax-method="POST">
+                <div class="modal-body">
+                    <ul class="list-unstyled">
+                        <li>
+                            <div class="custom-control custom-checkbox">
+                                <input id="MCO_IMEM" value="MCO_IMEM" name="cachedObjectValues" class="custom-control-input" type="checkbox">
+                                <label for="MCO_IMEM" class="custom-control-label">Memory Caches</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="custom-control custom-checkbox">
+                                <input id="MCO_OPML" value="MCO_OPML" name="cachedObjectValues" class="custom-control-input" type="checkbox">
+                                <label for="MCO_OPML" class="custom-control-label">OPML File</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="custom-control custom-checkbox">
+                                <input id="MCO_FEED" value="MCO_FEED" name="cachedObjectValues" class="custom-control-input" type="checkbox">
+                                <label for="MCO_FEED" class="custom-control-label">Subscription Feed Files</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="custom-control custom-checkbox">
+                                <input id="MCO_OPSH" value="MCO_OPSH" name="cachedObjectValues" class="custom-control-input" type="checkbox">
+                                <label for="MCO_OPSH" class="custom-control-label">Open Search File</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="custom-control custom-checkbox">
+                                <input id="MCO_SICO" value="MCO_SICO" name="cachedObjectValues" class="custom-control-input" type="checkbox">
+                                <label for="MCO_SICO" class="custom-control-label">Site Icon Files</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger btn-clearcache">Clear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
