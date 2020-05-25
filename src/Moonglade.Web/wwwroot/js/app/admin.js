@@ -363,6 +363,7 @@ var onClearCacheComplete = function () {
 };
 
 var onClearCacheSuccess = function (context) {
+    $('#cacheModal').modal('hide');
     if (window.toastr) {
         window.toastr.success('Cleared Cache');
     } else {
