@@ -87,7 +87,6 @@ CREATE TABLE [PostPublish](
 [IsDeleted] [bit] NOT NULL,
 [PubDateUtc] [datetime] NULL,
 [Revision] [int] NULL,
-[PublisherIp] [nvarchar](64) NULL,
 [ContentLanguageCode] [nvarchar](8) NULL)
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostTag')
