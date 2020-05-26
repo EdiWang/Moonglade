@@ -139,8 +139,7 @@ namespace Moonglade.Web.Controllers
                         ContentLanguageCode = model.ContentLanguageCode,
                         IsPublished = model.IsPublished,
                         Tags = tagList,
-                        CategoryIds = model.SelectedCategoryIds,
-                        RequestIp = HttpContext.Connection.RemoteIpAddress.ToString()
+                        CategoryIds = model.SelectedCategoryIds
                     };
 
                     var tzDate = _dateTimeResolver.GetNowWithUserTZone();

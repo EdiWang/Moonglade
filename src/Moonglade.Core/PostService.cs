@@ -411,8 +411,7 @@ namespace Moonglade.Core
                         ExposedToSiteMap = request.ExposedToSiteMap,
                         IsFeedIncluded = request.IsFeedIncluded,
                         Revision = 0,
-                        ContentLanguageCode = request.ContentLanguageCode,
-                        PublisherIp = request.RequestIp
+                        ContentLanguageCode = request.ContentLanguageCode
                     },
                     PostExtension = new PostExtensionEntity
                     {
@@ -520,7 +519,6 @@ namespace Moonglade.Core
                 if (request.IsPublished && !postModel.PostPublish.IsPublished)
                 {
                     postModel.PostPublish.IsPublished = true;
-                    postModel.PostPublish.PublisherIp = request.RequestIp;
                     postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
 
                     isNewPublish = true;

@@ -12,7 +12,6 @@ namespace Moonglade.Data.Entities
         public bool IsDeleted { get; set; }
         public DateTime? PubDateUtc { get; set; }
         public int? Revision { get; set; }
-        public string PublisherIp { get; set; }
         public string ContentLanguageCode { get; set; }
 
         public virtual PostEntity Post { get; set; }
