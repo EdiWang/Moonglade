@@ -17,6 +17,10 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(1024)]
         public string MetaDescription { get; set; }
 
+        [Display(Name = "Canonical URL Prefix")]
+        [MaxLength(64)]
+        public string CanonicalPrefix { get; set; }
+
         [Required]
         [Display(Name = "Logo Text")]
         [MaxLength(16)]
