@@ -352,5 +352,20 @@ namespace Moonglade.Tests
             var result = Utils.CombineUrl(url, path);
             return result;
         }
+
+        [TestCase("https://edi.wang", null, ExpectedResult = "https://edi.wang/")]
+        [TestCase("https://edi.wang", "", ExpectedResult = "https://edi.wang/")]
+        [TestCase("https://edi.wang", " ", ExpectedResult = "https://edi.wang/")]
+        [TestCase("https://edi.wang", "/", ExpectedResult = "https://edi.wang/")]
+        [TestCase("https://edi.wang", "//", ExpectedResult = "")]
+        [TestCase("https://edi.wang", "/996", ExpectedResult = "https://edi.wang/996")]
+        [TestCase("https://edi.wang", "996", ExpectedResult = "https://edi.wang/996")]
+        [TestCase("https://edi.wang", "996/007/251/404", ExpectedResult = "https://edi.wang/996/007/251/404")]
+        [TestCase("https://edi.wang/dotnet", "1055", ExpectedResult = "https://edi.wang/1055")]
+        public string TestResolveCanonicalUrl(string prefix, string path)
+        {
+            var result = Utils.ResolveCanonicalUrl(prefix, path);
+            return result;
+        }
     }
 }
