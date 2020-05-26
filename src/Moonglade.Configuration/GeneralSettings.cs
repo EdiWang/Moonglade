@@ -12,6 +12,8 @@ namespace Moonglade.Configuration
 
         public string MetaDescription { get; set; }
 
+        public string CanonicalPrefix { get; set; }
+
         public string Copyright { get; set; }
 
         public string SideBarCustomizedHtmlPitch { get; set; }

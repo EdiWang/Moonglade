@@ -1,4 +1,5 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+﻿@using Moonglade.Core
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
@@ -15,16 +16,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     @if (IsSectionDefined("keywords"))
     {
-        @RenderSection("keywords", false)
+        @await RenderSectionAsync("keywords", false)
     }
     else
     {
         <meta name="keywords" content="@Html.Raw(BlogConfig.GeneralSettings.MetaKeyword)" />
     }
-    @RenderSection("meta", false)
+
+    @await RenderSectionAsync("meta", false)
     @if (IsSectionDefined("metadescription"))
     {
-        @RenderSection("metadescription", false)
+        @await RenderSectionAsync("metadescription", false)
     }
     else
     {
@@ -35,13 +37,19 @@
     {
         <link rel="dns-prefetch" href="@BlogConfig.AdvancedSettings.DNSPrefetchEndpoint" />
     }
+    
+    @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
+    {
+        <link rel="canonical" href="@(Utils.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
+    }
+
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
     <link rel="alternate" type="application/rss+xml" title="@BlogConfig.FeedSettings.RssTitle" href="~/rss" />
     <link type="application/opensearchdescription+xml" rel="search" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/opensearch" />
     <partial name="_Favicons" />
     <link href="~/css/mooglade-css-bundle.min.css" rel="stylesheet" asp-append-version="true" />
     <script src="~/js/dist/app-js-bundle.min.js" asp-append-version="true"></script>
-    @RenderSection("head", false)
+    @await RenderSectionAsync("head", false)
     <environment include="Production">
         @Html.Raw(JavaScriptSnippet.FullScript)
     </environment>
