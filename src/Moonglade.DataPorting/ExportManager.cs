@@ -110,7 +110,6 @@ namespace Moonglade.DataPorting
                         p.PostPublish.IsDeleted,
                         p.PostPublish.IsFeedIncluded,
                         p.PostPublish.IsPublished,
-                        p.PostPublish.PublisherIp,
                         Categories = p.PostCategory.Select(pc => pc.Category.DisplayName),
                         Tags = p.PostTag.Select(pt => pt.Tag.DisplayName)
                     });
