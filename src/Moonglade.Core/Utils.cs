@@ -42,6 +42,25 @@ namespace Moonglade.Core
             return "#FFFFFF";
         }
 
+        public static string ResolveCanonicalUrl(string prefix, string path)
+        {
+            if (string.IsNullOrWhiteSpace(prefix))
+            {
+                return string.Empty;
+            }
+            path ??= string.Empty;
+
+            if (!prefix.IsValidUrl())
+            {
+                throw new UriFormatException($"Prefix '{prefix}' is not a valid URL.");
+            }
+
+            var prefixUri = new Uri(prefix);
+            return Uri.TryCreate(baseUri: prefixUri, relativeUri: path, out var newUri) ? 
+                newUri.ToString() : 
+                string.Empty;
+        }
+
         public static string SterilizeMenuLink(string rawUrl)
         {
             bool IsUnderLocalSlash()
@@ -66,7 +85,7 @@ namespace Moonglade.Core
 
                 return false;
             }
-            
+
             string invalidReturn = "#";
             if (string.IsNullOrWhiteSpace(rawUrl))
             {
@@ -77,7 +96,7 @@ namespace Moonglade.Core
             {
                 return IsUnderLocalSlash() ? rawUrl : invalidReturn;
             }
-            
+
             var uri = new Uri(rawUrl);
             if (uri.IsLoopback)
             {
