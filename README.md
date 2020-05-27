@@ -145,17 +145,19 @@ EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpo
 
 ## 🎉 Blog Protocols or Standards
 
-Name | Support
---- | ---
+Name | Support | Remark
+--- | --- | ---
 RSS | Yes
 Atom | Yes
 OPML | Yes
-APML | No
+APML | No | Not planned
+FOAF | No | Under triage
+BlogML | No | Under triage
 Open Search | Yes
 Pingback | Yes
-Trackback | No
-RSD | No
-MetaWeblog | No
+Trackback | No | Not planned
+RSD | No | Not planned
+MetaWeblog | No | Not planned
 Reader View | Yes
 
 ## 🐵 Customers
