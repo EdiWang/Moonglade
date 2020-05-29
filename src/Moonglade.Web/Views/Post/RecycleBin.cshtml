@@ -37,7 +37,7 @@
 
 <a asp-controller="Post" asp-action="EmptyRecycleBin" class="btn btn-outline-danger">
     <span class="icon-bin"></span>
-    Empty Recycle Bin
+    @Localizer["Empty Recycle Bin"]
 </a>
 
 @if (Model.Any())
@@ -46,9 +46,9 @@
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Created</th>
-                <th>Options</th>
+                <th>@Localizer["Title"]</th>
+                <th>@Localizer["Created"]</th>
+                <th>@Localizer["Options"]</th>
             </tr>
         </thead>
         <tbody>
@@ -59,10 +59,10 @@
                     <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy HH:mm")</td>
                     <td>
                         <a class="btn btn-sm btn-primary btn-restore" data-postid="@post.Id" href="javascript:;">
-                            <span class="icon-undo2"></span> Restore
+                            <span class="icon-undo2"></span> @Localizer["Restore"]
                         </a>
                         <a class="btn btn-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                            <span class="icon-bin"></span> Delete
+                            <span class="icon-bin"></span> @Localizer["Delete"]
                         </a>
                         <span id="span-processing-@post.Id" style="display: none">...</span>
                     </td>

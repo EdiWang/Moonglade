@@ -73,7 +73,7 @@
     <input type="hidden" asp-for="IsPublished" />
     <div class="row">
         <div class="col-md-9 col-xl-10">
-            <input type="text" asp-for="Title" class="form-control form-control-lg" placeholder="Title" />
+            <input type="text" asp-for="Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" />
             <div>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
@@ -88,7 +88,7 @@
                         </div>
                     </div>
                     <div class="col-2">
-                        <input type="text" asp-for="ContentLanguageCode" class="form-control form-control-sm" placeholder="Language Code" />
+                        <input type="text" asp-for="ContentLanguageCode" class="form-control form-control-sm" placeholder="@Localizer["Language Code"]" />
                         <div>
                             <span asp-validation-for="ContentLanguageCode" class="text-danger"></span>
                         </div>
@@ -104,12 +104,12 @@
             </div>
 
             <div class="form-group">
-                <input type="text" asp-for="Tags" class="form-control" placeholder="Tags" />
+                <input type="text" asp-for="Tags" class="form-control" placeholder="@Localizer["Tags"]" />
             </div>
         </div>
         <div class="col-md-3 col-xl-2">
             <div class="card mb-4">
-                <div class="card-header">Options</div>
+                <div class="card-header">@Localizer["Options"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <label asp-for="EnableComment" class="control-label"></label>
@@ -139,12 +139,12 @@
                 @if (Model.PostId != Guid.Empty)
                 {
                     <div class="card-body">
-                        <a class="btn btn-light" data-toggle="modal" data-target="#changePublishDateModal">Change Publish Date</a>
+                        <a class="btn btn-light" data-toggle="modal" data-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
                     </div>
                 }
             </div>
             <div class="card">
-                <div class="card-header">Categories</div>
+                <div class="card-header">@Localizer["Categories"]</div>
                 <div class="card-body">
                     @if (null != Model.CategoryList && Model.CategoryList.Count > 0)
                     {
@@ -165,7 +165,7 @@
                     }
                 </div>
                 <div class="card-footer">
-                    <a asp-action="Manage" asp-controller="Category" class="btn btn-sm btn-secondary">Manage Categories</a>
+                    <a asp-action="Manage" asp-controller="Category" class="btn btn-sm btn-secondary">@Localizer["Manage Categories"]</a>
                 </div>
             </div>
         </div>
@@ -175,30 +175,29 @@
 
     <div>
         <button type="submit" class="btn btn-success ediblogeditor-save" id="btn-save">
-            Save
+            @Localizer["Save"]
         </button>
         @if (!Model.IsPublished)
         {
             <button type="submit" class="btn btn-primary ediblogeditor-publish" id="btn-publish">
-                Publish
+                @Localizer["Publish"]
             </button>
-            <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">Preview</button>
+            <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">@Localizer["Preview"]</button>
         }
-        <a asp-controller="Post" asp-action="Manage" class="btn btn-light">Cancel</a>
+        <a asp-controller="Post" asp-action="Manage" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>
 
     <div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="resetModalLabel">Change Publish Date</h5>
+                    <h5 class="modal-title" id="resetModalLabel">@Localizer["Change Publish Date"]</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-warning">Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm.</div>
-
+                    <div class="alert alert-warning">@Localizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
                     <div class="form-group">
                         <input asp-for="ChangePublishDate" type="checkbox" />
                         <label asp-for="ChangePublishDate" class="control-label"></label>
@@ -211,8 +210,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Continue</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Continue"]</button>
                 </div>
             </div>
         </div>
