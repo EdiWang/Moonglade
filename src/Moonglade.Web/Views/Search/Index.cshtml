@@ -12,13 +12,13 @@
 else
 {
     <h3>
-        Search Result
+        @Localizer["Search Result"]
     </h3>
     <hr />
     if (!Model.Any())
     {
         <div class="alert alert-info">
-            No Matching Result
+            @Localizer["No Matching Result"]
         </div>
     }
     else
