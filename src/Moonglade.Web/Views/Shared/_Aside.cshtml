@@ -25,20 +25,20 @@
 
     <section class="top-tags mb-4">
         <div class="card">
-            <div class="card-header">Top Tags</div>
+            <div class="card-header">@Localizer["Top Tags"]</div>
             <div class="card-body">
                 <cache expires-after="@TimeSpan.FromMinutes(60)">
                     @await Component.InvokeAsync("HotTags")
                 </cache>
                 <hr />
-                <a asp-controller="Tags" asp-action="Index" class="card-link">All Tags</a>
+                <a asp-controller="Tags" asp-action="Index" class="card-link">@Localizer["All Tags"]</a>
             </div>
         </div>
     </section>
 
     <section class="cat-list mb-4">
         <div class="card">
-            <div class="card-header">All Categories</div>
+            <div class="card-header">@Localizer["All Categories"]</div>
             <cache expires-after="@TimeSpan.FromMinutes(60)">
                 @await Component.InvokeAsync("CategoryList")
             </cache>
@@ -48,7 +48,7 @@
     @if (Settings.Value.ShowAdminLoginButton)
     {
         <div class="text-center">
-            <a asp-action="Index" asp-controller="Admin" class="btn btn-sm btn-light">Admin Login</a>
+            <a asp-action="Index" asp-controller="Admin" class="btn btn-sm btn-light">@Localizer["Admin Login"]</a>
         </div>
     }
 </aside>
