@@ -39,14 +39,14 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-3">
-                <div class="card-header">Blog Identity</div>
+                <div class="card-header">@Localizer["Blog Identity"]</div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-2">
                             <div class="mb-2">
                                 <img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon" />
                             </div>
-                            <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#siteiconmodal">New Icon</a>
+                            <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#siteiconmodal">@Localizer["New Icon"]</a>
                         </div>
                         <div class="col-10">
                             <div class="row">
@@ -83,7 +83,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="SelectedThemeFileName">Theme</label>
+                                        <label class="input-group-text" for="SelectedThemeFileName">@Localizer["Theme"]</label>
                                     </div>
                                     <select class="custom-select" asp-for="SelectedThemeFileName" asp-items="@Model.ThemeList"></select>
                                 </div>
@@ -91,13 +91,13 @@
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox">
                                     <input asp-for="AutoDarkLightTheme" class="custom-control-input" type="checkbox">
-                                    <label asp-for="AutoDarkLightTheme" class="custom-control-label">Auto Light / Dark theme regarding client system settings</label>
+                                    <label asp-for="AutoDarkLightTheme" class="custom-control-label">@Localizer["Auto Light / Dark theme regarding client system settings"]</label>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="SelectedUtcOffset">Time Zone</label>
+                                        <label class="input-group-text" for="SelectedUtcOffset">@Localizer["Time Zone"]</label>
                                     </div>
                                     <select class="custom-select" asp-for="SelectedTimeZoneId" asp-items="@Model.TimeZoneList"></select>
                                 </div>
@@ -110,7 +110,7 @@
                             <div class="mb-2">
                                 <img src="@Url.Action("Avatar", "Assets")" class="img-thumbnail img-fluid blogadmin-avatar" />
                             </div>
-                            <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#avatarmodal">New Avatar</a>
+                            <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#avatarmodal">@Localizer["New Avatar"]</a>
                         </div>
                         <div class="col-md-10 col-sm-8">
                             <div class="form-group">
@@ -135,12 +135,12 @@
         </div>
         <div class="col-md-6">
             <div class="card mb-3">
-                <div class="card-header">HTML Pitch</div>
+                <div class="card-header">@Localizer["HTML Pitch"]</div>
                 <div class="card-body">
                     <div class="form-group">
                         <label asp-for="Copyright" class="control-label"></label>
                         <input asp-for="Copyright" class="form-control" />
-                        <p class="text-muted">Use [c] for copyright mark: &copy;, [year] for current year.</p>
+                        <p class="text-muted">@Localizer["Use [c] for copyright mark: &copy;, [year] for current year."]</p>
                         <span asp-validation-for="Copyright" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -160,7 +160,7 @@
 
     <hr />
     <div class="form-group">
-        <input id="btn-save-settings" type="submit" value="Save" class="btn btn-success" />
+        <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
     </div>
 </form>
 
@@ -168,7 +168,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="avatarmodalLabel">Change Avatar</h5>
+                <h5 class="modal-title" id="avatarmodalLabel">@Localizer["Change Avatar"]</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -177,21 +177,21 @@
 
                 <div class="form-group">
                     <div id="avatarDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
-                        Drag and drop image file here
+                        @Localizer["Drag and drop image file here"]
                     </div>
 
                     <div class="input-group mt-2">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="avatarImageFile" name="avatarImageFile">
-                            <label class="custom-file-label custom-file-label-avatar" for="avatarImageFile" aria-describedby="avatarImageFileAddon">.png or .jpg file</label>
+                            <label class="custom-file-label custom-file-label-avatar" for="avatarImageFile" aria-describedby="avatarImageFileAddon">@Localizer[".png or .jpg file"]</label>
                         </div>
                     </div>
 
-                    <p class="small text-muted text-center mt-2">* Image width and height must be equal</p>
+                    <p class="small text-muted text-center mt-2">@Localizer["* Image width and height must be equal"]</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success disabled" id="btn-upload-avatar" disabled="disabled">Upload</button>
+                <button class="btn btn-success disabled" id="btn-upload-avatar" disabled="disabled">@Localizer["Upload"]</button>
             </div>
         </div>
     </div>
@@ -201,7 +201,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="siteiconmodalLabel">Change Site Icon</h5>
+                <h5 class="modal-title" id="siteiconmodalLabel">@Localizer["Change Site Icon"]</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -210,21 +210,21 @@
 
                 <div class="form-group">
                     <div id="siteiconDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
-                        Drag and drop image file here
+                        @Localizer["Drag and drop image file here"]
                     </div>
 
                     <div class="input-group mt-2">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="siteiconImageFile" name="siteiconImageFile">
-                            <label class="custom-file-label custom-file-label-siteicon" for="siteiconImageFile" aria-describedby="siteiconImageFileAddon">.png file</label>
+                            <label class="custom-file-label custom-file-label-siteicon" for="siteiconImageFile" aria-describedby="siteiconImageFileAddon">@Localizer[".png file"]</label>
                         </div>
                     </div>
 
-                    <p class="small text-muted text-center mt-2">* Image width and height must be equal</p>
+                    <p class="small text-muted text-center mt-2">@Localizer["* Image width and height must be equal"]</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success disabled" id="btn-upload-siteicon" disabled="disabled">Upload</button>
+                <button class="btn btn-success disabled" id="btn-upload-siteicon" disabled="disabled">@Localizer["Upload"]</button>
             </div>
         </div>
     </div>
