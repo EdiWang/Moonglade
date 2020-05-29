@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header">General</div>
+                <div class="card-header">@Localizer["General"]</div>
                 <div class="card-body">
                     <div class="form-group">
                         <label asp-for="RssTitle" class="control-label"></label>
@@ -45,7 +45,7 @@
         </div>
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header">Advanced</div>
+                <div class="card-header">@Localizer["Advanced"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <label asp-for="UseFullContent" class="control-label"></label>
@@ -74,6 +74,6 @@
 
     <hr />
     <div class="form-group">
-        <input id="btn-save-settings" type="submit" value="Save" class="btn btn-success" />
+        <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
     </div>
 </form>
