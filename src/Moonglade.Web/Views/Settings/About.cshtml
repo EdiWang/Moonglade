@@ -10,42 +10,42 @@
 
 <div class="card mb-4">
     <div class="card-header">
-        Server Information
+        @Localizer["Server Information"]
     </div>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Item</th>
-                <th>Value</th>
+                <th>@Localizer["Item"]</th>
+                <th>@Localizer["Value"]</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>System</td>
+                <td>@Localizer["System"]</td>
                 <td>@System.Runtime.InteropServices.RuntimeInformation.OSDescription</td>
             </tr>
             <tr>
-                <td>Directory</td>
+                <td>@Localizer["Directory"]</td>
                 <td>@Environment.CurrentDirectory</td>
             </tr>
             <tr>
-                <td>x64 Process</td>
+                <td>@Localizer["64 Bit Process"]</td>
                 <td>@Environment.Is64BitProcess</td>
             </tr>
             <tr>
-                <td>Machine Name</td>
+                <td>@Localizer["Machine Name"]</td>
                 <td>@Environment.MachineName</td>
             </tr>
             <tr>
-                <td>User Name</td>
+                <td>@Localizer["User Name"]</td>
                 <td>@Environment.UserName</td>
             </tr>
             <tr>
-                <td>.NET Core Version</td>
+                <td>@Localizer[".NET Core Version"]</td>
                 <td>@Environment.Version</td>
             </tr>
             <tr>
-                <td>Worker Process</td>
+                <td>@Localizer["Worker Process"]</td>
                 <td>@Process.GetCurrentProcess().ProcessName</td>
             </tr>
         </tbody>
@@ -54,26 +54,26 @@
 
 <div class="card mb-4">
     <div class="card-header">
-        Moonglade Configuration
+        @Localizer["Moonglade Configuration"]
     </div>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Item</th>
-                <th>Value</th>
+                <th>@Localizer["Item"]</th>
+                <th>@Localizer["Value"]</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Data Directory</td>
+                <td>@Localizer["Data Directory"]</td>
                 <td>@AppDomain.CurrentDomain.GetData(Constants.DataDirectory)</td>
             </tr>
             <tr>
-                <td>App Base Directory</td>
+                <td>@Localizer["App Base Directory"]</td>
                 <td>@WebHostEnvironment.ContentRootPath</td>
             </tr>
             <tr>
-                <td>Editor</td>
+                <td>@Localizer["Editor"]</td>
                 <td>@Settings.Value.Editor</td>
             </tr>
         </tbody>

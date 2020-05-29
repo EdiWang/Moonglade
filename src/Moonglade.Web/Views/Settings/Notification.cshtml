@@ -13,7 +13,7 @@
 else
 {
     <div class="alert alert-info">
-        Current Endpoint: @Settings.Value.Notification.ApiEndpoint
+        @Localizer["Current Endpoint:"] @Settings.Value.Notification.ApiEndpoint
     </div>
 
     <form id="form-settings" asp-controller="Settings" asp-action="Notification"
@@ -28,7 +28,7 @@ else
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
-                    <div class="card-header">Email Options</div>
+                    <div class="card-header">@Localizer["Email Options"]</div>
                     <div class="card-body">
                         <div class="form-group">
                             <label asp-for="EmailDisplayName" class="control-label"></label>
@@ -43,13 +43,13 @@ else
                     </div>
 
                     <div class="card-footer">
-                        <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-primary">Send Test Email</a>
+                        <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-primary">@Localizer["Send Test Email"]</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card mb-4">
-                    <div class="card-header">Notification Options</div>
+                    <div class="card-header">@Localizer["Notification Options"]</div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <label asp-for="EnableEmailSending" class="control-label"></label>
@@ -81,7 +81,7 @@ else
         </div>
         <hr />
         <div class="form-group">
-            <input id="btn-save-settings" type="submit" value="Save" class="btn btn-success" />
+            <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
         </div>
     </form>
 }
