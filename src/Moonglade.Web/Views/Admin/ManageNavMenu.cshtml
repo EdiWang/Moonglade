@@ -76,16 +76,16 @@
 }
 
 <h3>
-    Navigation Menus
+    @Localizer["Navigation Menus"]
     <a class="btn btn-outline-success float-right" href="javascript:initCreateMenu();">
         <span class="icon-plus"></span>
-        Create
+        @Localizer["Create"]
     </a>
 </h3>
 <hr />
 
 <div class="alert alert-info">
-    To turn on / off system navigation items (Categories / Tags / Archive), edit <code>appsettings.json</code> or override with environment variables.
+    @Localizer["To turn on / off system navigation items (Categories / Tags / Archive), edit"] <code>appsettings.json</code> @Localizer["or override with environment variables."]
 </div>
 
 @if (null != Model.MenuItems && Model.MenuItems.Any())
@@ -93,12 +93,12 @@
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>URL</th>
-                <th>Icon</th>
-                <th>Order</th>
-                <th>Open in New Tab</th>
-                <th>Action</th>
+                <th>@Localizer["Title"]</th>
+                <th>@Localizer["URL"]</th>
+                <th>@Localizer["Icon"]</th>
+                <th>@Localizer["Order"]</th>
+                <th>@Localizer["Open in New Tab"]</th>
+                <th>@Localizer["Action"]</th>
             </tr>
         </thead>
         <tbody>
@@ -122,14 +122,14 @@
 }
 else
 {
-    <div class="alert alert-info">No Customized Menus</div>
+    <div class="alert alert-info">@Localizer["No Customized Menus"]</div>
 }
 
 <div class="modal fade" id="editMenuModal" tabindex="-1" role="dialog" aria-labelledby="editMenuModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editMenuModalLabel">Menu Information</h5>
+                <h5 class="modal-title" id="editMenuModalLabel">@Localizer["Menu Information"]</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -163,13 +163,13 @@ else
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
                             <input asp-for="NavMenuEditViewModel.IsOpenInNewTab" class="custom-control-input" type="checkbox">
-                            <label asp-for="NavMenuEditViewModel.IsOpenInNewTab" class="custom-control-label">Open in New Tab</label>
+                            <label asp-for="NavMenuEditViewModel.IsOpenInNewTab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-submit">Submit</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>
         </div>
