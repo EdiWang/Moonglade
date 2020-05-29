@@ -4,12 +4,12 @@
     <div class="float-right">
         <button class="btn btn-round btn-outline-success btn-ratings">
             <span class="icon-heart"></span>
-            Like (<span class="likehits-num">@Model.PostModel.Likes</span>)
+            @Localizer["Like"] (<span class="likehits-num">@Model.PostModel.Likes</span>)
         </button>
 
         <button class="btn btn-round btn-outline-secondary" data-toggle="modal" data-target="#qrcode-window">
             <span class="icon-qrcode"></span>
-            QR Code
+            @Localizer["QR Code"]
         </button>
     </div>
 </div>
@@ -26,14 +26,14 @@
             <div class="modal-body">
                 <div class="text-center">
                     <p class="text-center">
-                        Scan QR Code on your phone
+                        @Localizer["Scan QR Code on your phone"]
                     </p>
                     <div id="post-qrcode">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
             </div>
         </div>
     </div>

@@ -86,7 +86,7 @@
 @if (null != ViewBag.IsDraftPreview)
 {
     <div class="alert alert-info">
-        This is a preview for draft content.
+        @Localizer["This is a preview for draft content."]
     </div>
 }
 
@@ -102,7 +102,7 @@
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Edit on @DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
+                    <span>(@Localizer["Edit on"] @DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
                 | @BlogConfig.GeneralSettings.TimeZoneId
             </div>
@@ -113,11 +113,11 @@
                 <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(Edit on @DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
+                    <span>(@Localizer["Edit on"] @DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
                 | @BlogConfig.GeneralSettings.TimeZoneId
             </strong>
-            <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits Reads</span>
+            <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits @Localizer["Reads"]</span>
         </div>
 
         <div class="hidden-print">
@@ -206,7 +206,7 @@
             {
                 <div class="card bg-light comment-form-containter mb-4">
                     <div class="card-header">
-                        Comments
+                        @Localizer["Comments"]
                         <span class="badge badge-secondary float-right">@Model.PostModel.CommentCount</span>
                     </div>
                     <form id="form-comment" asp-controller="Comment" asp-action="NewComment"
@@ -224,19 +224,20 @@
                                     <span asp-validation-for="NewCommentViewModel.Username" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="Email (Optional)" asp-for="NewCommentViewModel.Email" data-toggle="tooltip" data-placement="top" title="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." />
+                                    <input type="text" class="form-control" placeholder="Email (Optional)" asp-for="NewCommentViewModel.Email" data-toggle="tooltip" data-placement="top" title="@Localizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]" />
                                     <span asp-validation-for="NewCommentViewModel.Email" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="comment-md-content form-group">
-                                <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4" placeholder="Your comments (Markdown supported)" maxlength="1024"></textarea>
+                                <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4"
+                                          placeholder="@Localizer["Your comments (Markdown supported)"]" maxlength="1024"></textarea>
                                 <span asp-validation-for="NewCommentViewModel.Content" class="text-danger"></span>
                             </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Assets")" data-toggle="tooltip" data-placement="top" title="Can't read? Click to change another image." />
+                                            <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Assets")" data-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
                                         </div>
                                         <input type="text"
                                                asp-for="NewCommentViewModel.CaptchaCode"
@@ -250,7 +251,7 @@
                                 </div>
                                 <div class="col">
                                     <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">
-                                        Submit
+                                        @Localizer["Submit"]
                                     </button>
                                 </div>
                             </div>
@@ -260,30 +261,30 @@
             }
             else
             {
-                <div class="alert alert-warning">Comment of this post is disabled.</div>
+                <div class="alert alert-warning">@Localizer["Comment of this post is disabled."]</div>
             }
         }
         else
         {
-            <div class="alert alert-warning">Comment is disabled by blog administrator.</div>
+            <div class="alert alert-warning">@Localizer["Comment is disabled by blog administrator."]</div>
         }
 
         <div id="loadingIndicator" style="display: none;" class="mb-4">
             <div class="progress">
                 <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                    <span class="sr-only">Processing...</span>
+                    <span class="sr-only">@Localizer["Processing..."]</span>
                 </div>
             </div>
         </div>
 
         <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
-            Thanks, your comment is pending approval now. <br />
-            It will show up once blog administrator approved your comment.
+            @Localizer["Thanks, your comment is pending approval now."] <br />
+            @Localizer["It will show up once blog administrator approved your comment."]
         </div>
 
         <div id="thx-for-comment-non-review" class="alert alert-success" style="display: none;">
-            Thanks for your comment. <br />
-            Refresh the page to see your comment.
+            @Localizer["Thanks for your comment."] <br />
+            @Localizer["Refresh the page to see your comment."]
         </div>
 
         @if (Model.PostModel.CommentCount > 0)

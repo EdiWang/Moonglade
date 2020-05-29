@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>
-        @BlogConfig.GeneralSettings.SiteTitle Admin
+        @BlogConfig.GeneralSettings.SiteTitle @Localizer["Admin"]
         <environment exclude="Production">
             (@WebHostEnvironment.EnvironmentName)
         </environment>
@@ -25,7 +25,7 @@
     <script src="~/js/dist/app-js-bundle.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/app/admin.js" asp-append-version="true"></script>
-    @RenderSection("head", false)
+    @await RenderSectionAsync("head", false)
     <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
 </head>
 <body class="admin-body">
@@ -50,35 +50,35 @@
                     <div class="list-group list-group-flush">
                         <a asp-controller="Post" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Post" ? "active" : null)">
                             <span class="icon-file-text2"></span>
-                            Posts
+                            @Localizer["Posts"]
                         </a>
                         <a asp-controller="Category" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Category" ? "active" : null)">
                             <span class="icon-folder"></span>
-                            Categories
+                            @Localizer["Categories"]
                         </a>
                         <a asp-controller="Comment" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Comment" ? "active" : null)">
                             <span class="icon-bubbles3"></span>
-                            Comments
+                            @Localizer["Comments"]
                         </a>
                         <a asp-controller="Tags" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Tags" ? "active" : null)">
                             <span class="icon-price-tag"></span>
-                            Tags
+                            @Localizer["Tags"]
                         </a>
                         <a asp-controller="CustomPage" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "CustomPage" ? "active" : null)">
                             <span class="icon-file-empty"></span>
-                            Pages
+                            @Localizer["Pages"]
                         </a>
                         <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
                             <span class="icon-earth"></span>
-                            Pingbacks
+                            @Localizer["Pingbacks"]
                         </a>
                         <a asp-controller="NavMenu" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "NavMenu" ? "active" : null)">
                             <span class="icon-list"></span>
-                            Menus
+                            @Localizer["Menus"]
                         </a>
                         <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
                             <span class="icon-cog"></span>
-                            Settings
+                            @Localizer["Settings"]
                         </a>
                     </div>
                 </section>
@@ -87,15 +87,15 @@
 
                 <div class="text-center mt-3">
                     <a href="/" target="_blank" class="btn btn-sm btn-success">
-                        <span class="icon-home"></span> Home
+                        <span class="icon-home"></span> @Localizer["Home"]
                     </a>
                     <a asp-controller="Admin" asp-action="SignOut" class="btn btn-sm btn-danger">
-                        <span class="icon-enter"></span> Sign Out
+                        <span class="icon-enter"></span> @Localizer["Sign Out"]
                     </a>
                 </div>
                 <p class="text-moonglade-dark-secondary mt-4 small text-center">
                     Moonglade @Utils.AppVersion <br />
-                    <a class="link-transparent" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">Issue or Suggestion</a>
+                    <a class="link-transparent" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">@Localizer["Issue or Suggestion"]</a>
                 </p>
             </aside>
             <div class="admin-main full-height pt-4 col-sm col-12">
@@ -103,6 +103,6 @@
             </div>
         </div>
     </div>
-    @RenderSection("scripts", false)
+    @await RenderSectionAsync("scripts", false)
 </body>
 </html>
