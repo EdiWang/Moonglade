@@ -1,6 +1,8 @@
 ﻿#region Usings
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -11,6 +13,7 @@ using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
@@ -54,12 +57,19 @@ namespace Moonglade.Web
         private readonly IConfigurationSection _appSettingsSection;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
+        private readonly List<CultureInfo> _supportedCultures;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
             _environment = env;
             _appSettingsSection = _configuration.GetSection(nameof(AppSettings));
+
+            _supportedCultures = new List<CultureInfo>
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("zh-CN")
+            };
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -86,8 +96,18 @@ namespace Moonglade.Web
 
             services.AddApplicationInsightsTelemetry();
             services.AddMoongladeAuthenticaton(authentication);
+
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc(options =>
-                            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+                            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+                    .AddViewLocalization();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = _supportedCultures;
+                options.SupportedUICultures = _supportedCultures;
+            });
 
             services.AddAntiforgery(options =>
             {
@@ -238,6 +258,13 @@ namespace Moonglade.Web
                 app.UseHttpsRedirection();
                 app.UseHsts();
             }
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                SupportedCultures = _supportedCultures,
+                SupportedUICultures = _supportedCultures
+            });
 
             app.UseStaticFiles();
             app.UseSession();

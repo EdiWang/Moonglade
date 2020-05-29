@@ -1,7 +1,9 @@
 ﻿@using Moonglade.Core
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+@inject IViewLocalizer Localizer
 
 <!DOCTYPE html>
 <html>
@@ -37,7 +39,7 @@
     {
         <link rel="dns-prefetch" href="@BlogConfig.AdvancedSettings.DNSPrefetchEndpoint" />
     }
-    
+
     @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
     {
         <link rel="canonical" href="@(Utils.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
@@ -75,7 +77,7 @@
                             <li id="navbar-dropdown-post" class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
                                     <span class="icon-book"></span>
-                                    <strong>Categories</strong>
+                                    <strong>@Localizer["Categories"]</strong>
                                 </a>
                                 <cache expires-after="@TimeSpan.FromMinutes(60)">
                                     @await Component.InvokeAsync("CategoryMenu")
@@ -88,7 +90,7 @@
                             <li class="nav-item">
                                 <a asp-controller="Tags" asp-action="Index" class="nav-link">
                                     <span class="icon-price-tag"></span>
-                                    <strong>Tags</strong>
+                                    <strong>@Localizer["Tags"]</strong>
                                 </a>
                             </li>
                         }
@@ -98,7 +100,7 @@
                             <li class="nav-item">
                                 <a asp-controller="Archive" asp-action="Index" class="nav-link">
                                     <span class="icon-folder"></span>
-                                    <strong>Archive</strong>
+                                    <strong>@Localizer["Archive"]</strong>
                                 </a>
                             </li>
                         }
@@ -110,13 +112,13 @@
                                class="form-control bg-transparent mr-sm-2"
                                type="search"
                                value=""
-                               title="Search"
+                               title="@Localizer["Search"]"
                                aria-label="Search"
-                               placeholder="Search"
+                               placeholder="@Localizer["Search"]"
                                name="term"
                                maxlength="30">
                         <button class="btn btn-outline-light btn-search my-2 my-sm-0 d-none d-md-block" type="submit"><span class="icon-search"></span></button>
-                        <button class="btn btn-block btn-success d-block d-sm-none mt-1" type="submit"><span class="icon-search"></span> Search</button>
+                        <button class="btn btn-block btn-success d-block d-sm-none mt-1" type="submit"><span class="icon-search"></span> @Localizer["Search"]</button>
                     </form>
                 </div>
             </div>
