@@ -117,19 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Close" xml:space="preserve">
-    <value>关闭</value>
+  <data name="Admin Login" xml:space="preserve">
+    <value>管理员登录</value>
   </data>
-  <data name="Copyright" xml:space="preserve">
-    <value>版权</value>
+  <data name="All Categories" xml:space="preserve">
+    <value>全部分类</value>
   </data>
-  <data name="Friend Links" xml:space="preserve">
-    <value>友情链接</value>
+  <data name="All Tags" xml:space="preserve">
+    <value>全部标签</value>
   </data>
-  <data name="Latest Posts" xml:space="preserve">
-    <value>最新文章</value>
-  </data>
-  <data name="Subscription" xml:space="preserve">
-    <value>订阅</value>
+  <data name="Top Tags" xml:space="preserve">
+    <value>热门标签</value>
   </data>
 </root>

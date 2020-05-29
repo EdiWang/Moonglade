@@ -117,19 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Close" xml:space="preserve">
-    <value>关闭</value>
+  <data name="No Matching Result" xml:space="preserve">
+    <value>找不到相关结果</value>
   </data>
-  <data name="Copyright" xml:space="preserve">
-    <value>版权</value>
-  </data>
-  <data name="Friend Links" xml:space="preserve">
-    <value>友情链接</value>
-  </data>
-  <data name="Latest Posts" xml:space="preserve">
-    <value>最新文章</value>
-  </data>
-  <data name="Subscription" xml:space="preserve">
-    <value>订阅</value>
+  <data name="Search Result" xml:space="preserve">
+    <value>搜索结果</value>
   </data>
 </root>
