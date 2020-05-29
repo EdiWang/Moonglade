@@ -3,7 +3,6 @@
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
-@inject IViewLocalizer Localizer
 
 <!DOCTYPE html>
 <html>
@@ -174,6 +173,6 @@
     <div class="clearfix"></div>
     <partial name="_Footer" />
 
-    @RenderSection("scripts", false)
+    @await RenderSectionAsync("scripts", false)
 </body>
 </html>
