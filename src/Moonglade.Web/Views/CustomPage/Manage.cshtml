@@ -25,10 +25,10 @@
 }
 
 <h3>
-    Pages
+    @Localizer["Pages"]
     <a class="btn btn-outline-success float-right" asp-controller="CustomPage" asp-action="Create">
         <span class="icon-plus"></span>
-        New
+        @Localizer["New"]
     </a>
 </h3>
 <hr />
@@ -68,8 +68,8 @@ else
 {
     <div class="empty-recycle">
         <div class="text-center">
-            <h4>No Pages</h4>
-            <p class="text-muted">no items to show</p>
+            <h4>@Localizer["No Pages"]</h4>
+            <p class="text-muted">@Localizer["no items to show"]</p>
         </div>
     </div>
 }
