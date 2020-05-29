@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3 col-sm-3">
-                <h4 class="d-none d-sm-block">Copyright</h4>
+                <h4 class="d-none d-sm-block">@Localizer["Copyright"]</h4>
                 <div class="mb-3">
                     @Html.Raw(Utils.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright))
                 </div>
@@ -16,7 +16,7 @@
             </div>
 
             <div class="col-md-3 col-sm-3 d-none d-sm-block">
-                <h4>Subscription</h4>
+                <h4>@Localizer["Subscription"]</h4>
 
                 <a class="btn btn-sm btn-round btn-outline-footer" href="#" data-toggle="modal" data-target="#subscriptionmodal">
                     <span class="icon-rss"></span>
@@ -32,7 +32,7 @@
             @if (BlogConfig.FriendLinksSettings.ShowFriendLinksSection)
             {
                 <div class="col-md-3 col-sm-3 d-none d-sm-block">
-                    <h4>Friend Links</h4>
+                    <h4>@Localizer["Friend Links"]</h4>
                     <cache expires-after="@TimeSpan.FromMinutes(60)">
                         @await Component.InvokeAsync("FriendLink")
                     </cache>
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
             </div>
         </div>
     </div>
