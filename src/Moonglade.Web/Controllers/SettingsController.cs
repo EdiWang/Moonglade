@@ -551,8 +551,8 @@ namespace Moonglade.Web.Controllers
             {
                 DNSPrefetchEndpoint = settings.DNSPrefetchEndpoint,
                 RobotsTxtContent = settings.RobotsTxtContent,
-                EnablePingBackSend = settings.EnablePingBackSend,
-                EnablePingBackReceive = settings.EnablePingBackReceive
+                EnablePingbackSend = settings.EnablePingBackSend,
+                EnablePingbackReceive = settings.EnablePingBackReceive
             };
 
             return View(vm);
@@ -566,8 +566,8 @@ namespace Moonglade.Web.Controllers
                 var settings = _blogConfig.AdvancedSettings;
                 settings.DNSPrefetchEndpoint = model.DNSPrefetchEndpoint;
                 settings.RobotsTxtContent = model.RobotsTxtContent;
-                settings.EnablePingBackSend = model.EnablePingBackSend;
-                settings.EnablePingBackReceive = model.EnablePingBackReceive;
+                settings.EnablePingBackSend = model.EnablePingbackSend;
+                settings.EnablePingBackReceive = model.EnablePingbackReceive;
 
                 var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();

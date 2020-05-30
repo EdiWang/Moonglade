@@ -14,10 +14,10 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(1024)]
         public string RobotsTxtContent { get; set; }
 
-        [Display(Name = "Enable PingBack Send")]
-        public bool EnablePingBackSend { get; set; }
+        [Display(Name = "Enable Pingback Send")]
+        public bool EnablePingbackSend { get; set; }
 
-        [Display(Name = "Enable PingBack Receive")]
-        public bool EnablePingBackReceive { get; set; }
+        [Display(Name = "Enable Pingback Receive")]
+        public bool EnablePingbackReceive { get; set; }
     }
 }

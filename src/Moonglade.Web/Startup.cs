@@ -100,7 +100,8 @@ namespace Moonglade.Web
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc(options =>
                             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-                    .AddViewLocalization();
+                    .AddViewLocalization()
+                    .AddDataAnnotationsLocalization();
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
