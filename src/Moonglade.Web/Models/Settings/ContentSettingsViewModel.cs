@@ -33,7 +33,7 @@ namespace Moonglade.Web.Models.Settings
 
         [Required]
         [Display(Name = "How many tags show on sidebar")]
-        [Range(1, 50, ErrorMessage = "Page Size can only range from 1-50")]
+        [Range(1, 50, ErrorMessage = "Tag amount can only range from 1-50")]
         public int HotTagAmount { get; set; }
 
         [Required]

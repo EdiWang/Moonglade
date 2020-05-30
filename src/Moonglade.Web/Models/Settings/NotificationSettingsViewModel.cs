@@ -10,7 +10,7 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Send Email on Comment Reply")]
         public bool SendEmailOnCommentReply { get; set; }
 
-        [Display(Name = "Send Email on NewComment")]
+        [Display(Name = "Send Email on New Comment")]
         public bool SendEmailOnNewComment { get; set; }
 
         [Required]
