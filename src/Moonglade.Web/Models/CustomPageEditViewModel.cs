@@ -19,6 +19,12 @@ namespace Moonglade.Web.Models
         [MaxLength(128)]
         public string RouteName { get; set; }
 
+        [Required(ErrorMessage = "Please enter the meta description.")]
+        [JsonIgnore]
+        [DataType(DataType.MultilineText)]
+        [MaxLength(256)]
+        public string MetaDescription { get; set; }
+
         [Required(ErrorMessage = "Please enter content.")]
         [JsonIgnore]
         [DataType(DataType.MultilineText)]

@@ -91,6 +91,7 @@ namespace Moonglade.Web.Controllers
                     Id = response.Item.Id,
                     Title = response.Item.Title,
                     RouteName = response.Item.RouteName,
+                    MetaDescription = response.Item.MetaDescription,
                     CssContent = response.Item.CssContent,
                     RawHtmlContent = response.Item.RawHtmlContent,
                     HideSidebar = response.Item.HideSidebar
@@ -121,6 +122,7 @@ namespace Moonglade.Web.Controllers
                         CssContent = model.CssContent,
                         HideSidebar = model.HideSidebar,
                         RouteName = model.RouteName,
+                        MetaDescription = model.MetaDescription,
                         Title = model.Title
                     };
 
