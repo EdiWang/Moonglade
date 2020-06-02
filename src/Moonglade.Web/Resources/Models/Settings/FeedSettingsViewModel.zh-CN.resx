@@ -126,9 +126,6 @@
   <data name="Description" xml:space="preserve">
     <value>描述</value>
   </data>
-  <data name="RSS Generator Name" xml:space="preserve">
-    <value>RSS生成器名称</value>
-  </data>
   <data name="RSS Items" xml:space="preserve">
     <value>RSS条目数量</value>
   </data>

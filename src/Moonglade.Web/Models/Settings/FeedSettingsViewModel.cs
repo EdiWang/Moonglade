@@ -18,11 +18,6 @@ namespace Moonglade.Web.Models.Settings
         public string RssDescription { get; set; }
 
         [Required]
-        [Display(Name = "RSS Generator Name")]
-        [MaxLength(64)]
-        public string RssGeneratorName { get; set; }
-
-        [Required]
         [Display(Name = "Title")]
         [MaxLength(64)]
         public string RssTitle { get; set; }

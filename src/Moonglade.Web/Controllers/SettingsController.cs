@@ -258,7 +258,6 @@ namespace Moonglade.Web.Controllers
                 AuthorName = settings.AuthorName,
                 RssCopyright = settings.RssCopyright,
                 RssDescription = settings.RssDescription,
-                RssGeneratorName = settings.RssGeneratorName,
                 RssItemCount = settings.RssItemCount,
                 RssTitle = settings.RssTitle,
                 UseFullContent = settings.UseFullContent
@@ -276,7 +275,6 @@ namespace Moonglade.Web.Controllers
                 settings.AuthorName = model.AuthorName;
                 settings.RssCopyright = model.RssCopyright;
                 settings.RssDescription = model.RssDescription;
-                settings.RssGeneratorName = model.RssGeneratorName;
                 settings.RssItemCount = model.RssItemCount;
                 settings.RssTitle = model.RssTitle;
                 settings.UseFullContent = model.UseFullContent;

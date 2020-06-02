@@ -55,7 +55,7 @@ namespace Moonglade.Core
                     HeadTitle = _blogConfig.FeedSettings.RssTitle,
                     HeadDescription = _blogConfig.FeedSettings.RssDescription,
                     Copyright = _blogConfig.FeedSettings.RssCopyright,
-                    Generator = _blogConfig.FeedSettings.RssGeneratorName,
+                    Generator = $"Moonglade v{Utils.AppVersion}",
                     FeedItemCollection = itemCollection,
                     TrackBackUrl = _baseUrl,
                     MaxContentLength = 0
@@ -79,7 +79,7 @@ namespace Moonglade.Core
                 HeadTitle = _blogConfig.FeedSettings.RssTitle,
                 HeadDescription = _blogConfig.FeedSettings.RssDescription,
                 Copyright = _blogConfig.FeedSettings.RssCopyright,
-                Generator = _blogConfig.FeedSettings.RssGeneratorName,
+                Generator = $"Moonglade v{Utils.AppVersion}",
                 FeedItemCollection = itemCollection,
                 TrackBackUrl = _baseUrl,
                 MaxContentLength = 0
