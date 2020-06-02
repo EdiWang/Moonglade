@@ -79,6 +79,7 @@ namespace Moonglade.Core
                     Id = uid,
                     Title = request.Title.Trim(),
                     RouteName = request.RouteName.ToLower().Trim(),
+                    MetaDescription = request.MetaDescription,
                     CreateOnUtc = DateTime.UtcNow,
                     HtmlContent = request.HtmlContent,
                     CssContent = request.CssContent,
@@ -104,6 +105,7 @@ namespace Moonglade.Core
 
                 page.Title = request.Title.Trim();
                 page.RouteName = request.RouteName.ToLower().Trim();
+                page.MetaDescription = request.MetaDescription;
                 page.HtmlContent = request.HtmlContent;
                 page.CssContent = request.CssContent;
                 page.HideSidebar = request.HideSidebar;
@@ -149,6 +151,7 @@ namespace Moonglade.Core
                 RawHtmlContent = entity.HtmlContent,
                 HideSidebar = entity.HideSidebar,
                 RouteName = entity.RouteName.Trim().ToLower(),
+                MetaDescription = entity.MetaDescription?.Trim(),
                 UpdatedOnUtc = entity.UpdatedOnUtc
             };
         }

@@ -88,6 +88,7 @@ namespace Moonglade.DataPorting
                         p.HideSidebar,
                         p.HtmlContent,
                         p.RouteName,
+                        p.MetaDescription,
                         p.UpdatedOnUtc
                     });
 
