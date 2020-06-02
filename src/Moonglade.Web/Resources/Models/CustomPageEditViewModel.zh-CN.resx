@@ -129,6 +129,9 @@
   <data name="Please enter content." xml:space="preserve">
     <value>请输入内容</value>
   </data>
+  <data name="Please enter the meta description." xml:space="preserve">
+    <value>请输入简要描述</value>
+  </data>
   <data name="Please enter the route name." xml:space="preserve">
     <value>请输入路由</value>
   </data>
