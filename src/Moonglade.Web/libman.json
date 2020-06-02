@@ -80,14 +80,6 @@
     },
     {
       "provider": "unpkg",
-      "library": "normalize.css@8.0.1",
-      "destination": "wwwroot/lib/normalize.css/",
-      "files": [
-        "normalize.css"
-      ]
-    },
-    {
-      "provider": "unpkg",
       "library": "bs-custom-file-input@1.3.4",
       "destination": "wwwroot/lib/bs-custom-file-input/",
       "files": [

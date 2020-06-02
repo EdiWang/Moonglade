@@ -2,6 +2,11 @@
     box-sizing: border-box
 }
 
+html {
+    line-height: 1.15; /* 1 */
+    -webkit-text-size-adjust: 100%; /* 2 */
+}
+
 body {
     background-color: #fff;
     color: #212529;
@@ -12,6 +17,7 @@ body {
     margin: 0;
     padding-top: 50px;
     text-align: left;
+    margin: 0;
 }
 
 a {
