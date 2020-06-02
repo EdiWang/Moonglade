@@ -151,7 +151,7 @@ namespace Moonglade.Core
                 RawHtmlContent = entity.HtmlContent,
                 HideSidebar = entity.HideSidebar,
                 RouteName = entity.RouteName.Trim().ToLower(),
-                MetaDescription = entity.MetaDescription.Trim(),
+                MetaDescription = entity.MetaDescription?.Trim(),
                 UpdatedOnUtc = entity.UpdatedOnUtc
             };
         }

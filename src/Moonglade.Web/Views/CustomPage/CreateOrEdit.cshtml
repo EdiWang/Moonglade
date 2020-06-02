@@ -96,7 +96,7 @@
     </style>
 }
 
-<form class="page-edit-form" method="post" asp-action="CreateOrEdit" 
+<form class="page-edit-form" method="post" asp-action="CreateOrEdit"
       data-ajax-begin="onPageCreateEditBegin"
       data-ajax-complete="onPageCreateEditComplete"
       data-ajax-failure="onPageCreateEditFailed"
@@ -122,6 +122,12 @@
             </div>
             <div>
                 <span asp-validation-for="RouteName" class="text-danger"></span>
+            </div>
+
+            <div class="mt-2">
+                <label asp-for="MetaDescription" class="control-label"></label>
+                <textarea asp-for="MetaDescription" class="form-control"></textarea>
+                <span asp-validation-for="MetaDescription" class="text-danger"></span>
             </div>
 
             <div>
