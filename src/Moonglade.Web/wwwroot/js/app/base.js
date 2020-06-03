@@ -2,6 +2,8 @@
     "positionClass": 'toast-bottom-center'
 };
 
+var isDarkMode = false;
+
 $(function () {
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
@@ -19,6 +21,14 @@ $(function () {
         .blur(function () {
             $(this).attr('placeholder', 'Search');
         });
+
+    $('.lightswitch').click(function () {
+        if (isDarkMode) {
+            themeModeSwitcher.useLightMode();
+        } else {
+            themeModeSwitcher.useDarkMode();
+        }
+    });
 });
 
 /**

@@ -18,7 +18,8 @@
       "wwwroot/js/app/base.js",
       "wwwroot/js/app/postslug.js",
       "wwwroot/js/app/csrf.js",
-      "wwwroot/js/app/comments.js"
+      "wwwroot/js/app/comments.js",
+      "wwwroot/js/app/darklighttheme.js"
     ]
   },
   {
