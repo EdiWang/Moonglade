@@ -1,5 +1,4 @@
 ﻿@model IReadOnlyList<Moonglade.Model.PostListItem>
-
 @if (null != ViewBag.IsServerError && ViewBag.IsServerError)
 {
     <partial name="_ServerErrorMessage" />
@@ -26,3 +25,5 @@ else
         }
     }
 }
+
+<partial name="_LightSwitch" />

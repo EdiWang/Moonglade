@@ -188,5 +188,9 @@
     <partial name="_Footer" />
 
     @await RenderSectionAsync("scripts", false)
+    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
+    {
+        <script src="~/js/app/autodarklighttheme.js"></script>
+    }
 </body>
 </html>

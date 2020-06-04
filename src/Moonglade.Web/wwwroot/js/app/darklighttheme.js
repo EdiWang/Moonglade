@@ -8,7 +8,7 @@
         $('#moonglade-footer').removeClass('bg-moonglade-accent2');
         $('').addClass('bg-dark');
 
-        $('.post-content').addClass('darkmode');
+        $('#page-content').addClass('darkmode');
 
         $('body').addClass('bg-moca-dark text-light');
         $('.card').addClass('text-white bg-dark');
@@ -24,8 +24,6 @@
         $('hr').addClass('hr-dark');
         $('#lighticon').removeClass('icon-sun-o');
         $('#lighticon').addClass('icon-moon-o');
-
-        console.info('Switched to dark mode');
     },
     useLightMode: function () {
         $('#moonglade-nav').addClass('bg-moonglade-accent1');
@@ -35,7 +33,7 @@
 
         $('#moonglade-footer').addClass('bg-moonglade-accent2');
 
-        $('.post-content').removeClass('darkmode');
+        $('#page-content').removeClass('darkmode');
 
         $('body').removeClass('bg-moca-dark text-light');
         $('.card').removeClass('text-white bg-dark');
@@ -51,6 +49,5 @@
         $('hr').removeClass('hr-dark');
         $('#lighticon').addClass('icon-sun-o');
         $('#lighticon').removeClass('icon-moon-o');
-        console.info('Switched to light mode');
     }
 }
