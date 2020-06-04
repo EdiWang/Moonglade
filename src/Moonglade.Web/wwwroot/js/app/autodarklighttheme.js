@@ -2,10 +2,10 @@
 if (window.matchMedia) {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         console.debug('Using Dark Mode');
-        postSlug.useDarkMode();
+        themeModeSwitcher.useDarkMode();
     }
     else {
         console.debug('Using Light Mode');
-        postSlug.useLightMode();
+        themeModeSwitcher.useLightMode();
     }
 }

@@ -74,14 +74,6 @@
                     $('#post-qrcode').qrcode(document.URL);
                 </text>
             }
-
-            $('.lightswitch').click(function() {
-                if (postSlug.isDarkMode) {
-                    postSlug.useLightMode();
-                } else {
-                    postSlug.useDarkMode();
-                }
-            });
         });
     </script>
 }
@@ -306,9 +298,7 @@
     </div>
 }
 
-<div class="lightswitch border rounded">
-    <span id="lighticon" class="icon-sun-o"></span>
-</div>
+<partial name="_LightSwitch" />
 
 <div class="modal fade" id="imgzoomModal" tabindex="-1" role="dialog" aria-labelledby="imgzoomModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-imgzoom" role="document">
