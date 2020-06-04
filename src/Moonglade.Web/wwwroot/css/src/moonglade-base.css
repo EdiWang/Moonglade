@@ -619,6 +619,10 @@ div.animbrand a:focus, div.animbrand a:hover {
     width: 70px;
 }
 
+.darkmode .post-date-box {
+    border: 1px solid #666;
+}
+
 .post-date-day {
     color: var(--moonglade-accent-color1);
     font-size: 42px;
@@ -628,11 +632,19 @@ div.animbrand a:focus, div.animbrand a:hover {
     text-align: right;
 }
 
+.darkmode .post-date-day {
+    color: #666;
+}
+
 .post-date-month {
     background-color: var(--moonglade-accent-color1);
     color: #fff;
     padding: 1px 10px;
     text-align: right;
+}
+
+.darkmode .post-date-month {
+    background-color: #666;
 }
 
 .post-summary-title {
@@ -649,6 +661,14 @@ div.animbrand a:focus, div.animbrand a:hover {
     line-height: 24px;
     word-break: break-all;
     word-wrap: break-word;
+}
+
+.darkmode .post-summary-text {
+    color: #CCC;
+}
+
+.darkmode .post-summary-title a {
+    color: #FFF;
 }
 
 .post-summary-tags {
