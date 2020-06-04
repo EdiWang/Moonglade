@@ -8,7 +8,7 @@
         $('#moonglade-footer').removeClass('bg-moonglade-accent2');
         $('').addClass('bg-dark');
 
-        $('.post-content').addClass('darkmode');
+        $('#page-content').addClass('darkmode');
 
         $('body').addClass('bg-moca-dark text-light');
         $('.card').addClass('text-white bg-dark');
@@ -35,7 +35,7 @@
 
         $('#moonglade-footer').addClass('bg-moonglade-accent2');
 
-        $('.post-content').removeClass('darkmode');
+        $('#page-content').removeClass('darkmode');
 
         $('body').removeClass('bg-moca-dark text-light');
         $('.card').removeClass('text-white bg-dark');

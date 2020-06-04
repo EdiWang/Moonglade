@@ -290,6 +290,11 @@ label {
     padding: 0 10px;
 }
 
+.darkmode .tagCloud li a {
+    border: 1px solid #666;
+    color: #CCC;
+}
+
     .tagCloud li a:hover {
         background-color: var(--moonglade-accent-color1) !important;
         border: 1px solid var(--moonglade-accent-color1) !important;
