@@ -46,11 +46,6 @@
 @section scripts {
     <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/highlight.pack.js"></script>
-
-    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
-    {
-        <script src="~/js/app/autodarklighttheme.js"></script>
-    }
     <script>
         $(function () {
             var pid = $("article").data("postid");

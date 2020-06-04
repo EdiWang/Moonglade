@@ -3,6 +3,7 @@
 };
 
 var isDarkMode = false;
+var supportLightSwitch = false;
 
 $(function () {
     $('[data-toggle="popover"]').popover();

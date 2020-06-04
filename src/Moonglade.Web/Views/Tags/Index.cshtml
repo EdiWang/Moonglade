@@ -37,14 +37,6 @@
     }
 }
 
-
-@section scripts {
-    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
-    {
-        <script src="~/js/app/autodarklighttheme.js"></script>
-    }
-}
-
 @if (null != ViewBag.IsServerError && ViewBag.IsServerError)
 {
     <partial name="_ServerErrorMessage" />

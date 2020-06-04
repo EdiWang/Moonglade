@@ -24,8 +24,6 @@
         $('hr').addClass('hr-dark');
         $('#lighticon').removeClass('icon-sun-o');
         $('#lighticon').addClass('icon-moon-o');
-
-        console.info('Switched to dark mode');
     },
     useLightMode: function () {
         $('#moonglade-nav').addClass('bg-moonglade-accent1');
@@ -51,6 +49,5 @@
         $('hr').removeClass('hr-dark');
         $('#lighticon').addClass('icon-sun-o');
         $('#lighticon').removeClass('icon-moon-o');
-        console.info('Switched to light mode');
     }
 }

@@ -1,11 +1,9 @@
 'use strict';
-if (window.matchMedia) {
+if (window.matchMedia && window.themeModeSwitcher && supportLightSwitch) {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        console.debug('Using Dark Mode');
         themeModeSwitcher.useDarkMode();
     }
     else {
-        console.debug('Using Light Mode');
         themeModeSwitcher.useLightMode();
     }
 }
