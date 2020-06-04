@@ -295,47 +295,47 @@ label {
     color: #CCC;
 }
 
-    .tagCloud li a:hover {
-        background-color: var(--moonglade-accent-color1) !important;
-        border: 1px solid var(--moonglade-accent-color1) !important;
-        color: #FFF !important;
-    }
+.tagCloud li a:hover {
+    background-color: var(--moonglade-accent-color1) !important;
+    border: 1px solid var(--moonglade-accent-color1) !important;
+    color: #FFF !important;
+}
 
-    .tagCloud li a.weight1 {
-        background-color: #c9302c;
-        border: 1px solid #d43f3a;
-        color: #FFF !important;
-        font-size: 145%;
-    }
+.tagCloud li a.weight1 {
+    background-color: #c9302c;
+    border: 1px solid #d43f3a;
+    color: #FFF !important;
+    font-size: 145%;
+}
 
-    .tagCloud li a.weight2 {
-        background-color: #f0ad4e;
-        border: 1px solid #eea236;
-        color: #FFF !important;
-        font-size: 133%;
-    }
+.tagCloud li a.weight2 {
+    background-color: #f0ad4e;
+    border: 1px solid #eea236;
+    color: #FFF !important;
+    font-size: 133%;
+}
 
-    .tagCloud li a.weight3 {
-        background-color: #449d44;
-        border: 1px solid #398439;
-        color: #FFF !important;
-        font-size: 115%;
-    }
+.tagCloud li a.weight3 {
+    background-color: #449d44;
+    border: 1px solid #398439;
+    color: #FFF !important;
+    font-size: 115%;
+}
 
-    .tagCloud li a.weight4 {
-        background-color: #286090;
-        border: 1px solid #204d74;
-        color: #FFF !important;
-        font-size: 100%;
-    }
+.tagCloud li a.weight4 {
+    background-color: #286090;
+    border: 1px solid #204d74;
+    color: #FFF !important;
+    font-size: 100%;
+}
 
-    .tagCloud li a.weight5 {
-        font-size: 90%;
-    }
+.tagCloud li a.weight5 {
+    font-size: 90%;
+}
 
-    .tagCloud li a.weight0 {
-        font-size: 80%;
-    }
+.tagCloud li a.weight0 {
+    font-size: 80%;
+}
 
 .arch-media-logo svg {
     width: 60px;
@@ -410,6 +410,10 @@ label {
     margin-bottom: 10px;
 }
 
+.darkmode .timeline-heading {
+    border-bottom: 1px solid #666;
+}
+
 .timeline {
     list-style: none;
     padding: 20px 0 20px;
@@ -427,102 +431,120 @@ label {
         width: 3px;
     }
 
-    .timeline > li {
-        margin-bottom: 20px;
-        position: relative;
+.darkmode .timeline:before {
+    background-color: #666;
+}
+
+.timeline > li {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+    .timeline > li:before,
+    .timeline > li:after {
+        content: " ";
+        display: table;
     }
 
-        .timeline > li:before,
-        .timeline > li:after {
-            content: " ";
-            display: table;
-        }
+    .timeline > li:after {
+        clear: both;
+    }
 
-        .timeline > li:after {
-            clear: both;
-        }
+    .timeline > li:before,
+    .timeline > li:after {
+        content: " ";
+        display: table;
+    }
 
-        .timeline > li:before,
-        .timeline > li:after {
-            content: " ";
-            display: table;
-        }
+    .timeline > li:after {
+        clear: both;
+    }
 
-        .timeline > li:after {
-            clear: both;
-        }
+    .timeline > li > .timeline-panel {
+        -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+        border: 1px solid #d4d4d4;
+        border-radius: 4px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+        float: left;
+        padding: 20px;
+        position: relative;
+        width: 46%;
+    }
 
-        .timeline > li > .timeline-panel {
-            -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
-            border: 1px solid #d4d4d4;
-            border-radius: 2px;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
-            float: left;
-            padding: 20px;
-            position: relative;
-            width: 46%;
-        }
+.darkmode .timeline > li > .timeline-panel {
+    border: 1px solid #666;
+}
 
-            .timeline > li > .timeline-panel:before {
-                border-bottom: 15px solid transparent;
-                border-left: 15px solid #ccc;
-                border-right: 0 solid #ccc;
-                border-top: 15px solid transparent;
-                content: " ";
-                display: inline-block;
-                position: absolute;
-                right: -15px;
-                top: 26px;
-            }
+.timeline > li > .timeline-panel:before {
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid #ccc;
+    border-right: 0 solid #ccc;
+    border-top: 15px solid transparent;
+    content: " ";
+    display: inline-block;
+    position: absolute;
+    right: -15px;
+    top: 26px;
+}
 
-            .timeline > li > .timeline-panel:after {
-                border-bottom: 14px solid transparent;
-                border-left: 14px solid #fff;
-                border-right: 0 solid #fff;
-                border-top: 14px solid transparent;
-                content: " ";
-                display: inline-block;
-                position: absolute;
-                right: -14px;
-                top: 27px;
-            }
+.darkmode .timeline > li > .timeline-panel:before {
+    border-left: 15px solid #666;
+    border-right: 0 solid #666;
+}
 
-        .timeline > li > .timeline-badge {
-            background-color: #999999;
-            border-bottom-left-radius: 50%;
-            border-bottom-right-radius: 50%;
-            border-top-left-radius: 50%;
-            border-top-right-radius: 50%;
-            color: #fff;
-            font-size: 1.4em;
-            height: 50px;
-            left: 50%;
-            line-height: 50px;
-            margin-left: -25px;
-            position: absolute;
-            text-align: center;
-            top: 16px;
-            width: 50px;
-            z-index: 100;
-        }
+.timeline > li > .timeline-panel:after {
+    border-bottom: 14px solid transparent;
+    border-left: 14px solid #fff;
+    border-right: 0 solid #fff;
+    border-top: 14px solid transparent;
+    content: " ";
+    display: inline-block;
+    position: absolute;
+    right: -14px;
+    top: 27px;
+}
 
-        .timeline > li.timeline-inverted > .timeline-panel {
-            float: right;
-        }
+.darkmode .timeline > li > .timeline-panel:after {
+    border-left: 14px solid #666;
+    border-right: 0 solid #666;
+}
 
-            .timeline > li.timeline-inverted > .timeline-panel:before {
-                border-left-width: 0;
-                border-right-width: 15px;
-                left: -15px;
-                right: auto;
-            }
+.timeline > li > .timeline-badge {
+    background-color: #999999;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    color: #fff;
+    font-size: 1.4em;
+    height: 50px;
+    left: 50%;
+    line-height: 50px;
+    margin-left: -25px;
+    position: absolute;
+    text-align: center;
+    top: 16px;
+    width: 50px;
+    z-index: 100;
+}
 
-            .timeline > li.timeline-inverted > .timeline-panel:after {
-                border-left-width: 0;
-                border-right-width: 14px;
-                left: -14px;
-                right: auto;
-            }
+.timeline > li.timeline-inverted > .timeline-panel {
+    float: right;
+}
+
+    .timeline > li.timeline-inverted > .timeline-panel:before {
+        border-left-width: 0;
+        border-right-width: 15px;
+        left: -15px;
+        right: auto;
+    }
+
+    .timeline > li.timeline-inverted > .timeline-panel:after {
+        border-left-width: 0;
+        border-right-width: 14px;
+        left: -14px;
+        right: auto;
+    }
 
 .timeline-badge.primary {
     background-color: #2e6da4 !important;
@@ -558,6 +580,14 @@ label {
     .timeline-body > p + p {
         margin-top: 5px;
     }
+
+.darkmode .timeline-title a {
+    color: #FFF;
+}
+
+.darkmode .timeline-body a {
+    color: #CCC;
+}
 
 .animate {
     -moz-transition: all .3s ease-in-out;

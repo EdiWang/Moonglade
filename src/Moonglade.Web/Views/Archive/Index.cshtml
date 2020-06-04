@@ -6,15 +6,14 @@
 @model IReadOnlyList<Moonglade.Model.Archive>
 
 @{
-    IEnumerable<int> yearList = new List<int>();
+    int[] yearList = null;
     if (null != Model && Model.Any())
     {
         yearList = (from item in Model
                     orderby item.Year descending
-                    select item.Year).Distinct();
+                    select item.Year).Distinct().ToArray();
     }
 }
-
 
 @if (null != ViewBag.IsServerError && ViewBag.IsServerError)
 {
@@ -27,7 +26,7 @@ else
     </h3>
     <hr />
 
-    @if (null != Model && Model.Any())
+    @if (null != Model && Model.Any() && null != yearList)
     {
         <ul class="timeline" id="monthList">
             @foreach (var item in yearList)
@@ -77,3 +76,5 @@ else
         <div class="alert alert-info">@Localizer["No Archive"]</div>
     }
 }
+
+<partial name="_LightSwitch" />
