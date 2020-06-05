@@ -254,6 +254,11 @@ label {
     border-color: var(--moonglade-accent-color1);
 }
 
+.darkmode .list-group-item.active, .darkmode .page-item.active .page-link {
+    background-color: #333;
+    border-color: #333;
+}
+
 .table .table-item-title {
     text-align: left;
 }
@@ -716,10 +721,14 @@ div.animbrand a:focus, div.animbrand a:hover {
         padding: 5px 10px;
     }
 
-        .post-summary-tags a:hover {
-            background-color: var(--moonglade-accent-color3);
-            color: #fff;
-        }
+.darkmode .post-summary-tags a {
+    background-color: #333;
+}
+
+.post-summary-tags a:hover {
+    background-color: var(--moonglade-accent-color3);
+    color: #fff;
+}
 
 .blog-info-desktop-lg {
     background: #fafafa;
@@ -771,11 +780,15 @@ a {
     text-decoration: none;
 }
 
-    a:hover,
-    a:focus {
-        color: var(--moonglade-accent-color1);
-        text-decoration: none;
-    }
+.darkmode a {
+    color: #CCC;
+}
+
+a:hover,
+a:focus {
+    color: var(--moonglade-accent-color1);
+    text-decoration: none;
+}
 
 .bg-moonglade-accent1 {
     background-color: var(--moonglade-accent-color1);
@@ -869,6 +882,17 @@ footer {
 .page-link {
     color: var(--moonglade-accent-color1);
 }
+
+.darkmode .page-link {
+    background-color: #111;
+    border: 1px solid #333;
+}
+
+    .darkmode .page-link:hover {
+        background-color: #333;
+        border: 1px solid #333;
+        color: #FFF;
+    }
 
 .comment-form-containter .badge {
     font-size: 100% !important;
@@ -997,10 +1021,14 @@ body {
     padding: 5px 10px;
 }
 
-    .toptags-list a:hover {
-        background-color: var(--moonglade-accent-color3);
-        color: #fff;
-    }
+.darkmode .toptags-list a {
+    background-color: #333;
+}
+
+.toptags-list a:hover {
+    background-color: var(--moonglade-accent-color3);
+    color: #fff;
+}
 
 .lightswitch {
     background: #fff;
