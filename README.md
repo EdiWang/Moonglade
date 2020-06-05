@@ -8,6 +8,10 @@ The [**.NET Core**](https://dotnet.microsoft.com/) blog system of [**edi.wang**]
 
 ## 🛠 Build and Run
 
+With the following ARM template you can automate the creation of the resources for this website.
+
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://deploy.azure.com/?repository=https://github.com/EdiWang/Moonglade/tree/master)
+
 > The system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
 
 Tools | Alternative
