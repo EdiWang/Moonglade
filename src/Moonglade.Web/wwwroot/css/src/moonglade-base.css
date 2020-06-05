@@ -254,6 +254,11 @@ label {
     border-color: var(--moonglade-accent-color1);
 }
 
+.darkmode .list-group-item.active, .darkmode .page-item.active .page-link {
+    background-color: #333;
+    border-color: #333;
+}
+
 .table .table-item-title {
     text-align: left;
 }
@@ -779,11 +784,11 @@ a {
     color: #CCC;
 }
 
-    a:hover,
-    a:focus {
-        color: var(--moonglade-accent-color1);
-        text-decoration: none;
-    }
+a:hover,
+a:focus {
+    color: var(--moonglade-accent-color1);
+    text-decoration: none;
+}
 
 .bg-moonglade-accent1 {
     background-color: var(--moonglade-accent-color1);
@@ -877,6 +882,17 @@ footer {
 .page-link {
     color: var(--moonglade-accent-color1);
 }
+
+.darkmode .page-link {
+    background-color: #111;
+    border: 1px solid #333;
+}
+
+    .darkmode .page-link:hover {
+        background-color: #333;
+        border: 1px solid #333;
+        color: #FFF;
+    }
 
 .comment-form-containter .badge {
     font-size: 100% !important;
