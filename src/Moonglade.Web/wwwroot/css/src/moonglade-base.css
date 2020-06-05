@@ -716,10 +716,14 @@ div.animbrand a:focus, div.animbrand a:hover {
         padding: 5px 10px;
     }
 
-        .post-summary-tags a:hover {
-            background-color: var(--moonglade-accent-color3);
-            color: #fff;
-        }
+.darkmode .post-summary-tags a {
+    background-color: #333;
+}
+
+.post-summary-tags a:hover {
+    background-color: var(--moonglade-accent-color3);
+    color: #fff;
+}
 
 .blog-info-desktop-lg {
     background: #fafafa;
@@ -769,6 +773,10 @@ div.animbrand a:focus, div.animbrand a:hover {
 a {
     color: var(--moonglade-accent-color1);
     text-decoration: none;
+}
+
+.darkmode a {
+    color: #CCC;
 }
 
     a:hover,
@@ -997,10 +1005,14 @@ body {
     padding: 5px 10px;
 }
 
-    .toptags-list a:hover {
-        background-color: var(--moonglade-accent-color3);
-        color: #fff;
-    }
+.darkmode .toptags-list a {
+    background-color: #333;
+}
+
+.toptags-list a:hover {
+    background-color: var(--moonglade-accent-color3);
+    color: #fff;
+}
 
 .lightswitch {
     background: #fff;
