@@ -55,6 +55,10 @@
             postSlug.applyImageZooming();
             postSlug.renderCodeHighlighter();
 
+            @if (Settings.Value.WarnExternalLink){
+                // TODO: Call JS function to register link check
+            }
+
             @if (null == ViewBag.IsDraftPreview)
             {
                 <text>
@@ -302,3 +306,8 @@
         </div>
     </div>
 </div>
+
+@if (Settings.Value.WarnExternalLink)
+{
+    // TODO: Make external link warning dialog
+}

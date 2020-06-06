@@ -8,6 +8,7 @@
         public int ImageCacheSlidingExpirationMinutes { get; set; }
         public bool AllowExternalScripts { get; set; }
         public bool AllowScriptsInCustomPage { get; set; }
+        public bool WarnExternalLink { get; set; }
         public bool ShowAdminLoginButton { get; set; }
         public bool EnableAudit { get; set; }
         public bool EnableOpenGraph { get; set; }
