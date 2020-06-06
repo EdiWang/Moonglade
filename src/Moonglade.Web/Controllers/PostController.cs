@@ -12,6 +12,7 @@ using Moonglade.DateTimeOps;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback.Mvc;
+using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using X.PagedList;
 
@@ -105,14 +106,14 @@ namespace Moonglade.Web.Controllers
             {
                 case "meta":
                     var rspMeta = await _postService.GetMetaAsync(year, month, day, slug);
-                    return !rspMeta.IsSuccess 
-                        ? ServerError(rspMeta.Message) 
+                    return !rspMeta.IsSuccess
+                        ? ServerError(rspMeta.Message)
                         : Json(rspMeta.Item);
 
                 case "content":
                     var rspContent = await _postService.GetRawContentAsync(year, month, day, slug);
-                    return !rspContent.IsSuccess 
-                        ? ServerError(rspContent.Message) 
+                    return !rspContent.IsSuccess
+                        ? ServerError(rspContent.Message)
                         : Content(rspContent.Item, "text/plain");
             }
 
@@ -141,6 +142,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("hit")]
+        [DisallowSpiderUA]
         public async Task<IActionResult> Hit([FromForm] Guid postId)
         {
             if (DNT)
@@ -164,6 +166,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("like")]
+        [DisallowSpiderUA]
         public async Task<IActionResult> Like([FromForm] Guid postId)
         {
             if (DNT)
