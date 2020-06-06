@@ -56,7 +56,14 @@
             postSlug.renderCodeHighlighter();
 
             @if (Settings.Value.WarnExternalLink){
-                // TODO: Call JS function to register link check
+                <text>
+                    $.expr[':'].external = function(obj){
+                        return !obj.href.match(/^mailto\\:/)
+                            && (obj.hostname != location.hostname);
+                    };
+
+                    $('.post-content a:external').addClass('external');
+                </text>
             }
 
             @if (null == ViewBag.IsDraftPreview)
