@@ -913,13 +913,23 @@ footer {
     font-size: 0.9rem;
 }
 
-    .navbar .dropdown-menu .dropdown-item {
-        color: #FFF;
-        line-height: 1.7rem;
-    }
+.darkmode .navbar .dropdown-menu {
+    background-color: #343a40;
+}
+
+.navbar .dropdown-menu .dropdown-item {
+    color: #FFF;
+    line-height: 1.7rem;
+}
 
 .navbar .dropdown-item.active, .dropdown-item:hover {
     background-color: var(--moonglade-accent-color3);
+    color: #fff;
+    text-decoration: none;
+}
+
+.darkmode .navbar .dropdown-item.active, .darkmode .dropdown-item:hover {
+    background-color: #333;
     color: #fff;
     text-decoration: none;
 }
@@ -1045,4 +1055,9 @@ body {
 #lighticon {
     display: block;
     transform: translate(0, 50%);
+}
+
+.darkmode .form-control {
+    border: 1px solid #333;
+    color: #CCC;
 }
