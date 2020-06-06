@@ -190,7 +190,17 @@
     @await RenderSectionAsync("scripts", false)
     @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
     {
-        <script src="~/js/app/autodarklighttheme.js"></script>
+        <script>
+            'use strict';
+            if (window.matchMedia && window.themeModeSwitcher && supportLightSwitch) {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    themeModeSwitcher.useDarkMode();
+                }
+                else {
+                    themeModeSwitcher.useLightMode();
+                }
+            }
+        </script>
     }
 </body>
 </html>

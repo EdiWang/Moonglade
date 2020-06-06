@@ -29,6 +29,7 @@
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/moonglade-base.css",
       "wwwroot/css/src/moonglade-rwd.css",
+      "wwwroot/css/src/darkmode.css",
       "wwwroot/css/src/admin.css",
       "wwwroot/css/src/highlighter-custom.css",
       "wwwroot/lib/toastr.js/toastr.min.css"

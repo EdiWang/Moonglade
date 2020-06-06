@@ -1,0 +1,97 @@
+﻿.darkmode a {
+    color: #CCC;
+}
+
+.darkmode .list-group-item.active, .darkmode .page-item.active .page-link {
+    background-color: #333;
+    border-color: #333;
+}
+
+.darkmode .tagCloud li a {
+    border: 1px solid #666;
+    color: #CCC;
+}
+
+.darkmode .timeline-heading {
+    border-bottom: 1px solid #666;
+}
+
+.darkmode .timeline:before {
+    background-color: #666;
+}
+
+.darkmode .timeline > li > .timeline-panel {
+    border: 1px solid #666;
+}
+
+    .darkmode .timeline > li > .timeline-panel:before {
+        border-left: 15px solid #666;
+        border-right: 0 solid #666;
+    }
+
+    .darkmode .timeline > li > .timeline-panel:after {
+        border-left: 14px solid #666;
+        border-right: 0 solid #666;
+    }
+
+.darkmode .timeline-title a {
+    color: #FFF;
+}
+
+.darkmode .timeline-body a {
+    color: #CCC;
+}
+
+.darkmode .post-date-box {
+    border: 1px solid #666;
+}
+
+.darkmode .post-date-day {
+    color: #666;
+}
+
+.darkmode .post-date-month {
+    background-color: #666;
+}
+
+.darkmode .post-summary-text {
+    color: #CCC;
+}
+
+.darkmode .post-summary-title a {
+    color: #FFF;
+}
+
+.darkmode .post-summary-tags a {
+    background-color: #333;
+}
+
+.darkmode .page-link {
+    background-color: #111;
+    border: 1px solid #333;
+}
+
+    .darkmode .page-link:hover {
+        background-color: #333;
+        border: 1px solid #333;
+        color: #FFF;
+    }
+
+.darkmode .navbar .dropdown-menu {
+    background-color: #343a40;
+}
+
+.darkmode .navbar .dropdown-item.active, .darkmode .dropdown-item:hover {
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+}
+
+.darkmode .toptags-list a {
+    background-color: #333;
+}
+
+.darkmode .form-control {
+    border: 1px solid #333;
+    color: #CCC;
+}
