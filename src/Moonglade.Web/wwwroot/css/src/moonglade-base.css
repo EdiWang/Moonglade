@@ -963,3 +963,7 @@ body {
     display: block;
     transform: translate(0, 50%);
 }
+
+#extlink-url {
+    color: var(--moonglade-accent-color1);
+}

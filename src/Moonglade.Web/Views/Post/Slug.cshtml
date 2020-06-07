@@ -47,7 +47,7 @@
     <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/highlight.pack.js"></script>
     <script>
-        $(function () {
+        $(function() {
             var pid = $("article").data("postid");
 
             postSlug.registerRatingButtons(pid);
@@ -55,27 +55,37 @@
             postSlug.applyImageZooming();
             postSlug.renderCodeHighlighter();
 
-            @if (Settings.Value.WarnExternalLink){
+            @if (Settings.Value.WarnExternalLink)
+            {
                 <text>
-                    $.expr[':'].external = function(obj){
-                        return !obj.href.match(/^mailto\\:/)
-                            && (obj.hostname != location.hostname);
+                    $.expr[':'].external = function(obj) {
+                        return !obj.href.match(/^mailto\\:/) && (obj.hostname != location.hostname);
                     };
 
                     $('.post-content a:external').addClass('external');
+
+                    $('a.external').click(function (e) {
+                        e.preventDefault();
+                        var linkHref = $(this).attr('href');
+                        $('#extlink-url').html(linkHref);
+                        $('#extlink-continue').attr('href', linkHref);
+                        $('#externalLinkModal').modal('show');
+                    });
                 </text>
             }
 
             @if (null == ViewBag.IsDraftPreview)
             {
                 <text>
-                    $("#img-captcha").click(function () {
+                    $("#img-captcha").click(function() {
                         postSlug.resetCaptchaImage();
                     });
 
-                    ajaxPostWithCSRFToken("/post/hit", { postId: pid }, function (data) {
-                        console.info("updated post hit");
-                    });
+                    ajaxPostWithCSRFToken("/post/hit",
+                        { postId: pid },
+                        function(data) {
+                            console.info("updated post hit");
+                        });
 
                     $('#post-qrcode').qrcode(document.URL);
                 </text>
@@ -316,5 +326,24 @@
 
 @if (Settings.Value.WarnExternalLink)
 {
-    // TODO: Make external link warning dialog
+    <div class="modal fade" id="externalLinkModal" tabindex="-1" role="dialog" aria-labelledby="externalLinkModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-externalLink" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">External Link Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to leave this website and go to this external link. We are not responsible for any content or malicious behaviours of this link. Please confirm before continue browsing the link.</p>
+                    <p id="extlink-url"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <a id="extlink-continue" href="#" target="_blank" class="btn btn-primary">Continue</a>
+                </div>
+            </div>
+        </div>
+    </div>
 }
