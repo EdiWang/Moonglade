@@ -95,3 +95,9 @@
     border: 1px solid #333;
     color: #CCC;
 }
+
+@media (max-width: 767px) {
+    .darkmode .article-post-summary {
+        border-bottom: 1px solid #333;
+    }
+}
