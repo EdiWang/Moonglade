@@ -30,18 +30,18 @@ namespace Moonglade.Web.Controllers
 
         public string[] InvalidPageRouteNames => new[] { "index", "manage", "createoredit", "create", "edit" };
 
-        [HttpGet("{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> Index(string routeName, [FromServices] IMemoryCache cache)
+        [HttpGet("{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        public async Task<IActionResult> Index(string slug, [FromServices] IMemoryCache cache)
         {
-            if (string.IsNullOrWhiteSpace(routeName))
+            if (string.IsNullOrWhiteSpace(slug))
             {
                 return BadRequest();
             }
 
-            var cacheKey = $"page-{routeName.ToLower()}";
+            var cacheKey = $"page-{slug.ToLower()}";
             var pageResponse = await cache.GetOrCreateAsync(cacheKey, async entry =>
             {
-                var response = await _customPageService.GetPageAsync(routeName);
+                var response = await _customPageService.GetPageAsync(slug);
                 return response;
             });
 
@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
             {
                 if (pageResponse.Item == null)
                 {
-                    Logger.LogWarning($"Custom page not found. {nameof(routeName)}: '{routeName}'");
+                    Logger.LogWarning($"Page not found. {nameof(slug)}: '{slug}'");
                     return NotFound();
                 }
 
@@ -90,7 +90,7 @@ namespace Moonglade.Web.Controllers
                 {
                     Id = response.Item.Id,
                     Title = response.Item.Title,
-                    RouteName = response.Item.RouteName,
+                    Slug = response.Item.Slug,
                     MetaDescription = response.Item.MetaDescription,
                     CssContent = response.Item.CssContent,
                     RawHtmlContent = response.Item.RawHtmlContent,
@@ -110,9 +110,9 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (InvalidPageRouteNames.Contains(model.RouteName.ToLower()))
+                    if (InvalidPageRouteNames.Contains(model.Slug.ToLower()))
                     {
-                        ModelState.AddModelError(nameof(model.RouteName), "Reserved Route Name.");
+                        ModelState.AddModelError(nameof(model.Slug), "Reserved Route Name.");
                         return View("CreateOrEdit", model);
                     }
 
@@ -121,7 +121,7 @@ namespace Moonglade.Web.Controllers
                         HtmlContent = model.RawHtmlContent,
                         CssContent = model.CssContent,
                         HideSidebar = model.HideSidebar,
-                        RouteName = model.RouteName,
+                        Slug = model.Slug,
                         MetaDescription = model.MetaDescription,
                         Title = model.Title
                     };
@@ -134,7 +134,7 @@ namespace Moonglade.Web.Controllers
                     {
                         Logger.LogInformation($"User '{User.Identity.Name}' updated custom page id '{response.Item}'");
 
-                        var cacheKey = $"page-{req.RouteName.ToLower()}";
+                        var cacheKey = $"page-{req.Slug.ToLower()}";
                         cache.Remove(cacheKey);
 
                         return Json(new { PageId = response.Item });

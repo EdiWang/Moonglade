@@ -37,17 +37,17 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<CustomPage>> GetPageAsync(string routeName)
+        public Task<Response<CustomPage>> GetPageAsync(string slug)
         {
             return TryExecuteAsync<CustomPage>(async () =>
             {
-                if (string.IsNullOrWhiteSpace(routeName))
+                if (string.IsNullOrWhiteSpace(slug))
                 {
-                    throw new ArgumentNullException(nameof(routeName));
+                    throw new ArgumentNullException(nameof(slug));
                 }
 
-                var loweredRouteName = routeName.ToLower();
-                var entity = await _customPageRepository.GetAsync(p => p.RouteName == loweredRouteName);
+                var loweredRouteName = slug.ToLower();
+                var entity = await _customPageRepository.GetAsync(p => p.Slug == loweredRouteName);
                 var item = EntityToCustomPage(entity);
                 return new SuccessResponse<CustomPage>(item);
             });
@@ -61,7 +61,7 @@ namespace Moonglade.Core
                 {
                     Id = page.Id,
                     CreateOnUtc = page.CreateOnUtc,
-                    RouteName = page.RouteName,
+                    RouteName = page.Slug,
                     Title = page.Title
                 });
 
@@ -78,7 +78,7 @@ namespace Moonglade.Core
                 {
                     Id = uid,
                     Title = request.Title.Trim(),
-                    RouteName = request.RouteName.ToLower().Trim(),
+                    Slug = request.Slug.ToLower().Trim(),
                     MetaDescription = request.MetaDescription,
                     CreateOnUtc = DateTime.UtcNow,
                     HtmlContent = request.HtmlContent,
@@ -104,7 +104,7 @@ namespace Moonglade.Core
                 }
 
                 page.Title = request.Title.Trim();
-                page.RouteName = request.RouteName.ToLower().Trim();
+                page.Slug = request.Slug.ToLower().Trim();
                 page.MetaDescription = request.MetaDescription;
                 page.HtmlContent = request.HtmlContent;
                 page.CssContent = request.CssContent;
@@ -150,7 +150,7 @@ namespace Moonglade.Core
                 CssContent = entity.CssContent,
                 RawHtmlContent = entity.HtmlContent,
                 HideSidebar = entity.HideSidebar,
-                RouteName = entity.RouteName.Trim().ToLower(),
+                Slug = entity.Slug.Trim().ToLower(),
                 MetaDescription = entity.MetaDescription?.Trim(),
                 UpdatedOnUtc = entity.UpdatedOnUtc
             };

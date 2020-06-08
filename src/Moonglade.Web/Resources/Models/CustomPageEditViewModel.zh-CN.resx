@@ -123,6 +123,9 @@
   <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
     <value>必须为小写英文字符或中划线</value>
   </data>
+  <data name="Please enter a slug." xml:space="preserve">
+    <value>请输入Slug</value>
+  </data>
   <data name="Please enter a title." xml:space="preserve">
     <value>请输入标题</value>
   </data>
@@ -131,8 +134,5 @@
   </data>
   <data name="Please enter the meta description." xml:space="preserve">
     <value>请输入简要描述</value>
-  </data>
-  <data name="Please enter the route name." xml:space="preserve">
-    <value>请输入路由</value>
   </data>
 </root>
