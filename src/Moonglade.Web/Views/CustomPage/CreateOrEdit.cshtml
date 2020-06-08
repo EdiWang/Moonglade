@@ -15,7 +15,7 @@
     <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
     <script>
         $("#Title").change(function () {
-            $("#RouteName").val(slugify($(this).val()));
+            $("#Slug").val(slugify($(this).val()));
         });
 
         var htmlContentEditor = null;
@@ -118,10 +118,10 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">page/</span>
                 </div>
-                <input type="text" asp-for="RouteName" class="form-control form-control-sm" placeholder="route-name" />
+                <input type="text" asp-for="Slug" class="form-control form-control-sm" placeholder="slug" />
             </div>
             <div>
-                <span asp-validation-for="RouteName" class="text-danger"></span>
+                <span asp-validation-for="Slug" class="text-danger"></span>
             </div>
 
             <div class="mt-2">
