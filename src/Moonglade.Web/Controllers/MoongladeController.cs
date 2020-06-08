@@ -22,7 +22,9 @@ namespace Moonglade.Web.Controllers
 
         protected string SiteIconDirectory => Path.Join(SiteDataDirectory, "siteicons");
 
-        protected bool DNT => (bool) HttpContext.Items["DNT"];
+        protected string UserAgent => Request.Headers["User-Agent"];
+
+        protected bool DNT => (bool)HttpContext.Items["DNT"];
 
         public MoongladeController(
             ILogger<ControllerBase> logger,
@@ -46,11 +48,6 @@ namespace Moonglade.Web.Controllers
         {
             HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             ViewBag.IsServerError = true;
-        }
-
-        protected string GetUserAgent()
-        {
-            return Request.Headers["User-Agent"];
         }
 
         protected string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)

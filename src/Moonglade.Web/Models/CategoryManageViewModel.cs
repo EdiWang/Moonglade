@@ -7,7 +7,7 @@ namespace Moonglade.Web.Models
     {
         public CategoryEditViewModel CategoryEditViewModel { get; set; }
 
-        public IReadOnlyList<Model.Category> Categories { get; set; }
+        public IReadOnlyList<Category> Categories { get; set; }
 
         public CategoryManageViewModel()
         {

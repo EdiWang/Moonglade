@@ -56,8 +56,8 @@ namespace Moonglade.Core
             }
 
             var prefixUri = new Uri(prefix);
-            return Uri.TryCreate(baseUri: prefixUri, relativeUri: path, out var newUri) ? 
-                newUri.ToString() : 
+            return Uri.TryCreate(baseUri: prefixUri, relativeUri: path, out var newUri) ?
+                newUri.ToString() :
                 string.Empty;
         }
 
@@ -461,7 +461,9 @@ namespace Moonglade.Core
 
         public static string ConvertMarkdownContent(string markdown, MarkdownConvertType type, bool disableHtml = true)
         {
-            var pipeline = GetMoongladeMarkdownPipelineBuilder();
+            var pipeline = new MarkdownPipelineBuilder()
+                .UsePipeTables()
+                .UseBootstrap();
 
             if (disableHtml)
             {
@@ -484,15 +486,6 @@ namespace Moonglade.Core
             None = 0,
             Html = 1,
             Text = 2
-        }
-
-        private static MarkdownPipelineBuilder GetMoongladeMarkdownPipelineBuilder()
-        {
-            var pipeline = new MarkdownPipelineBuilder()
-                .UsePipeTables()
-                .UseBootstrap();
-
-            return pipeline;
         }
 
         public static Response<(string Slug, DateTime PubDate)> GetSlugInfoFromPostUrl(string url)

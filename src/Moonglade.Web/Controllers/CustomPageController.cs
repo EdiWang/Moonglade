@@ -18,20 +18,22 @@ namespace Moonglade.Web.Controllers
     [Route("page")]
     public class CustomPageController : MoongladeController
     {
+        private readonly IMemoryCache _cache;
         private readonly CustomPageService _customPageService;
+        private static string[] InvalidPageRouteNames => new[] { "index", "manage" };
 
         public CustomPageController(
             ILogger<CustomPageController> logger,
             IOptions<AppSettings> settings,
+            IMemoryCache cache,
             CustomPageService customPageService) : base(logger, settings)
         {
+            _cache = cache;
             _customPageService = customPageService;
         }
 
-        public string[] InvalidPageRouteNames => new[] { "index", "manage", "createoredit", "create", "edit" };
-
         [HttpGet("{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> Index(string slug, [FromServices] IMemoryCache cache)
+        public async Task<IActionResult> Index(string slug)
         {
             if (string.IsNullOrWhiteSpace(slug))
             {
@@ -39,7 +41,7 @@ namespace Moonglade.Web.Controllers
             }
 
             var cacheKey = $"page-{slug.ToLower()}";
-            var pageResponse = await cache.GetOrCreateAsync(cacheKey, async entry =>
+            var pageResponse = await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
                 var response = await _customPageService.GetPageAsync(slug);
                 return response;
@@ -112,7 +114,7 @@ namespace Moonglade.Web.Controllers
                 {
                     if (InvalidPageRouteNames.Contains(model.Slug.ToLower()))
                     {
-                        ModelState.AddModelError(nameof(model.Slug), "Reserved Route Name.");
+                        ModelState.AddModelError(nameof(model.Slug), "Reserved Slug.");
                         return View("CreateOrEdit", model);
                     }
 
@@ -157,7 +159,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/delete")]
-        public async Task<IActionResult> Delete(Guid pageId, string routeName, [FromServices] IMemoryCache cache)
+        public async Task<IActionResult> Delete(Guid pageId, string routeName)
         {
             try
             {
@@ -165,7 +167,7 @@ namespace Moonglade.Web.Controllers
                 if (response.IsSuccess)
                 {
                     var cacheKey = $"page-{routeName.ToLower()}";
-                    cache.Remove(cacheKey);
+                    _cache.Remove(cacheKey);
 
                     return Json(pageId);
                 }

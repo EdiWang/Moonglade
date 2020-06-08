@@ -122,7 +122,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("preview/{postId}")]
-        public async Task<IActionResult> DraftPreview(Guid postId)
+        public async Task<IActionResult> Preview(Guid postId)
         {
             var rsp = await _postService.GetDraftPreviewAsync(postId);
             if (!rsp.IsSuccess) return ServerError(rsp.Message);

@@ -26,7 +26,7 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public Task<Response<IReadOnlyList<PostListItem>>> SearchPostAsync(string keyword)
+        public Task<Response<IReadOnlyList<PostListItem>>> SearchAsync(string keyword)
         {
             return TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
             {
@@ -35,7 +35,7 @@ namespace Moonglade.Core
                     throw new ArgumentNullException(keyword);
                 }
 
-                var postList = SearchPostByKeyword(keyword);
+                var postList = SearchByKeyword(keyword);
 
                 var resultList = await postList.Select(p => new PostListItem
                 {
@@ -54,7 +54,7 @@ namespace Moonglade.Core
             }, keyParameter: keyword);
         }
 
-        private IQueryable<PostEntity> SearchPostByKeyword(string keyword)
+        private IQueryable<PostEntity> SearchByKeyword(string keyword)
         {
             var query = _postRepository.GetAsQueryable()
                                        .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished).AsNoTracking();

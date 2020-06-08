@@ -73,7 +73,7 @@ namespace Moonglade.Web.Controllers
 
                 ViewBag.TitlePrefix = term;
 
-                var response = await _searchService.SearchPostAsync(term);
+                var response = await _searchService.SearchAsync(term);
                 if (!response.IsSuccess)
                 {
                     SetFriendlyErrorMessage();

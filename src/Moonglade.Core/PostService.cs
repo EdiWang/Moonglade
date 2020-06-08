@@ -487,8 +487,6 @@ namespace Moonglade.Core
                 }
 
                 await _postRepository.AddAsync(postModel);
-
-                Logger.LogInformation($"New Post Created Successfully. PostId: {postModel.Id}");
                 await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostCreated, $"Post created, id: {postModel.Id}");
 
                 return new SuccessResponse<PostEntity>(postModel);

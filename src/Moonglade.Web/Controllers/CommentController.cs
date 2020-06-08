@@ -69,7 +69,7 @@ namespace Moonglade.Web.Controllers
                         Content = commentPostModel.Content,
                         Email = commentPostModel.Email,
                         IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
-                        UserAgent = GetUserAgent()
+                        UserAgent = UserAgent
                     });
 
                     if (response.IsSuccess)
@@ -162,7 +162,7 @@ namespace Moonglade.Web.Controllers
                 commentId,
                 replyContent,
                 HttpContext.Connection.RemoteIpAddress.ToString(),
-                GetUserAgent());
+                UserAgent);
 
             if (!response.IsSuccess)
             {
