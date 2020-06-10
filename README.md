@@ -4,7 +4,7 @@
 
 The [**.NET Core**](https://dotnet.microsoft.com/) blog system of [**edi.wang**](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enable most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
 
-![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v2.png)
+![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v3.png)
 
 ## 🛠 Build and Run
 
