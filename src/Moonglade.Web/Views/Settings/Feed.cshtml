@@ -61,6 +61,7 @@
                         <label asp-for="RssItemCount" class="control-label"></label>
                         <input asp-for="RssItemCount" class="form-control" />
                         <span asp-validation-for="RssItemCount" class="text-danger"></span>
+                        <small class="form-text text-muted">@Localizer["The number of entries to include in RSS feed."]</small>
                     </div>
                 </div>
             </div>

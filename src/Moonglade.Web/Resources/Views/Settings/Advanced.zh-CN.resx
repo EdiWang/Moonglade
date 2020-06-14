@@ -138,6 +138,9 @@
   <data name="Erase all data and configuration." xml:space="preserve">
     <value>抹除所有数据及配置</value>
   </data>
+  <data name="Leave blank if you are not using a DNS service." xml:space="preserve">
+    <value>若您不使用DNS，则留空</value>
+  </data>
   <data name="Memory Caches" xml:space="preserve">
     <value>内存缓存</value>
   </data>

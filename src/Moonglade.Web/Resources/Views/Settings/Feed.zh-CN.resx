@@ -126,4 +126,7 @@
   <data name="Save" xml:space="preserve">
     <value>保存</value>
   </data>
+  <data name="The number of entries to include in RSS feed." xml:space="preserve">
+    <value>RSS中包含的条目数量</value>
+  </data>
 </root>
