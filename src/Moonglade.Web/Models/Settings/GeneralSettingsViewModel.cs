@@ -39,18 +39,18 @@ namespace Moonglade.Web.Models.Settings
         public string SiteTitle { get; set; }
 
         [Required]
-        [Display(Name = "Blogger Name")]
+        [Display(Name = "Your Name")]
         [MaxLength(32)]
         public string OwnerName { get; set; }
 
         [Required]
-        [Display(Name = "Blogger Description")]
+        [Display(Name = "Your Description")]
         [DataType(DataType.MultilineText)]
         [MaxLength(256)]
         public string OwnerDescription { get; set; }
 
         [Required]
-        [Display(Name = "Blogger Short Description")]
+        [Display(Name = "Short Description")]
         [MaxLength(32)]
         public string OwnerShortDescription { get; set; }
 

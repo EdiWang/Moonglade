@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Blocked words will be masked as *** in comment content." xml:space="preserve">
+    <value>评论内容中的违禁词将被替换为***</value>
+  </data>
   <data name="Blog posts" xml:space="preserve">
     <value>博客文章</value>
   </data>
@@ -126,7 +129,13 @@
   <data name="Comments" xml:space="preserve">
     <value>评论</value>
   </data>
+  <data name="e.g. Your blog post license information." xml:space="preserve">
+    <value>例如：博客文章的许可协议</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>保存</value>
+  </data>
+  <data name="The call-out section will display on top of every page in the website." xml:space="preserve">
+    <value>公告区将在网站中每个页面顶部显示</value>
   </data>
 </root>

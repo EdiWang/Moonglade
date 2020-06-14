@@ -132,6 +132,9 @@
   <data name="Blog Identity" xml:space="preserve">
     <value>博客身份</value>
   </data>
+  <data name="Blog posts will use this time zone as date display." xml:space="preserve">
+    <value>博客文章会使用该时区作为时间及日期显示</value>
+  </data>
   <data name="Change Avatar" xml:space="preserve">
     <value>更换头像</value>
   </data>
@@ -152,6 +155,12 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>保存</value>
+  </data>
+  <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
+    <value>若您的网站绑定了多个域名，请填写主域名</value>
+  </data>
+  <data name="Short description is for display only on Phone screen." xml:space="preserve">
+    <value>仅用于在手机版视图显示</value>
   </data>
   <data name="Theme" xml:space="preserve">
     <value>主题</value>
