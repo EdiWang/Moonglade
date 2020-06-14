@@ -39,6 +39,7 @@ else
                             <label asp-for="AdminEmail" class="control-label"></label>
                             <input asp-for="AdminEmail" class="form-control" />
                             <span asp-validation-for="AdminEmail" class="text-danger"></span>
+                            <small class="form-text text-muted">@Localizer["Email address to receive notifications from this blog."]</small>
                         </div>
                     </div>
 
