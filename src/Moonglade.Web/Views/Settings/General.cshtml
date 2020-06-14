@@ -79,6 +79,7 @@
                                 <label asp-for="CanonicalPrefix" class="control-label"></label>
                                 <input asp-for="CanonicalPrefix" class="form-control" />
                                 <span asp-validation-for="CanonicalPrefix" class="text-danger"></span>
+                                <small class="form-text text-muted">@Localizer["Set a primary domain if your website binds to multiple domian names."]</small>
                             </div>
                             <div class="form-group">
                                 <div class="input-group">
@@ -101,6 +102,7 @@
                                     </div>
                                     <select class="custom-select" asp-for="SelectedTimeZoneId" asp-items="@Model.TimeZoneList"></select>
                                 </div>
+                                <small class="form-text text-muted">@Localizer["Blog posts will use this time zone as date and time display."]</small>
                             </div>
                         </div>
                     </div>
@@ -127,6 +129,7 @@
                                 <label asp-for="OwnerShortDescription" class="control-label"></label>
                                 <input asp-for="OwnerShortDescription" class="form-control" />
                                 <span asp-validation-for="OwnerShortDescription" class="text-danger"></span>
+                                <small class="form-text text-muted">@Localizer["Short description is for display only on Phone screen."]</small>
                             </div>
                         </div>
                     </div>

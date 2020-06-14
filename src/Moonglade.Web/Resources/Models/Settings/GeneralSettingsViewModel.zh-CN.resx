@@ -123,15 +123,6 @@
   <data name="Blog Title" xml:space="preserve">
     <value>博客标题</value>
   </data>
-  <data name="Blogger Description" xml:space="preserve">
-    <value>博主简介</value>
-  </data>
-  <data name="Blogger Name" xml:space="preserve">
-    <value>博主名字</value>
-  </data>
-  <data name="Blogger Short Description" xml:space="preserve">
-    <value>博主简介(短)</value>
-  </data>
   <data name="Canonical URL Prefix" xml:space="preserve">
     <value>网址 (Canonical URL)</value>
   </data>
@@ -153,7 +144,16 @@
   <data name="Only letters, numbers, - and [] are allowed." xml:space="preserve">
     <value>仅允许字母、数字、-及[]</value>
   </data>
+  <data name="Short Description" xml:space="preserve">
+    <value>博主简介(短)</value>
+  </data>
   <data name="Side Bar Pitch (HTML)" xml:space="preserve">
     <value>侧边栏HTML区域</value>
+  </data>
+  <data name="Your Description" xml:space="preserve">
+    <value>博主简介</value>
+  </data>
+  <data name="Your Name" xml:space="preserve">
+    <value>博主名字</value>
   </data>
 </root>
