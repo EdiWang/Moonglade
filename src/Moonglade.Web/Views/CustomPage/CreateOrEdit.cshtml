@@ -71,6 +71,14 @@
             }
         });
 
+        $('#btn-preview').click(function (e) {
+            assignEditorValues();
+            if (!$(".page-edit-form").valid()) {
+                e.preventDefault();
+            }
+            isPreviewRequired = true;
+        });
+
         $(function () {
             $('a[data-toggle="tab"]').on('shown.bs.tab',
                 function (e) {
@@ -193,6 +201,7 @@
         <button type="submit" class="btn btn-success" id="btn-submit">
             @Localizer["Save"]
         </button>
+        <button class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
         <a asp-controller="CustomPage" asp-action="Manage" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>
 </form>
