@@ -79,7 +79,6 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            ViewBag.TitlePrefix = $"{page.Title}";
             ViewBag.IsDraftPreview = true;
             return View("Index", page);
         }
