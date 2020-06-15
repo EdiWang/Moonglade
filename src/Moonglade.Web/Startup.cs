@@ -37,14 +37,10 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.OpmlFileWriter;
 using Moonglade.Pingback;
-using Moonglade.Setup;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Filters;
-using Moonglade.Web.Middleware.DNT;
-using Moonglade.Web.Middleware.FirstRun;
-using Moonglade.Web.Middleware.PoweredBy;
-using Moonglade.Web.Middleware.RobotsTxt;
+using Moonglade.Web.Middleware;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
 

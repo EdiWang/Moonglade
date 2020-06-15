@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration.Abstraction;
 
-namespace Moonglade.Web.Middleware.RobotsTxt
+namespace Moonglade.Web.Middleware
 {
     public class RobotsTxtMiddleware
     {

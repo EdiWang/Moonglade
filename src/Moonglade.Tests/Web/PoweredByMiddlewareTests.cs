@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using Moonglade.Web.Middleware.PoweredBy;
+using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
 

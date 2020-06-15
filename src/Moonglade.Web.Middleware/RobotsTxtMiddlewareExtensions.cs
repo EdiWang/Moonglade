@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace Moonglade.Web.Middleware.RobotsTxt
+namespace Moonglade.Web.Middleware
 {
     public static class RobotsTxtMiddlewareExtensions
     {

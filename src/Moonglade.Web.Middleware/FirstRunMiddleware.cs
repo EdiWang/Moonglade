@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Model;
 using Moonglade.Setup;
 
-namespace Moonglade.Web.Middleware.FirstRun
+namespace Moonglade.Web.Middleware
 {
     public class FirstRunMiddleware
     {
