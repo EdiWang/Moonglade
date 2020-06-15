@@ -66,6 +66,25 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
+        [Route("preview/{pageId}")]
+        public async Task<IActionResult> Preview(Guid pageId)
+        {
+            var response = await _customPageService.GetPageAsync(pageId);
+            if (!response.IsSuccess) return ServerError(response.Message);
+
+            var page = response.Item;
+            if (page == null)
+            {
+                Logger.LogWarning($"Page not found, parameter '{pageId}'.");
+                return NotFound();
+            }
+
+            ViewBag.TitlePrefix = $"{page.Title}";
+            ViewBag.IsDraftPreview = true;
+            return View("Index", page);
+        }
+
+        [Authorize]
         [HttpGet("manage")]
         public async Task<IActionResult> Manage()
         {
