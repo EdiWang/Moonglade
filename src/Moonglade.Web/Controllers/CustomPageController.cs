@@ -55,6 +55,11 @@ namespace Moonglade.Web.Controllers
                     return NotFound();
                 }
 
+                if (!pageResponse.Item.IsPublished)
+                {
+                    return NotFound();
+                }
+
                 return View(pageResponse.Item);
             }
             return ServerError();
@@ -161,14 +166,14 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/delete")]
-        public async Task<IActionResult> Delete(Guid pageId, string routeName)
+        public async Task<IActionResult> Delete(Guid pageId, string slug)
         {
             try
             {
                 var response = await _customPageService.DeletePageAsync(pageId);
                 if (response.IsSuccess)
                 {
-                    var cacheKey = $"page-{routeName.ToLower()}";
+                    var cacheKey = $"page-{slug.ToLower()}";
                     _cache.Remove(cacheKey);
 
                     return Json(pageId);
