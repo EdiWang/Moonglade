@@ -96,7 +96,8 @@ namespace Moonglade.Web.Controllers
                     MetaDescription = response.Item.MetaDescription,
                     CssContent = response.Item.CssContent,
                     RawHtmlContent = response.Item.RawHtmlContent,
-                    HideSidebar = response.Item.HideSidebar
+                    HideSidebar = response.Item.HideSidebar,
+                    IsPublished = response.Item.IsPublished
                 };
 
                 return View("CreateOrEdit", model);
@@ -125,7 +126,8 @@ namespace Moonglade.Web.Controllers
                         HideSidebar = model.HideSidebar,
                         Slug = model.Slug,
                         MetaDescription = model.MetaDescription,
-                        Title = model.Title
+                        Title = model.Title,
+                        IsPublished = model.IsPublished
                     };
 
                     var response = model.Id == Guid.Empty ?

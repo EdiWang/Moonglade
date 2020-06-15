@@ -83,7 +83,8 @@ namespace Moonglade.Core
                     CreateOnUtc = DateTime.UtcNow,
                     HtmlContent = request.HtmlContent,
                     CssContent = request.CssContent,
-                    HideSidebar = request.HideSidebar
+                    HideSidebar = request.HideSidebar,
+                    IsPublished = request.IsPublished
                 };
 
                 await _customPageRepository.AddAsync(customPage);
@@ -110,6 +111,7 @@ namespace Moonglade.Core
                 page.CssContent = request.CssContent;
                 page.HideSidebar = request.HideSidebar;
                 page.UpdatedOnUtc = DateTime.UtcNow;
+                page.IsPublished = request.IsPublished;
 
                 await _customPageRepository.UpdateAsync(page);
                 await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, $"Page '{request.Id}' updated.");
@@ -152,7 +154,8 @@ namespace Moonglade.Core
                 HideSidebar = entity.HideSidebar,
                 Slug = entity.Slug.Trim().ToLower(),
                 MetaDescription = entity.MetaDescription?.Trim(),
-                UpdatedOnUtc = entity.UpdatedOnUtc
+                UpdatedOnUtc = entity.UpdatedOnUtc,
+                IsPublished = entity.IsPublished
             };
         }
     }
