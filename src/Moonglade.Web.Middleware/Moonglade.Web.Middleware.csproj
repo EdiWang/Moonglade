@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+    <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
   </ItemGroup>
 
 </Project>

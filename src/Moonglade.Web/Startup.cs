@@ -42,6 +42,7 @@ using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware.DNT;
+using Moonglade.Web.Middleware.FirstRun;
 using Moonglade.Web.Middleware.PoweredBy;
 using Moonglade.Web.Middleware.RobotsTxt;
 using Moonglade.Web.SiteIconGenerator;
@@ -240,6 +241,7 @@ namespace Moonglade.Web
             TryUseUrlRewrite(app);
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
+            app.UseMiddleware<FirstRunMiddleware>();
 
             if (_environment.IsDevelopment())
             {
@@ -270,62 +272,24 @@ namespace Moonglade.Web
             app.UseStaticFiles();
             app.UseSession();
 
-            var conn = _configuration.GetConnectionString(Constants.DbConnectionName);
-            var setupHelper = new SetupHelper(conn);
+            app.UseIpRateLimiting();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            if (!setupHelper.TestDatabaseConnection(exception =>
+            app.UseEndpoints(endpoints =>
             {
-                _logger.LogCritical(exception, $"Error {nameof(SetupHelper.TestDatabaseConnection)}, connection string: {conn}");
-            }))
-            {
-                app.Run(async context =>
+                endpoints.MapGet("/ping", async context =>
                 {
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    await context.Response.WriteAsync("Database connection failed. Please see error log. Application has been stopped.");
-                    appLifetime.StopApplication();
+                    context.Response.Headers.Add("X-Moonglade-Version", Utils.AppVersion);
+                    await context.Response.WriteAsync(
+                        $"Moonglade Version: {Utils.AppVersion}, .NET Core {Environment.Version}", Encoding.UTF8);
                 });
-            }
-            else
-            {
-                if (setupHelper.IsFirstRun())
-                {
-                    try
-                    {
-                        _logger.LogInformation("Initializing first run configuration...");
-                        setupHelper.InitFirstRun();
-                        _logger.LogInformation("Database setup successfully.");
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogCritical(e, e.Message);
-                        app.Run(async context =>
-                        {
-                            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                            await context.Response.WriteAsync("Error initializing first run, please check error log.");
-                            appLifetime.StopApplication();
-                        });
-                    }
-                }
-
-                app.UseIpRateLimiting();
-                app.UseRouting();
-                app.UseAuthentication();
-                app.UseAuthorization();
-
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapGet("/ping", async context =>
-                    {
-                        context.Response.Headers.Add("X-Moonglade-Version", Utils.AppVersion);
-                        await context.Response.WriteAsync(
-                            $"Moonglade Version: {Utils.AppVersion}, .NET Core {Environment.Version}", Encoding.UTF8);
-                    });
-                    endpoints.MapControllerRoute(
-                        "default",
-                        "{controller=Home}/{action=Index}/{id?}");
-                    endpoints.MapRazorPages();
-                });
-            }
+                endpoints.MapControllerRoute(
+                    "default",
+                    "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+            });
         }
 
         #region Private Helpers
