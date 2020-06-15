@@ -55,9 +55,32 @@ namespace Moonglade.Web.Controllers
                     return NotFound();
                 }
 
+                if (!pageResponse.Item.IsPublished)
+                {
+                    return NotFound();
+                }
+
                 return View(pageResponse.Item);
             }
             return ServerError();
+        }
+
+        [Authorize]
+        [Route("preview/{pageId}")]
+        public async Task<IActionResult> Preview(Guid pageId)
+        {
+            var response = await _customPageService.GetPageAsync(pageId);
+            if (!response.IsSuccess) return ServerError(response.Message);
+
+            var page = response.Item;
+            if (page == null)
+            {
+                Logger.LogWarning($"Page not found, parameter '{pageId}'.");
+                return NotFound();
+            }
+
+            ViewBag.IsDraftPreview = true;
+            return View("Index", page);
         }
 
         [Authorize]
@@ -96,7 +119,8 @@ namespace Moonglade.Web.Controllers
                     MetaDescription = response.Item.MetaDescription,
                     CssContent = response.Item.CssContent,
                     RawHtmlContent = response.Item.RawHtmlContent,
-                    HideSidebar = response.Item.HideSidebar
+                    HideSidebar = response.Item.HideSidebar,
+                    IsPublished = response.Item.IsPublished
                 };
 
                 return View("CreateOrEdit", model);
@@ -125,7 +149,8 @@ namespace Moonglade.Web.Controllers
                         HideSidebar = model.HideSidebar,
                         Slug = model.Slug,
                         MetaDescription = model.MetaDescription,
-                        Title = model.Title
+                        Title = model.Title,
+                        IsPublished = model.IsPublished
                     };
 
                     var response = model.Id == Guid.Empty ?
@@ -159,14 +184,14 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/delete")]
-        public async Task<IActionResult> Delete(Guid pageId, string routeName)
+        public async Task<IActionResult> Delete(Guid pageId, string slug)
         {
             try
             {
                 var response = await _customPageService.DeletePageAsync(pageId);
                 if (response.IsSuccess)
                 {
-                    var cacheKey = $"page-{routeName.ToLower()}";
+                    var cacheKey = $"page-{slug.ToLower()}";
                     _cache.Remove(cacheKey);
 
                     return Json(pageId);

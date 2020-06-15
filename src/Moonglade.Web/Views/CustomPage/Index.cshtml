@@ -16,6 +16,13 @@
     <meta name="description" content="@Model.MetaDescription" />
 }
 
+@if (null != ViewBag.IsDraftPreview)
+{
+    <div class="alert alert-info">
+        @Localizer["This is a preview for draft content."]
+    </div>
+}
+
 @if (Settings.Value.AllowScriptsInCustomPage)
 {
     @Html.Raw(Model.RawHtmlContent)

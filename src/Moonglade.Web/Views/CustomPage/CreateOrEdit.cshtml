@@ -69,6 +69,15 @@
             if (!$(".page-edit-form").valid()) {
                 e.preventDefault();
             }
+            isPreviewRequired = false;
+        });
+
+        $('#btn-preview').click(function (e) {
+            assignEditorValues();
+            if (!$(".page-edit-form").valid()) {
+                e.preventDefault();
+            }
+            isPreviewRequired = true;
         });
 
         $(function () {
@@ -174,6 +183,14 @@
                             <input name="HideSidebar" type="hidden" value="false">
                         </div>
                     </li>
+                    <li class="list-group-item">
+                        <label asp-for="IsPublished" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.IsPublished ? "checked=\" checked\"" : "") id="IsPublished" name="IsPublished" type="checkbox" value="true">
+                            <label for="IsPublished" class="label-success"></label>
+                            <input name="IsPublished" type="hidden" value="false">
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -185,6 +202,10 @@
         <button type="submit" class="btn btn-success" id="btn-submit">
             @Localizer["Save"]
         </button>
+        @if (!Model.IsPublished)
+        {
+            <button class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
+        }
         <a asp-controller="CustomPage" asp-action="Manage" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>
 </form>

@@ -38,6 +38,9 @@ namespace Moonglade.Web.Models
         [Display(Name = "Hide Sidebar")]
         public bool HideSidebar { get; set; }
 
+        [Display(Name = "Published")]
+        public bool IsPublished { get; set; }
+
         public CustomPageEditViewModel()
         {
             Id = Guid.Empty;

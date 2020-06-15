@@ -10,6 +10,7 @@ namespace Moonglade.Model
         public string HtmlContent { get; set; }
         public string CssContent { get; set; }
         public bool HideSidebar { get; set; }
+        public bool IsPublished { get; set; }
     }
 
     public class EditCustomPageRequest : CreateCustomPageRequest

@@ -120,6 +120,9 @@
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="Preview" xml:space="preserve">
+    <value>预览</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>保存</value>
   </data>

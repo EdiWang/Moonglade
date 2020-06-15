@@ -431,6 +431,15 @@ var onPageCreateEditSuccess = function (data) {
     if (data.pageId) {
         $('input[name="Id"]').val(data.pageId);
         toastr.success('Page saved successfully.');
+
+        if ($('input[name="IsPublished"]:checked').val() === 'true') {
+            $('#btn-preview').hide();
+        }
+
+        if (isPreviewRequired) {
+            isPreviewRequired = false;
+            window.open(`/page/preview/${data.pageId}`);
+        }
     }
 };
 
