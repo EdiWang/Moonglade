@@ -69,6 +69,7 @@
             if (!$(".page-edit-form").valid()) {
                 e.preventDefault();
             }
+            isPreviewRequired = false;
         });
 
         $('#btn-preview').click(function (e) {
@@ -201,7 +202,10 @@
         <button type="submit" class="btn btn-success" id="btn-submit">
             @Localizer["Save"]
         </button>
-        <button class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
+        @if (!Model.IsPublished)
+        {
+            <button class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
+        }
         <a asp-controller="CustomPage" asp-action="Manage" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>
 </form>
