@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -8,18 +9,22 @@ namespace Moonglade.Web.Authentication
 {
     public static class AuthenticationServiceCollectionExtensions
     {
-        public static void AddMoongladeAuthenticaton(this IServiceCollection services, AuthenticationSettings authenticationSettings)
+        public static void AddMoongladeAuthenticaton(this IServiceCollection services, IConfiguration configuration)
         {
-            switch (authenticationSettings.Provider)
+            var authentication = new AuthenticationSettings();
+            configuration.Bind(nameof(Authentication), authentication);
+            services.Configure<AuthenticationSettings>(configuration.GetSection(nameof(Authentication)));
+
+            switch (authentication.Provider)
             {
                 case AuthenticationProvider.AzureAD:
                     services.Configure<AzureAdOption>(option =>
                     {
-                        option.CallbackPath = authenticationSettings.AzureAd.CallbackPath;
-                        option.ClientId = authenticationSettings.AzureAd.ClientId;
-                        option.Domain = authenticationSettings.AzureAd.Domain;
-                        option.Instance = authenticationSettings.AzureAd.Instance;
-                        option.TenantId = authenticationSettings.AzureAd.TenantId;
+                        option.CallbackPath = authentication.AzureAd.CallbackPath;
+                        option.ClientId = authentication.AzureAd.ClientId;
+                        option.Domain = authentication.AzureAd.Domain;
+                        option.Instance = authentication.AzureAd.Instance;
+                        option.TenantId = authentication.AzureAd.TenantId;
                     }).AddSingleton<IConfigureOptions<OpenIdConnectOptions>, ConfigureAzureOptions>();
 
                     services.AddAuthentication(sharedOptions =>
@@ -42,12 +47,12 @@ namespace Moonglade.Web.Authentication
                 case AuthenticationProvider.None:
                     break;
                 default:
-                    var msg = $"Provider {authenticationSettings.Provider} is not supported.";
+                    var msg = $"Provider {authentication.Provider} is not supported.";
                     throw new NotSupportedException(msg);
             }
         }
 
-        private class ConfigureAzureOptions: IConfigureNamedOptions<OpenIdConnectOptions>
+        private class ConfigureAzureOptions : IConfigureNamedOptions<OpenIdConnectOptions>
         {
             private readonly AzureAdOption _azureOptions;
 

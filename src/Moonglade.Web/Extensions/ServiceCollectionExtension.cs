@@ -1,16 +1,32 @@
 ﻿using System;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Core;
 using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
+using Moonglade.Pingback;
 
 namespace Moonglade.Web.Extensions
 {
-    public static class ImageStorageExtension
+    public static class ServiceCollectionExtension
     {
-        public static void AddMoongladeImageStorage(this IServiceCollection services, ImageStorageSettings imageStorage, string contentRootPath)
+        public static void AddPingback(this IServiceCollection services)
         {
+            services.AddScoped<IPingbackSender, PingbackSender>();
+            services.AddScoped<IPingbackReceiver, PingbackReceiver>();
+        }
+
+        public static void AddImageStorage(
+            this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+        {
+            var imageStorage = new ImageStorageSettings();
+            configuration.Bind(nameof(ImageStorage), imageStorage);
+            services.Configure<ImageStorageSettings>(configuration.GetSection(nameof(ImageStorage)));
+            
+            services.AddScoped<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
+
             if (imageStorage.CDNSettings.GetImageByCDNRedirect)
             {
                 if (string.IsNullOrWhiteSpace(imageStorage.CDNSettings.CDNEndpoint))
@@ -54,7 +70,7 @@ namespace Moonglade.Web.Extensions
                     break;
                 case "filesystem":
                     var path = imageStorage.FileSystemSettings.Path;
-                    var fullPath = Utils.ResolveImageStoragePath(contentRootPath, path);
+                    var fullPath = Utils.ResolveImageStoragePath(environment.ContentRootPath, path);
                     services.AddSingleton(s => new FileSystemImageProviderInfo(fullPath));
                     services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
                     break;

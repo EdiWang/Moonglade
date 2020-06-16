@@ -32,11 +32,9 @@ using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
-using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.OpmlFileWriter;
-using Moonglade.Pingback;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Filters;
@@ -54,7 +52,7 @@ namespace Moonglade.Web
         private readonly IConfigurationSection _appSettingsSection;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
-        private readonly List<CultureInfo> _supportedCultures;
+        private readonly IList<CultureInfo> _supportedCultures;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
@@ -77,14 +75,6 @@ namespace Moonglade.Web
 
             services.Configure<AppSettings>(_appSettingsSection);
 
-            var authentication = new AuthenticationSettings();
-            _configuration.Bind(nameof(Authentication), authentication);
-            services.Configure<AuthenticationSettings>(_configuration.GetSection(nameof(Authentication)));
-
-            var imageStorage = new ImageStorageSettings();
-            _configuration.Bind(nameof(ImageStorage), imageStorage);
-            services.Configure<ImageStorageSettings>(_configuration.GetSection(nameof(ImageStorage)));
-
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -92,7 +82,7 @@ namespace Moonglade.Web
             });
 
             services.AddApplicationInsightsTelemetry();
-            services.AddMoongladeAuthenticaton(authentication);
+            services.AddMoongladeAuthenticaton(_configuration);
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc(options =>
@@ -114,7 +104,7 @@ namespace Moonglade.Web
                 options.FormFieldName = $"{cookieBaseName}-FORM";
             });
 
-            services.AddMoongladeImageStorage(imageStorage, _environment.ContentRootPath);
+            services.AddImageStorage(_configuration, _environment);
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IBlogConfig, BlogConfig>();
@@ -125,10 +115,8 @@ namespace Moonglade.Web
                 new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
 
             services.AddScoped<IExportManager, ExportManager>();
-            services.AddScoped<IPingbackSender, PingbackSender>();
-            services.AddScoped<IPingbackReceiver, PingbackReceiver>();
+            services.AddPingback();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
-            services.AddScoped<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
             services.AddSessionBasedCaptcha();
 
             var asm = Assembly.GetAssembly(typeof(MoongladeService));
@@ -206,8 +194,7 @@ namespace Moonglade.Web
                     {
                         csp.AddUpgradeInsecureRequests();
                     }
-                    csp.AddFormAction()
-                        .Self();
+                    csp.AddFormAction().Self();
 
                     if (!allowExtScripts)
                     {
@@ -220,14 +207,13 @@ namespace Moonglade.Web
                             .From("https://*.services.visualstudio.com");
                     }
                 })
-                // Microsoft believes privacy is a fundamental human right
-                // So should I
                 .AddFeaturePolicy(builder =>
                 {
                     builder.AddCamera().None();
                     builder.AddMicrophone().None();
                     builder.AddPayment().None();
                     builder.AddUsb().None();
+                    builder.AddAccelerometer().None();
                 })
                 .RemoveServerHeader()
             );
