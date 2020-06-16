@@ -1,17 +1,44 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Data;
+using Moonglade.Data.Infrastructure;
 using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
+using Moonglade.Model.Settings;
 using Moonglade.Pingback;
 
 namespace Moonglade.Web.Extensions
 {
     public static class ServiceCollectionExtension
     {
+        public static void AddBlogConfiguration(this IServiceCollection services, IConfigurationSection appSettings)
+        {
+            services.AddOptions();
+            services.Configure<AppSettings>(appSettings);
+            services.AddSingleton<IBlogConfig, BlogConfig>();
+        }
+
+        public static void AddDataStorage(this IServiceCollection services, string connectionString)
+        {
+            services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
+            services.AddDbContext<MoongladeDbContext>(options =>
+                options.UseLazyLoadingProxies()
+                    .UseSqlServer(connectionString, sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(
+                            3,
+                            TimeSpan.FromSeconds(30),
+                            null);
+                    }));
+        }
+
         public static void AddPingback(this IServiceCollection services)
         {
             services.AddScoped<IPingbackSender, PingbackSender>();
@@ -24,7 +51,7 @@ namespace Moonglade.Web.Extensions
             var imageStorage = new ImageStorageSettings();
             configuration.Bind(nameof(ImageStorage), imageStorage);
             services.Configure<ImageStorageSettings>(configuration.GetSection(nameof(ImageStorage)));
-            
+
             services.AddScoped<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
 
             if (imageStorage.CDNSettings.GetImageByCDNRedirect)

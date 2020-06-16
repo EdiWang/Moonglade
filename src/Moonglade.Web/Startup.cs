@@ -17,19 +17,15 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
-using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Core.Notification;
-using Moonglade.Data;
-using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
 using Moonglade.Model;
@@ -49,7 +45,7 @@ namespace Moonglade.Web
     public class Startup
     {
         private ILogger<Startup> _logger;
-        private readonly IConfigurationSection _appSettingsSection;
+        private readonly IConfigurationSection _appSettings;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
         private readonly IList<CultureInfo> _supportedCultures;
@@ -58,22 +54,15 @@ namespace Moonglade.Web
         {
             _configuration = configuration;
             _environment = env;
-            _appSettingsSection = _configuration.GetSection(nameof(AppSettings));
-
-            _supportedCultures = new List<CultureInfo>
-            {
-                new CultureInfo("en-US"),
-                new CultureInfo("zh-CN")
-            };
+            _appSettings = _configuration.GetSection(nameof(AppSettings));
+            _supportedCultures = new[] { "en-US", "zh-CN" }.Select(p => new CultureInfo(p)).ToList();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
+            services.AddBlogConfiguration(_appSettings);
             services.AddMemoryCache();
             services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
-
-            services.Configure<AppSettings>(_appSettingsSection);
 
             services.AddSession(options =>
             {
@@ -104,10 +93,9 @@ namespace Moonglade.Web
                 options.FormFieldName = $"{cookieBaseName}-FORM";
             });
 
+            services.AddPingback();
             services.AddImageStorage(_configuration, _environment);
-            services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<IMoongladeAudit, MoongladeAudit>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
@@ -115,7 +103,6 @@ namespace Moonglade.Web
                 new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
 
             services.AddScoped<IExportManager, ExportManager>();
-            services.AddPingback();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
             services.AddSessionBasedCaptcha();
 
@@ -138,15 +125,7 @@ namespace Moonglade.Web
                                     _logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
                                 }));
 
-            services.AddDbContext<MoongladeDbContext>(options =>
-                    options.UseLazyLoadingProxies()
-                           .UseSqlServer(_configuration.GetConnectionString(Constants.DbConnectionName), sqlOptions =>
-                               {
-                                   sqlOptions.EnableRetryOnFailure(
-                                       3,
-                                       TimeSpan.FromSeconds(30),
-                                       null);
-                               }));
+            services.AddDataStorage(_configuration.GetConnectionString(Constants.DbConnectionName));
         }
 
         public void Configure(
@@ -156,8 +135,8 @@ namespace Moonglade.Web
             TelemetryConfiguration configuration)
         {
             _logger = logger;
-            var enforceHttps = bool.Parse(_appSettingsSection["EnforceHttps"]);
-            var allowExtScripts = bool.Parse(_appSettingsSection["AllowExternalScripts"]);
+            var enforceHttps = bool.Parse(_appSettings["EnforceHttps"]);
+            var allowExtScripts = bool.Parse(_appSettings["AllowExternalScripts"]);
 
             // Support Chinese contents
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -182,7 +161,6 @@ namespace Moonglade.Web
             {
                 _logger.LogInformation("Moonglade stopped.");
             });
-
 
             app.UseSecurityHeaders(new HeaderPolicyCollection()
                 .AddFrameOptionsSameOrigin()
@@ -274,8 +252,6 @@ namespace Moonglade.Web
             });
         }
 
-        #region Private Helpers
-
         private void TryUseUrlRewrite(IApplicationBuilder app)
         {
             try
@@ -291,7 +267,5 @@ namespace Moonglade.Web
                 _logger.LogError(e, nameof(TryUseUrlRewrite));
             }
         }
-
-        #endregion
     }
 }
