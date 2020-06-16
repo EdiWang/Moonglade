@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Models.Settings
 {
-    public class FeedSettingsViewModel
+    public class SubscriptionSettingsViewModel
     {
         [Display(Name = "RSS Items")]
         public int RssItemCount { get; set; }
@@ -30,7 +30,7 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Use full blog post content instead of abstract")]
         public bool UseFullContent { get; set; }
 
-        public FeedSettingsViewModel()
+        public SubscriptionSettingsViewModel()
         {
             RssItemCount = 20;
         }

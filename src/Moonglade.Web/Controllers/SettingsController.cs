@@ -249,11 +249,11 @@ namespace Moonglade.Web.Controllers
 
         #region Feed Settings
 
-        [HttpGet("feed")]
-        public IActionResult Feed()
+        [HttpGet("subscription")]
+        public IActionResult Subscription()
         {
             var settings = _blogConfig.FeedSettings;
-            var vm = new FeedSettingsViewModel
+            var vm = new SubscriptionSettingsViewModel
             {
                 AuthorName = settings.AuthorName,
                 RssCopyright = settings.RssCopyright,
@@ -266,8 +266,8 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("feed")]
-        public async Task<IActionResult> Feed(FeedSettingsViewModel model)
+        [HttpPost("subscription")]
+        public async Task<IActionResult> Subscription(SubscriptionSettingsViewModel model)
         {
             if (ModelState.IsValid)
             {

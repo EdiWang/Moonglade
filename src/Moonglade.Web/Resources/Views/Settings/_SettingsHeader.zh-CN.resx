@@ -129,9 +129,6 @@
   <data name="Content" xml:space="preserve">
     <value>内容</value>
   </data>
-  <data name="Feed" xml:space="preserve">
-    <value>订阅</value>
-  </data>
   <data name="Friend Links" xml:space="preserve">
     <value>友情链接</value>
   </data>
@@ -146,6 +143,9 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>设置</value>
+  </data>
+  <data name="Subscription" xml:space="preserve">
+    <value>订阅</value>
   </data>
   <data name="Watermark" xml:space="preserve">
     <value>水印</value>
