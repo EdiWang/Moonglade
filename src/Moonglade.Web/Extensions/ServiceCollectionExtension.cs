@@ -8,6 +8,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
+using Moonglade.DateTimeOps;
 using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.AzureBlob;
 using Moonglade.ImageStorage.FileSystem;
@@ -23,6 +24,8 @@ namespace Moonglade.Web.Extensions
             services.AddOptions();
             services.Configure<AppSettings>(appSettings);
             services.AddSingleton<IBlogConfig, BlogConfig>();
+            services.AddScoped<IDateTimeResolver>(c =>
+                new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
         }
 
         public static void AddDataStorage(this IServiceCollection services, string connectionString)
@@ -92,14 +95,14 @@ namespace Moonglade.Web.Extensions
                 case "azurestorage":
                     var conn = imageStorage.AzureStorageSettings.ConnectionString;
                     var container = imageStorage.AzureStorageSettings.ContainerName;
-                    services.AddSingleton(s => new AzureStorageInfo(conn, container));
-                    services.AddSingleton<IAsyncImageStorageProvider, AzureStorageImageProvider>();
+                    services.AddSingleton(s => new AzureBlobConfiguration(conn, container));
+                    services.AddSingleton<IBlogImageStorage, AzureBlobImageStorage>();
                     break;
                 case "filesystem":
                     var path = imageStorage.FileSystemSettings.Path;
                     var fullPath = Utils.ResolveImageStoragePath(environment.ContentRootPath, path);
-                    services.AddSingleton(s => new FileSystemImageProviderInfo(fullPath));
-                    services.AddSingleton<IAsyncImageStorageProvider, FileSystemImageProvider>();
+                    services.AddSingleton(s => new FileSystemImageConfiguration(fullPath));
+                    services.AddSingleton<IBlogImageStorage, FileSystemImageStorage>();
                     break;
                 default:
                     var msg = $"Provider {imageStorageProvider} is not supported.";

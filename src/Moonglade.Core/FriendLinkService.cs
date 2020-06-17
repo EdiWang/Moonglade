@@ -28,7 +28,7 @@ namespace Moonglade.Core
             _moongladeAudit = moongladeAudit;
         }
 
-        public Task<Response<FriendLink>> GetFriendLinkAsync(Guid id)
+        public Task<Response<FriendLink>> GetAsync(Guid id)
         {
             return TryExecuteAsync<FriendLink>(async () =>
             {
@@ -43,7 +43,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<FriendLink>>> GetAllFriendLinksAsync()
+        public Task<Response<IReadOnlyList<FriendLink>>> GetAllAsync()
         {
             return TryExecuteAsync<IReadOnlyList<FriendLink>>(async () =>
             {

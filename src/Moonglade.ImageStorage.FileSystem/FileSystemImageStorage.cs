@@ -6,20 +6,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.ImageStorage.FileSystem
 {
-    public class FileSystemImageProvider : IAsyncImageStorageProvider
+    public class FileSystemImageStorage : IBlogImageStorage
     {
-        public string Name => nameof(FileSystemImageProvider);
+        public string Name => nameof(FileSystemImageStorage);
 
-        private readonly ILogger<FileSystemImageProvider> _logger;
+        private readonly ILogger<FileSystemImageStorage> _logger;
 
         private readonly string _path;
 
-        public FileSystemImageProvider(ILogger<FileSystemImageProvider> logger, FileSystemImageProviderInfo pvdInfo)
+        public FileSystemImageStorage(ILogger<FileSystemImageStorage> logger, FileSystemImageConfiguration imgConfig)
         {
             _logger = logger;
-            logger.LogInformation($"Created {nameof(FileSystemImageProvider)}");
-
-            _path = pvdInfo.Path;
+            _path = imgConfig.Path;
         }
 
         public async Task<Response<ImageInfo>> GetAsync(string fileName)

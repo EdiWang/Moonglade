@@ -1,12 +1,12 @@
 ﻿namespace Moonglade.ImageStorage.AzureBlob
 {
-    public class AzureStorageInfo
+    public class AzureBlobConfiguration
     {
         public string ConnectionString { get; }
 
         public string ContainerName { get; }
 
-        public AzureStorageInfo(string connectionString, string containerName)
+        public AzureBlobConfiguration(string connectionString, string containerName)
         {
             ConnectionString = connectionString;
             ContainerName = containerName;

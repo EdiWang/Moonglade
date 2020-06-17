@@ -338,7 +338,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("friendlink")]
         public async Task<IActionResult> FriendLink()
         {
-            var response = await _friendLinkService.GetAllFriendLinksAsync();
+            var response = await _friendLinkService.GetAllAsync();
             if (response.IsSuccess)
             {
                 var vm = new FriendLinkSettingsViewModelWrap
@@ -401,7 +401,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                var response = await _friendLinkService.GetFriendLinkAsync(id);
+                var response = await _friendLinkService.GetAsync(id);
                 if (response.IsSuccess)
                 {
                     var obj = new FriendLinkEditViewModel

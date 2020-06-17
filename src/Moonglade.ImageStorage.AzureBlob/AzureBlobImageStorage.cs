@@ -8,27 +8,27 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.ImageStorage.AzureBlob
 {
-    public class AzureStorageImageProvider : IAsyncImageStorageProvider
+    public class AzureBlobImageStorage : IBlogImageStorage
     {
-        public string Name => nameof(AzureStorageImageProvider);
+        public string Name => nameof(AzureBlobImageStorage);
 
         private readonly BlobContainerClient _container;
 
-        private readonly ILogger<AzureStorageImageProvider> _logger;
+        private readonly ILogger<AzureBlobImageStorage> _logger;
 
-        public AzureStorageImageProvider(ILogger<AzureStorageImageProvider> logger, AzureStorageInfo storageInfo)
+        public AzureBlobImageStorage(ILogger<AzureBlobImageStorage> logger, AzureBlobConfiguration blobConfiguration)
         {
             try
             {
                 _logger = logger;
 
-                _container = new BlobContainerClient(storageInfo.ConnectionString, storageInfo.ContainerName);
+                _container = new BlobContainerClient(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
 
-                logger.LogInformation($"Created {nameof(AzureStorageImageProvider)} for account {_container.AccountName} on container {_container.Name}");
+                logger.LogInformation($"Created {nameof(AzureBlobImageStorage)} for account {_container.AccountName} on container {_container.Name}");
             }
             catch (Exception e)
             {
-                logger.LogError(e, $"Failed to create {nameof(AzureStorageImageProvider)}");
+                logger.LogError(e, $"Failed to create {nameof(AzureBlobImageStorage)}");
                 throw;
             }
         }

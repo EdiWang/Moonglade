@@ -23,11 +23,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
-using Moonglade.DateTimeOps;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.OpmlFileWriter;
@@ -99,8 +97,6 @@ namespace Moonglade.Web
             services.AddScoped<IMoongladeAudit, MoongladeAudit>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
-            services.AddScoped<IDateTimeResolver>(c =>
-                new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
 
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();

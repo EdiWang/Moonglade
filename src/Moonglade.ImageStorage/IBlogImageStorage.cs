@@ -3,7 +3,7 @@ using Edi.Practice.RequestResponseModel;
 
 namespace Moonglade.ImageStorage
 {
-    public interface IAsyncImageStorageProvider
+    public interface IBlogImageStorage
     {
         string Name { get; }
 

@@ -26,7 +26,7 @@ namespace Moonglade.Web.Controllers
     public class AssetsController : MoongladeController
     {
         private readonly IBlogConfig _blogConfig;
-        private readonly IAsyncImageStorageProvider _imageStorageProvider;
+        private readonly IBlogImageStorage _imageStorage;
         private readonly ISiteIconGenerator _siteIconGenerator;
         private readonly IWebHostEnvironment _env;
         private readonly CDNSettings _cdnSettings;
@@ -35,7 +35,7 @@ namespace Moonglade.Web.Controllers
             ILogger<AssetsController> logger,
             IOptions<AppSettings> settings,
             IOptions<ImageStorageSettings> imageStorageSettings,
-            IAsyncImageStorageProvider imageStorageProvider,
+            IBlogImageStorage imageStorage,
             IBlogConfig blogConfig,
             ISiteIconGenerator siteIconGenerator, 
             IWebHostEnvironment env) : base(logger, settings)
@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig = blogConfig;
             _siteIconGenerator = siteIconGenerator;
             _env = env;
-            _imageStorageProvider = imageStorageProvider;
+            _imageStorage = imageStorage;
             _cdnSettings = imageStorageSettings.Value?.CDNSettings;
         }
 
@@ -74,7 +74,7 @@ namespace Moonglade.Web.Controllers
                     Logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
                     entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.ImageCacheSlidingExpirationMinutes);
-                    var imgBytesResponse = await _imageStorageProvider.GetAsync(filename);
+                    var imgBytesResponse = await _imageStorage.GetAsync(filename);
                     return imgBytesResponse;
                 });
 
@@ -146,7 +146,7 @@ namespace Moonglade.Web.Controllers
                         _blogConfig.WatermarkSettings.FontSize);
                 }
 
-                var response = await _imageStorageProvider.InsertAsync(primaryFileName,
+                var response = await _imageStorage.InsertAsync(primaryFileName,
                     watermarkedStream != null ?
                         watermarkedStream.ToArray() :
                         stream.ToArray());
@@ -154,7 +154,7 @@ namespace Moonglade.Web.Controllers
                 if (_blogConfig.WatermarkSettings.KeepOriginImage)
                 {
                     var arr = stream.ToArray();
-                    _ = Task.Run(async () => await _imageStorageProvider.InsertAsync(secondaryFieName, arr));
+                    _ = Task.Run(async () => await _imageStorage.InsertAsync(secondaryFieName, arr));
                 }
 
                 Logger.LogInformation($"Image '{primaryFileName}' uloaded.");
