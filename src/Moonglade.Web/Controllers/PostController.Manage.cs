@@ -89,10 +89,10 @@ namespace Moonglade.Web.Controllers
                 tagStr = tagStr.TrimEnd(',');
                 editViewModel.Tags = tagStr;
 
-                var catResponse = await _categoryService.GetAllCategoriesAsync();
+                var catResponse = await _categoryService.GetAllAsync();
                 if (!catResponse.IsSuccess)
                 {
-                    return ServerError("Unsuccessful response from _categoryService.GetAllCategoriesAsync().");
+                    return ServerError("Unsuccessful response from _categoryService.GetAllAsync().");
                 }
 
                 var catList = catResponse.Item;
@@ -258,7 +258,7 @@ namespace Moonglade.Web.Controllers
                 FeedIncluded = true
             };
 
-            var catList = await _categoryService.GetAllCategoriesAsync();
+            var catList = await _categoryService.GetAllAsync();
             if (null != catList.Item && catList.Item.Any())
             {
                 var cbCatList = catList.Item.Select(p =>

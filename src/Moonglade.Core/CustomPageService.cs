@@ -27,7 +27,7 @@ namespace Moonglade.Core
             _moongladeAudit = moongladeAudit;
         }
 
-        public Task<Response<CustomPage>> GetPageAsync(Guid pageId)
+        public Task<Response<CustomPage>> GetAsync(Guid pageId)
         {
             return TryExecuteAsync<CustomPage>(async () =>
             {
@@ -37,7 +37,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<CustomPage>> GetPageAsync(string slug)
+        public Task<Response<CustomPage>> GetAsync(string slug)
         {
             return TryExecuteAsync<CustomPage>(async () =>
             {
@@ -53,11 +53,11 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<CustomPageMetaData>>> GetPagesMetaAsync()
+        public Task<Response<IReadOnlyList<CustomPageSegment>>> ListSegmentAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<CustomPageMetaData>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<CustomPageSegment>>(async () =>
             {
-                var list = await _customPageRepository.SelectAsync(page => new CustomPageMetaData
+                var list = await _customPageRepository.SelectAsync(page => new CustomPageSegment
                 {
                     Id = page.Id,
                     CreateOnUtc = page.CreateOnUtc,
@@ -65,11 +65,11 @@ namespace Moonglade.Core
                     Title = page.Title
                 });
 
-                return new SuccessResponse<IReadOnlyList<CustomPageMetaData>>(list);
+                return new SuccessResponse<IReadOnlyList<CustomPageSegment>>(list);
             });
         }
 
-        public Task<Response<Guid>> CreatePageAsync(CreateCustomPageRequest request)
+        public Task<Response<Guid>> CreateAsync(CreateCustomPageRequest request)
         {
             return TryExecuteAsync<Guid>(async () =>
             {
@@ -94,7 +94,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<Guid>> EditPageAsync(EditCustomPageRequest request)
+        public Task<Response<Guid>> UpdateAsync(EditCustomPageRequest request)
         {
             return TryExecuteAsync<Guid>(async () =>
             {
@@ -120,7 +120,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> DeletePageAsync(Guid pageId)
+        public Task<Response> DeleteAsync(Guid pageId)
         {
             return TryExecuteAsync(async () =>
             {
@@ -137,7 +137,7 @@ namespace Moonglade.Core
             });
         }
 
-        private CustomPage EntityToCustomPage(CustomPageEntity entity)
+        private static CustomPage EntityToCustomPage(CustomPageEntity entity)
         {
             if (null == entity)
             {

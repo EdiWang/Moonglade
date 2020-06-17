@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
             }
 
             var pageSize = _blogConfig.ContentSettings.PostListPageSize;
-            var catResponse = await _categoryService.GetCategoryAsync(routeName);
+            var catResponse = await _categoryService.GetAsync(routeName);
             if (!catResponse.IsSuccess)
             {
                 return ServerError($"Unsuccessful response: {catResponse.Message}");
@@ -76,7 +76,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                var allCats = await _categoryService.GetAllCategoriesAsync();
+                var allCats = await _categoryService.GetAllAsync();
                 if (!allCats.IsSuccess)
                 {
                     ViewBag.HasError = true;
@@ -110,7 +110,7 @@ namespace Moonglade.Web.Controllers
                         DisplayName = model.DisplayName
                     };
 
-                    var response = await _categoryService.CreateCategoryAsync(request);
+                    var response = await _categoryService.CreateAsync(request);
                     if (response.IsSuccess)
                     {
                         DeleteOpmlFile();
@@ -137,7 +137,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var r = await _categoryService.GetCategoryAsync(id);
+            var r = await _categoryService.GetAsync(id);
             if (r.IsSuccess && null != r.Item)
             {
                 var model = new CategoryEditViewModel
@@ -169,7 +169,7 @@ namespace Moonglade.Web.Controllers
                         DisplayName = model.DisplayName
                     };
 
-                    var response = await _categoryService.UpdateCategoryAsync(request);
+                    var response = await _categoryService.UpdateAsync(request);
 
                     if (response.IsSuccess)
                     {

@@ -28,7 +28,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage")]
         public async Task<IActionResult> Manage([FromServices] MenuService menuService)
         {
-            var menuItemsResp = await menuService.GetAllMenusAsync();
+            var menuItemsResp = await menuService.GetAllAsync();
             if (menuItemsResp.IsSuccess)
             {
                 var model = new NavMenuManageViewModel
@@ -58,7 +58,7 @@ namespace Moonglade.Web.Controllers
                         IsOpenInNewTab = model.IsOpenInNewTab
                     };
 
-                    var response = await _menuService.CreateMenuAsync(request);
+                    var response = await _menuService.CreateAsync(request);
                     if (response.IsSuccess)
                     {
                         return Json(response);
@@ -104,7 +104,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var r = await _menuService.GetMenuAsync(id);
+            var r = await _menuService.GetAsync(id);
             if (r.IsSuccess && null != r.Item)
             {
                 var model = new NavMenuEditViewModel
@@ -140,7 +140,7 @@ namespace Moonglade.Web.Controllers
                         IsOpenInNewTab = model.IsOpenInNewTab
                     };
 
-                    var response = await _menuService.UpdateMenuAsync(request);
+                    var response = await _menuService.UpdateAsync(request);
 
                     if (response.IsSuccess)
                     {

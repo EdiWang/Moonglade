@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
             var cacheKey = $"page-{slug.ToLower()}";
             var pageResponse = await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
-                var response = await _customPageService.GetPageAsync(slug);
+                var response = await _customPageService.GetAsync(slug);
                 return response;
             });
 
@@ -69,7 +69,7 @@ namespace Moonglade.Web.Controllers
         [Route("preview/{pageId}")]
         public async Task<IActionResult> Preview(Guid pageId)
         {
-            var response = await _customPageService.GetPageAsync(pageId);
+            var response = await _customPageService.GetAsync(pageId);
             if (!response.IsSuccess) return ServerError(response.Message);
 
             var page = response.Item;
@@ -87,7 +87,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage")]
         public async Task<IActionResult> Manage()
         {
-            var response = await _customPageService.GetPagesMetaAsync();
+            var response = await _customPageService.ListSegmentAsync();
             return response.IsSuccess ? View(response.Item) : ServerError();
         }
 
@@ -103,7 +103,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var response = await _customPageService.GetPageAsync(id);
+            var response = await _customPageService.GetAsync(id);
             if (response.IsSuccess)
             {
                 if (response.Item == null)
@@ -154,8 +154,8 @@ namespace Moonglade.Web.Controllers
                     };
 
                     var response = model.Id == Guid.Empty ?
-                        await _customPageService.CreatePageAsync(req) :
-                        await _customPageService.EditPageAsync(req);
+                        await _customPageService.CreateAsync(req) :
+                        await _customPageService.UpdateAsync(req);
 
                     if (response.IsSuccess)
                     {
@@ -188,7 +188,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                var response = await _customPageService.DeletePageAsync(pageId);
+                var response = await _customPageService.DeleteAsync(pageId);
                 if (response.IsSuccess)
                 {
                     var cacheKey = $"page-{slug.ToLower()}";

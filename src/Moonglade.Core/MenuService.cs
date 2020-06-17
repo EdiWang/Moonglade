@@ -27,7 +27,7 @@ namespace Moonglade.Core
             _moongladeAudit = moongladeAudit;
         }
 
-        public Task<Response<MenuModel>> GetMenuAsync(Guid id)
+        public Task<Response<MenuModel>> GetAsync(Guid id)
         {
             return TryExecuteAsync<MenuModel>(async () =>
             {
@@ -37,7 +37,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<MenuModel>>> GetAllMenusAsync()
+        public Task<Response<IReadOnlyList<MenuModel>>> GetAllAsync()
         {
             return TryExecuteAsync<IReadOnlyList<MenuModel>>(async () =>
             {
@@ -54,7 +54,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<Guid>> CreateMenuAsync(CreateMenuRequest request)
+        public Task<Response<Guid>> CreateAsync(CreateMenuRequest request)
         {
             return TryExecuteAsync<Guid>(async () =>
             {
@@ -76,7 +76,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<Guid>> UpdateMenuAsync(EditMenuRequest request)
+        public Task<Response<Guid>> UpdateAsync(EditMenuRequest request)
         {
             return TryExecuteAsync<Guid>(async () =>
             {

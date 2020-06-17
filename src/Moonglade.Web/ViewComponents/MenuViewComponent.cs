@@ -17,7 +17,7 @@ namespace Moonglade.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var response = await _menuService.GetAllMenusAsync();
+            var response = await _menuService.GetAllAsync();
             if (response.IsSuccess)
             {
                 return View(response.Item);

@@ -120,7 +120,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> DeleteCommentsAsync(Guid[] commentIds)
+        public Task<Response> DeleteAsync(Guid[] commentIds)
         {
             return TryExecuteAsync(async () =>
             {
@@ -149,7 +149,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<CommentListItem>> AddCommentAsync(NewCommentRequest request)
+        public Task<Response<CommentListItem>> CreateAsync(NewCommentRequest request)
         {
             return TryExecuteAsync<CommentListItem>(async () =>
             {

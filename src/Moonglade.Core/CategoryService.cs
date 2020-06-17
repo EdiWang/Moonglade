@@ -27,22 +27,22 @@ namespace Moonglade.Core
             _moongladeAudit = moongladeAudit;
         }
 
-        public Task<Response<IReadOnlyList<Category>>> GetAllCategoriesAsync()
+        public Task<Response<IReadOnlyList<Category>>> GetAllAsync()
         {
             return TryExecuteAsync<IReadOnlyList<Category>>(async () =>
             {
-                var item = await _categoryRepository.SelectAsync(cat => new Category
+                var list = await _categoryRepository.SelectAsync(c => new Category
                 {
-                    Id = cat.Id,
-                    DisplayName = cat.DisplayName,
-                    RouteName = cat.RouteName,
-                    Note = cat.Note
+                    Id = c.Id,
+                    DisplayName = c.DisplayName,
+                    RouteName = c.RouteName,
+                    Note = c.Note
                 });
-                return new SuccessResponse<IReadOnlyList<Category>>(item);
+                return new SuccessResponse<IReadOnlyList<Category>>(list);
             });
         }
 
-        public Task<Response<Category>> GetCategoryAsync(string categoryName)
+        public Task<Response<Category>> GetAsync(string categoryName)
         {
             return TryExecuteAsync<Category>(async () =>
             {
@@ -60,7 +60,7 @@ namespace Moonglade.Core
             }, keyParameter: categoryName);
         }
 
-        public Task<Response<Category>> GetCategoryAsync(Guid categoryId)
+        public Task<Response<Category>> GetAsync(Guid categoryId)
         {
             return TryExecuteAsync<Category>(async () =>
             {
@@ -78,23 +78,7 @@ namespace Moonglade.Core
             }, keyParameter: categoryId);
         }
 
-        public Task<Response<IReadOnlyList<Category>>> GetCategoriesAsync()
-        {
-            return TryExecuteAsync<IReadOnlyList<Category>>(async () =>
-            {
-                var list = await _categoryRepository.SelectAsync(c => new Category
-                {
-                    Id = c.Id,
-                    DisplayName = c.DisplayName,
-                    RouteName = c.RouteName,
-                    Note = c.Note
-                });
-
-                return new SuccessResponse<IReadOnlyList<Category>>(list);
-            });
-        }
-
-        public Task<Response> CreateCategoryAsync(CreateCategoryRequest createCategoryRequest)
+        public Task<Response> CreateAsync(CreateCategoryRequest createCategoryRequest)
         {
             return TryExecuteAsync(async () =>
             {
@@ -139,7 +123,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> UpdateCategoryAsync(EditCategoryRequest editCategoryRequest)
+        public Task<Response> UpdateAsync(EditCategoryRequest editCategoryRequest)
         {
             return TryExecuteAsync(async () =>
             {

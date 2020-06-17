@@ -23,7 +23,7 @@ namespace Moonglade.Web.ViewComponents
         {
             try
             {
-                var cats = await _categoryService.GetAllCategoriesAsync();
+                var cats = await _categoryService.GetAllAsync();
                 var items = cats.Item.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName)).ToList();
                 var viewModel = new SubscriptionViewModel
                 {
