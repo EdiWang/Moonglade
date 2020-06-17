@@ -119,7 +119,7 @@ namespace Moonglade.Core
             }, keyParameter: postId);
         }
 
-        public Task<Response<Post>> GetPostAsync(Guid id)
+        public Task<Response<Post>> GetAsync(Guid id)
         {
             return TryExecuteAsync<Post>(async () =>
             {
@@ -208,14 +208,14 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<PostSlugMetaModel>> GetMetaAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlugSegmentModel>> GetSegmentAsync(int year, int month, int day, string slug)
         {
-            return TryExecuteAsync<PostSlugMetaModel>(async () =>
+            return TryExecuteAsync<PostSlugSegmentModel>(async () =>
             {
                 var date = new DateTime(year, month, day);
                 var spec = new PostSpec(date, slug);
 
-                var model = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugMetaModel
+                var model = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugSegmentModel
                 {
                     Title = post.Title,
                     PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
@@ -230,11 +230,11 @@ namespace Moonglade.Core
                                .ToArray()
                 });
 
-                return new SuccessResponse<PostSlugMetaModel>(model);
+                return new SuccessResponse<PostSlugSegmentModel>(model);
             });
         }
 
-        public Task<Response<PostSlugModel>> GetPostAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlugModel>> GetAsync(int year, int month, int day, string slug)
         {
             return TryExecuteAsync<PostSlugModel>(async () =>
             {
@@ -278,10 +278,10 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostMetaData>> GetMetaListAsync(PostPublishStatus postPublishStatus)
+        public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostPublishStatus postPublishStatus)
         {
             var spec = new PostSpec(postPublishStatus);
-            return _postRepository.SelectAsync(spec, p => new PostMetaData
+            return _postRepository.SelectAsync(spec, p => new PostSegment
             {
                 Id = p.Id,
                 Title = p.Title,
@@ -295,10 +295,10 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostMetaData>> GetInsightsAsync(PostInsightsType insightsType)
+        public Task<IReadOnlyList<PostSegment>> GetInsightsAsync(PostInsightsType insightsType)
         {
             var spec = new PostInsightsSpec(insightsType, 10);
-            return _postRepository.SelectAsync(spec, p => new PostMetaData
+            return _postRepository.SelectAsync(spec, p => new PostSegment
             {
                 Id = p.Id,
                 Title = p.Title,
@@ -340,7 +340,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<IReadOnlyList<PostListItem>> GetArchivedPostsAsync(int year, int month = 0)
+        public async Task<IReadOnlyList<PostListItem>> GetArchiveAsync(int year, int month = 0)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
@@ -365,7 +365,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public Task<Response<IReadOnlyList<PostListItem>>> GetPostsByTagAsync(int tagId)
+        public Task<Response<IReadOnlyList<PostListItem>>> GetByTagAsync(int tagId)
         {
             return TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
             {
@@ -387,7 +387,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response<PostEntity>> CreateNewPost(CreatePostRequest request)
+        public async Task<Response<PostEntity>> CreateAsync(CreatePostRequest request)
         {
             return await TryExecuteAsync<PostEntity>(async () =>
             {
@@ -493,7 +493,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Response<PostEntity>> EditPost(EditPostRequest request)
+        public async Task<Response<PostEntity>> UpdateAsync(EditPostRequest request)
         {
             return await TryExecuteAsync<PostEntity>(async () =>
             {
@@ -600,7 +600,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> RestoreDeletedPostAsync(Guid postId)
+        public Task<Response> RestoreDeletedAsync(Guid postId)
         {
             return TryExecuteAsync(async () =>
             {
@@ -638,7 +638,7 @@ namespace Moonglade.Core
             }, keyParameter: postId);
         }
 
-        public Task<Response> DeleteRecycledPostsAsync()
+        public Task<Response> DeleteRecycledAsync()
         {
             return TryExecuteAsync(async () =>
             {

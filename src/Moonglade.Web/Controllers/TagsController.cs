@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
         [Route("list/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> List(string normalizedName)
         {
-            var tagResponse = _tagService.GetTag(normalizedName);
+            var tagResponse = _tagService.Get(normalizedName);
             if (!tagResponse.IsSuccess)
             {
                 SetFriendlyErrorMessage();
@@ -52,7 +52,7 @@ namespace Moonglade.Web.Controllers
             }
 
             ViewBag.TitlePrefix = tagResponse.Item.TagName;
-            var postResponse = await _postService.GetPostsByTagAsync(tagResponse.Item.Id);
+            var postResponse = await _postService.GetByTagAsync(tagResponse.Item.Id);
             if (!postResponse.IsSuccess)
             {
                 SetFriendlyErrorMessage();
@@ -66,7 +66,7 @@ namespace Moonglade.Web.Controllers
         [Route("get-all-tag-names")]
         public async Task<IActionResult> GetAllTagNames()
         {
-            var tagNames = await _tagService.GetAllTagNamesAsync();
+            var tagNames = await _tagService.GetAllNamesAsync();
             return Json(tagNames.Item);
         }
 
@@ -74,7 +74,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var response = await _tagService.GetAllTagsAsync();
+            var response = await _tagService.GetAllAsync();
             return response.IsSuccess ? View("~/Views/Admin/ManageTags.cshtml", response.Item) : ServerError();
         }
 
@@ -82,7 +82,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("update")]
         public async Task<IActionResult> Update(int tagId, string newTagName)
         {
-            var response = await _tagService.UpdateTagAsync(tagId, newTagName);
+            var response = await _tagService.UpdateAsync(tagId, newTagName);
             return response.IsSuccess ? Json(new { tagId, newTagName }) : ServerError();
         }
 

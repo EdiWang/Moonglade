@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class PostMetaData
+    public class PostSegment
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

@@ -23,7 +23,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var list = await _postService.GetMetaListAsync(PostPublishStatus.Published);
+            var list = await _postService.ListSegmentAsync(PostPublishStatus.Published);
             return View(list);
         }
 
@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/draft")]
         public async Task<IActionResult> Draft()
         {
-            var list = await _postService.GetMetaListAsync(PostPublishStatus.Draft);
+            var list = await _postService.ListSegmentAsync(PostPublishStatus.Draft);
             return View(list);
         }
 
@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/recycle-bin")]
         public async Task<IActionResult> RecycleBin()
         {
-            var list = await _postService.GetMetaListAsync(PostPublishStatus.Deleted);
+            var list = await _postService.ListSegmentAsync(PostPublishStatus.Deleted);
             return View(list);
         }
 
@@ -55,7 +55,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var postResponse = await _postService.GetPostAsync(id);
+            var postResponse = await _postService.GetAsync(id);
             if (!postResponse.IsSuccess)
             {
                 return ServerError();
@@ -152,8 +152,8 @@ namespace Moonglade.Web.Controllers
                     }
 
                     var response = model.PostId == Guid.Empty ?
-                        await _postService.CreateNewPost(request) :
-                        await _postService.EditPost(request);
+                        await _postService.CreateAsync(request) :
+                        await _postService.UpdateAsync(request);
 
                     if (response.IsSuccess)
                     {
@@ -194,7 +194,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/restore")]
         public async Task<IActionResult> Restore(Guid postId)
         {
-            var response = await _postService.RestoreDeletedPostAsync(postId);
+            var response = await _postService.RestoreDeletedAsync(postId);
             return response.IsSuccess ? Json(postId) : ServerError();
         }
 
@@ -223,7 +223,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/empty-recycle-bin")]
         public async Task<IActionResult> EmptyRecycleBin()
         {
-            await _postService.DeleteRecycledPostsAsync();
+            await _postService.DeleteRecycledAsync();
             return RedirectToAction("RecycleBin");
         }
 

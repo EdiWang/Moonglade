@@ -33,7 +33,7 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public async Task<PingbackServiceResponse> ProcessReceivedPingbackAsync(HttpContext context)
+        public async Task<PingbackServiceResponse> ProcessReceivedPayloadAsync(HttpContext context)
         {
             var response = await _pingbackReceiver.ValidatePingRequest(context);
             if (response == PingbackValidationResult.ValidPingRequest)

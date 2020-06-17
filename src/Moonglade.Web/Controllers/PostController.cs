@@ -72,7 +72,7 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            var rsp = await _postService.GetPostAsync(year, month, day, slug);
+            var rsp = await _postService.GetAsync(year, month, day, slug);
             if (!rsp.IsSuccess) return ServerError(rsp.Message);
 
             var post = rsp.Item;
@@ -105,7 +105,7 @@ namespace Moonglade.Web.Controllers
             switch (raw.ToLower())
             {
                 case "meta":
-                    var rspMeta = await _postService.GetMetaAsync(year, month, day, slug);
+                    var rspMeta = await _postService.GetSegmentAsync(year, month, day, slug);
                     return !rspMeta.IsSuccess
                         ? ServerError(rspMeta.Message)
                         : Json(rspMeta.Item);

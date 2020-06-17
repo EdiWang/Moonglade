@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
                 return Forbid();
             }
 
-            var response = await _pingbackService.ProcessReceivedPingbackAsync(HttpContext);
+            var response = await _pingbackService.ProcessReceivedPayloadAsync(HttpContext);
             Logger.LogInformation($"Pingback Processor Response: {response.ToString()}");
             return new PingbackResult(response);
         }

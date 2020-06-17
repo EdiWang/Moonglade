@@ -68,7 +68,7 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task RefreshFeedFileForPostAsync(bool isAtom)
+        public async Task RefreshFeedFileAsync(bool isAtom)
         {
             Logger.LogInformation("Start refreshing feed for posts.");
             var itemCollection = await GetPostsAsFeedItemsAsync();

@@ -17,7 +17,7 @@ namespace Moonglade.Core
     public static class Utils
     {
         public static string AppVersion =>
-            Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
         public static async Task<string> GetThemeColorAsync(string webRootPath, string currentTheme)
         {

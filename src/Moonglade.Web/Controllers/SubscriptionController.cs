@@ -34,7 +34,7 @@ namespace Moonglade.Web.Controllers
 
                 if (string.IsNullOrWhiteSpace(routeName))
                 {
-                    await _syndicationFeedService.RefreshFeedFileForPostAsync(false);
+                    await _syndicationFeedService.RefreshFeedFileAsync(false);
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogInformation($"Atom file not found, writing new file on {atomDataFile}");
 
-                await _syndicationFeedService.RefreshFeedFileForPostAsync(true);
+                await _syndicationFeedService.RefreshFeedFileAsync(true);
 
                 if (!System.IO.File.Exists(atomDataFile))
                 {

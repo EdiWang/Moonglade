@@ -21,7 +21,7 @@ namespace Moonglade.Model
         public IList<Tag> Tags { get; set; }
     }
 
-    public class PostSlugMetaModel
+    public class PostSlugSegmentModel
     {
         public string Title { get; set; }
         public DateTime PubDateUtc { get; set; }
