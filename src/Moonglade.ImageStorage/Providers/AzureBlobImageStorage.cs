@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 
-namespace Moonglade.ImageStorage.AzureBlob
+namespace Moonglade.ImageStorage.Providers
 {
     public class AzureBlobImageStorage : IBlogImageStorage
     {

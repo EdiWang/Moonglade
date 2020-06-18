@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 
-namespace Moonglade.ImageStorage.FileSystem
+namespace Moonglade.ImageStorage.Providers
 {
     public class FileSystemImageStorage : IBlogImageStorage
     {

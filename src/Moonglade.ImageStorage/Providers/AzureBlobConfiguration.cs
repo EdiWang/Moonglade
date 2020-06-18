@@ -1,4 +1,4 @@
-﻿namespace Moonglade.ImageStorage.AzureBlob
+﻿namespace Moonglade.ImageStorage.Providers
 {
     public class AzureBlobConfiguration
     {

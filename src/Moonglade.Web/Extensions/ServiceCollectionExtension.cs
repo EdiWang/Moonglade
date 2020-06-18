@@ -10,8 +10,7 @@ using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DateTimeOps;
 using Moonglade.ImageStorage;
-using Moonglade.ImageStorage.AzureBlob;
-using Moonglade.ImageStorage.FileSystem;
+using Moonglade.ImageStorage.Providers;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback;
 
