@@ -10,12 +10,14 @@ using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Web.Authentication;
+using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers
 {
     [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
     [Route("api/graph")]
     [ApiController]
+    [AppendMoongladeVersion]
     public class BlogGraphController : ControllerBase
     {
         private readonly ILogger<BlogGraphController> _logger;
