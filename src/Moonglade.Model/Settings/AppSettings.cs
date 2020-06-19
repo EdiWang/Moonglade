@@ -10,6 +10,7 @@
         public bool AllowScriptsInCustomPage { get; set; }
         public bool WarnExternalLink { get; set; }
         public bool ShowAdminLoginButton { get; set; }
+        public bool EnableWebApi { get; set; }
         public bool EnableAudit { get; set; }
         public bool EnableOpenGraph { get; set; }
         public bool EnablePostRawEndpoint { get; set; }

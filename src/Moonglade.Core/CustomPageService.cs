@@ -62,7 +62,8 @@ namespace Moonglade.Core
                     Id = page.Id,
                     CreateOnUtc = page.CreateOnUtc,
                     RouteName = page.Slug,
-                    Title = page.Title
+                    Title = page.Title,
+                    IsPublished = page.IsPublished
                 });
 
                 return new SuccessResponse<IReadOnlyList<CustomPageSegment>>(list);

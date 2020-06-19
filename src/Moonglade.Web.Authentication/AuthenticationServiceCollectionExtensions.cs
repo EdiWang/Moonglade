@@ -27,11 +27,11 @@ namespace Moonglade.Web.Authentication
                         option.TenantId = authentication.AzureAd.TenantId;
                     }).AddSingleton<IConfigureOptions<OpenIdConnectOptions>, ConfigureAzureOptions>();
 
-                    services.AddAuthentication(sharedOptions =>
+                    services.AddAuthentication(options =>
                     {
-                        sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                    }).AddOpenIdConnect().AddCookie();
+                        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    }).AddOpenIdConnect().AddCookie().AddApiKeySupport(options => { });
 
                     break;
                 case AuthenticationProvider.Local:
@@ -41,8 +41,7 @@ namespace Moonglade.Web.Authentication
                                 options.AccessDeniedPath = "/admin/accessdenied";
                                 options.LoginPath = "/admin/signin";
                                 options.LogoutPath = "/admin/signout";
-                            });
-
+                            }).AddApiKeySupport(options => { }); ;
                     break;
                 case AuthenticationProvider.None:
                     break;

@@ -10,6 +10,8 @@ namespace Moonglade.Model
 
         public string RouteName { get; set; }
 
+        public bool IsPublished { get; set; }
+
         public DateTime CreateOnUtc { get; set; }
     }
 }

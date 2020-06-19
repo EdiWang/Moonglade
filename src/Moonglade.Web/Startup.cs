@@ -132,7 +132,7 @@ namespace Moonglade.Web
         {
             _logger = logger;
             var enforceHttps = bool.Parse(_appSettings["EnforceHttps"]);
-            var allowExtScripts = bool.Parse(_appSettings["AllowExternalScripts"]);
+            var allowExtScripts = bool.Parse(_appSettings[nameof(AppSettings.AllowExternalScripts)]);
 
             // Support Chinese contents
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -232,6 +232,20 @@ namespace Moonglade.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api")
+                    && !bool.Parse(_appSettings[nameof(AppSettings.EnableWebApi)]))
+                {
+                    context.Response.StatusCode = StatusCodes.Status501NotImplemented;
+                    await context.Response.WriteAsync("API is disabled", Encoding.UTF8);
+                }
+                else
+                {
+                    await next.Invoke();
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {
