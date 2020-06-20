@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
@@ -33,18 +32,12 @@ namespace Moonglade.Core.Notification
             _blogConfig = blogConfig;
             if (settings.Value.Notification.Enabled)
             {
-                if (Uri.IsWellFormedUriString(settings.Value.Notification.ApiEndpoint, UriKind.Absolute))
+                if (Uri.IsWellFormedUriString(settings.Value.Notification.AzureFunctionEndpoint, UriKind.Absolute))
                 {
-                    if (!settings.Value.Notification.ApiEndpoint.EndsWith("/"))
-                    {
-                        throw new FormatException($"{nameof(settings.Value.Notification.ApiEndpoint)} must end with a slash '/'.");
-                    }
-
-                    httpClient.BaseAddress = new Uri(settings.Value.Notification.ApiEndpoint);
+                    httpClient.BaseAddress = new Uri(settings.Value.Notification.AzureFunctionEndpoint);
                 }
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Utils.AppVersion}");
-                httpClient.DefaultRequestHeaders.Add("X-Api-Key", settings.Value.Notification.ApiKey);
                 _httpClient = httpClient;
 
                 if (_blogConfig.NotificationSettings.EnableEmailSending)
@@ -71,11 +64,7 @@ namespace Moonglade.Core.Notification
                 if (response.IsSuccessStatusCode)
                 {
                     var dataStr = await response.Content.ReadAsStringAsync();
-                    var data = JsonSerializer.Deserialize<Response>(dataStr, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-                    return data;
+                    return new SuccessResponse { Message = dataStr };
                 }
 
                 return new FailedResponse((int)ResponseFailureCode.ApiError, response.StatusCode.ToString());

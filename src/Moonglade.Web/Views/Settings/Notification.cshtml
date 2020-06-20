@@ -13,7 +13,7 @@
 else
 {
     <div class="alert alert-info">
-        @Localizer["Current Endpoint:"] @Settings.Value.Notification.ApiEndpoint
+        @Localizer["Current Endpoint:"] @(new Uri(Settings.Value.Notification.AzureFunctionEndpoint).Host)
     </div>
 
     <form id="form-settings" asp-controller="Settings" asp-action="Notification"
