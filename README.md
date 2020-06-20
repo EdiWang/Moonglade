@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master)
 
-The [**.NET Core**](https://dotnet.microsoft.com/) blog system of [**edi.wang**](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enable most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
+The [.NET Core](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enable most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v3.png)
 
@@ -94,19 +94,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 }
 ```
 
-#### 📂 File System (Alternative)
-
-```json
-"Provider": "filesystem",
-"FileSystemSettings": {
-  "Path": "${basedir}\\UploadedImages"
-}
-```
-The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the website's current directory. Storing images files under website directory is **NOT** recommended. 
-
-#### ☁ CDN
-
-If ```GetImageByCDNRedirect``` is set to ```true```, the blog will get images from client browser using a 302 redirect. This is especially useful when you have a CDN for your image resources. 
+When configured the image storage to use Azure Blob, you can take advantage of CDN for your image resources. Set ```GetImageByCDNRedirect``` to ```true```, the blog will get images from client browser using a 302 redirect. 
 
 ```json
 "CDNSettings": {
@@ -115,15 +103,27 @@ If ```GetImageByCDNRedirect``` is set to ```true```, the blog will get images fr
 }
 ```
 
+#### 📂 File System (Not Recommended)
+
+You can also choose File System for image storage, but this will make your site root not read-only, which would be a potential security issue. And it will be harder for you to backup or update the website.
+
+```json
+"Provider": "filesystem",
+"FileSystemSettings": {
+  "Path": "${basedir}\\UploadedImages"
+}
+```
+The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the website's current directory. 
+
+
 ### 📧 Email Notification
 
-If you need email notification for new comments, new replies and pingbacks, you have to setup the Moonglade.Notification API first. See https://github.com/EdiWang/Moonglade.Notification for instructions.
+If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Notification Azure Function](https://github.com/EdiWang/Moonglade.Notification) first, and then set the values in ```appsettings.[env].json``` or in your runtime environment variables.
 
 ```json
 "Notification": {
   "Enabled": true,
-  "ApiEndpoint": "{PROD-ENV-VARIABLE}",
-  "ApiKey": "{PROD-ENV-VARIABLE}"
+  "AzureFunctionEndpoint": "{PROD-ENV-VARIABLE}"
 }
 ```
 
