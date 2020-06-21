@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Moonglade.OpmlFileWriter
+namespace Moonglade.Syndication
 {
     public interface IFileSystemOpmlWriter
     {

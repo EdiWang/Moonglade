@@ -1,4 +1,4 @@
-﻿namespace Moonglade.OpmlFileWriter
+﻿namespace Moonglade.Syndication
 {
     public class OpmlCategoryInfo
     {

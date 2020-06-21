@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
-using Moonglade.OpmlFileWriter;
+using Moonglade.Syndication;
 
 namespace Moonglade.Web.Controllers
 {

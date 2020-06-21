@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Moonglade.OpmlFileWriter
+namespace Moonglade.Syndication
 {
     public class FileSystemOpmlWriter : IFileSystemOpmlWriter
     {

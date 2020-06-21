@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Moonglade.OpmlFileWriter
+namespace Moonglade.Syndication
 {
     public class OpmlInfo
     {
