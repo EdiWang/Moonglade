@@ -17,8 +17,5 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Data.Entities\Moonglade.Data.Entities.csproj" />
-  </ItemGroup>
 
 </Project>
