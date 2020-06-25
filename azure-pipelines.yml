@@ -42,13 +42,13 @@ jobs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
       artifactName: 'Drop'
 
-- job: Docker
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - task: Docker@2
-    displayName: 'Build and Push'
-    inputs:
-      containerRegistry: 'ediwang_dockerhub'
-      repository: ediwang/moonglade
-      tags: latest
+# - job: Docker
+#   pool:
+#     vmImage: 'ubuntu-latest'
+#   steps:
+#   - task: Docker@2
+#     displayName: 'Build and Push'
+#     inputs:
+#       containerRegistry: 'ediwang_dockerhub'
+#       repository: ediwang/moonglade
+#       tags: latest
