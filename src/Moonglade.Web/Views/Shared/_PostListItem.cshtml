@@ -3,7 +3,7 @@
 @model Moonglade.Model.PostListItem
 @inject IDateTimeResolver DateTimeResolver
 
-<article class="article-post-summary">
+<article class="article-post-summary" lang="@Model.LangCode">
     <div class="post-date-box d-none d-md-block">
         <div class="post-date-day">
             @DateTimeResolver.GetDateTimeWithUserTZone(Model.PubDateUtc).Day.ToString("00")
