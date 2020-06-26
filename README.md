@@ -39,7 +39,7 @@ Build and run ```./src/Moonglade.sln```
 
 ## ⚙ Configuration
 
-> Below section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
+> This section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
 **For production, it is strongly recommended to use Environment Variables over appsetting.json file.**
 
@@ -131,17 +131,24 @@ If you need email notification for new comments, new replies and pingbacks, you 
 
 Key | Data Type | Description
 --- | --- | ---
-Editor | ```string``` | HTML / Markdown
-CaptchaSettings:ImageWidth | ```int``` | Pixel Width of Captcha Image
-CaptchaSettings:ImageHeight | ```int``` | Pixel Height of Captcha Image
-PostAbstractWords | ```int``` | How may words to show in post list abstract
-ImageCacheSlidingExpirationMinutes | ```int``` | Time for cached images to expire
-EnforceHttps | ```bool``` | Force website use HTTPS
-AllowExternalScripts | ```bool``` | If CSP should enable external JavaScript links
-AllowScriptsInCustomPage | ```bool``` | Allow JavaScript in Page content or not
-EnableAudit | ```bool``` | Enable Audit Log or not
-EnablePostRawEndpoint | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
-
+```AllowExternalScripts``` | ```bool``` | If CSP should enable external JavaScript links
+```AllowScriptsInCustomPage``` | ```bool``` | Allow JavaScript in Page content or not
+```CaptchaSettings:ImageWidth``` | ```int``` | Pixel Width of Captcha Image
+```CaptchaSettings:ImageHeight``` | ```int``` | Pixel Height of Captcha Image
+```DefaultLangCode``` | ```string``` | Default language code for editing posts (e.g. ```en-us```)
+```Editor``` | ```string``` | ```HTML``` or ```Markdown```
+```EnforceHttps``` | ```bool``` | Force website use HTTPS
+```EnableAudit``` | ```bool``` | Enable Audit Log or not
+```EnableOpenGraph``` | ```bool``` | Enable Open Graph
+```EnablePostRawEndpoint``` | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
+```EnableWebApi``` | ```bool``` | Enable REST API
+```ImageCacheSlidingExpirationMinutes``` | ```int``` | Time for cached images to expire
+```PostAbstractWords``` | ```int``` | How may words to show in post list abstract
+```ShowAdminLoginButton``` | ```bool``` | Show 'Admin Login' button under side bar
+```SystemNavMenus:Categories``` | ```bool``` | Show 'Categories' Menu
+```SystemNavMenus:Tags``` | ```bool``` | Show 'Tags' Menu
+```SystemNavMenus:Archive``` | ```bool``` | Show 'Archive' Menu
+```WarnExternalLink``` | ```bool``` | Warn user when clicking an external URL in a post
 
 ## 🎉 Blog Protocols or Standards
 

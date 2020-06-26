@@ -183,7 +183,8 @@ namespace Moonglade.Core
                         }).ToList(),
                     PostId = post.Id,
                     IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
-                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc
+                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                    LangCode = post.PostPublish.ContentLanguageCode
                 });
 
                 if (null != postSlugModel)
@@ -266,6 +267,7 @@ namespace Moonglade.Core
                     CommentEnabled = post.CommentEnabled,
                     IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                    LangCode = post.PostPublish.ContentLanguageCode,
                     CommentCount = post.Comment.Count(c => c.IsApproved)
                 });
 
@@ -332,6 +334,7 @@ namespace Moonglade.Core
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                LangCode = p.PostPublish.ContentLanguageCode,
                 Tags = p.PostTag.Select(pt => new Tag
                 {
                     NormalizedTagName = pt.Tag.NormalizedName,
@@ -360,7 +363,8 @@ namespace Moonglade.Core
                 Title = p.Title,
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault()
+                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                LangCode = p.PostPublish.ContentLanguageCode
             });
             return list;
         }
@@ -380,7 +384,8 @@ namespace Moonglade.Core
                         Title = p.Post.Title,
                         Slug = p.Post.Slug,
                         ContentAbstract = p.Post.ContentAbstract,
-                        PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault()
+                        PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault(),
+                        LangCode = p.Post.PostPublish.ContentLanguageCode
                     });
 
                 return new SuccessResponse<IReadOnlyList<PostListItem>>(posts);

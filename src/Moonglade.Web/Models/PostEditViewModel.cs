@@ -64,7 +64,6 @@ namespace Moonglade.Web.Models
         public PostEditViewModel()
         {
             PostId = Guid.Empty;
-            ContentLanguageCode = "en-us";
         }
     }
 }
