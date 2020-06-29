@@ -4,11 +4,9 @@
 
 The [.NET Core](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enable most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
 
-![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v3.png)
+![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v4.png)
 
 ## 🛠 Build and Run
-
-> The system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
 
 Tools | Alternative
 --- | ---
@@ -36,6 +34,36 @@ Update the ```MoongladeDatabase``` as your database connection string in **appse
 Build and run ```./src/Moonglade.sln```
 - Default Admin Username: ```admin```
 - Default Admin Password: ```admin123```
+
+### ☁ Azure Deployment
+
+> The system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
+
+This diagram shows a recommended full feature Azure deployment for Moonglade. It doesn't come out of the box, you have to manually setup every piece of it.
+
+![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-visio.png)
+
+If you just want to quickly get it running on Azure without knowing every detail. You can have a minimal deployment that use Docker Container to run on App Service (Linux) by executing the quick start deployment script in PowerShell Core:
+
+```./Azure-Deployment/Deploy.ps1```
+
+Please edit the script file and replace these items with your own values:
+
+```powershell
+# Replace with your own values
+$subscriptionName = "Microsoft MVP"
+$rsgName = "Moonglade-Test-RSG"
+$regionName = "East Asia"
+$webAppName = "moonglade-test-web"
+$aspName = "moonglade-test-plan"
+$storageAccountName = "moongladeteststorage"
+$storageContainerName = "moongladetestimages"
+$sqlServerName = "moongladetestsqlsvr"
+$sqlServerUsername = "moonglade"
+$sqlServerPassword = "DotNetM00n8!@d3"
+$sqlDatabaseName = "moonglade-test-db"
+$cdnProfileName = "moonglade-test-cdn"
+```
 
 ## ⚙ Configuration
 
