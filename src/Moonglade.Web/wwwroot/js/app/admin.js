@@ -141,19 +141,21 @@ var postEditor = {
                 images_upload_credentials: true,
                 content_css: '/css/tinymce-editor-bs-bundle.min.css',
                 codesample_languages: [
-                    { text: 'C#', value: 'csharp' },
                     { text: 'Bash', value: 'bash' },
-                    { text: 'HTML/XML', value: 'markup' },
-                    { text: 'JavaScript', value: 'javascript' },
-                    { text: 'CSS', value: 'css' },
-                    { text: 'PHP', value: 'php' },
-                    { text: 'Ruby', value: 'ruby' },
-                    { text: 'Python', value: 'python' },
-                    { text: 'Json', value: 'json' },
+                    { text: 'C#', value: 'csharp' },
                     { text: 'C', value: 'c' },
                     { text: 'C++', value: 'cpp' },
-                    { text: 'Visual Basic', value: 'vb' },
-                    { text: 'PowerShell', value: 'powershell' }
+                    { text: 'CSS', value: 'css' },
+                    { text: 'F#', value: 'fsharp' },
+                    { text: 'HTML/XML', value: 'markup' },
+                    { text: 'JavaScript', value: 'javascript' },
+                    { text: 'Json', value: 'json' },
+                    { text: 'PowerShell', value: 'powershell' },
+                    { text: 'Python', value: 'python' },
+                    { text: 'PHP', value: 'php' },
+                    { text: 'Ruby', value: 'ruby' },
+                    { text: 'SQL', value: 'sql' },
+                    { text: 'Visual Basic', value: 'vb' }
                 ],
                 setup: function (editor) {
                     editor.on('NodeChange', function (e) {
