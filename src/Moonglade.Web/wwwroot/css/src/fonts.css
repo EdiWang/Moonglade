@@ -7,7 +7,7 @@
 
 @font-face {
     font-family: 'icomoonglade';
-    src: url('/webfonts/icomoonglade.ttf?996007') format('truetype'), url('/webfonts/icomoonglade.woff?996007') format('woff'), url('/webfonts/icomoonglade.svg?996007#icomoonglade') format('svg');
+    src: url('/webfonts/icomoonglade.ttf?251404') format('truetype'), url('/webfonts/icomoonglade.woff?251404') format('woff'), url('/webfonts/icomoonglade.svg?251404#icomoonglade') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -207,8 +207,40 @@
     content: "\eac9";
 }
 
+.icon-home1:before {
+    content: "\e901";
+}
+
+.icon-book1:before {
+    content: "\e920";
+}
+
+.icon-bubble:before {
+    content: "\e96b";
+}
+
 .icon-user:before {
     content: "\e971";
+}
+
+.icon-user-tie:before {
+    content: "\e976";
+}
+
+.icon-key:before {
+    content: "\e98d";
+}
+
+.icon-trophy:before {
+    content: "\e99e";
+}
+
+.icon-lab:before {
+    content: "\e9aa";
+}
+
+.icon-power:before {
+    content: "\e9b5";
 }
 
 .icon-list:before {
