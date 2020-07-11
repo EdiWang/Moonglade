@@ -1,11 +1,18 @@
 ﻿@model PostSlugViewModelWrapper
+@{
+    bool isDNT = (bool)Context.Items["DNT"];
+}
+
 <hr />
 <div class="post-slug-actions clearfix mb-4">
     <div class="float-right">
-        <button class="btn btn-round btn-outline-success btn-ratings">
-            <span class="icon-heart"></span>
-            @Localizer["Like"] (<span class="likehits-num">@Model.PostModel.Likes</span>)
-        </button>
+        @if (!isDNT)
+        {
+            <button class="btn btn-round btn-outline-success btn-ratings">
+                <span class="icon-heart"></span>
+                @Localizer["Like"] (<span class="likehits-num">@Model.PostModel.Likes</span>)
+            </button>
+        }
 
         <button class="btn btn-round btn-outline-secondary" data-toggle="modal" data-target="#qrcode-window">
             <span class="icon-qrcode"></span>
