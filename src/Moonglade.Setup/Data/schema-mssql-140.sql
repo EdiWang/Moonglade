@@ -115,6 +115,7 @@ CREATE TABLE [CustomPage](
 	[HtmlContent] NVARCHAR(MAX) NULL,
 	[CssContent] NVARCHAR(MAX) NULL,
 	[HideSidebar] BIT NOT NULL,
+	[IsPublished] BIT NOT NULL,
 	[CreateOnUtc] DATETIME NOT NULL,
 	[UpdatedOnUtc] DATETIME NULL
 )
