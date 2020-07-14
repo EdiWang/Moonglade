@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -19,6 +20,7 @@ namespace Moonglade.Core
     {
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IMemoryCache _cache;
 
         #region Repository Objects
 
@@ -42,7 +44,8 @@ namespace Moonglade.Core
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
             IDateTimeResolver dateTimeResolver,
-            IMoongladeAudit moongladeAudit) : base(logger, settings)
+            IMoongladeAudit moongladeAudit,
+            IMemoryCache cache) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -53,6 +56,7 @@ namespace Moonglade.Core
             _postCategoryRepository = postCategoryRepository;
             _dateTimeResolver = dateTimeResolver;
             _moongladeAudit = moongladeAudit;
+            _cache = cache;
         }
 
         public Response<int> CountVisiblePosts()
@@ -241,42 +245,56 @@ namespace Moonglade.Core
             {
                 var date = new DateTime(year, month, day);
                 var spec = new PostSpec(date, slug);
-                var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugModel
-                {
-                    Title = post.Title,
-                    Abstract = post.ContentAbstract,
-                    PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
 
-                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
+                var pid = await _postRepository.SelectFirstOrDefaultAsync(spec, p => p.Id);
+                if (pid != Guid.Empty)
+                {
+                    var psm = await _cache.GetOrCreateAsync($"post-{pid}", async entry =>
                     {
-                        DisplayName = p.DisplayName,
-                        RouteName = p.RouteName
-                    }).ToList(),
+                        entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Post"]);
 
-                    Content = post.PostContent,
-                    Hits = post.PostExtension.Hits,
-                    Likes = post.PostExtension.Likes,
-
-                    Tags = post.PostTag.Select(pt => pt.Tag)
-                        .Select(p => new Tag
+                        var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugModel
                         {
-                            NormalizedTagName = p.NormalizedName,
-                            TagName = p.DisplayName
-                        }).ToList(),
-                    PostId = post.Id,
-                    CommentEnabled = post.CommentEnabled,
-                    IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
-                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
-                    LangCode = post.PostPublish.ContentLanguageCode,
-                    CommentCount = post.Comment.Count(c => c.IsApproved)
-                });
+                            Title = post.Title,
+                            Abstract = post.ContentAbstract,
+                            PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
 
-                if (null != postSlugModel)
-                {
-                    postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
+                            Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
+                            {
+                                DisplayName = p.DisplayName,
+                                RouteName = p.RouteName
+                            }).ToList(),
+
+                            Content = post.PostContent,
+                            Hits = post.PostExtension.Hits,
+                            Likes = post.PostExtension.Likes,
+
+                            Tags = post.PostTag.Select(pt => pt.Tag)
+                                .Select(p => new Tag
+                                {
+                                    NormalizedTagName = p.NormalizedName,
+                                    TagName = p.DisplayName
+                                }).ToList(),
+                            PostId = post.Id,
+                            CommentEnabled = post.CommentEnabled,
+                            IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
+                            LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                            LangCode = post.PostPublish.ContentLanguageCode,
+                            CommentCount = post.Comment.Count(c => c.IsApproved)
+                        });
+
+                        if (null != postSlugModel)
+                        {
+                            postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
+                        }
+
+                        return postSlugModel;
+                    });
+
+                    return new SuccessResponse<PostSlugModel>(psm);
                 }
 
-                return new SuccessResponse<PostSlugModel>(postSlugModel);
+                return new SuccessResponse<PostSlugModel>(null);
             });
         }
 
@@ -601,6 +619,7 @@ namespace Moonglade.Core
                     isNewPublish ? AuditEventId.PostPublished : AuditEventId.PostUpdated,
                     $"Post updated, id: {postModel.Id}");
 
+                _cache.Remove($"post-{request.Id}");
                 return new SuccessResponse<PostEntity>(postModel);
             });
         }
@@ -616,6 +635,7 @@ namespace Moonglade.Core
                 await _postPublishRepository.UpdateAsync(pp);
                 await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
 
+                _cache.Remove($"post-{postId}");
                 return new SuccessResponse();
             }, keyParameter: postId);
         }
@@ -639,6 +659,7 @@ namespace Moonglade.Core
                     await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
                 }
 
+                _cache.Remove($"post-{postId}");
                 return new SuccessResponse();
             }, keyParameter: postId);
         }
@@ -652,6 +673,10 @@ namespace Moonglade.Core
                 await _postRepository.DeleteAsync(posts);
                 await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.EmptyRecycleBin, "Emptied Recycle Bin.");
 
+                foreach (var guid in posts.Select(p => p.Id))
+                {
+                    _cache.Remove($"post-{guid}");
+                }
                 return new SuccessResponse();
             });
         }

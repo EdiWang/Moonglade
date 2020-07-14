@@ -73,7 +73,7 @@ namespace Moonglade.Web.Controllers
                 {
                     Logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
-                    entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.ImageCacheSlidingExpirationMinutes);
+                    entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Image"]);
                     var imgBytesResponse = await _imageStorage.GetAsync(filename);
                     return imgBytesResponse;
                 });

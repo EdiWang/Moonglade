@@ -1,11 +1,13 @@
-﻿namespace Moonglade.Model.Settings
+﻿using System.Collections.Generic;
+
+namespace Moonglade.Model.Settings
 {
     public class AppSettings
     {
         public EditorChoice Editor { get; set; }
         public CaptchaSettings CaptchaSettings { get; set; }
         public int PostAbstractWords { get; set; }
-        public int ImageCacheSlidingExpirationMinutes { get; set; }
+        public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
         public string DefaultLangCode { get; set; }
         public bool AllowExternalScripts { get; set; }
         public bool AllowScriptsInCustomPage { get; set; }
