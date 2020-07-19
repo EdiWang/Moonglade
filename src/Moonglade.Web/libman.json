@@ -68,14 +68,6 @@
     },
     {
       "provider": "unpkg",
-      "library": "inline-attachment@2.0.3",
-      "destination": "wwwroot/lib/inline-attachment/",
-      "files": [
-        "src/inline-attachment.js"
-      ]
-    },
-    {
-      "provider": "unpkg",
       "library": "bs-custom-file-input@1.3.4",
       "destination": "wwwroot/lib/bs-custom-file-input/",
       "files": [
@@ -94,7 +86,7 @@
     },
     {
       "provider": "unpkg",
-      "library": "jquery-validation@1.19.1",
+      "library": "jquery-validation@1.19.2",
       "destination": "wwwroot/lib/jquery-validation/",
       "files": [
         "dist/jquery.validate.js",
