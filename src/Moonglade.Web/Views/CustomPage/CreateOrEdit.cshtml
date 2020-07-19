@@ -116,12 +116,10 @@
     <input type="hidden" asp-for="Id" />
     <div class="row">
         <div class="col-md-9 col-xl-10">
-            <input type="text" asp-for="Title" class="form-control form-control-lg" placeholder="Title" />
+            <input type="text" asp-for="Title" class="form-control form-control-lg mb-1" placeholder="Title" />
             <div>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-
-            <hr />
 
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
@@ -131,12 +129,6 @@
             </div>
             <div>
                 <span asp-validation-for="Slug" class="text-danger"></span>
-            </div>
-
-            <div class="mt-2">
-                <label asp-for="MetaDescription" class="control-label"></label>
-                <textarea asp-for="MetaDescription" class="form-control"></textarea>
-                <span asp-validation-for="MetaDescription" class="text-danger"></span>
             </div>
 
             <div>
@@ -192,6 +184,11 @@
                         </div>
                     </li>
                 </ul>
+                <div class="card-body">
+                    <label asp-for="MetaDescription" class="control-label"></label>
+                    <textarea asp-for="MetaDescription" class="form-control"></textarea>
+                    <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                </div>
             </div>
         </div>
     </div>
