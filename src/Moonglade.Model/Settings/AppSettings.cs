@@ -37,20 +37,4 @@ namespace Moonglade.Model.Settings
             Notification = new NotificationSettings();
         }
     }
-
-    public class SystemNavMenus
-    {
-        public bool Categories { get; set; }
-
-        public bool Tags { get; set; }
-
-        public bool Archive { get; set; }
-    }
-
-    public enum EditorChoice
-    {
-        None = 0,
-        HTML = 1,
-        Markdown = 2
-    }
 }
