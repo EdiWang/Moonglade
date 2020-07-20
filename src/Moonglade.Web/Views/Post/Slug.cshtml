@@ -12,7 +12,7 @@
 @section keywords {
     @if (Model.PostModel.Tags.Count > 0)
     {
-        <meta name="keywords" content="@string.Join(", ", Model.PostModel.Tags.Select(t => t.NormalizedTagName))" />
+        <meta name="keywords" content="@string.Join(", ", Model.PostModel.Tags.Select(t => t.NormalizedName))" />
     }
 }
 
@@ -148,7 +148,7 @@
                             {
                                 <a asp-controller="Tags"
                                    asp-action="List"
-                                   asp-route-normalizedName="@item.NormalizedTagName">@item.TagName</a>
+                                   asp-route-normalizedName="@item.NormalizedName">@item.DisplayName</a>
                             }
                         </span>
                     }
@@ -208,7 +208,7 @@
                 {
                     <a asp-controller="Tags"
                        asp-action="List"
-                       asp-route-normalizedName="@item.NormalizedTagName">@item.TagName</a>
+                       asp-route-normalizedName="@item.NormalizedName">@item.DisplayName</a>
                 }
             </span>
         }

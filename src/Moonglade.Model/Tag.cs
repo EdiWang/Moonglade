@@ -4,13 +4,13 @@
     {
         public int Id { get; set; }
 
-        public string TagName { get; set; }
+        public string DisplayName { get; set; }
 
-        public string NormalizedTagName { get; set; }
+        public string NormalizedName { get; set; }
     }
 
-    public class TagCountInfo : Tag
+    public class DegreeTag : Tag
     {
-        public int TagCount { get; set; }
+        public int Degree { get; set; }
     }
 }

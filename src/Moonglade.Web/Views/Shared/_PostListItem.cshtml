@@ -35,9 +35,9 @@
                 {
                     <a asp-controller="Tags"
                        asp-action="List"
-                       asp-route-normalizedName="@tag.NormalizedTagName"
+                       asp-route-normalizedName="@tag.NormalizedName"
                        class="post-summary-tag">
-                        @tag.TagName
+                        @tag.DisplayName
                     </a>
                 }
             </div>

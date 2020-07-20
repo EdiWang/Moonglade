@@ -3,7 +3,7 @@
 }
 
 @using System.Web
-@model IReadOnlyList<Moonglade.Model.TagCountInfo>
+@model IReadOnlyList<Moonglade.Model.DegreeTag>
 
 @functions {
     private static int Weight(double weightPercent)
@@ -50,12 +50,12 @@ else
 
     if (Model.Any())
     {
-        var tagMax = Model.Select(p => p.TagCount).Max();
+        var tagMax = Model.Select(p => p.Degree).Max();
 
         <ul class="list-unstyled tagCloud">
-            @foreach (var tag in Model.OrderBy(t => t.TagName))
+            @foreach (var tag in Model.OrderBy(t => t.DisplayName))
             {
-                var weightPercent = Convert.ToInt32(tag.TagCount) * 1.0 / Convert.ToInt32(tagMax) * 100;
+                var weightPercent = Convert.ToInt32(tag.Degree) * 1.0 / Convert.ToInt32(tagMax) * 100;
                 var weight = Weight(weightPercent);
 
                 if (weight >= 0)
@@ -63,9 +63,9 @@ else
                     <li>
                         <a asp-controller="Tags"
                            asp-action="List"
-                           asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedTagName.ToLower())"
-                           class="weight@(weight)" title="@(tag.TagCount)">
-                            @tag.TagName.Replace("-", " ")
+                           asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedName.ToLower())"
+                           class="weight@(weight)" title="@(tag.Degree)">
+                            @tag.DisplayName.Replace("-", " ")
                         </a>
                     </li>
                 }

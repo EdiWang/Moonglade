@@ -1,8 +1,8 @@
-﻿@model IReadOnlyList<Moonglade.Model.TagCountInfo>
+﻿@model IReadOnlyList<Moonglade.Model.DegreeTag>
 
 <div class="toptags-list">
     @foreach (var item in Model)
     {
-        <a asp-controller="Tags" asp-action="List" asp-route-normalizedName="@item.NormalizedTagName" rel="@item.TagCount">@item.TagName</a>
+        <a asp-controller="Tags" asp-action="List" asp-route-normalizedName="@item.NormalizedName" rel="@item.Degree">@item.DisplayName</a>
     }
 </div>

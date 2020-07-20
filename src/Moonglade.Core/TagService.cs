@@ -34,8 +34,8 @@ namespace Moonglade.Core
                 var list = await _tagRepository.SelectAsync(t => new Tag
                 {
                     Id = t.Id,
-                    NormalizedTagName = t.NormalizedName,
-                    TagName = t.DisplayName
+                    NormalizedName = t.NormalizedName,
+                    DisplayName = t.DisplayName
                 });
 
                 return new SuccessResponse<IReadOnlyList<Tag>>(list);
@@ -87,24 +87,24 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<TagCountInfo>>> GetHotTagsAsync(int top)
+        public Task<Response<IReadOnlyList<DegreeTag>>> GetHotTagsAsync(int top)
         {
-            return TryExecuteAsync<IReadOnlyList<TagCountInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<DegreeTag>>(async () =>
             {
                 if (_tagRepository.Any())
                 {
                     var spec = new TagSpec(top);
-                    var hotTags = await _tagRepository.SelectAsync(spec, t => new TagCountInfo
+                    var hotTags = await _tagRepository.SelectAsync(spec, t => new DegreeTag
                     {
-                        TagCount = t.PostTag.Count,
-                        TagName = t.DisplayName,
-                        NormalizedTagName = t.NormalizedName
+                        Degree = t.PostTag.Count,
+                        DisplayName = t.DisplayName,
+                        NormalizedName = t.NormalizedName
                     });
 
-                    return new SuccessResponse<IReadOnlyList<TagCountInfo>>(hotTags);
+                    return new SuccessResponse<IReadOnlyList<DegreeTag>>(hotTags);
                 }
 
-                return new SuccessResponse<IReadOnlyList<TagCountInfo>>(new List<TagCountInfo>());
+                return new SuccessResponse<IReadOnlyList<DegreeTag>>(new List<DegreeTag>());
             }, keyParameter: top);
         }
 
@@ -115,25 +115,25 @@ namespace Moonglade.Core
                 var tag = _tagRepository.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new Tag
                 {
                     Id = tg.Id,
-                    NormalizedTagName = tg.NormalizedName,
-                    TagName = tg.DisplayName
+                    NormalizedName = tg.NormalizedName,
+                    DisplayName = tg.DisplayName
                 });
                 return new SuccessResponse<Tag>(tag);
             });
         }
 
-        public Task<Response<IReadOnlyList<TagCountInfo>>> GetTagCountListAsync()
+        public Task<Response<IReadOnlyList<DegreeTag>>> GetTagCountListAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<TagCountInfo>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<DegreeTag>>(async () =>
             {
-                var list = await _tagRepository.SelectAsync(t => new TagCountInfo
+                var list = await _tagRepository.SelectAsync(t => new DegreeTag
                 {
-                    TagName = t.DisplayName,
-                    NormalizedTagName = t.NormalizedName,
-                    TagCount = t.PostTag.Count
+                    DisplayName = t.DisplayName,
+                    NormalizedName = t.NormalizedName,
+                    Degree = t.PostTag.Count
                 });
 
-                return new SuccessResponse<IReadOnlyList<TagCountInfo>>(list);
+                return new SuccessResponse<IReadOnlyList<DegreeTag>>(list);
             });
         }
     }

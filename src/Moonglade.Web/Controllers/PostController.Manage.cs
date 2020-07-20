@@ -83,7 +83,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var tagStr = post.Tags
-                                 .Select(p => p.TagName)
+                                 .Select(p => p.DisplayName)
                                  .Aggregate(string.Empty, (current, item) => current + item + ",");
 
                 tagStr = tagStr.TrimEnd(',');

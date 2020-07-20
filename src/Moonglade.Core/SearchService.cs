@@ -45,8 +45,8 @@ namespace Moonglade.Core
                     PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
                     Tags = p.PostTag.Select(pt => new Tag
                     {
-                        NormalizedTagName = pt.Tag.NormalizedName,
-                        TagName = pt.Tag.DisplayName
+                        NormalizedName = pt.Tag.NormalizedName,
+                        DisplayName = pt.Tag.DisplayName
                     }).ToList()
                 }).ToListAsync();
 

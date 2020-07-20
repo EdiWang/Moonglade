@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            ViewBag.TitlePrefix = tagResponse.Item.TagName;
+            ViewBag.TitlePrefix = tagResponse.Item.DisplayName;
             var postResponse = await _postService.GetByTagAsync(tagResponse.Item.Id);
             if (!postResponse.IsSuccess)
             {

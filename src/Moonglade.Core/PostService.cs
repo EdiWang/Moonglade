@@ -145,8 +145,8 @@ namespace Moonglade.Core
                     Tags = p.PostTag.Select(pt => new Tag
                     {
                         Id = pt.TagId,
-                        NormalizedTagName = pt.Tag.NormalizedName,
-                        TagName = pt.Tag.DisplayName
+                        NormalizedName = pt.Tag.NormalizedName,
+                        DisplayName = pt.Tag.DisplayName
                     }).ToList(),
                     Categories = p.PostCategory.Select(pc => new Category
                     {
@@ -182,8 +182,8 @@ namespace Moonglade.Core
                     Tags = post.PostTag.Select(pt => pt.Tag)
                         .Select(p => new Tag
                         {
-                            NormalizedTagName = p.NormalizedName,
-                            TagName = p.DisplayName
+                            NormalizedName = p.NormalizedName,
+                            DisplayName = p.DisplayName
                         }).ToList(),
                     PostId = post.Id,
                     IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
@@ -272,8 +272,8 @@ namespace Moonglade.Core
                             Tags = post.PostTag.Select(pt => pt.Tag)
                                 .Select(p => new Tag
                                 {
-                                    NormalizedTagName = p.NormalizedName,
-                                    TagName = p.DisplayName
+                                    NormalizedName = p.NormalizedName,
+                                    DisplayName = p.DisplayName
                                 }).ToList(),
                             PostId = post.Id,
                             CommentEnabled = post.CommentEnabled,
@@ -355,8 +355,8 @@ namespace Moonglade.Core
                 LangCode = p.PostPublish.ContentLanguageCode,
                 Tags = p.PostTag.Select(pt => new Tag
                 {
-                    NormalizedTagName = pt.Tag.NormalizedName,
-                    TagName = pt.Tag.DisplayName
+                    NormalizedName = pt.Tag.NormalizedName,
+                    DisplayName = pt.Tag.DisplayName
                 }).ToList()
             });
         }
