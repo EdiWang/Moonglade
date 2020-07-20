@@ -51,7 +51,7 @@ namespace Moonglade.Core.Notification
         {
             if (!IsEnabled)
             {
-                return new FailedResponse((int)ResponseFailureCode.EmailSendingDisabled, "Email Sending is disabled.");
+                return new FailedResponse((int)FaultCode.EmailSendingDisabled, "Email Sending is disabled.");
             }
 
             try
@@ -67,12 +67,12 @@ namespace Moonglade.Core.Notification
                     return new SuccessResponse { Message = dataStr };
                 }
 
-                return new FailedResponse((int)ResponseFailureCode.ApiError, response.StatusCode.ToString());
+                return new FailedResponse((int)FaultCode.ApiError, response.StatusCode.ToString());
             }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse((int)FaultCode.GeneralException, e.Message);
             }
         }
 

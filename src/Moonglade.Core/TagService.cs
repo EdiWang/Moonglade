@@ -67,7 +67,7 @@ namespace Moonglade.Core
                     return new SuccessResponse();
                 }
 
-                return new FailedResponse((int)ResponseFailureCode.TagNotFound);
+                return new FailedResponse((int)FaultCode.TagNotFound);
             });
         }
 

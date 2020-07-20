@@ -97,7 +97,7 @@ namespace Moonglade.Core
                 if (rows == -1)
                 {
                     Logger.LogWarning($"Pingback id {pingbackId} not found, skip delete operation.");
-                    return new FailedResponse((int)ResponseFailureCode.PingbackRecordNotFound);
+                    return new FailedResponse((int)FaultCode.PingbackRecordNotFound);
                 }
 
                 return new Response { IsSuccess = rows > 0 };

@@ -31,7 +31,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error executing {callerMemberName}({keyParameter})");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse((int)FaultCode.GeneralException, e.Message);
             }
         }
 
@@ -44,7 +44,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error executing {callerMemberName}({keyParameter})");
-                return new FailedResponse<T>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<T>((int)FaultCode.GeneralException, e.Message);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error executing {callerMemberName}({keyParameter})");
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse((int)FaultCode.GeneralException, e.Message);
             }
         }
 
@@ -71,7 +71,7 @@ namespace Moonglade.Core
             catch (Exception e)
             {
                 Logger.LogError(e, $"Error executing {callerMemberName}({keyParameter})");
-                return new FailedResponse<T>((int)ResponseFailureCode.GeneralException, e.Message);
+                return new FailedResponse<T>((int)FaultCode.GeneralException, e.Message);
             }
         }
     }

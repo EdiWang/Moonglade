@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Model
 {
-    public enum ResponseFailureCode
+    public enum FaultCode
     {
         None = 0,
         GeneralException = 1,

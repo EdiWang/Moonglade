@@ -66,7 +66,7 @@ namespace Moonglade.Auditing
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
+                return new FailedResponse((int)FaultCode.GeneralException, e.Message, e);
             }
         }
 
@@ -117,7 +117,7 @@ namespace Moonglade.Auditing
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse<(IReadOnlyList<AuditEntry> Entries, int Count)>((int)ResponseFailureCode.GeneralException, e.Message, e);
+                return new FailedResponse<(IReadOnlyList<AuditEntry> Entries, int Count)>((int)FaultCode.GeneralException, e.Message, e);
             }
         }
 
@@ -145,7 +145,7 @@ namespace Moonglade.Auditing
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
+                return new FailedResponse((int)FaultCode.GeneralException, e.Message, e);
             }
         }
 

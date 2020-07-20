@@ -95,7 +95,7 @@ namespace Moonglade.Configuration
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse((int)ResponseFailureCode.GeneralException, e.Message, e);
+                return new FailedResponse((int)FaultCode.GeneralException, e.Message, e);
             }
         }
 

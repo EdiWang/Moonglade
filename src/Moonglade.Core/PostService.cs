@@ -104,7 +104,7 @@ namespace Moonglade.Core
             return TryExecuteAsync(async () =>
             {
                 var pp = await _postExtensionRepository.GetAsync(postId);
-                if (pp == null) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
+                if (pp == null) return new FailedResponse((int)FaultCode.PostNotFound);
 
                 switch (statisticTypes)
                 {
@@ -523,7 +523,7 @@ namespace Moonglade.Core
                 var postModel = await _postRepository.GetAsync(request.Id);
                 if (null == postModel)
                 {
-                    return new FailedResponse<PostEntity>((int)ResponseFailureCode.PostNotFound);
+                    return new FailedResponse<PostEntity>((int)FaultCode.PostNotFound);
                 }
 
                 postModel.CommentEnabled = request.EnableComment;
@@ -629,7 +629,7 @@ namespace Moonglade.Core
             return TryExecuteAsync(async () =>
             {
                 var pp = await _postPublishRepository.GetAsync(postId);
-                if (null == pp) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
+                if (null == pp) return new FailedResponse((int)FaultCode.PostNotFound);
 
                 pp.IsDeleted = false;
                 await _postPublishRepository.UpdateAsync(pp);
@@ -645,7 +645,7 @@ namespace Moonglade.Core
             return TryExecuteAsync(async () =>
             {
                 var post = await _postRepository.GetAsync(postId);
-                if (null == post) return new FailedResponse((int)ResponseFailureCode.PostNotFound);
+                if (null == post) return new FailedResponse((int)FaultCode.PostNotFound);
 
                 if (isRecycle)
                 {

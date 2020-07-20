@@ -156,7 +156,7 @@ namespace Moonglade.Core
                 // 1. Check comment enabled or not
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
-                    return new FailedResponse<CommentListItem>((int)ResponseFailureCode.CommentDisabled);
+                    return new FailedResponse<CommentListItem>((int)FaultCode.CommentDisabled);
                 }
 
                 // 2. Harmonize banned keywords
@@ -208,14 +208,14 @@ namespace Moonglade.Core
             {
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
-                    return new FailedResponse<CommentReplyDetail>((int)ResponseFailureCode.CommentDisabled);
+                    return new FailedResponse<CommentReplyDetail>((int)FaultCode.CommentDisabled);
                 }
 
                 var cmt = await _commentRepository.GetAsync(commentId);
 
                 if (null == cmt)
                 {
-                    return new FailedResponse<CommentReplyDetail>((int)ResponseFailureCode.CommentNotFound);
+                    return new FailedResponse<CommentReplyDetail>((int)FaultCode.CommentNotFound);
                 }
 
                 var id = Guid.NewGuid();

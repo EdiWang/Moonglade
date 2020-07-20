@@ -63,17 +63,17 @@ namespace Moonglade.Core
             {
                 if (string.IsNullOrWhiteSpace(title))
                 {
-                    return new FailedResponse((int)ResponseFailureCode.InvalidParameter, $"{nameof(title)} can not be empty.");
+                    return new FailedResponse((int)FaultCode.InvalidParameter, $"{nameof(title)} can not be empty.");
                 }
 
                 if (string.IsNullOrWhiteSpace(linkUrl))
                 {
-                    return new FailedResponse((int)ResponseFailureCode.InvalidParameter, $"{nameof(linkUrl)} can not be empty.");
+                    return new FailedResponse((int)FaultCode.InvalidParameter, $"{nameof(linkUrl)} can not be empty.");
                 }
 
                 if (!Uri.IsWellFormedUriString(linkUrl, UriKind.Absolute))
                 {
-                    return new FailedResponse((int)ResponseFailureCode.InvalidParameter, $"{nameof(linkUrl)} is not a valid url.");
+                    return new FailedResponse((int)FaultCode.InvalidParameter, $"{nameof(linkUrl)} is not a valid url.");
                 }
 
                 var fdLink = new FriendLinkEntity
@@ -107,17 +107,17 @@ namespace Moonglade.Core
             {
                 if (string.IsNullOrWhiteSpace(newTitle))
                 {
-                    return new FailedResponse((int)ResponseFailureCode.InvalidParameter, $"{nameof(newTitle)} can not be empty.");
+                    return new FailedResponse((int)FaultCode.InvalidParameter, $"{nameof(newTitle)} can not be empty.");
                 }
 
                 if (string.IsNullOrWhiteSpace(newLinkUrl))
                 {
-                    return new FailedResponse((int)ResponseFailureCode.InvalidParameter, $"{nameof(newLinkUrl)} can not be empty.");
+                    return new FailedResponse((int)FaultCode.InvalidParameter, $"{nameof(newLinkUrl)} can not be empty.");
                 }
 
                 if (!Uri.IsWellFormedUriString(newLinkUrl, UriKind.Absolute))
                 {
-                    return new FailedResponse((int)ResponseFailureCode.InvalidParameter, $"{nameof(newLinkUrl)} is not a valid url.");
+                    return new FailedResponse((int)FaultCode.InvalidParameter, $"{nameof(newLinkUrl)} is not a valid url.");
                 }
 
                 var fdlink = await _friendlinkRepository.GetAsync(id);
@@ -131,7 +131,7 @@ namespace Moonglade.Core
 
                     return new SuccessResponse();
                 }
-                return new FailedResponse((int)ResponseFailureCode.FriendLinkNotFound);
+                return new FailedResponse((int)FaultCode.FriendLinkNotFound);
             }, keyParameter: id);
         }
     }

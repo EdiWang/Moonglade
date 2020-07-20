@@ -92,7 +92,7 @@ namespace Moonglade.Web.Controllers
                     CommentResponse failedResponse;
                     switch (response.ResponseCode)
                     {
-                        case (int)ResponseFailureCode.CommentDisabled:
+                        case (int)FaultCode.CommentDisabled:
                             Logger.LogWarning("Comment is disabled in settings, but user somehow called NewComment() method.");
                             Response.StatusCode = (int)HttpStatusCode.Forbidden;
                             failedResponse = new CommentResponse(false, CommentResponseCode.CommentDisabled);

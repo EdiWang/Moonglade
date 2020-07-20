@@ -140,7 +140,7 @@ namespace Moonglade.Web.Controllers
 
                 return Json(response);
             }
-            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
         }
 
         [HttpGet("content")]
@@ -190,7 +190,7 @@ namespace Moonglade.Web.Controllers
                 return Json(response);
 
             }
-            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
         }
 
         #region Email Settings
@@ -230,7 +230,7 @@ namespace Moonglade.Web.Controllers
 
                 return Json(response);
             }
-            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
         }
 
         [HttpPost("send-test-email")]
@@ -287,7 +287,7 @@ namespace Moonglade.Web.Controllers
 
                 return Json(response);
             }
-            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
         }
 
         #endregion
@@ -328,7 +328,7 @@ namespace Moonglade.Web.Controllers
 
                 return Json(response);
             }
-            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
         }
 
         #endregion
@@ -369,7 +369,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
                 return Json(response);
             }
-            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
         }
 
         [HttpPost("friendlink/create")]
@@ -587,7 +587,7 @@ namespace Moonglade.Web.Controllers
                 await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
                 return Json(response);
             }
-            return Json(new FailedResponse((int)ResponseFailureCode.InvalidModelState, "Invalid ModelState"));
+            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
         }
 
         [HttpPost("shutdown")]
