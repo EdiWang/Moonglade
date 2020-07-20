@@ -170,7 +170,9 @@ Key | Data Type | Description
 ```EnableOpenGraph``` | ```bool``` | Enable Open Graph
 ```EnablePostRawEndpoint``` | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
 ```EnableWebApi``` | ```bool``` | Enable REST API
-```ImageCacheSlidingExpirationMinutes``` | ```int``` | Time for cached images to expire
+```CacheSlidingExpirationMinutes:Post``` | ```int``` | Time for cached posts to expire
+```CacheSlidingExpirationMinutes:Page``` | ```int``` | Time for cached pages to expire
+```CacheSlidingExpirationMinutes:Image``` | ```int``` | Time for cached image to expire
 ```PostAbstractWords``` | ```int``` | How may words to show in post list abstract
 ```ShowAdminLoginButton``` | ```bool``` | Show 'Admin Login' button under side bar
 ```SystemNavMenus:Categories``` | ```bool``` | Show 'Categories' Menu
@@ -180,20 +182,18 @@ Key | Data Type | Description
 
 ## 🎉 Blog Protocols or Standards
 
-Name | Support | Remark
---- | --- | ---
-RSS | Yes
-Atom | Yes
-OPML | Yes
-APML | No | Not planned
-FOAF | No | Under triage
-BlogML | No | Under triage
-Open Search | Yes
-Pingback | Yes
-Trackback | No | Not planned
-RSD | No | Not planned
-MetaWeblog | No | Not planned
-Reader View | Yes
+- [X] RSS
+- [X] Atom
+- [X] OPML
+- [X] Open Search
+- [X] Pingback
+- [X] Reader View
+- [ ] APML - Not planned
+- [ ] FOAF - Under triage
+- [ ] BlogML - Under triage
+- [ ] Trackback - Not planned
+- [ ] RSD - Not planned
+- [ ] MetaWeblog - Not planned
 
 ## 🐵 Customers
 
