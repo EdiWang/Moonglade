@@ -51,13 +51,6 @@
       "destination": "wwwroot/lib/monaco-editor/"
     },
     {
-      "library": "jquery-ajax-unobtrusive@3.2.6",
-      "destination": "wwwroot/lib/jquery-ajax-unobtrusive/",
-      "files": [
-        "jquery.unobtrusive-ajax.min.js"
-      ]
-    },
-    {
       "provider": "unpkg",
       "library": "bootstrap@4.5.0",
       "destination": "wwwroot/lib/bootstrap/",
@@ -73,15 +66,6 @@
       "files": [
         "dist/bs-custom-file-input.min.js",
         "dist/bs-custom-file-input.js"
-      ]
-    },
-    {
-      "provider": "unpkg",
-      "library": "jquery-validation-unobtrusive@3.2.11",
-      "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
-      "files": [
-        "dist/jquery.validate.unobtrusive.js",
-        "dist/jquery.validate.unobtrusive.min.js"
       ]
     },
     {
