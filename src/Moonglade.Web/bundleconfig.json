@@ -9,7 +9,7 @@
   {
     "outputFileName": "wwwroot/js/dist/app-js-bundle.js",
     "inputFiles": [
-      "wwwroot/lib/jquery/jquery.min.js",
+      "wwwroot/js/3rd/jquery.min.js",
       "wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
       "wwwroot/js/3rd/jquery.validate.unobtrusive.min.js",
       "wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
