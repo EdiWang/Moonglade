@@ -13,7 +13,7 @@
       "wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
       "wwwroot/js/3rd/jquery.validate.unobtrusive.min.js",
       "wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
-      "wwwroot/lib/jquery-qrcode/jquery.qrcode.min.js",
+      "wwwroot/js/3rd/jquery.qrcode.min.js",
       "wwwroot/lib/toastr.js/toastr.min.js",
       "wwwroot/js/app/base.js",
       "wwwroot/js/app/postslug.js",

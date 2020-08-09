@@ -8,22 +8,11 @@
       "files": []
     },
     {
-      "library": "jquery.qrcode@1.0",
-      "destination": "wwwroot/lib/jquery-qrcode"
-    },
-    {
       "library": "toastr.js@2.1.4",
       "destination": "wwwroot/lib/toastr.js/",
       "files": [
         "toastr.min.js",
         "toastr.min.css"
-      ]
-    },
-    {
-      "library": "typeahead.js@0.11.1",
-      "destination": "wwwroot/lib/typeahead.js/",
-      "files": [
-        "typeahead.bundle.min.js"
       ]
     },
     {
