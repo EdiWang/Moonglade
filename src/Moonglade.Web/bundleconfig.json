@@ -12,7 +12,7 @@
       "wwwroot/js/3rd/jquery.min.js",
       "wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
       "wwwroot/js/3rd/jquery.validate.unobtrusive.min.js",
-      "wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+      "wwwroot/js/3rd/bootstrap.bundle.min.js",
       "wwwroot/js/3rd/jquery.qrcode.min.js",
       "wwwroot/lib/toastr.js/toastr.min.js",
       "wwwroot/js/app/base.js",
@@ -25,7 +25,7 @@
   {
     "outputFileName": "wwwroot/css/mooglade-css-bundle.css",
     "inputFiles": [
-      "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "wwwroot/css/3rd/bootstrap.min.css",
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/moonglade-base.css",
       "wwwroot/css/src/moonglade-rwd.css",
