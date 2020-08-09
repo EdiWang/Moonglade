@@ -40,15 +40,6 @@
         "dist/bs-custom-file-input.min.js",
         "dist/bs-custom-file-input.js"
       ]
-    },
-    {
-      "provider": "unpkg",
-      "library": "jquery-validation@1.19.2",
-      "destination": "wwwroot/lib/jquery-validation/",
-      "files": [
-        "dist/jquery.validate.js",
-        "dist/jquery.validate.min.js"
-      ]
     }
   ]
 }
