@@ -42,7 +42,7 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/bootstrap-tagsinput-bundle.css",
+    "outputFileName": "wwwroot/css/3rd/bootstrap-tagsinput-bundle.css",
     "inputFiles": [
       "wwwroot/lib/bootstrap-tagsinput/bootstrap-tagsinput.css",
       "wwwroot/lib/bootstrap-tagsinput/bootstrap-tagsinput-typeahead.css"
