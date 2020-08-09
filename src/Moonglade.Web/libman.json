@@ -31,15 +31,6 @@
     {
       "library": "monaco-editor@0.20.0",
       "destination": "wwwroot/lib/monaco-editor/"
-    },
-    {
-      "provider": "unpkg",
-      "library": "bs-custom-file-input@1.3.4",
-      "destination": "wwwroot/lib/bs-custom-file-input/",
-      "files": [
-        "dist/bs-custom-file-input.min.js",
-        "dist/bs-custom-file-input.js"
-      ]
     }
   ]
 }
