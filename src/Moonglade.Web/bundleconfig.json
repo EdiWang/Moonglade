@@ -21,6 +21,15 @@
     ]
   },
   {
+    "outputFileName": "wwwroot/js/dist/admin-js-bundle.js",
+    "inputFiles": [
+      "wwwroot/js/3rd/jquery.validate.min.js",
+      "wwwroot/js/3rd/jquery.validate.unobtrusive.min.js",
+      "wwwroot/js/3rd/jquery.unobtrusive-ajax.min.js",
+      "wwwroot/js/app/admin.js"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/css/mooglade-css-bundle.css",
     "inputFiles": [
       "wwwroot/css/3rd/bootstrap.min.css",

@@ -7,6 +7,8 @@ appsettings.Development.json
 ## Auto Generated Files
 app-js-bundle.js
 app-js-bundle.min.js
+admin-js-bundle.js
+admin-js-bundle.min.js
 errorpages-bundle.css
 errorpages-bundle.min.css
 mooglade-css-bundle.css

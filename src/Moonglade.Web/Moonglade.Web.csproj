@@ -6,14 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Resources\Models\Settings\NotificationSettingsViewModel.zh-CN.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Resources\Models\Settings\NotificationSettingsViewModel.zh-CN.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="Always" />
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
