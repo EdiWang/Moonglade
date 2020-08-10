@@ -4,27 +4,8 @@
 
 @model PostEditViewModel
 
-@section head{
-    <link href="~/css/3rd/bootstrap-tagsinput-bundle.min.css" rel="stylesheet" />
-    <style>
-        .bootstrap-tagsinput {
-            display: inherit;
-            box-shadow: inherit;
-        }
-
-            .bootstrap-tagsinput .tag {
-                background: #2a579a;
-                padding: 2px 5px;
-            }
-
-                .bootstrap-tagsinput .tag [data-role="remove"]:hover {
-                    box-shadow: inherit;
-                }
-    </style>
-}
 @section scripts{
     <script src="~/js/3rd/typeahead.bundle.min.js"></script>
-    <script src="~/lib/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
     @{
         var ec = Settings.Value.Editor;
         switch (ec)
@@ -43,7 +24,6 @@
                 break;
         }
     }
-    <script src="~/js/3rd/jquery.are-you-sure.min.js"></script>
 
     <script>
         $(function () {

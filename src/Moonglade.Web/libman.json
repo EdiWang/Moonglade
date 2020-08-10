@@ -8,15 +8,6 @@
       "files": []
     },
     {
-      "library": "bootstrap-tagsinput@0.8.0",
-      "destination": "wwwroot/lib/bootstrap-tagsinput/",
-      "files": [
-        "bootstrap-tagsinput.min.js",
-        "bootstrap-tagsinput-typeahead.css",
-        "bootstrap-tagsinput.css"
-      ]
-    },
-    {
       "library": "simplemde@1.11.2",
       "destination": "wwwroot/lib/simplemde/"
     },

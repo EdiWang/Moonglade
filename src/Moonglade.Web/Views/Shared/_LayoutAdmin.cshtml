@@ -22,10 +22,11 @@
     <link type="application/opensearchdescription+xml" rel="search" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/opensearch" />
     <partial name="_Favicons" />
     <link href="~/css/mooglade-css-bundle.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/mooglade-admin-bundle.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
     <script src="~/js/dist/app-js-bundle.min.js" asp-append-version="true"></script>
     <script src="~/js/dist/admin-js-bundle.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("head", false)
-    <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
 </head>
 <body class="admin-body">
     <div class="container-fluid full-height">

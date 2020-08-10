@@ -26,6 +26,8 @@
       "wwwroot/js/3rd/jquery.validate.min.js",
       "wwwroot/js/3rd/jquery.validate.unobtrusive.min.js",
       "wwwroot/js/3rd/jquery.unobtrusive-ajax.min.js",
+      "wwwroot/js/3rd/bootstrap-tagsinput.min.js",
+      "wwwroot/js/3rd/jquery.are-you-sure.min.js",
       "wwwroot/js/app/admin.js"
     ]
   },
@@ -38,7 +40,6 @@
       "wwwroot/css/src/moonglade-base.css",
       "wwwroot/css/src/moonglade-rwd.css",
       "wwwroot/css/src/darkmode.css",
-      "wwwroot/css/src/admin.css",
       "wwwroot/css/src/highlighter-custom.css"
     ]
   },
@@ -49,10 +50,11 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/3rd/bootstrap-tagsinput-bundle.css",
+    "outputFileName": "wwwroot/css/mooglade-admin-bundle.css",
     "inputFiles": [
-      "wwwroot/lib/bootstrap-tagsinput/bootstrap-tagsinput.css",
-      "wwwroot/lib/bootstrap-tagsinput/bootstrap-tagsinput-typeahead.css"
+      "wwwroot/css/3rd/bootstrap-tagsinput.css",
+      "wwwroot/css/3rd/bootstrap-tagsinput-typeahead.css",
+      "wwwroot/css/src/admin.css"
     ]
   }
 ]
