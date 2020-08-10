@@ -2,7 +2,7 @@
   {
     "outputFileName": "wwwroot/css/tinymce-editor-bs-bundle.css",
     "inputFiles": [
-      "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "wwwroot/css/3rd/bootstrap.min.css",
       "wwwroot/css/src/tinymce-editor-content.css"
     ]
   },
