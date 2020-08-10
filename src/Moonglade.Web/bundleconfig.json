@@ -12,7 +12,7 @@
       "wwwroot/js/3rd/jquery.min.js",
       "wwwroot/js/3rd/bootstrap.bundle.min.js",
       "wwwroot/js/3rd/jquery.qrcode.min.js",
-      "wwwroot/lib/toastr.js/toastr.min.js",
+      "wwwroot/js/3rd/toastr.min.js",
       "wwwroot/js/app/base.js",
       "wwwroot/js/app/postslug.js",
       "wwwroot/js/app/csrf.js",
@@ -33,13 +33,13 @@
     "outputFileName": "wwwroot/css/mooglade-css-bundle.css",
     "inputFiles": [
       "wwwroot/css/3rd/bootstrap.min.css",
+      "wwwroot/css/3rd/toastr.min.css",
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/moonglade-base.css",
       "wwwroot/css/src/moonglade-rwd.css",
       "wwwroot/css/src/darkmode.css",
       "wwwroot/css/src/admin.css",
-      "wwwroot/css/src/highlighter-custom.css",
-      "wwwroot/lib/toastr.js/toastr.min.css"
+      "wwwroot/css/src/highlighter-custom.css"
     ]
   },
   {

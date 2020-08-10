@@ -8,14 +8,6 @@
       "files": []
     },
     {
-      "library": "toastr.js@2.1.4",
-      "destination": "wwwroot/lib/toastr.js/",
-      "files": [
-        "toastr.min.js",
-        "toastr.min.css"
-      ]
-    },
-    {
       "library": "bootstrap-tagsinput@0.8.0",
       "destination": "wwwroot/lib/bootstrap-tagsinput/",
       "files": [
