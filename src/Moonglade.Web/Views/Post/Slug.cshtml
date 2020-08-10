@@ -238,18 +238,30 @@
                             <input type="hidden" asp-for="NewCommentViewModel.PostId" />
                             <div class="row form-group">
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control" placeholder="Your Name" asp-for="NewCommentViewModel.Username" />
-                                    <span asp-validation-for="NewCommentViewModel.Username" class="text-danger"></span>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           placeholder="Your name" 
+                                           asp-for="NewCommentViewModel.Username"
+                                           required />
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="Email (Optional)" asp-for="NewCommentViewModel.Email" data-toggle="tooltip" data-placement="top" title="@Localizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]" />
-                                    <span asp-validation-for="NewCommentViewModel.Email" class="text-danger"></span>
+                                    <input type="email"
+                                           class="form-control"
+                                           placeholder="Email (Optional)"
+                                           asp-for="NewCommentViewModel.Email"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="@Localizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]" />
                                 </div>
                             </div>
                             <div class="comment-md-content form-group">
-                                <textarea asp-for="NewCommentViewModel.Content" class="form-control" cols="60" rows="4"
-                                          placeholder="@Localizer["Your comments (Markdown supported)"]" maxlength="1024"></textarea>
-                                <span asp-validation-for="NewCommentViewModel.Content" class="text-danger"></span>
+                                <textarea asp-for="NewCommentViewModel.Content" 
+                                          class="form-control" 
+                                          cols="60" 
+                                          rows="4" 
+                                          placeholder="@Localizer["Your comments (Markdown supported)"]" 
+                                          maxlength="1024"
+                                          required></textarea>
                             </div>
                             <div class="row">
                                 <div class="col">
@@ -263,9 +275,9 @@
                                                placeholder="Captcha Code"
                                                autocomplete="off"
                                                minlength="4"
-                                               maxlength="4" />
+                                               maxlength="4" 
+                                               required />
                                     </div>
-                                    <span asp-validation-for="NewCommentViewModel.CaptchaCode" class="text-danger"></span>
                                 </div>
                                 <div class="col">
                                     <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">

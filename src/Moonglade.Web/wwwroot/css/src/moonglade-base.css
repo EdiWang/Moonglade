@@ -28,6 +28,10 @@
     padding-right: 0;
 }
 
+/*input:required:invalid, input:focus:invalid {
+    border: 1px solid #ff0000;
+}*/
+
 .field-validation-error {
     color: #ff0000;
 }
