@@ -8,10 +8,6 @@
       "files": []
     },
     {
-      "library": "simplemde@1.11.2",
-      "destination": "wwwroot/lib/simplemde/"
-    },
-    {
       "library": "monaco-editor@0.20.0",
       "destination": "wwwroot/lib/monaco-editor/"
     }
