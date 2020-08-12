@@ -147,7 +147,7 @@ install_Moonglade()
     # Install basic packages
     echo "Installing git vim dotnet-sdk caddy mssql-server nodejs ufw..."
     add_source > /dev/null
-    apt install -y apt-transport-https git vim dotnet-sdk-3.1 caddy mssql-server nodejs ufw > /dev/null
+    apt install -y apt-transport-https git vim dotnet-sdk-3.1 caddy mssql-server mssql-tools unixodbc-dev nodejs ufw > /dev/null
 
     # Init database password
     MSSQL_SA_PASSWORD=$dbPassword MSSQL_PID='express' /opt/mssql/bin/mssql-conf -n setup accept-eula
@@ -172,8 +172,12 @@ install_Moonglade()
     connectionString="Server=tcp:127.0.0.1,1433;Initial Catalog=Moonglade;Persist Security Info=False;User ID=sa;Password=$dbPassword;MultipleActiveResultSets=True;Connection Timeout=30;"
     update_settings "MoongladeDatabase" "$connectionString" $moonglade_path
     update_settings Path '\/root\/Storage' $moonglade_path
-#/root/Storage
     npm install web-push -g
+
+    # Create database.
+    echo 'Creating database...'
+    echo 'Create Database Moonglade' > /opt/mssql-tools/bin/sqlcmd/initDb.sql
+    /opt/mssql-tools/bin/sqlcmd -U sa -P $dbPassword -S 127.0.0.1 -i /opt/mssql-tools/bin/sqlcmd/initDb.sql
 
     # Register Moonglade service
     echo "Registering Moonglade service..."
