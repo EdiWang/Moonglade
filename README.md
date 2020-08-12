@@ -6,79 +6,25 @@ The [.NET Core](https://dotnet.microsoft.com/) blog system of [edi.wang](https:/
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v4.png)
 
+## 📦 Deployment
 
-## One-command Install
+> The system design DOES NOT couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
 
-### Brief steps:
+### ☁ Full Deploy on Azure (Recommend)
 
-* Get a domain name. (Like kahla.example.com)
-* Get a server.
-* Install on your server.
+This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure with only ~$300 USD/month.
 
-### Get a server
+It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
 
-Get a brand new Ubuntu 18.04 server.
-
-  * Server must be Ubuntu 18.04. (20.04 and 16.04 is not supported)
-  * Server must have a public IP address. (No local VM)
-  * Server must have access to the global Internet. (Not Chinese network)
-
-Vultr or DigitalOcean is suggested. [Get it from Vultr](https://www.vultr.com/?ref=7274488).
-
-### Install on server
-
-Execute the following command on the server:
-
-```bash
-$ curl -sL https://github.com/EdiWang/Moonglade/raw/master/install.sh | sudo bash -s moonglade.example.com
-```
-
-To uninstall:
-
-```bash
-$ curl -sL https://github.com/EdiWang/Moonglade/raw/master/uninstall.sh | sudo bash
-```
-
-## 🛠 Build and Run
-
-Tools | Alternative
---- | ---
-[.NET Core 3.1 SDK](http://dot.net) | N/A
-[Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
-[Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) | [SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) / LocalDB (Dev Only)
-
-###  Setup Database
-
-Development | Production 
---- | ---
-Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?WT.mc_id=AZ-MVP-5002809&view=sql-server-ver15) database. e.g. ```moonglade``` | [Create an Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started?WT.mc_id=AZ-MVP-5002809) or a SQL Server 2019 database. e.g. ```moonglade-production```
-Update the ```MoongladeDatabase``` as your database connection string in **appsettings.Development.json** | Set environment variable: ```ConnectionStrings__MoongladeDatabase``` as your connection string. 
-
-##### Connection String Example
-
-*If you are deploying to Azure App Service, you can set the connection string in the Configuration blade.*
-
-```json
-"MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
-```
-
-### 🔨 Build Source
-
-Build and run ```./src/Moonglade.sln```
-- Default Admin Username: ```admin```
-- Default Admin Password: ```admin123```
-
-### ☁ Azure Deployment
-
-> The system design does not couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
-
-This diagram shows a recommended full feature Azure deployment for Moonglade. It doesn't come out of the box, you have to manually setup every piece of it.
+This diagram shows a recommended full feature Azure deployment for Moonglade. It doesn't come out of the box. Although the `./Deployment/AzureAppServiceDeploy.ps1` can cover a part of it, you have to manually setup every other piece of it. 
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-visio.png)
 
+### 🐋 Quick Deploy on Azure with/out Docker 
+
 If you just want to quickly get it running on Azure without knowing every detail. You can have a minimal deployment that use Docker Container to run on App Service (Linux) by executing the quick start deployment script in PowerShell Core:
 
-```./Azure-Deployment/Deploy.ps1```
+`./Deployment/AzureAppServiceDeploy.ps1`
 
 Please edit the script file and replace these items with your own values:
 
@@ -96,7 +42,42 @@ $sqlServerUsername = "moonglade"
 $sqlServerPassword = "DotNetM00n8!@d3"
 $sqlDatabaseName = "moonglade-test-db"
 $cdnProfileName = "moonglade-test-cdn"
+[bool] $useLinuxPlanWithDocker = 1
 ```
+
+Set `$useLinuxPlanWithDocker` to `1` will use Docker on Linux App Service plan, it will be a ready to run deployment. Set it to `0` will only deploy infrastructure without the application code, and leave the deployment in your control.
+
+### 🐧 Quick Deploy on Linux
+
+If you just want to quickly get it running on a new Linux machine without Docker, please follow the steps in `./Deployment.md`. 
+
+## 🐵 Development
+
+Tools | Alternative
+--- | ---
+[.NET Core 3.1 SDK](http://dot.net) | N/A
+[Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
+[SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) / LocalDB | N/A
+
+### 💾 Setup Database
+
+Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15) database. e.g. ```moonglade```
+
+Update the ```MoongladeDatabase``` as your database connection string in **appsettings.Development.json** or set environment variable: ```ConnectionStrings__MoongladeDatabase``` as your connection string. 
+
+Example
+
+```json
+"MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
+```
+
+*If you are deploying to Azure App Service, you can set the connection string in the Configuration blade.*
+
+### 🔨 Build Source
+
+Build and run ```./src/Moonglade.sln```
+- Default Admin Username: ```admin```
+- Default Admin Password: ```admin123```
 
 ## ⚙ Configuration
 
@@ -164,7 +145,7 @@ When configured the image storage to use Azure Blob, you can take advantage of C
 }
 ```
 
-#### 📂 File System (Not Recommended)
+#### File System (Not Recommended)
 
 You can also choose File System for image storage, but this will make your site root not read-only, which would be a potential security issue. And it will be harder for you to backup or update the website.
 
@@ -175,7 +156,6 @@ You can also choose File System for image storage, but this will make your site 
 }
 ```
 The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the website's current directory. 
-
 
 ### 📧 Email Notification
 
@@ -228,7 +208,7 @@ Key | Data Type | Description
 - [ ] RSD - Not planned
 - [ ] MetaWeblog - Not planned
 
-## 🐵 Customers
+## 🐼 Customers
 
 There are a few individuals already setup thier blogs using Moonglade on Azure (Global or China), Alibaba Cloud, Tencent Cloud, etc.
 
