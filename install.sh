@@ -176,8 +176,8 @@ install_Moonglade()
 
     # Create database.
     echo 'Creating database...'
-    echo 'Create Database Moonglade' > /opt/mssql-tools/bin/sqlcmd/initDb.sql
-    /opt/mssql-tools/bin/sqlcmd -U sa -P $dbPassword -S 127.0.0.1 -i /opt/mssql-tools/bin/sqlcmd/initDb.sql
+    echo 'Create Database Moonglade' > ~/initDb.sql
+    /opt/mssql-tools/bin/sqlcmd -U sa -P $dbPassword -S 127.0.0.1 -i ~/initDb.sql
 
     # Register Moonglade service
     echo "Registering Moonglade service..."
