@@ -71,6 +71,10 @@
                         $('#extlink-continue').attr('href', linkHref);
                         $('#externalLinkModal').modal('show');
                     });
+
+                    $('#extlink-continue').click(function () {
+                        $('#externalLinkModal').modal('hide');
+                    });
                 </text>
             }
 
@@ -238,9 +242,9 @@
                             <input type="hidden" asp-for="NewCommentViewModel.PostId" />
                             <div class="row form-group">
                                 <div class="col-md-4">
-                                    <input type="text" 
-                                           class="form-control" 
-                                           placeholder="Your name" 
+                                    <input type="text"
+                                           class="form-control"
+                                           placeholder="Your name"
                                            asp-for="NewCommentViewModel.Username"
                                            required />
                                 </div>
@@ -255,11 +259,11 @@
                                 </div>
                             </div>
                             <div class="comment-md-content form-group">
-                                <textarea asp-for="NewCommentViewModel.Content" 
-                                          class="form-control" 
-                                          cols="60" 
-                                          rows="4" 
-                                          placeholder="@Localizer["Your comments (Markdown supported)"]" 
+                                <textarea asp-for="NewCommentViewModel.Content"
+                                          class="form-control"
+                                          cols="60"
+                                          rows="4"
+                                          placeholder="@Localizer["Your comments (Markdown supported)"]"
                                           maxlength="1024"
                                           required></textarea>
                             </div>
@@ -275,7 +279,7 @@
                                                placeholder="Captcha Code"
                                                autocomplete="off"
                                                minlength="4"
-                                               maxlength="4" 
+                                               maxlength="4"
                                                required />
                                     </div>
                                 </div>
