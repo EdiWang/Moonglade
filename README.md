@@ -30,7 +30,7 @@ Vultr or DigitalOcean is suggested. [Get it from Vultr](https://www.vultr.com/?r
 Execute the following command on the server:
 
 ```bash
-$ curl -sL https://github.com/EdiWang/Moonglade/raw/master/install.sh | sudo bash -s kahla.example.com yourappid yourappsecret
+$ curl -sL https://github.com/EdiWang/Moonglade/raw/master/install.sh | sudo bash -s kahla.example.com
 ```
 
 To uninstall:
