@@ -106,8 +106,8 @@ update_settings()
     key="$1"
     value="$2"
     path="$3"
-    dbFixedString=$(echo "\"$key\": \"$value\",")
-    dbLineNumber=$(grep -n $key $path/appsettings.Production.json | cut -d : -f 1)
+    dbFixedString=$(echo "\"$key\": \"$value\"")
+    dbLineNumber=$(grep -n \"$key\" $path/appsettings.Production.json | cut -d : -f 1)
     pattern=$(echo $dbLineNumber)s/.*/$dbFixedString/
     sed -i "$pattern" $path/appsettings.Production.json
 }
@@ -155,11 +155,14 @@ install_Moonglade()
 
     # Download the source code
     ls | grep -q Moonglade && rm ./Moonglade -rf
+    mkdir Storage
+    chmod -R 777 ~/Storage/
     git clone -b master https://github.com/EdiWang/Moonglade.git
 
     # Build the code
     echo 'Building the source code...'
     moonglade_path="$(pwd)/apps/moongladeApp"
+    rm ./Moonglade/src/Moonglade.Web/libman.json # Remove libman because it is easy to crash.
     dotnet publish -c Release -o $moonglade_path ./Moonglade/src/Moonglade.Web/Moonglade.Web.csproj
     rm ~/Moonglade -rf
     cat $moonglade_path/appsettings.json > $moonglade_path/appsettings.Production.json
@@ -167,8 +170,9 @@ install_Moonglade()
     # Configure appsettings.json
     echo 'Generating default configuration file...'
     connectionString="Server=tcp:127.0.0.1,1433;Initial Catalog=Moonglade;Persist Security Info=False;User ID=sa;Password=$dbPassword;MultipleActiveResultSets=True;Connection Timeout=30;"
-    update_settings "DatabaseConnection" "$connectionString" $moonglade_path
-
+    update_settings "MoongladeDatabase" "$connectionString" $moonglade_path
+    update_settings Path '\/root\/Storage' $moonglade_path
+#/root/Storage
     npm install web-push -g
 
     # Register Moonglade service
