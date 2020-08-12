@@ -6,6 +6,39 @@ The [.NET Core](https://dotnet.microsoft.com/) blog system of [edi.wang](https:/
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v4.png)
 
+
+## One-command Install
+
+### Brief steps:
+
+* Get a domain name. (Like kahla.example.com)
+* Get a server.
+* Install on your server.
+
+### Get a server
+
+Get a brand new Ubuntu 18.04 server.
+
+  * Server must be Ubuntu 18.04. (20.04 and 16.04 is not supported)
+  * Server must have a public IP address. (No local VM)
+  * Server must have access to the global Internet. (Not Chinese network)
+
+Vultr or DigitalOcean is suggested. [Get it from Vultr](https://www.vultr.com/?ref=7274488).
+
+### Install on server
+
+Execute the following command on the server:
+
+```bash
+$ curl -sL https://github.com/EdiWang/Moonglade/raw/master/install.sh | sudo bash -s moonglade.example.com
+```
+
+To uninstall:
+
+```bash
+$ curl -sL https://github.com/EdiWang/Moonglade/raw/master/uninstall.sh | sudo bash
+```
+
 ## 🛠 Build and Run
 
 Tools | Alternative
