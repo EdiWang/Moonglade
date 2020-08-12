@@ -177,7 +177,7 @@ install_Moonglade()
 
     # Register Moonglade service
     echo "Registering Moonglade service..."
-    register_service "moonglade" $port $moonglade_path "Moonglade.Server"
+    register_service "moonglade" $port $moonglade_path "Moonglade.Web"
     sleep 2
 
     # Config caddy
