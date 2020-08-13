@@ -49,7 +49,7 @@ Set `$useLinuxPlanWithDocker` to `1` will use Docker on Linux App Service plan, 
 
 ### 🐧 Quick Deploy on Linux
 
-If you just want to quickly get it running on a new Linux machine without Docker, please follow the steps [here](./Deployment.md`).
+If you just want to quickly get it running on a new Linux machine without Docker, please follow the steps [here](./Deployment.md).
 
 ## 🐵 Development
 
