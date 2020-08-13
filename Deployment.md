@@ -24,6 +24,8 @@ Execute the following command on the server:
 $ curl -sL https://go.edi.wang/aka/mgli | sudo bash -s moonglade.example.com
 ```
 
+**By install, you accept the eula of SQL Server: https://go.microsoft.com/fwlink/?LinkId=2104294&clcid=0x409**
+
 To uninstall:
 
 ```bash
