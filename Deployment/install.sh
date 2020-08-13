@@ -162,7 +162,7 @@ install_Moonglade()
     # Build the code
     echo 'Building the source code...'
     moonglade_path="$(pwd)/apps/moongladeApp"
-    rm ./Moonglade/src/Moonglade.Web/libman.json # Remove libman because it is easy to crash.
+    #rm ./Moonglade/src/Moonglade.Web/libman.json # Remove libman because it is easy to crash.
     dotnet publish -c Release -o $moonglade_path ./Moonglade/src/Moonglade.Web/Moonglade.Web.csproj
     rm ~/Moonglade -rf
     cat $moonglade_path/appsettings.json > $moonglade_path/appsettings.Production.json
