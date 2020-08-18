@@ -61,7 +61,7 @@ Tools | Alternative
 
 ### 💾 Setup Database
 
-Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15) database. e.g. ```moonglade```
+Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809) database. e.g. ```moonglade```
 
 Update the ```MoongladeDatabase``` as your database connection string in **appsettings.Development.json** or set environment variable: ```ConnectionStrings__MoongladeDatabase``` as your connection string. 
 
