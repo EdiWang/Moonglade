@@ -8,6 +8,29 @@ namespace Moonglade.Tests
     public class DateTimeResolverTests
     {
         [Test]
+        public void TestInvalidTimeSpanFormat()
+        {
+            var resolver = new DateTimeResolver("996ICU");
+            var utc = new DateTime(2000, 1, 1, 0, 0, 0);
+
+            Assert.Throws<FormatException>(() =>
+            {
+                resolver.GetDateTimeWithUserTZone(utc);
+            });
+        }
+
+        [Test]
+        public void TestGetDateTimeWithUserTZoneZero()
+        {
+            var resolver = new DateTimeResolver(string.Empty);
+
+            var utc = new DateTime(2000, 1, 1, 0, 0, 0);
+            var dt = resolver.GetDateTimeWithUserTZone(utc);
+
+            Assert.IsTrue(dt == DateTime.Parse("2000/1/1 0:00:00"));
+        }
+
+        [Test]
         public void TestGetDateTimeWithUserTZone()
         {
             var tSpan = "02:51:00";
