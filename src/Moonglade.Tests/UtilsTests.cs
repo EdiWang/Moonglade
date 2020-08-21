@@ -8,6 +8,13 @@ namespace Moonglade.Tests
     [TestFixture]
     public class UtilsTests
     {
+        [Test]
+        public void TestAppVersion()
+        {
+            var ver = Utils.AppVersion;
+            Assert.IsNotNull(ver);
+        }
+
         [TestCase(1, ExpectedResult = "January")]
         [TestCase(2, ExpectedResult = "February")]
         [TestCase(3, ExpectedResult = "March")]
@@ -138,6 +145,7 @@ namespace Moonglade.Tests
         [TestCase("Cup<T>", ExpectedResult = false)]
         [TestCase("(1)", ExpectedResult = false)]
         [TestCase("usr/bin", ExpectedResult = false)]
+        [TestCase("", ExpectedResult = false)]
         public bool TestValidateTagName(string tagDisplayName)
         {
             return Utils.ValidateTagName(tagDisplayName);
@@ -406,6 +414,15 @@ namespace Moonglade.Tests
         {
             var result = Utils.ResolveCanonicalUrl(prefix, path);
             return result;
+        }
+
+        [Test]
+        public void TestResolveCanonicalUrlInvalid()
+        {
+            Assert.Throws<UriFormatException>(() =>
+            {
+                Utils.ResolveCanonicalUrl("996ICU", "251");
+            });
         }
     }
 }
