@@ -38,7 +38,7 @@ namespace Moonglade.Tests
             var tSpan = "10:55:00";
             var resolver = new DateTimeResolver(tSpan);
             var ts = resolver.GetTimeSpanByZoneId("China Standard Time");
-            Assert.AreEqual(ts, TimeSpan.FromHours(8));
+            Assert.AreEqual(TimeSpan.FromHours(8), ts);
         }
 
         [Test]
@@ -47,7 +47,19 @@ namespace Moonglade.Tests
             var tSpan = "10:55:00";
             var resolver = new DateTimeResolver(tSpan);
             var ts = resolver.GetTimeSpanByZoneId(string.Empty);
-            Assert.AreEqual(ts, TimeSpan.Zero);
+            Assert.AreEqual(TimeSpan.Zero, ts);
+        }
+
+        [Test]
+        public void TestGetNowWithUserTZone()
+        {
+            var tSpan = "8:00:00";
+            var resolver = new DateTimeResolver(tSpan);
+            var utc = DateTime.UtcNow;
+            var dt = resolver.GetNowWithUserTZone();
+            Assert.AreEqual(utc.AddHours(8).Date, dt.Date);
+            Assert.AreEqual(utc.AddHours(8).Hour, dt.Hour);
+            Assert.AreEqual(utc.AddHours(8).Minute, dt.Minute);
         }
     }
 }
