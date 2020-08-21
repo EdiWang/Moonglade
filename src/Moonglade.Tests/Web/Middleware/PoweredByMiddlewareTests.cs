@@ -6,7 +6,7 @@ using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Web
+namespace Moonglade.Tests.Web.Middleware
 {
     [TestFixture]
     public class PoweredByMiddlewareTests

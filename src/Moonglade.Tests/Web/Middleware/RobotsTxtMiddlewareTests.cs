@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Web
+namespace Moonglade.Tests.Web.Middleware
 {
     [TestFixture]
     public class RobotsTxtMiddlewareTests
