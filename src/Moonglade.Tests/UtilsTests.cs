@@ -289,6 +289,7 @@ namespace Moonglade.Tests
 
         [TestCase("A 996 programmer went to heaven.", ExpectedResult = "A 996" + "\u00A0\u2026")]
         [TestCase("Fu bao", ExpectedResult = "Fu bao")]
+        [TestCase("", ExpectedResult = "")]
         public string TestEllipsize(string str)
         {
             return str.Ellipsize(10);
@@ -327,11 +328,22 @@ namespace Moonglade.Tests
         [TestCase("https://dot.net/955", ExpectedResult = true)]
         [TestCase("https://edi.wang", ExpectedResult = true)]
         [TestCase("http://javato.net", ExpectedResult = true)]
+        [TestCase("http://996.icu", Utils.UrlScheme.Http, ExpectedResult = true)]
+        [TestCase("http://996.icu", Utils.UrlScheme.Https, ExpectedResult = false)]
         [TestCase("a quick brown fox jumped over the lazy dog.", ExpectedResult = false)]
         [TestCase("http://a\\b", ExpectedResult = false)]
-        public bool TestIsValidUrl(string str)
+        public bool TestIsValidUrl(string str, Utils.UrlScheme urlScheme = Utils.UrlScheme.All)
         {
-            return str.IsValidUrl();
+            return str.IsValidUrl(urlScheme);
+        }
+
+        [Test]
+        public void TestIsValidUrlUnknownSchema()
+        {
+            Assert.Throws(typeof(ArgumentOutOfRangeException), () =>
+            {
+                "https://996.icu".IsValidUrl((Utils.UrlScheme)4);
+            });
         }
 
         [TestCase("https://996.icu", ExpectedResult = true)]
