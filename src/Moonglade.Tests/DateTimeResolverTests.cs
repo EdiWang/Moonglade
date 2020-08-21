@@ -7,11 +7,6 @@ namespace Moonglade.Tests
     [TestFixture]
     public class DateTimeResolverTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void TestGetDateTimeWithUserTZone()
         {
@@ -34,6 +29,25 @@ namespace Moonglade.Tests
             var utc = new DateTime(2000, 1, 1, 0, 0, 0);
 
             Assert.IsTrue(dt == utc);
+        }
+
+        [Test]
+        [Platform(Include = "Win")]
+        public void TestGetTimeSpanByZoneId()
+        {
+            var tSpan = "10:55:00";
+            var resolver = new DateTimeResolver(tSpan);
+            var ts = resolver.GetTimeSpanByZoneId("China Standard Time");
+            Assert.AreEqual(ts, TimeSpan.FromHours(8));
+        }
+
+        [Test]
+        public void TestGetTimeSpanByZoneIdEmpty()
+        {
+            var tSpan = "10:55:00";
+            var resolver = new DateTimeResolver(tSpan);
+            var ts = resolver.GetTimeSpanByZoneId(string.Empty);
+            Assert.AreEqual(ts, TimeSpan.Zero);
         }
     }
 }
