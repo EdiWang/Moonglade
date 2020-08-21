@@ -7,11 +7,6 @@ namespace Moonglade.Tests
     [TestFixture]
     public class GuidFileNameGeneratorTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void TestNonAppendix()
         {
@@ -41,15 +36,33 @@ namespace Moonglade.Tests
 
         [TestCase("007 Stupid")]
         [TestCase(".icu")]
-        [TestCase(" ")]
         public void TestInvalidFileName(string name)
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
-            Assert.Catch<ArgumentException>(() =>
+            Assert.Throws<ArgumentException>(() =>
             {
-                var fileName = gen.GetFileName(name);
+                gen.GetFileName(name);
             });
+        }
+
+        [TestCase(" ")]
+        public void TestEmptyFileName(string name)
+        {
+            var uid = Guid.NewGuid();
+            var gen = new GuidFileNameGenerator(uid);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                gen.GetFileName(name);
+            });
+        }
+
+        [Test]
+        public void TestGeneratorName()
+        {
+            var uid = Guid.NewGuid();
+            var gen = new GuidFileNameGenerator(uid);
+            Assert.AreEqual(gen.Name, nameof(GuidFileNameGenerator));
         }
 
         [TestCase("Choose .NET Core.png", "")]
