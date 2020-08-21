@@ -118,17 +118,11 @@ install_Moonglade()
     echo "Installing Moonglade to domain $server..."
 
     # Valid domain is required
-    ip=$(dig +short $server)
-    if [[ "$server" == "" ]] || [[ "$ip" == "" ]]; then
-        echo "You must specify your valid server domain. Try execute with 'bash -s www.a.com'"
-        return 9
-    fi
-
-    if [[ $(ifconfig) == *"$ip"* ]]; 
+    if [[ $(curl -sL ifconfig.me) == "$(dig +short $server)" ]]; 
     then
-        echo "$server resolves $ip and it is a valid current machine IP."
+        echo "IP is correct."
     else
-        echo "The ip result from domian $server is: $ip and it seems not to be your current machine's IP!"
+        echo "$server is not your current machine IP!"
         return 9
     fi
 
