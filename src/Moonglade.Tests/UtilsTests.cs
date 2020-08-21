@@ -253,6 +253,13 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        public void TestRemoveTagsEmpty()
+        {
+            var output = Utils.RemoveTags(string.Empty);
+            Assert.AreEqual(string.Empty, output);
+        }
+
+        [Test]
         public void TestRemoveScriptTagFromHtml()
         {
             var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><script>console.info('hey');</script><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
@@ -273,6 +280,8 @@ namespace Moonglade.Tests
 
         [TestCase('f', ExpectedResult = true)]
         [TestCase('0', ExpectedResult = false)]
+        [TestCase('`', ExpectedResult = false)]
+        [TestCase('#', ExpectedResult = false)]
         public bool TestIsLetter(char c)
         {
             return c.IsLetter();
@@ -392,6 +401,7 @@ namespace Moonglade.Tests
         [TestCase("https://edi.wang", "996", ExpectedResult = "https://edi.wang/996")]
         [TestCase("https://edi.wang", "996/007/251/404", ExpectedResult = "https://edi.wang/996/007/251/404")]
         [TestCase("https://edi.wang/dotnet", "1055", ExpectedResult = "https://edi.wang/1055")]
+        [TestCase("", "", ExpectedResult = "")]
         public string TestResolveCanonicalUrl(string prefix, string path)
         {
             var result = Utils.ResolveCanonicalUrl(prefix, path);
