@@ -176,6 +176,13 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        public void TestLazyLoadToImgTagEmpty()
+        {
+            var result = Utils.AddLazyLoadToImgTag(string.Empty);
+            Assert.IsTrue(result == string.Empty);
+        }
+
+        [Test]
         public void TestMdContentToHtml()
         {
             var md = "A quick brown **fox** jumped over the lazy dog.";
@@ -350,6 +357,18 @@ namespace Moonglade.Tests
         {
             var result = Utils.CombineUrl(url, path);
             return result;
+        }
+
+        [TestCase("", "")]
+        [TestCase("", " ")]
+        [TestCase(" ", "")]
+        [TestCase(" ", " ")]
+        public void TestCombineUrlEmptyOrWhitespace(string url, string path)
+        {
+            Assert.Throws(typeof(ArgumentNullException), () =>
+            {
+                var result = Utils.CombineUrl(url, path);
+            });
         }
 
         [TestCase("https://edi.wang", null, ExpectedResult = "https://edi.wang/")]
