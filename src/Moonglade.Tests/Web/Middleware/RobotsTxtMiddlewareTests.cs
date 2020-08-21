@@ -1,6 +1,10 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Web.Middleware;
@@ -73,6 +77,19 @@ namespace Moonglade.Tests.Web.Middleware
             Assert.AreEqual(StatusCodes.Status404NotFound, ctx.Response.StatusCode);
 
             Assert.Pass();
+        }
+
+        [Test]
+        public void TestRobotsTxtMiddlewareExtensions()
+        {
+            var serviceCollection = new ServiceCollection();
+            var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
+
+            applicationBuilder.UseRobotsTxt();
+
+            var app = applicationBuilder.Build();
+
+            Assert.IsInstanceOf<MapWhenMiddleware>(app.Target);
         }
     }
 }
