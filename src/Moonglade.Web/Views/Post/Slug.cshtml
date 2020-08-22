@@ -55,7 +55,7 @@
             postSlug.applyImageZooming();
             postSlug.renderCodeHighlighter();
 
-            @if (Settings.Value.WarnExternalLink)
+            @if (BlogConfig.SecuritySettings.WarnExternalLink)
             {
                 <text>
                     $.expr[':'].external = function(obj) {
@@ -340,7 +340,7 @@
     </div>
 </div>
 
-@if (Settings.Value.WarnExternalLink)
+@if (BlogConfig.SecuritySettings.WarnExternalLink)
 {
     <div class="modal fade" id="externalLinkModal" tabindex="-1" role="dialog" aria-labelledby="externalLinkModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-externalLink" role="document">
