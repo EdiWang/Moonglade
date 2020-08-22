@@ -91,7 +91,7 @@ namespace Moonglade.Web.Controllers
         [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}/{raw:regex(^(meta|content)$)}")]
         public async Task<IActionResult> Raw(int year, int month, int day, string slug, string raw)
         {
-            if (!AppSettings.EnablePostRawEndpoint)
+            if (!_blogConfig.SecuritySettings.EnablePostRawEndpoint)
             {
                 return NotFound();
             }

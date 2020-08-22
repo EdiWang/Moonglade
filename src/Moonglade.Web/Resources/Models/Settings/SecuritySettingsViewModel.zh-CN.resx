@@ -117,40 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="About" xml:space="preserve">
-    <value>关于</value>
+  <data name="Allow javascript in custom pages" xml:space="preserve">
+    <value>允许自定义页面中执JavaScript代码</value>
   </data>
-  <data name="Advanced" xml:space="preserve">
-    <value>高级</value>
+  <data name="Enable raw endpoint for posts" xml:space="preserve">
+    <value>启用文章RAW信息终端</value>
   </data>
-  <data name="Audit Logs" xml:space="preserve">
-    <value>审计日志</value>
+  <data name="Show Admin login button under sidebar" xml:space="preserve">
+    <value>在侧边栏下显示管理员登录按钮</value>
   </data>
-  <data name="Content" xml:space="preserve">
-    <value>内容</value>
-  </data>
-  <data name="Friend Links" xml:space="preserve">
-    <value>友情链接</value>
-  </data>
-  <data name="General" xml:space="preserve">
-    <value>通用</value>
-  </data>
-  <data name="Import &amp;amp; Export Data" xml:space="preserve">
-    <value>导出导入数据</value>
-  </data>
-  <data name="Notification" xml:space="preserve">
-    <value>通知</value>
-  </data>
-  <data name="Security" xml:space="preserve">
-    <value>安全</value>
-  </data>
-  <data name="Settings" xml:space="preserve">
-    <value>设置</value>
-  </data>
-  <data name="Subscription" xml:space="preserve">
-    <value>订阅</value>
-  </data>
-  <data name="Watermark" xml:space="preserve">
-    <value>水印</value>
+  <data name="Show warning when clicking external links" xml:space="preserve">
+    <value>点击外部链接时弹出警告</value>
   </data>
 </root>

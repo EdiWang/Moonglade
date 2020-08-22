@@ -617,6 +617,45 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
+        #region Security Settings
+
+        [HttpGet("security")]
+        public IActionResult Security()
+        {
+            var settings = _blogConfig.SecuritySettings;
+            var vm = new SecuritySettingsViewModel
+            {
+                WarnExternalLink = settings.WarnExternalLink,
+                AllowScriptsInCustomPage = settings.AllowScriptsInCustomPage,
+                ShowAdminLoginButton = settings.ShowAdminLoginButton,
+                EnablePostRawEndpoint = settings.EnablePostRawEndpoint
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost("security")]
+        public async Task<IActionResult> Security(SecuritySettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var settings = _blogConfig.SecuritySettings;
+                settings.WarnExternalLink = model.WarnExternalLink;
+                settings.AllowScriptsInCustomPage = model.AllowScriptsInCustomPage;
+                settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
+                settings.EnablePostRawEndpoint = model.EnablePostRawEndpoint;
+
+                var response = await _blogConfig.SaveConfigurationAsync(settings);
+                _blogConfig.RequireRefresh();
+
+                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
+                return Json(response);
+            }
+            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+        }
+
+        #endregion
+
         #region Audit Logs
 
         [HttpGet("auditlogs")]

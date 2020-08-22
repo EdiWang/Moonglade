@@ -12,6 +12,7 @@ namespace Moonglade.Configuration.Abstraction
         WatermarkSettings WatermarkSettings { get; set; }
         FriendLinksSettings FriendLinksSettings { get; set; }
         AdvancedSettings AdvancedSettings { get; set; }
+        SecuritySettings SecuritySettings { get; set; }
 
         Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings;
 

@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Moonglade.Web.Models.Settings
+{
+    public class SecuritySettingsViewModel
+    {
+        [Display(Name = "Show warning when clicking external links")]
+        public bool WarnExternalLink { get; set; }
+
+        [Display(Name = "Allow javascript in custom pages")]
+        public bool AllowScriptsInCustomPage { get; set; }
+
+        [Display(Name = "Show Admin login button under sidebar")]
+        public bool ShowAdminLoginButton { get; set; }
+
+        [Display(Name = "Enable raw endpoint for posts")]
+        public bool EnablePostRawEndpoint { get; set; }
+    }
+}

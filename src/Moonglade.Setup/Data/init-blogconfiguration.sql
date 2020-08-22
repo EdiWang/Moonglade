@@ -7,3 +7,4 @@ INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (4, 
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (5, 'WatermarkSettings', '{"IsEnabled":true,"KeepOriginImage":false,"FontSize":20,"WatermarkText":"Moonglade"}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (6, 'FriendLinksSettings', '{"ShowFriendLinksSection":true}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (7, 'AdvancedSettings', '{"DNSPrefetchEndpoint":""}', GETDATE())
+INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (8, 'SecuritySettings', '{"WarnExternalLink":true,"AllowScriptsInCustomPage":false,"ShowAdminLoginButton":false,"EnablePostRawEndpoint":true}', GETDATE())
