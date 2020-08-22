@@ -617,6 +617,7 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
+        #region Security Settings
 
         [HttpGet("security")]
         public IActionResult Security()
