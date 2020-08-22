@@ -634,7 +634,7 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("Security")]
+        [HttpPost("security")]
         public async Task<IActionResult> Security(SecuritySettingsViewModel model)
         {
             if (ModelState.IsValid)

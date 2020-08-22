@@ -6,3 +6,61 @@
 @Html.AntiForgeryToken()
 
 <partial name="_SettingsHeader" />
+
+<form id="form-settings" asp-controller="Settings" asp-action="Security"
+      data-ajax-begin="onUpdateSettingsBegin"
+      data-ajax-complete="onUpdateSettingsComplete"
+      data-ajax-failure="onUpdateSettingsFailed"
+      data-ajax-success="onUpdateSettingsSuccess"
+      data-ajax="true"
+      data-ajax-method="POST">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">@Localizer["Security Settings"]</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label asp-for="WarnExternalLink" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.WarnExternalLink ? "checked=\"checked\"" : "") id="WarnExternalLink" name="WarnExternalLink" type="checkbox" value="true">
+                            <label for="WarnExternalLink" class="label-success"></label>
+                            <input name="WarnExternalLink" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="AllowScriptsInCustomPage" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.AllowScriptsInCustomPage ? "checked=\"checked\"" : "") id="AllowScriptsInCustomPage" name="AllowScriptsInCustomPage" type="checkbox" value="true">
+                            <label for="AllowScriptsInCustomPage" class="label-success"></label>
+                            <input name="AllowScriptsInCustomPage" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="ShowAdminLoginButton" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.ShowAdminLoginButton ? "checked=\"checked\"" : "") id="ShowAdminLoginButton" name="ShowAdminLoginButton" type="checkbox" value="true">
+                            <label for="ShowAdminLoginButton" class="label-success"></label>
+                            <input name="ShowAdminLoginButton" type="hidden" value="false">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label asp-for="EnablePostRawEndpoint" class="control-label"></label>
+                        <div class="material-switch float-right">
+                            <input @(Model.EnablePostRawEndpoint ? "checked=\"checked\"" : "") id="EnablePostRawEndpoint" name="EnablePostRawEndpoint" type="checkbox" value="true">
+                            <label for="EnablePostRawEndpoint" class="label-success"></label>
+                            <input name="EnablePostRawEndpoint" type="hidden" value="false">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
+    <hr />
+    <div class="form-group">
+        <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
+    </div>
+</form>
