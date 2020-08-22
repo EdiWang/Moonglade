@@ -173,7 +173,6 @@ If you need email notification for new comments, new replies and pingbacks, you 
 Key | Data Type | Description
 --- | --- | ---
 ```AllowExternalScripts``` | ```bool``` | If CSP should enable external JavaScript links
-```AllowScriptsInCustomPage``` | ```bool``` | Allow JavaScript in Page content or not
 ```CaptchaSettings:ImageWidth``` | ```int``` | Pixel Width of Captcha Image
 ```CaptchaSettings:ImageHeight``` | ```int``` | Pixel Height of Captcha Image
 ```DefaultLangCode``` | ```string``` | Default language code for editing posts (e.g. ```en-us```)
@@ -181,17 +180,14 @@ Key | Data Type | Description
 ```EnforceHttps``` | ```bool``` | Force website use HTTPS
 ```EnableAudit``` | ```bool``` | Enable Audit Log or not
 ```EnableOpenGraph``` | ```bool``` | Enable Open Graph
-```EnablePostRawEndpoint``` | ```bool``` | Enable ```/meta``` and ```/content``` endpoint for post URL
 ```EnableWebApi``` | ```bool``` | Enable REST API
 ```CacheSlidingExpirationMinutes:Post``` | ```int``` | Time for cached posts to expire
 ```CacheSlidingExpirationMinutes:Page``` | ```int``` | Time for cached pages to expire
 ```CacheSlidingExpirationMinutes:Image``` | ```int``` | Time for cached image to expire
 ```PostAbstractWords``` | ```int``` | How may words to show in post list abstract
-```ShowAdminLoginButton``` | ```bool``` | Show 'Admin Login' button under side bar
 ```SystemNavMenus:Categories``` | ```bool``` | Show 'Categories' Menu
 ```SystemNavMenus:Tags``` | ```bool``` | Show 'Tags' Menu
 ```SystemNavMenus:Archive``` | ```bool``` | Show 'Archive' Menu
-```WarnExternalLink``` | ```bool``` | Warn user when clicking an external URL in a post
 
 ## 🎉 Blog Protocols or Standards
 
