@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="Edi.Practice.RequestResponseModel" Version="1.3.4" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.1" />
 
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
