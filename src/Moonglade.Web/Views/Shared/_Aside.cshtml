@@ -45,12 +45,15 @@
         </div>
     </section>
     
-    <section class="lang-selection mb-4">
-        <div class="card">
-            @await Html.PartialAsync("_SelectLanguagePartial")
-        </div>
-    </section>
-
+    @if (Settings.Value.AsideWidgets.LangSelection)
+    {
+        <section class="lang-selection mb-4">
+            <div class="card">
+                @await Html.PartialAsync("_SelectLanguagePartial")
+            </div>
+        </section>
+    }
+    
     @if (BlogConfig.SecuritySettings.ShowAdminLoginButton)
     {
         <div class="text-center">
