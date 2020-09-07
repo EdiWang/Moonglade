@@ -188,6 +188,7 @@ Key | Data Type | Description
 ```SystemNavMenus:Categories``` | ```bool``` | Show 'Categories' Menu
 ```SystemNavMenus:Tags``` | ```bool``` | Show 'Tags' Menu
 ```SystemNavMenus:Archive``` | ```bool``` | Show 'Archive' Menu
+```AsideWidgets:LangSelection``` | ```bool``` | Show language selection widget
 
 ## 🎉 Blog Protocols or Standards
 
