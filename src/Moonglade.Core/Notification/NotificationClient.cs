@@ -76,7 +76,7 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task SendNewCommentNotificationAsync(CommentListItem model, Func<string, string> funcCommentContentFormat)
+        public async Task SendNewCommentNotificationAsync(CommentDetailedItem model, Func<string, string> funcCommentContentFormat)
         {
             if (!IsEnabled)
             {

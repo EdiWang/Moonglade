@@ -47,9 +47,9 @@ namespace Moonglade.Core
             return _commentRepository.Count(c => true);
         }
 
-        public Task<IReadOnlyList<PostCommentListItem>> GetSelectedCommentsOfPostAsync(Guid postId)
+        public Task<IReadOnlyList<CommentItem>> GetSelectedCommentsOfPostAsync(Guid postId)
         {
-            return _commentRepository.SelectAsync(new CommentSpec(postId), c => new PostCommentListItem
+            return _commentRepository.SelectAsync(new CommentSpec(postId), c => new CommentItem
             {
                 CommentContent = c.CommentContent,
                 CreateOnUtc = c.CreateOnUtc,
@@ -63,9 +63,9 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<CommentListItem>>> GetPagedCommentAsync(int pageSize, int pageIndex)
+        public Task<Response<IReadOnlyList<CommentDetailedItem>>> GetPagedCommentAsync(int pageSize, int pageIndex)
         {
-            return TryExecuteAsync<IReadOnlyList<CommentListItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<CommentDetailedItem>>(async () =>
             {
                 if (pageSize < 1)
                 {
@@ -73,7 +73,7 @@ namespace Moonglade.Core
                 }
 
                 var spec = new CommentSpec(pageSize, pageIndex);
-                var comments = await _commentRepository.SelectAsync(spec, p => new CommentListItem
+                var comments = await _commentRepository.SelectAsync(spec, p => new CommentDetailedItem
                 {
                     Id = p.Id,
                     CommentContent = p.CommentContent,
@@ -90,7 +90,7 @@ namespace Moonglade.Core
                     }).ToList()
                 });
 
-                return new SuccessResponse<IReadOnlyList<CommentListItem>>(comments);
+                return new SuccessResponse<IReadOnlyList<CommentDetailedItem>>(comments);
             });
         }
 
@@ -149,14 +149,14 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<CommentListItem>> CreateAsync(NewCommentRequest request)
+        public Task<Response<CommentDetailedItem>> CreateAsync(NewCommentRequest request)
         {
-            return TryExecuteAsync<CommentListItem>(async () =>
+            return TryExecuteAsync<CommentDetailedItem>(async () =>
             {
                 // 1. Check comment enabled or not
                 if (!_blogConfig.ContentSettings.EnableComments)
                 {
-                    return new FailedResponse<CommentListItem>((int)FaultCode.CommentDisabled);
+                    return new FailedResponse<CommentDetailedItem>((int)FaultCode.CommentDisabled);
                 }
 
                 // 2. Harmonize banned keywords
@@ -186,7 +186,7 @@ namespace Moonglade.Core
                 var spec = new PostSpec(request.PostId, false);
                 var postTitle = _postRepository.SelectFirstOrDefault(spec, p => p.Title);
 
-                var item = new CommentListItem
+                var item = new CommentDetailedItem
                 {
                     Id = model.Id,
                     CommentContent = model.CommentContent,
@@ -198,7 +198,7 @@ namespace Moonglade.Core
                     Username = model.Username
                 };
 
-                return new SuccessResponse<CommentListItem>(item);
+                return new SuccessResponse<CommentDetailedItem>(item);
             });
         }
 
