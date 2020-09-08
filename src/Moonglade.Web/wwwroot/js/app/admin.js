@@ -133,12 +133,14 @@ var postEditor = {
                 relative_urls: false, // avoid image upload fuck up
                 browser_spellcheck: true,
                 branding: false,
+                block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
                 fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
                 plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools',
                 toolbar: 'undo redo | formatselect | fontsizeselect | bold italic strikethrough forecolor backcolor | removeformat | link image codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
                 paste_data_images: true,
                 images_upload_url: '/upload-image',
                 images_upload_credentials: true,
+                body_class: 'post-content',
                 content_css: '/css/tinymce-editor-bs-bundle.min.css',
                 codesample_languages: [
                     { text: 'Bash', value: 'bash' },

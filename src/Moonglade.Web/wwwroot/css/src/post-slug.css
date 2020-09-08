@@ -1,0 +1,36 @@
+﻿h1.post-title, .post-content h1 {
+    font-size: 1.55rem;
+}
+
+.post-content h2 {
+    font-size: 1.35rem;
+}
+
+.post-content h3 {
+    font-size: 1.25rem;
+}
+
+.post-content h4 {
+    font-size: 1.15rem;
+}
+
+.post-content p {
+    font-size: 0.95rem;
+    line-height: 1.6rem;
+    margin-bottom: 15px;
+    word-wrap: break-word;
+}
+
+.post-content img {
+    cursor: pointer;
+    min-height: 4px;
+    min-width: 4px;
+}
+
+.post-header-hr {
+    margin-bottom: 5px;
+}
+
+.post-publish-info {
+    font-size: 0.75rem;
+}
