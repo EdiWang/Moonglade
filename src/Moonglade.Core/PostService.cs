@@ -160,12 +160,12 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<PostSlugModel>> GetDraftPreviewAsync(Guid postId)
+        public Task<Response<PostSlug>> GetDraftPreviewAsync(Guid postId)
         {
-            return TryExecuteAsync<PostSlugModel>(async () =>
+            return TryExecuteAsync<PostSlug>(async () =>
             {
                 var spec = new PostSpec(postId);
-                var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugModel
+                var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlug
                 {
                     Title = post.Title,
                     Abstract = post.ContentAbstract,
@@ -196,7 +196,7 @@ namespace Moonglade.Core
                     postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
                 }
 
-                return new SuccessResponse<PostSlugModel>(postSlugModel);
+                return new SuccessResponse<PostSlug>(postSlugModel);
             });
         }
 
@@ -213,14 +213,14 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<PostSlugSegmentModel>> GetSegmentAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlugSegment>> GetSegmentAsync(int year, int month, int day, string slug)
         {
-            return TryExecuteAsync<PostSlugSegmentModel>(async () =>
+            return TryExecuteAsync<PostSlugSegment>(async () =>
             {
                 var date = new DateTime(year, month, day);
                 var spec = new PostSpec(date, slug);
 
-                var model = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugSegmentModel
+                var model = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugSegment
                 {
                     Title = post.Title,
                     PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
@@ -235,13 +235,13 @@ namespace Moonglade.Core
                                .ToArray()
                 });
 
-                return new SuccessResponse<PostSlugSegmentModel>(model);
+                return new SuccessResponse<PostSlugSegment>(model);
             });
         }
 
-        public Task<Response<PostSlugModel>> GetAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlug>> GetAsync(int year, int month, int day, string slug)
         {
-            return TryExecuteAsync<PostSlugModel>(async () =>
+            return TryExecuteAsync<PostSlug>(async () =>
             {
                 var date = new DateTime(year, month, day);
                 var spec = new PostSpec(date, slug);
@@ -253,7 +253,7 @@ namespace Moonglade.Core
                     {
                         entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Post"]);
 
-                        var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugModel
+                        var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlug
                         {
                             Title = post.Title,
                             Abstract = post.ContentAbstract,
@@ -291,10 +291,10 @@ namespace Moonglade.Core
                         return postSlugModel;
                     });
 
-                    return new SuccessResponse<PostSlugModel>(psm);
+                    return new SuccessResponse<PostSlug>(psm);
                 }
 
-                return new SuccessResponse<PostSlugModel>(null);
+                return new SuccessResponse<PostSlug>(null);
             });
         }
 

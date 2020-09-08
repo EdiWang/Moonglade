@@ -4,7 +4,7 @@ namespace Moonglade.Web.Models
 {
     public class PostSlugViewModelWrapper
     {
-        public PostSlugModel PostModel { get; }
+        public PostSlug PostModel { get; }
         public NewCommentViewModel NewCommentViewModel { get; set; }
 
         public PostSlugViewModelWrapper()
@@ -13,7 +13,7 @@ namespace Moonglade.Web.Models
             // Model bound complex types must not be abstract or value types and must have a parameterless constructor. Alternatively, give the 'model' parameter a non-null default value.
         }
 
-        public PostSlugViewModelWrapper(PostSlugModel postModel)
+        public PostSlugViewModelWrapper(PostSlug postModel)
         {
             PostModel = postModel;
             NewCommentViewModel = new NewCommentViewModel { PostId = PostModel.PostId };

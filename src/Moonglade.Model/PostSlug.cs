@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Moonglade.Model
 {
-    public class PostSlugModel
+    public class PostSlug
     {
         public string Title { get; set; }
         public string Abstract { get; set; }
@@ -21,7 +21,7 @@ namespace Moonglade.Model
         public IList<Tag> Tags { get; set; }
     }
 
-    public class PostSlugSegmentModel
+    public class PostSlugSegment
     {
         public string Title { get; set; }
         public DateTime PubDateUtc { get; set; }
