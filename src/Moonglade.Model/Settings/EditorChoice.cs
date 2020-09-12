@@ -3,7 +3,7 @@
     public enum EditorChoice
     {
         None = 0,
-        HTML = 1,
+        Html = 1,
         Markdown = 2
     }
 }

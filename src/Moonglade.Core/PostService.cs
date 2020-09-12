@@ -175,7 +175,7 @@ namespace Moonglade.Core
                     {
                         DisplayName = p.DisplayName,
                         RouteName = p.RouteName
-                    }).ToList(),
+                    }).ToArray(),
 
                     Content = post.PostContent,
 
@@ -184,7 +184,7 @@ namespace Moonglade.Core
                         {
                             NormalizedName = p.NormalizedName,
                             DisplayName = p.DisplayName
-                        }).ToList(),
+                        }).ToArray(),
                     PostId = post.Id,
                     IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
@@ -263,7 +263,7 @@ namespace Moonglade.Core
                             {
                                 DisplayName = p.DisplayName,
                                 RouteName = p.RouteName
-                            }).ToList(),
+                            }).ToArray(),
 
                             Content = post.PostContent,
                             Hits = post.PostExtension.Hits,
@@ -274,7 +274,7 @@ namespace Moonglade.Core
                                 {
                                     NormalizedName = p.NormalizedName,
                                     DisplayName = p.DisplayName
-                                }).ToList(),
+                                }).ToArray(),
                             PostId = post.Id,
                             CommentEnabled = post.CommentEnabled,
                             IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
