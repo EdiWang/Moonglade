@@ -194,10 +194,12 @@ namespace Moonglade.Web
             );
 
             app.UseRobotsTxt();
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
+
+            // Set environment variable `ASPNETCORE_FORWARDEDHEADERS_ENABLED` to `true` to enable forward headers
+            //app.UseForwardedHeaders(new ForwardedHeadersOptions
+            //{
+            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            //});
 
             TryUseUrlRewrite(app);
             app.UseMiddleware<PoweredByMiddleware>();
