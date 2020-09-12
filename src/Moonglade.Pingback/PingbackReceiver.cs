@@ -83,20 +83,20 @@ namespace Moonglade.Pingback
             return req;
         }
 
-        public PingbackServiceResponse ProcessReceivedPingback(PingRequest req, Func<bool> ifTargetResourceExists, Func<bool> ifAlreadyBeenPinged)
+        public PingbackResponse ReceivingPingback(PingRequest req, Func<bool> ifTargetResourceExists, Func<bool> ifAlreadyBeenPinged)
         {
             try
             {
                 if (null == req)
                 {
-                    return PingbackServiceResponse.InvalidPingRequest;
+                    return PingbackResponse.InvalidPingRequest;
                 }
 
                 var ti = ifTargetResourceExists();
-                if (!ti) return PingbackServiceResponse.Error32TargetUriNotExist;
+                if (!ti) return PingbackResponse.Error32TargetUriNotExist;
 
                 var pd = ifAlreadyBeenPinged();
-                if (pd) return PingbackServiceResponse.Error48PingbackAlreadyRegistered;
+                if (pd) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
                 if (req.SourceDocumentInfo.SourceHasLink && !req.SourceDocumentInfo.ContainsHtml)
                 {
@@ -104,21 +104,21 @@ namespace Moonglade.Pingback
                     var domain = GetDomain(_sourceUrl);
 
                     OnPingSuccess?.Invoke(this, new PingSuccessEventArgs(domain, req));
-                    return PingbackServiceResponse.Success;
+                    return PingbackResponse.Success;
                 }
 
                 if (!req.SourceDocumentInfo.SourceHasLink)
                 {
                     Logger.LogError("Pingback error: The source URI does not contain a link to the target URI, and so cannot be used as a source.");
-                    return PingbackServiceResponse.Error17SourceNotContainTargetUri;
+                    return PingbackResponse.Error17SourceNotContainTargetUri;
                 }
                 Logger.LogWarning("Spam detected on current Pingback...");
-                return PingbackServiceResponse.SpamDetectedFakeNotFound;
+                return PingbackResponse.SpamDetectedFakeNotFound;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, nameof(ProcessReceivedPingback));
-                return PingbackServiceResponse.GenericError;
+                Logger.LogError(ex, nameof(ReceivingPingback));
+                return PingbackResponse.GenericError;
             }
         }
 

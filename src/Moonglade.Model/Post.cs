@@ -16,8 +16,8 @@ namespace Moonglade.Model
         public bool ExposedToSiteMap { get; set; }
         public bool FeedIncluded { get; set; }
         public string ContentLanguageCode { get; set; }
-        public IList<Tag> Tags { get; set; }
-        public IList<Category> Categories { get; set; }
+        public Tag[] Tags { get; set; }
+        public Category[] Categories { get; set; }
         public DateTime? PubDateUtc { get; set; }
     }
 }

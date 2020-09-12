@@ -147,14 +147,14 @@ namespace Moonglade.Core
                         Id = pt.TagId,
                         NormalizedName = pt.Tag.NormalizedName,
                         DisplayName = pt.Tag.DisplayName
-                    }).ToList(),
+                    }).ToArray(),
                     Categories = p.PostCategory.Select(pc => new Category
                     {
                         Id = pc.CategoryId,
                         DisplayName = pc.Category.DisplayName,
                         RouteName = pc.Category.RouteName,
                         Note = pc.Category.Note
-                    }).ToList()
+                    }).ToArray()
                 });
                 return new SuccessResponse<Post>(post);
             });
@@ -357,7 +357,7 @@ namespace Moonglade.Core
                 {
                     NormalizedName = pt.Tag.NormalizedName,
                     DisplayName = pt.Tag.DisplayName
-                }).ToList()
+                }).ToArray()
             });
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Pingback
 {
-    public enum PingbackServiceResponse
+    public enum PingbackResponse
     {
         Success,
         GenericError,

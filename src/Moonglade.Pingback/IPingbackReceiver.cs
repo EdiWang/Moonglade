@@ -13,6 +13,6 @@ namespace Moonglade.Pingback
         event PingbackReceiver.PingSuccessHandler OnPingSuccess;
         Task<PingbackValidationResult> ValidatePingRequest(HttpContext context);
         Task<PingRequest> GetPingRequest();
-        PingbackServiceResponse ProcessReceivedPingback(PingRequest req, Func<bool> ifTargetResourceExists, Func<bool> ifAlreadyBeenPinged);
+        PingbackResponse ReceivingPingback(PingRequest req, Func<bool> ifTargetResourceExists, Func<bool> ifAlreadyBeenPinged);
     }
 }
