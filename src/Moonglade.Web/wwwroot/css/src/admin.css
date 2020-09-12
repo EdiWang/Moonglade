@@ -6,16 +6,41 @@
     padding-top: 0;
 }
 
+.admin-body-wrapper {
+    overflow-x: hidden;
+}
+
 .admin-nav {
     background-color: var(--moonglade-accent-color2);
-    max-width: 230px;
-    padding-left: 0;
-    padding-right: 0;
+    width: 260px;
+    min-height: 100vh;
+    margin-left: -15rem;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
 }
 
 .admin-main {
     overflow-y: scroll;
+    min-width: 100vw;
 }
+
+@media (min-width: 768px) {
+    .admin-nav {
+        margin-left: 0;
+    }
+
+    .admin-main {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .admin-body-wrapper.toggled .admin-nav {
+        margin-left: -15rem;
+    }
+}
+
 
 .textarea-code {
     font-family: 'Consolas';
