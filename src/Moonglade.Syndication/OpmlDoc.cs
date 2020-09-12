@@ -2,7 +2,7 @@
 
 namespace Moonglade.Syndication
 {
-    public class OpmlInfo
+    public class OpmlDoc
     {
         public string HtmlUrl { get; set; }
 
@@ -14,6 +14,6 @@ namespace Moonglade.Syndication
 
         public string CategoryHtmlUrlTemplate { get; set; }
 
-        public IEnumerable<OpmlCategoryInfo> CategoryInfo { get; set; }
+        public IEnumerable<OpmlCategory> CategoryInfo { get; set; }
     }
 }

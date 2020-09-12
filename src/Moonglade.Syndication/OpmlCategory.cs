@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Syndication
 {
-    public class OpmlCategoryInfo
+    public class OpmlCategory
     {
         public string Title { get; set; }
         public string DisplayName { get; set; }

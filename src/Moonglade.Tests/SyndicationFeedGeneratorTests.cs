@@ -14,7 +14,7 @@ namespace Moonglade.Tests
         [Test]
         public async Task TestRss20EmptyCollection()
         {
-            var itemCollection = new List<SimpleFeedItem>();
+            var itemCollection = new List<FeedEntry>();
 
             var rw = new SyndicationFeedGenerator
             {
@@ -60,7 +60,7 @@ namespace Moonglade.Tests
         [Test]
         public async Task TestAtom10EmptyCollection()
         {
-            var itemCollection = new List<SimpleFeedItem>();
+            var itemCollection = new List<FeedEntry>();
 
             var rw = new SyndicationFeedGenerator
             {
@@ -84,7 +84,7 @@ namespace Moonglade.Tests
         [Test]
         public async Task TestAtom10WithCollection()
         {
-            var itemCollection = new List<SimpleFeedItem>();
+            var itemCollection = new List<FeedEntry>();
 
             var rw = new SyndicationFeedGenerator
             {
@@ -105,11 +105,11 @@ namespace Moonglade.Tests
             Assert.IsTrue(File.Exists(path));
         }
 
-        private IList<SimpleFeedItem> GetFeedItems()
+        private static IEnumerable<FeedEntry> GetFeedItems()
         {
-            var itemCollection = new List<SimpleFeedItem>
+            var itemCollection = new List<FeedEntry>
             {
-                new SimpleFeedItem
+                new FeedEntry
                 {
                     Author = "J Ma",
                     Title = "996 is Fubao",
@@ -120,7 +120,7 @@ namespace Moonglade.Tests
                     Link = "https://996.icu/fubao",
                     PubDateUtc = DateTime.Now
                 },
-                new SimpleFeedItem
+                new FeedEntry
                 {
                     Author = "G Ni",
                     Title = "Cheating funds from zero to hero",

@@ -9,7 +9,7 @@ namespace Moonglade.Syndication
         string HeadDescription { get; set; }
         string HeadTitle { get; set; }
         string HostUrl { get; set; }
-        IEnumerable<SimpleFeedItem> FeedItemCollection { get; set; }
+        IEnumerable<FeedEntry> FeedItemCollection { get; set; }
         int MaxContentLength { get; set; }
         string TrackBackUrl { get; set; }
     }

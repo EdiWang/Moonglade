@@ -104,7 +104,7 @@ namespace Moonglade.Core
             Logger.LogInformation("Finished writing feed for posts.");
         }
 
-        private async Task<IReadOnlyList<SimpleFeedItem>> GetPostsAsFeedItemsAsync(Guid? categoryId = null)
+        private async Task<IReadOnlyList<FeedEntry>> GetPostsAsFeedItemsAsync(Guid? categoryId = null)
         {
             int? top = null;
             if (_blogConfig.FeedSettings.RssItemCount != 0)
@@ -113,7 +113,7 @@ namespace Moonglade.Core
             }
 
             var postSpec = new PostSpec(categoryId, top);
-            var list = await _postRepository.SelectAsync(postSpec, p => p.PostPublish.PubDateUtc != null ? new SimpleFeedItem
+            var list = await _postRepository.SelectAsync(postSpec, p => p.PostPublish.PubDateUtc != null ? new FeedEntry
             {
                 Id = p.Id.ToString(),
                 Title = p.Title,

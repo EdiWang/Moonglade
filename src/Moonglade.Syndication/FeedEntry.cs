@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Moonglade.Syndication
 {
-    public class SimpleFeedItem
+    public class FeedEntry
     {
         public string Id { get; set; }
         public DateTime PubDateUtc { get; set; }

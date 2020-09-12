@@ -14,12 +14,12 @@ namespace Moonglade.Syndication
     {
         public SyndicationFeedGenerator()
         {
-            FeedItemCollection = new List<SimpleFeedItem>();
+            FeedItemCollection = new List<FeedEntry>();
         }
 
         #region Properties
 
-        public IEnumerable<SimpleFeedItem> FeedItemCollection { get; set; }
+        public IEnumerable<FeedEntry> FeedItemCollection { get; set; }
 
         public int MaxContentLength { get; set; }
 
@@ -39,7 +39,7 @@ namespace Moonglade.Syndication
 
         #endregion
 
-        private static IEnumerable<SyndicationItem> GetSyndicationItemCollection(IEnumerable<SimpleFeedItem> itemCollection)
+        private static IEnumerable<SyndicationItem> GetSyndicationItemCollection(IEnumerable<FeedEntry> itemCollection)
         {
             var synItemCollection = new List<SyndicationItem>();
             foreach (var item in itemCollection)
