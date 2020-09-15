@@ -1,4 +1,4 @@
-﻿@model IReadOnlyList<Moonglade.Model.PostListItem>
+﻿@model IReadOnlyList<Moonglade.Model.PostListEntry>
 
 @{
     ViewBag.TitlePrefix = $"All Posts in {ViewBag.ArchiveInfo}";
@@ -19,7 +19,7 @@
     {
         foreach (var item in Model.OrderByDescending(s => s.PubDateUtc))
         {
-            <partial name="_PostListItem" model="item" />
+            <partial name="_PostListEntry" model="item" />
             <div class="mb-4 d-none d-md-block"></div>
             <hr class="d-none d-md-block" />
         }

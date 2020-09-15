@@ -332,7 +332,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostListItem>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null)
+        public Task<IReadOnlyList<PostListEntry>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -346,7 +346,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostPagingSpec(pageSize, pageIndex, categoryId);
-            return _postRepository.SelectAsync(spec, p => new PostListItem
+            return _postRepository.SelectAsync(spec, p => new PostListEntry
             {
                 Title = p.Title,
                 Slug = p.Slug,
@@ -361,7 +361,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<IReadOnlyList<PostListItem>> GetArchiveAsync(int year, int month = 0)
+        public async Task<IReadOnlyList<PostListEntry>> GetArchiveAsync(int year, int month = 0)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
@@ -376,7 +376,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostSpec(year, month);
-            var list = await _postRepository.SelectAsync(spec, p => new PostListItem
+            var list = await _postRepository.SelectAsync(spec, p => new PostListEntry
             {
                 Title = p.Title,
                 Slug = p.Slug,
@@ -387,9 +387,9 @@ namespace Moonglade.Core
             return list;
         }
 
-        public Task<Response<IReadOnlyList<PostListItem>>> GetByTagAsync(int tagId)
+        public Task<Response<IReadOnlyList<PostListEntry>>> GetByTagAsync(int tagId)
         {
-            return TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<PostListEntry>>(async () =>
             {
                 if (tagId == 0)
                 {
@@ -397,7 +397,7 @@ namespace Moonglade.Core
                 }
 
                 var posts = await _postTagRepository.SelectAsync(new PostTagSpec(tagId),
-                    p => new PostListItem
+                    p => new PostListEntry
                     {
                         Title = p.Post.Title,
                         Slug = p.Post.Slug,
@@ -406,7 +406,7 @@ namespace Moonglade.Core
                         LangCode = p.Post.PostPublish.ContentLanguageCode
                     });
 
-                return new SuccessResponse<IReadOnlyList<PostListItem>>(posts);
+                return new SuccessResponse<IReadOnlyList<PostListEntry>>(posts);
             });
         }
 

@@ -50,7 +50,7 @@ namespace Moonglade.Web.Controllers
                 var postList = await _postService.GetPagedPostsAsync(pagesize, page);
                 var postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCount, entry => _postService.CountVisiblePosts().Item);
 
-                var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pagesize, postCount);
+                var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pagesize, postCount);
                 return View(postsAsIPagedList);
             }
             catch (Exception e)

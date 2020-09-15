@@ -26,9 +26,9 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public Task<Response<IReadOnlyList<PostListItem>>> SearchAsync(string keyword)
+        public Task<Response<IReadOnlyList<PostListEntry>>> SearchAsync(string keyword)
         {
-            return TryExecuteAsync<IReadOnlyList<PostListItem>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<PostListEntry>>(async () =>
             {
                 if (string.IsNullOrWhiteSpace(keyword))
                 {
@@ -37,7 +37,7 @@ namespace Moonglade.Core
 
                 var postList = SearchByKeyword(keyword);
 
-                var resultList = await postList.Select(p => new PostListItem
+                var resultList = await postList.Select(p => new PostListEntry
                 {
                     Title = p.Title,
                     Slug = p.Slug,
@@ -50,7 +50,7 @@ namespace Moonglade.Core
                     }).ToList()
                 }).ToListAsync();
 
-                return new SuccessResponse<IReadOnlyList<PostListItem>>(resultList);
+                return new SuccessResponse<IReadOnlyList<PostListEntry>>(resultList);
             }, keyParameter: keyword);
         }
 

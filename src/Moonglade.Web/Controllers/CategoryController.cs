@@ -64,7 +64,7 @@ namespace Moonglade.Web.Controllers
             var postCount = _postService.CountByCategoryId(cat.Id).Item;
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
-            var postsAsIPagedList = new StaticPagedList<PostListItem>(postList, page, pageSize, postCount);
+            var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pageSize, postCount);
             return View(postsAsIPagedList);
         }
 

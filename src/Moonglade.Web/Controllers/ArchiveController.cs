@@ -41,7 +41,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest();
             }
 
-            IReadOnlyList<PostListItem> model;
+            IReadOnlyList<PostListEntry> model;
 
             if (null != month)
             {
