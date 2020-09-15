@@ -80,13 +80,13 @@ namespace Moonglade.Web.Controllers
             {
                 Text = t.DisplayName,
                 Value = t.Id
-            }).ToList();
+            });
 
             var tmList = Utils.GetThemes().Select(t => new SelectListItem
             {
                 Text = t.Key,
                 Value = t.Value
-            }).ToList();
+            });
 
             var vm = new GeneralSettingsViewModel
             {
