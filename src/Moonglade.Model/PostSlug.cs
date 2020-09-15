@@ -19,13 +19,4 @@ namespace Moonglade.Model
         public Category[] Categories { get; set; }
         public Tag[] Tags { get; set; }
     }
-
-    public class PostSlugSegment
-    {
-        public string Title { get; set; }
-        public DateTime PubDateUtc { get; set; }
-        public DateTime? LastModifyOnUtc { get; set; }
-        public string[] Categories { get; set; }
-        public string[] Tags { get; set; }
-    }
 }
