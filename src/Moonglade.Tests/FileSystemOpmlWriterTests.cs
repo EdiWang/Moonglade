@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Moonglade.Syndication;
 using NUnit.Framework;
@@ -14,9 +13,9 @@ namespace Moonglade.Tests
         [Test]
         public async Task TestWriteOpmlFileAsync()
         {
-            var catInfos = new List<OpmlCategoryInfo>
+            var catInfos = new List<OpmlCategory>
             {
-                new OpmlCategoryInfo
+                new OpmlCategory
                 {
                     DisplayName = "Work 996",
                     Title = "work-996"
@@ -24,7 +23,7 @@ namespace Moonglade.Tests
             };
             var siteRootUrl = "https://996.icu";
 
-            var info = new OpmlInfo
+            var info = new OpmlDoc
             {
                 SiteTitle = $"Work 996 - OPML",
                 CategoryInfo = catInfos,

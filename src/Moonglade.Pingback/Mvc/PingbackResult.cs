@@ -10,13 +10,13 @@ namespace Moonglade.Pingback.Mvc
 {
     public class PingbackResult : IActionResult
     {
-        public PingbackServiceResponse PingbackServiceResponse { get; }
+        public PingbackResponse PingbackResponse { get; }
 
         private ILogger<PingbackResult> _logger;
 
-        public PingbackResult(PingbackServiceResponse pingbackServiceResponse)
+        public PingbackResult(PingbackResponse pingbackResponse)
         {
-            PingbackServiceResponse = pingbackServiceResponse;
+            PingbackResponse = pingbackResponse;
         }
 
         public Task ExecuteResultAsync(ActionContext context)
@@ -27,39 +27,39 @@ namespace Moonglade.Pingback.Mvc
             }
 
             _logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<PingbackResult>>();
-            _logger.LogInformation($"Executing PingbackResult for '{PingbackServiceResponse}'");
+            _logger.LogInformation($"Executing PingbackResult for '{PingbackResponse}'");
 
             string content = null;
             int statusCode = StatusCodes.Status200OK;
             IActionResult actionResult = null;
 
-            switch (PingbackServiceResponse)
+            switch (PingbackResponse)
             {
-                case PingbackServiceResponse.Success:
+                case PingbackResponse.Success:
                     content =
                         "<methodResponse><params><param><value><string>Thanks!</string></value></param></params></methodResponse>";
                     break;
-                case PingbackServiceResponse.Error17SourceNotContainTargetUri:
+                case PingbackResponse.Error17SourceNotContainTargetUri:
                     content = BuildErrorResponseBody(17,
                         "The source URI does not contain a link to the target URI, and so cannot be used as a source.");
                     break;
-                case PingbackServiceResponse.Error32TargetUriNotExist:
+                case PingbackResponse.Error32TargetUriNotExist:
                     content = BuildErrorResponseBody(32, "The specified target URI does not exist.");
                     break;
-                case PingbackServiceResponse.Error48PingbackAlreadyRegistered:
+                case PingbackResponse.Error48PingbackAlreadyRegistered:
                     content = BuildErrorResponseBody(48, "The pingback has already been registered.");
                     break;
-                case PingbackServiceResponse.SpamDetectedFakeNotFound:
+                case PingbackResponse.SpamDetectedFakeNotFound:
                     actionResult = new NotFoundResult();
                     break;
-                case PingbackServiceResponse.GenericError:
+                case PingbackResponse.GenericError:
                     actionResult = new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     break;
-                case PingbackServiceResponse.InvalidPingRequest:
+                case PingbackResponse.InvalidPingRequest:
                     actionResult = new BadRequestResult();
                     break;
                 default:
-                    _logger.LogError($"Error Executing PingbackResult, invalid PingbackServiceResponse '{PingbackServiceResponse}'");
+                    _logger.LogError($"Error Executing PingbackResult, invalid PingbackResponse '{PingbackResponse}'");
                     throw new ArgumentOutOfRangeException();
             }
 

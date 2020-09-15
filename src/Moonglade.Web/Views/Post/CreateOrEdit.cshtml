@@ -10,7 +10,7 @@
         var ec = Settings.Value.Editor;
         switch (ec)
         {
-            case EditorChoice.HTML:
+            case EditorChoice.Html:
                 <script src="~/lib/tinymce/tinymce.min.js"></script>
                 break;
             case EditorChoice.Markdown:
@@ -25,20 +25,20 @@
         }
     }
 
-    <script>
+<script>
         $(function () {
             postEditor.initEvents();
             var editorMode = '@Settings.Value.Editor';
-            if (editorMode == 'HTML') {
+            if (editorMode == '@nameof(EditorChoice.Html)') {
                 postEditor.loadRichEditor(".post-content-textarea");
             }
-            if (editorMode == 'Markdown') {
+            if (editorMode == '@nameof(EditorChoice.Markdown)') {
                 postEditor.loadMdEditor(".post-content-textarea");
             }
 
             postEditor.keepAlive();
         });
-    </script>
+</script>
 }
 
 <form class="post-edit-form" asp-action="CreateOrEdit"

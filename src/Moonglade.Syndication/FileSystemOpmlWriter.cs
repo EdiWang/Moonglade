@@ -7,7 +7,7 @@ namespace Moonglade.Syndication
 {
     public class FileSystemOpmlWriter : IFileSystemOpmlWriter
     {
-        public async Task WriteOpmlFileAsync(string opmlFilePath, OpmlInfo opmlInfo)
+        public async Task WriteOpmlFileAsync(string opmlFilePath, OpmlDoc opmlDoc)
         {
             await using var fs = new FileStream(opmlFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
@@ -23,7 +23,7 @@ namespace Moonglade.Syndication
                 // open HEAD
                 writer.WriteStartElement("head");
                 writer.WriteStartElement("title");
-                writer.WriteValue(opmlInfo.SiteTitle);
+                writer.WriteValue(opmlDoc.SiteTitle);
                 await writer.WriteEndElementAsync();
                 await writer.WriteEndElementAsync();
 
@@ -35,12 +35,12 @@ namespace Moonglade.Syndication
                 writer.WriteAttributeString("title", "All Posts");
                 writer.WriteAttributeString("text", "All Posts");
                 writer.WriteAttributeString("type", "rss");
-                writer.WriteAttributeString("xmlUrl", opmlInfo.XmlUrl);
-                writer.WriteAttributeString("htmlUrl", opmlInfo.HtmlUrl);
+                writer.WriteAttributeString("xmlUrl", opmlDoc.XmlUrl);
+                writer.WriteAttributeString("htmlUrl", opmlDoc.HtmlUrl);
                 await writer.WriteEndElementAsync();
 
                 // categories
-                foreach (var cat in opmlInfo.CategoryInfo)
+                foreach (var cat in opmlDoc.CategoryInfo)
                 {
                     // open OUTLINE
                     writer.WriteStartElement("outline");
@@ -48,8 +48,8 @@ namespace Moonglade.Syndication
                     writer.WriteAttributeString("title", cat.DisplayName);
                     writer.WriteAttributeString("text", cat.Title);
                     writer.WriteAttributeString("type", "rss");
-                    writer.WriteAttributeString("xmlUrl", opmlInfo.CategoryXmlUrlTemplate.Replace("[catTitle]", cat.Title).ToLower());
-                    writer.WriteAttributeString("htmlUrl", opmlInfo.CategoryHtmlUrlTemplate.Replace("[catTitle]", cat.Title).ToLower());
+                    writer.WriteAttributeString("xmlUrl", opmlDoc.CategoryXmlUrlTemplate.Replace("[catTitle]", cat.Title).ToLower());
+                    writer.WriteAttributeString("htmlUrl", opmlDoc.CategoryHtmlUrlTemplate.Replace("[catTitle]", cat.Title).ToLower());
 
                     // close OUTLINE
                     await writer.WriteEndElementAsync();

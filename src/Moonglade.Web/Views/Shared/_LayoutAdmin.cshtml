@@ -29,76 +29,76 @@
     @await RenderSectionAsync("head", false)
 </head>
 <body class="admin-body">
-    <div class="container-fluid full-height">
-        <div class="row full-height">
-            <aside class="admin-nav full-height col-12 col-sm-3">
-                <div class="admin-avatar d-flex justify-content-center mt-4">
-                    <img src="@Url.Action("Avatar", "Assets")"
-                         alt="@BlogConfig.GeneralSettings.OwnerName"
-                         class="rounded-circle blogger-head-pic" />
-                </div>
-                <div class="admin-user-info text-center mt-3 mb-3 text-light">
-                    <h4>
-                        @BlogConfig.GeneralSettings.OwnerName
-                    </h4>
-                    <p class="small text-moonglade-dark-secondary">@User.Identity.Name</p>
-                </div>
+    <div class="d-flex admin-body-wrapper">
+        <aside class="admin-nav">
+            <div class="admin-avatar d-flex justify-content-center mt-4">
+                <img src="@Url.Action("Avatar", "Assets")"
+                     alt="@BlogConfig.GeneralSettings.OwnerName"
+                     class="rounded-circle blogger-head-pic" />
+            </div>
+            <div class="admin-user-info text-center mt-3 mb-3 text-light">
+                <h4>
+                    @BlogConfig.GeneralSettings.OwnerName
+                </h4>
+                <p class="small text-moonglade-dark-secondary">@User.Identity.Name</p>
+            </div>
 
-                <hr class="admin-nav-divider" />
+            <hr class="admin-nav-divider" />
 
-                <section class="admin-nav-section mt-3 mb-3">
-                    <div class="list-group list-group-flush">
-                        <a asp-controller="Post" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Post" ? "active" : null)">
-                            <span class="icon-file-text2"></span>
-                            @Localizer["Posts"]
-                        </a>
-                        <a asp-controller="Category" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Category" ? "active" : null)">
-                            <span class="icon-folder"></span>
-                            @Localizer["Categories"]
-                        </a>
-                        <a asp-controller="Comment" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Comment" ? "active" : null)">
-                            <span class="icon-bubbles3"></span>
-                            @Localizer["Comments"]
-                        </a>
-                        <a asp-controller="Tags" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Tags" ? "active" : null)">
-                            <span class="icon-price-tag"></span>
-                            @Localizer["Tags"]
-                        </a>
-                        <a asp-controller="CustomPage" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "CustomPage" ? "active" : null)">
-                            <span class="icon-file-empty"></span>
-                            @Localizer["Pages"]
-                        </a>
-                        <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
-                            <span class="icon-earth"></span>
-                            @Localizer["Pingbacks"]
-                        </a>
-                        <a asp-controller="NavMenu" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "NavMenu" ? "active" : null)">
-                            <span class="icon-list"></span>
-                            @Localizer["Menus"]
-                        </a>
-                        <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
-                            <span class="icon-cog"></span>
-                            @Localizer["Settings"]
-                        </a>
-                    </div>
-                </section>
-
-                <hr class="admin-nav-divider" />
-
-                <div class="text-center mt-3">
-                    <a href="/" target="_blank" class="btn btn-sm btn-success">
-                        <span class="icon-home"></span> @Localizer["Home"]
+            <section class="admin-nav-section mt-3 mb-3">
+                <div class="list-group list-group-flush">
+                    <a asp-controller="Post" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Post" ? "active" : null)">
+                        <span class="icon-file-text2"></span>
+                        @Localizer["Posts"]
                     </a>
-                    <a asp-controller="Admin" asp-action="SignOut" class="btn btn-sm btn-danger">
-                        <span class="icon-enter"></span> @Localizer["Sign Out"]
+                    <a asp-controller="Category" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Category" ? "active" : null)">
+                        <span class="icon-folder"></span>
+                        @Localizer["Categories"]
+                    </a>
+                    <a asp-controller="Comment" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Comment" ? "active" : null)">
+                        <span class="icon-bubbles3"></span>
+                        @Localizer["Comments"]
+                    </a>
+                    <a asp-controller="Tags" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Tags" ? "active" : null)">
+                        <span class="icon-price-tag"></span>
+                        @Localizer["Tags"]
+                    </a>
+                    <a asp-controller="CustomPage" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "CustomPage" ? "active" : null)">
+                        <span class="icon-file-empty"></span>
+                        @Localizer["Pages"]
+                    </a>
+                    <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
+                        <span class="icon-earth"></span>
+                        @Localizer["Pingbacks"]
+                    </a>
+                    <a asp-controller="NavMenu" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "NavMenu" ? "active" : null)">
+                        <span class="icon-list"></span>
+                        @Localizer["Menus"]
+                    </a>
+                    <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
+                        <span class="icon-cog"></span>
+                        @Localizer["Settings"]
                     </a>
                 </div>
-                <p class="text-moonglade-dark-secondary mt-4 small text-center">
-                    Moonglade @Utils.AppVersion <br />
-                    <a class="link-transparent" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">@Localizer["Issue or Suggestion"]</a>
-                </p>
-            </aside>
-            <div class="admin-main full-height pt-4 col-sm col-12">
+            </section>
+
+            <hr class="admin-nav-divider" />
+
+            <div class="text-center mt-3">
+                <a href="/" target="_blank" class="btn btn-sm btn-success">
+                    <span class="icon-home"></span> @Localizer["Home"]
+                </a>
+                <a asp-controller="Admin" asp-action="SignOut" class="btn btn-sm btn-danger">
+                    <span class="icon-enter"></span> @Localizer["Sign Out"]
+                </a>
+            </div>
+            <p class="text-moonglade-dark-secondary mt-4 small text-center">
+                Moonglade @Utils.AppVersion <br />
+                <a class="link-transparent" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">@Localizer["Issue or Suggestion"]</a>
+            </p>
+        </aside>
+        <div class="admin-main pt-4">
+            <div class="container-fluid">
                 @RenderBody()
             </div>
         </div>

@@ -29,10 +29,10 @@ namespace Moonglade.Tests.Core
             _postRepositoryMock = new Mock<IRepository<PostEntity>>();
         }
 
-        [TestCase(PingbackValidationResult.GenericError, ExpectedResult = PingbackServiceResponse.InvalidPingRequest)]
-        [TestCase(PingbackValidationResult.TerminatedMethodNotFound, ExpectedResult = PingbackServiceResponse.InvalidPingRequest)]
-        [TestCase(PingbackValidationResult.TerminatedUrlNotFound, ExpectedResult = PingbackServiceResponse.InvalidPingRequest)]
-        public async Task<PingbackServiceResponse> TestProcessReceivedPingbackInvalidRequest(PingbackValidationResult result)
+        [TestCase(PingbackValidationResult.GenericError, ExpectedResult = PingbackResponse.InvalidPingRequest)]
+        [TestCase(PingbackValidationResult.TerminatedMethodNotFound, ExpectedResult = PingbackResponse.InvalidPingRequest)]
+        [TestCase(PingbackValidationResult.TerminatedUrlNotFound, ExpectedResult = PingbackResponse.InvalidPingRequest)]
+        public async Task<PingbackResponse> TestProcessReceivedPingbackInvalidRequest(PingbackValidationResult result)
         {
             var tcs = new TaskCompletionSource<PingbackValidationResult>();
             tcs.SetResult(result);

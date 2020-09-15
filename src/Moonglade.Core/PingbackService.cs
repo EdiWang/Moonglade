@@ -33,7 +33,7 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public async Task<PingbackServiceResponse> ProcessReceivedPayloadAsync(HttpContext context)
+        public async Task<PingbackResponse> ProcessReceivedPayloadAsync(HttpContext context)
         {
             var response = await _pingbackReceiver.ValidatePingRequest(context);
             if (response == PingbackValidationResult.ValidPingRequest)
@@ -57,17 +57,17 @@ namespace Moonglade.Core
                             SourceIp = context.Connection.RemoteIpAddress.ToString()
                         });
 
-                    return _pingbackReceiver.ProcessReceivedPingback(
+                    return _pingbackReceiver.ReceivingPingback(
                         pingRequest,
                         () => true,
                         () => HasAlreadyBeenPinged(idTitleTuple.Id, pingRequest.SourceUrl, pingRequest.TargetUrl));
                 }
 
                 Logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
-                return PingbackServiceResponse.GenericError;
+                return PingbackResponse.GenericError;
             }
 
-            return PingbackServiceResponse.InvalidPingRequest;
+            return PingbackResponse.InvalidPingRequest;
         }
 
         public Task<Response<IReadOnlyList<PingbackHistory>>> GetReceivedPingbacksAsync()

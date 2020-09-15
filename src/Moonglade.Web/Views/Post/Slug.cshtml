@@ -10,7 +10,7 @@
 }
 
 @section keywords {
-    @if (Model.PostModel.Tags.Count > 0)
+    @if (Model.PostModel.Tags.Length > 0)
     {
         <meta name="keywords" content="@string.Join(", ", Model.PostModel.Tags.Select(t => t.NormalizedName))" />
     }
@@ -145,7 +145,7 @@
         <div class="hidden-print">
             <section class="post-cat-tag-info">
                 <div class="float-right d-none d-md-block">
-                    @if (Model.PostModel.Tags.Count > 0)
+                    @if (Model.PostModel.Tags.Length > 0)
                     {
                         <span class="toptags-list toptags-list-sm">
                             @foreach (var item in Model.PostModel.Tags)
@@ -157,7 +157,7 @@
                         </span>
                     }
                 </div>
-                @if (Model.PostModel.Categories.Count > 0)
+                @if (Model.PostModel.Categories.Length > 0)
                 {
                     <ul class="d-flex flex-row list-unstyled ul-cat-list-desktop mb-0">
                         @foreach (var item in Model.PostModel.Categories)
@@ -186,7 +186,7 @@
                 @Html.Raw(Utils.ConvertMarkdownContent(Model.PostModel.Content, Utils.MarkdownConvertType.Html, false))
                 break;
             case EditorChoice.None:
-            case EditorChoice.HTML:
+            case EditorChoice.Html:
             default:
                 @Html.Raw(Model.PostModel.Content)
                 break;
@@ -205,7 +205,7 @@
 
     <div class="tag-mobile d-block d-sm-none">
         <hr />
-        @if (Model.PostModel.Tags.Count > 0)
+        @if (Model.PostModel.Tags.Length > 0)
         {
             <span class="toptags-list toptags-list-sm">
                 @foreach (var item in Model.PostModel.Tags)

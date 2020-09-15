@@ -49,13 +49,13 @@ namespace Moonglade.Web.Controllers
                     return ServerError("Unsuccessful response from _categoryService.GetAllAsync().");
                 }
 
-                var catInfos = catResponse.Item.Select(c => new OpmlCategoryInfo
+                var catInfos = catResponse.Item.Select(c => new OpmlCategory
                 {
                     DisplayName = c.DisplayName,
                     Title = c.RouteName
                 });
 
-                var oi = new OpmlInfo
+                var oi = new OpmlDoc
                 {
                     SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
                     CategoryInfo = catInfos,
