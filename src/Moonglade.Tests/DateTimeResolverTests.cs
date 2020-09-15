@@ -15,7 +15,7 @@ namespace Moonglade.Tests
 
             Assert.Throws<FormatException>(() =>
             {
-                resolver.GetDateTimeWithUserTZone(utc);
+                resolver.ToTimeZone(utc);
             });
         }
 
@@ -25,7 +25,7 @@ namespace Moonglade.Tests
             var resolver = new DateTimeResolver(string.Empty);
 
             var utc = new DateTime(2000, 1, 1, 0, 0, 0);
-            var dt = resolver.GetDateTimeWithUserTZone(utc);
+            var dt = resolver.ToTimeZone(utc);
 
             Assert.IsTrue(dt == DateTime.Parse("2000/1/1 0:00:00"));
         }
@@ -37,7 +37,7 @@ namespace Moonglade.Tests
             var resolver = new DateTimeResolver(tSpan);
 
             var utc = new DateTime(2000, 1, 1, 0, 0, 0);
-            var dt = resolver.GetDateTimeWithUserTZone(utc);
+            var dt = resolver.ToTimeZone(utc);
 
             Assert.IsTrue(dt == DateTime.Parse("2000/1/1 2:51:00"));
         }
@@ -48,7 +48,7 @@ namespace Moonglade.Tests
             var tSpan = "10:55:00";
             var resolver = new DateTimeResolver(tSpan);
 
-            var dt = resolver.GetUtcTimeFromUserTZone(DateTime.Parse("2000/1/1 10:55:00"));
+            var dt = resolver.ToUtc(DateTime.Parse("2000/1/1 10:55:00"));
             var utc = new DateTime(2000, 1, 1, 0, 0, 0);
 
             Assert.IsTrue(dt == utc);
@@ -79,7 +79,7 @@ namespace Moonglade.Tests
             var tSpan = "8:00:00";
             var resolver = new DateTimeResolver(tSpan);
             var utc = DateTime.UtcNow;
-            var dt = resolver.GetNowWithUserTZone();
+            var dt = resolver.GetNowOfTimeZone();
             Assert.AreEqual(utc.AddHours(8).Date, dt.Date);
             Assert.AreEqual(utc.AddHours(8).Hour, dt.Hour);
             Assert.AreEqual(utc.AddHours(8).Minute, dt.Minute);

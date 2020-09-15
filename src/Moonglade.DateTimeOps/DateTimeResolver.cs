@@ -14,22 +14,22 @@ namespace Moonglade.DateTimeOps
             TimeZoneUtcOffset = timeZoneUtcOffset;
         }
 
-        public DateTime GetNowWithUserTZone()
+        public DateTime GetNowOfTimeZone()
         {
             return UtcToZoneTime(DateTime.UtcNow, TimeZoneUtcOffset);
         }
 
-        public DateTime GetDateTimeWithUserTZone(DateTime utcDateTime)
+        public DateTime ToTimeZone(DateTime utcDateTime)
         {
             return UtcToZoneTime(utcDateTime, TimeZoneUtcOffset);
         }
 
-        public DateTime GetUtcTimeFromUserTZone(DateTime userDateTime)
+        public DateTime ToUtc(DateTime userDateTime)
         {
             return ZoneTimeToUtc(userDateTime, TimeZoneUtcOffset);
         }
 
-        public IEnumerable<TimeZoneInfo> GetTimeZones()
+        public IEnumerable<TimeZoneInfo> ListTimeZones()
         {
             return TimeZoneInfo.GetSystemTimeZones();
         }
@@ -74,7 +74,7 @@ namespace Moonglade.DateTimeOps
                 throw new FormatException($"{nameof(timeSpan)} is not a valid TimeSpan format");
             }
 
-            tz = GetTimeZones().FirstOrDefault(t => t.BaseUtcOffset == span);
+            tz = ListTimeZones().FirstOrDefault(t => t.BaseUtcOffset == span);
             return span;
         }
 

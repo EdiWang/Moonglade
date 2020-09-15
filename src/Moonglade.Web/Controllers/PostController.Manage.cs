@@ -79,7 +79,7 @@ namespace Moonglade.Web.Controllers
 
                 if (post.PubDateUtc != null)
                 {
-                    editViewModel.PublishDate = _dateTimeResolver.GetDateTimeWithUserTZone(post.PubDateUtc.GetValueOrDefault());
+                    editViewModel.PublishDate = _dateTimeResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
                 }
 
                 var tagStr = post.Tags
@@ -142,7 +142,7 @@ namespace Moonglade.Web.Controllers
                         CategoryIds = model.SelectedCategoryIds
                     };
 
-                    var tzDate = _dateTimeResolver.GetNowWithUserTZone();
+                    var tzDate = _dateTimeResolver.GetNowOfTimeZone();
                     if (model.ChangePublishDate &&
                         model.PublishDate.HasValue &&
                         model.PublishDate <= tzDate &&

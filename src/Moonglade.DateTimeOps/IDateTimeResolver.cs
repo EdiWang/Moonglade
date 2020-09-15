@@ -5,10 +5,10 @@ namespace Moonglade.DateTimeOps
 {
     public interface IDateTimeResolver
     {
-        DateTime GetNowWithUserTZone();
-        DateTime GetDateTimeWithUserTZone(DateTime utcDateTime);
-        DateTime GetUtcTimeFromUserTZone(DateTime userDateTime);
-        IEnumerable<TimeZoneInfo> GetTimeZones();
+        DateTime GetNowOfTimeZone();
+        DateTime ToTimeZone(DateTime utcDateTime);
+        DateTime ToUtc(DateTime userDateTime);
+        IEnumerable<TimeZoneInfo> ListTimeZones();
         TimeSpan GetTimeSpanByZoneId(string timeZoneId);
     }
 }

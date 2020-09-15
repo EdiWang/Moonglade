@@ -107,7 +107,7 @@ else
                 </div>
 
                 <div class="text-muted">
-                    <span>@DateTimeResolver.GetDateTimeWithUserTZone(item.CreateOnUtc).ToString("yyyy-MM-dd HH:mm")</span> | <span class="text-muted d-none d-sm-inline">@item.IpAddress</span>
+                    <span>@DateTimeResolver.ToTimeZone(item.CreateOnUtc).ToString("yyyy-MM-dd HH:mm")</span> | <span class="text-muted d-none d-sm-inline">@item.IpAddress</span>
                 </div>
 
                 <div class="reply-ui mt-3" style="display: none;">
@@ -135,7 +135,7 @@ else
                             <div class="mb-2">
                                 @Html.Raw(Utils.ConvertMarkdownContent(reply.ReplyContent, Utils.MarkdownConvertType.Html))
                             </div>
-                            <div class="text-muted">@DateTimeResolver.GetDateTimeWithUserTZone(reply.ReplyTimeUtc)</div>
+                            <div class="text-muted">@DateTimeResolver.ToTimeZone(reply.ReplyTimeUtc)</div>
                         </div>
                     }
                 </div>

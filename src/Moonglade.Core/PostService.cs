@@ -549,7 +549,7 @@ namespace Moonglade.Core
                 if (request.PublishDate != null && postModel.PostPublish.PubDateUtc.HasValue)
                 {
                     var tod = postModel.PostPublish.PubDateUtc.Value.TimeOfDay;
-                    var adjustedDate = _dateTimeResolver.GetUtcTimeFromUserTZone(request.PublishDate.Value);
+                    var adjustedDate = _dateTimeResolver.ToUtc(request.PublishDate.Value);
                     postModel.PostPublish.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
                 }
 

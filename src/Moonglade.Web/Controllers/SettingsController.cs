@@ -76,7 +76,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("general-settings")]
         public IActionResult General()
         {
-            var tzList = _dateTimeResolver.GetTimeZones().Select(t => new SelectListItem
+            var tzList = _dateTimeResolver.ListTimeZones().Select(t => new SelectListItem
             {
                 Text = t.DisplayName,
                 Value = t.Id

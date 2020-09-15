@@ -121,10 +121,10 @@
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info post-publish-info-mobile bg-light">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.ToTimeZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(@Localizer["Edit on"] @DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
+                    <span>(@Localizer["Edit on"] @DateTimeResolver.ToTimeZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
                 | @BlogConfig.GeneralSettings.TimeZoneId
             </div>
@@ -132,10 +132,10 @@
 
         <div class="d-none d-md-block post-publish-info mb-2">
             <strong class="text-muted">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.ToTimeZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
-                    <span>(@Localizer["Edit on"] @DateTimeResolver.GetDateTimeWithUserTZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
+                    <span>(@Localizer["Edit on"] @DateTimeResolver.ToTimeZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
                 | @BlogConfig.GeneralSettings.TimeZoneId
             </strong>
