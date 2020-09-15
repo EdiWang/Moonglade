@@ -13,8 +13,8 @@ namespace Moonglade.Model.Settings
         public bool EnableWebApi { get; set; }
         public bool EnableAudit { get; set; }
         public bool AllowExternalScripts { get; set; }
-        public SystemNavMenus SystemNavMenus { get; set; }
-        public AsideWidgets AsideWidgets { get; set; }
+        public Dictionary<string, bool> SystemNavMenus { get; set; }
+        public Dictionary<string, bool> AsideWidgets { get; set; }
         public NotificationSettings Notification { get; set; }
 
         public AppSettings()
@@ -25,18 +25,7 @@ namespace Moonglade.Model.Settings
                 ImageHeight = 36,
                 ImageWidth = 100
             };
-            SystemNavMenus = new SystemNavMenus
-            {
-                Archive = true,
-                Categories = true,
-                Tags = true
-            };
             Notification = new NotificationSettings();
         }
-    }
-
-    public class AsideWidgets
-    {
-        public bool LangSelection { get; set; }
     }
 }

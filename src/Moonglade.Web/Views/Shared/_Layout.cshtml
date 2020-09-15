@@ -85,7 +85,7 @@
                 <div class="collapse navbar-collapse" id="moonglade-navbar-content">
                     <ul class="navbar-nav mr-auto">
                         <!-- System Nav Menu -->
-                        @if (Settings.Value.SystemNavMenus.Categories)
+                        @if (Settings.Value.SystemNavMenus["Categories"])
                         {
                             <li id="navbar-dropdown-post" class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
@@ -98,7 +98,7 @@
                             </li>
                         }
 
-                        @if (Settings.Value.SystemNavMenus.Tags)
+                        @if (Settings.Value.SystemNavMenus["Tags"])
                         {
                             <li class="nav-item">
                                 <a asp-controller="Tags" asp-action="Index" class="nav-link">
@@ -108,7 +108,7 @@
                             </li>
                         }
 
-                        @if (Settings.Value.SystemNavMenus.Archive)
+                        @if (Settings.Value.SystemNavMenus["Archive"])
                         {
                             <li class="nav-item">
                                 <a asp-controller="Archive" asp-action="Index" class="nav-link">
