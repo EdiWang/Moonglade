@@ -87,7 +87,7 @@ namespace Moonglade.Core.Notification
 
             try
             {
-                var req = new NewCommentNotificationPayload(
+                var req = new NewCommentPayload(
                     model.Username,
                     model.Email,
                     model.IpAddress,
@@ -97,7 +97,7 @@ namespace Moonglade.Core.Notification
                 );
 
                 await SendNotificationRequest(
-                    new NotificationRequest<NewCommentNotificationPayload>(MailMesageTypes.NewCommentNotification, req));
+                    new NotificationRequest<NewCommentPayload>(MailMesageTypes.NewCommentNotification, req));
             }
             catch (Exception e)
             {
@@ -116,7 +116,7 @@ namespace Moonglade.Core.Notification
 
             try
             {
-                var req = new CommentReplyNotificationPayload(
+                var req = new CommentReplyPayload(
                     model.Email,
                     model.CommentContent,
                     model.Title,
@@ -124,7 +124,7 @@ namespace Moonglade.Core.Notification
                     postLink);
 
                 await SendNotificationRequest(
-                    new NotificationRequest<CommentReplyNotificationPayload>(MailMesageTypes.AdminReplyNotification, req));
+                    new NotificationRequest<CommentReplyPayload>(MailMesageTypes.AdminReplyNotification, req));
             }
             catch (Exception e)
             {
@@ -143,7 +143,7 @@ namespace Moonglade.Core.Notification
 
             try
             {
-                var req = new PingNotificationPayload(
+                var req = new PingPayload(
                     model.TargetPostTitle,
                     model.PingTimeUtc,
                     model.Domain,
@@ -151,7 +151,7 @@ namespace Moonglade.Core.Notification
                     model.SourceUrl,
                     model.SourceTitle);
 
-                await SendNotificationRequest(new NotificationRequest<PingNotificationPayload>(MailMesageTypes.BeingPinged, req));
+                await SendNotificationRequest(new NotificationRequest<PingPayload>(MailMesageTypes.BeingPinged, req));
             }
             catch (Exception e)
             {

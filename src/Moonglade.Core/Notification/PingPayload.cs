@@ -2,9 +2,9 @@
 
 namespace Moonglade.Core.Notification
 {
-    internal class PingNotificationPayload
+    internal class PingPayload
     {
-        public PingNotificationPayload(
+        public PingPayload(
             string targetPostTitle, DateTime pingTimeUtc, string domain, string sourceIp, string sourceUrl, string sourceTitle)
         {
             TargetPostTitle = targetPostTitle;

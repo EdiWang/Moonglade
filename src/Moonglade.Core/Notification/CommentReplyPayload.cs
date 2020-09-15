@@ -1,8 +1,8 @@
 ﻿namespace Moonglade.Core.Notification
 {
-    internal class CommentReplyNotificationPayload
+    internal class CommentReplyPayload
     {
-        public CommentReplyNotificationPayload(
+        public CommentReplyPayload(
             string email, string commentContent, string title, string replyContentHtml, string postLink)
         {
             Email = email;

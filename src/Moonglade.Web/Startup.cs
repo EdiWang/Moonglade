@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -194,12 +193,6 @@ namespace Moonglade.Web
             );
 
             app.UseRobotsTxt();
-
-            // Set environment variable `ASPNETCORE_FORWARDEDHEADERS_ENABLED` to `true` to enable forward headers
-            //app.UseForwardedHeaders(new ForwardedHeadersOptions
-            //{
-            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            //});
 
             TryUseUrlRewrite(app);
             app.UseMiddleware<PoweredByMiddleware>();

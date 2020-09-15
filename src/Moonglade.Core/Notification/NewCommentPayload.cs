@@ -2,9 +2,9 @@
 
 namespace Moonglade.Core.Notification
 {
-    internal class NewCommentNotificationPayload
+    internal class NewCommentPayload
     {
-        public NewCommentNotificationPayload(
+        public NewCommentPayload(
             string username, string email, string ipAddress, string postTitle, string commentContent, DateTime createOnUtc)
         {
             Username = username;
