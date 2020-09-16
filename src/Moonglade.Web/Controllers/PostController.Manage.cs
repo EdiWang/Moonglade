@@ -115,7 +115,10 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [HttpPost("manage/createoredit")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[]
+        {
+            new[] { StaticCacheKeys.PostCount, StaticCacheKeys.PostCountCategory }
+        })]
         public async Task<IActionResult> CreateOrEdit(PostEditViewModel model,
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
@@ -190,7 +193,10 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[]
+        {
+            new[] { StaticCacheKeys.PostCount, StaticCacheKeys.PostCountCategory }
+        })]
         [HttpPost("manage/restore")]
         public async Task<IActionResult> Restore(Guid postId)
         {
@@ -200,7 +206,10 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.PostCount })]
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[]
+        {
+            new[] { StaticCacheKeys.PostCount, StaticCacheKeys.PostCountCategory }
+        })]
         [HttpPost("manage/delete")]
         public async Task<IActionResult> Delete(Guid postId)
         {

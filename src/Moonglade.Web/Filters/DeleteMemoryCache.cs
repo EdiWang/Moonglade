@@ -7,18 +7,21 @@ namespace Moonglade.Web.Filters
     {
         private readonly IMemoryCache _memoryCache;
 
-        private readonly string _cacheKey;
+        private readonly string[] _cacheKeys;
 
-        public DeleteMemoryCache(string cacheKey, IMemoryCache memoryCache)
+        public DeleteMemoryCache(string[] cacheKeys, IMemoryCache memoryCache)
         {
-            _cacheKey = cacheKey;
+            _cacheKeys = cacheKeys;
             _memoryCache = memoryCache;
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
-            _memoryCache.Remove(_cacheKey);
+            foreach (string cacheKey in _cacheKeys)
+            {
+                _memoryCache.Remove(cacheKey);
+            }
         }
     }
 }

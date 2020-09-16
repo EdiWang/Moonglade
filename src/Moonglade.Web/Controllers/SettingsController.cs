@@ -455,7 +455,7 @@ namespace Moonglade.Web.Controllers
         #region User Avatar
 
         [HttpPost("set-blogger-avatar")]
-        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { StaticCacheKeys.Avatar })]
+        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { new[] { StaticCacheKeys.Avatar } })]
         public async Task<IActionResult> SetBloggerAvatar(string base64Img)
         {
             try
