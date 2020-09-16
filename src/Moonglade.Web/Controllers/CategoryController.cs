@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
@@ -36,7 +37,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> List(string routeName, int page = 1)
+        public async Task<IActionResult> List(string routeName, int page = 1, [FromServices] IMemoryCache memoryCache = null)
         {
             if (string.IsNullOrWhiteSpace(routeName))
             {
@@ -60,8 +61,8 @@ namespace Moonglade.Web.Controllers
             ViewBag.CategoryDisplayName = cat.DisplayName;
             ViewBag.CategoryRouteName = cat.RouteName;
             ViewBag.CategoryDescription = cat.Note;
-
-            var postCount = _postService.CountByCategoryId(cat.Id).Item;
+            
+            var postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCountCategory, entry => _postService.CountByCategoryId(cat.Id).Item);
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
             var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pageSize, postCount);

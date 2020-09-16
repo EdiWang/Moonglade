@@ -72,7 +72,10 @@ namespace Moonglade.Core
         {
             return TryExecute(() =>
             {
-                var count = _postCategoryRepository.Count(c => c.CategoryId == catId);
+                var count = _postCategoryRepository.Count(c => c.CategoryId == catId 
+                                                               && c.Post.PostPublish.IsPublished
+                                                               && !c.Post.PostPublish.IsDeleted);
+
                 return new SuccessResponse<int>(count);
             });
         }
