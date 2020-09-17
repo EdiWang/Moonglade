@@ -82,6 +82,10 @@ register_service()
     Restart=always
     RestartSec=10
     KillSignal=SIGINT
+    Environment=\"ASPNETCORE_ENVIRONMENT=Production\"
+    Environment=\"DOTNET_PRINT_TELEMETRY_MESSAGE=false\"
+    Environment=\"DOTNET_CLI_TELEMETRY_OPTOUT=1\"
+    Environment=\"ASPNETCORE_FORWARDEDHEADERS_ENABLED=true\"
 
     [Install]
     WantedBy=multi-user.target" > /etc/systemd/system/$service_name.service
@@ -159,7 +163,7 @@ install_Moonglade()
     echo 'Building the source code...'
     moonglade_path="$(pwd)/apps/moongladeApp"
     #rm ./Moonglade/src/Moonglade.Web/libman.json # Remove libman because it is easy to crash.
-    dotnet publish -c Release -o $moonglade_path ./Moonglade/src/Moonglade.Web/Moonglade.Web.csproj
+    dotnet publish -c Release -o $moonglade_path -r linux-x64 /p:PublishReadyToRun=true --no-self-contained ./Moonglade/src/Moonglade.Web/Moonglade.Web.csproj
     rm ~/Moonglade -rf
     cat $moonglade_path/appsettings.json > $moonglade_path/appsettings.Production.json
 
