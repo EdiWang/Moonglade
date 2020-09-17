@@ -82,6 +82,10 @@ register_service()
     Restart=always
     RestartSec=10
     KillSignal=SIGINT
+    Environment=\"ASPNETCORE_ENVIRONMENT=Production\"
+    Environment=\"DOTNET_PRINT_TELEMETRY_MESSAGE=false\"
+    Environment=\"DOTNET_CLI_TELEMETRY_OPTOUT=false\"
+    Environment=\"ASPNETCORE_FORWARDEDHEADERS_ENABLED=true\"
 
     [Install]
     WantedBy=multi-user.target" > /etc/systemd/system/$service_name.service
