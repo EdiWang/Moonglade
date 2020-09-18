@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
+using Moonglade.Core;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Models;
 
@@ -32,6 +33,12 @@ namespace Moonglade.Web.Controllers
         {
             _moongladeAudit = moongladeAudit;
             _authenticationSettings = authSettings.Value;
+        }
+
+        [Route("list-cache")]
+        public IActionResult ListCache([FromServices] IBlogCache cache)
+        {
+            return Json(cache.CacheDivision);
         }
 
         [Route("")]
