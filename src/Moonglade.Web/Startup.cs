@@ -100,6 +100,7 @@ namespace Moonglade.Web
 
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
+            services.AddSingleton<IBlogCache, BlogCache>();
             services.AddSessionBasedCaptcha();
 
             var asm = Assembly.GetAssembly(typeof(MoongladeService));
