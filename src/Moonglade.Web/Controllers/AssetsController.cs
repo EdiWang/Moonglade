@@ -190,7 +190,7 @@ namespace Moonglade.Web.Controllers
 
         [Route("avatar")]
         [ResponseCache(Duration = 300)]
-        public IActionResult Avatar([FromServices] IMemoryCache cache)
+        public IActionResult Avatar([FromServices] IBlogCache cache)
         {
             var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
             if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.AvatarBase64))
@@ -200,7 +200,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                return cache.GetOrCreate(StaticCacheKeys.Avatar, entry =>
+                return cache.GetOrCreate(CacheDivisionKeys.General, "avatar", entry =>
                 {
                     Logger.LogTrace("Avatar not on cache, getting new avatar image...");
                     var avatarBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.AvatarBase64);

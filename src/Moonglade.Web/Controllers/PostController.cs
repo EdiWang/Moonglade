@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
@@ -25,6 +24,7 @@ namespace Moonglade.Web.Controllers
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
+        private readonly IBlogCache _cache;
 
         public PostController(
             ILogger<PostController> logger,
@@ -32,23 +32,25 @@ namespace Moonglade.Web.Controllers
             PostService postService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
-            IDateTimeResolver dateTimeResolver)
+            IDateTimeResolver dateTimeResolver, 
+            IBlogCache cache)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
             _dateTimeResolver = dateTimeResolver;
+            _cache = cache;
         }
 
         [Route(""), Route("/")]
-        public async Task<IActionResult> Index(int page = 1, [FromServices] IMemoryCache memoryCache = null)
+        public async Task<IActionResult> Index(int page = 1)
         {
             try
             {
                 var pagesize = _blogConfig.ContentSettings.PostListPageSize;
                 var postList = await _postService.GetPagedPostsAsync(pagesize, page);
-                var postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCount, entry => _postService.CountVisiblePosts().Item);
+                var postCount = _cache.GetOrCreate(CacheDivisionKeys.General, "postcount", entry => _postService.CountVisiblePosts().Item);
 
                 var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pagesize, postCount);
                 return View(postsAsIPagedList);

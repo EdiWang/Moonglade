@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -20,7 +19,7 @@ namespace Moonglade.Core
     {
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IMoongladeAudit _moongladeAudit;
-        private readonly IMemoryCache _cache;
+        private readonly IBlogCache _cache;
 
         #region Repository Objects
 
@@ -45,7 +44,7 @@ namespace Moonglade.Core
             IRepository<PostCategoryEntity> postCategoryRepository,
             IDateTimeResolver dateTimeResolver,
             IMoongladeAudit moongladeAudit,
-            IMemoryCache cache) : base(logger, settings)
+            IBlogCache cache) : base(logger, settings)
         {
             _postRepository = postRepository;
             _postExtensionRepository = postExtensionRepository;
@@ -72,7 +71,7 @@ namespace Moonglade.Core
         {
             return TryExecute(() =>
             {
-                var count = _postCategoryRepository.Count(c => c.CategoryId == catId 
+                var count = _postCategoryRepository.Count(c => c.CategoryId == catId
                                                                && c.Post.PostPublish.IsPublished
                                                                && !c.Post.PostPublish.IsDeleted);
 
@@ -252,7 +251,7 @@ namespace Moonglade.Core
                 var pid = await _postRepository.SelectFirstOrDefaultAsync(spec, p => p.Id);
                 if (pid != Guid.Empty)
                 {
-                    var psm = await _cache.GetOrCreateAsync($"post-{pid}", async entry =>
+                    var psm = await _cache.GetOrCreateAsync(CacheDivisionKeys.Post, $"{pid}", async entry =>
                     {
                         entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Post"]);
 
@@ -622,7 +621,7 @@ namespace Moonglade.Core
                     isNewPublish ? AuditEventId.PostPublished : AuditEventId.PostUpdated,
                     $"Post updated, id: {postModel.Id}");
 
-                _cache.Remove($"post-{request.Id}");
+                _cache.Remove(CacheDivisionKeys.Post, request.Id.ToString());
                 return new SuccessResponse<PostEntity>(postModel);
             });
         }
@@ -638,7 +637,7 @@ namespace Moonglade.Core
                 await _postPublishRepository.UpdateAsync(pp);
                 await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
 
-                _cache.Remove($"post-{postId}");
+                _cache.Remove(CacheDivisionKeys.Post, postId.ToString());
                 return new SuccessResponse();
             }, keyParameter: postId);
         }
@@ -662,7 +661,7 @@ namespace Moonglade.Core
                     await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
                 }
 
-                _cache.Remove($"post-{postId}");
+                _cache.Remove(CacheDivisionKeys.Post, postId.ToString());
                 return new SuccessResponse();
             }, keyParameter: postId);
         }
@@ -678,7 +677,7 @@ namespace Moonglade.Core
 
                 foreach (var guid in posts.Select(p => p.Id))
                 {
-                    _cache.Remove($"post-{guid}");
+                    _cache.Remove(CacheDivisionKeys.Post, guid.ToString());
                 }
                 return new SuccessResponse();
             });
