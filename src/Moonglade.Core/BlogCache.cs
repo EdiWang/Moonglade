@@ -40,36 +40,6 @@ namespace Moonglade.Core
             return _memoryCache.GetOrCreateAsync($"{divisionKey}-{key}", factory);
         }
 
-        public void Remove(string key)
-        {
-            _memoryCache.Remove(key);
-        }
-
-        public string AddToDivision(string divisionKey, string cacheKey)
-        {
-            if (string.IsNullOrWhiteSpace(divisionKey) || string.IsNullOrWhiteSpace(cacheKey)) return null;
-
-            if (!CacheDivision.ContainsKey(divisionKey))
-            {
-                CacheDivision.Add(divisionKey, new[] { cacheKey }.ToList());
-            }
-
-            if (!CacheDivision[divisionKey].Contains(cacheKey))
-            {
-                CacheDivision[divisionKey].Add(cacheKey);
-            }
-
-            return $"{divisionKey}-{cacheKey}";
-        }
-
-        public void AddToDivision(string divisionKey, IEnumerable<string> cacheKeys = null)
-        {
-            if (!string.IsNullOrWhiteSpace(divisionKey))
-            {
-                CacheDivision.Add(divisionKey, null == cacheKeys ? new List<string>() : cacheKeys.ToList());
-            }
-        }
-
         public void RemoveAllCache()
         {
             var keys =
@@ -84,7 +54,7 @@ namespace Moonglade.Core
             }
         }
 
-        public void RemoveCache(string divisionKey)
+        public void Remove(string divisionKey)
         {
             if (string.IsNullOrEmpty(divisionKey))
             {
@@ -98,6 +68,26 @@ namespace Moonglade.Core
                 {
                     _memoryCache.Remove(key);
                 }
+            }
+        }
+
+        public void Remove(string divisionKey, string key)
+        {
+            _memoryCache.Remove($"{divisionKey}-{key}");
+        }
+
+        private void AddToDivision(string divisionKey, string cacheKey)
+        {
+            if (string.IsNullOrWhiteSpace(divisionKey) || string.IsNullOrWhiteSpace(cacheKey)) return;
+
+            if (!CacheDivision.ContainsKey(divisionKey))
+            {
+                CacheDivision.Add(divisionKey, new[] { cacheKey }.ToList());
+            }
+
+            if (!CacheDivision[divisionKey].Contains(cacheKey))
+            {
+                CacheDivision[divisionKey].Add(cacheKey);
             }
         }
     }
