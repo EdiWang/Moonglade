@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
@@ -18,14 +17,14 @@ namespace Moonglade.Web.Controllers
     [Route("page")]
     public class CustomPageController : MoongladeController
     {
-        private readonly IMemoryCache _cache;
+        private readonly IBlogCache _cache;
         private readonly CustomPageService _customPageService;
         private static string[] InvalidPageRouteNames => new[] { "index", "manage" };
 
         public CustomPageController(
             ILogger<CustomPageController> logger,
             IOptions<AppSettings> settings,
-            IMemoryCache cache,
+            IBlogCache cache,
             CustomPageService customPageService) : base(logger, settings)
         {
             _cache = cache;
@@ -40,8 +39,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest();
             }
 
-            var cacheKey = $"page-{slug.ToLower()}";
-            var pageResponse = await _cache.GetOrCreateAsync(cacheKey, async entry =>
+            var pageResponse = await _cache.GetOrCreateAsync(CacheDivisionKeys.Page, slug.ToLower(), async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Page"]);
 
@@ -132,7 +130,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/createoredit")]
-        public async Task<IActionResult> CreateOrEdit(CustomPageEditViewModel model, [FromServices] IMemoryCache cache)
+        public async Task<IActionResult> CreateOrEdit(CustomPageEditViewModel model)
         {
             try
             {
@@ -162,9 +160,7 @@ namespace Moonglade.Web.Controllers
                     if (response.IsSuccess)
                     {
                         Logger.LogInformation($"User '{User.Identity.Name}' updated custom page id '{response.Item}'");
-
-                        var cacheKey = $"page-{req.Slug.ToLower()}";
-                        cache.Remove(cacheKey);
+                        _cache.Remove(CacheDivisionKeys.Page, req.Slug.ToLower());
 
                         return Json(new { PageId = response.Item });
                     }
@@ -193,9 +189,7 @@ namespace Moonglade.Web.Controllers
                 var response = await _customPageService.DeleteAsync(pageId);
                 if (response.IsSuccess)
                 {
-                    var cacheKey = $"page-{slug.ToLower()}";
-                    _cache.Remove(cacheKey);
-
+                    _cache.Remove(CacheDivisionKeys.Page, slug.ToLower());
                     return Json(pageId);
                 }
 

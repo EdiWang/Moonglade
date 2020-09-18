@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -455,7 +454,7 @@ namespace Moonglade.Web.Controllers
         #region User Avatar
 
         [HttpPost("set-blogger-avatar")]
-        [TypeFilter(typeof(DeleteMemoryCache), Arguments = new object[] { new[] { StaticCacheKeys.Avatar } })]
+        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivisionKeys.General, "avatar" })]
         public async Task<IActionResult> SetBloggerAvatar(string base64Img)
         {
             try
@@ -755,7 +754,7 @@ namespace Moonglade.Web.Controllers
         #endregion
 
         [HttpPost("clear-data-cache")]
-        public IActionResult ClearDataCache(string[] cachedObjectValues, [FromServices] IMemoryCache cache)
+        public IActionResult ClearDataCache(string[] cachedObjectValues, [FromServices] IBlogCache cache)
         {
             try
             {
@@ -763,11 +762,7 @@ namespace Moonglade.Web.Controllers
                 {
                     if (cachedObjectValues.Contains("MCO_IMEM"))
                     {
-                        cache.Remove(StaticCacheKeys.Avatar);
-                        cache.Remove(StaticCacheKeys.PostCount);
-
-                        // Per this thread, it is not possible to get all cache keys in ASP.NET Core in order to clear them
-                        // https://stackoverflow.com/questions/45597057/how-to-retrieve-a-list-of-memory-cache-keys-in-asp-net-core
+                        cache.RemoveAllCache();
                     }
 
                     if (cachedObjectValues.Contains("MCO_OPML"))

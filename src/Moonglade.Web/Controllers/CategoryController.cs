@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
@@ -21,23 +20,26 @@ namespace Moonglade.Web.Controllers
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
+        private readonly IBlogCache _blogCache;
 
         public CategoryController(
             ILogger<CategoryController> logger,
             IOptions<AppSettings> settings,
             CategoryService categoryService,
             PostService postService,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig,
+            IBlogCache blogCache)
             : base(logger, settings)
         {
             _postService = postService;
             _categoryService = categoryService;
 
             _blogConfig = blogConfig;
+            _blogCache = blogCache;
         }
 
         [Route("list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> List(string routeName, int page = 1, [FromServices] IMemoryCache memoryCache = null)
+        public async Task<IActionResult> List(string routeName, int page = 1)
         {
             if (string.IsNullOrWhiteSpace(routeName))
             {
@@ -61,8 +63,10 @@ namespace Moonglade.Web.Controllers
             ViewBag.CategoryDisplayName = cat.DisplayName;
             ViewBag.CategoryRouteName = cat.RouteName;
             ViewBag.CategoryDescription = cat.Note;
-            
-            var postCount = memoryCache.GetOrCreate(StaticCacheKeys.PostCountCategory, entry => _postService.CountByCategoryId(cat.Id).Item);
+
+            var postCount = _blogCache.GetOrCreate(CacheDivisionKeys.PostCountCategory, cat.Id.ToString(),
+                entry => _postService.CountByCategoryId(cat.Id).Item);
+
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
             var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pageSize, postCount);
