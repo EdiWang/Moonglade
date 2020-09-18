@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -73,6 +72,8 @@ namespace Moonglade.Core
 
         public void Remove(string divisionKey, string key)
         {
+            if (string.IsNullOrWhiteSpace(divisionKey) || string.IsNullOrWhiteSpace(key)) return;
+
             _memoryCache.Remove($"{divisionKey}-{key}");
         }
 
