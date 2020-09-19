@@ -151,10 +151,7 @@ namespace Moonglade.Web.Controllers
         [DisallowSpiderUA]
         public async Task<IActionResult> Hit([FromForm] Guid postId)
         {
-            if (DNT || HasCookie(CookieNames.Hit, postId.ToString()))
-            {
-                return Ok();
-            }
+            if (DNT || HasCookie(CookieNames.Hit, postId.ToString())) return Ok();
 
             var response = await _postService.UpdateStatisticAsync(postId);
             if (response.IsSuccess)
@@ -169,16 +166,8 @@ namespace Moonglade.Web.Controllers
         [DisallowSpiderUA]
         public async Task<IActionResult> Like([FromForm] Guid postId)
         {
-            if (DNT)
-            {
-                await Task.CompletedTask;
-                return Ok();
-            }
-
-            if (HasCookie(CookieNames.Liked, postId.ToString()))
-            {
-                return Conflict();
-            }
+            if (DNT) return Ok();
+            if (HasCookie(CookieNames.Liked, postId.ToString())) return Conflict();
 
             var response = await _postService.UpdateStatisticAsync(postId, 1);
             if (response.IsSuccess)
