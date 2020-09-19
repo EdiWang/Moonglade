@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Core;
+using Moonglade.Core.Caching;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;

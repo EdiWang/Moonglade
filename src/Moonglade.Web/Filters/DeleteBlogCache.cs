@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Moonglade.Core;
+using Moonglade.Core.Caching;
 
 namespace Moonglade.Web.Filters
 {

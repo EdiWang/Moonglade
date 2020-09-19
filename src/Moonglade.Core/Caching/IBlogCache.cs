@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.Caching
 {
     public interface IBlogCache
     {

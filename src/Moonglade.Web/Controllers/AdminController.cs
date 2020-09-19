@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
-using Moonglade.Core;
+using Moonglade.Core.Caching;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Models;
 

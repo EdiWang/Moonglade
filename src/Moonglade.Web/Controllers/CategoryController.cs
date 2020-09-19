@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Core.Caching;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
@@ -106,28 +107,26 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid) return BadRequest("Invalid ModelState");
+
+                var request = new CreateCategoryRequest
                 {
-                    var request = new CreateCategoryRequest
-                    {
-                        RouteName = model.RouteName,
-                        Note = model.Note,
-                        DisplayName = model.DisplayName
-                    };
+                    RouteName = model.RouteName,
+                    Note = model.Note,
+                    DisplayName = model.DisplayName
+                };
 
-                    var response = await _categoryService.CreateAsync(request);
-                    if (response.IsSuccess)
-                    {
-                        DeleteOpmlFile();
-                        return Json(response);
-                    }
-
-                    Logger.LogError($"Create category failed: {response.Message}");
-                    ModelState.AddModelError("", response.Message);
-                    return BadRequest("Create category failed");
+                var response = await _categoryService.CreateAsync(request);
+                if (response.IsSuccess)
+                {
+                    DeleteOpmlFile();
+                    return Json(response);
                 }
 
-                return BadRequest("Invalid ModelState");
+                Logger.LogError($"Create category failed: {response.Message}");
+                ModelState.AddModelError("", response.Message);
+                return BadRequest("Create category failed");
+
             }
             catch (Exception e)
             {
@@ -143,20 +142,17 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var r = await _categoryService.GetAsync(id);
-            if (r.IsSuccess && null != r.Item)
+            if (!r.IsSuccess || null == r.Item) return NotFound();
+
+            var model = new CategoryEditViewModel
             {
-                var model = new CategoryEditViewModel
-                {
-                    Id = r.Item.Id,
-                    DisplayName = r.Item.DisplayName,
-                    RouteName = r.Item.RouteName,
-                    Note = r.Item.Note
-                };
+                Id = r.Item.Id,
+                DisplayName = r.Item.DisplayName,
+                RouteName = r.Item.RouteName,
+                Note = r.Item.Note
+            };
 
-                return Json(model);
-            }
-
-            return NotFound();
+            return Json(model);
         }
 
         [Authorize]
@@ -165,29 +161,26 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid) return BadRequest();
+
+                var request = new EditCategoryRequest(model.Id)
                 {
-                    var request = new EditCategoryRequest(model.Id)
-                    {
-                        RouteName = model.RouteName,
-                        Note = model.Note,
-                        DisplayName = model.DisplayName
-                    };
+                    RouteName = model.RouteName,
+                    Note = model.Note,
+                    DisplayName = model.DisplayName
+                };
 
-                    var response = await _categoryService.UpdateAsync(request);
+                var response = await _categoryService.UpdateAsync(request);
 
-                    if (response.IsSuccess)
-                    {
-                        DeleteOpmlFile();
-                        return Json(response);
-                    }
-
-                    Logger.LogError($"Edit category failed: {response.Message}");
-                    ModelState.AddModelError("", response.Message);
-                    return Conflict(ModelState);
+                if (response.IsSuccess)
+                {
+                    DeleteOpmlFile();
+                    return Json(response);
                 }
 
-                return BadRequest();
+                Logger.LogError($"Edit category failed: {response.Message}");
+                ModelState.AddModelError("", response.Message);
+                return Conflict(ModelState);
             }
             catch (Exception e)
             {

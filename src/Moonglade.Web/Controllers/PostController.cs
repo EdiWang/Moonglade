@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Core.Caching;
 using Moonglade.DateTimeOps;
 using Moonglade.Model;
 using Moonglade.Model.Settings;

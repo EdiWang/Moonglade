@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.Caching
 {
     public class BlogCache : IBlogCache
     {
@@ -61,12 +61,11 @@ namespace Moonglade.Core
             }
 
             var cacheKeys = CacheDivision[divisionKey];
-            if (null != cacheKeys && cacheKeys.Count > 0)
+            if (null == cacheKeys || cacheKeys.Count <= 0) return;
+
+            foreach (string key in cacheKeys)
             {
-                foreach (string key in cacheKeys)
-                {
-                    _memoryCache.Remove(key);
-                }
+                _memoryCache.Remove(key);
             }
         }
 

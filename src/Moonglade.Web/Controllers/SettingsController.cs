@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Core.Caching;
 using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;

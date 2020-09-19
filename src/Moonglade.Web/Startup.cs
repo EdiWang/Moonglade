@@ -24,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Core;
+using Moonglade.Core.Caching;
 using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
 using Moonglade.Model;
