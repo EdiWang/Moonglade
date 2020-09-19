@@ -151,15 +151,9 @@ namespace Moonglade.Web.Controllers
         [DisallowSpiderUA]
         public async Task<IActionResult> Hit([FromForm] Guid postId)
         {
-            if (DNT)
+            if (DNT || HasCookie(CookieNames.Hit, postId.ToString()))
             {
-                await Task.CompletedTask;
                 return Ok();
-            }
-
-            if (HasCookie(CookieNames.Hit, postId.ToString()))
-            {
-                return new EmptyResult();
             }
 
             var response = await _postService.UpdateStatisticAsync(postId);
@@ -168,7 +162,7 @@ namespace Moonglade.Web.Controllers
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
             }
 
-            return Json(response);
+            return Ok();
         }
 
         [HttpPost("like")]
@@ -183,11 +177,7 @@ namespace Moonglade.Web.Controllers
 
             if (HasCookie(CookieNames.Liked, postId.ToString()))
             {
-                return Json(new
-                {
-                    IsSuccess = false,
-                    Message = "You Have Rated"
-                });
+                return Conflict();
             }
 
             var response = await _postService.UpdateStatisticAsync(postId, 1);
@@ -196,7 +186,7 @@ namespace Moonglade.Web.Controllers
                 SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
             }
 
-            return Json(response);
+            return Ok();
         }
 
         #region Helper Methods
