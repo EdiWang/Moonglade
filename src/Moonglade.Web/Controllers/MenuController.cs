@@ -13,11 +13,11 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [Route("navmenu")]
-    public class NavMenuController : MoongladeController
+    public class MenuController : MoongladeController
     {
         private readonly MenuService _menuService;
 
-        public NavMenuController(
+        public MenuController(
             ILogger<ControllerBase> logger,
             IOptions<AppSettings> settings,
             MenuService menuService) : base(logger, settings)
@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
             var menuItemsResp = await menuService.GetAllAsync();
             if (menuItemsResp.IsSuccess)
             {
-                var model = new NavMenuManageViewModel
+                var model = new MenuManageViewModel
                 {
                     MenuItems = menuItemsResp.Item
                 };
@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create(NavMenuEditViewModel model)
+        public async Task<IActionResult> Create(MenuEditViewModel model)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace Moonglade.Web.Controllers
             var r = await _menuService.GetAsync(id);
             if (r.IsSuccess && null != r.Item)
             {
-                var model = new NavMenuEditViewModel
+                var model = new MenuEditViewModel
                 {
                     Id = r.Item.Id,
                     DisplayOrder = r.Item.DisplayOrder,
@@ -125,7 +125,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("edit")]
-        public async Task<IActionResult> Edit(NavMenuEditViewModel model)
+        public async Task<IActionResult> Edit(MenuEditViewModel model)
         {
             try
             {

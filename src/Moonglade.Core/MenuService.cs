@@ -27,21 +27,21 @@ namespace Moonglade.Core
             _moongladeAudit = moongladeAudit;
         }
 
-        public Task<Response<MenuModel>> GetAsync(Guid id)
+        public Task<Response<Menu>> GetAsync(Guid id)
         {
-            return TryExecuteAsync<MenuModel>(async () =>
+            return TryExecuteAsync<Menu>(async () =>
             {
                 var entity = await _menuRepository.GetAsync(id);
                 var item = EntityToMenuModel(entity);
-                return new SuccessResponse<MenuModel>(item);
+                return new SuccessResponse<Menu>(item);
             });
         }
 
-        public Task<Response<IReadOnlyList<MenuModel>>> GetAllAsync()
+        public Task<Response<IReadOnlyList<Menu>>> GetAllAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<MenuModel>>(async () =>
+            return TryExecuteAsync<IReadOnlyList<Menu>>(async () =>
             {
-                var list = await _menuRepository.SelectAsync(p => new MenuModel
+                var list = await _menuRepository.SelectAsync(p => new Menu
                 {
                     Id = p.Id,
                     DisplayOrder = p.DisplayOrder,
@@ -50,7 +50,7 @@ namespace Moonglade.Core
                     Url = p.Url,
                     IsOpenInNewTab = p.IsOpenInNewTab
                 });
-                return new SuccessResponse<IReadOnlyList<MenuModel>>(list);
+                return new SuccessResponse<IReadOnlyList<Menu>>(list);
             });
         }
 
@@ -119,14 +119,14 @@ namespace Moonglade.Core
             });
         }
 
-        private static MenuModel EntityToMenuModel(MenuEntity entity)
+        private static Menu EntityToMenuModel(MenuEntity entity)
         {
             if (null == entity)
             {
                 return null;
             }
 
-            return new MenuModel
+            return new Menu
             {
                 Id = entity.Id,
                 Title = entity.Title.Trim(),

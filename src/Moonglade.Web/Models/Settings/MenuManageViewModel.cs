@@ -6,20 +6,20 @@ using Moonglade.Model;
 
 namespace Moonglade.Web.Models.Settings
 {
-    public class NavMenuManageViewModel
+    public class MenuManageViewModel
     {
-        public NavMenuEditViewModel NavMenuEditViewModel { get; set; }
+        public MenuEditViewModel MenuEditViewModel { get; set; }
 
-        public IReadOnlyList<MenuModel> MenuItems { get; set; }
+        public IReadOnlyList<Menu> MenuItems { get; set; }
 
-        public NavMenuManageViewModel()
+        public MenuManageViewModel()
         {
-            NavMenuEditViewModel = new NavMenuEditViewModel();
-            MenuItems = new List<MenuModel>();
+            MenuEditViewModel = new MenuEditViewModel();
+            MenuItems = new List<Menu>();
         }
     }
 
-    public class NavMenuEditViewModel
+    public class MenuEditViewModel
     {
         [HiddenInput]
         public Guid Id { get; set; }
@@ -42,7 +42,7 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Open in New Tab")]
         public bool IsOpenInNewTab { get; set; }
 
-        public NavMenuEditViewModel()
+        public MenuEditViewModel()
         {
             Icon = "icon-file-text2";
         }

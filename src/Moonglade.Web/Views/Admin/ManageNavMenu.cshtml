@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
-@model NavMenuManageViewModel
+@model MenuManageViewModel
 
 @section scripts{
     <script>
@@ -138,32 +138,32 @@ else
             <form id="edit-form" method="post">
                 <div class="modal-body">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <input type="hidden" asp-for="NavMenuEditViewModel.Id" />
+                    <input type="hidden" asp-for="MenuEditViewModel.Id" />
                     <div class="form-group">
-                        <label asp-for="NavMenuEditViewModel.Title" class="control-label"></label>
-                        <input asp-for="NavMenuEditViewModel.Title" class="form-control" />
-                        <span asp-validation-for="NavMenuEditViewModel.Title" class="text-danger"></span>
+                        <label asp-for="MenuEditViewModel.Title" class="control-label"></label>
+                        <input asp-for="MenuEditViewModel.Title" class="form-control" />
+                        <span asp-validation-for="MenuEditViewModel.Title" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="NavMenuEditViewModel.Url" class="control-label"></label>
-                        <input asp-for="NavMenuEditViewModel.Url" class="form-control" />
-                        <span asp-validation-for="NavMenuEditViewModel.Url" class="text-danger"></span>
+                        <label asp-for="MenuEditViewModel.Url" class="control-label"></label>
+                        <input asp-for="MenuEditViewModel.Url" class="form-control" />
+                        <span asp-validation-for="MenuEditViewModel.Url" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="NavMenuEditViewModel.Icon" class="control-label"></label>
-                        <input asp-for="NavMenuEditViewModel.Icon" class="form-control" />
-                        <span asp-validation-for="NavMenuEditViewModel.Icon" class="text-danger"></span>
+                        <label asp-for="MenuEditViewModel.Icon" class="control-label"></label>
+                        <input asp-for="MenuEditViewModel.Icon" class="form-control" />
+                        <span asp-validation-for="MenuEditViewModel.Icon" class="text-danger"></span>
                         <p class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</p>
                     </div>
                     <div class="form-group">
-                        <label asp-for="NavMenuEditViewModel.DisplayOrder" class="control-label"></label>
-                        <input asp-for="NavMenuEditViewModel.DisplayOrder" class="form-control" />
-                        <span asp-validation-for="NavMenuEditViewModel.DisplayOrder" class="text-danger"></span>
+                        <label asp-for="MenuEditViewModel.DisplayOrder" class="control-label"></label>
+                        <input asp-for="MenuEditViewModel.DisplayOrder" class="form-control" />
+                        <span asp-validation-for="MenuEditViewModel.DisplayOrder" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            <input asp-for="NavMenuEditViewModel.IsOpenInNewTab" class="custom-control-input" type="checkbox">
-                            <label asp-for="NavMenuEditViewModel.IsOpenInNewTab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
+                            <input asp-for="MenuEditViewModel.IsOpenInNewTab" class="custom-control-input" type="checkbox">
+                            <label asp-for="MenuEditViewModel.IsOpenInNewTab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
                         </div>
                     </div>
                 </div>

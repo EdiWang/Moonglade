@@ -23,7 +23,7 @@ namespace Moonglade.Tests
                     NormalizedName = "dot-net"
                 };
 
-                var mm = new MenuModel
+                var mm = new Menu
                 {
                     DisplayOrder = 404,
                     Icon = "icon",

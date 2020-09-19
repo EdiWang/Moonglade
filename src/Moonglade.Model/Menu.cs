@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class MenuModel
+    public class Menu
     {
         public Guid Id { get; set; }
 
@@ -16,7 +16,7 @@ namespace Moonglade.Model
 
         public bool IsOpenInNewTab { get; set; }
 
-        public MenuModel()
+        public Menu()
         {
             Icon = "icon-file-text2";
         }
