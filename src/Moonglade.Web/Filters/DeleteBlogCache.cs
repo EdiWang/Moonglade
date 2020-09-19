@@ -7,18 +7,18 @@ namespace Moonglade.Web.Filters
     {
         private readonly IBlogCache _cache;
 
-        private readonly string _divisionKey;
+        private readonly CacheDivision _division;
 
-        public DeleteBlogCacheDivision(string divisionKey, IBlogCache cache)
+        public DeleteBlogCacheDivision(CacheDivision division, IBlogCache cache)
         {
-            _divisionKey = divisionKey;
+            _division = division;
             _cache = cache;
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
-            _cache.Remove(_divisionKey);
+            _cache.Remove(_division);
         }
     }
 
@@ -27,11 +27,11 @@ namespace Moonglade.Web.Filters
         private readonly IBlogCache _cache;
 
         private readonly string _cacheKey;
-        private readonly string _divisionKey;
+        private readonly CacheDivision _division;
 
-        public DeleteBlogCache(string divisionKey, string cacheKey, IBlogCache cache)
+        public DeleteBlogCache(CacheDivision division, string cacheKey, IBlogCache cache)
         {
-            _divisionKey = divisionKey;
+            _division = division;
             _cacheKey = cacheKey;
             _cache = cache;
         }
@@ -39,7 +39,7 @@ namespace Moonglade.Web.Filters
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
-            _cache.Remove(_divisionKey, _cacheKey);
+            _cache.Remove(_division, _cacheKey);
         }
     }
 }

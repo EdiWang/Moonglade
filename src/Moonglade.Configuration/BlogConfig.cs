@@ -61,7 +61,6 @@ namespace Moonglade.Configuration
             if (_hasInitialized) return;
 
             var cfgDic = GetAllConfigurations();
-
             var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
             GeneralSettings = JsonSerializer.Deserialize<GeneralSettings>(cfgDic[nameof(GeneralSettings)], jsonOptions);

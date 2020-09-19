@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
             {
                 var pagesize = _blogConfig.ContentSettings.PostListPageSize;
                 var postList = await _postService.GetPagedPostsAsync(pagesize, page);
-                var postCount = _cache.GetOrCreate(CacheDivisionKeys.General, "postcount", entry => _postService.CountVisiblePosts().Item);
+                var postCount = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts().Item);
 
                 var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pagesize, postCount);
                 return View(postsAsIPagedList);
@@ -97,10 +97,7 @@ namespace Moonglade.Web.Controllers
         {
             var slugInfo = new PostSlugInfo(year, month, day, slug);
 
-            if (!_blogConfig.SecuritySettings.EnablePostRawEndpoint)
-            {
-                return NotFound();
-            }
+            if (!_blogConfig.SecuritySettings.EnablePostRawEndpoint) return NotFound();
 
             if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug))
             {

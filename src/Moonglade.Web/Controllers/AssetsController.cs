@@ -201,7 +201,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                return cache.GetOrCreate(CacheDivisionKeys.General, "avatar", entry =>
+                return cache.GetOrCreate(CacheDivision.General, "avatar", entry =>
                 {
                     Logger.LogTrace("Avatar not on cache, getting new avatar image...");
                     var avatarBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.AvatarBase64);

@@ -40,7 +40,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest();
             }
 
-            var pageResponse = await _cache.GetOrCreateAsync(CacheDivisionKeys.Page, slug.ToLower(), async entry =>
+            var pageResponse = await _cache.GetOrCreateAsync(CacheDivision.Page, slug.ToLower(), async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Page"]);
 
@@ -157,7 +157,7 @@ namespace Moonglade.Web.Controllers
                     if (response.IsSuccess)
                     {
                         Logger.LogInformation($"User '{User.Identity.Name}' updated custom page id '{response.Item}'");
-                        _cache.Remove(CacheDivisionKeys.Page, req.Slug.ToLower());
+                        _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
 
                         return Json(new { PageId = response.Item });
                     }
@@ -186,7 +186,7 @@ namespace Moonglade.Web.Controllers
                 var response = await _customPageService.DeleteAsync(pageId);
                 if (!response.IsSuccess) return ServerError();
 
-                _cache.Remove(CacheDivisionKeys.Page, slug.ToLower());
+                _cache.Remove(CacheDivision.Page, slug.ToLower());
                 return Json(pageId);
             }
             catch (Exception e)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Moonglade.Core.Caching;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Pingback;
@@ -115,8 +116,8 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [HttpPost("manage/createoredit")]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivisionKeys.General, "postcount" })]
-        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivisionKeys.PostCountCategory })]
+        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
+        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
         public async Task<IActionResult> CreateOrEdit(PostEditViewModel model,
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
@@ -191,8 +192,8 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivisionKeys.General, "postcount" })]
-        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivisionKeys.PostCountCategory })]
+        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
+        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
         [HttpPost("manage/restore")]
         public async Task<IActionResult> Restore(Guid postId)
         {
@@ -202,8 +203,8 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivisionKeys.General, "postcount" })]
-        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivisionKeys.PostCountCategory })]
+        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
+        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
         [HttpPost("manage/delete")]
         public async Task<IActionResult> Delete(Guid postId)
         {

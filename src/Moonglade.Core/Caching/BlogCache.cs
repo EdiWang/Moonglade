@@ -6,6 +6,14 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Moonglade.Core.Caching
 {
+    public enum CacheDivision
+    {
+        General,
+        Post,
+        Page,
+        PostCountCategory
+    }
+
     public class BlogCache : IBlogCache
     {
         /* Create Key-Value mapping for cache divisions to workaround
@@ -27,16 +35,16 @@ namespace Moonglade.Core.Caching
             CacheDivision = new Dictionary<string, IList<string>>();
         }
 
-        public TItem GetOrCreate<TItem>(string divisionKey, string key, Func<ICacheEntry, TItem> factory)
+        public TItem GetOrCreate<TItem>(CacheDivision division, string key, Func<ICacheEntry, TItem> factory)
         {
-            AddToDivision(divisionKey, key);
+            AddToDivision(division.ToString(), key);
             return _memoryCache.GetOrCreate(key, factory);
         }
 
-        public Task<TItem> GetOrCreateAsync<TItem>(string divisionKey, string key, Func<ICacheEntry, Task<TItem>> factory)
+        public Task<TItem> GetOrCreateAsync<TItem>(CacheDivision division, string key, Func<ICacheEntry, Task<TItem>> factory)
         {
-            AddToDivision(divisionKey, key);
-            return _memoryCache.GetOrCreateAsync($"{divisionKey}-{key}", factory);
+            AddToDivision(division.ToString(), key);
+            return _memoryCache.GetOrCreateAsync($"{division}-{key}", factory);
         }
 
         public void RemoveAllCache()
@@ -53,14 +61,9 @@ namespace Moonglade.Core.Caching
             }
         }
 
-        public void Remove(string divisionKey)
+        public void Remove(CacheDivision division)
         {
-            if (string.IsNullOrEmpty(divisionKey))
-            {
-                return;
-            }
-
-            var cacheKeys = CacheDivision[divisionKey];
+            var cacheKeys = CacheDivision[division.ToString()];
             if (null == cacheKeys || cacheKeys.Count <= 0) return;
 
             foreach (string key in cacheKeys)
@@ -69,11 +72,10 @@ namespace Moonglade.Core.Caching
             }
         }
 
-        public void Remove(string divisionKey, string key)
+        public void Remove(CacheDivision division, string key)
         {
-            if (string.IsNullOrWhiteSpace(divisionKey) || string.IsNullOrWhiteSpace(key)) return;
-
-            _memoryCache.Remove($"{divisionKey}-{key}");
+            if (string.IsNullOrWhiteSpace(key)) return;
+            _memoryCache.Remove($"{division}-{key}");
         }
 
         private void AddToDivision(string divisionKey, string cacheKey)

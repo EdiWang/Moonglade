@@ -249,7 +249,7 @@ namespace Moonglade.Core
                 var pid = await _postRepository.SelectFirstOrDefaultAsync(spec, p => p.Id);
                 if (pid != Guid.Empty)
                 {
-                    var psm = await _cache.GetOrCreateAsync(CacheDivisionKeys.Post, $"{pid}", async entry =>
+                    var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
                     {
                         entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Post"]);
 
@@ -619,7 +619,7 @@ namespace Moonglade.Core
                     isNewPublish ? AuditEventId.PostPublished : AuditEventId.PostUpdated,
                     $"Post updated, id: {postModel.Id}");
 
-                _cache.Remove(CacheDivisionKeys.Post, request.Id.ToString());
+                _cache.Remove(CacheDivision.Post, request.Id.ToString());
                 return new SuccessResponse<PostEntity>(postModel);
             });
         }
@@ -635,7 +635,7 @@ namespace Moonglade.Core
                 await _postPublishRepository.UpdateAsync(pp);
                 await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
 
-                _cache.Remove(CacheDivisionKeys.Post, postId.ToString());
+                _cache.Remove(CacheDivision.Post, postId.ToString());
                 return new SuccessResponse();
             }, keyParameter: postId);
         }
@@ -659,7 +659,7 @@ namespace Moonglade.Core
                     await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
                 }
 
-                _cache.Remove(CacheDivisionKeys.Post, postId.ToString());
+                _cache.Remove(CacheDivision.Post, postId.ToString());
                 return new SuccessResponse();
             }, keyParameter: postId);
         }
@@ -675,7 +675,7 @@ namespace Moonglade.Core
 
                 foreach (var guid in posts.Select(p => p.Id))
                 {
-                    _cache.Remove(CacheDivisionKeys.Post, guid.ToString());
+                    _cache.Remove(CacheDivision.Post, guid.ToString());
                 }
                 return new SuccessResponse();
             });
