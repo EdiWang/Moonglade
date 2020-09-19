@@ -75,7 +75,8 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            var rsp = await _postService.GetAsync(year, month, day, slug);
+            var slugInfo = new PostSlugInfo(year, month, day, slug);
+            var rsp = await _postService.GetAsync(slugInfo);
             if (!rsp.IsSuccess) return ServerError(rsp.Message);
 
             var post = rsp.Item;
@@ -94,6 +95,8 @@ namespace Moonglade.Web.Controllers
         [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}/{raw:regex(^(meta|content)$)}")]
         public async Task<IActionResult> Raw(int year, int month, int day, string slug, string raw)
         {
+            var slugInfo = new PostSlugInfo(year, month, day, slug);
+
             if (!_blogConfig.SecuritySettings.EnablePostRawEndpoint)
             {
                 return NotFound();
@@ -108,13 +111,13 @@ namespace Moonglade.Web.Controllers
             switch (raw.ToLower())
             {
                 case "meta":
-                    var rspMeta = await _postService.GetSegmentAsync(year, month, day, slug);
+                    var rspMeta = await _postService.GetSegmentAsync(slugInfo);
                     return !rspMeta.IsSuccess
                         ? ServerError(rspMeta.Message)
                         : Json(rspMeta.Item);
 
                 case "content":
-                    var rspContent = await _postService.GetRawContentAsync(year, month, day, slug);
+                    var rspContent = await _postService.GetRawContentAsync(slugInfo);
                     return !rspContent.IsSuccess
                         ? ServerError(rspContent.Message)
                         : Content(rspContent.Item, "text/plain");

@@ -200,12 +200,12 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<string>> GetRawContentAsync(int year, int month, int day, string slug)
+        public Task<Response<string>> GetRawContentAsync(PostSlugInfo slugInfo)
         {
             return TryExecuteAsync<string>(async () =>
             {
-                var date = new DateTime(year, month, day);
-                var spec = new PostSpec(date, slug);
+                var date = new DateTime(slugInfo.Year, slugInfo.Month, slugInfo.Day);
+                var spec = new PostSpec(date, slugInfo.Slug);
 
                 var model = await _postRepository.SelectFirstOrDefaultAsync(spec,
                     post => post.PostContent);
@@ -213,12 +213,12 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<PostSlugSegment>> GetSegmentAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlugSegment>> GetSegmentAsync(PostSlugInfo slugInfo)
         {
             return TryExecuteAsync<PostSlugSegment>(async () =>
             {
-                var date = new DateTime(year, month, day);
-                var spec = new PostSpec(date, slug);
+                var date = new DateTime(slugInfo.Year, slugInfo.Month, slugInfo.Day);
+                var spec = new PostSpec(date, slugInfo.Slug);
 
                 var model = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugSegment
                 {
@@ -239,12 +239,12 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<PostSlug>> GetAsync(int year, int month, int day, string slug)
+        public Task<Response<PostSlug>> GetAsync(PostSlugInfo slugInfo)
         {
             return TryExecuteAsync<PostSlug>(async () =>
             {
-                var date = new DateTime(year, month, day);
-                var spec = new PostSpec(date, slug);
+                var date = new DateTime(slugInfo.Year, slugInfo.Month, slugInfo.Day);
+                var spec = new PostSpec(date, slugInfo.Slug);
 
                 var pid = await _postRepository.SelectFirstOrDefaultAsync(spec, p => p.Id);
                 if (pid != Guid.Empty)
