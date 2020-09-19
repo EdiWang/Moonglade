@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Moonglade.Syndication;
 using NUnit.Framework;
@@ -114,7 +113,7 @@ namespace Moonglade.Tests
                     Author = "J Ma",
                     Title = "996 is Fubao",
                     AuthorEmail = "admin@996.icu",
-                    Categories = new List<string>{ "Hard work" },
+                    Categories = new []{ "Hard work" },
                     Description = "You young people need fen dou",
                     Id = "996",
                     Link = "https://996.icu/fubao",
@@ -125,7 +124,7 @@ namespace Moonglade.Tests
                     Author = "G Ni",
                     Title = "Cheating funds from zero to hero",
                     AuthorEmail = "copy-paste@from.github",
-                    Categories = new List<string> { "Independent Development" },
+                    Categories = new []{ "Independent Development" },
                     Description = "Nation's Proud",
                     Id = "251",
                     Link = "https://404.com/no-such-thing",

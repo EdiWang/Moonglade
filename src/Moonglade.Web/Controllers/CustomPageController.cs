@@ -48,22 +48,20 @@ namespace Moonglade.Web.Controllers
                 return response;
             });
 
-            if (pageResponse.IsSuccess)
+            if (!pageResponse.IsSuccess) return ServerError();
+
+            if (pageResponse.Item == null)
             {
-                if (pageResponse.Item == null)
-                {
-                    Logger.LogWarning($"Page not found. {nameof(slug)}: '{slug}'");
-                    return NotFound();
-                }
-
-                if (!pageResponse.Item.IsPublished)
-                {
-                    return NotFound();
-                }
-
-                return View(pageResponse.Item);
+                Logger.LogWarning($"Page not found. {nameof(slug)}: '{slug}'");
+                return NotFound();
             }
-            return ServerError();
+
+            if (!pageResponse.Item.IsPublished)
+            {
+                return NotFound();
+            }
+
+            return View(pageResponse.Item);
         }
 
         [Authorize]
@@ -105,28 +103,26 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _customPageService.GetAsync(id);
-            if (response.IsSuccess)
+            if (!response.IsSuccess) return ServerError();
+
+            if (response.Item == null)
             {
-                if (response.Item == null)
-                {
-                    return NotFound();
-                }
-
-                var model = new CustomPageEditViewModel
-                {
-                    Id = response.Item.Id,
-                    Title = response.Item.Title,
-                    Slug = response.Item.Slug,
-                    MetaDescription = response.Item.MetaDescription,
-                    CssContent = response.Item.CssContent,
-                    RawHtmlContent = response.Item.RawHtmlContent,
-                    HideSidebar = response.Item.HideSidebar,
-                    IsPublished = response.Item.IsPublished
-                };
-
-                return View("CreateOrEdit", model);
+                return NotFound();
             }
-            return ServerError();
+
+            var model = new CustomPageEditViewModel
+            {
+                Id = response.Item.Id,
+                Title = response.Item.Title,
+                Slug = response.Item.Slug,
+                MetaDescription = response.Item.MetaDescription,
+                CssContent = response.Item.CssContent,
+                RawHtmlContent = response.Item.RawHtmlContent,
+                HideSidebar = response.Item.HideSidebar,
+                IsPublished = response.Item.IsPublished
+            };
+
+            return View("CreateOrEdit", model);
         }
 
         [Authorize]
@@ -188,13 +184,10 @@ namespace Moonglade.Web.Controllers
             try
             {
                 var response = await _customPageService.DeleteAsync(pageId);
-                if (response.IsSuccess)
-                {
-                    _cache.Remove(CacheDivisionKeys.Page, slug.ToLower());
-                    return Json(pageId);
-                }
+                if (!response.IsSuccess) return ServerError();
 
-                return ServerError();
+                _cache.Remove(CacheDivisionKeys.Page, slug.ToLower());
+                return Json(pageId);
             }
             catch (Exception e)
             {

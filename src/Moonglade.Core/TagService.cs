@@ -57,17 +57,14 @@ namespace Moonglade.Core
             {
                 Logger.LogInformation($"Updating tag {tagId} with new name {newName}");
                 var tag = await _tagRepository.GetAsync(tagId);
-                if (null != tag)
-                {
-                    tag.DisplayName = newName;
-                    tag.NormalizedName = Utils.NormalizeTagName(newName);
-                    await _tagRepository.UpdateAsync(tag);
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
+                if (null == tag) return new FailedResponse((int) FaultCode.TagNotFound);
 
-                    return new SuccessResponse();
-                }
+                tag.DisplayName = newName;
+                tag.NormalizedName = Utils.NormalizeTagName(newName);
+                await _tagRepository.UpdateAsync(tag);
+                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
 
-                return new FailedResponse((int)FaultCode.TagNotFound);
+                return new SuccessResponse();
             });
         }
 
@@ -91,20 +88,17 @@ namespace Moonglade.Core
         {
             return TryExecuteAsync<IReadOnlyList<DegreeTag>>(async () =>
             {
-                if (_tagRepository.Any())
+                if (!_tagRepository.Any()) return new SuccessResponse<IReadOnlyList<DegreeTag>>(new List<DegreeTag>());
+
+                var spec = new TagSpec(top);
+                var hotTags = await _tagRepository.SelectAsync(spec, t => new DegreeTag
                 {
-                    var spec = new TagSpec(top);
-                    var hotTags = await _tagRepository.SelectAsync(spec, t => new DegreeTag
-                    {
-                        Degree = t.PostTag.Count,
-                        DisplayName = t.DisplayName,
-                        NormalizedName = t.NormalizedName
-                    });
+                    Degree = t.PostTag.Count,
+                    DisplayName = t.DisplayName,
+                    NormalizedName = t.NormalizedName
+                });
 
-                    return new SuccessResponse<IReadOnlyList<DegreeTag>>(hotTags);
-                }
-
-                return new SuccessResponse<IReadOnlyList<DegreeTag>>(new List<DegreeTag>());
+                return new SuccessResponse<IReadOnlyList<DegreeTag>>(hotTags);
             }, keyParameter: top);
         }
 

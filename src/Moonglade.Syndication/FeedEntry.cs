@@ -12,6 +12,6 @@ namespace Moonglade.Syndication
         public string Description { get; set; }
         public string Author { get; set; }
         public string AuthorEmail { get; set; }
-        public IList<string> Categories { get; set; }
+        public string[] Categories { get; set; }
     }
 }
