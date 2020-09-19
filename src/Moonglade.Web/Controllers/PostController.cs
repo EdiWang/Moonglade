@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
             PostService postService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
-            IDateTimeResolver dateTimeResolver, 
+            IDateTimeResolver dateTimeResolver,
             IBlogCache cache)
             : base(logger, settings)
         {
@@ -159,7 +159,7 @@ namespace Moonglade.Web.Controllers
                 return new EmptyResult();
             }
 
-            var response = await _postService.UpdateStatisticAsync(postId, StatisticTypes.Hits);
+            var response = await _postService.UpdateStatisticAsync(postId);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
@@ -187,7 +187,7 @@ namespace Moonglade.Web.Controllers
                 });
             }
 
-            var response = await _postService.UpdateStatisticAsync(postId, StatisticTypes.Likes);
+            var response = await _postService.UpdateStatisticAsync(postId, 1);
             if (response.IsSuccess)
             {
                 SetPostTrackingCookie(CookieNames.Liked, postId.ToString());

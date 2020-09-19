@@ -102,23 +102,20 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response> UpdateStatisticAsync(Guid postId, StatisticTypes statisticTypes)
+        public Task<Response> UpdateStatisticAsync(Guid postId, int likes = 0)
         {
             return TryExecuteAsync(async () =>
             {
                 var pp = await _postExtensionRepository.GetAsync(postId);
                 if (pp == null) return new FailedResponse((int)FaultCode.PostNotFound);
 
-                switch (statisticTypes)
+                if (likes > 0)
                 {
-                    case StatisticTypes.Hits:
-                        pp.Hits += 1;
-                        break;
-                    case StatisticTypes.Likes:
-                        pp.Likes += 1;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(statisticTypes), statisticTypes, null);
+                    pp.Likes += likes;
+                }
+                else
+                {
+                    pp.Hits += 1;
                 }
 
                 await _postExtensionRepository.UpdateAsync(pp);
