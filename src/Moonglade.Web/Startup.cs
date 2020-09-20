@@ -114,7 +114,7 @@ namespace Moonglade.Web
                 }
             }
 
-            services.AddHttpClient<IMoongladeNotificationClient, NotificationClient>()
+            services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
                     .AddTransientHttpErrorPolicy(builder =>
                             builder.WaitAndRetryAsync(3, retryCount =>
                             TimeSpan.FromSeconds(Math.Pow(2, retryCount)),

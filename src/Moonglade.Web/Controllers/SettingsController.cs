@@ -235,7 +235,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("send-test-email")]
         [IgnoreAntiforgeryToken]
-        public async Task<IActionResult> SendTestEmail([FromServices] IMoongladeNotificationClient notificationClient)
+        public async Task<IActionResult> SendTestEmail([FromServices] IBlogNotificationClient notificationClient)
         {
             var response = await notificationClient.SendTestNotificationAsync();
             if (!response.IsSuccess)

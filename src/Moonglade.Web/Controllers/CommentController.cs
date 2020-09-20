@@ -24,7 +24,7 @@ namespace Moonglade.Web.Controllers
         #region Private Fields
 
         private readonly CommentService _commentService;
-        private readonly IMoongladeNotificationClient _notificationClient;
+        private readonly IBlogNotificationClient _notificationClient;
         private readonly IBlogConfig _blogConfig;
 
         #endregion
@@ -34,7 +34,7 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings,
             CommentService commentService,
             IBlogConfig blogConfig,
-            IMoongladeNotificationClient notificationClient = null)
+            IBlogNotificationClient notificationClient = null)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;

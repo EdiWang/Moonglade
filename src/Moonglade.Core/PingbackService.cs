@@ -15,7 +15,7 @@ namespace Moonglade.Core
 {
     public class PingbackService : BlogService
     {
-        private readonly IMoongladeNotificationClient _notificationClient;
+        private readonly IBlogNotificationClient _notificationClient;
         private readonly IPingbackReceiver _pingbackReceiver;
         private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
         private readonly IRepository<PostEntity> _postRepository;
@@ -25,7 +25,7 @@ namespace Moonglade.Core
             IPingbackReceiver pingbackReceiver,
             IRepository<PingbackHistoryEntity> pingbackRepository,
             IRepository<PostEntity> postRepository,
-            IMoongladeNotificationClient notificationClient = null) : base(logger)
+            IBlogNotificationClient notificationClient = null) : base(logger)
         {
             _notificationClient = notificationClient;
             _pingbackReceiver = pingbackReceiver;

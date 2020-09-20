@@ -12,7 +12,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core.Notification
 {
-    public class NotificationClient : IMoongladeNotificationClient
+    public class NotificationClient : IBlogNotificationClient
     {
         private readonly HttpClient _httpClient;
 
