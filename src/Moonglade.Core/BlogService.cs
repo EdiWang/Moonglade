@@ -9,13 +9,13 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class MoongladeService
+    public class BlogService
     {
-        protected readonly ILogger<MoongladeService> Logger;
+        protected readonly ILogger<BlogService> Logger;
 
         protected readonly AppSettings AppSettings;
 
-        public MoongladeService(ILogger<MoongladeService> logger = null,
+        public BlogService(ILogger<BlogService> logger = null,
             IOptions<AppSettings> settings = null)
         {
             if (null != settings) AppSettings = settings.Value;

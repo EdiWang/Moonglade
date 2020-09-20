@@ -12,7 +12,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class MenuService : MoongladeService
+    public class MenuService : BlogService
     {
         private readonly IRepository<MenuEntity> _menuRepository;
         private readonly IBlogAudit _blogAudit;

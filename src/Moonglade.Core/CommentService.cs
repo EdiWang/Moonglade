@@ -16,7 +16,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class CommentService : MoongladeService
+    public class CommentService : BlogService
     {
         private readonly IBlogConfig _blogConfig;
 

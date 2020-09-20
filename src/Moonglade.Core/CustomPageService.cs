@@ -12,7 +12,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class CustomPageService : MoongladeService
+    public class CustomPageService : BlogService
     {
         private readonly IRepository<CustomPageEntity> _customPageRepository;
         private readonly IBlogAudit _blogAudit;

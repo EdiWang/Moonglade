@@ -104,7 +104,7 @@ namespace Moonglade.Web
             services.AddSingleton<IBlogCache, BlogCache>();
             services.AddSessionBasedCaptcha();
 
-            var asm = Assembly.GetAssembly(typeof(MoongladeService));
+            var asm = Assembly.GetAssembly(typeof(BlogService));
             if (null != asm)
             {
                 var types = asm.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));

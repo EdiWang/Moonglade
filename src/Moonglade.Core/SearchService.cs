@@ -14,7 +14,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class SearchService : MoongladeService
+    public class SearchService : BlogService
     {
         private readonly IRepository<PostEntity> _postRepository;
 

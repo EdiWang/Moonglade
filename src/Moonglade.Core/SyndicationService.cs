@@ -16,7 +16,7 @@ using Moonglade.Syndication;
 
 namespace Moonglade.Core
 {
-    public class SyndicationService : MoongladeService
+    public class SyndicationService : BlogService
     {
         private readonly string _baseUrl;
 

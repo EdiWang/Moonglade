@@ -11,7 +11,7 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class CategoryService : MoongladeService
+    public class CategoryService : BlogService
     {
         private readonly IRepository<CategoryEntity> _categoryRepository;
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;

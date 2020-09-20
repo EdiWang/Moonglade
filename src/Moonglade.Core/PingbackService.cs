@@ -13,7 +13,7 @@ using Moonglade.Pingback;
 
 namespace Moonglade.Core
 {
-    public class PingbackService : MoongladeService
+    public class PingbackService : BlogService
     {
         private readonly IMoongladeNotificationClient _notificationClient;
         private readonly IPingbackReceiver _pingbackReceiver;

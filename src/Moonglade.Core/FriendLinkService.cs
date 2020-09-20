@@ -13,7 +13,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class FriendLinkService : MoongladeService
+    public class FriendLinkService : BlogService
     {
         private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
         private readonly IBlogAudit _blogAudit;
