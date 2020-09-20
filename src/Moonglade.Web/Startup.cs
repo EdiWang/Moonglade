@@ -70,7 +70,7 @@ namespace Moonglade.Web
             });
 
             services.AddApplicationInsightsTelemetry();
-            services.AddMoongladeAuthenticaton(_configuration);
+            services.AddBlogAuthenticaton(_configuration);
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc(options =>

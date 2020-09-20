@@ -9,7 +9,7 @@ namespace Moonglade.Web.Authentication
 {
     public static class AuthenticationServiceCollectionExtensions
     {
-        public static void AddMoongladeAuthenticaton(this IServiceCollection services, IConfiguration configuration)
+        public static void AddBlogAuthenticaton(this IServiceCollection services, IConfiguration configuration)
         {
             var authentication = new AuthenticationSettings();
             configuration.Bind(nameof(Authentication), authentication);
