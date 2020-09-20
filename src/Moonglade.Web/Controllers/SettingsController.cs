@@ -40,7 +40,7 @@ namespace Moonglade.Web.Controllers
         private readonly FriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
-        private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IBlogAudit _blogAudit;
 
         #endregion
 
@@ -50,12 +50,12 @@ namespace Moonglade.Web.Controllers
             FriendLinkService friendLinkService,
             IBlogConfig blogConfig,
             IDateTimeResolver dateTimeResolver,
-            IMoongladeAudit moongladeAudit)
+            IBlogAudit blogAudit)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _dateTimeResolver = dateTimeResolver;
-            _moongladeAudit = moongladeAudit;
+            _blogAudit = blogAudit;
 
             _friendLinkService = friendLinkService;
         }
@@ -136,7 +136,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
 
                 return Json(response);
             }
@@ -185,7 +185,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
 
                 return Json(response);
 
@@ -226,7 +226,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
 
                 return Json(response);
             }
@@ -283,7 +283,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
                 return Json(response);
             }
@@ -324,7 +324,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
                 return Json(response);
             }
@@ -489,7 +489,7 @@ namespace Moonglade.Web.Controllers
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
 
                 return Json(response);
             }
@@ -540,7 +540,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated site icon.");
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
 
                 return Json(response);
             }
@@ -584,7 +584,7 @@ namespace Moonglade.Web.Controllers
                 var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();
 
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
                 return Json(response);
             }
             return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
@@ -609,7 +609,7 @@ namespace Moonglade.Web.Controllers
 
             if (!response.IsSuccess) return ServerError(response.Message);
 
-            await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "System reset.");
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "System reset.");
 
             applicationLifetime.StopApplication();
             return Ok();
@@ -648,7 +648,7 @@ namespace Moonglade.Web.Controllers
                 var response = await _blogConfig.SaveConfigurationAsync(settings);
                 _blogConfig.RequireRefresh();
 
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
                 return Json(response);
             }
             return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
@@ -676,7 +676,7 @@ namespace Moonglade.Web.Controllers
 
                 var skip = (page - 1) * 20;
 
-                var response = await _moongladeAudit.GetAuditEntries(skip, 20);
+                var response = await _blogAudit.GetAuditEntries(skip, 20);
                 if (response.IsSuccess)
                 {
                     var auditEntriesAsIPagedList = new StaticPagedList<AuditEntry>(response.Item.Entries, page, 20, response.Item.Count);
@@ -705,7 +705,7 @@ namespace Moonglade.Web.Controllers
                     return BadRequest();
                 }
 
-                var response = await _moongladeAudit.ClearAuditLog();
+                var response = await _blogAudit.ClearAuditLog();
                 return response.IsSuccess ?
                     RedirectToAction("AuditLogs") :
                     ServerError(response.Message);

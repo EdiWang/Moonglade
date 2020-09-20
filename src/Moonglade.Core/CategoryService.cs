@@ -15,16 +15,16 @@ namespace Moonglade.Core
     {
         private readonly IRepository<CategoryEntity> _categoryRepository;
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
-        private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IBlogAudit _blogAudit;
 
         public CategoryService(ILogger<CategoryService> logger,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository, 
-            IMoongladeAudit moongladeAudit) : base(logger)
+            IBlogAudit blogAudit) : base(logger)
         {
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
-            _moongladeAudit = moongladeAudit;
+            _blogAudit = blogAudit;
         }
 
         public Task<Response<IReadOnlyList<Category>>> GetAllAsync()
@@ -97,7 +97,7 @@ namespace Moonglade.Core
                 };
 
                 await _categoryRepository.AddAsync(category);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryCreated, $"Category '{category.RouteName}' created");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryCreated, $"Category '{category.RouteName}' created");
 
                 return new SuccessResponse();
             });
@@ -117,7 +117,7 @@ namespace Moonglade.Core
                 }
 
                 _categoryRepository.Delete(id);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Category '{id}' deleted.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Category '{id}' deleted.");
 
                 return new SuccessResponse();
             });
@@ -135,7 +135,7 @@ namespace Moonglade.Core
                 cat.Note = editCategoryRequest.Note.Trim();
 
                 await _categoryRepository.UpdateAsync(cat);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryUpdated, $"Category '{editCategoryRequest.Id}' updated.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryUpdated, $"Category '{editCategoryRequest.Id}' updated.");
 
                 return new SuccessResponse();
             });

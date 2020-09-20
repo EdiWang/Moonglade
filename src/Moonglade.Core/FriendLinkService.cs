@@ -16,16 +16,16 @@ namespace Moonglade.Core
     public class FriendLinkService : MoongladeService
     {
         private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
-        private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IBlogAudit _blogAudit;
 
         public FriendLinkService(
             ILogger<FriendLinkService> logger,
             IOptions<AppSettings> settings,
             IRepository<FriendLinkEntity> friendlinkRepository, 
-            IMoongladeAudit moongladeAudit) : base(logger, settings)
+            IBlogAudit blogAudit) : base(logger, settings)
         {
             _friendlinkRepository = friendlinkRepository;
-            _moongladeAudit = moongladeAudit;
+            _blogAudit = blogAudit;
         }
 
         public Task<Response<FriendLink>> GetAsync(Guid id)
@@ -84,7 +84,7 @@ namespace Moonglade.Core
                 };
 
                 await _friendlinkRepository.AddAsync(fdLink);
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
 
                 return new SuccessResponse();
             });
@@ -95,7 +95,7 @@ namespace Moonglade.Core
             return TryExecuteAsync(async () =>
             {
                 await _friendlinkRepository.DeleteAsync(id);
-                await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
 
                 return new SuccessResponse();
             }, keyParameter: id);
@@ -127,7 +127,7 @@ namespace Moonglade.Core
                     fdlink.LinkUrl = newLinkUrl;
 
                     await _friendlinkRepository.UpdateAsync(fdlink);
-                    await _moongladeAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+                    await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
 
                     return new SuccessResponse();
                 }

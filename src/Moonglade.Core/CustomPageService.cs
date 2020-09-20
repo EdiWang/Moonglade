@@ -15,16 +15,16 @@ namespace Moonglade.Core
     public class CustomPageService : MoongladeService
     {
         private readonly IRepository<CustomPageEntity> _customPageRepository;
-        private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IBlogAudit _blogAudit;
 
         public CustomPageService(
             ILogger<CustomPageService> logger,
             IOptions<AppSettings> settings,
             IRepository<CustomPageEntity> customPageRepository,
-            IMoongladeAudit moongladeAudit) : base(logger, settings)
+            IBlogAudit blogAudit) : base(logger, settings)
         {
             _customPageRepository = customPageRepository;
-            _moongladeAudit = moongladeAudit;
+            _blogAudit = blogAudit;
         }
 
         public Task<Response<CustomPage>> GetAsync(Guid pageId)
@@ -89,7 +89,7 @@ namespace Moonglade.Core
                 };
 
                 await _customPageRepository.AddAsync(customPage);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PageCreated, $"Page '{customPage.Id}' created.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PageCreated, $"Page '{customPage.Id}' created.");
 
                 return new SuccessResponse<Guid>(uid);
             });
@@ -115,7 +115,7 @@ namespace Moonglade.Core
                 page.IsPublished = request.IsPublished;
 
                 await _customPageRepository.UpdateAsync(page);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, $"Page '{request.Id}' updated.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, $"Page '{request.Id}' updated.");
 
                 return new SuccessResponse<Guid>(page.Id);
             });
@@ -132,7 +132,7 @@ namespace Moonglade.Core
                 }
 
                 await _customPageRepository.DeleteAsync(pageId);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PageDeleted, $"Page '{pageId}' deleted.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PageDeleted, $"Page '{pageId}' deleted.");
 
                 return new SuccessResponse();
             });

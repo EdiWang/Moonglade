@@ -19,7 +19,7 @@ namespace Moonglade.Core
     public class PostService : MoongladeService
     {
         private readonly IDateTimeResolver _dateTimeResolver;
-        private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IBlogAudit _blogAudit;
         private readonly IBlogCache _cache;
 
         #region Repository Objects
@@ -44,7 +44,7 @@ namespace Moonglade.Core
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
             IDateTimeResolver dateTimeResolver,
-            IMoongladeAudit moongladeAudit,
+            IBlogAudit blogAudit,
             IBlogCache cache) : base(logger, settings)
         {
             _postRepository = postRepository;
@@ -55,7 +55,7 @@ namespace Moonglade.Core
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
             _dateTimeResolver = dateTimeResolver;
-            _moongladeAudit = moongladeAudit;
+            _blogAudit = blogAudit;
             _cache = cache;
         }
 
@@ -497,7 +497,7 @@ namespace Moonglade.Core
                             };
 
                             tag = await _tagRepository.AddAsync(newTag);
-                            await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
+                            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
                                 $"Tag '{tag.NormalizedName}' created.");
                         }
 
@@ -510,7 +510,7 @@ namespace Moonglade.Core
                 }
 
                 await _postRepository.AddAsync(postModel);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostCreated, $"Post created, id: {postModel.Id}");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostCreated, $"Post created, id: {postModel.Id}");
 
                 return new SuccessResponse<PostEntity>(postModel);
             });
@@ -571,7 +571,7 @@ namespace Moonglade.Core
                         NormalizedName = Utils.NormalizeTagName(item)
                     });
 
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
+                    await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
                         $"Tag '{item}' created.");
                 }
 
@@ -614,7 +614,7 @@ namespace Moonglade.Core
 
                 await _postRepository.UpdateAsync(postModel);
 
-                await _moongladeAudit.AddAuditEntry(
+                await _blogAudit.AddAuditEntry(
                     EventType.Content,
                     isNewPublish ? AuditEventId.PostPublished : AuditEventId.PostUpdated,
                     $"Post updated, id: {postModel.Id}");
@@ -633,7 +633,7 @@ namespace Moonglade.Core
 
                 pp.IsDeleted = false;
                 await _postPublishRepository.UpdateAsync(pp);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
 
                 _cache.Remove(CacheDivision.Post, postId.ToString());
                 return new SuccessResponse();
@@ -651,12 +651,12 @@ namespace Moonglade.Core
                 {
                     post.PostPublish.IsDeleted = true;
                     await _postRepository.UpdateAsync(post);
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
+                    await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
                 }
                 else
                 {
                     await _postRepository.DeleteAsync(post);
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
+                    await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
                 }
 
                 _cache.Remove(CacheDivision.Post, postId.ToString());
@@ -671,7 +671,7 @@ namespace Moonglade.Core
                 var spec = new PostSpec(true);
                 var posts = await _postRepository.GetAsync(spec);
                 await _postRepository.DeleteAsync(posts);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.EmptyRecycleBin, "Emptied Recycle Bin.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.EmptyRecycleBin, "Emptied Recycle Bin.");
 
                 foreach (var guid in posts.Select(p => p.Id))
                 {

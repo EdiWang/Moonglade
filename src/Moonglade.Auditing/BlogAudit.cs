@@ -13,14 +13,14 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Auditing
 {
-    public class MoongladeAudit : IMoongladeAudit
+    public class BlogAudit : IBlogAudit
     {
-        private readonly ILogger<MoongladeAudit> _logger;
+        private readonly ILogger<BlogAudit> _logger;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public MoongladeAudit(
-            ILogger<MoongladeAudit> logger,
+        public BlogAudit(
+            ILogger<BlogAudit> logger,
             IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor)
         {

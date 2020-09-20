@@ -23,7 +23,7 @@ namespace Moonglade.Core
         private readonly IRepository<PostEntity> _postRepository;
         private readonly IRepository<CommentEntity> _commentRepository;
         private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
-        private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IBlogAudit _blogAudit;
 
         public CommentService(
             ILogger<CommentService> logger,
@@ -32,14 +32,14 @@ namespace Moonglade.Core
             IRepository<CommentEntity> commentRepository,
             IRepository<CommentReplyEntity> commentReplyRepository,
             IRepository<PostEntity> postRepository,
-            IMoongladeAudit moongladeAudit) : base(logger, settings)
+            IBlogAudit blogAudit) : base(logger, settings)
         {
             _blogConfig = blogConfig;
 
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
             _postRepository = postRepository;
-            _moongladeAudit = moongladeAudit;
+            _blogAudit = blogAudit;
         }
 
         public int CountComments()
@@ -112,7 +112,7 @@ namespace Moonglade.Core
 
                     string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
                     Logger.LogInformation(logMessage);
-                    await _moongladeAudit.AddAuditEntry(
+                    await _blogAudit.AddAuditEntry(
                         EventType.Content, cmt.IsApproved ? AuditEventId.CommentApproval : AuditEventId.CommentDisapproval, logMessage);
                 }
 
@@ -142,7 +142,7 @@ namespace Moonglade.Core
 
                     // 2. Delete comment itself
                     _commentRepository.Delete(cmt);
-                    await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
+                    await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
                 }
 
                 return new SuccessResponse();
@@ -248,7 +248,7 @@ namespace Moonglade.Core
                     UserAgent = model.UserAgent
                 };
 
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
                 return new SuccessResponse<CommentReplyDetail>(detail);
             });
         }

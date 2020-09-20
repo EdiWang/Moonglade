@@ -17,14 +17,14 @@ namespace Moonglade.Tests.Core
     {
         private Mock<ILogger<FriendLinkService>> _loggerMock;
         private Mock<IOptions<AppSettings>> _appSettingsMock;
-        private Mock<IMoongladeAudit> _auditMock;
+        private Mock<IBlogAudit> _auditMock;
 
         [SetUp]
         public void Setup()
         {
             _loggerMock = new Mock<ILogger<FriendLinkService>>();
             _appSettingsMock = new Mock<IOptions<AppSettings>>();
-            _auditMock = new Mock<IMoongladeAudit>();
+            _auditMock = new Mock<IBlogAudit>();
         }
 
         [TestCase("", "", ExpectedResult = false)]

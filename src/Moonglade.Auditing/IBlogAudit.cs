@@ -4,7 +4,7 @@ using Edi.Practice.RequestResponseModel;
 
 namespace Moonglade.Auditing
 {
-    public interface IMoongladeAudit
+    public interface IBlogAudit
     {
         Task<Response> AddAuditEntry(EventType eventType, AuditEventId auditEventId, string message);
 

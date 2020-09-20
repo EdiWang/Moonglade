@@ -14,17 +14,17 @@ namespace Moonglade.Core
     {
         private readonly IRepository<TagEntity> _tagRepository;
         private readonly IRepository<PostTagEntity> _postTagRepository;
-        private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IBlogAudit _blogAudit;
 
         public TagService(
             ILogger<TagService> logger,
             IRepository<TagEntity> tagRepository,
             IRepository<PostTagEntity> postTagRepository,
-            IMoongladeAudit moongladeAudit) : base(logger)
+            IBlogAudit blogAudit) : base(logger)
         {
             _tagRepository = tagRepository;
             _postTagRepository = postTagRepository;
-            _moongladeAudit = moongladeAudit;
+            _blogAudit = blogAudit;
         }
 
         public Task<Response<IReadOnlyList<Tag>>> GetAllAsync()
@@ -62,7 +62,7 @@ namespace Moonglade.Core
                 tag.DisplayName = newName;
                 tag.NormalizedName = Utils.NormalizeTagName(newName);
                 await _tagRepository.UpdateAsync(tag);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
 
                 return new SuccessResponse();
             });
@@ -78,7 +78,7 @@ namespace Moonglade.Core
 
                 // 2. Delte Tag itslef
                 await _tagRepository.DeleteAsync(tagId);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.TagDeleted, $"Tag id '{tagId}' is deleted");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.TagDeleted, $"Tag id '{tagId}' is deleted");
 
                 return new SuccessResponse();
             });

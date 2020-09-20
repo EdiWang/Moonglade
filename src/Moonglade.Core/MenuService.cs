@@ -15,16 +15,16 @@ namespace Moonglade.Core
     public class MenuService : MoongladeService
     {
         private readonly IRepository<MenuEntity> _menuRepository;
-        private readonly IMoongladeAudit _moongladeAudit;
+        private readonly IBlogAudit _blogAudit;
 
         public MenuService(
             ILogger<MenuService> logger,
             IOptions<AppSettings> settings,
             IRepository<MenuEntity> menuRepository,
-            IMoongladeAudit moongladeAudit) : base(logger, settings)
+            IBlogAudit blogAudit) : base(logger, settings)
         {
             _menuRepository = menuRepository;
-            _moongladeAudit = moongladeAudit;
+            _blogAudit = blogAudit;
         }
 
         public Task<Response<Menu>> GetAsync(Guid id)
@@ -70,7 +70,7 @@ namespace Moonglade.Core
                 };
 
                 await _menuRepository.AddAsync(menu);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, $"Menu '{menu.Id}' created.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, $"Menu '{menu.Id}' created.");
 
                 return new SuccessResponse<Guid>(uid);
             });
@@ -96,7 +96,7 @@ namespace Moonglade.Core
                 menu.IsOpenInNewTab = request.IsOpenInNewTab;
 
                 await _menuRepository.UpdateAsync(menu);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
 
                 return new SuccessResponse<Guid>(menu.Id);
             });
@@ -113,7 +113,7 @@ namespace Moonglade.Core
                 }
                 
                 _menuRepository.Delete(id);
-                await _moongladeAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Menu '{id}' deleted.");
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Menu '{id}' deleted.");
                 
                 return new SuccessResponse();
             });

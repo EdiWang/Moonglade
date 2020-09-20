@@ -16,7 +16,7 @@ namespace Moonglade.Tests.Web
     public class AdminControllerTests
     {
         private Mock<IOptions<AuthenticationSettings>> _authenticationSettingsMock;
-        private Mock<IMoongladeAudit> _auditMock;
+        private Mock<IBlogAudit> _auditMock;
         private Mock<ILogger<AdminController>> _loggerMock;
 
         [SetUp]
@@ -24,7 +24,7 @@ namespace Moonglade.Tests.Web
         {
             _authenticationSettingsMock = new Mock<IOptions<AuthenticationSettings>>();
             _loggerMock = new Mock<ILogger<AdminController>>();
-            _auditMock = new Mock<IMoongladeAudit>();
+            _auditMock = new Mock<IBlogAudit>();
         }
 
         [Test]
