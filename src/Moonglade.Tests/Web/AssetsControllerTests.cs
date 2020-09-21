@@ -42,7 +42,7 @@ namespace Moonglade.Tests.Web
                 CDNSettings = new CDNSettings
                 {
                     CDNEndpoint = "https://fake-cdn.edi.wang/images",
-                    GetImageByCDNRedirect = true
+                    EnableCDNRedirect = true
                 }
             });
         }

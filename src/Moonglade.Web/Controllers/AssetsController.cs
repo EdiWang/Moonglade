@@ -64,7 +64,7 @@ namespace Moonglade.Web.Controllers
 
                 Logger.LogTrace($"Requesting image file {filename}");
 
-                if (_cdnSettings.GetImageByCDNRedirect)
+                if (_cdnSettings.EnableCDNRedirect)
                 {
                     var imageUrl = Utils.CombineUrl(_cdnSettings.CDNEndpoint, filename);
                     return Redirect(imageUrl);

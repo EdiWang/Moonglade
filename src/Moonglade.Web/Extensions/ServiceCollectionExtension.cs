@@ -56,12 +56,12 @@ namespace Moonglade.Web.Extensions
 
             services.AddScoped<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
 
-            if (imageStorage.CDNSettings.GetImageByCDNRedirect)
+            if (imageStorage.CDNSettings.EnableCDNRedirect)
             {
                 if (string.IsNullOrWhiteSpace(imageStorage.CDNSettings.CDNEndpoint))
                 {
                     throw new ArgumentNullException(nameof(imageStorage.CDNSettings.CDNEndpoint),
-                        $"{nameof(imageStorage.CDNSettings.CDNEndpoint)} must be specified when {nameof(imageStorage.CDNSettings.GetImageByCDNRedirect)} is set to 'true'.");
+                        $"{nameof(imageStorage.CDNSettings.CDNEndpoint)} must be specified when {nameof(imageStorage.CDNSettings.EnableCDNRedirect)} is set to 'true'.");
                 }
 
                 // _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");

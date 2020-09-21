@@ -2,7 +2,7 @@
 {
     public class CDNSettings
     {
-        public bool GetImageByCDNRedirect { get; set; }
+        public bool EnableCDNRedirect { get; set; }
 
         public string CDNEndpoint { get; set; }
     }

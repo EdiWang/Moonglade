@@ -140,7 +140,7 @@ When configured the image storage to use Azure Blob, you can take advantage of C
 
 ```json
 "CDNSettings": {
-    "GetImageByCDNRedirect": true,
+    "EnableCDNRedirect": true,
     "CDNEndpoint": "https://yourendpoint.azureedge.net/moonglade-images"
 }
 ```
