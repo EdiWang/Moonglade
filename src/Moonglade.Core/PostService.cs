@@ -139,8 +139,8 @@ namespace Moonglade.Core
                     CreateOnUtc = p.CreateOnUtc,
                     PubDateUtc = p.PostPublish.PubDateUtc,
                     IsPublished = p.PostPublish.IsPublished,
-                    ExposedToSiteMap = p.PostPublish.ExposedToSiteMap,
-                    FeedIncluded = p.PostPublish.IsFeedIncluded,
+                    ExposedToSiteMap = p.ExposedToSiteMap,
+                    FeedIncluded = p.IsFeedIncluded,
                     ContentLanguageCode = p.ContentLanguageCode,
                     Tags = p.PostTag.Select(pt => new Tag
                     {
@@ -186,7 +186,7 @@ namespace Moonglade.Core
                             DisplayName = p.DisplayName
                         }).ToArray(),
                     PostId = post.Id,
-                    IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
+                    IsExposedToSiteMap = post.ExposedToSiteMap,
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
                     LangCode = post.ContentLanguageCode
                 });
@@ -277,7 +277,7 @@ namespace Moonglade.Core
                                 }).ToArray(),
                             PostId = post.Id,
                             CommentEnabled = post.CommentEnabled,
-                            IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
+                            IsExposedToSiteMap = post.ExposedToSiteMap,
                             LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
                             LangCode = post.ContentLanguageCode,
                             CommentCount = post.Comment.Count(c => c.IsApproved)
@@ -428,13 +428,13 @@ namespace Moonglade.Core
                     Title = request.Title.Trim(),
                     Revision = 0,
                     ContentLanguageCode = request.ContentLanguageCode,
+                    ExposedToSiteMap = request.ExposedToSiteMap,
+                    IsFeedIncluded = request.IsFeedIncluded,
                     PostPublish = new PostPublishEntity
                     {
                         IsDeleted = false,
                         IsPublished = request.IsPublished,
                         PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
-                        ExposedToSiteMap = request.ExposedToSiteMap,
-                        IsFeedIncluded = request.IsFeedIncluded
                     },
                     PostExtension = new PostExtensionEntity
                     {
@@ -555,9 +555,9 @@ namespace Moonglade.Core
 
                 postModel.Slug = request.Slug;
                 postModel.Title = request.Title;
-                postModel.PostPublish.ExposedToSiteMap = request.ExposedToSiteMap;
+                postModel.ExposedToSiteMap = request.ExposedToSiteMap;
                 postModel.PostPublish.LastModifiedUtc = DateTime.UtcNow;
-                postModel.PostPublish.IsFeedIncluded = request.IsFeedIncluded;
+                postModel.IsFeedIncluded = request.IsFeedIncluded;
                 postModel.ContentLanguageCode = request.ContentLanguageCode;
 
                 ++postModel.Revision;

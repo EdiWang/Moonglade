@@ -107,9 +107,9 @@ namespace Moonglade.DataPorting
                         p.PostExtension.Likes,
                         p.PostPublish.PubDateUtc,
                         p.ContentLanguageCode,
-                        p.PostPublish.ExposedToSiteMap,
+                        p.ExposedToSiteMap,
                         p.PostPublish.IsDeleted,
-                        p.PostPublish.IsFeedIncluded,
+                        p.IsFeedIncluded,
                         p.PostPublish.IsPublished,
                         Categories = p.PostCategory.Select(pc => pc.Category.DisplayName),
                         Tags = p.PostTag.Select(pt => pt.Tag.DisplayName)

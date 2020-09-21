@@ -21,6 +21,8 @@ namespace Moonglade.Data.Entities
         public string ContentAbstract { get; set; }
         public int? Revision { get; set; }
         public string ContentLanguageCode { get; set; }
+        public bool ExposedToSiteMap { get; set; }
+        public bool IsFeedIncluded { get; set; }
 
         public virtual PostExtensionEntity PostExtension { get; set; }
         public virtual PostPublishEntity PostPublish { get; set; }

@@ -11,7 +11,7 @@ namespace Moonglade.Data.Spec
         public PostSpec(Guid? categoryId, int? top = null) :
             base(p => !p.PostPublish.IsDeleted &&
                       p.PostPublish.IsPublished &&
-                      p.PostPublish.IsFeedIncluded &&
+                      p.IsFeedIncluded &&
                       (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)))
         {
             // AddInclude(p => p.PostPublish);
