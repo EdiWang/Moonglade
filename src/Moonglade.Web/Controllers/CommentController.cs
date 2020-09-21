@@ -158,11 +158,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("reply")]
         public async Task<IActionResult> Reply(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
-            var response = await _commentService.AddReply(
-                commentId,
-                replyContent,
-                HttpContext.Connection.RemoteIpAddress.ToString(),
-                UserAgent);
+            var response = await _commentService.AddReply(commentId, replyContent);
 
             if (!response.IsSuccess)
             {
