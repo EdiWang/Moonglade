@@ -239,7 +239,7 @@ namespace Moonglade.Core
                     Id = model.Id,
                     IpAddress = model.IpAddress,
                     PostId = cmt.PostId,
-                    PubDateUtc = cmt.Post.PostPublish.PubDateUtc.GetValueOrDefault(),
+                    PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
                     ReplyContent = model.ReplyContent,
                     ReplyContentHtml = Utils.ConvertMarkdownContent(model.ReplyContent, Utils.MarkdownConvertType.Html),
                     ReplyTimeUtc = model.ReplyTimeUtc,

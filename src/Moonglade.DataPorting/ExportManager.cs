@@ -105,12 +105,12 @@ namespace Moonglade.DataPorting
                         p.CommentEnabled,
                         p.PostExtension.Hits,
                         p.PostExtension.Likes,
-                        p.PostPublish.PubDateUtc,
-                        p.PostPublish.ContentLanguageCode,
-                        p.PostPublish.ExposedToSiteMap,
-                        p.PostPublish.IsDeleted,
-                        p.PostPublish.IsFeedIncluded,
-                        p.PostPublish.IsPublished,
+                        p.PubDateUtc,
+                        p.ContentLanguageCode,
+                        p.ExposedToSiteMap,
+                        p.IsDeleted,
+                        p.IsFeedIncluded,
+                        p.IsPublished,
                         Categories = p.PostCategory.Select(pc => pc.Category.DisplayName),
                         Tags = p.PostTag.Select(pt => pt.Tag.DisplayName)
                     });

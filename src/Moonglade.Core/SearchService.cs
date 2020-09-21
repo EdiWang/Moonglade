@@ -42,7 +42,7 @@ namespace Moonglade.Core
                     Title = p.Title,
                     Slug = p.Slug,
                     ContentAbstract = p.ContentAbstract,
-                    PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                    PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
                     Tags = p.PostTag.Select(pt => new Tag
                     {
                         NormalizedName = pt.Tag.NormalizedName,
@@ -57,7 +57,7 @@ namespace Moonglade.Core
         private IQueryable<PostEntity> SearchByKeyword(string keyword)
         {
             var query = _postRepository.GetAsQueryable()
-                                       .Where(p => !p.PostPublish.IsDeleted && p.PostPublish.IsPublished).AsNoTracking();
+                                       .Where(p => !p.IsDeleted && p.IsPublished).AsNoTracking();
 
             var str = Regex.Replace(keyword, @"\s+", " ");
             var rst = str.Split(' ');

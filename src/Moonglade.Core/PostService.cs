@@ -26,7 +26,6 @@ namespace Moonglade.Core
 
         private readonly IRepository<PostEntity> _postRepository;
         private readonly IRepository<PostExtensionEntity> _postExtensionRepository;
-        private readonly IRepository<PostPublishEntity> _postPublishRepository;
         private readonly IRepository<TagEntity> _tagRepository;
         private readonly IRepository<PostTagEntity> _postTagRepository;
         private readonly IRepository<CategoryEntity> _categoryRepository;
@@ -40,7 +39,6 @@ namespace Moonglade.Core
             IRepository<PostExtensionEntity> postExtensionRepository,
             IRepository<TagEntity> tagRepository,
             IRepository<PostTagEntity> postTagRepository,
-            IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
             IDateTimeResolver dateTimeResolver,
@@ -51,7 +49,6 @@ namespace Moonglade.Core
             _postExtensionRepository = postExtensionRepository;
             _tagRepository = tagRepository;
             _postTagRepository = postTagRepository;
-            _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
             _dateTimeResolver = dateTimeResolver;
@@ -63,7 +60,7 @@ namespace Moonglade.Core
         {
             return TryExecute(() =>
             {
-                var count = _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
+                var count = _postRepository.Count(p => p.IsPublished && !p.IsDeleted);
                 return new SuccessResponse<int>(count);
             });
         }
@@ -73,8 +70,8 @@ namespace Moonglade.Core
             return TryExecute(() =>
             {
                 var count = _postCategoryRepository.Count(c => c.CategoryId == catId
-                                                               && c.Post.PostPublish.IsPublished
-                                                               && !c.Post.PostPublish.IsDeleted);
+                                                               && c.Post.IsPublished
+                                                               && !c.Post.IsDeleted);
 
                 return new SuccessResponse<int>(count);
             });
@@ -85,14 +82,14 @@ namespace Moonglade.Core
             return TryExecuteAsync<IReadOnlyList<Archive>>(async () =>
             {
                 if (!_postRepository.Any(p =>
-                    p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
+                    p.IsPublished && !p.IsDeleted))
                     return new SuccessResponse<IReadOnlyList<Archive>>();
 
                 var spec = new PostSpec(PostPublishStatus.Published);
                 var list = await _postRepository.SelectAsync(spec, post => new
                 {
-                    post.PostPublish.PubDateUtc.Value.Year,
-                    post.PostPublish.PubDateUtc.Value.Month
+                    post.PubDateUtc.Value.Year,
+                    post.PubDateUtc.Value.Month
                 }, monthList => new Archive(
                     monthList.Key.Year,
                     monthList.Key.Month,
@@ -137,11 +134,11 @@ namespace Moonglade.Core
                     ContentAbstract = p.ContentAbstract,
                     CommentEnabled = p.CommentEnabled,
                     CreateOnUtc = p.CreateOnUtc,
-                    PubDateUtc = p.PostPublish.PubDateUtc,
-                    IsPublished = p.PostPublish.IsPublished,
-                    ExposedToSiteMap = p.PostPublish.ExposedToSiteMap,
-                    FeedIncluded = p.PostPublish.IsFeedIncluded,
-                    ContentLanguageCode = p.PostPublish.ContentLanguageCode,
+                    PubDateUtc = p.PubDateUtc,
+                    IsPublished = p.IsPublished,
+                    ExposedToSiteMap = p.ExposedToSiteMap,
+                    FeedIncluded = p.IsFeedIncluded,
+                    ContentLanguageCode = p.ContentLanguageCode,
                     Tags = p.PostTag.Select(pt => new Tag
                     {
                         Id = pt.TagId,
@@ -186,9 +183,9 @@ namespace Moonglade.Core
                             DisplayName = p.DisplayName
                         }).ToArray(),
                     PostId = post.Id,
-                    IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
-                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
-                    LangCode = post.PostPublish.ContentLanguageCode
+                    IsExposedToSiteMap = post.ExposedToSiteMap,
+                    LastModifyOnUtc = post.LastModifiedUtc,
+                    LangCode = post.ContentLanguageCode
                 });
 
                 if (null != postSlugModel)
@@ -223,8 +220,8 @@ namespace Moonglade.Core
                 var model = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugSegment
                 {
                     Title = post.Title,
-                    PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
-                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                    PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
+                    LastModifyOnUtc = post.LastModifiedUtc,
 
                     Categories = post.PostCategory
                                      .Select(pc => pc.Category.DisplayName)
@@ -257,7 +254,7 @@ namespace Moonglade.Core
                         {
                             Title = post.Title,
                             Abstract = post.ContentAbstract,
-                            PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
+                            PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
 
                             Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
                             {
@@ -277,9 +274,9 @@ namespace Moonglade.Core
                                 }).ToArray(),
                             PostId = post.Id,
                             CommentEnabled = post.CommentEnabled,
-                            IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
-                            LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
-                            LangCode = post.PostPublish.ContentLanguageCode,
+                            IsExposedToSiteMap = post.ExposedToSiteMap,
+                            LastModifyOnUtc = post.LastModifiedUtc,
+                            LangCode = post.ContentLanguageCode,
                             CommentCount = post.Comment.Count(c => c.IsApproved)
                         });
 
@@ -306,10 +303,10 @@ namespace Moonglade.Core
                 Id = p.Id,
                 Title = p.Title,
                 Slug = p.Slug,
-                PubDateUtc = p.PostPublish.PubDateUtc,
-                IsPublished = p.PostPublish.IsPublished,
-                IsDeleted = p.PostPublish.IsDeleted,
-                Revision = p.PostPublish.Revision,
+                PubDateUtc = p.PubDateUtc,
+                IsPublished = p.IsPublished,
+                IsDeleted = p.IsDeleted,
+                Revision = p.Revision,
                 CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
             });
@@ -323,10 +320,10 @@ namespace Moonglade.Core
                 Id = p.Id,
                 Title = p.Title,
                 Slug = p.Slug,
-                PubDateUtc = p.PostPublish.PubDateUtc,
-                IsPublished = p.PostPublish.IsPublished,
-                IsDeleted = p.PostPublish.IsDeleted,
-                Revision = p.PostPublish.Revision,
+                PubDateUtc = p.PubDateUtc,
+                IsPublished = p.IsPublished,
+                IsDeleted = p.IsDeleted,
+                Revision = p.Revision,
                 CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
             });
@@ -351,8 +348,8 @@ namespace Moonglade.Core
                 Title = p.Title,
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                LangCode = p.PostPublish.ContentLanguageCode,
+                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
+                LangCode = p.ContentLanguageCode,
                 Tags = p.PostTag.Select(pt => new Tag
                 {
                     NormalizedName = pt.Tag.NormalizedName,
@@ -381,8 +378,8 @@ namespace Moonglade.Core
                 Title = p.Title,
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                LangCode = p.PostPublish.ContentLanguageCode
+                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
+                LangCode = p.ContentLanguageCode
             });
             return list;
         }
@@ -402,8 +399,8 @@ namespace Moonglade.Core
                         Title = p.Post.Title,
                         Slug = p.Post.Slug,
                         ContentAbstract = p.Post.ContentAbstract,
-                        PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault(),
-                        LangCode = p.Post.PostPublish.ContentLanguageCode
+                        PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
+                        LangCode = p.Post.ContentLanguageCode
                     });
 
                 return new SuccessResponse<IReadOnlyList<PostListEntry>>(posts);
@@ -426,16 +423,13 @@ namespace Moonglade.Core
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
                     Title = request.Title.Trim(),
-                    PostPublish = new PostPublishEntity
-                    {
-                        IsDeleted = false,
-                        IsPublished = request.IsPublished,
-                        PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
-                        ExposedToSiteMap = request.ExposedToSiteMap,
-                        IsFeedIncluded = request.IsFeedIncluded,
-                        Revision = 0,
-                        ContentLanguageCode = request.ContentLanguageCode
-                    },
+                    Revision = 0,
+                    ContentLanguageCode = request.ContentLanguageCode,
+                    ExposedToSiteMap = request.ExposedToSiteMap,
+                    IsFeedIncluded = request.IsFeedIncluded,
+                    PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
+                    IsDeleted = false,
+                    IsPublished = request.IsPublished,
                     PostExtension = new PostExtensionEntity
                     {
                         Hits = 0,
@@ -445,16 +439,16 @@ namespace Moonglade.Core
 
                 // check if exist same slug under the same day
                 // linq to sql fix:
-                // cannot write "p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date"
+                // cannot write "p.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date"
                 // it will not blow up, but can result in select ENTIRE posts and evaluated in memory!!!
-                // - The LINQ expression 'where (Convert([p.PostPublish]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
+                // - The LINQ expression 'where (Convert([p]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
                 // Why EF Core this diao yang?
                 if (_postRepository.Any(p =>
                     p.Slug == postModel.Slug &&
-                    p.PostPublish.PubDateUtc != null &&
-                    p.PostPublish.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
-                    p.PostPublish.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
-                    p.PostPublish.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
+                    p.PubDateUtc != null &&
+                    p.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
+                    p.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
+                    p.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
                 {
                     var uid = Guid.NewGuid();
                     postModel.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
@@ -534,33 +528,33 @@ namespace Moonglade.Core
                                             AppSettings.Editor == EditorChoice.Markdown);
 
                 // Address #221: Do not allow published posts back to draft status
-                // postModel.PostPublish.IsPublished = request.IsPublished;
+                // postModel.IsPublished = request.IsPublished;
                 // Edit draft -> save and publish, ignore false case because #221
                 bool isNewPublish = false;
-                if (request.IsPublished && !postModel.PostPublish.IsPublished)
+                if (request.IsPublished && !postModel.IsPublished)
                 {
-                    postModel.PostPublish.IsPublished = true;
-                    postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
+                    postModel.IsPublished = true;
+                    postModel.PubDateUtc = DateTime.UtcNow;
 
                     isNewPublish = true;
                 }
 
                 // #325: Allow changing publish date for published posts
-                if (request.PublishDate != null && postModel.PostPublish.PubDateUtc.HasValue)
+                if (request.PublishDate != null && postModel.PubDateUtc.HasValue)
                 {
-                    var tod = postModel.PostPublish.PubDateUtc.Value.TimeOfDay;
+                    var tod = postModel.PubDateUtc.Value.TimeOfDay;
                     var adjustedDate = _dateTimeResolver.ToUtc(request.PublishDate.Value);
-                    postModel.PostPublish.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
+                    postModel.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
                 }
 
                 postModel.Slug = request.Slug;
                 postModel.Title = request.Title;
-                postModel.PostPublish.ExposedToSiteMap = request.ExposedToSiteMap;
-                postModel.PostPublish.LastModifiedUtc = DateTime.UtcNow;
-                postModel.PostPublish.IsFeedIncluded = request.IsFeedIncluded;
-                postModel.PostPublish.ContentLanguageCode = request.ContentLanguageCode;
+                postModel.ExposedToSiteMap = request.ExposedToSiteMap;
+                postModel.LastModifiedUtc = DateTime.UtcNow;
+                postModel.IsFeedIncluded = request.IsFeedIncluded;
+                postModel.ContentLanguageCode = request.ContentLanguageCode;
 
-                ++postModel.PostPublish.Revision;
+                ++postModel.Revision;
 
                 // 1. Add new tags to tag lib
                 foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
@@ -628,11 +622,11 @@ namespace Moonglade.Core
         {
             return TryExecuteAsync(async () =>
             {
-                var pp = await _postPublishRepository.GetAsync(postId);
+                var pp = await _postRepository.GetAsync(postId);
                 if (null == pp) return new FailedResponse((int)FaultCode.PostNotFound);
 
                 pp.IsDeleted = false;
-                await _postPublishRepository.UpdateAsync(pp);
+                await _postRepository.UpdateAsync(pp);
                 await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
 
                 _cache.Remove(CacheDivision.Post, postId.ToString());
@@ -649,7 +643,7 @@ namespace Moonglade.Core
 
                 if (isRecycle)
                 {
-                    post.PostPublish.IsDeleted = true;
+                    post.IsDeleted = true;
                     await _postRepository.UpdateAsync(post);
                     await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
                 }

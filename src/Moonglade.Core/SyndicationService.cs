@@ -113,13 +113,13 @@ namespace Moonglade.Core
             }
 
             var postSpec = new PostSpec(categoryId, top);
-            var list = await _postRepository.SelectAsync(postSpec, p => p.PostPublish.PubDateUtc != null ? new FeedEntry
+            var list = await _postRepository.SelectAsync(postSpec, p => p.PubDateUtc != null ? new FeedEntry
             {
                 Id = p.Id.ToString(),
                 Title = p.Title,
-                PubDateUtc = p.PostPublish.PubDateUtc.Value,
+                PubDateUtc = p.PubDateUtc.Value,
                 Description = _blogConfig.FeedSettings.UseFullContent ? p.PostContent : p.ContentAbstract,
-                Link = $"{_baseUrl}/post/{p.PostPublish.PubDateUtc.Value.Year}/{p.PostPublish.PubDateUtc.Value.Month}/{p.PostPublish.PubDateUtc.Value.Day}/{p.Slug}",
+                Link = $"{_baseUrl}/post/{p.PubDateUtc.Value.Year}/{p.PubDateUtc.Value.Month}/{p.PubDateUtc.Value.Day}/{p.Slug}",
                 Author = _blogConfig.FeedSettings.AuthorName,
                 AuthorEmail = _blogConfig.NotificationSettings.AdminEmail,
                 Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()

@@ -114,11 +114,11 @@ namespace Moonglade.Core
             }
 
             var post = _postRepository.Get(p => p.Slug == response.Item.Slug &&
-                                                p.PostPublish.IsPublished &&
-                                                p.PostPublish.PubDateUtc.Value.Year == response.Item.PubDate.Year &&
-                                                p.PostPublish.PubDateUtc.Value.Month == response.Item.PubDate.Month &&
-                                                p.PostPublish.PubDateUtc.Value.Day == response.Item.PubDate.Day &&
-                                                !p.PostPublish.IsDeleted);
+                                                p.IsPublished &&
+                                                p.PubDateUtc.Value.Year == response.Item.PubDate.Year &&
+                                                p.PubDateUtc.Value.Month == response.Item.PubDate.Month &&
+                                                p.PubDateUtc.Value.Day == response.Item.PubDate.Day &&
+                                                !p.IsDeleted);
 
             if (null == post)
             {
