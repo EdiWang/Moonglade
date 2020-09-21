@@ -34,3 +34,7 @@
 .post-publish-info {
     font-size: 0.75rem;
 }
+
+.post-content a {
+    border-bottom: 1px dashed var(--moonglade-accent-color1);
+}
