@@ -26,20 +26,20 @@
         }
 
         function initCreateMenu() {
-            $("#NavMenuEditViewModel_Id").val(emptyGuid);
+            $("#MenuEditViewModel_Id").val(emptyGuid);
             $("#edit-form")[0].reset();
             $('#editMenuModal').modal();
         }
 
         function editMenu(id) {
             $.get(`/navmenu/edit/${id}`, function (data) {
-                $("#NavMenuEditViewModel_Id").val(data.id);
-                $("#NavMenuEditViewModel_Title").val(data.title);
-                $("#NavMenuEditViewModel_Url").val(data.url);
-                $("#NavMenuEditViewModel_Icon").val(data.icon);
-                $("#NavMenuEditViewModel_DisplayOrder").val(data.displayOrder);
+                $("#MenuEditViewModel_Id").val(data.id);
+                $("#MenuEditViewModel_Title").val(data.title);
+                $("#MenuEditViewModel_Url").val(data.url);
+                $("#MenuEditViewModel_Icon").val(data.icon);
+                $("#MenuEditViewModel_DisplayOrder").val(data.displayOrder);
                 if (data.isOpenInNewTab) {
-                    $("#NavMenuEditViewModel_IsOpenInNewTab").prop('checked', 'checked');
+                    $("#MenuEditViewModel_IsOpenInNewTab").prop('checked', 'checked');
                 }
                 $("#editMenuModal").modal();
             });
@@ -48,7 +48,7 @@
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
                 var action = '';
-                var menuId = $("#NavMenuEditViewModel_Id").val();
+                var menuId = $("#MenuEditViewModel_Id").val();
                 if (menuId == emptyGuid) {
                     action = "create";
                 }
@@ -58,12 +58,12 @@
 
                 ajaxPostWithCSRFToken(`/navmenu/${action}`,
                     {
-                        "Id": $("#NavMenuEditViewModel_Id").val(),
-                        "Title": $("#NavMenuEditViewModel_Title").val(),
-                        "Url": $("#NavMenuEditViewModel_Url").val(),
-                        "Icon": $("#NavMenuEditViewModel_Icon").val(),
-                        "DisplayOrder": $("#NavMenuEditViewModel_DisplayOrder").val(),
-                        "IsOpenInNewTab": $('#NavMenuEditViewModel_IsOpenInNewTab').prop('checked')
+                        "Id": $("#MenuEditViewModel_Id").val(),
+                        "Title": $("#MenuEditViewModel_Title").val(),
+                        "Url": $("#MenuEditViewModel_Url").val(),
+                        "Icon": $("#MenuEditViewModel_Icon").val(),
+                        "DisplayOrder": $("#MenuEditViewModel_DisplayOrder").val(),
+                        "IsOpenInNewTab": $('#MenuEditViewModel_IsOpenInNewTab').prop('checked')
                     },
                     function (data) {
                         $("#edit-form")[0].reset();

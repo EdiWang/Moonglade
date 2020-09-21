@@ -36,7 +36,7 @@ namespace Moonglade.Web.Controllers
                     MenuItems = menuItemsResp.Item
                 };
 
-                return View("~/Views/Admin/ManageNavMenu.cshtml", model);
+                return View("~/Views/Admin/ManageMenu.cshtml", model);
             }
 
             return ServerError(menuItemsResp.Message);
