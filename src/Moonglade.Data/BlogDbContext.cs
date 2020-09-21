@@ -4,13 +4,13 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data
 {
-    public class MoongladeDbContext : DbContext
+    public class BlogDbContext : DbContext
     {
-        public MoongladeDbContext()
+        public BlogDbContext()
         {
         }
 
-        public MoongladeDbContext(DbContextOptions options)
+        public BlogDbContext(DbContextOptions options)
             : base(options)
         {
         }

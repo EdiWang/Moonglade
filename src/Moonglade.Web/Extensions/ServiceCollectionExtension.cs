@@ -30,7 +30,7 @@ namespace Moonglade.Web.Extensions
         public static void AddDataStorage(this IServiceCollection services, string connectionString)
         {
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
-            services.AddDbContext<MoongladeDbContext>(options =>
+            services.AddDbContext<BlogDbContext>(options =>
                 options.UseLazyLoadingProxies()
                     .UseSqlServer(connectionString, sqlOptions =>
                     {

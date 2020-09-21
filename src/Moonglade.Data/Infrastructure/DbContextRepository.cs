@@ -9,9 +9,9 @@ namespace Moonglade.Data.Infrastructure
 {
     public class DbContextRepository<T> : IRepository<T> where T : class
     {
-        protected readonly MoongladeDbContext DbContext;
+        protected readonly BlogDbContext DbContext;
 
-        public DbContextRepository(MoongladeDbContext dbContext)
+        public DbContextRepository(BlogDbContext dbContext)
         {
             DbContext = dbContext;
         }
