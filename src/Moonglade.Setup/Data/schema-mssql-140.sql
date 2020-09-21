@@ -58,7 +58,10 @@ CREATE TABLE [Post](
 [PostContent] [nvarchar](max) NULL,
 [CommentEnabled] [bit] NOT NULL,
 [CreateOnUtc] [datetime] NOT NULL,
-[ContentAbstract] [nvarchar](1024) NULL) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+[ContentAbstract] [nvarchar](1024) NULL,
+[ContentLanguageCode] [nvarchar](8) NULL,
+[Revision] [int] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostCategory')
 CREATE TABLE [PostCategory](
@@ -85,9 +88,8 @@ CREATE TABLE [PostPublish](
 [IsFeedIncluded] [bit] NOT NULL,
 [LastModifiedUtc] [datetime] NULL,
 [IsDeleted] [bit] NOT NULL,
-[PubDateUtc] [datetime] NULL,
-[Revision] [int] NULL,
-[ContentLanguageCode] [nvarchar](8) NULL)
+[PubDateUtc] [datetime] NULL
+)
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostTag')
 CREATE TABLE [PostTag](
