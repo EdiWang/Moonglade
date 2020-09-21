@@ -63,6 +63,8 @@ namespace Moonglade.Core.Caching
 
         public void Remove(CacheDivision division)
         {
+            if (!CacheDivision.ContainsKey(division.ToString())) return;
+
             var cacheKeys = CacheDivision[division.ToString()];
             if (null == cacheKeys || cacheKeys.Count <= 0) return;
 
@@ -74,7 +76,7 @@ namespace Moonglade.Core.Caching
 
         public void Remove(CacheDivision division, string key)
         {
-            if (string.IsNullOrWhiteSpace(key)) return;
+            if ((string.IsNullOrWhiteSpace(key)) || !CacheDivision.ContainsKey(division.ToString())) return;
             _memoryCache.Remove($"{division}-{key}");
         }
 
