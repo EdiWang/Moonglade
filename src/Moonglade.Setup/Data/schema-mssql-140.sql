@@ -60,7 +60,9 @@ CREATE TABLE [Post](
 [CreateOnUtc] [datetime] NOT NULL,
 [ContentAbstract] [nvarchar](1024) NULL,
 [ContentLanguageCode] [nvarchar](8) NULL,
-[Revision] [int] NULL
+[Revision] [int] NULL,
+[ExposedToSiteMap] [bit] NOT NULL,
+[IsFeedIncluded] [bit] NOT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostCategory')
@@ -84,8 +86,6 @@ IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N
 CREATE TABLE [PostPublish](
 [PostId] [uniqueidentifier] PRIMARY KEY NOT NULL,
 [IsPublished] [bit] NOT NULL,
-[ExposedToSiteMap] [bit] NOT NULL,
-[IsFeedIncluded] [bit] NOT NULL,
 [LastModifiedUtc] [datetime] NULL,
 [IsDeleted] [bit] NOT NULL,
 [PubDateUtc] [datetime] NULL
