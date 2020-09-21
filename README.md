@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master) ![Docker Build and Push](https://github.com/EdiWang/Moonglade/workflows/Docker%20Build%20and%20Push/badge.svg)
 
-The [.NET Core](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enable most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
+The [.NET Core](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enabling most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v4.png)
 
@@ -49,7 +49,7 @@ Set `$useLinuxPlanWithDocker` to `1` will use Docker on Linux App Service plan, 
 
 ### 🐧 Quick Deploy on Linux
 
-If you just want to quickly get it running on a new Linux machine without Docker, please follow the steps [here](./Deployment.md).
+To quickly get it running on a new Linux machine without Docker, please follow the steps [here](./Deployment.md).
 
 ## 🐵 Development
 
@@ -63,7 +63,7 @@ Tools | Alternative
 
 Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809) database. e.g. ```moonglade```
 
-Update the ```MoongladeDatabase``` as your database connection string in **appsettings.Development.json** or set environment variable: ```ConnectionStrings__MoongladeDatabase``` as your connection string. 
+Update the `MoongladeDatabase` with your database connection string in `appsettings.Development.json` or set environment variable: `ConnectionStrings__MoongladeDatabase` to your connection string. 
 
 Example
 
@@ -71,13 +71,14 @@ Example
 "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
 ```
 
-*If you are deploying to Azure App Service, you can set the connection string in the Configuration blade.*
+*For Azure App Service, you can set the connection string in the Configuration blade.*
 
 ### 🔨 Build Source
 
-Build and run ```./src/Moonglade.sln```
-- Default Admin Username: ```admin```
-- Default Admin Password: ```admin123```
+Build and run `./src/Moonglade.sln`
+- Admin entrance: `/admin`
+- Default Admin username: `admin`
+- Default Admin password: `admin123`
 
 ## ⚙ Configuration
 
