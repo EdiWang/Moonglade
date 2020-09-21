@@ -6,7 +6,6 @@ namespace Moonglade.Data.Entities
     {
         public Guid PostId { get; set; }
         public bool IsPublished { get; set; }
-        public DateTime? LastModifiedUtc { get; set; }
         public bool IsDeleted { get; set; }
         public virtual PostEntity Post { get; set; }
     }

@@ -187,7 +187,7 @@ namespace Moonglade.Core
                         }).ToArray(),
                     PostId = post.Id,
                     IsExposedToSiteMap = post.ExposedToSiteMap,
-                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                    LastModifyOnUtc = post.LastModifiedUtc,
                     LangCode = post.ContentLanguageCode
                 });
 
@@ -224,7 +224,7 @@ namespace Moonglade.Core
                 {
                     Title = post.Title,
                     PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
-                    LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                    LastModifyOnUtc = post.LastModifiedUtc,
 
                     Categories = post.PostCategory
                                      .Select(pc => pc.Category.DisplayName)
@@ -278,7 +278,7 @@ namespace Moonglade.Core
                             PostId = post.Id,
                             CommentEnabled = post.CommentEnabled,
                             IsExposedToSiteMap = post.ExposedToSiteMap,
-                            LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
+                            LastModifyOnUtc = post.LastModifiedUtc,
                             LangCode = post.ContentLanguageCode,
                             CommentCount = post.Comment.Count(c => c.IsApproved)
                         });
@@ -556,7 +556,7 @@ namespace Moonglade.Core
                 postModel.Slug = request.Slug;
                 postModel.Title = request.Title;
                 postModel.ExposedToSiteMap = request.ExposedToSiteMap;
-                postModel.PostPublish.LastModifiedUtc = DateTime.UtcNow;
+                postModel.LastModifiedUtc = DateTime.UtcNow;
                 postModel.IsFeedIncluded = request.IsFeedIncluded;
                 postModel.ContentLanguageCode = request.ContentLanguageCode;
 

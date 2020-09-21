@@ -24,6 +24,7 @@ namespace Moonglade.Data.Entities
         public bool ExposedToSiteMap { get; set; }
         public bool IsFeedIncluded { get; set; }
         public DateTime? PubDateUtc { get; set; }
+        public DateTime? LastModifiedUtc { get; set; }
 
         public virtual PostExtensionEntity PostExtension { get; set; }
         public virtual PostPublishEntity PostPublish { get; set; }

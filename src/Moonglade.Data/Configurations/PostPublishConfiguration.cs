@@ -10,7 +10,6 @@ namespace Moonglade.Data.Configurations
         {
             builder.HasKey(e => e.PostId);
             builder.Property(e => e.PostId).ValueGeneratedNever();
-            builder.Property(e => e.LastModifiedUtc).HasColumnType("datetime");
 
             builder.HasOne(d => d.Post)
                    .WithOne(p => p.PostPublish)
