@@ -29,8 +29,6 @@ CREATE TABLE [CommentReply](
 [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
 [ReplyContent] [nvarchar](max) NULL,
 [ReplyTimeUtc] [datetime] NOT NULL,
-[UserAgent] [nvarchar](512) NULL,
-[IpAddress] [nvarchar](64) NULL,
 [CommentId] [uniqueidentifier] NULL) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'FriendLink')

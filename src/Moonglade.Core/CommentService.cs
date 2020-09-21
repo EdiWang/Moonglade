@@ -202,7 +202,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<CommentReplyDetail>> AddReply(Guid commentId, string replyContent, string ipAddress, string userAgent)
+        public Task<Response<CommentReplyDetail>> AddReply(Guid commentId, string replyContent)
         {
             return TryExecuteAsync<CommentReplyDetail>(async () =>
             {
@@ -223,8 +223,6 @@ namespace Moonglade.Core
                 {
                     Id = id,
                     ReplyContent = replyContent,
-                    IpAddress = ipAddress,
-                    UserAgent = userAgent,
                     ReplyTimeUtc = DateTime.UtcNow,
                     CommentId = commentId
                 };
@@ -237,15 +235,13 @@ namespace Moonglade.Core
                     CommentId = commentId,
                     Email = cmt.Email,
                     Id = model.Id,
-                    IpAddress = model.IpAddress,
                     PostId = cmt.PostId,
                     PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
                     ReplyContent = model.ReplyContent,
                     ReplyContentHtml = Utils.ConvertMarkdownContent(model.ReplyContent, Utils.MarkdownConvertType.Html),
                     ReplyTimeUtc = model.ReplyTimeUtc,
                     Slug = cmt.Post.Slug,
-                    Title = cmt.Post.Title,
-                    UserAgent = model.UserAgent
+                    Title = cmt.Post.Title
                 };
 
                 await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
