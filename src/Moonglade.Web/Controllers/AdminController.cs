@@ -35,12 +35,6 @@ namespace Moonglade.Web.Controllers
             _authenticationSettings = authSettings.Value;
         }
 
-        [Route("list-cache")]
-        public IActionResult ListCache([FromServices] IBlogCache cache)
-        {
-            return Json(cache.CacheDivision);
-        }
-
         [Route("")]
         public async Task<IActionResult> Index()
         {
