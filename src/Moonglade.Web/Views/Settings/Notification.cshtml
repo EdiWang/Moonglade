@@ -13,7 +13,10 @@
 else
 {
     <div class="alert alert-info">
-        @Localizer["Current Endpoint:"] @(new Uri(Settings.Value.Notification.AzureFunctionEndpoint).Host)
+        @if (!string.IsNullOrWhiteSpace(Settings.Value.Notification.AzureFunctionEndpoint))
+        {
+            @Localizer["Current Endpoint:"] @(new Uri(Settings.Value.Notification.AzureFunctionEndpoint).Host)
+        }
     </div>
 
     <form id="form-settings" asp-controller="Settings" asp-action="Notification"
