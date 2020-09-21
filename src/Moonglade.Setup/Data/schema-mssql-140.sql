@@ -64,7 +64,9 @@ CREATE TABLE [Post](
 [ExposedToSiteMap] [bit] NOT NULL,
 [IsFeedIncluded] [bit] NOT NULL,
 [PubDateUtc] [datetime] NULL,
-[LastModifiedUtc] [datetime] NULL
+[LastModifiedUtc] [datetime] NULL,
+[IsPublished] [bit] NOT NULL,
+[IsDeleted] [bit] NOT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostCategory')
@@ -83,13 +85,6 @@ CREATE TABLE [PostExtension](
 [PostId] [uniqueidentifier] PRIMARY KEY NOT NULL,
 [Hits] [int] NOT NULL,
 [Likes] [int] NOT NULL)
-
-IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostPublish')
-CREATE TABLE [PostPublish](
-[PostId] [uniqueidentifier] PRIMARY KEY NOT NULL,
-[IsPublished] [bit] NOT NULL,
-[IsDeleted] [bit] NOT NULL
-)
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostTag')
 CREATE TABLE [PostTag](

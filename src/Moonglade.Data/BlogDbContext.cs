@@ -22,7 +22,6 @@ namespace Moonglade.Data
         public virtual DbSet<PostEntity> Post { get; set; }
         public virtual DbSet<PostCategoryEntity> PostCategory { get; set; }
         public virtual DbSet<PostExtensionEntity> PostExtension { get; set; }
-        public virtual DbSet<PostPublishEntity> PostPublish { get; set; }
         public virtual DbSet<PostTagEntity> PostTag { get; set; }
         public virtual DbSet<TagEntity> Tag { get; set; }
         public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
@@ -40,7 +39,6 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new PostConfiguration());
             modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new PostExtensionConfiguration());
-            modelBuilder.ApplyConfiguration(new PostPublishConfiguration());
             modelBuilder.ApplyConfiguration(new PostTagConfiguration());
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());

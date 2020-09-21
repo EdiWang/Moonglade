@@ -26,7 +26,6 @@ namespace Moonglade.Core
 
         private readonly IRepository<PostEntity> _postRepository;
         private readonly IRepository<PostExtensionEntity> _postExtensionRepository;
-        private readonly IRepository<PostPublishEntity> _postPublishRepository;
         private readonly IRepository<TagEntity> _tagRepository;
         private readonly IRepository<PostTagEntity> _postTagRepository;
         private readonly IRepository<CategoryEntity> _categoryRepository;
@@ -40,7 +39,6 @@ namespace Moonglade.Core
             IRepository<PostExtensionEntity> postExtensionRepository,
             IRepository<TagEntity> tagRepository,
             IRepository<PostTagEntity> postTagRepository,
-            IRepository<PostPublishEntity> postPublishRepository,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
             IDateTimeResolver dateTimeResolver,
@@ -51,7 +49,6 @@ namespace Moonglade.Core
             _postExtensionRepository = postExtensionRepository;
             _tagRepository = tagRepository;
             _postTagRepository = postTagRepository;
-            _postPublishRepository = postPublishRepository;
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
             _dateTimeResolver = dateTimeResolver;
@@ -63,7 +60,7 @@ namespace Moonglade.Core
         {
             return TryExecute(() =>
             {
-                var count = _postPublishRepository.Count(p => p.IsPublished && !p.IsDeleted);
+                var count = _postRepository.Count(p => p.IsPublished && !p.IsDeleted);
                 return new SuccessResponse<int>(count);
             });
         }
@@ -73,8 +70,8 @@ namespace Moonglade.Core
             return TryExecute(() =>
             {
                 var count = _postCategoryRepository.Count(c => c.CategoryId == catId
-                                                               && c.Post.PostPublish.IsPublished
-                                                               && !c.Post.PostPublish.IsDeleted);
+                                                               && c.Post.IsPublished
+                                                               && !c.Post.IsDeleted);
 
                 return new SuccessResponse<int>(count);
             });
@@ -85,7 +82,7 @@ namespace Moonglade.Core
             return TryExecuteAsync<IReadOnlyList<Archive>>(async () =>
             {
                 if (!_postRepository.Any(p =>
-                    p.PostPublish.IsPublished && !p.PostPublish.IsDeleted))
+                    p.IsPublished && !p.IsDeleted))
                     return new SuccessResponse<IReadOnlyList<Archive>>();
 
                 var spec = new PostSpec(PostPublishStatus.Published);
@@ -138,7 +135,7 @@ namespace Moonglade.Core
                     CommentEnabled = p.CommentEnabled,
                     CreateOnUtc = p.CreateOnUtc,
                     PubDateUtc = p.PubDateUtc,
-                    IsPublished = p.PostPublish.IsPublished,
+                    IsPublished = p.IsPublished,
                     ExposedToSiteMap = p.ExposedToSiteMap,
                     FeedIncluded = p.IsFeedIncluded,
                     ContentLanguageCode = p.ContentLanguageCode,
@@ -307,8 +304,8 @@ namespace Moonglade.Core
                 Title = p.Title,
                 Slug = p.Slug,
                 PubDateUtc = p.PubDateUtc,
-                IsPublished = p.PostPublish.IsPublished,
-                IsDeleted = p.PostPublish.IsDeleted,
+                IsPublished = p.IsPublished,
+                IsDeleted = p.IsDeleted,
                 Revision = p.Revision,
                 CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
@@ -324,8 +321,8 @@ namespace Moonglade.Core
                 Title = p.Title,
                 Slug = p.Slug,
                 PubDateUtc = p.PubDateUtc,
-                IsPublished = p.PostPublish.IsPublished,
-                IsDeleted = p.PostPublish.IsDeleted,
+                IsPublished = p.IsPublished,
+                IsDeleted = p.IsDeleted,
                 Revision = p.Revision,
                 CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
@@ -431,11 +428,8 @@ namespace Moonglade.Core
                     ExposedToSiteMap = request.ExposedToSiteMap,
                     IsFeedIncluded = request.IsFeedIncluded,
                     PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
-                    PostPublish = new PostPublishEntity
-                    {
-                        IsDeleted = false,
-                        IsPublished = request.IsPublished
-                    },
+                    IsDeleted = false,
+                    IsPublished = request.IsPublished,
                     PostExtension = new PostExtensionEntity
                     {
                         Hits = 0,
@@ -447,7 +441,7 @@ namespace Moonglade.Core
                 // linq to sql fix:
                 // cannot write "p.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date"
                 // it will not blow up, but can result in select ENTIRE posts and evaluated in memory!!!
-                // - The LINQ expression 'where (Convert([p.PostPublish]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
+                // - The LINQ expression 'where (Convert([p]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
                 // Why EF Core this diao yang?
                 if (_postRepository.Any(p =>
                     p.Slug == postModel.Slug &&
@@ -534,12 +528,12 @@ namespace Moonglade.Core
                                             AppSettings.Editor == EditorChoice.Markdown);
 
                 // Address #221: Do not allow published posts back to draft status
-                // postModel.PostPublish.IsPublished = request.IsPublished;
+                // postModel.IsPublished = request.IsPublished;
                 // Edit draft -> save and publish, ignore false case because #221
                 bool isNewPublish = false;
-                if (request.IsPublished && !postModel.PostPublish.IsPublished)
+                if (request.IsPublished && !postModel.IsPublished)
                 {
-                    postModel.PostPublish.IsPublished = true;
+                    postModel.IsPublished = true;
                     postModel.PubDateUtc = DateTime.UtcNow;
 
                     isNewPublish = true;
@@ -628,11 +622,11 @@ namespace Moonglade.Core
         {
             return TryExecuteAsync(async () =>
             {
-                var pp = await _postPublishRepository.GetAsync(postId);
+                var pp = await _postRepository.GetAsync(postId);
                 if (null == pp) return new FailedResponse((int)FaultCode.PostNotFound);
 
                 pp.IsDeleted = false;
-                await _postPublishRepository.UpdateAsync(pp);
+                await _postRepository.UpdateAsync(pp);
                 await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
 
                 _cache.Remove(CacheDivision.Post, postId.ToString());
@@ -649,7 +643,7 @@ namespace Moonglade.Core
 
                 if (isRecycle)
                 {
-                    post.PostPublish.IsDeleted = true;
+                    post.IsDeleted = true;
                     await _postRepository.UpdateAsync(post);
                     await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
                 }

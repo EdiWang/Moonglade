@@ -25,9 +25,10 @@ namespace Moonglade.Data.Entities
         public bool IsFeedIncluded { get; set; }
         public DateTime? PubDateUtc { get; set; }
         public DateTime? LastModifiedUtc { get; set; }
+        public bool IsPublished { get; set; }
+        public bool IsDeleted { get; set; }
 
         public virtual PostExtensionEntity PostExtension { get; set; }
-        public virtual PostPublishEntity PostPublish { get; set; }
         public virtual ICollection<CommentEntity> Comment { get; set; }
         public virtual ICollection<PostCategoryEntity> PostCategory { get; set; }
         public virtual ICollection<PostTagEntity> PostTag { get; set; }

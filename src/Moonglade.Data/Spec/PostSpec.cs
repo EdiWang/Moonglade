@@ -9,12 +9,12 @@ namespace Moonglade.Data.Spec
     public sealed class PostSpec : BaseSpecification<PostEntity>
     {
         public PostSpec(Guid? categoryId, int? top = null) :
-            base(p => !p.PostPublish.IsDeleted &&
-                      p.PostPublish.IsPublished &&
+            base(p => !p.IsDeleted &&
+                      p.IsPublished &&
                       p.IsFeedIncluded &&
                       (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)))
         {
-            // AddInclude(p => p.PostPublish);
+            // AddInclude(p => p);
             ApplyOrderByDescending(p => p.PubDateUtc);
 
             if (top.HasValue)
@@ -28,20 +28,20 @@ namespace Moonglade.Data.Spec
                       (month == 0 || p.PubDateUtc.Value.Month == month))
         {
             // Fix #313: Filter out unpublished posts
-            AddCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
+            AddCriteria(p => p.IsPublished && !p.IsDeleted);
 
-            AddInclude(post => post.Include(p => p.PostPublish));
+            AddInclude(post => post.Include(p => p));
             ApplyOrderByDescending(p => p.PubDateUtc);
         }
 
         public PostSpec(DateTime date, string slug)
             : base(p => p.Slug == slug &&
-             p.PostPublish.IsPublished &&
+             p.IsPublished &&
              p.PubDateUtc.Value.Date == date &&
-             !p.PostPublish.IsDeleted)
+             !p.IsDeleted)
         {
             AddInclude(post => post
-                .Include(p => p.PostPublish)
+                .Include(p => p)
                 .Include(p => p.PostExtension)
                 .Include(p => p.Comment)
                 .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
@@ -53,7 +53,7 @@ namespace Moonglade.Data.Spec
             if (includeRelatedData)
             {
                 AddInclude(post => post
-                    .Include(p => p.PostPublish)
+                    .Include(p => p)
                     .Include(p => p.PostTag)
                     .ThenInclude(pt => pt.Tag)
                     .Include(p => p.PostCategory)
@@ -66,13 +66,13 @@ namespace Moonglade.Data.Spec
             switch (status)
             {
                 case PostPublishStatus.Draft:
-                    AddCriteria(p => !p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
+                    AddCriteria(p => !p.IsPublished && !p.IsDeleted);
                     break;
                 case PostPublishStatus.Published:
-                    AddCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
+                    AddCriteria(p => p.IsPublished && !p.IsDeleted);
                     break;
                 case PostPublishStatus.Deleted:
-                    AddCriteria(p => p.PostPublish.IsDeleted);
+                    AddCriteria(p => p.IsDeleted);
                     break;
                 case PostPublishStatus.NotSet:
                     AddCriteria(p => true);
@@ -83,13 +83,13 @@ namespace Moonglade.Data.Spec
         }
 
         public PostSpec(bool isDeleted) :
-            base(p => p.PostPublish.IsDeleted == isDeleted)
+            base(p => p.IsDeleted == isDeleted)
         {
 
         }
 
         public PostSpec() :
-            base(p => p.PostPublish.IsDeleted)
+            base(p => p.IsDeleted)
         {
 
         }
