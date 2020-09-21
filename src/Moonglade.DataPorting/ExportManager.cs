@@ -106,7 +106,7 @@ namespace Moonglade.DataPorting
                         p.PostExtension.Hits,
                         p.PostExtension.Likes,
                         p.PostPublish.PubDateUtc,
-                        p.PostPublish.ContentLanguageCode,
+                        p.ContentLanguageCode,
                         p.PostPublish.ExposedToSiteMap,
                         p.PostPublish.IsDeleted,
                         p.PostPublish.IsFeedIncluded,

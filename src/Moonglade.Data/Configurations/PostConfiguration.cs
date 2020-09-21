@@ -11,6 +11,7 @@ namespace Moonglade.Data.Configurations
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.CommentEnabled);
             builder.Property(e => e.ContentAbstract).HasMaxLength(1024);
+            builder.Property(e => e.ContentLanguageCode).HasMaxLength(8);
 
             builder.Property(e => e.CreateOnUtc).HasColumnType("datetime");
             builder.Property(e => e.PostContent);

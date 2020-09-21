@@ -141,7 +141,7 @@ namespace Moonglade.Core
                     IsPublished = p.PostPublish.IsPublished,
                     ExposedToSiteMap = p.PostPublish.ExposedToSiteMap,
                     FeedIncluded = p.PostPublish.IsFeedIncluded,
-                    ContentLanguageCode = p.PostPublish.ContentLanguageCode,
+                    ContentLanguageCode = p.ContentLanguageCode,
                     Tags = p.PostTag.Select(pt => new Tag
                     {
                         Id = pt.TagId,
@@ -188,7 +188,7 @@ namespace Moonglade.Core
                     PostId = post.Id,
                     IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
-                    LangCode = post.PostPublish.ContentLanguageCode
+                    LangCode = post.ContentLanguageCode
                 });
 
                 if (null != postSlugModel)
@@ -279,7 +279,7 @@ namespace Moonglade.Core
                             CommentEnabled = post.CommentEnabled,
                             IsExposedToSiteMap = post.PostPublish.ExposedToSiteMap,
                             LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
-                            LangCode = post.PostPublish.ContentLanguageCode,
+                            LangCode = post.ContentLanguageCode,
                             CommentCount = post.Comment.Count(c => c.IsApproved)
                         });
 
@@ -309,7 +309,7 @@ namespace Moonglade.Core
                 PubDateUtc = p.PostPublish.PubDateUtc,
                 IsPublished = p.PostPublish.IsPublished,
                 IsDeleted = p.PostPublish.IsDeleted,
-                Revision = p.PostPublish.Revision,
+                Revision = p.Revision,
                 CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
             });
@@ -326,7 +326,7 @@ namespace Moonglade.Core
                 PubDateUtc = p.PostPublish.PubDateUtc,
                 IsPublished = p.PostPublish.IsPublished,
                 IsDeleted = p.PostPublish.IsDeleted,
-                Revision = p.PostPublish.Revision,
+                Revision = p.Revision,
                 CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
             });
@@ -352,7 +352,7 @@ namespace Moonglade.Core
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                LangCode = p.PostPublish.ContentLanguageCode,
+                LangCode = p.ContentLanguageCode,
                 Tags = p.PostTag.Select(pt => new Tag
                 {
                     NormalizedName = pt.Tag.NormalizedName,
@@ -382,7 +382,7 @@ namespace Moonglade.Core
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
-                LangCode = p.PostPublish.ContentLanguageCode
+                LangCode = p.ContentLanguageCode
             });
             return list;
         }
@@ -403,7 +403,7 @@ namespace Moonglade.Core
                         Slug = p.Post.Slug,
                         ContentAbstract = p.Post.ContentAbstract,
                         PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault(),
-                        LangCode = p.Post.PostPublish.ContentLanguageCode
+                        LangCode = p.Post.ContentLanguageCode
                     });
 
                 return new SuccessResponse<IReadOnlyList<PostListEntry>>(posts);
@@ -426,15 +426,15 @@ namespace Moonglade.Core
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
                     Title = request.Title.Trim(),
+                    Revision = 0,
+                    ContentLanguageCode = request.ContentLanguageCode,
                     PostPublish = new PostPublishEntity
                     {
                         IsDeleted = false,
                         IsPublished = request.IsPublished,
                         PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
                         ExposedToSiteMap = request.ExposedToSiteMap,
-                        IsFeedIncluded = request.IsFeedIncluded,
-                        Revision = 0,
-                        ContentLanguageCode = request.ContentLanguageCode
+                        IsFeedIncluded = request.IsFeedIncluded
                     },
                     PostExtension = new PostExtensionEntity
                     {
@@ -558,9 +558,9 @@ namespace Moonglade.Core
                 postModel.PostPublish.ExposedToSiteMap = request.ExposedToSiteMap;
                 postModel.PostPublish.LastModifiedUtc = DateTime.UtcNow;
                 postModel.PostPublish.IsFeedIncluded = request.IsFeedIncluded;
-                postModel.PostPublish.ContentLanguageCode = request.ContentLanguageCode;
+                postModel.ContentLanguageCode = request.ContentLanguageCode;
 
-                ++postModel.PostPublish.Revision;
+                ++postModel.Revision;
 
                 // 1. Add new tags to tag lib
                 foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))

@@ -15,8 +15,6 @@ namespace Moonglade.Data.Configurations
             builder.Property(e => e.PubDateUtc)
                    .HasColumnType("datetime");
 
-            builder.Property(e => e.ContentLanguageCode).HasMaxLength(8);
-
             builder.HasOne(d => d.Post)
                    .WithOne(p => p.PostPublish)
                    .HasForeignKey<PostPublishEntity>(d => d.PostId)
