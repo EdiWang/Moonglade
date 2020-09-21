@@ -136,7 +136,6 @@ namespace Moonglade.Web.Controllers
             var response = await _commentService.ToggleApprovalStatusAsync(new[] { commentId });
             if (response.IsSuccess)
             {
-                Logger.LogInformation($"User '{User.Identity.Name}' updated approval status of comment id '{commentId}'");
                 return Json(commentId);
             }
 
@@ -149,8 +148,6 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Delete(Guid commentId)
         {
             var response = await _commentService.DeleteAsync(new[] { commentId });
-            Logger.LogInformation($"User '{User.Identity.Name}' deleting comment id '{commentId}'");
-
             return response.IsSuccess ? Json(commentId) : Json(false);
         }
 
