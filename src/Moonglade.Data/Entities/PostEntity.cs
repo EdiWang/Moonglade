@@ -23,6 +23,7 @@ namespace Moonglade.Data.Entities
         public string ContentLanguageCode { get; set; }
         public bool ExposedToSiteMap { get; set; }
         public bool IsFeedIncluded { get; set; }
+        public DateTime? PubDateUtc { get; set; }
 
         public virtual PostExtensionEntity PostExtension { get; set; }
         public virtual PostPublishEntity PostPublish { get; set; }

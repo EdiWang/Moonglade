@@ -9,7 +9,7 @@ namespace Moonglade.Data.Spec
         public PostInsightsSpec(PostInsightsType insightsType, int top) : 
             base(p => !p.PostPublish.IsDeleted 
                       && p.PostPublish.IsPublished 
-                      && p.PostPublish.PubDateUtc >= DateTime.UtcNow.AddYears(-1))
+                      && p.PubDateUtc >= DateTime.UtcNow.AddYears(-1))
         {
             switch (insightsType)
             {

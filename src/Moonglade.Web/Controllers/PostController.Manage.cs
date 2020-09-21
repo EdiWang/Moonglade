@@ -163,7 +163,7 @@ namespace Moonglade.Web.Controllers
                         {
                             Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
 
-                            var pubDate = response.Item.PostPublish.PubDateUtc.GetValueOrDefault();
+                            var pubDate = response.Item.PubDateUtc.GetValueOrDefault();
                             var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
 
                             if (_blogConfig.AdvancedSettings.EnablePingBackSend)

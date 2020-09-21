@@ -42,7 +42,7 @@ namespace Moonglade.Core
                     Title = p.Title,
                     Slug = p.Slug,
                     ContentAbstract = p.ContentAbstract,
-                    PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                    PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
                     Tags = p.PostTag.Select(pt => new Tag
                     {
                         NormalizedName = pt.Tag.NormalizedName,

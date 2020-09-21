@@ -15,7 +15,7 @@ namespace Moonglade.Data.Spec
                       (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)))
         {
             // AddInclude(p => p.PostPublish);
-            ApplyOrderByDescending(p => p.PostPublish.PubDateUtc);
+            ApplyOrderByDescending(p => p.PubDateUtc);
 
             if (top.HasValue)
             {
@@ -24,20 +24,20 @@ namespace Moonglade.Data.Spec
         }
 
         public PostSpec(int year, int month = 0) :
-            base(p => p.PostPublish.PubDateUtc.Value.Year == year &&
-                      (month == 0 || p.PostPublish.PubDateUtc.Value.Month == month))
+            base(p => p.PubDateUtc.Value.Year == year &&
+                      (month == 0 || p.PubDateUtc.Value.Month == month))
         {
             // Fix #313: Filter out unpublished posts
             AddCriteria(p => p.PostPublish.IsPublished && !p.PostPublish.IsDeleted);
 
             AddInclude(post => post.Include(p => p.PostPublish));
-            ApplyOrderByDescending(p => p.PostPublish.PubDateUtc);
+            ApplyOrderByDescending(p => p.PubDateUtc);
         }
 
         public PostSpec(DateTime date, string slug)
             : base(p => p.Slug == slug &&
              p.PostPublish.IsPublished &&
-             p.PostPublish.PubDateUtc.Value.Date == date &&
+             p.PubDateUtc.Value.Date == date &&
              !p.PostPublish.IsDeleted)
         {
             AddInclude(post => post

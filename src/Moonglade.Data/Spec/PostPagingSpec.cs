@@ -20,7 +20,7 @@ namespace Moonglade.Data.Spec
             //    .Include(p => p.PostTag)
             //    .ThenInclude(pt => pt.Tag));
             ApplyPaging(startRow, pageSize);
-            ApplyOrderByDescending(p => p.PostPublish.PubDateUtc);
+            ApplyOrderByDescending(p => p.PubDateUtc);
         }
     }
 }

@@ -91,8 +91,8 @@ namespace Moonglade.Core
                 var spec = new PostSpec(PostPublishStatus.Published);
                 var list = await _postRepository.SelectAsync(spec, post => new
                 {
-                    post.PostPublish.PubDateUtc.Value.Year,
-                    post.PostPublish.PubDateUtc.Value.Month
+                    post.PubDateUtc.Value.Year,
+                    post.PubDateUtc.Value.Month
                 }, monthList => new Archive(
                     monthList.Key.Year,
                     monthList.Key.Month,
@@ -137,7 +137,7 @@ namespace Moonglade.Core
                     ContentAbstract = p.ContentAbstract,
                     CommentEnabled = p.CommentEnabled,
                     CreateOnUtc = p.CreateOnUtc,
-                    PubDateUtc = p.PostPublish.PubDateUtc,
+                    PubDateUtc = p.PubDateUtc,
                     IsPublished = p.PostPublish.IsPublished,
                     ExposedToSiteMap = p.ExposedToSiteMap,
                     FeedIncluded = p.IsFeedIncluded,
@@ -223,7 +223,7 @@ namespace Moonglade.Core
                 var model = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlugSegment
                 {
                     Title = post.Title,
-                    PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
+                    PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
                     LastModifyOnUtc = post.PostPublish.LastModifiedUtc,
 
                     Categories = post.PostCategory
@@ -257,7 +257,7 @@ namespace Moonglade.Core
                         {
                             Title = post.Title,
                             Abstract = post.ContentAbstract,
-                            PubDateUtc = post.PostPublish.PubDateUtc.GetValueOrDefault(),
+                            PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
 
                             Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
                             {
@@ -306,7 +306,7 @@ namespace Moonglade.Core
                 Id = p.Id,
                 Title = p.Title,
                 Slug = p.Slug,
-                PubDateUtc = p.PostPublish.PubDateUtc,
+                PubDateUtc = p.PubDateUtc,
                 IsPublished = p.PostPublish.IsPublished,
                 IsDeleted = p.PostPublish.IsDeleted,
                 Revision = p.Revision,
@@ -323,7 +323,7 @@ namespace Moonglade.Core
                 Id = p.Id,
                 Title = p.Title,
                 Slug = p.Slug,
-                PubDateUtc = p.PostPublish.PubDateUtc,
+                PubDateUtc = p.PubDateUtc,
                 IsPublished = p.PostPublish.IsPublished,
                 IsDeleted = p.PostPublish.IsDeleted,
                 Revision = p.Revision,
@@ -351,7 +351,7 @@ namespace Moonglade.Core
                 Title = p.Title,
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
                 LangCode = p.ContentLanguageCode,
                 Tags = p.PostTag.Select(pt => new Tag
                 {
@@ -381,7 +381,7 @@ namespace Moonglade.Core
                 Title = p.Title,
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PostPublish.PubDateUtc.GetValueOrDefault(),
+                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
                 LangCode = p.ContentLanguageCode
             });
             return list;
@@ -402,7 +402,7 @@ namespace Moonglade.Core
                         Title = p.Post.Title,
                         Slug = p.Post.Slug,
                         ContentAbstract = p.Post.ContentAbstract,
-                        PubDateUtc = p.Post.PostPublish.PubDateUtc.GetValueOrDefault(),
+                        PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
                         LangCode = p.Post.ContentLanguageCode
                     });
 
@@ -430,11 +430,11 @@ namespace Moonglade.Core
                     ContentLanguageCode = request.ContentLanguageCode,
                     ExposedToSiteMap = request.ExposedToSiteMap,
                     IsFeedIncluded = request.IsFeedIncluded,
+                    PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
                     PostPublish = new PostPublishEntity
                     {
                         IsDeleted = false,
-                        IsPublished = request.IsPublished,
-                        PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
+                        IsPublished = request.IsPublished
                     },
                     PostExtension = new PostExtensionEntity
                     {
@@ -445,16 +445,16 @@ namespace Moonglade.Core
 
                 // check if exist same slug under the same day
                 // linq to sql fix:
-                // cannot write "p.PostPublish.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date"
+                // cannot write "p.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date"
                 // it will not blow up, but can result in select ENTIRE posts and evaluated in memory!!!
                 // - The LINQ expression 'where (Convert([p.PostPublish]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
                 // Why EF Core this diao yang?
                 if (_postRepository.Any(p =>
                     p.Slug == postModel.Slug &&
-                    p.PostPublish.PubDateUtc != null &&
-                    p.PostPublish.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
-                    p.PostPublish.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
-                    p.PostPublish.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
+                    p.PubDateUtc != null &&
+                    p.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
+                    p.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
+                    p.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
                 {
                     var uid = Guid.NewGuid();
                     postModel.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
@@ -540,17 +540,17 @@ namespace Moonglade.Core
                 if (request.IsPublished && !postModel.PostPublish.IsPublished)
                 {
                     postModel.PostPublish.IsPublished = true;
-                    postModel.PostPublish.PubDateUtc = DateTime.UtcNow;
+                    postModel.PubDateUtc = DateTime.UtcNow;
 
                     isNewPublish = true;
                 }
 
                 // #325: Allow changing publish date for published posts
-                if (request.PublishDate != null && postModel.PostPublish.PubDateUtc.HasValue)
+                if (request.PublishDate != null && postModel.PubDateUtc.HasValue)
                 {
-                    var tod = postModel.PostPublish.PubDateUtc.Value.TimeOfDay;
+                    var tod = postModel.PubDateUtc.Value.TimeOfDay;
                     var adjustedDate = _dateTimeResolver.ToUtc(request.PublishDate.Value);
-                    postModel.PostPublish.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
+                    postModel.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
                 }
 
                 postModel.Slug = request.Slug;

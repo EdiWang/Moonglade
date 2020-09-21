@@ -12,9 +12,6 @@ namespace Moonglade.Data.Configurations
             builder.Property(e => e.PostId).ValueGeneratedNever();
             builder.Property(e => e.LastModifiedUtc).HasColumnType("datetime");
 
-            builder.Property(e => e.PubDateUtc)
-                   .HasColumnType("datetime");
-
             builder.HasOne(d => d.Post)
                    .WithOne(p => p.PostPublish)
                    .HasForeignKey<PostPublishEntity>(d => d.PostId)
