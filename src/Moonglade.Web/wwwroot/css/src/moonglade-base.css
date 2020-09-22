@@ -78,6 +78,10 @@ label {
         font-size: 60%;
     }
 
+.font-sairas {
+    font-family: SairaSemiCondensed-Bold, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei" !important;
+}
+
 .btn-outline-footer {
     border-color: rgba(255, 255, 255, 0.5);
     color: rgba(255, 255, 255, 0.5);
@@ -224,7 +228,6 @@ label {
 .post-date-box {
     border: 1px solid var(--moonglade-accent-color1);
     border-radius: 3px;
-    font-family: SairaSemiCondensed-Bold;
     position: absolute;
     width: 70px;
 }
@@ -321,11 +324,6 @@ label {
     z-index: 999;
 }
 
-.blog-info-desktop-lg h3 {
-    color: #fff;
-    font-family: SairaSemiCondensed-Bold;
-}
-
 .bg-moonglade-accent1 {
     background-color: var(--moonglade-accent-color1);
 }
@@ -377,7 +375,6 @@ label {
 }
 
 .moonglade-logo {
-    font-family: SairaSemiCondensed-Bold;
     font-size: 28px;
     line-height: 1px;
 }
