@@ -1,4 +1,57 @@
-﻿.btn-outline-footer {
+﻿html, body {
+    height: 100%;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CECECE;
+}
+
+::selection {
+    background-color: rgba(43, 87, 154, .15);
+    color: inherit;
+    text-shadow: none;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei";
+    font-size: 0.9rem;
+    padding-top: 50px;
+}
+
+a {
+    color: var(--moonglade-accent-color1);
+    text-decoration: none;
+}
+
+    a:hover,
+    a:focus {
+        color: var(--moonglade-accent-color1);
+        text-decoration: none;
+    }
+
+footer {
+    color: rgba(255, 255, 255, 0.5);
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+    footer .container h4 {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 20px;
+        font-weight: lighter;
+        margin-bottom: 31px;
+        text-transform: uppercase;
+    }
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5 {
+    font-weight: normal;
+}
+
+.btn-outline-footer {
     border-color: rgba(255, 255, 255, 0.5);
     color: rgba(255, 255, 255, 0.5);
 }
@@ -355,16 +408,6 @@ label {
     font-family: SairaSemiCondensed-Bold;
 }
 
-a {
-    color: var(--moonglade-accent-color1);
-    text-decoration: none;
-}
-
-    a:hover,
-    a:focus {
-        color: var(--moonglade-accent-color1);
-        text-decoration: none;
-    }
 
 .bg-moonglade-accent1 {
     background-color: var(--moonglade-accent-color1);
@@ -383,19 +426,7 @@ a {
         background-color: #1d2124 !important;
     }
 
-footer {
-    color: rgba(255, 255, 255, 0.5);
-    padding-bottom: 20px;
-    padding-top: 20px;
-}
 
-    footer .container h4 {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 20px;
-        font-weight: lighter;
-        margin-bottom: 31px;
-        text-transform: uppercase;
-    }
 
 .btn-primary {
     background-color: #124078;
@@ -441,34 +472,6 @@ footer a {
     .qrcode-link a:hover {
         color: #FFF;
     }
-
-html, body {
-    height: 100%;
-}
-
-::-webkit-scrollbar {
-    width: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #CECECE;
-}
-
-::selection {
-    background-color: rgba(43, 87, 154, .15);
-    color: inherit;
-    text-shadow: none;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei";
-    font-size: 0.9rem;
-    padding-top: 50px;
-}
-
-.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5 {
-    font-weight: normal;
-}
 
 .hr-dark {
     border-top: 1px solid rgba(255, 255, 255, .15) !important;
@@ -519,8 +522,4 @@ body {
 #lighticon {
     display: block;
     transform: translate(0, 50%);
-}
-
-#extlink-url {
-    color: var(--moonglade-accent-color1);
 }
