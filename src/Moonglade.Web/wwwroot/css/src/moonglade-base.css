@@ -63,6 +63,13 @@ footer {
             color: #FFF;
         }
 
+label {
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    max-width: 100%;
+}
+
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5 {
     font-weight: normal;
 }
@@ -105,23 +112,6 @@ footer {
 .h-300px {
     height: 300px !important;
 }
-
-.title-box {
-    background-position: center 0;
-    background-repeat: no-repeat;
-    background-size: cover;
-    box-shadow: 0 0 9px #000;
-    position: relative;
-}
-
-    .title-box h1 {
-        font-weight: lighter;
-    }
-
-    .title-box h1, .title-box h3 {
-        color: #fff;
-        text-shadow: 1px 1px 4px #000;
-    }
 
 .page-content .card-header {
     padding: 0.5rem !important;
@@ -169,8 +159,6 @@ footer {
     border-radius: 50px !important;
 }
 
-
-
 .textarea-banned-keywords {
     border: none;
     font-size: 14px;
@@ -179,13 +167,6 @@ footer {
 
 .label-success {
     background-color: #5cb85c;
-}
-
-label {
-    display: inline-block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    max-width: 100%;
 }
 
 .list-group-item.active, .page-item.active .page-link {
