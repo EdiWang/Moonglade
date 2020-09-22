@@ -13,7 +13,6 @@ namespace Moonglade.Data.Configurations
             builder.Property(e => e.CreateOnUtc).HasColumnType("datetime");
             builder.Property(e => e.Email).HasMaxLength(128);
             builder.Property(e => e.IPAddress).HasMaxLength(64);
-            builder.Property(e => e.UserAgent).HasMaxLength(512);
             builder.Property(e => e.Username).HasMaxLength(64);
             builder.HasOne(d => d.Post)
                    .WithMany(p => p.Comment)
