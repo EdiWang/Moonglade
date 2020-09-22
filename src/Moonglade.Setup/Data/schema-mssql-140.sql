@@ -21,8 +21,7 @@ CREATE TABLE [Comment](
 [CreateOnUtc] [datetime] NOT NULL,
 [CommentContent] [nvarchar](max) NOT NULL,
 [PostId] [uniqueidentifier] NOT NULL,
-[IsApproved] [bit] NOT NULL,
-[UserAgent] [nvarchar](512) NULL) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+[IsApproved] [bit] NOT NULL) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'CommentReply')
 CREATE TABLE [CommentReply](

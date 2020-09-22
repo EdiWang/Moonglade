@@ -14,8 +14,6 @@ namespace Moonglade.Model
 
         public string IpAddress { get; set; }
 
-        public string UserAgent { get; set; }
-
         public NewCommentRequest(Guid postId)
         {
             PostId = postId;

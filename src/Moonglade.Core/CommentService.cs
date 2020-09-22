@@ -177,8 +177,7 @@ namespace Moonglade.Core
                     CreateOnUtc = DateTime.UtcNow,
                     Email = request.Email,
                     IPAddress = request.IpAddress,
-                    IsApproved = !_blogConfig.ContentSettings.RequireCommentReview,
-                    UserAgent = request.UserAgent
+                    IsApproved = !_blogConfig.ContentSettings.RequireCommentReview
                 };
 
                 await _commentRepository.AddAsync(model);

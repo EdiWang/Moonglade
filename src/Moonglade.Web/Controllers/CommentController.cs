@@ -68,8 +68,7 @@ namespace Moonglade.Web.Controllers
                         Username = commentPostModel.Username,
                         Content = commentPostModel.Content,
                         Email = commentPostModel.Email,
-                        IpAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
-                        UserAgent = UserAgent
+                        IpAddress = HttpContext.Connection.RemoteIpAddress.ToString()
                     });
 
                     if (response.IsSuccess)
