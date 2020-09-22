@@ -1,4 +1,8 @@
-﻿.darkmode a {
+﻿.hr-dark {
+    border-top: 1px solid rgba(255, 255, 255, .15) !important;
+}
+
+.darkmode a {
     color: #CCC;
 }
 

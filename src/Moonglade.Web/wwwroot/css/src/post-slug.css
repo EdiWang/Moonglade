@@ -14,6 +14,10 @@
     width: max-content;
 }
 
+.ul-cat-list-desktop a.btn {
+    margin-right: 10px;
+}
+
 .modal-imgzoom {
     display: table;
 }
@@ -83,4 +87,38 @@ h1.post-title, .post-content h1 {
         display: block;
         font-size: 80%;
         line-height: 1.42857143;
+    }
+
+.comment-list .thumbnail {
+    padding: 0;
+}
+
+.comment-list .card {
+    position: relative;
+}
+
+    .comment-list .card > .card-header:after, .comment-list .card > .card-header:before {
+        border-color: transparent;
+        border-style: solid solid outset;
+        content: " ";
+        display: block;
+        height: 0;
+        left: -16px;
+        pointer-events: none;
+        position: absolute;
+        right: 100%;
+        top: 11px;
+        width: 0;
+    }
+
+    .comment-list .card > .card-header:after {
+        border-right-color: #f7f7f7;
+        border-width: 7px;
+        margin-left: 2px;
+        margin-top: 1px;
+    }
+
+    .comment-list .card > .card-header:before {
+        border-right-color: #ddd;
+        border-width: 8px;
     }
