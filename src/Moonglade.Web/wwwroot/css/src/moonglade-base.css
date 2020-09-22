@@ -1,19 +1,4 @@
-﻿.comment-md-content .editor-toolbar {
-    border-left: 0 none !important;
-    border-right: 0 none !important;
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-}
-
-.comment-md-content .CodeMirror {
-    border-bottom: 1px solid #ddd !important;
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-    border-left: 0 none !important;
-    border-right: 0 none !important;
-}
-
-.btn-outline-footer {
+﻿.btn-outline-footer {
     border-color: rgba(255, 255, 255, 0.5);
     color: rgba(255, 255, 255, 0.5);
 }
