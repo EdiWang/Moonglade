@@ -127,65 +127,6 @@ footer {
     padding: 0.5rem !important;
 }
 
-.tile {
-    height: 80px;
-    margin-bottom: 15px;
-}
-
-.tile-image {
-    background-color: var(--moonglade-accent-color1);
-    color: #FFF;
-    float: left;
-    font-size: 44px;
-    height: 64px;
-    margin-right: 10px;
-    text-align: center;
-    width: 64px;
-}
-
-.tile-info {
-    float: left;
-}
-
-.tile-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.tilexsm {
-    clear: both;
-    margin-bottom: 15px;
-    overflow: hidden;
-}
-
-.tilexsm-image {
-    background-color: var(--moonglade-accent-color1);
-    border-radius: 50%;
-    color: #FFF;
-    float: left;
-    font-size: 21px;
-    height: 36px;
-    margin-right: 10px;
-    padding-top: 2px;
-    text-align: center;
-    width: 36px;
-}
-
-.tilexsm-info {
-    margin: 0 15px 0 42px;
-    width: 100%;
-}
-
-.tilexsm-title {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.tilexsm-subtitle {
-    font-size: 12px;
-}
-
 .ul-cat-list-desktop a.btn {
     margin-right: 10px;
 }

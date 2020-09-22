@@ -3,19 +3,10 @@
 @foreach (var (key, value) in Model.Cats.OrderBy(c => c.Key))
 {
     <div class="col-6">
-        <div class="tilexsm">
-            <div class="tilexsm-image">
-                <span class="icon-rss"></span>
-            </div>
-
-            <div class="tilexsm-info">
-                <div class="tilesm-title">
-                    <a asp-controller="Subscription" asp-action="Rss" asp-route-routeName="@value"
-                       title="@key">
-                        @key
-                    </a>
-                </div>
-            </div>
-        </div>
+        <a asp-controller="Subscription" asp-action="Rss" asp-route-routeName="@value"
+           title="@key" class="d-block mb-2">
+            <span class="icon-rss"></span>
+            @key
+        </a>
     </div>
 }
