@@ -38,3 +38,25 @@
 .post-content a {
     border-bottom: 1px dashed var(--moonglade-accent-color1);
 }
+
+.post-content blockquote, .post-content .blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    border-left: 5px solid #eeeeee;
+    color: #555;
+}
+
+    .post-content blockquote p:last-child,
+    .post-content blockquote ul:last-child,
+    .post-content blockquote ol:last-child {
+        margin-bottom: 0;
+    }
+
+    .post-content blockquote footer,
+    .post-content blockquote small,
+    .post-content blockquote .small {
+        display: block;
+        font-size: 80%;
+        line-height: 1.42857143;
+        color: #777777;
+    }
