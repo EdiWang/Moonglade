@@ -1,4 +1,6 @@
-﻿#extlink-url { color: var(--moonglade-accent-color1); }
+﻿#extlink-url {
+    color: var(--moonglade-accent-color1);
+}
 
 #img-captcha {
     cursor: pointer;
@@ -6,15 +8,35 @@
     padding: 0 !important;
 }
 
-.badge.post-hit-number { font-size: 100%; }
+#imgzoom {
+    height: max-content;
+    margin: 0 auto;
+    width: max-content;
+}
 
-h1.post-title, .post-content h1 { font-size: 1.55rem; }
+.modal-imgzoom {
+    display: table;
+}
 
-.post-content h2 { font-size: 1.35rem; }
+.badge.post-hit-number {
+    font-size: 100%;
+}
 
-.post-content h3 { font-size: 1.25rem; }
+h1.post-title, .post-content h1 {
+    font-size: 1.55rem;
+}
 
-.post-content h4 { font-size: 1.15rem; }
+.post-content h2 {
+    font-size: 1.35rem;
+}
+
+.post-content h3 {
+    font-size: 1.25rem;
+}
+
+.post-content h4 {
+    font-size: 1.15rem;
+}
 
 .post-content p {
     font-size: 0.95rem;
@@ -29,11 +51,17 @@ h1.post-title, .post-content h1 { font-size: 1.55rem; }
     min-width: 4px;
 }
 
-.post-header-hr { margin-bottom: 5px; }
+.post-header-hr {
+    margin-bottom: 5px;
+}
 
-.post-publish-info { font-size: 0.75rem; }
+.post-publish-info {
+    font-size: 0.75rem;
+}
 
-.post-content a { border-bottom: 1px dashed var(--moonglade-accent-color1); }
+.post-content a {
+    border-bottom: 1px dashed var(--moonglade-accent-color1);
+}
 
 .post-content blockquote, .post-content .blockquote {
     border-left: 5px solid #eeeeee;
@@ -42,15 +70,17 @@ h1.post-title, .post-content h1 { font-size: 1.55rem; }
     padding: 10px 20px;
 }
 
-.post-content blockquote p:last-child,
-.post-content blockquote ul:last-child,
-.post-content blockquote ol:last-child { margin-bottom: 0; }
+    .post-content blockquote p:last-child,
+    .post-content blockquote ul:last-child,
+    .post-content blockquote ol:last-child {
+        margin-bottom: 0;
+    }
 
-.post-content blockquote footer,
-.post-content blockquote small,
-.post-content blockquote .small {
-    color: #777777;
-    display: block;
-    font-size: 80%;
-    line-height: 1.42857143;
-}
+    .post-content blockquote footer,
+    .post-content blockquote small,
+    .post-content blockquote .small {
+        color: #777777;
+        display: block;
+        font-size: 80%;
+        line-height: 1.42857143;
+    }

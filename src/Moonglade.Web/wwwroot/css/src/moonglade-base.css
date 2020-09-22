@@ -33,6 +33,14 @@ a {
         text-decoration: none;
     }
 
+    a.link-transparent {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+        a.link-transparent:hover {
+            color: #FFF;
+        }
+
 footer {
     color: rgba(255, 255, 255, 0.5);
     padding-bottom: 20px;
@@ -47,9 +55,21 @@ footer {
         text-transform: uppercase;
     }
 
+    footer a {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+        footer a:hover {
+            color: #FFF;
+        }
+
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5 {
     font-weight: normal;
 }
+
+    h3 small {
+        font-size: 60%;
+    }
 
 .btn-outline-footer {
     border-color: rgba(255, 255, 255, 0.5);
@@ -60,28 +80,6 @@ footer {
         border-color: #fff;
         color: #fff;
     }
-
-.field-validation-error {
-    color: #ff0000;
-}
-
-.field-validation-valid {
-    display: none;
-}
-
-.input-validation-error {
-    background-color: #ffeeee;
-    border: 1px solid #ff0000;
-}
-
-.validation-summary-errors {
-    color: #ff0000;
-    font-weight: bold;
-}
-
-.validation-summary-valid {
-    display: none;
-}
 
 .sec.sec-alter {
     background-color: #f2f2f2;
@@ -230,9 +228,7 @@ footer {
     border-radius: 50px !important;
 }
 
-h3 small {
-    font-size: 60%;
-}
+
 
 .textarea-banned-keywords {
     border: none;
@@ -408,7 +404,6 @@ label {
     font-family: SairaSemiCondensed-Bold;
 }
 
-
 .bg-moonglade-accent1 {
     background-color: var(--moonglade-accent-color1);
 }
@@ -425,8 +420,6 @@ label {
     .bg-moca-dark .list-group-item-action:hover {
         background-color: #1d2124 !important;
     }
-
-
 
 .btn-primary {
     background-color: #124078;
@@ -445,22 +438,6 @@ label {
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
 }
 
-a.link-transparent {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-    a.link-transparent:hover {
-        color: #FFF;
-    }
-
-footer a {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-    footer a:hover {
-        color: #FFF;
-    }
-
 .qrcode-link a {
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
@@ -475,16 +452,6 @@ footer a {
 
 .hr-dark {
     border-top: 1px solid rgba(255, 255, 255, .15) !important;
-}
-
-#imgzoom {
-    height: max-content;
-    margin: 0 auto;
-    width: max-content;
-}
-
-.modal-imgzoom {
-    display: table;
 }
 
 .moonglade-logo {
