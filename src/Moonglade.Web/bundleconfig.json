@@ -40,6 +40,8 @@
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/moonglade-base.css",
       "wwwroot/css/src/moonglade-rwd.css",
+      "wwwroot/css/src/timeline.css",
+      "wwwroot/css/src/tagcloud.css",
       "wwwroot/css/src/post-slug.css",
       "wwwroot/css/src/darkmode.css",
       "wwwroot/css/src/highlighter-custom.css"

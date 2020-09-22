@@ -1,0 +1,62 @@
+﻿.tagCloud {
+    line-height: 28px;
+    text-align: justify;
+}
+
+    .tagCloud li {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+        .tagCloud li a {
+            border: 1px solid #BBBBBB;
+            color: #444;
+            display: block;
+            height: 33px;
+            line-height: 33px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+            padding: 0 10px;
+        }
+
+            .tagCloud li a:hover {
+                background-color: var(--moonglade-accent-color1) !important;
+                border: 1px solid var(--moonglade-accent-color1) !important;
+                color: #FFF !important;
+            }
+
+            .tagCloud li a.weight1 {
+                background-color: #c9302c;
+                border: 1px solid #d43f3a;
+                color: #FFF !important;
+                font-size: 145%;
+            }
+
+            .tagCloud li a.weight2 {
+                background-color: #f0ad4e;
+                border: 1px solid #eea236;
+                color: #FFF !important;
+                font-size: 133%;
+            }
+
+            .tagCloud li a.weight3 {
+                background-color: #449d44;
+                border: 1px solid #398439;
+                color: #FFF !important;
+                font-size: 115%;
+            }
+
+            .tagCloud li a.weight4 {
+                background-color: #286090;
+                border: 1px solid #204d74;
+                color: #FFF !important;
+                font-size: 100%;
+            }
+
+            .tagCloud li a.weight5 {
+                font-size: 90%;
+            }
+
+            .tagCloud li a.weight0 {
+                font-size: 80%;
+            }

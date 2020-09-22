@@ -1,4 +1,13 @@
-﻿h1.post-title, .post-content h1 {
+﻿#img-captcha {
+    cursor: pointer;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.badge.post-hit-number {
+    font-size: 100%;
+}
+
+h1.post-title, .post-content h1 {
     font-size: 1.55rem;
 }
 
