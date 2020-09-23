@@ -1,16 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class CategoryMenuViewComponent : BlogViewComponent
+    public class CategoryMenuViewComponent : ViewComponent
     {
         private readonly CategoryService _categoryService;
 
-        public CategoryMenuViewComponent(
-            ILogger<CategoryMenuViewComponent> logger, CategoryService categoryService) : base(logger)
+        public CategoryMenuViewComponent(CategoryService categoryService)
         {
             _categoryService = categoryService;
         }

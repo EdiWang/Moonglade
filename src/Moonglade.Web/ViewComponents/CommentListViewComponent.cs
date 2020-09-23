@@ -6,13 +6,15 @@ using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class CommentListViewComponent : BlogViewComponent
+    public class CommentListViewComponent : ViewComponent
     {
+        private readonly ILogger<CommentListViewComponent> _logger;
         private readonly CommentService _commentService;
 
         public CommentListViewComponent(
-            ILogger<CommentListViewComponent> logger, CommentService commentService) : base(logger)
+            ILogger<CommentListViewComponent> logger, CommentService commentService)
         {
+            _logger = logger;
             _commentService = commentService;
         }
 
@@ -22,7 +24,7 @@ namespace Moonglade.Web.ViewComponents
             {
                 if (postId == Guid.Empty)
                 {
-                    Logger.LogWarning($"postId: {postId} is not a valid GUID");
+                    _logger.LogWarning($"postId: {postId} is not a valid GUID");
                     return View("Error");
                 }
 
@@ -31,7 +33,7 @@ namespace Moonglade.Web.ViewComponents
             }
             catch (Exception e)
             {
-                Logger.LogError(e, $"Error reading comments for post id: {postId}");
+                _logger.LogError(e, $"Error reading comments for post id: {postId}");
 
                 ViewBag.ComponentErrorMessage = e.Message;
                 return View("~/Views/Shared/ComponentError.cshtml");

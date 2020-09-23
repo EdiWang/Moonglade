@@ -8,14 +8,15 @@ using Moonglade.Model;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class FriendLinkViewComponent : BlogViewComponent
+    public class FriendLinkViewComponent : ViewComponent
     {
+        private readonly ILogger<FriendLinkViewComponent> _logger;
         private readonly FriendLinkService _friendLinkService;
 
         public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger,
             FriendLinkService friendLinkService)
-            : base(logger)
         {
+            _logger = logger;
             _friendLinkService = friendLinkService;
         }
 
@@ -28,7 +29,7 @@ namespace Moonglade.Web.ViewComponents
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error Reading FriendLink.");
+                _logger.LogError(e, "Error Reading FriendLink.");
 
                 ViewBag.ComponentErrorMessage = e.Message;
                 return View("~/Views/Shared/ComponentError.cshtml");

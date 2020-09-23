@@ -9,13 +9,15 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class RssCatListViewComponent : BlogViewComponent
+    public class RssCatListViewComponent : ViewComponent
     {
+        private readonly ILogger<RssCatListViewComponent> _logger;
+
         private readonly CategoryService _categoryService;
 
-        public RssCatListViewComponent(
-            ILogger<RssCatListViewComponent> logger, CategoryService categoryService) : base(logger)
+        public RssCatListViewComponent(ILogger<RssCatListViewComponent> logger, CategoryService categoryService)
         {
+            _logger = logger;
             _categoryService = categoryService;
         }
 
@@ -34,7 +36,7 @@ namespace Moonglade.Web.ViewComponents
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error.");
+                _logger.LogError(e, "Error.");
 
                 ViewBag.ComponentErrorMessage = e.Message;
                 return View("~/Views/Shared/ComponentError.cshtml");

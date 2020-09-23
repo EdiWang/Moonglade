@@ -1,21 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class HotTagsViewComponent : BlogViewComponent
+    public class HotTagsViewComponent : ViewComponent
     {
         private readonly TagService _tagService;
 
         private readonly IBlogConfig _blogConfig;
 
-        public HotTagsViewComponent(
-            ILogger<HotTagsViewComponent> logger,
-            TagService tagService, 
-            IBlogConfig blogConfig) : base(logger)
+        public HotTagsViewComponent(TagService tagService, IBlogConfig blogConfig)
         {
             _tagService = tagService;
             _blogConfig = blogConfig;

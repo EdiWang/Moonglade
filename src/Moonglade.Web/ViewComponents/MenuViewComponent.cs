@@ -1,16 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class MenuViewComponent : BlogViewComponent
+    public class MenuViewComponent : ViewComponent
     {
         private readonly MenuService _menuService;
 
-        public MenuViewComponent(
-            ILogger<MenuViewComponent> logger, MenuService menuService) : base(logger)
+        public MenuViewComponent(MenuService menuService)
         {
             _menuService = menuService;
         }
