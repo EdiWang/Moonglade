@@ -7,7 +7,7 @@
 }
 
 .timeline-heading {
-    border-bottom: 1px solid #EEE;
+    border-bottom: 1px solid var(--light-gray-2);
     margin-bottom: 10px;
 }
 
@@ -18,7 +18,7 @@
 }
 
     .timeline:before {
-        background-color: #eeeeee;
+        background-color: var(--light-gray-2);
         bottom: 0;
         content: " ";
         left: 50%;
