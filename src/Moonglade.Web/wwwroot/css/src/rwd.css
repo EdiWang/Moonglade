@@ -44,7 +44,7 @@
     }
 
     .blogger-intro-content {
-        color: #FFF;
+        color: var(--white);
         padding: 15px;
         position: absolute;
         top: 0;
@@ -52,9 +52,9 @@
     }
 
         .blogger-intro-content h4 {
-            background-color: rgba(255, 255, 255, .2);
+            background-color: var(--transparent-white-20);
             border-radius: 5px;
-            color: #fff;
+            color: var(--white);
             font-size: 1rem;
             padding: 5px;
             text-shadow: 2px 0 2px #000;
@@ -79,7 +79,6 @@
     }
 
     .post-summary-text {
-        color: #555;
         line-height: 22px;
     }
 
@@ -88,7 +87,7 @@
     }
 
     .article-post-summary {
-        border-bottom: 1px solid #EEE;
+        border-bottom: 1px solid var(--light-gray-2);
         margin-bottom: 15px;
         padding-bottom: 15px;
     }
