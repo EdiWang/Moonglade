@@ -112,7 +112,7 @@ h1.post-title, .post-content h1 {
     }
 
     .comment-list .card > .card-header:after {
-        border-right-color: var(--gray-4);
+        border-right-color: var(--gray-0);
         border-width: 7px;
         margin-left: 2px;
         margin-top: 1px;
