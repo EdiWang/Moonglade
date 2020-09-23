@@ -230,18 +230,15 @@ label {
 
 .post-date-month {
     background-color: var(--accent-color1);
-    color: var(--white);
     padding: 1px 10px;
     text-align: right;
 }
 
 .post-summary-title {
-    font-size: 18px;
-    margin-bottom: 15px;
+    font-size: 1.14rem;
 }
 
 .post-summary-box {
-    display: block;
     margin-left: 105px;
 }
 
@@ -251,18 +248,9 @@ label {
     word-wrap: break-word;
 }
 
-.post-summary-tags {
-    margin-bottom: -10px;
-    padding-top: 10px;
-}
-
-    .post-summary-tags a {
+.post-summary-tags a {
         background-color: var(--accent-color1);
-        color: var(--white);
-        display: inline-block;
         font-size: 0.75rem;
-        margin-bottom: 10px;
-        margin-right: 10px;
         padding: 5px 10px;
     }
 
@@ -273,7 +261,6 @@ label {
 
 .blog-info-desktop-lg {
     border-radius: 3px;
-    color: var(--white);
     overflow: hidden;
     position: relative;
 }
@@ -354,8 +341,6 @@ label {
 
 .toptags-list a {
     background-color: var(--accent-color1);
-    color: var(--white);
-    display: inline-block;
     margin-bottom: 10px;
     margin-right: 1px;
     padding: 5px 10px;

@@ -8,16 +8,16 @@
         <div class="post-date-day">
             @DateTimeResolver.ToTimeZone(Model.PubDateUtc).Day.ToString("00")
         </div>
-        <div class="post-date-month">
+        <div class="post-date-month text-white">
             @DateTimeResolver.ToTimeZone(Model.PubDateUtc).ToString("MMM", new CultureInfo("en-US")).ToUpper()
         </div>
     </div>
-    <div class="post-summary-box">
+    <div class="post-summary-box d-block">
         <time datetime="@Model.PubDateUtc.ToString("u")" class="d-none">
             @Model.PubDateUtc
         </time>
 
-        <h4 class="post-summary-title">
+        <h4 class="post-summary-title mb-3">
             <a asp-controller="Post" asp-action="Slug"
                asp-route-year="@Model.PubDateUtc.Year"
                asp-route-month="@Model.PubDateUtc.Month"
@@ -30,13 +30,13 @@
         <p class="post-summary-text">@(Model.ContentAbstract)</p>
         @if (null != Model.Tags)
         {
-            <div class="post-summary-tags">
+            <div class="post-summary-tags pt-2">
                 @foreach (var tag in Model.Tags)
                 {
                     <a asp-controller="Tags"
                        asp-action="List"
                        asp-route-normalizedName="@tag.NormalizedName"
-                       class="post-summary-tag">
+                       class="d-inline-block text-white mr-2">
                         @tag.DisplayName
                     </a>
                 }
