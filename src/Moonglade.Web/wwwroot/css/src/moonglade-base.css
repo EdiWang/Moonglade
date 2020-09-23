@@ -3,6 +3,7 @@
 }
 
 :root {
+    --body-bg: #FFF;
     --box-shadow-light: rgba(0, 0, 0, 0.108);
     --box-shadow-medium: rgba(0, 0, 0, 0.132);
     --transparent-white-20: rgba(255, 255, 255, 0.2);
@@ -15,7 +16,6 @@
     --gray-1: #666;
     --gray-2: #555;
     --gray-3: #777;
-    --gray-5: #ddd;
     --gray-6: #EEE;
     --moca-dark: #171717;
     --moca-dark-1: #1d2124;
@@ -39,6 +39,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei";
     font-size: 0.9rem;
     padding-top: 50px;
+    background-color: var(--body-bg);
 }
 
 a {
@@ -91,6 +92,10 @@ label {
 
 .bg-lightgray-1 {
     background-color: var(--gray-0);
+}
+
+.color-transparent-white-50 {
+    color: var(--transparent-white-50);
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5 {

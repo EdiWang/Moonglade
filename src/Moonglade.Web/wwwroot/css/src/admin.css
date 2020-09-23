@@ -19,10 +19,6 @@
     font-weight: bold;
 }
 
-.full-height {
-    height: 100%;
-}
-
 .admin-body {
     padding-top: 0;
 }
@@ -71,10 +67,6 @@
 hr.admin-nav-divider {
     border-top: 1px solid var(--transparent-white-30);
     margin: 0 20px;
-}
-
-.text-moonglade-dark-secondary {
-    color: var(--transparent-white-50);
 }
 
 .post-content-textarea {
@@ -159,7 +151,7 @@ div.mce-fullscreen {
 
         .ul-tag-mgr li a {
             background-color: var(--gray-6);
-            color: var(--gray-5);
+            color: var(--gray-3);
             cursor: pointer;
             display: inline-block;
             font-size: 16px;
