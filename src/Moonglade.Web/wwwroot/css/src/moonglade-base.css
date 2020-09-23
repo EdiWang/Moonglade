@@ -1,8 +1,4 @@
-﻿html, body {
-    height: 100%;
-}
-
-:root {
+﻿:root {
     --body-bg: #FFF;
     --box-shadow-light: rgba(0, 0, 0, 0.108);
     --box-shadow-medium: rgba(0, 0, 0, 0.132);
