@@ -159,3 +159,46 @@
     .timeline-body > p + p {
         margin-top: 5px;
     }
+
+@media (max-width: 767px) {
+    .img-timeline {
+        display: none;
+    }
+
+    ul.timeline:before {
+        left: 22px;
+    }
+
+    ul.timeline > li > .timeline-panel {
+        width: calc(100% - 65px);
+        width: -moz-calc(100% - 65px);
+        width: -webkit-calc(100% - 65px);
+    }
+
+    ul.timeline > li > .timeline-badge {
+        height: 45px;
+        left: 0;
+        line-height: 45px;
+        margin-left: 0;
+        top: 16px;
+        width: 45px;
+    }
+
+    ul.timeline > li > .timeline-panel {
+        float: right;
+    }
+
+        ul.timeline > li > .timeline-panel:before {
+            border-left-width: 0;
+            border-right-width: 15px;
+            left: -15px;
+            right: auto;
+        }
+
+        ul.timeline > li > .timeline-panel:after {
+            border-left-width: 0;
+            border-right-width: 14px;
+            left: -14px;
+            right: auto;
+        }
+}
