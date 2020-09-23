@@ -1,6 +1,6 @@
-﻿@model SubscriptionViewModel
+﻿@model IEnumerable<KeyValuePair<string, string>>
 
-@foreach (var (key, value) in Model.Cats.OrderBy(c => c.Key))
+@foreach (var (key, value) in Model.OrderBy(c => c.Key))
 {
     <div class="col-6">
         <a asp-controller="Subscription" asp-action="Rss" asp-route-routeName="@value"

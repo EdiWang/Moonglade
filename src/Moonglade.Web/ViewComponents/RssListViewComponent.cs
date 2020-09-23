@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.ViewComponents
 {
@@ -26,13 +25,9 @@ namespace Moonglade.Web.ViewComponents
             try
             {
                 var cats = await _categoryService.GetAllAsync();
-                var items = cats.Item.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName)).ToList();
-                var viewModel = new SubscriptionViewModel
-                {
-                    Cats = items
-                };
+                var items = cats.Item.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
 
-                return View(viewModel);
+                return View(items);
             }
             catch (Exception e)
             {
