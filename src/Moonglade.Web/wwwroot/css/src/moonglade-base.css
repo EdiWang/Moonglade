@@ -59,8 +59,6 @@ a {
 
 footer {
     color: var(--transparent-white-50);
-    padding-bottom: 20px;
-    padding-top: 20px;
 }
 
     footer .container h4 {
@@ -293,11 +291,11 @@ label {
     z-index: 999;
 }
 
-.bg-moonglade-accent1 {
+.bg-accent1 {
     background-color: var(--accent-color1);
 }
 
-.bg-moonglade-accent2 {
+.bg-accent2 {
     background-color: var(--accent-color2);
 }
 

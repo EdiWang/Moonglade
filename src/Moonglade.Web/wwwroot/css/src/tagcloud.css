@@ -4,18 +4,15 @@
 }
 
     .tagCloud li {
-        display: inline-block;
         vertical-align: top;
     }
 
         .tagCloud li a {
             border: 1px solid var(--gray-3);
             color: var(--gray-1);
-            display: block;
             height: 33px;
             line-height: 33px;
             margin-bottom: 10px;
-            margin-right: 10px;
             padding: 0 10px;
         }
 
