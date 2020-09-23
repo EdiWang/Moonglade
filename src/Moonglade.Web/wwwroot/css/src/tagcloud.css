@@ -10,7 +10,7 @@
 
         .tagCloud li a {
             border: 1px solid var(--gray-3);
-            color: var(--dark-1);
+            color: var(--gray-1);
             display: block;
             height: 33px;
             line-height: 33px;

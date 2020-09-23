@@ -13,10 +13,9 @@
     --transparent-white-60: rgba(255, 255, 255, 0.6);
     --transparent-white-70: rgba(255, 255, 255, 0.7);
     --transparent-dark-1: rgba(0, 0, 0, .175);
-    --light-gray: #fafafa;
     --light-gray-1: #f2f2f2;
     --light-gray-2: #EEE;
-    --dark-1: #666;
+    --gray-1: #666;
     --dark-2: #1d2124;
     --gray-2: #555;
     --gray-3: #777777;
@@ -275,7 +274,6 @@ label {
         }
 
 .blog-info-desktop-lg {
-    background: var(--light-gray);
     border-radius: 3px;
     color: var(--white);
     overflow: hidden;
