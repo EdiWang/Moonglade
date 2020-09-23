@@ -8,6 +8,8 @@
     --transparent-white-60: rgba(255, 255, 255, 0.6);
     --transparent-white-70: rgba(255, 255, 255, 0.7);
     --transparent-dark-1: rgba(0, 0, 0, .175);
+    --light-gray: #fafafa;
+    --light-gray-1: #f2f2f2;
     --dark-1: #666;
     --dark-2: #1d2124;
     --moca-dark: #171717;
@@ -104,7 +106,7 @@ label {
     }
 
 .sec.sec-alter {
-    background-color: #f2f2f2;
+    background-color: var(--light-gray-1);
 }
 
 .sec {
@@ -137,7 +139,7 @@ label {
 }
 
 .label-success {
-    background-color: #5cb85c;
+    background-color: var(--green);
 }
 
 .list-group-item.active, .page-item.active .page-link {
@@ -252,7 +254,7 @@ label {
         }
 
 .blog-info-desktop-lg {
-    background: #fafafa;
+    background: var(--light-gray);
     border-radius: 3px;
     color: var(--white);
     overflow: hidden;
