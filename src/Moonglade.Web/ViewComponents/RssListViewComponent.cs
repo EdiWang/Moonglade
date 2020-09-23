@@ -9,13 +9,13 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class RssCatListViewComponent : ViewComponent
+    public class RssListViewComponent : ViewComponent
     {
-        private readonly ILogger<RssCatListViewComponent> _logger;
+        private readonly ILogger<RssListViewComponent> _logger;
 
         private readonly CategoryService _categoryService;
 
-        public RssCatListViewComponent(ILogger<RssCatListViewComponent> logger, CategoryService categoryService)
+        public RssListViewComponent(ILogger<RssListViewComponent> logger, CategoryService categoryService)
         {
             _logger = logger;
             _categoryService = categoryService;
