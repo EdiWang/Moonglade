@@ -18,7 +18,7 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [Route("admin")]
-    public class AdminController : MoongladeController
+    public class AdminController : BlogController
     {
         private readonly AuthenticationSettings _authenticationSettings;
 

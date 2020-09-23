@@ -19,7 +19,7 @@ using X.PagedList;
 namespace Moonglade.Web.Controllers
 {
     [Route("comment")]
-    public class CommentController : MoongladeController
+    public class CommentController : BlogController
     {
         #region Private Fields
 

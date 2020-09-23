@@ -13,7 +13,7 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [Route("navmenu")]
-    public class MenuController : MoongladeController
+    public class MenuController : BlogController
     {
         private readonly MenuService _menuService;
 

@@ -9,7 +9,7 @@ using Moonglade.Model;
 namespace Moonglade.Web.Controllers
 {
     [Route("archive")]
-    public class ArchiveController : MoongladeController
+    public class ArchiveController : BlogController
     {
         private readonly PostService _postService;
 

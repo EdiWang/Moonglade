@@ -9,7 +9,7 @@ using Moonglade.Model.Settings;
 namespace Moonglade.Web.Controllers
 {
     [Route("tags")]
-    public class TagsController : MoongladeController
+    public class TagsController : BlogController
     {
         private readonly TagService _tagService;
         private readonly PostService _postService;

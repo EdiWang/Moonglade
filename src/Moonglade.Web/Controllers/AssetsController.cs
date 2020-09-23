@@ -24,7 +24,7 @@ using Moonglade.Web.SiteIconGenerator;
 
 namespace Moonglade.Web.Controllers
 {
-    public class AssetsController : MoongladeController
+    public class AssetsController : BlogController
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogImageStorage _imageStorage;

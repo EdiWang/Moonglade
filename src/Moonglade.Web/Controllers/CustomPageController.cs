@@ -16,7 +16,7 @@ using Moonglade.Web.Models;
 namespace Moonglade.Web.Controllers
 {
     [Route("page")]
-    public class CustomPageController : MoongladeController
+    public class CustomPageController : BlogController
     {
         private readonly IBlogCache _cache;
         private readonly CustomPageService _customPageService;

@@ -8,7 +8,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
-    public class SubscriptionController : MoongladeController
+    public class SubscriptionController : BlogController
     {
         private readonly SyndicationService _syndicationFeedService;
 

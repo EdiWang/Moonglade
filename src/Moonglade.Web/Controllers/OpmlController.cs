@@ -11,7 +11,7 @@ using Moonglade.Syndication;
 namespace Moonglade.Web.Controllers
 {
     [Route("opml")]
-    public class OpmlController : MoongladeController
+    public class OpmlController : BlogController
     {
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;

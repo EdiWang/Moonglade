@@ -12,7 +12,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
-    public class SearchController : MoongladeController
+    public class SearchController : BlogController
     {
         private readonly IBlogConfig _blogConfig;
 

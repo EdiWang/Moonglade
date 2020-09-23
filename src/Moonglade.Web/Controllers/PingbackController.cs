@@ -13,7 +13,7 @@ using Moonglade.Pingback.Mvc;
 namespace Moonglade.Web.Controllers
 {
     [Route("pingback")]
-    public class PingbackController : MoongladeController
+    public class PingbackController : BlogController
     {
         private readonly PingbackService _pingbackService;
         private readonly IBlogConfig _blogConfig;

@@ -10,7 +10,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
-    public class MoongladeController : Controller
+    public class BlogController : Controller
     {
         protected ILogger<ControllerBase> Logger { get; }
 
@@ -22,11 +22,9 @@ namespace Moonglade.Web.Controllers
 
         protected string SiteIconDirectory => Path.Join(SiteDataDirectory, "siteicons");
 
-        protected string UserAgent => Request.Headers["User-Agent"];
-
         protected bool DNT => (bool)HttpContext.Items["DNT"];
 
-        public MoongladeController(
+        public BlogController(
             ILogger<ControllerBase> logger,
             IOptions<AppSettings> settings = null)
         {

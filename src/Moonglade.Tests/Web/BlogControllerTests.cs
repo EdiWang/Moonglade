@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests.Web
 {
     [TestFixture]
-    public class MoongladeControllerTests
+    public class BlogControllerTests
     {
         private Mock<ILogger<ControllerBase>> _loggerMock;
 
@@ -20,7 +20,7 @@ namespace Moonglade.Tests.Web
         [Test]
         public void TestServerError()
         {
-            var ctl = new MoongladeController(_loggerMock.Object);
+            var ctl = new BlogController(_loggerMock.Object);
             var result = ctl.ServerError();
             Assert.IsInstanceOf(typeof(StatusCodeResult), result);
             if (result is StatusCodeResult rdResult)

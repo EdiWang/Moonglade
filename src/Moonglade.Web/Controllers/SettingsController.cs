@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [Route("admin/settings")]
-    public class SettingsController : MoongladeController
+    public class SettingsController : BlogController
     {
         #region Private Fields
 

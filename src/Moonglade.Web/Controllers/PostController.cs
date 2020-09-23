@@ -19,7 +19,7 @@ using X.PagedList;
 namespace Moonglade.Web.Controllers
 {
     [Route("post")]
-    public partial class PostController : MoongladeController
+    public partial class PostController : BlogController
     {
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
