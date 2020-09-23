@@ -3,9 +3,13 @@
 }
 
 :root {
+    --transparent-white-20: rgba(255, 255, 255, 0.2);
     --transparent-white-50: rgba(255, 255, 255, 0.5);
     --transparent-white-60: rgba(255, 255, 255, 0.6);
     --transparent-white-70: rgba(255, 255, 255, 0.7);
+    --transparent-dark-1: rgba(0, 0, 0, .175);
+    --dark-1: #666;
+    --moca-dark: #171717;
 }
 
 ::-webkit-scrollbar {
@@ -13,12 +17,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #CECECE;
+    background: var(--gray);
 }
 
 ::selection {
-    background-color: rgba(43, 87, 154, .15);
-    color: inherit;
+    background-color: var(--primary);
+    color: var(--white);
     text-shadow: none;
 }
 
@@ -291,7 +295,7 @@ label {
 }
 
 .bg-moca-dark {
-    background-color: #171717;
+    background-color: var(--moca-dark);
 }
 
     .bg-moca-dark .list-group-item-action:focus,
@@ -313,7 +317,7 @@ label {
 }
 
 .dropdown-menu {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px var(--transparent-dark-1);
 }
 
 .qrcode-link a {

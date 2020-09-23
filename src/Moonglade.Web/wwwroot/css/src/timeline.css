@@ -78,8 +78,8 @@
 
             .timeline > li > .timeline-panel:after {
                 border-bottom: 14px solid transparent;
-                border-left: 14px solid #fff;
-                border-right: 0 solid #fff;
+                border-left: 14px solid var(--white);
+                border-right: 0 solid var(--white);
                 border-top: 14px solid transparent;
                 content: " ";
                 display: inline-block;
@@ -94,7 +94,7 @@
             border-bottom-right-radius: 50%;
             border-top-left-radius: 50%;
             border-top-right-radius: 50%;
-            color: #fff;
+            color: var(--white);
             font-size: 1.4em;
             height: 50px;
             left: 50%;
