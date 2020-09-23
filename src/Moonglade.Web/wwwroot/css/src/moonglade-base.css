@@ -42,13 +42,13 @@ body {
 }
 
 a {
-    color: var(--moonglade-accent-color1);
+    color: var(--accent-color1);
     text-decoration: none;
 }
 
     a:hover,
     a:focus {
-        color: var(--moonglade-accent-color1);
+        color: var(--accent-color1);
         text-decoration: none;
     }
 
@@ -160,8 +160,8 @@ label {
 }
 
 .list-group-item.active, .page-item.active .page-link {
-    background-color: var(--moonglade-accent-color1);
-    border-color: var(--moonglade-accent-color1);
+    background-color: var(--accent-color1);
+    border-color: var(--accent-color1);
 }
 
 .table .table-item-title {
@@ -212,14 +212,14 @@ label {
 }
 
 .post-date-box {
-    border: 1px solid var(--moonglade-accent-color1);
+    border: 1px solid var(--accent-color1);
     border-radius: 3px;
     position: absolute;
     width: 70px;
 }
 
 .post-date-day {
-    color: var(--moonglade-accent-color1);
+    color: var(--accent-color1);
     font-size: 42px;
     height: 58px;
     margin: 0;
@@ -228,7 +228,7 @@ label {
 }
 
 .post-date-month {
-    background-color: var(--moonglade-accent-color1);
+    background-color: var(--accent-color1);
     color: var(--white);
     padding: 1px 10px;
     text-align: right;
@@ -256,7 +256,7 @@ label {
 }
 
     .post-summary-tags a {
-        background-color: var(--moonglade-accent-color1);
+        background-color: var(--accent-color1);
         color: var(--white);
         display: inline-block;
         font-size: 0.75rem;
@@ -266,7 +266,7 @@ label {
     }
 
         .post-summary-tags a:hover {
-            background-color: var(--moonglade-accent-color3);
+            background-color: var(--accent-color3);
             color: var(--white);
         }
 
@@ -306,11 +306,11 @@ label {
 }
 
 .bg-moonglade-accent1 {
-    background-color: var(--moonglade-accent-color1);
+    background-color: var(--accent-color1);
 }
 
 .bg-moonglade-accent2 {
-    background-color: var(--moonglade-accent-color2);
+    background-color: var(--accent-color2);
 }
 
 .bg-moca-dark {
@@ -323,7 +323,7 @@ label {
     }
 
 .page-link {
-    color: var(--moonglade-accent-color1);
+    color: var(--accent-color1);
 }
 
 .comment-form-containter .badge {
@@ -352,7 +352,7 @@ label {
 }
 
 .toptags-list a {
-    background-color: var(--moonglade-accent-color1);
+    background-color: var(--accent-color1);
     color: var(--white);
     display: inline-block;
     margin-bottom: 10px;
@@ -361,7 +361,7 @@ label {
 }
 
     .toptags-list a:hover {
-        background-color: var(--moonglade-accent-color3);
+        background-color: var(--accent-color3);
         color: var(--white);
     }
 

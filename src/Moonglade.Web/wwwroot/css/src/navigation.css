@@ -61,7 +61,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
 .navbar .dropdown-menu {
-    background-color: var(--moonglade-accent-color1);
+    background-color: var(--accent-color1);
     border: 0;
     color: var(--white);
     font-size: 0.9rem;
@@ -73,7 +73,7 @@ div.animbrand a:focus, div.animbrand a:hover {
     }
 
 .navbar .dropdown-item.active, .dropdown-item:hover {
-    background-color: var(--moonglade-accent-color3);
+    background-color: var(--accent-color3);
     color: var(--white);
     text-decoration: none;
 }
@@ -126,6 +126,6 @@ div.animbrand a:focus, div.animbrand a:hover {
 .form-control#search:focus {
     -ms-box-shadow: none;
     -webkit-box-shadow: none;
-    border-color: var(--moonglade-accent-color1);
+    border-color: var(--accent-color1);
     box-shadow: none;
 }

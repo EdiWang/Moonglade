@@ -1,5 +1,5 @@
 ﻿#extlink-url {
-    color: var(--moonglade-accent-color1);
+    color: var(--accent-color1);
 }
 
 #img-captcha {
@@ -64,7 +64,7 @@ h1.post-title, .post-content h1 {
 }
 
 .post-content a {
-    border-bottom: 1px dashed var(--moonglade-accent-color1);
+    border-bottom: 1px dashed var(--accent-color1);
 }
 
 .post-content blockquote, .post-content .blockquote {

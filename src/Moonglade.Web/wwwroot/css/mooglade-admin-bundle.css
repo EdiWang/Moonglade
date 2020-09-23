@@ -148,7 +148,7 @@
 }
 
 .admin-nav {
-    background-color: var(--moonglade-accent-color2);
+    background-color: var(--accent-color2);
     width: 260px;
     min-height: 100vh;
     margin-left: -15rem;
@@ -209,7 +209,7 @@ hr.admin-nav-divider {
 
     .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
-        background-color: var(--moonglade-accent-color1);
+        background-color: var(--accent-color1);
         color: var(--white);
     }
 
@@ -382,7 +382,7 @@ div.mce-fullscreen {
 }
 
     .bootstrap-tagsinput .tag {
-        background: var(--moonglade-accent-color1);
+        background: var(--accent-color1);
         padding: 2px 5px;
     }
 

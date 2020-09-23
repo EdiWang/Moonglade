@@ -20,8 +20,8 @@
         }
 
             .tagCloud li a:hover {
-                background-color: var(--moonglade-accent-color1) !important;
-                border: 1px solid var(--moonglade-accent-color1) !important;
+                background-color: var(--accent-color1) !important;
+                border: 1px solid var(--accent-color1) !important;
                 color: var(--white) !important;
             }
 
