@@ -4,7 +4,7 @@
 
 .darkmode .box {
     background-color: var(--moca-dark);
-    border: 1px solid var(--light-gray-2);
+    border: 1px solid var(--gray-6);
     box-shadow: 0 1.6px 3.6px 0 var(--box-shadow-medium),0 .3px .9px 0 var(--box-shadow-light);
 }
 

@@ -87,7 +87,7 @@
     }
 
     .article-post-summary {
-        border-bottom: 1px solid var(--light-gray-2);
+        border-bottom: 1px solid var(--gray-6);
         margin-bottom: 15px;
         padding-bottom: 15px;
     }
