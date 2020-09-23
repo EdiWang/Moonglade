@@ -115,7 +115,7 @@
 }
 
 .field-validation-error {
-    color: #ff0000;
+    color: var(--danger);
 }
 
 .field-validation-valid {
@@ -123,7 +123,7 @@
 }
 
 .input-validation-error {
-    border: 1px solid #ff0000;
+    border: 1px solid var(--danger);
 }
 
 .validation-summary-valid {
@@ -131,7 +131,7 @@
 }
 
 .validation-summary-errors {
-    color: #ff0000;
+    color: var(--danger);
     font-weight: bold;
 }
 
@@ -190,7 +190,7 @@ hr.admin-nav-divider {
 }
 
 .text-moonglade-dark-secondary {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--transparent-white-50);
 }
 
 .post-content-textarea {
@@ -204,7 +204,7 @@ hr.admin-nav-divider {
 .admin-nav-section .list-group-item {
     background-color: transparent;
     border: 0 none;
-    color: rgba(255, 255, 255, .5);
+    color: var(--transparent-white-50);
 }
 
     .admin-nav-section .list-group-item.active,
@@ -257,7 +257,7 @@ div.mce-fullscreen {
 
     .ul-tag-mgr li {
         border: 1px solid #bbb;
-        color: #444;
+        color: var(--gray-dark);
         display: inline-block;
         height: 33px;
         line-height: 33px;
@@ -266,7 +266,7 @@ div.mce-fullscreen {
     }
 
         .ul-tag-mgr li.updated {
-            border: 1px solid #398439;
+            border: 1px solid var(--green);
         }
 
         .ul-tag-mgr li span {
@@ -286,8 +286,8 @@ div.mce-fullscreen {
         }
 
             .ul-tag-mgr li a:hover {
-                background-color: #a94442;
-                color: #FFF;
+                background-color: var(--red);
+                color: var(--white);
             }
 
 .material-switch > input[type="checkbox"] {
