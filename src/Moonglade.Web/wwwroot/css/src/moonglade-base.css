@@ -9,6 +9,7 @@
     --transparent-white-70: rgba(255, 255, 255, 0.7);
     --transparent-dark-1: rgba(0, 0, 0, .175);
     --dark-1: #666;
+    --dark-2: #1d2124;
     --moca-dark: #171717;
 }
 
@@ -300,13 +301,8 @@ label {
 
     .bg-moca-dark .list-group-item-action:focus,
     .bg-moca-dark .list-group-item-action:hover {
-        background-color: #1d2124 !important;
+        background-color: var(--dark-2) !important;
     }
-
-.btn-primary {
-    background-color: #124078;
-    border-color: #0e315d;
-}
 
 .page-link {
     color: var(--moonglade-accent-color1);
