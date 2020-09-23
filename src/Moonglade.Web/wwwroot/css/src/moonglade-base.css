@@ -16,12 +16,12 @@
     --gray-0: #f2f2f2;
     --light-gray-2: #EEE;
     --gray-1: #666;
-    --dark-2: #1d2124;
     --gray-2: #555;
     --gray-3: #777;
     --gray-4: #f7f7f7;
     --gray-5: #ddd;
     --moca-dark: #171717;
+    --moca-dark-1: #1d2124;
 }
 
 ::-webkit-scrollbar {
@@ -322,7 +322,7 @@ label {
 
     .bg-moca-dark .list-group-item-action:focus,
     .bg-moca-dark .list-group-item-action:hover {
-        background-color: var(--dark-2) !important;
+        background-color: var(--moca-dark-1) !important;
     }
 
 .page-link {
