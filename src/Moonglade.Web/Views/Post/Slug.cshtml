@@ -148,12 +148,12 @@
                 <div class="float-right d-none d-md-block">
                     @if (Model.PostModel.Tags.Length > 0)
                     {
-                        <span class="toptags-list toptags-list-sm">
+                        <span class="toptags-list">
                             @foreach (var item in Model.PostModel.Tags)
                             {
                                 <a asp-controller="Tags"
                                    asp-action="List"
-                                   asp-route-normalizedName="@item.NormalizedName">@item.DisplayName</a>
+                                   asp-route-normalizedName="@item.NormalizedName" class="text-white">@item.DisplayName</a>
                             }
                         </span>
                     }
