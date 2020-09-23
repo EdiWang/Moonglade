@@ -68,8 +68,8 @@ h1.post-title, .post-content h1 {
 }
 
 .post-content blockquote, .post-content .blockquote {
-    border-left: 5px solid #eeeeee;
-    color: #555;
+    border-left: 5px solid var(--light-gray-2);
+    color: var(--gray-2);
     margin: 0 0 20px;
     padding: 10px 20px;
 }
@@ -83,7 +83,7 @@ h1.post-title, .post-content h1 {
     .post-content blockquote footer,
     .post-content blockquote small,
     .post-content blockquote .small {
-        color: #777777;
+        color: var(--gray-3);
         display: block;
         font-size: 80%;
         line-height: 1.42857143;
@@ -112,13 +112,13 @@ h1.post-title, .post-content h1 {
     }
 
     .comment-list .card > .card-header:after {
-        border-right-color: #f7f7f7;
+        border-right-color: var(--gray-4);
         border-width: 7px;
         margin-left: 2px;
         margin-top: 1px;
     }
 
     .comment-list .card > .card-header:before {
-        border-right-color: #ddd;
+        border-right-color: var(--gray-5);
         border-width: 8px;
     }
