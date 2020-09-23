@@ -9,8 +9,8 @@
     }
 
         .tagCloud li a {
-            border: 1px solid #BBBBBB;
-            color: #444;
+            border: 1px solid var(--gray-3);
+            color: var(--dark-1);
             display: block;
             height: 33px;
             line-height: 33px;
@@ -22,33 +22,33 @@
             .tagCloud li a:hover {
                 background-color: var(--moonglade-accent-color1) !important;
                 border: 1px solid var(--moonglade-accent-color1) !important;
-                color: #FFF !important;
+                color: var(--white) !important;
             }
 
             .tagCloud li a.weight1 {
-                background-color: #c9302c;
-                border: 1px solid #d43f3a;
+                background-color: var(--red);
+                border: 1px solid var(--red);
                 color: var(--white) !important;
                 font-size: 145%;
             }
 
             .tagCloud li a.weight2 {
-                background-color: #f0ad4e;
-                border: 1px solid #eea236;
+                background-color: var(--orange);
+                border: 1px solid var(--orange);
                 color: var(--white) !important;
                 font-size: 133%;
             }
 
             .tagCloud li a.weight3 {
-                background-color: #449d44;
-                border: 1px solid #398439;
+                background-color: var(--green);
+                border: 1px solid var(--green);
                 color: var(--white) !important;
                 font-size: 115%;
             }
 
             .tagCloud li a.weight4 {
-                background-color: #286090;
-                border: 1px solid #204d74;
+                background-color: var(--blue);
+                border: 1px solid var(--blue);
                 color: var(--white) !important;
                 font-size: 100%;
             }

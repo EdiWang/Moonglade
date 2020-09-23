@@ -69,7 +69,7 @@
 }
 
 hr.admin-nav-divider {
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid var(--transparent-white-30);
     margin: 0 20px;
 }
 
@@ -94,11 +94,11 @@ hr.admin-nav-divider {
     .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
         background-color: var(--moonglade-accent-color1);
-        color: #FFF;
+        color: var(--white);
     }
 
 .admin-nav-link:active {
-    color: #FFF;
+    color: var(--white);
 }
 
 .admin-main .validation-summary-errors ul {
@@ -140,8 +140,6 @@ div.mce-fullscreen {
 }
 
     .ul-tag-mgr li {
-        border: 1px solid #bbb;
-        color: var(--gray-dark);
         display: inline-block;
         height: 33px;
         line-height: 33px;
@@ -160,8 +158,8 @@ div.mce-fullscreen {
         }
 
         .ul-tag-mgr li a {
-            background-color: #EEE;
-            color: #CCC;
+            background-color: var(--light-gray-2);
+            color: var(--gray-5);
             cursor: pointer;
             display: inline-block;
             font-size: 16px;
@@ -180,7 +178,7 @@ div.mce-fullscreen {
 
 .material-switch > label {
     cursor: pointer;
-    height: 0px;
+    height: 0;
     position: relative;
     width: 40px;
 }
@@ -197,7 +195,7 @@ div.mce-fullscreen {
     }
 
     .material-switch > label::after {
-        background: #EEE;
+        background: var(--light-gray-2);
         content: '';
         height: 24px;
         left: -4px;
