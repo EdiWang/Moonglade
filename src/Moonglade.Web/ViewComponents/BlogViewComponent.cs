@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public abstract class MoongladeViewComponent : ViewComponent
+    public abstract class BlogViewComponent : ViewComponent
     {
-        protected readonly ILogger<MoongladeViewComponent> Logger;
+        protected readonly ILogger<BlogViewComponent> Logger;
 
-        protected MoongladeViewComponent(ILogger<MoongladeViewComponent> logger = null)
+        protected BlogViewComponent(ILogger<BlogViewComponent> logger = null)
         {
             if (null != logger)
             {

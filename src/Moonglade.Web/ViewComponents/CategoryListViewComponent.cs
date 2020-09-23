@@ -5,7 +5,7 @@ using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class CategoryListViewComponent : MoongladeViewComponent
+    public class CategoryListViewComponent : BlogViewComponent
     {
         private readonly CategoryService _categoryService;
 

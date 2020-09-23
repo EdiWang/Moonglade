@@ -8,7 +8,7 @@ using Moonglade.Model;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class FriendLinkViewComponent : MoongladeViewComponent
+    public class FriendLinkViewComponent : BlogViewComponent
     {
         private readonly FriendLinkService _friendLinkService;
 

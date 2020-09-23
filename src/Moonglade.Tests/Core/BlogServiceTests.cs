@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests.Core
 {
     [TestFixture]
-    public class MoongladeServiceTests
+    public class BlogServiceTests
     {
         private Mock<ILogger<BlogService>> _loggerMock;
         private Mock<IOptions<AppSettings>> _appSettingsMock;

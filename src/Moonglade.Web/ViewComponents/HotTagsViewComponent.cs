@@ -6,7 +6,7 @@ using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class HotTagsViewComponent : MoongladeViewComponent
+    public class HotTagsViewComponent : BlogViewComponent
     {
         private readonly TagService _tagService;
 

@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class GeneralSettings : MoongladeSettings
+    public class GeneralSettings : BlogSettings
     {
         public string SiteTitle { get; set; }
 

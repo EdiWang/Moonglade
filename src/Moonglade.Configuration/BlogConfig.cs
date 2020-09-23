@@ -75,7 +75,7 @@ namespace Moonglade.Configuration
             _hasInitialized = true;
         }
 
-        public async Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings
+        public async Task<Response> SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings
         {
             async Task<int> SetConfiguration(string key, string value)
             {
@@ -91,7 +91,7 @@ namespace Moonglade.Configuration
 
             try
             {
-                var json = JsonSerializer.Serialize(moongladeSettings);
+                var json = JsonSerializer.Serialize(blogSettings);
                 var rows = await SetConfiguration(typeof(T).Name, json);
                 return new Response(rows > 0);
             }

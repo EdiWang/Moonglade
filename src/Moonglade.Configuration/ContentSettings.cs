@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class ContentSettings : MoongladeSettings
+    public class ContentSettings : BlogSettings
     {
         public string DisharmonyWords { get; set; }
 

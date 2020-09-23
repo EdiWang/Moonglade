@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Configuration.Abstraction
 {
-    public class MoongladeSettings
+    public class BlogSettings
     {
         // Empty base class to restrain SaveConfigurationAsync type
     }

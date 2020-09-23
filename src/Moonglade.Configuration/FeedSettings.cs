@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class FeedSettings : MoongladeSettings
+    public class FeedSettings : BlogSettings
     {
         public int RssItemCount { get; set; }
         public string RssCopyright { get; set; }

@@ -9,7 +9,7 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class RssCatListViewComponent : MoongladeViewComponent
+    public class RssCatListViewComponent : BlogViewComponent
     {
         private readonly CategoryService _categoryService;
 

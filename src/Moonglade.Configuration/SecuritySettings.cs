@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class SecuritySettings : MoongladeSettings
+    public class SecuritySettings : BlogSettings
     {
         public bool WarnExternalLink { get; set; }
         public bool AllowScriptsInCustomPage { get; set; }

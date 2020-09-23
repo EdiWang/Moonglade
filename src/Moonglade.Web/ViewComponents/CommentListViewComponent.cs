@@ -6,7 +6,7 @@ using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents
 {
-    public class CommentListViewComponent : MoongladeViewComponent
+    public class CommentListViewComponent : BlogViewComponent
     {
         private readonly CommentService _commentService;
 

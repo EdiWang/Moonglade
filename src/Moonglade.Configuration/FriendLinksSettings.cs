@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class FriendLinksSettings : MoongladeSettings
+    public class FriendLinksSettings : BlogSettings
     {
         public bool ShowFriendLinksSection { get; set; }
     }

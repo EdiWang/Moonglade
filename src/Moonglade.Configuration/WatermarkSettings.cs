@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class WatermarkSettings : MoongladeSettings
+    public class WatermarkSettings : BlogSettings
     {
         public bool IsEnabled { get; set; }
         public bool KeepOriginImage { get; set; }

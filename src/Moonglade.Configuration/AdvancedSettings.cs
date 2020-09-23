@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class AdvancedSettings : MoongladeSettings
+    public class AdvancedSettings : BlogSettings
     {
         public string DNSPrefetchEndpoint { get; set; }
 

@@ -14,7 +14,7 @@ namespace Moonglade.Configuration.Abstraction
         AdvancedSettings AdvancedSettings { get; set; }
         SecuritySettings SecuritySettings { get; set; }
 
-        Task<Response> SaveConfigurationAsync<T>(T moongladeSettings) where T : MoongladeSettings;
+        Task<Response> SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings;
 
         void RequireRefresh();
     }
