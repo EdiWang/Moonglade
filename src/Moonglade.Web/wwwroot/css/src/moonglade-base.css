@@ -13,12 +13,12 @@
     --transparent-white-60: rgba(255, 255, 255, 0.6);
     --transparent-white-70: rgba(255, 255, 255, 0.7);
     --transparent-dark-1: rgba(0, 0, 0, .175);
-    --light-gray-1: #f2f2f2;
+    --gray-0: #f2f2f2;
     --light-gray-2: #EEE;
     --gray-1: #666;
     --dark-2: #1d2124;
     --gray-2: #555;
-    --gray-3: #777777;
+    --gray-3: #777;
     --gray-4: #f7f7f7;
     --gray-5: #ddd;
     --moca-dark: #171717;
@@ -93,7 +93,7 @@ label {
 }
 
 .bg-lightgray-1 {
-    background-color: var(--light-gray-1);
+    background-color: var(--gray-0);
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5 {
@@ -126,7 +126,7 @@ label {
     }
 
 .sec.sec-alter {
-    background-color: var(--light-gray-1);
+    background-color: var(--gray-0);
 }
 
 .sec {
