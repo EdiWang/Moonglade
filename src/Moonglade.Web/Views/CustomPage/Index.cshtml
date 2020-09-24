@@ -8,7 +8,7 @@
 
 @section head{
     <style>
-        @Utils.RemoveWhiteSpaceFromStylesheets(Model.CssContent)
+        @Html.Raw(Utils.RemoveWhiteSpaceFromStylesheets(Model.CssContent))
     </style>
 }
 
