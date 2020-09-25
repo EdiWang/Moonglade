@@ -103,7 +103,7 @@ namespace Moonglade.Web.Controllers
                         new CheckBoxViewModel(
                             p.DisplayName,
                             p.Id.ToString(),
-                            post.Categories.Any(q => q.Id == p.Id))).ToList();
+                            post.Categories.Any(q => q.Id == p.Id)));
                     editViewModel.CategoryList = cbCatList;
                 }
 
@@ -267,7 +267,7 @@ namespace Moonglade.Web.Controllers
             if (null != catList.Item && catList.Item.Any())
             {
                 var cbCatList = catList.Item.Select(p =>
-                    new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false)).ToList();
+                    new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false));
                 view.CategoryList = cbCatList;
             }
 

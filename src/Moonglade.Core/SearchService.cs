@@ -47,7 +47,7 @@ namespace Moonglade.Core
                     {
                         NormalizedName = pt.Tag.NormalizedName,
                         DisplayName = pt.Tag.DisplayName
-                    }).ToList()
+                    })
                 }).ToListAsync();
 
                 return new SuccessResponse<IReadOnlyList<PostListEntry>>(resultList);

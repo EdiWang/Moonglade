@@ -354,7 +354,7 @@ namespace Moonglade.Core
                 {
                     NormalizedName = pt.Tag.NormalizedName,
                     DisplayName = pt.Tag.DisplayName
-                }).ToArray()
+                })
             });
         }
 

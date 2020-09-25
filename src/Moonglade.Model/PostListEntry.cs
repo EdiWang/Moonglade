@@ -15,6 +15,6 @@ namespace Moonglade.Model
 
         public string LangCode { get; set; }
 
-        public IList<Tag> Tags { get; set; }
+        public IEnumerable<Tag> Tags { get; set; }
     }
 }

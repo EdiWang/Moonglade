@@ -126,7 +126,7 @@
             <div class="card">
                 <div class="card-header">@Localizer["Categories"]</div>
                 <div class="card-body">
-                    @if (null != Model.CategoryList && Model.CategoryList.Count > 0)
+                    @if (null != Model.CategoryList && Model.CategoryList.Any())
                     {
                         <div class="catlist">
                             <ul>
