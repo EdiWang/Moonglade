@@ -120,11 +120,11 @@
   <data name="Admin Login" xml:space="preserve">
     <value>管理员登录</value>
   </data>
-  <data name="All Categories" xml:space="preserve">
-    <value>全部分类</value>
-  </data>
   <data name="All Tags" xml:space="preserve">
     <value>全部标签</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>分类</value>
   </data>
   <data name="Top Tags" xml:space="preserve">
     <value>热门标签</value>
