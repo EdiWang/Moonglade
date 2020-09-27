@@ -28,7 +28,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--gray);
+    background: var(--gray-5);
 }
 
 ::selection {
