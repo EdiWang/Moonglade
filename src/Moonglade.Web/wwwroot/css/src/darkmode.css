@@ -12,6 +12,11 @@
     color: var(--gray-3);
 }
 
+.darkmode .post-content blockquote, .darkmode .post-content .blockquote {
+    border-left: 5px solid var(--gray-6);
+    color: var(--gray-4);
+}
+
 .darkmode .list-group-item.active, .darkmode .page-item.active .page-link {
     background-color: var(--gray-7);
     border-color: var(--gray-7);
