@@ -1,5 +1,5 @@
 ﻿.hr-dark {
-    border-top: 1px solid rgba(255, 255, 255, .15) !important;
+    border-top: 1px solid var(--transparent-white-15) !important;
 }
 
 .darkmode .box {
@@ -9,105 +9,105 @@
 }
 
 .darkmode a {
-    color: #CCC;
+    color: var(--gray-5);
 }
 
 .darkmode .list-group-item.active, .darkmode .page-item.active .page-link {
-    background-color: #333;
-    border-color: #333;
+    background-color: var(--gray-6);
+    border-color: var(--gray-6);
 }
 
 .darkmode .tagCloud li a {
-    border: 1px solid #666;
-    color: #CCC;
+    border: 1px solid var(--gray-1);
+    color: var(--gray-5);
 }
 
 .darkmode .timeline-heading {
-    border-bottom: 1px solid #666;
+    border-bottom: 1px solid var(--gray-1);
 }
 
 .darkmode .timeline:before {
-    background-color: #666;
+    background-color: var(--gray-1);
 }
 
 .darkmode .timeline > li > .timeline-panel {
-    border: 1px solid #666;
+    border: 1px solid var(--gray-1);
 }
 
     .darkmode .timeline > li > .timeline-panel:before {
-        border-left: 15px solid #666;
-        border-right: 0 solid #666;
+        border-left: 15px solid var(--gray-1);
+        border-right: 0 solid var(--gray-1);
     }
 
     .darkmode .timeline > li > .timeline-panel:after {
-        border-left: 14px solid #666;
-        border-right: 0 solid #666;
+        border-left: 14px solid var(--gray-1);
+        border-right: 0 solid var(--gray-1);
     }
 
 .darkmode .timeline-title a {
-    color: #FFF;
+    color: var(--white);
 }
 
 .darkmode .timeline-body a {
-    color: #CCC;
+    color: var(--gray-5);
 }
 
 .darkmode .post-date-box {
-    border: 1px solid #666;
+    border: 1px solid var(--gray-1);
 }
 
 .darkmode .post-date-day {
-    color: #666;
+    color: var(--gray-1);
 }
 
 .darkmode .post-date-month {
-    background-color: #666;
+    background-color: var(--gray-1);
 }
 
 .darkmode .post-summary-text {
-    color: #CCC;
+    color: var(--gray-5);
 }
 
 .darkmode .post-summary-title a {
-    color: #FFF;
+    color: var(--white);
 }
 
 .darkmode .post-summary-tags a {
-    background-color: #333;
+    background-color: var(--gray-6);
 }
 
 .darkmode .page-link {
-    background-color: #111;
-    border: 1px solid #333;
+    background-color: var(--gray-7);
+    border: 1px solid var(--gray-6);
 }
 
     .darkmode .page-link:hover {
-        background-color: #333;
-        border: 1px solid #333;
-        color: #FFF;
+        background-color: var(--gray-6);
+        border: 1px solid var(--gray-6);
+        color: var(--white);
     }
 
 .darkmode .navbar .dropdown-menu {
-    background-color: #343a40;
+    background-color: var(--moca-dark-2);
 }
 
 .darkmode .navbar .dropdown-item.active, .darkmode .dropdown-item:hover {
-    background-color: #333;
-    color: #fff;
+    background-color: var(--gray-6);
+    color: var(--white);
     text-decoration: none;
 }
 
 .darkmode .toptags-list a {
-    background-color: #333;
+    background-color: var(--gray-6);
 }
 
 .darkmode .form-control {
-    border: 1px solid #333;
-    color: #CCC;
+    border: 1px solid var(--gray-6);
+    color: var(--gray-5);
 }
 
 @media (max-width: 767px) {
     .darkmode .article-post-summary {
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid var(--gray-6);
     }
 }

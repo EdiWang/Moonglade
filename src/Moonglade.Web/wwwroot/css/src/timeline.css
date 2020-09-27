@@ -54,10 +54,10 @@
         }
 
         .timeline > li > .timeline-panel {
-            -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
-            border: 1px solid #d4d4d4;
+            -webkit-box-shadow: 0 1px 6px var(--transparent-dark-1);
+            border: 1px solid var(--gray-5);
             border-radius: 4px;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+            box-shadow: 0 1px 6px var(--transparent-dark-1);
             float: left;
             padding: 20px;
             position: relative;
@@ -66,8 +66,8 @@
 
             .timeline > li > .timeline-panel:before {
                 border-bottom: 15px solid transparent;
-                border-left: 15px solid #ccc;
-                border-right: 0 solid #ccc;
+                border-left: 15px solid var(--gray-5);
+                border-right: 0 solid var(--gray-5);
                 border-top: 15px solid transparent;
                 content: " ";
                 display: inline-block;
@@ -89,7 +89,6 @@
             }
 
         .timeline > li > .timeline-badge {
-            background-color: #999999;
             border-bottom-left-radius: 50%;
             border-bottom-right-radius: 50%;
             border-top-left-radius: 50%;

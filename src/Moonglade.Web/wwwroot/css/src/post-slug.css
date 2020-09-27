@@ -119,6 +119,6 @@ h1.post-title, .post-content h1 {
     }
 
     .comment-list .card > .card-header:before {
-        border-right-color: rgba(0, 0, 0, .125);
+        border-right-color: var(--transparent-dark-2);
         border-width: 8px;
     }
