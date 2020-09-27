@@ -12,7 +12,7 @@
     --gray-1: #666;
     --gray-2: #555;
     --gray-3: #777;
-    --gray-6: #EEE;
+    --gray-4: #EEE;
     --moca-dark: #171717;
     --moca-dark-1: #1d2124;
 }
@@ -102,7 +102,7 @@ label {
 
 .box {
     background-color: var(--white);
-    border: 1px solid var(--gray-6);
+    border: 1px solid var(--gray-4);
     padding: 1.5rem;
     box-shadow: 0 1.6px 3.6px 0 var(--box-shadow-medium),0 .3px .9px 0 var(--box-shadow-light);
 }

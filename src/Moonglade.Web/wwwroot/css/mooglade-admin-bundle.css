@@ -266,7 +266,7 @@ div.mce-fullscreen {
         }
 
         .ul-tag-mgr li a {
-            background-color: var(--gray-6);
+            background-color: var(--gray-4);
             color: var(--gray-3);
             cursor: pointer;
             display: inline-block;
@@ -303,7 +303,7 @@ div.mce-fullscreen {
     }
 
     .material-switch > label::after {
-        background: var(--gray-6);
+        background: var(--gray-4);
         content: '';
         height: 24px;
         left: -4px;
