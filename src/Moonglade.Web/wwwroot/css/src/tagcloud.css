@@ -8,8 +8,8 @@
     }
 
         .tagCloud li a {
-            border: 1px solid var(--gray-3);
-            color: var(--gray-1);
+            border: 1px solid var(--gray-4);
+            color: var(--gray-5);
             height: 33px;
             line-height: 33px;
             margin-bottom: 10px;

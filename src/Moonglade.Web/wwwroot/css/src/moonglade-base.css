@@ -1,26 +1,25 @@
 ﻿:root {
-    --body-bg: #FFF;
-    --box-shadow-light: rgba(0, 0, 0, 0.108);
-    --box-shadow-medium: rgba(0, 0, 0, 0.132);
-    --transparent-white-15: rgba(255, 255, 255, .15);
-    --transparent-white-20: rgba(255, 255, 255, 0.2);
-    --transparent-white-30: rgba(255, 255, 255, 0.3);
-    --transparent-white-50: rgba(255, 255, 255, 0.5);
-    --transparent-white-60: rgba(255, 255, 255, 0.6);
-    --transparent-white-70: rgba(255, 255, 255, 0.7);
-    --transparent-dark-1: rgba(0, 0, 0, .175);
-    --transparent-dark-2: rgba(0, 0, 0, .125);
-    --gray-0: #f2f2f2;
-    --gray-1: #666;
-    --gray-2: #555;
-    --gray-3: #777;
-    --gray-4: #EEE;
-    --gray-5: #CCC;
-    --gray-6: #333;
-    --gray-7: #111;
+    --transparent-light-15: rgba(255, 255, 255, 0.15);
+    --transparent-light-20: rgba(255, 255, 255, 0.2);
+    --transparent-light-30: rgba(255, 255, 255, 0.3);
+    --transparent-light-50: rgba(255, 255, 255, 0.5);
+    --transparent-light-60: rgba(255, 255, 255, 0.6);
+    --transparent-light-70: rgba(255, 255, 255, 0.7);
+    --transparent-dark-1: rgba(0, 0, 0, 0.108);
+    --transparent-dark-2: rgba(0, 0, 0, 0.125);
+    --transparent-dark-3: rgba(0, 0, 0, 0.132);
+    --transparent-dark-4: rgba(0, 0, 0, 0.175);
+    --gray-1: #F2F2F2;
+    --gray-2: #EEE;
+    --gray-3: #CCC;
+    --gray-4: #777;
+    --gray-5: #666;
+    --gray-6: #555;
+    --gray-7: #333;
     --moca-dark: #171717;
-    --moca-dark-1: #1d2124;
-    --moca-dark-2: #343a40;
+    --gray-9: #111;
+    --moca-dark-1: #1D2124;
+    --moca-dark-2: #343A40;
 }
 
 ::-webkit-scrollbar {
@@ -28,7 +27,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--gray-5);
+    background: var(--gray-3);
 }
 
 ::selection {
@@ -41,7 +40,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei";
     font-size: 0.9rem;
     padding-top: 50px;
-    background-color: var(--body-bg);
+    background-color: var(--white);
 }
 
 a {
@@ -56,7 +55,7 @@ a {
     }
 
     a.link-transparent {
-        color: var(--transparent-white-70);
+        color: var(--transparent-light-70);
     }
 
         a.link-transparent:hover {
@@ -64,11 +63,11 @@ a {
         }
 
 footer {
-    color: var(--transparent-white-50);
+    color: var(--transparent-light-50);
 }
 
     footer .container h4 {
-        color: var(--transparent-white-60);
+        color: var(--transparent-light-60);
         font-size: 20px;
         font-weight: lighter;
         margin-bottom: 31px;
@@ -76,7 +75,7 @@ footer {
     }
 
     footer a {
-        color: var(--transparent-white-70);
+        color: var(--transparent-light-70);
     }
 
         footer a:hover {
@@ -91,11 +90,11 @@ label {
 }
 
 .bg-lightgray-1 {
-    background-color: var(--gray-0);
+    background-color: var(--gray-1);
 }
 
 .color-transparent-white-50 {
-    color: var(--transparent-white-50);
+    color: var(--transparent-light-50);
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5 {
@@ -108,9 +107,9 @@ label {
 
 .box {
     background-color: var(--white);
-    border: 1px solid var(--gray-4);
+    border: 1px solid var(--gray-2);
     padding: 1.5rem;
-    box-shadow: 0 1.6px 3.6px 0 var(--box-shadow-medium),0 .3px .9px 0 var(--box-shadow-light);
+    box-shadow: 0 1.6px 3.6px 0 var(--transparent-dark-3),0 .3px .9px 0 var(--transparent-dark-1);
 }
 
 .font-sairas {
@@ -118,8 +117,8 @@ label {
 }
 
 .btn-outline-footer {
-    border-color: var(--transparent-white-50);
-    color: var(--transparent-white-50);
+    border-color: var(--transparent-light-50);
+    color: var(--transparent-light-50);
 }
 
     .btn-outline-footer:hover {
@@ -128,7 +127,7 @@ label {
     }
 
 .sec.sec-alter {
-    background-color: var(--gray-0);
+    background-color: var(--gray-1);
 }
 
 .sec {
@@ -284,7 +283,7 @@ label {
 }
 
 .blogger-head-pic {
-    border: 5px solid var(--transparent-white-50);
+    border: 5px solid var(--transparent-light-50);
     height: 110px;
     width: 110px;
 }
@@ -323,11 +322,11 @@ label {
 }
 
 .dropdown-menu {
-    box-shadow: 0 6px 12px var(--transparent-dark-1);
+    box-shadow: 0 6px 12px var(--transparent-dark-4);
 }
 
 .qrcode-link a {
-    color: var(--transparent-white-50);
+    color: var(--transparent-light-50);
     cursor: pointer;
     display: inline-block;
     font-size: 25px;

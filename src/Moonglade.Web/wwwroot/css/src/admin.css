@@ -65,7 +65,7 @@
 }
 
 hr.admin-nav-divider {
-    border-top: 1px solid var(--transparent-white-30);
+    border-top: 1px solid var(--transparent-light-30);
     margin: 0 20px;
 }
 
@@ -80,7 +80,7 @@ hr.admin-nav-divider {
 .admin-nav-section .list-group-item {
     background-color: transparent;
     border: 0 none;
-    color: var(--transparent-white-50);
+    color: var(--transparent-light-50);
 }
 
     .admin-nav-section .list-group-item.active,
@@ -150,8 +150,8 @@ div.mce-fullscreen {
         }
 
         .ul-tag-mgr li a {
-            background-color: var(--gray-4);
-            color: var(--gray-3);
+            background-color: var(--gray-2);
+            color: var(--gray-4);
             cursor: pointer;
             display: inline-block;
             font-size: 16px;
@@ -187,7 +187,7 @@ div.mce-fullscreen {
     }
 
     .material-switch > label::after {
-        background: var(--gray-4);
+        background: var(--gray-2);
         content: '';
         height: 24px;
         left: -4px;

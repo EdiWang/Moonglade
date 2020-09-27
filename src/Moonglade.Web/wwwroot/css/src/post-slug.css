@@ -68,8 +68,8 @@ h1.post-title, .post-content h1 {
 }
 
 .post-content blockquote, .post-content .blockquote {
-    border-left: 5px solid var(--gray-4);
-    color: var(--gray-2);
+    border-left: 5px solid var(--gray-2);
+    color: var(--gray-6);
     margin: 0 0 20px;
     padding: 10px 20px;
 }
@@ -83,7 +83,7 @@ h1.post-title, .post-content h1 {
     .post-content blockquote footer,
     .post-content blockquote small,
     .post-content blockquote .small {
-        color: var(--gray-3);
+        color: var(--gray-4);
         display: block;
         font-size: 80%;
         line-height: 1.42857143;

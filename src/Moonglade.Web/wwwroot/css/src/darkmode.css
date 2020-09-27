@@ -1,47 +1,47 @@
 ﻿.hr-dark {
-    border-top: 1px solid var(--transparent-white-15) !important;
+    border-top: 1px solid var(--transparent-light-15) !important;
 }
 
 .darkmode .box {
     background-color: var(--moca-dark);
-    border: 1px solid var(--gray-4);
-    box-shadow: 0 1.6px 3.6px 0 var(--box-shadow-medium),0 .3px .9px 0 var(--box-shadow-light);
+    border: 1px solid var(--gray-2);
+    box-shadow: 0 1.6px 3.6px 0 var(--transparent-dark-3),0 .3px .9px 0 var(--transparent-dark-1);
 }
 
 .darkmode a {
-    color: var(--gray-5);
+    color: var(--gray-3);
 }
 
 .darkmode .list-group-item.active, .darkmode .page-item.active .page-link {
-    background-color: var(--gray-6);
-    border-color: var(--gray-6);
+    background-color: var(--gray-7);
+    border-color: var(--gray-7);
 }
 
 .darkmode .tagCloud li a {
-    border: 1px solid var(--gray-1);
-    color: var(--gray-5);
+    border: 1px solid var(--gray-5);
+    color: var(--gray-3);
 }
 
 .darkmode .timeline-heading {
-    border-bottom: 1px solid var(--gray-1);
+    border-bottom: 1px solid var(--gray-5);
 }
 
 .darkmode .timeline:before {
-    background-color: var(--gray-1);
+    background-color: var(--gray-5);
 }
 
 .darkmode .timeline > li > .timeline-panel {
-    border: 1px solid var(--gray-1);
+    border: 1px solid var(--gray-5);
 }
 
     .darkmode .timeline > li > .timeline-panel:before {
-        border-left: 15px solid var(--gray-1);
-        border-right: 0 solid var(--gray-1);
+        border-left: 15px solid var(--gray-5);
+        border-right: 0 solid var(--gray-5);
     }
 
     .darkmode .timeline > li > .timeline-panel:after {
-        border-left: 14px solid var(--gray-1);
-        border-right: 0 solid var(--gray-1);
+        border-left: 14px solid var(--gray-5);
+        border-right: 0 solid var(--gray-5);
     }
 
 .darkmode .timeline-title a {
@@ -49,23 +49,23 @@
 }
 
 .darkmode .timeline-body a {
-    color: var(--gray-5);
+    color: var(--gray-3);
 }
 
 .darkmode .post-date-box {
-    border: 1px solid var(--gray-1);
+    border: 1px solid var(--gray-5);
 }
 
 .darkmode .post-date-day {
-    color: var(--gray-1);
+    color: var(--gray-5);
 }
 
 .darkmode .post-date-month {
-    background-color: var(--gray-1);
+    background-color: var(--gray-5);
 }
 
 .darkmode .post-summary-text {
-    color: var(--gray-5);
+    color: var(--gray-3);
 }
 
 .darkmode .post-summary-title a {
@@ -73,17 +73,17 @@
 }
 
 .darkmode .post-summary-tags a {
-    background-color: var(--gray-6);
+    background-color: var(--gray-7);
 }
 
 .darkmode .page-link {
-    background-color: var(--gray-7);
-    border: 1px solid var(--gray-6);
+    background-color: var(--gray-9);
+    border: 1px solid var(--gray-7);
 }
 
     .darkmode .page-link:hover {
-        background-color: var(--gray-6);
-        border: 1px solid var(--gray-6);
+        background-color: var(--gray-7);
+        border: 1px solid var(--gray-7);
         color: var(--white);
     }
 
@@ -92,22 +92,22 @@
 }
 
 .darkmode .navbar .dropdown-item.active, .darkmode .dropdown-item:hover {
-    background-color: var(--gray-6);
+    background-color: var(--gray-7);
     color: var(--white);
     text-decoration: none;
 }
 
 .darkmode .toptags-list a {
-    background-color: var(--gray-6);
+    background-color: var(--gray-7);
 }
 
 .darkmode .form-control {
-    border: 1px solid var(--gray-6);
-    color: var(--gray-5);
+    border: 1px solid var(--gray-7);
+    color: var(--gray-3);
 }
 
 @media (max-width: 767px) {
     .darkmode .article-post-summary {
-        border-bottom: 1px solid var(--gray-6);
+        border-bottom: 1px solid var(--gray-7);
     }
 }

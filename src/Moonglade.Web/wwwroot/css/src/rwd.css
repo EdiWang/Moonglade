@@ -52,7 +52,7 @@
     }
 
         .blogger-intro-content h4 {
-            background-color: var(--transparent-white-20);
+            background-color: var(--transparent-light-20);
             border-radius: 5px;
             color: var(--white);
             font-size: 1rem;
@@ -87,7 +87,7 @@
     }
 
     .article-post-summary {
-        border-bottom: 1px solid var(--gray-4);
+        border-bottom: 1px solid var(--gray-2);
         margin-bottom: 15px;
         padding-bottom: 15px;
     }
