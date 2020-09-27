@@ -216,5 +216,6 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 - [51azure](https://www.51azure.cloud/)
 - [Zhuangkh](https://zhuangkh.com/)
 - [HueiFeng](https://blog.stackable.cn/)
+- [Leslie Wang](https://lesliewxj.com/)
 
 *Just Submit PR or issue if you want your blog to be listed here*
