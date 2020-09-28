@@ -9,7 +9,6 @@ namespace Moonglade.Pingback
     {
         ILogger<PingbackReceiver> Logger { get; set; }
         int RemoteTimeout { get; set; }
-        HttpContext HttpContext { get; }
         event PingbackReceiver.PingSuccessHandler OnPingSuccess;
         Task<PingbackValidationResult> ValidatePingRequest(HttpContext context);
         Task<PingRequest> GetPingRequest();

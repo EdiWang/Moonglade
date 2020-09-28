@@ -17,8 +17,6 @@ namespace Moonglade.Pingback
 
         public int RemoteTimeout { get; set; }
 
-        public HttpContext HttpContext { get; private set; }
-
         #region Events
 
         public delegate void PingSuccessHandler(object sender, PingSuccessEventArgs e);
@@ -40,11 +38,9 @@ namespace Moonglade.Pingback
         {
             try
             {
-                HttpContext = context;
+                Logger.LogInformation($"Receiving Pingback from {context.Connection.RemoteIpAddress}");
 
-                Logger.LogInformation($"Receiving Pingback from {HttpContext.Connection.RemoteIpAddress}");
-
-                var xml = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
+                var xml = await new StreamReader(context.Request.Body, Encoding.Default).ReadToEndAsync();
                 Logger.LogInformation($"Pingback received xml: {xml}");
                 if (!xml.Contains("<methodName>pingback.ping</methodName>"))
                 {
@@ -178,7 +174,7 @@ namespace Moonglade.Pingback
         {
             var start = sourceUrl.IndexOf("://", StringComparison.Ordinal) + 3;
             var stop = sourceUrl.IndexOf("/", start, StringComparison.Ordinal);
-            return sourceUrl.Substring(start, stop - start).Replace("www.", string.Empty);
+            return sourceUrl[start..stop].Replace("www.", string.Empty);
         }
     }
 }
