@@ -25,7 +25,7 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public Task<Response<IReadOnlyList<Archive>>> GetArchiveListAsync()
+        public Task<Response<IReadOnlyList<Archive>>> ListAsync()
         {
             return TryExecuteAsync<IReadOnlyList<Archive>>(async () =>
             {
@@ -47,7 +47,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<IReadOnlyList<PostListEntry>> GetArchiveAsync(int year, int month = 0)
+        public async Task<IReadOnlyList<PostListEntry>> ListPostsAsync(int year, int month = 0)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {

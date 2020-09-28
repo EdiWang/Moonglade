@@ -24,7 +24,7 @@ namespace Moonglade.Web.Controllers
         [Route("")]
         public async Task<IActionResult> Index()
         {
-            var response = await _postArchiveService.GetArchiveListAsync();
+            var response = await _postArchiveService.ListAsync();
             if (!response.IsSuccess)
             {
                 SetFriendlyErrorMessage();
@@ -47,13 +47,13 @@ namespace Moonglade.Web.Controllers
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
-                model = await _postArchiveService.GetArchiveAsync(year, month.Value);
+                model = await _postArchiveService.ListPostsAsync(year, month.Value);
             }
             else
             {
                 // {year}
                 ViewBag.ArchiveInfo = $"{year}";
-                model = await _postArchiveService.GetArchiveAsync(year);
+                model = await _postArchiveService.ListPostsAsync(year);
             }
 
             return View(model);
