@@ -11,20 +11,20 @@ namespace Moonglade.Web.Controllers
     [Route("archive")]
     public class ArchiveController : BlogController
     {
-        private readonly PostService _postService;
+        private readonly PostArchiveService _postArchiveService;
 
         public ArchiveController(
             ILogger<PostController> logger,
-            PostService postService)
+            PostArchiveService postArchiveService)
             : base(logger)
         {
-            _postService = postService;
+            _postArchiveService = postArchiveService;
         }
 
         [Route("")]
         public async Task<IActionResult> Index()
         {
-            var response = await _postService.GetArchiveListAsync();
+            var response = await _postArchiveService.GetArchiveListAsync();
             if (!response.IsSuccess)
             {
                 SetFriendlyErrorMessage();
@@ -47,13 +47,13 @@ namespace Moonglade.Web.Controllers
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
-                model = await _postService.GetArchiveAsync(year, month.Value);
+                model = await _postArchiveService.GetArchiveAsync(year, month.Value);
             }
             else
             {
                 // {year}
                 ViewBag.ArchiveInfo = $"{year}";
-                model = await _postService.GetArchiveAsync(year);
+                model = await _postArchiveService.GetArchiveAsync(year);
             }
 
             return View(model);

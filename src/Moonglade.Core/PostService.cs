@@ -77,28 +77,6 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<Archive>>> GetArchiveListAsync()
-        {
-            return TryExecuteAsync<IReadOnlyList<Archive>>(async () =>
-            {
-                if (!_postRepository.Any(p =>
-                    p.IsPublished && !p.IsDeleted))
-                    return new SuccessResponse<IReadOnlyList<Archive>>();
-
-                var spec = new PostSpec(PostPublishStatus.Published);
-                var list = await _postRepository.SelectAsync(spec, post => new
-                {
-                    post.PubDateUtc.Value.Year,
-                    post.PubDateUtc.Value.Month
-                }, monthList => new Archive(
-                    monthList.Key.Year,
-                    monthList.Key.Month,
-                    monthList.Count()));
-
-                return new SuccessResponse<IReadOnlyList<Archive>>(list);
-            });
-        }
-
         public Task<Response> UpdateStatisticAsync(Guid postId, int likes = 0)
         {
             return TryExecuteAsync(async () =>
@@ -354,32 +332,6 @@ namespace Moonglade.Core
                     DisplayName = pt.Tag.DisplayName
                 })
             });
-        }
-
-        public async Task<IReadOnlyList<PostListEntry>> GetArchiveAsync(int year, int month = 0)
-        {
-            if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
-            {
-                Logger.LogError($"parameter '{nameof(year)}:{year}' is out of range");
-                throw new ArgumentOutOfRangeException(nameof(year));
-            }
-
-            if (month > 12 || month < 0)
-            {
-                Logger.LogError($"parameter '{nameof(month)}:{month}' is out of range");
-                throw new ArgumentOutOfRangeException(nameof(month));
-            }
-
-            var spec = new PostSpec(year, month);
-            var list = await _postRepository.SelectAsync(spec, p => new PostListEntry
-            {
-                Title = p.Title,
-                Slug = p.Slug,
-                ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-                LangCode = p.ContentLanguageCode
-            });
-            return list;
         }
 
         public Task<Response<IReadOnlyList<PostListEntry>>> GetByTagAsync(int tagId)
