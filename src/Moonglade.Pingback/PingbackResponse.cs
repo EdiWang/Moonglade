@@ -14,7 +14,7 @@
     public enum PingbackValidationResult
     {
         GenericError,
-        ValidPingRequest,
+        Valid,
         TerminatedMethodNotFound,
         TerminatedUrlNotFound
     }

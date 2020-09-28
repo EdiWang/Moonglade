@@ -69,7 +69,7 @@ namespace Moonglade.Pingback
                 _targetUrl = list[1].InnerText.Trim();
                 _remoteIpAddress = remoteIp;
 
-                return PingbackValidationResult.ValidPingRequest;
+                return PingbackValidationResult.Valid;
             }
             catch (Exception e)
             {

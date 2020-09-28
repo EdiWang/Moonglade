@@ -41,7 +41,7 @@ namespace Moonglade.Core
             var requestBody = await new StreamReader(context.Request.Body, Encoding.Default).ReadToEndAsync();
 
             var response = _pingbackReceiver.ValidatePingRequest(requestBody, ip);
-            if (response == PingbackValidationResult.ValidPingRequest)
+            if (response == PingbackValidationResult.Valid)
             {
                 Logger.LogInformation($"Pingback attempt from '{ip}' is valid");
 
