@@ -757,6 +757,14 @@ namespace Moonglade.Web.Controllers
         [HttpPost("clear-data-cache")]
         public IActionResult ClearDataCache(string[] cachedObjectValues, [FromServices] IBlogCache cache)
         {
+            static void DeleteIfExists(string path)
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path);
+                }
+            }
+
             try
             {
                 if (ModelState.IsValid)
@@ -769,36 +777,24 @@ namespace Moonglade.Web.Controllers
                     if (cachedObjectValues.Contains("MCO_OPML"))
                     {
                         var opmlDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
-                        if (System.IO.File.Exists(opmlDataFile))
-                        {
-                            System.IO.File.Delete(opmlDataFile);
-                        }
+                        DeleteIfExists(opmlDataFile);
                     }
 
                     if (cachedObjectValues.Contains("MCO_FEED"))
                     {
                         var feedDir = Path.Join($"{SiteDataDirectory}", "feed");
-                        if (Directory.Exists(feedDir))
-                        {
-                            Directory.Delete(feedDir);
-                        }
+                        DeleteIfExists(feedDir);
                     }
 
                     if (cachedObjectValues.Contains("MCO_OPSH"))
                     {
                         var openSearchDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpenSearchFileName}");
-                        if (System.IO.File.Exists(openSearchDataFile))
-                        {
-                            System.IO.File.Delete(openSearchDataFile);
-                        }
+                        DeleteIfExists(openSearchDataFile);
                     }
 
                     if (cachedObjectValues.Contains("MCO_SICO"))
                     {
-                        if (Directory.Exists(SiteIconDirectory))
-                        {
-                            Directory.Delete(SiteIconDirectory);
-                        }
+                        DeleteIfExists(SiteIconDirectory);
                     }
 
                     return Ok();
