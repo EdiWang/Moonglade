@@ -165,16 +165,13 @@
         <hr class="post-header-hr" />
     </header>
     <section class="post-content clearfix">
-        @switch (ec)
+        @if (ec == EditorChoice.Markdown)
         {
-            case EditorChoice.Markdown:
-                @Html.Raw(Utils.ConvertMarkdownContent(Model.PostModel.Content, Utils.MarkdownConvertType.Html, false))
-                break;
-            case EditorChoice.None:
-            case EditorChoice.Html:
-            default:
-                @Html.Raw(Model.PostModel.Content)
-                break;
+            @Html.Raw(Utils.ConvertMarkdownContent(Model.PostModel.RawPostContent, Utils.MarkdownConvertType.Html, false))
+        }
+        else
+        {
+            @Html.Raw(Model.PostModel.RawPostContent)
         }
     </section>
     @if (BlogConfig.ContentSettings.ShowPostFooter)

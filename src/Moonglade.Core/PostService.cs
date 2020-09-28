@@ -152,7 +152,7 @@ namespace Moonglade.Core
                         RouteName = p.RouteName
                     }).ToArray(),
 
-                    Content = post.PostContent,
+                    RawPostContent = post.PostContent,
 
                     Tags = post.PostTag.Select(pt => pt.Tag)
                         .Select(p => new Tag
@@ -168,7 +168,7 @@ namespace Moonglade.Core
 
                 if (null != postSlugModel)
                 {
-                    postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
+                    postSlugModel.RawPostContent = Utils.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
                 }
 
                 return new SuccessResponse<PostSlug>(postSlugModel);
@@ -240,7 +240,7 @@ namespace Moonglade.Core
                                 RouteName = p.RouteName
                             }).ToArray(),
 
-                            Content = post.PostContent,
+                            RawPostContent = post.PostContent,
                             Hits = post.PostExtension.Hits,
                             Likes = post.PostExtension.Likes,
 
@@ -260,7 +260,7 @@ namespace Moonglade.Core
 
                         if (null != postSlugModel)
                         {
-                            postSlugModel.Content = Utils.AddLazyLoadToImgTag(postSlugModel.Content);
+                            postSlugModel.RawPostContent = Utils.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
                         }
 
                         return postSlugModel;
