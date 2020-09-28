@@ -9,6 +9,9 @@
         $('').addClass('bg-dark');
 
         $('body').addClass('bg-moca-dark text-light darkmode');
+        $('body.body-post-slug').removeClass('bg-gray-1');
+        $('.article-post-slug').removeClass('box border');
+
         $('.card').addClass('text-white bg-dark');
         $('.list-group-item, .card-body').addClass('bg-moca-dark text-light');
 
@@ -33,6 +36,8 @@
         $('#moonglade-footer').addClass('bg-accent2');
 
         $('body').removeClass('bg-moca-dark text-light darkmode');
+        $('body.body-post-slug').addClass('bg-gray-1');
+        $('.article-post-slug').addClass('box border');
         $('.card').removeClass('text-white bg-dark');
         $('.list-group-item, .card-body').removeClass('bg-moca-dark text-light');
 

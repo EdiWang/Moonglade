@@ -1,4 +1,8 @@
-﻿#extlink-url {
+﻿.bg-gray-1 {
+    background-color: var(--gray-1);
+}
+
+#extlink-url {
     color: var(--accent-color1);
 }
 
