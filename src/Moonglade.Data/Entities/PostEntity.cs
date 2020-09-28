@@ -19,7 +19,6 @@ namespace Moonglade.Data.Entities
         public bool CommentEnabled { get; set; }
         public DateTime CreateOnUtc { get; set; }
         public string ContentAbstract { get; set; }
-        public int? Revision { get; set; }
         public string ContentLanguageCode { get; set; }
         public bool ExposedToSiteMap { get; set; }
         public bool IsFeedIncluded { get; set; }

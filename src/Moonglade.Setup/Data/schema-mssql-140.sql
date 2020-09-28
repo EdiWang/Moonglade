@@ -57,7 +57,6 @@ CREATE TABLE [Post](
 [CreateOnUtc] [datetime] NOT NULL,
 [ContentAbstract] [nvarchar](1024) NULL,
 [ContentLanguageCode] [nvarchar](8) NULL,
-[Revision] [int] NULL,
 [ExposedToSiteMap] [bit] NOT NULL,
 [IsFeedIncluded] [bit] NOT NULL,
 [PubDateUtc] [datetime] NULL,

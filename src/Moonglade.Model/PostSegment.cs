@@ -9,7 +9,6 @@ namespace Moonglade.Model
         public string Slug { get; set; }
         public DateTime? PubDateUtc { get; set; }
         public DateTime CreateOnUtc { get; set; }
-        public int? Revision { get; set; }
         public bool IsPublished { get; set; }
         public int Hits { get; set; }
         public bool IsDeleted { get; set; }

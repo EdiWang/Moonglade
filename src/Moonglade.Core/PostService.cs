@@ -306,7 +306,6 @@ namespace Moonglade.Core
                 PubDateUtc = p.PubDateUtc,
                 IsPublished = p.IsPublished,
                 IsDeleted = p.IsDeleted,
-                Revision = p.Revision,
                 CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
             });
@@ -323,7 +322,6 @@ namespace Moonglade.Core
                 PubDateUtc = p.PubDateUtc,
                 IsPublished = p.IsPublished,
                 IsDeleted = p.IsDeleted,
-                Revision = p.Revision,
                 CreateOnUtc = p.CreateOnUtc,
                 Hits = p.PostExtension.Hits
             });
@@ -423,7 +421,6 @@ namespace Moonglade.Core
                     CreateOnUtc = DateTime.UtcNow,
                     Slug = request.Slug.ToLower().Trim(),
                     Title = request.Title.Trim(),
-                    Revision = 0,
                     ContentLanguageCode = request.ContentLanguageCode,
                     ExposedToSiteMap = request.ExposedToSiteMap,
                     IsFeedIncluded = request.IsFeedIncluded,
@@ -553,8 +550,6 @@ namespace Moonglade.Core
                 postModel.LastModifiedUtc = DateTime.UtcNow;
                 postModel.IsFeedIncluded = request.IsFeedIncluded;
                 postModel.ContentLanguageCode = request.ContentLanguageCode;
-
-                ++postModel.Revision;
 
                 // 1. Add new tags to tag lib
                 foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
