@@ -131,43 +131,43 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    if (InvalidPageRouteNames.Contains(model.Slug.ToLower()))
-                    {
-                        ModelState.AddModelError(nameof(model.Slug), "Reserved Slug.");
-                        return View("CreateOrEdit", model);
-                    }
-
-                    var req = new EditCustomPageRequest(model.Id)
-                    {
-                        HtmlContent = model.RawHtmlContent,
-                        CssContent = model.CssContent,
-                        HideSidebar = model.HideSidebar,
-                        Slug = model.Slug,
-                        MetaDescription = model.MetaDescription,
-                        Title = model.Title,
-                        IsPublished = model.IsPublished
-                    };
-
-                    var response = model.Id == Guid.Empty ?
-                        await _customPageService.CreateAsync(req) :
-                        await _customPageService.UpdateAsync(req);
-
-                    if (response.IsSuccess)
-                    {
-                        Logger.LogInformation($"User '{User.Identity.Name}' updated custom page id '{response.Item}'");
-                        _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
-
-                        return Json(new { PageId = response.Item });
-                    }
-
-                    Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    return Json(new FailedResponse(response.Message));
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return Json(new FailedResponse("Invalid ModelState"));
                 }
 
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new FailedResponse("Invalid ModelState"));
+                if (InvalidPageRouteNames.Contains(model.Slug.ToLower()))
+                {
+                    ModelState.AddModelError(nameof(model.Slug), "Reserved Slug.");
+                    return View("CreateOrEdit", model);
+                }
+
+                var req = new EditCustomPageRequest(model.Id)
+                {
+                    HtmlContent = model.RawHtmlContent,
+                    CssContent = model.CssContent,
+                    HideSidebar = model.HideSidebar,
+                    Slug = model.Slug,
+                    MetaDescription = model.MetaDescription,
+                    Title = model.Title,
+                    IsPublished = model.IsPublished
+                };
+
+                var response = model.Id == Guid.Empty ?
+                    await _customPageService.CreateAsync(req) :
+                    await _customPageService.UpdateAsync(req);
+
+                if (response.IsSuccess)
+                {
+                    Logger.LogInformation($"User '{User.Identity.Name}' updated custom page id '{response.Item}'");
+                    _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
+
+                    return Json(new { PageId = response.Item });
+                }
+
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new FailedResponse(response.Message));
             }
             catch (Exception e)
             {

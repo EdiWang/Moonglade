@@ -29,17 +29,14 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Manage([FromServices] MenuService menuService)
         {
             var menuItemsResp = await menuService.GetAllAsync();
-            if (menuItemsResp.IsSuccess)
+            if (!menuItemsResp.IsSuccess) return ServerError(menuItemsResp.Message);
+
+            var model = new MenuManageViewModel
             {
-                var model = new MenuManageViewModel
-                {
-                    MenuItems = menuItemsResp.Item
-                };
+                MenuItems = menuItemsResp.Item
+            };
 
-                return View("~/Views/Admin/ManageMenu.cshtml", model);
-            }
-
-            return ServerError(menuItemsResp.Message);
+            return View("~/Views/Admin/ManageMenu.cshtml", model);
         }
 
         [HttpPost("create")]
@@ -47,28 +44,26 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid) return BadRequest("Invalid ModelState");
+
+                var request = new CreateMenuRequest
                 {
-                    var request = new CreateMenuRequest
-                    {
-                        DisplayOrder = model.DisplayOrder,
-                        Icon = model.Icon,
-                        Title = model.Title,
-                        Url = model.Url,
-                        IsOpenInNewTab = model.IsOpenInNewTab
-                    };
+                    DisplayOrder = model.DisplayOrder,
+                    Icon = model.Icon,
+                    Title = model.Title,
+                    Url = model.Url,
+                    IsOpenInNewTab = model.IsOpenInNewTab
+                };
 
-                    var response = await _menuService.CreateAsync(request);
-                    if (response.IsSuccess)
-                    {
-                        return Json(response);
-                    }
-
-                    Logger.LogError($"Create menu failed: {response.Message}");
-                    ModelState.AddModelError("", response.Message);
-                    return Conflict(ModelState);
+                var response = await _menuService.CreateAsync(request);
+                if (response.IsSuccess)
+                {
+                    return Json(response);
                 }
-                return BadRequest("Invalid ModelState");
+
+                Logger.LogError($"Create menu failed: {response.Message}");
+                ModelState.AddModelError("", response.Message);
+                return Conflict(ModelState);
             }
             catch (Exception e)
             {
@@ -129,30 +124,28 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid) return BadRequest();
+
+                var request = new EditMenuRequest(model.Id)
                 {
-                    var request = new EditMenuRequest(model.Id)
-                    {
-                        Title = model.Title,
-                        DisplayOrder = model.DisplayOrder,
-                        Icon = model.Icon,
-                        Url = model.Url,
-                        IsOpenInNewTab = model.IsOpenInNewTab
-                    };
+                    Title = model.Title,
+                    DisplayOrder = model.DisplayOrder,
+                    Icon = model.Icon,
+                    Url = model.Url,
+                    IsOpenInNewTab = model.IsOpenInNewTab
+                };
 
-                    var response = await _menuService.UpdateAsync(request);
+                var response = await _menuService.UpdateAsync(request);
 
-                    if (response.IsSuccess)
-                    {
-                        return Json(response);
-                    }
-
-                    Logger.LogError($"Edit menu failed: {response.Message}");
-                    ModelState.AddModelError("", response.Message);
-                    return Conflict(ModelState);
+                if (response.IsSuccess)
+                {
+                    return Json(response);
                 }
 
-                return BadRequest();
+                Logger.LogError($"Edit menu failed: {response.Message}");
+                ModelState.AddModelError("", response.Message);
+                return Conflict(ModelState);
+
             }
             catch (Exception e)
             {
