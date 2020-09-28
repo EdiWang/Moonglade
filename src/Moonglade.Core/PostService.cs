@@ -143,7 +143,7 @@ namespace Moonglade.Core
                 var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlug
                 {
                     Title = post.Title,
-                    Abstract = post.ContentAbstract,
+                    ContentAbstract = post.ContentAbstract,
                     PubDateUtc = DateTime.UtcNow,
 
                     Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
@@ -160,10 +160,10 @@ namespace Moonglade.Core
                             NormalizedName = p.NormalizedName,
                             DisplayName = p.DisplayName
                         }).ToArray(),
-                    PostId = post.Id,
-                    IsExposedToSiteMap = post.ExposedToSiteMap,
+                    Id = post.Id,
+                    ExposedToSiteMap = post.ExposedToSiteMap,
                     LastModifyOnUtc = post.LastModifiedUtc,
-                    LangCode = post.ContentLanguageCode
+                    ContentLanguageCode = post.ContentLanguageCode
                 });
 
                 if (null != postSlugModel)
@@ -231,7 +231,7 @@ namespace Moonglade.Core
                         var postSlugModel = await _postRepository.SelectFirstOrDefaultAsync(spec, post => new PostSlug
                         {
                             Title = post.Title,
-                            Abstract = post.ContentAbstract,
+                            ContentAbstract = post.ContentAbstract,
                             PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
 
                             Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
@@ -250,11 +250,11 @@ namespace Moonglade.Core
                                     NormalizedName = p.NormalizedName,
                                     DisplayName = p.DisplayName
                                 }).ToArray(),
-                            PostId = post.Id,
+                            Id = post.Id,
                             CommentEnabled = post.CommentEnabled,
-                            IsExposedToSiteMap = post.ExposedToSiteMap,
+                            ExposedToSiteMap = post.ExposedToSiteMap,
                             LastModifyOnUtc = post.LastModifiedUtc,
-                            LangCode = post.ContentLanguageCode,
+                            ContentLanguageCode = post.ContentLanguageCode,
                             CommentCount = post.Comment.Count(c => c.IsApproved)
                         });
 

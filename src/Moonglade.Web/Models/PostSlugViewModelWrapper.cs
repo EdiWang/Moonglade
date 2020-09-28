@@ -16,7 +16,7 @@ namespace Moonglade.Web.Models
         public PostSlugViewModelWrapper(PostSlug postModel)
         {
             PostModel = postModel;
-            NewCommentViewModel = new NewCommentViewModel { PostId = PostModel.PostId };
+            NewCommentViewModel = new NewCommentViewModel { PostId = PostModel.Id };
         }
     }
 }

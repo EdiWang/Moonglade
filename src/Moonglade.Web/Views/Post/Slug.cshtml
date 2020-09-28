@@ -18,7 +18,7 @@
 }
 
 @section meta {
-    @if (!Model.PostModel.IsExposedToSiteMap)
+    @if (!Model.PostModel.ExposedToSiteMap)
     {
         <meta name="robots" content="noindex, nofollow" />
     }
@@ -33,7 +33,7 @@
     <meta property="og:site_name" content="@BlogConfig.GeneralSettings.SiteTitle">
     <meta property="og:title" content="@Model.PostModel.Title">
     <meta property="og:type" content="article" />
-    <meta property="og:description" content="@Model.PostModel.Abstract" />
+    <meta property="og:description" content="@Model.PostModel.ContentAbstract" />
     @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
     {
         <meta property="og:url" content="@(Utils.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
@@ -41,7 +41,7 @@
 }
 
 @section metadescription{
-    <meta name="description" content="@Model.PostModel.Abstract" />
+    <meta name="description" content="@Model.PostModel.ContentAbstract" />
 }
 
 @section scripts {
@@ -97,7 +97,7 @@
     </div>
 }
 
-<article class="article-post-slug box border mb-4" data-postid="@Model.PostModel.PostId" lang="@Model.PostModel.LangCode">
+<article class="article-post-slug box border mb-4" data-postid="@Model.PostModel.Id" lang="@Model.PostModel.ContentLanguageCode">
     <header class="post-header">
         <h1 class="post-title">
             @Model.PostModel.Title
@@ -309,7 +309,7 @@
         @if (Model.PostModel.CommentCount > 0)
         {
             <section id="comments-list">
-                @await Component.InvokeAsync("CommentList", new { postId = Model.PostModel.PostId })
+                @await Component.InvokeAsync("CommentList", new { postId = Model.PostModel.Id })
             </section>
         }
     </div>
