@@ -46,5 +46,24 @@
         $('pre code').each(function (i, block) {
             hljs.highlightBlock(block);
         });
+    },
+    warnExtLink: function () {
+        $.expr[':'].external = function (obj) {
+            return !obj.href.match(/^mailto\\:/) && (obj.hostname != location.hostname);
+        };
+
+        $('.post-content a:external').addClass('external');
+
+        $('a.external').click(function (e) {
+            e.preventDefault();
+            var linkHref = $(this).attr('href');
+            $('#extlink-url').html(linkHref);
+            $('#extlink-continue').attr('href', linkHref);
+            $('#externalLinkModal').modal('show');
+        });
+
+        $('#extlink-continue').click(function () {
+            $('#externalLinkModal').modal('hide');
+        });
     }
 };
