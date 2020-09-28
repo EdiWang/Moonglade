@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Pingback
@@ -34,21 +31,30 @@ namespace Moonglade.Pingback
             RemoteTimeout = 30;
         }
 
-        public async Task<PingbackValidationResult> ValidatePingRequest(HttpContext context)
+        public PingbackValidationResult ValidatePingRequest(string requestBody, string remoteIp)
         {
             try
             {
-                Logger.LogInformation($"Receiving Pingback from {context.Connection.RemoteIpAddress}");
+                if (string.IsNullOrWhiteSpace(requestBody))
+                {
+                    throw new ArgumentNullException(nameof(requestBody));
+                }
 
-                var xml = await new StreamReader(context.Request.Body, Encoding.Default).ReadToEndAsync();
-                Logger.LogInformation($"Pingback received xml: {xml}");
-                if (!xml.Contains("<methodName>pingback.ping</methodName>"))
+                if (string.IsNullOrWhiteSpace(remoteIp))
+                {
+                    throw new ArgumentNullException(nameof(remoteIp));
+                }
+
+                Logger.LogInformation($"Receiving Pingback from {remoteIp}");
+                Logger.LogInformation($"Pingback received xml: {requestBody}");
+
+                if (!requestBody.Contains("<methodName>pingback.ping</methodName>"))
                 {
                     return PingbackValidationResult.TerminatedMethodNotFound;
                 }
 
                 var doc = new XmlDocument();
-                doc.LoadXml(xml);
+                doc.LoadXml(requestBody);
 
                 var list = doc.SelectNodes("methodCall/params/param/value/string") ??
                            doc.SelectNodes("methodCall/params/param/value");
@@ -61,7 +67,7 @@ namespace Moonglade.Pingback
 
                 _sourceUrl = list[0].InnerText.Trim();
                 _targetUrl = list[1].InnerText.Trim();
-                _remoteIpAddress = context.Connection.RemoteIpAddress.ToString();
+                _remoteIpAddress = remoteIp;
 
                 return PingbackValidationResult.ValidPingRequest;
             }

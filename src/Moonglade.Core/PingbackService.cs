@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Http;
@@ -35,10 +37,13 @@ namespace Moonglade.Core
 
         public async Task<PingbackResponse> ProcessReceivedPayloadAsync(HttpContext context)
         {
-            var response = await _pingbackReceiver.ValidatePingRequest(context);
+            var ip = context.Connection.RemoteIpAddress?.ToString();
+            var requestBody = await new StreamReader(context.Request.Body, Encoding.Default).ReadToEndAsync();
+
+            var response = _pingbackReceiver.ValidatePingRequest(requestBody, ip);
             if (response == PingbackValidationResult.ValidPingRequest)
             {
-                Logger.LogInformation($"Pingback attempt from '{context.Connection.RemoteIpAddress}' is valid");
+                Logger.LogInformation($"Pingback attempt from '{ip}' is valid");
 
                 var pingRequest = await _pingbackReceiver.GetPingRequest();
                 var postResponse = TryGetPostIdTitle(pingRequest.TargetUrl, out var idTitleTuple);
@@ -54,7 +59,7 @@ namespace Moonglade.Core
                             SourceTitle = args.PingRequest.SourceDocumentInfo.Title,
                             TargetPostId = idTitleTuple.Id,
                             TargetPostTitle = idTitleTuple.Title,
-                            SourceIp = context.Connection.RemoteIpAddress.ToString()
+                            SourceIp = ip
                         });
 
                     return _pingbackReceiver.ReceivingPingback(

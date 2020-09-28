@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Pingback
@@ -10,7 +9,7 @@ namespace Moonglade.Pingback
         ILogger<PingbackReceiver> Logger { get; set; }
         int RemoteTimeout { get; set; }
         event PingbackReceiver.PingSuccessHandler OnPingSuccess;
-        Task<PingbackValidationResult> ValidatePingRequest(HttpContext context);
+        PingbackValidationResult ValidatePingRequest(string requestBody, string remoteIp);
         Task<PingRequest> GetPingRequest();
         PingbackResponse ReceivingPingback(PingRequest req, Func<bool> ifTargetResourceExists, Func<bool> ifAlreadyBeenPinged);
     }
