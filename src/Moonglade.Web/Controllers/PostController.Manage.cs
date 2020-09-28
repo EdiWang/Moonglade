@@ -74,7 +74,7 @@ namespace Moonglade.Web.Controllers
                     Title = post.Title,
                     EnableComment = post.CommentEnabled,
                     ExposedToSiteMap = post.ExposedToSiteMap,
-                    FeedIncluded = post.FeedIncluded,
+                    FeedIncluded = post.IsFeedIncluded,
                     ContentLanguageCode = post.ContentLanguageCode
                 };
 

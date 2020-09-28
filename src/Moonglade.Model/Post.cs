@@ -13,7 +13,7 @@ namespace Moonglade.Model
         public string ContentAbstract { get; set; }
         public bool IsPublished { get; set; }
         public bool ExposedToSiteMap { get; set; }
-        public bool FeedIncluded { get; set; }
+        public bool IsFeedIncluded { get; set; }
         public string ContentLanguageCode { get; set; }
         public Tag[] Tags { get; set; }
         public Category[] Categories { get; set; }

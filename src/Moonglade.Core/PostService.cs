@@ -115,7 +115,7 @@ namespace Moonglade.Core
                     PubDateUtc = p.PubDateUtc,
                     IsPublished = p.IsPublished,
                     ExposedToSiteMap = p.ExposedToSiteMap,
-                    FeedIncluded = p.IsFeedIncluded,
+                    IsFeedIncluded = p.IsFeedIncluded,
                     ContentLanguageCode = p.ContentLanguageCode,
                     Tags = p.PostTag.Select(pt => new Tag
                     {
