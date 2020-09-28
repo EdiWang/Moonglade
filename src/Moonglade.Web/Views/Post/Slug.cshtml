@@ -113,7 +113,7 @@
     </div>
 }
 
-<article class="article-post-slug box mb-4" data-postid="@Model.PostModel.PostId" lang="@Model.PostModel.LangCode">
+<article class="article-post-slug box border mb-4" data-postid="@Model.PostModel.PostId" lang="@Model.PostModel.LangCode">
     <header class="post-header">
         <h1 class="post-title">
             @Model.PostModel.Title
@@ -140,7 +140,7 @@
                 }
                 | @BlogConfig.GeneralSettings.TimeZoneId
             </strong>
-            <span class="badge badge-secondary float-right post-hit-number">@Model.PostModel.Hits @Localizer["Reads"]</span>
+            <span class="text-muted float-right post-hit-number">@Model.PostModel.Hits @Localizer["Reads"]</span>
         </div>
 
         <div class="hidden-print">

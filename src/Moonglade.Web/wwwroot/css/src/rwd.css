@@ -15,6 +15,21 @@
 }
 
 @media (max-width: 767px) {
+
+    .article-post-slug.box {
+        padding: 0;
+        box-shadow: none;
+        border: none !important;
+    }
+
+    body.body-post-slug {
+        background-color: var(--white);
+    }
+
+    body.darkmode.body-post-slug {
+        background-color: var(--moca-dark);
+    }
+
     .post-content img {
         cursor: inherit;
     }
