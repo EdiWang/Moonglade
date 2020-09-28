@@ -24,8 +24,8 @@
     }
 
     <meta name="title" content="@Model.PostModel.Title" />
-    <meta name="displaydate" content="@Model.PostModel.PubDateUtc.ToString("u")">
-    <meta name="copyright" content="(C) @Model.PostModel.PubDateUtc.Year @BlogConfig.GeneralSettings.SiteTitle">
+    <meta name="displaydate" content="@Model.PostModel.PubDateUtc.GetValueOrDefault().ToString("u")">
+    <meta name="copyright" content="(C) @Model.PostModel.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@BlogConfig.GeneralSettings.OwnerName" />
 }
 
@@ -106,8 +106,8 @@
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info post-publish-info-mobile bg-light">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">
-                    @DateTimeResolver.ToTimeZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")
+                <time datetime="@Model.PostModel.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PostModel.PubDateUtc">
+                    @DateTimeResolver.ToTimeZone(Model.PostModel.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")
                 </time>
                 <span>
                     | @BlogConfig.GeneralSettings.TimeZoneId
@@ -117,7 +117,7 @@
 
         <div class="d-none d-md-block post-publish-info mb-2">
             <strong class="text-muted">
-                <time datetime="@Model.PostModel.PubDateUtc.ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.ToTimeZone(Model.PostModel.PubDateUtc).ToString("MM/dd/yyyy")</time>
+                <time datetime="@Model.PostModel.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.ToTimeZone(Model.PostModel.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")</time>
                 @if (Model.PostModel.LastModifyOnUtc.HasValue)
                 {
                     <span>(@Localizer["Edit on"] @DateTimeResolver.ToTimeZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
