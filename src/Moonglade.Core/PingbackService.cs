@@ -52,8 +52,10 @@ namespace Moonglade.Core
                     Logger.LogInformation($"Post '{idTitleTuple.Id}:{idTitleTuple.Title}' is found for ping.");
 
                     _pingbackReceiver.OnPingSuccess += async (sender, args) => await SavePingbackRecordAsync(
-                        new PingbackRequest
+                        new PingbackHistoryEntity
                         {
+                            Id = Guid.NewGuid(),
+                            PingTimeUtc = DateTime.UtcNow,
                             Domain = args.Domain,
                             SourceUrl = args.PingRequest.SourceUrl,
                             SourceTitle = args.PingRequest.SourceDocumentInfo.Title,
@@ -75,7 +77,7 @@ namespace Moonglade.Core
             return PingbackResponse.InvalidPingRequest;
         }
 
-        public Task<Response<IReadOnlyList<PingbackHistory>>> GetReceivedPingbacksAsync()
+        public Task<Response<IReadOnlyList<PingbackHistory>>> GetPingbackHistoryAsync()
         {
             return TryExecuteAsync<IReadOnlyList<PingbackHistory>>(async () =>
             {
@@ -135,9 +137,11 @@ namespace Moonglade.Core
             return true;
         }
 
-        private async Task NotifyAdminAsync(Guid pingbackId)
+        private async Task SavePingbackRecordAsync(PingbackHistoryEntity request)
         {
-            var pingback = await _pingbackRepository.SelectFirstOrDefaultAsync(new PingbackHistorySpec(pingbackId),
+            await _pingbackRepository.AddAsync(request);
+
+            var pingback = await _pingbackRepository.SelectFirstOrDefaultAsync(new PingbackHistorySpec(request.Id),
                 p => new PingbackHistory
                 {
                     Id = p.Id,
@@ -155,42 +159,12 @@ namespace Moonglade.Core
             }
         }
 
-        private async Task SavePingbackRecordAsync(PingbackRequest request)
-        {
-            var pid = Guid.NewGuid();
-            var rpb = new PingbackHistoryEntity
-            {
-                Domain = request.Domain,
-                SourceIp = request.SourceIp,
-                Id = pid,
-                PingTimeUtc = DateTime.UtcNow,
-                SourceTitle = request.SourceTitle,
-                SourceUrl = request.SourceUrl,
-                TargetPostId = request.TargetPostId,
-                TargetPostTitle = request.TargetPostTitle
-            };
-
-            await _pingbackRepository.AddAsync(rpb);
-
-            await NotifyAdminAsync(pid);
-        }
-
         private bool HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp)
         {
             var any = _pingbackRepository.Any(p => p.TargetPostId == postId &&
                                                    p.SourceUrl == sourceUrl &&
                                                    p.SourceIp == sourceIp);
             return any;
-        }
-
-        private class PingbackRequest
-        {
-            public string Domain { get; set; }
-            public string SourceUrl { get; set; }
-            public string SourceTitle { get; set; }
-            public Guid TargetPostId { get; set; }
-            public string TargetPostTitle { get; set; }
-            public string SourceIp { get; set; }
         }
     }
 }

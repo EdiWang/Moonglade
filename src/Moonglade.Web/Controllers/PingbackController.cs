@@ -40,7 +40,7 @@ namespace Moonglade.Web.Controllers
             }
 
             var response = await _pingbackService.ProcessReceivedPayloadAsync(HttpContext);
-            Logger.LogInformation($"Pingback Processor Response: {response.ToString()}");
+            Logger.LogInformation($"Pingback Processor Response: {response}");
             return new PingbackResult(response);
         }
 
