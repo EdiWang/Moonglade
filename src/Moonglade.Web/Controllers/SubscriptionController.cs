@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
                 }
                 else
                 {
-                    await _syndicationFeedService.RefreshRssFilesForCategoryAsync(routeName.ToLower());
+                    await _syndicationFeedService.RefreshRssFilesAsync(routeName.ToLower());
                 }
 
                 if (!System.IO.File.Exists(rssDataFile))

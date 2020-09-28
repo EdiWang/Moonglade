@@ -40,14 +40,14 @@ namespace Moonglade.Core
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
         }
 
-        public async Task RefreshRssFilesForCategoryAsync(string categoryName)
+        public async Task RefreshRssFilesAsync(string categoryName)
         {
             var cat = await _categoryRepository.GetAsync(c => c.RouteName == categoryName);
             if (null != cat)
             {
                 Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
 
-                var itemCollection = await GetPostsAsFeedItemsAsync(cat.Id);
+                var itemCollection = await GetFeedEntriesAsync(cat.Id);
 
                 var rw = new SyndicationFeedGenerator
                 {
@@ -71,7 +71,7 @@ namespace Moonglade.Core
         public async Task RefreshFeedFileAsync(bool isAtom)
         {
             Logger.LogInformation("Start refreshing feed for posts.");
-            var itemCollection = await GetPostsAsFeedItemsAsync();
+            var itemCollection = await GetFeedEntriesAsync();
 
             var rw = new SyndicationFeedGenerator
             {
@@ -104,7 +104,7 @@ namespace Moonglade.Core
             Logger.LogInformation("Finished writing feed for posts.");
         }
 
-        private async Task<IReadOnlyList<FeedEntry>> GetPostsAsFeedItemsAsync(Guid? categoryId = null)
+        private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? categoryId = null)
         {
             int? top = null;
             if (_blogConfig.FeedSettings.RssItemCount != 0)
@@ -131,14 +131,14 @@ namespace Moonglade.Core
             {
                 foreach (var simpleFeedItem in list)
                 {
-                    simpleFeedItem.Description = GetPostContent(simpleFeedItem.Description);
+                    simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description);
                 }
             }
 
             return list;
         }
 
-        private string GetPostContent(string rawContent)
+        private string FormatPostContent(string rawContent)
         {
             return AppSettings.Editor == EditorChoice.Markdown ? 
                 Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Html, false) : 
