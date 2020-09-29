@@ -10,12 +10,4 @@
         Error17SourceNotContainTargetUri,
         SpamDetectedFakeNotFound
     }
-
-    public enum PingbackValidationResult
-    {
-        GenericError,
-        Valid,
-        TerminatedMethodNotFound,
-        TerminatedUrlNotFound
-    }
 }

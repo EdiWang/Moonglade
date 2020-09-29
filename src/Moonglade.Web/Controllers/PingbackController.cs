@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,8 +45,10 @@ namespace Moonglade.Web.Controllers
                 return Forbid();
             }
 
-            var response = await _pingbackService.ProcessReceivedPayloadAsync(
-                HttpContext,
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
+
+            var response = await _pingbackService.ProcessReceivedPayloadAsync(requestBody, ip,
                 history => _notificationClient.SendPingNotificationAsync(history));
 
             Logger.LogInformation($"Pingback Processor Response: {response}");
