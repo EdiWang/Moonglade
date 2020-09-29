@@ -15,18 +15,18 @@ namespace Moonglade.Web.Controllers
     [Route("pingback")]
     public class PingbackController : BlogController
     {
-        private readonly PingbackService _pingbackService;
+        private readonly LegacyPingbackService _legacyPingbackService;
         private readonly IBlogConfig _blogConfig;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            PingbackService pingbackService)
+            LegacyPingbackService legacyPingbackService)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _pingbackService = pingbackService;
+            _legacyPingbackService = legacyPingbackService;
         }
 
         [HttpPost("")]
@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
                 return Forbid();
             }
 
-            var response = await _pingbackService.ProcessReceivedPayloadAsync(HttpContext);
+            var response = await _legacyPingbackService.ProcessReceivedPayloadAsync(HttpContext);
             Logger.LogInformation($"Pingback Processor Response: {response}");
             return new PingbackResult(response);
         }
@@ -48,7 +48,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var response = await _pingbackService.GetPingbackHistoryAsync();
+            var response = await _legacyPingbackService.GetPingbackHistoryAsync();
             return response.IsSuccess ? View("~/Views/Admin/ManagePingback.cshtml", response.Item) : ServerError();
         }
 
@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("delete")]
         public async Task<IActionResult> Delete(Guid pingbackId, [FromServices] IBlogAudit blogAudit)
         {
-            if (_pingbackService.DeleteReceivedPingback(pingbackId).IsSuccess)
+            if (_legacyPingbackService.DeleteReceivedPingback(pingbackId).IsSuccess)
             {
                 await blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PingbackDeleted,
                     $"Pingback '{pingbackId}' deleted.");

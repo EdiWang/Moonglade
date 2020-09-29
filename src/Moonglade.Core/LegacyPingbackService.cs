@@ -15,15 +15,15 @@ using Moonglade.Pingback;
 
 namespace Moonglade.Core
 {
-    public class PingbackService : BlogService
+    public class LegacyPingbackService : BlogService
     {
         private readonly IBlogNotificationClient _notificationClient;
         private readonly IPingbackReceiver _pingbackReceiver;
         private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
         private readonly IRepository<PostEntity> _postRepository;
 
-        public PingbackService(
-            ILogger<PingbackService> logger,
+        public LegacyPingbackService(
+            ILogger<LegacyPingbackService> logger,
             IPingbackReceiver pingbackReceiver,
             IRepository<PingbackHistoryEntity> pingbackRepository,
             IRepository<PostEntity> postRepository,

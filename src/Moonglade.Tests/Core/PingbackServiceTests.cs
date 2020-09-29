@@ -15,7 +15,7 @@ namespace Moonglade.Tests.Core
     [TestFixture]
     public class PingbackServiceTests
     {
-        private Mock<ILogger<PingbackService>> _loggerMock;
+        private Mock<ILogger<LegacyPingbackService>> _loggerMock;
         private Mock<IBlogNotificationClient> _notificationMock;
         private Mock<IRepository<PingbackHistoryEntity>> _pingbackRepositoryMock;
         private Mock<IRepository<PostEntity>> _postRepositoryMock;
@@ -23,7 +23,7 @@ namespace Moonglade.Tests.Core
         [SetUp]
         public void Setup()
         {
-            _loggerMock = new Mock<ILogger<PingbackService>>();
+            _loggerMock = new Mock<ILogger<LegacyPingbackService>>();
             _notificationMock = new Mock<IBlogNotificationClient>();
             _pingbackRepositoryMock = new Mock<IRepository<PingbackHistoryEntity>>();
             _postRepositoryMock = new Mock<IRepository<PostEntity>>();
@@ -37,7 +37,7 @@ namespace Moonglade.Tests.Core
             _pingbackRepositoryMock.Setup(p => p.Delete(It.IsAny<Guid>())).Returns(deleteReturn);
             var pingbackReceiverMock = new Mock<IPingbackReceiver>();
 
-            var svc = new PingbackService(
+            var svc = new LegacyPingbackService(
                 _loggerMock.Object,
                 pingbackReceiverMock.Object,
                 _pingbackRepositoryMock.Object,
