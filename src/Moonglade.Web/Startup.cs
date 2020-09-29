@@ -29,6 +29,7 @@ using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Pingback;
 using Moonglade.Syndication;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
@@ -99,6 +100,7 @@ namespace Moonglade.Web
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
 
+            services.AddScoped<IPingbackService, PingbackService>();
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
             services.AddSingleton<IBlogCache, BlogCache>();

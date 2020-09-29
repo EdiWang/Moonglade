@@ -11,4 +11,8 @@
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+  </ItemGroup>
 </Project>

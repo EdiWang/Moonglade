@@ -77,24 +77,6 @@ namespace Moonglade.Core
             return PingbackResponse.InvalidPingRequest;
         }
 
-        public Task<Response<IReadOnlyList<PingbackHistory>>> GetPingbackHistoryAsync()
-        {
-            return TryExecuteAsync<IReadOnlyList<PingbackHistory>>(async () =>
-            {
-                var list = await _pingbackRepository.SelectAsync(p => new PingbackHistory
-                {
-                    Id = p.Id,
-                    Domain = p.Domain,
-                    PingTimeUtc = p.PingTimeUtc,
-                    SourceIp = p.SourceIp,
-                    SourceTitle = p.SourceTitle,
-                    SourceUrl = p.SourceUrl,
-                    TargetPostTitle = p.TargetPostTitle
-                });
-                return new SuccessResponse<IReadOnlyList<PingbackHistory>>(list);
-            });
-        }
-
         public Response DeleteReceivedPingback(Guid pingbackId)
         {
             return TryExecute(() =>

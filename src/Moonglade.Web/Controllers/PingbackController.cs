@@ -8,6 +8,7 @@ using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
+using Moonglade.Pingback;
 using Moonglade.Pingback.Mvc;
 
 namespace Moonglade.Web.Controllers
@@ -17,16 +18,19 @@ namespace Moonglade.Web.Controllers
     {
         private readonly LegacyPingbackService _legacyPingbackService;
         private readonly IBlogConfig _blogConfig;
+        private readonly IPingbackService _pingbackService;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            LegacyPingbackService legacyPingbackService)
+            LegacyPingbackService legacyPingbackService,
+            IPingbackService pingbackService)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
             _legacyPingbackService = legacyPingbackService;
+            _pingbackService = pingbackService;
         }
 
         [HttpPost("")]
@@ -48,8 +52,8 @@ namespace Moonglade.Web.Controllers
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var response = await _legacyPingbackService.GetPingbackHistoryAsync();
-            return response.IsSuccess ? View("~/Views/Admin/ManagePingback.cshtml", response.Item) : ServerError();
+            var list = await _pingbackService.GetPingbackHistoryAsync();
+            return View("~/Views/Admin/ManagePingback.cshtml", list);
         }
 
         [Authorize]
