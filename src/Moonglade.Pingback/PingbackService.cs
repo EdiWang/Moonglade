@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,9 @@ namespace Moonglade.Pingback
 
         public async Task<PingbackResponse> ProcessReceivedPayloadAsync(HttpContext context, Action<PingbackHistory> pingSuccessAction)
         {
+            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+            await using var conn = new SqlConnection(connStr);
+
             var ip = context.Connection.RemoteIpAddress?.ToString();
             var requestBody = await new StreamReader(context.Request.Body, Encoding.Default).ReadToEndAsync();
 
@@ -39,7 +43,7 @@ namespace Moonglade.Pingback
                 _logger.LogInformation($"Pingback attempt from '{ip}' is valid");
 
                 var pingRequest = await _pingbackReceiver.GetPingRequest();
-                var postResponse = await GetPostIdTitle(pingRequest.TargetUrl);
+                var postResponse = await GetPostIdTitle(pingRequest.TargetUrl, conn);
                 if (postResponse.Id != Guid.Empty)
                 {
                     _logger.LogInformation($"Post '{postResponse.Id}:{postResponse.Title}' is found for ping.");
@@ -58,11 +62,11 @@ namespace Moonglade.Pingback
                             SourceIp = ip
                         };
 
-                        await SavePingbackRecordAsync(obj);
+                        await SavePingbackRecordAsync(obj, conn);
                         pingSuccessAction(obj);
                     };
 
-                    var pinged = await HasAlreadyBeenPinged(postResponse.Id, pingRequest.SourceUrl, ip);
+                    var pinged = await HasAlreadyBeenPinged(postResponse.Id, pingRequest.SourceUrl, ip, conn);
                     return _pingbackReceiver.ReceivingPingback(pingRequest, () => true, () => pinged);
                 }
 
@@ -114,23 +118,17 @@ namespace Moonglade.Pingback
             }
         }
 
-        private async Task SavePingbackRecordAsync(PingbackHistory request)
+        private async Task SavePingbackRecordAsync(PingbackHistory request, IDbConnection conn)
         {
-            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-            await using var conn = new SqlConnection(connStr);
-
             var sql = $"INSERT INTO {nameof(PingbackHistory)}" +
                       $"(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
                       $"VALUES (@id, @domain, @sourceUrl, @sourceTitle, @targetPostId, @pingTimeUtc, @targetPostTitle)";
             await conn.ExecuteAsync(sql, request);
         }
 
-        private async Task<(Guid Id, string Title)> GetPostIdTitle(string url)
+        private async Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn)
         {
             var slugInfo = GetSlugInfoFromPostUrl(url);
-
-            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-            await using var conn = new SqlConnection(connStr);
             var sql = "SELECT p.Id, p.Title FROM Post p " +
                       "WHERE p.IsPublished = '1' " +
                       "AND p.IsDeleted = '0'" +
@@ -148,10 +146,8 @@ namespace Moonglade.Pingback
             return p;
         }
 
-        private async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp)
+        private async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
         {
-            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-            await using var conn = new SqlConnection(connStr);
             var sql = $"SELECT TOP 1 1 FROM {nameof(PingbackHistory)} ph " +
                       $"WHERE ph.TargetPostId = @postId " +
                       $"AND ph.SourceUrl = @sourceUrl " +
