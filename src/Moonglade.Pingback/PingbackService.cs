@@ -64,6 +64,17 @@ namespace Moonglade.Pingback
             }
         }
 
+        private async Task SavePingbackRecordAsync(PingbackHistory request)
+        {
+            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+            await using var conn = new SqlConnection(connStr);
+
+            var sql = $"INSERT INTO {nameof(PingbackHistory)}" +
+                      $"(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
+                      $"VALUES (@id, @domain, @sourceUrl, @sourceTitle, @targetPostId, @pingTimeUtc, @targetPostTitle)";
+            await conn.ExecuteAsync(sql, request);
+        }
+
         private async Task<(Guid Id, string Title)> GetPostIdTitle(string url)
         {
             var slugInfo = GetSlugInfoFromPostUrl(url);
