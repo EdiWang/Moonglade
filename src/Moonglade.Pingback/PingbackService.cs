@@ -189,7 +189,7 @@ namespace Moonglade.Pingback
             await conn.ExecuteAsync(sql, request);
         }
 
-        private async Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn)
+        private static async Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn)
         {
             var slugInfo = GetSlugInfoFromPostUrl(url);
             var sql = "SELECT p.Id, p.Title FROM Post p " +
@@ -209,7 +209,7 @@ namespace Moonglade.Pingback
             return p;
         }
 
-        private async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
+        private static async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
         {
             var sql = $"SELECT TOP 1 1 FROM {nameof(PingbackHistory)} ph " +
                       $"WHERE ph.TargetPostId = @postId " +
