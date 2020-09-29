@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Core;
+using Moonglade.Core.Notification;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback;
 using Moonglade.Pingback.Mvc;
@@ -16,21 +16,21 @@ namespace Moonglade.Web.Controllers
     [Route("pingback")]
     public class PingbackController : BlogController
     {
-        private readonly LegacyPingbackService _legacyPingbackService;
         private readonly IBlogConfig _blogConfig;
         private readonly IPingbackService _pingbackService;
+        private readonly IBlogNotificationClient _notificationClient;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            LegacyPingbackService legacyPingbackService,
-            IPingbackService pingbackService)
+            IPingbackService pingbackService,
+            IBlogNotificationClient notificationClient)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _legacyPingbackService = legacyPingbackService;
             _pingbackService = pingbackService;
+            _notificationClient = notificationClient;
         }
 
         [HttpPost("")]
@@ -43,7 +43,10 @@ namespace Moonglade.Web.Controllers
                 return Forbid();
             }
 
-            var response = await _legacyPingbackService.ProcessReceivedPayloadAsync(HttpContext);
+            var response = await _pingbackService.ProcessReceivedPayloadAsync(
+                HttpContext,
+                history => _notificationClient.SendPingNotificationAsync(history));
+
             Logger.LogInformation($"Pingback Processor Response: {response}");
             return new PingbackResult(response);
         }

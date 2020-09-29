@@ -487,23 +487,5 @@ namespace Moonglade.Core
             Html = 1,
             Text = 2
         }
-
-        public static Response<(string Slug, DateTime PubDate)> GetSlugInfoFromPostUrl(string url)
-        {
-            var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
-            var match = blogSlugRegex.Match(url);
-            if (!match.Success)
-            {
-                return new FailedResponse<(string Slug, DateTime date)>("Invalid Slug Format");
-            }
-
-            var year = int.Parse(match.Groups["yyyy"].Value);
-            var month = int.Parse(match.Groups["MM"].Value);
-            var day = int.Parse(match.Groups["dd"].Value);
-            var slug = match.Groups["slug"].Value;
-            var date = new DateTime(year, month, day);
-
-            return new SuccessResponse<(string Slug, DateTime date)>((slug, date));
-        }
     }
 }

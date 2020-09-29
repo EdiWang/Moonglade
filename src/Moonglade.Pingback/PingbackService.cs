@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -16,11 +18,59 @@ namespace Moonglade.Pingback
     {
         private readonly ILogger<PingbackService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IPingbackReceiver _pingbackReceiver;
 
-        public PingbackService(ILogger<PingbackService> logger, IConfiguration configuration)
+        public PingbackService(
+            ILogger<PingbackService> logger, IConfiguration configuration, IPingbackReceiver pingbackReceiver)
         {
             _logger = logger;
             _configuration = configuration;
+            _pingbackReceiver = pingbackReceiver;
+        }
+
+        public async Task<PingbackResponse> ProcessReceivedPayloadAsync(HttpContext context, Action<PingbackHistory> pingSuccessAction)
+        {
+            var ip = context.Connection.RemoteIpAddress?.ToString();
+            var requestBody = await new StreamReader(context.Request.Body, Encoding.Default).ReadToEndAsync();
+
+            var response = _pingbackReceiver.ValidatePingRequest(requestBody, ip);
+            if (response == PingbackValidationResult.Valid)
+            {
+                _logger.LogInformation($"Pingback attempt from '{ip}' is valid");
+
+                var pingRequest = await _pingbackReceiver.GetPingRequest();
+                var postResponse = await GetPostIdTitle(pingRequest.TargetUrl);
+                if (postResponse.Id != Guid.Empty)
+                {
+                    _logger.LogInformation($"Post '{postResponse.Id}:{postResponse.Title}' is found for ping.");
+
+                    _pingbackReceiver.OnPingSuccess += async (sender, args) =>
+                    {
+                        var obj = new PingbackHistory
+                        {
+                            Id = Guid.NewGuid(),
+                            PingTimeUtc = DateTime.UtcNow,
+                            Domain = args.Domain,
+                            SourceUrl = args.PingRequest.SourceUrl,
+                            SourceTitle = args.PingRequest.SourceDocumentInfo.Title,
+                            TargetPostId = postResponse.Id,
+                            TargetPostTitle = postResponse.Title,
+                            SourceIp = ip
+                        };
+
+                        await SavePingbackRecordAsync(obj);
+                        pingSuccessAction(obj);
+                    };
+
+                    var pinged = await HasAlreadyBeenPinged(postResponse.Id, pingRequest.SourceUrl, ip);
+                    return _pingbackReceiver.ReceivingPingback(pingRequest, () => true, () => pinged);
+                }
+
+                _logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
+                return PingbackResponse.GenericError;
+            }
+
+            return PingbackResponse.InvalidPingRequest;
         }
 
         public async Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync()
@@ -131,6 +181,7 @@ namespace Moonglade.Pingback
 
     public interface IPingbackService
     {
+        Task<PingbackResponse> ProcessReceivedPayloadAsync(HttpContext context, Action<PingbackHistory> pingSuccessAction);
         Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync();
         Task DeletePingbackHistory(Guid id);
     }
