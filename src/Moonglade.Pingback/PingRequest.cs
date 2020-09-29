@@ -2,8 +2,6 @@
 {
     public class PingRequest
     {
-        public string SourceIpAddress { get; set; }
-
         public string SourceUrl { get; set; }
 
         public string TargetUrl { get; set; }

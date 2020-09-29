@@ -44,7 +44,7 @@ namespace Moonglade.Web.Extensions
         public static void AddPingback(this IServiceCollection services)
         {
             services.AddScoped<IPingbackSender, PingbackSender>();
-            services.AddScoped<IPingbackReceiver, PingbackReceiver>();
+            services.AddScoped<IPingbackService, PingbackService>();
         }
 
         public static void AddImageStorage(

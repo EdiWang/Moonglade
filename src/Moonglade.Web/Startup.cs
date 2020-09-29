@@ -100,7 +100,6 @@ namespace Moonglade.Web
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
 
-            services.AddScoped<IPingbackService, PingbackService>();
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
             services.AddSingleton<IBlogCache, BlogCache>();
