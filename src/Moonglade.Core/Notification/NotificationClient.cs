@@ -9,6 +9,7 @@ using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Pingback;
 
 namespace Moonglade.Core.Notification
 {

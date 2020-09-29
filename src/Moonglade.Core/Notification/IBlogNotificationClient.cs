@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Moonglade.Model;
+using Moonglade.Pingback;
 
 namespace Moonglade.Core.Notification
 {
