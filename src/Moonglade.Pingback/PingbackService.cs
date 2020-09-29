@@ -46,10 +46,27 @@ namespace Moonglade.Pingback
                 throw;
             }
         }
+
+        public async Task DeletePingbackHistory(Guid id)
+        {
+            try
+            {
+                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+                await using var conn = new SqlConnection(connStr);
+                var sql = $"DELETE FROM {nameof(PingbackHistory)} WHERE Id = @id";
+                await conn.ExecuteAsync(sql, new { id });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error {nameof(id)}");
+                throw;
+            }
+        }
     }
 
     public interface IPingbackService
     {
         Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync();
+        Task DeletePingbackHistory(Guid id);
     }
 }

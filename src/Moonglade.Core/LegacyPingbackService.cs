@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core.Notification;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Model;
 using Moonglade.Pingback;
 
 namespace Moonglade.Core
@@ -75,22 +72,6 @@ namespace Moonglade.Core
             }
 
             return PingbackResponse.InvalidPingRequest;
-        }
-
-        public Response DeleteReceivedPingback(Guid pingbackId)
-        {
-            return TryExecute(() =>
-            {
-                Logger.LogInformation($"Deleting pingback {pingbackId}.");
-                var rows = _pingbackRepository.Delete(pingbackId);
-                if (rows == -1)
-                {
-                    Logger.LogWarning($"Pingback id {pingbackId} not found, skip delete operation.");
-                    return new FailedResponse((int)FaultCode.PingbackRecordNotFound);
-                }
-
-                return new Response { IsSuccess = rows > 0 };
-            }, keyParameter: pingbackId);
         }
 
         private bool TryGetPostIdTitle(string url, out (Guid Id, string Title) idTitleTuple)
