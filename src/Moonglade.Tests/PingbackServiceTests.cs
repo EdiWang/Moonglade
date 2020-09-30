@@ -86,5 +86,26 @@ namespace Moonglade.Tests
             var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.Error17SourceNotContainTargetUri);
         }
+
+        [Test]
+        public async Task TestProcessReceivedPayloadAsyncSpam()
+        {
+            var tcs = new TaskCompletionSource<PingRequest>();
+            tcs.SetResult(new PingRequest
+            {
+                SourceDocumentInfo = new SourceDocumentInfo
+                {
+                    SourceHasLink = true,
+                    ContainsHtml = true
+                }
+            });
+
+            _pingSourceInspectorMock
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
+
+            var pingbackService = new PingbackService(_loggerMock.Object, _configurationMock.Object, _pingSourceInspectorMock.Object);
+            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            Assert.AreEqual(result, PingbackResponse.SpamDetectedFakeNotFound);
+        }
     }
 }
