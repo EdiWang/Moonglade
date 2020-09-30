@@ -8,13 +8,13 @@ using Dapper;
 
 namespace Moonglade.Pingback
 {
-    public interface IPingTargetFinder
+    public interface IPingbackRepository
     {
         Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn);
         Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn);
     }
 
-    public class PingTargetFinder : IPingTargetFinder
+    public class PingbackRepository : IPingbackRepository
     {
         public async Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn)
         {

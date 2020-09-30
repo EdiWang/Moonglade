@@ -15,7 +15,7 @@ namespace Moonglade.Pingback
     {
         private readonly ILogger<PingbackService> _logger;
         private readonly IPingSourceInspector _pingSourceInspector;
-        private readonly IPingTargetFinder _pingTargetFinder;
+        private readonly IPingbackRepository _pingbackRepository;
 
         private string DatabaseConnectionString { get; }
         private string _sourceUrl;
@@ -25,11 +25,11 @@ namespace Moonglade.Pingback
             ILogger<PingbackService> logger,
             IConfiguration configuration,
             IPingSourceInspector pingSourceInspector,
-            IPingTargetFinder pingTargetFinder)
+            IPingbackRepository pingbackRepository)
         {
             _logger = logger;
             _pingSourceInspector = pingSourceInspector;
-            _pingTargetFinder = pingTargetFinder;
+            _pingbackRepository = pingbackRepository;
             DatabaseConnectionString = configuration.GetConnectionString(Constants.DbConnectionName);
         }
 
@@ -63,7 +63,7 @@ namespace Moonglade.Pingback
                     return PingbackResponse.SpamDetectedFakeNotFound;
                 }
 
-                var postIdTitle = await _pingTargetFinder.GetPostIdTitle(pingRequest.TargetUrl, conn);
+                var postIdTitle = await _pingbackRepository.GetPostIdTitle(pingRequest.TargetUrl, conn);
                 if (postIdTitle.Id == Guid.Empty)
                 {
                     _logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
@@ -71,7 +71,7 @@ namespace Moonglade.Pingback
                 }
                 _logger.LogInformation($"Post '{postIdTitle.Id}:{postIdTitle.Title}' is found for ping.");
 
-                var pinged = await _pingTargetFinder.HasAlreadyBeenPinged(postIdTitle.Id, pingRequest.SourceUrl, ip, conn);
+                var pinged = await _pingbackRepository.HasAlreadyBeenPinged(postIdTitle.Id, pingRequest.SourceUrl, ip, conn);
                 if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
                 _logger.LogInformation("Adding received pingback...");

@@ -18,7 +18,7 @@ namespace Moonglade.Tests
         private Mock<ILogger<PingbackService>> _loggerMock;
         private Mock<IConfiguration> _configurationMock;
         private Mock<IPingSourceInspector> _pingSourceInspectorMock;
-        private Mock<IPingTargetFinder> _pingTargetFinderMock;
+        private Mock<IPingbackRepository> _pingTargetFinderMock;
 
         private string _fakePingRequest;
 
@@ -28,7 +28,7 @@ namespace Moonglade.Tests
             _loggerMock = new Mock<ILogger<PingbackService>>();
             _configurationMock = new Mock<IConfiguration>();
             _pingSourceInspectorMock = new Mock<IPingSourceInspector>();
-            _pingTargetFinderMock = new Mock<IPingTargetFinder>();
+            _pingTargetFinderMock = new Mock<IPingbackRepository>();
             _fakePingRequest = @"<?xml version=""1.0"" encoding=""iso-8859-1""?>
                                 <methodCall>
                                   <methodName>pingback.ping</methodName>
