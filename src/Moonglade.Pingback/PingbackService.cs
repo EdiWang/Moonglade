@@ -86,7 +86,7 @@ namespace Moonglade.Pingback
                 };
 
                 await SavePingbackRecordAsync(obj, conn);
-                pingSuccessAction(obj);
+                pingSuccessAction?.Invoke(obj);
 
                 return PingbackResponse.Success;
             }
