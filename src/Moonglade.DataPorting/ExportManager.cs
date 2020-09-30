@@ -13,7 +13,7 @@ namespace Moonglade.DataPorting
         private readonly IRepository<TagEntity> _tagRepository;
         private readonly IRepository<CategoryEntity> _catRepository;
         private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
-        private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
+        //private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
         private readonly IRepository<CustomPageEntity> _pageRepository;
         private readonly IRepository<PostEntity> _postRepository;
 
@@ -21,14 +21,14 @@ namespace Moonglade.DataPorting
             IRepository<TagEntity> tagRepository,
             IRepository<CategoryEntity> catRepository,
             IRepository<FriendLinkEntity> friendlinkRepository,
-            IRepository<PingbackHistoryEntity> pingbackRepository,
-            IRepository<CustomPageEntity> pageRepository, 
+            //IRepository<PingbackHistoryEntity> pingbackRepository,
+            IRepository<CustomPageEntity> pageRepository,
             IRepository<PostEntity> postRepository)
         {
             _tagRepository = tagRepository;
             _catRepository = catRepository;
             _friendlinkRepository = friendlinkRepository;
-            _pingbackRepository = pingbackRepository;
+            //_pingbackRepository = pingbackRepository;
             _pageRepository = pageRepository;
             _postRepository = postRepository;
         }
@@ -66,17 +66,18 @@ namespace Moonglade.DataPorting
                     return fdExportData;
 
                 case ExportDataType.Pingbacks:
-                    var pbExp = new SingeJsonExporter<PingbackHistoryEntity>(_pingbackRepository);
-                    var pbExportData = await pbExp.ExportData(p => new
-                    {
-                        p.Domain,
-                        p.PingTimeUtc,
-                        p.SourceIp,
-                        p.SourceTitle,
-                        p.SourceUrl,
-                        p.TargetPostTitle
-                    });
-                    return pbExportData;
+                    //var pbExp = new SingeJsonExporter<PingbackHistoryEntity>(_pingbackRepository);
+                    //var pbExportData = await pbExp.ExportData(p => new
+                    //{
+                    //    p.Domain,
+                    //    p.PingTimeUtc,
+                    //    p.SourceIp,
+                    //    p.SourceTitle,
+                    //    p.SourceUrl,
+                    //    p.TargetPostTitle
+                    //});
+                    //return pbExportData;
+                    throw new NotImplementedException("Pingback export is not supported for now.");
 
                 case ExportDataType.Pages:
                     var pgExp = new ZippedJsonExporter<CustomPageEntity>(_pageRepository, "moonglade-pages");

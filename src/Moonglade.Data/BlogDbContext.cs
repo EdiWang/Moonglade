@@ -18,7 +18,6 @@ namespace Moonglade.Data
         public virtual DbSet<CategoryEntity> Category { get; set; }
         public virtual DbSet<CommentEntity> Comment { get; set; }
         public virtual DbSet<CommentReplyEntity> CommentReply { get; set; }
-        public virtual DbSet<PingbackHistoryEntity> PingbackHistory { get; set; }
         public virtual DbSet<PostEntity> Post { get; set; }
         public virtual DbSet<PostCategoryEntity> PostCategory { get; set; }
         public virtual DbSet<PostExtensionEntity> PostExtension { get; set; }
@@ -35,7 +34,6 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new CommentConfiguration());
             modelBuilder.ApplyConfiguration(new CommentReplyConfiguration());
-            modelBuilder.ApplyConfiguration(new PingbackHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new PostConfiguration());
             modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new PostExtensionConfiguration());
