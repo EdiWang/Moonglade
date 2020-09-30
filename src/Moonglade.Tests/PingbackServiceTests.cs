@@ -33,8 +33,8 @@ namespace Moonglade.Tests
                                 <methodCall>
                                   <methodName>pingback.ping</methodName>
                                   <params>
+                                    <param><value><string>https://sourceurl</string></value></param>
                                     <param><value><string>https://targeturl</string></value></param>
-	                                <param><value><string>https://sourceurl</string></value></param>
                                   </params>
                                 </methodCall>";
         }
