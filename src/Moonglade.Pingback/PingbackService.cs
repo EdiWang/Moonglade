@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Net;
-using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using Dapper;
@@ -44,7 +41,7 @@ namespace Moonglade.Pingback
 
                 if (string.IsNullOrWhiteSpace(requestBody))
                 {
-                    _logger.LogError($"Pingback requestBody is null");
+                    _logger.LogError("Pingback requestBody is null");
                     return PingbackResponse.GenericError;
                 }
 
