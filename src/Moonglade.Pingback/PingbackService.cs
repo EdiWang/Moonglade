@@ -151,7 +151,7 @@ namespace Moonglade.Pingback
         {
             var sql = $"INSERT INTO {nameof(PingbackHistory)}" +
                       $"(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
-                      $"VALUES (@id, @domain, @sourceUrl, @sourceTitle, @targetPostId, @pingTimeUtc, @targetPostTitle)";
+                      $"VALUES (@id, @domain, @sourceUrl, @sourceTitle, @sourceIp, @targetPostId, @pingTimeUtc, @targetPostTitle)";
             await conn.ExecuteAsync(sql, request);
         }
 
