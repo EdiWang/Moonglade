@@ -17,6 +17,7 @@ namespace Moonglade.Tests
         private Mock<ILogger<PingbackService>> _loggerMock;
         private Mock<IConfiguration> _configurationMock;
         private Mock<IPingSourceInspector> _pingSourceInspectorMock;
+        private string _fakePingRequest;
 
         [SetUp]
         public void Setup()
@@ -24,6 +25,14 @@ namespace Moonglade.Tests
             _loggerMock = new Mock<ILogger<PingbackService>>();
             _configurationMock = new Mock<IConfiguration>();
             _pingSourceInspectorMock = new Mock<IPingSourceInspector>();
+            _fakePingRequest = @"<?xml version=""1.0"" encoding=""iso-8859-1""?>
+                                <methodCall>
+                                  <methodName>pingback.ping</methodName>
+                                  <params>
+                                    <param><value><string>https://targeturl</string></value></param>
+	                                <param><value><string>https://sourceurl</string></value></param>
+                                  </params>
+                                </methodCall>";
         }
 
         [TestCase(" ", ExpectedResult = PingbackResponse.GenericError)]
@@ -42,6 +51,40 @@ namespace Moonglade.Tests
             var pingbackService = new PingbackService(_loggerMock.Object, _configurationMock.Object, _pingSourceInspectorMock.Object);
             var result = await pingbackService.ProcessReceivedPayloadAsync("<hello></hello>", "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
+        }
+
+        [Test]
+        public async Task TestProcessReceivedPayloadAsyncInvalidRequest()
+        {
+            var tcs = new TaskCompletionSource<PingRequest>();
+            tcs.SetResult(null);
+
+            _pingSourceInspectorMock
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
+
+            var pingbackService = new PingbackService(_loggerMock.Object, _configurationMock.Object, _pingSourceInspectorMock.Object);
+            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
+        }
+
+        [Test]
+        public async Task TestProcessReceivedPayloadAsyncError17()
+        {
+            var tcs = new TaskCompletionSource<PingRequest>();
+            tcs.SetResult(new PingRequest
+            {
+                SourceDocumentInfo = new SourceDocumentInfo
+                {
+                    SourceHasLink = false
+                }
+            });
+
+            _pingSourceInspectorMock
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
+
+            var pingbackService = new PingbackService(_loggerMock.Object, _configurationMock.Object, _pingSourceInspectorMock.Object);
+            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            Assert.AreEqual(result, PingbackResponse.Error17SourceNotContainTargetUri);
         }
     }
 }

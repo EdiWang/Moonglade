@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>.NET implementation for Pingback http://www.hixie.ch/specs/pingback/pingback</Description>
   </PropertyGroup>
 
   <ItemGroup>
