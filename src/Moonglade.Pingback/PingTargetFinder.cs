@@ -11,6 +11,9 @@ namespace Moonglade.Pingback
     public interface IPingbackRepository
     {
         Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn);
+        Task SavePingbackRecordAsync(PingbackHistory request, IDbConnection conn);
+        Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync(IDbConnection conn);
+        Task DeletePingbackHistory(Guid id, IDbConnection conn);
         Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn);
     }
 
@@ -34,6 +37,35 @@ namespace Moonglade.Pingback
                 day = slugInfo.PubDate.Day
             });
             return p;
+        }
+
+        public async Task SavePingbackRecordAsync(PingbackHistory request, IDbConnection conn)
+        {
+            var sql = $"INSERT INTO {nameof(PingbackHistory)}" +
+                      $"(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
+                      $"VALUES (@id, @domain, @sourceUrl, @sourceTitle, @sourceIp, @targetPostId, @pingTimeUtc, @targetPostTitle)";
+            await conn.ExecuteAsync(sql, request);
+        }
+
+        public async Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync(IDbConnection conn)
+        {
+            var sql = $"SELECT ph.{nameof(PingbackHistory.Id)}, " +
+                          $"ph.{nameof(PingbackHistory.Domain)}, " +
+                          $"ph.{nameof(PingbackHistory.SourceUrl)}, " +
+                          $"ph.{nameof(PingbackHistory.SourceTitle)}, " +
+                          $"ph.{nameof(PingbackHistory.TargetPostId)}, " +
+                          $"ph.{nameof(PingbackHistory.TargetPostTitle)}, " +
+                          $"ph.{nameof(PingbackHistory.PingTimeUtc)} " +
+                          $"FROM {nameof(PingbackHistory)} ph";
+
+            var list = await conn.QueryAsync<PingbackHistory>(sql);
+            return list;
+        }
+
+        public async Task DeletePingbackHistory(Guid id, IDbConnection conn)
+        {
+            var sql = $"DELETE FROM {nameof(PingbackHistory)} WHERE Id = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)

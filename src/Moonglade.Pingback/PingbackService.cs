@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using System.Xml;
-using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -89,7 +87,7 @@ namespace Moonglade.Pingback
                     SourceIp = ip
                 };
 
-                await SavePingbackRecordAsync(obj, conn);
+                await _pingbackRepository.SavePingbackRecordAsync(obj, conn);
                 pingSuccessAction?.Invoke(obj);
 
                 return PingbackResponse.Success;
@@ -106,16 +104,7 @@ namespace Moonglade.Pingback
             try
             {
                 await using var conn = new SqlConnection(DatabaseConnectionString);
-                var sql = $"SELECT ph.{nameof(PingbackHistory.Id)}, " +
-                          $"ph.{nameof(PingbackHistory.Domain)}, " +
-                          $"ph.{nameof(PingbackHistory.SourceUrl)}, " +
-                          $"ph.{nameof(PingbackHistory.SourceTitle)}, " +
-                          $"ph.{nameof(PingbackHistory.TargetPostId)}, " +
-                          $"ph.{nameof(PingbackHistory.TargetPostTitle)}, " +
-                          $"ph.{nameof(PingbackHistory.PingTimeUtc)} " +
-                          $"FROM {nameof(PingbackHistory)} ph";
-
-                var list = await conn.QueryAsync<PingbackHistory>(sql);
+                var list = await _pingbackRepository.GetPingbackHistoryAsync(conn);
                 return list;
             }
             catch (Exception e)
@@ -130,12 +119,11 @@ namespace Moonglade.Pingback
             try
             {
                 await using var conn = new SqlConnection(DatabaseConnectionString);
-                var sql = $"DELETE FROM {nameof(PingbackHistory)} WHERE Id = @id";
-                await conn.ExecuteAsync(sql, new { id });
+                await _pingbackRepository.DeletePingbackHistory(id, conn);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error {nameof(id)}");
+                _logger.LogError(e, $"Error {nameof(DeletePingbackHistory)}");
                 throw;
             }
         }
@@ -145,14 +133,6 @@ namespace Moonglade.Pingback
             var start = sourceUrl.IndexOf("://", StringComparison.Ordinal) + 3;
             var stop = sourceUrl.IndexOf("/", start, StringComparison.Ordinal);
             return sourceUrl[start..stop].Replace("www.", string.Empty);
-        }
-
-        private async Task SavePingbackRecordAsync(PingbackHistory request, IDbConnection conn)
-        {
-            var sql = $"INSERT INTO {nameof(PingbackHistory)}" +
-                      $"(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
-                      $"VALUES (@id, @domain, @sourceUrl, @sourceTitle, @sourceIp, @targetPostId, @pingTimeUtc, @targetPostTitle)";
-            await conn.ExecuteAsync(sql, request);
         }
 
         private bool ValidatePingRequest(string requestBody)
