@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -134,6 +135,73 @@ namespace Moonglade.Tests
 
             var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.SpamDetectedFakeNotFound);
+        }
+
+        [Test]
+        public async Task TestProcessReceivedPayloadAsyncTargetNotFound()
+        {
+            var tcsPr = new TaskCompletionSource<PingRequest>();
+            tcsPr.SetResult(new PingRequest
+            {
+                SourceDocumentInfo = new SourceDocumentInfo
+                {
+                    SourceHasLink = true,
+                    ContainsHtml = false
+                }
+            });
+
+            var tcsPt = new TaskCompletionSource<(Guid Id, string Title)>();
+            tcsPt.SetResult((Guid.Empty, string.Empty));
+
+            _pingSourceInspectorMock
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcsPr.Task);
+            _pingTargetFinderMock.Setup(p => p.GetPostIdTitle(It.IsAny<string>(), It.IsAny<IDbConnection>())).Returns(tcsPt.Task);
+
+            var pingbackService = new PingbackService(
+                _loggerMock.Object,
+                _configurationMock.Object,
+                _pingSourceInspectorMock.Object,
+                _pingTargetFinderMock.Object);
+
+            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            Assert.AreEqual(result, PingbackResponse.Error32TargetUriNotExist);
+        }
+
+        [Test]
+        public async Task TestProcessReceivedPayloadAsyncAlreadyPinged()
+        {
+            var tcsPr = new TaskCompletionSource<PingRequest>();
+            tcsPr.SetResult(new PingRequest
+            {
+                SourceDocumentInfo = new SourceDocumentInfo
+                {
+                    SourceHasLink = true,
+                    ContainsHtml = false
+                }
+            });
+
+            _pingSourceInspectorMock
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Returns(tcsPr.Task);
+
+            var tcsPt = new TaskCompletionSource<(Guid Id, string Title)>();
+            tcsPt.SetResult((Guid.NewGuid(), "Pingback Unit Test"));
+            _pingTargetFinderMock.Setup(p => p.GetPostIdTitle(It.IsAny<string>(), It.IsAny<IDbConnection>())).Returns(tcsPt.Task);
+
+            var tcsAp = new TaskCompletionSource<bool>();
+            tcsAp.SetResult(true);
+            _pingTargetFinderMock.Setup(p => p.HasAlreadyBeenPinged(
+                It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDbConnection>()))
+                .Returns(tcsAp.Task);
+
+            var pingbackService = new PingbackService(
+                _loggerMock.Object,
+                _configurationMock.Object,
+                _pingSourceInspectorMock.Object,
+                _pingTargetFinderMock.Object);
+
+            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            Assert.AreEqual(result, PingbackResponse.Error48PingbackAlreadyRegistered);
         }
     }
 }

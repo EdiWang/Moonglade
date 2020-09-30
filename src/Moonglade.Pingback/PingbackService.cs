@@ -71,7 +71,7 @@ namespace Moonglade.Pingback
                 }
                 _logger.LogInformation($"Post '{postIdTitle.Id}:{postIdTitle.Title}' is found for ping.");
 
-                var pinged = await HasAlreadyBeenPinged(postIdTitle.Id, pingRequest.SourceUrl, ip, conn);
+                var pinged = await _pingTargetFinder.HasAlreadyBeenPinged(postIdTitle.Id, pingRequest.SourceUrl, ip, conn);
                 if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
                 _logger.LogInformation("Adding received pingback...");
@@ -153,16 +153,6 @@ namespace Moonglade.Pingback
                       $"(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
                       $"VALUES (@id, @domain, @sourceUrl, @sourceTitle, @targetPostId, @pingTimeUtc, @targetPostTitle)";
             await conn.ExecuteAsync(sql, request);
-        }
-
-        private static async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
-        {
-            var sql = $"SELECT TOP 1 1 FROM {nameof(PingbackHistory)} ph " +
-                      $"WHERE ph.TargetPostId = @postId " +
-                      $"AND ph.SourceUrl = @sourceUrl " +
-                      $"AND ph.SourceIp = @sourceIp";
-            var result = await conn.ExecuteScalarAsync<int>(sql, new { postId, sourceUrl, sourceIp });
-            return result == 1;
         }
 
         private bool ValidatePingRequest(string requestBody)

@@ -11,6 +11,7 @@ namespace Moonglade.Pingback
     public interface IPingTargetFinder
     {
         Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn);
+        Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn);
     }
 
     public class PingTargetFinder : IPingTargetFinder
@@ -33,6 +34,16 @@ namespace Moonglade.Pingback
                 day = slugInfo.PubDate.Day
             });
             return p;
+        }
+
+        public async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
+        {
+            var sql = $"SELECT TOP 1 1 FROM {nameof(PingbackHistory)} ph " +
+                      $"WHERE ph.TargetPostId = @postId " +
+                      $"AND ph.SourceUrl = @sourceUrl " +
+                      $"AND ph.SourceIp = @sourceIp";
+            var result = await conn.ExecuteScalarAsync<int>(sql, new { postId, sourceUrl, sourceIp });
+            return result == 1;
         }
 
         private static (string Slug, DateTime PubDate) GetSlugInfoFromPostUrl(string url)
