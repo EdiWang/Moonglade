@@ -15,13 +15,15 @@ namespace Moonglade.Tests
     public class PingbackServiceTests
     {
         private Mock<ILogger<PingbackService>> _loggerMock;
-        private Mock<IConfiguration> _iconfiguration;
+        private Mock<IConfiguration> _configurationMock;
+        private Mock<IPingSourceInspector> _pingSourceInspectorMock;
 
         [SetUp]
         public void Setup()
         {
             _loggerMock = new Mock<ILogger<PingbackService>>();
-            _iconfiguration = new Mock<IConfiguration>();
+            _configurationMock = new Mock<IConfiguration>();
+            _pingSourceInspectorMock = new Mock<IPingSourceInspector>();
         }
 
         [TestCase(" ", ExpectedResult = PingbackResponse.GenericError)]
@@ -29,9 +31,17 @@ namespace Moonglade.Tests
         [TestCase(null, ExpectedResult = PingbackResponse.GenericError)]
         public async Task<PingbackResponse> TestProcessReceivedPayloadAsyncEmptyRequest(string requestBody)
         {
-            var pingbackService = new PingbackService(_loggerMock.Object, _iconfiguration.Object);
+            var pingbackService = new PingbackService(_loggerMock.Object, _configurationMock.Object, _pingSourceInspectorMock.Object);
             var result = await pingbackService.ProcessReceivedPayloadAsync(requestBody, "10.0.0.1", null);
             return result;
+        }
+
+        [Test]
+        public async Task TestProcessReceivedPayloadAsyncNoMethod()
+        {
+            var pingbackService = new PingbackService(_loggerMock.Object, _configurationMock.Object, _pingSourceInspectorMock.Object);
+            var result = await pingbackService.ProcessReceivedPayloadAsync("<hello></hello>", "10.0.0.1", null);
+            Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
         }
     }
 }

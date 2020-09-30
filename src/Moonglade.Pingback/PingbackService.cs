@@ -17,15 +17,19 @@ namespace Moonglade.Pingback
     public class PingbackService : IPingbackService
     {
         private readonly ILogger<PingbackService> _logger;
+        private readonly IPingSourceInspector _pingSourceInspector;
 
         private string DatabaseConnectionString { get; }
         private string _sourceUrl;
         private string _targetUrl;
 
         public PingbackService(
-            ILogger<PingbackService> logger, IConfiguration configuration)
+            ILogger<PingbackService> logger,
+            IConfiguration configuration,
+            IPingSourceInspector pingSourceInspector)
         {
             _logger = logger;
+            _pingSourceInspector = pingSourceInspector;
             DatabaseConnectionString = configuration.GetConnectionString(Constants.DbConnectionName);
         }
 
@@ -46,7 +50,7 @@ namespace Moonglade.Pingback
 
                 _logger.LogInformation($"Processing Pingback from: {_sourceUrl} ({ip}) to {_targetUrl}");
 
-                var pingRequest = await ExamineSourceAsync();
+                var pingRequest = await _pingSourceInspector.ExamineSourceAsync(_sourceUrl, _targetUrl);
                 if (null == pingRequest) return PingbackResponse.InvalidPingRequest;
                 if (!pingRequest.SourceDocumentInfo.SourceHasLink)
                 {
@@ -133,44 +137,6 @@ namespace Moonglade.Pingback
             {
                 _logger.LogError(e, $"Error {nameof(id)}");
                 throw;
-            }
-        }
-
-        private async Task<PingRequest> ExamineSourceAsync()
-        {
-            try
-            {
-                var regexHtml = new Regex(
-                    @"</?\w+((\s+\w+(\s*=\s*(?:"".*?""|'.*?'|[^'"">\s]+))?)+\s*|\s*)/?>",
-                    RegexOptions.Singleline | RegexOptions.Compiled);
-
-                var regexTitle = new Regex(
-                    @"(?<=<title.*>)([\s\S]*)(?=</title>)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-                using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-                var html = await httpClient.GetStringAsync(_sourceUrl);
-                var title = regexTitle.Match(html).Value.Trim();
-                var containsHtml = regexHtml.IsMatch(title);
-                var sourceHasLink = html.ToUpperInvariant().Contains(_targetUrl.ToUpperInvariant());
-
-                var pingRequest = new PingRequest
-                {
-                    SourceDocumentInfo = new SourceDocumentInfo
-                    {
-                        Title = title,
-                        ContainsHtml = containsHtml,
-                        SourceHasLink = sourceHasLink
-                    },
-                    TargetUrl = _targetUrl,
-                    SourceUrl = _sourceUrl
-                };
-
-                return pingRequest;
-            }
-            catch (WebException ex)
-            {
-                _logger.LogError(ex, nameof(ExamineSourceAsync));
-                return null;
             }
         }
 

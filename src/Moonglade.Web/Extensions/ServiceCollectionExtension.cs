@@ -43,6 +43,7 @@ namespace Moonglade.Web.Extensions
 
         public static void AddPingback(this IServiceCollection services)
         {
+            services.AddScoped<IPingSourceInspector, PingSourceInspector>();
             services.AddScoped<IPingbackSender, PingbackSender>();
             services.AddScoped<IPingbackService, PingbackService>();
         }

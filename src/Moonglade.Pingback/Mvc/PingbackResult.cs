@@ -30,7 +30,7 @@ namespace Moonglade.Pingback.Mvc
             _logger.LogInformation($"Executing PingbackResult for '{PingbackResponse}'");
 
             string content = null;
-            int statusCode = StatusCodes.Status200OK;
+            int statusCode = StatusCodes.Status201Created;
             IActionResult actionResult = null;
 
             switch (PingbackResponse)
