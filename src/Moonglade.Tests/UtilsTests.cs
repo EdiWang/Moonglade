@@ -111,22 +111,6 @@ namespace Moonglade.Tests
             Assert.IsTrue(themes.All(t => t.Value.EndsWith(".css")));
         }
 
-        [Test]
-        public void TestLeft()
-        {
-            const string str = "Microsoft Rocks!";
-            var left = Utils.Left(str, 9);
-            Assert.IsTrue(left == "Microsoft");
-        }
-
-        [Test]
-        public void TestRight()
-        {
-            var str = "996 Sucks!";
-            var left = Utils.Right(str, 6);
-            Assert.IsTrue(left == "Sucks!");
-        }
-
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
         [TestCase("C#", ExpectedResult = "csharp")]
         [TestCase("955", ExpectedResult = "955")]

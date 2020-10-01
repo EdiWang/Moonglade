@@ -337,16 +337,6 @@ namespace Moonglade.Core
             return c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == ' ';
         }
 
-        public static string Left(string sSource, int iLength)
-        {
-            return sSource.Substring(0, iLength > sSource.Length ? sSource.Length : iLength);
-        }
-
-        public static string Right(string sSource, int iLength)
-        {
-            return sSource.Substring(iLength > sSource.Length ? 0 : sSource.Length - iLength);
-        }
-
         public static string RemoveTags(string html)
         {
             if (string.IsNullOrEmpty(html))
