@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
@@ -110,6 +111,57 @@ namespace Moonglade.ImageStorage.Providers
                     Message = e.Message
                 };
             }
+        }
+
+        public static string ResolveImageStoragePath(string contentRootPath, string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            const string basedirStr = "${basedir}"; // Do not use "." because there could be "." in path.
+            if (path.IndexOf(basedirStr, StringComparison.Ordinal) > 0)
+            {
+                throw new NotSupportedException($"{basedirStr} can only be at the beginning.");
+            }
+            if (path.IndexOf(basedirStr, StringComparison.Ordinal) == 0)
+            {
+                // Use relative path
+                // Warning: Write data under application directory may blow up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.
+                path = path.Replace(basedirStr, contentRootPath);
+            }
+
+            // Handle Path for non-Windows environment #412
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || Path.DirectorySeparatorChar != '\\')
+            {
+                if (path.IndexOf('\\') > 0)
+                {
+                    path = path.Replace('\\', Path.DirectorySeparatorChar);
+                }
+            }
+
+            // IsPathFullyQualified can't check if path is valid, e.g.:
+            // Path: C:\Documents<>|foo
+            //   Rooted: True
+            //   Fully qualified: True
+            //   Full path: C:\Documents<>|foo
+            var invalidChars = Path.GetInvalidPathChars();
+            if (path.IndexOfAny(invalidChars) >= 0)
+            {
+                throw new InvalidOperationException("Path can not contain invalid chars.");
+            }
+            if (!Path.IsPathFullyQualified(path))
+            {
+                throw new InvalidOperationException("Path is not fully qualified.");
+            }
+
+            var fullPath = Path.GetFullPath(path);
+            if (!Directory.Exists(fullPath))
+            {
+                Directory.CreateDirectory(fullPath);
+            }
+            return fullPath;
         }
     }
 }

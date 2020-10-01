@@ -101,7 +101,7 @@ namespace Moonglade.Web.Extensions
                     break;
                 case "filesystem":
                     var path = imageStorage.FileSystemSettings.Path;
-                    var fullPath = Utils.ResolveImageStoragePath(environment.ContentRootPath, path);
+                    var fullPath = FileSystemImageStorage.ResolveImageStoragePath(environment.ContentRootPath, path);
                     services.AddSingleton(s => new FileSystemImageConfiguration(fullPath));
                     services.AddSingleton<IBlogImageStorage, FileSystemImageStorage>();
                     break;

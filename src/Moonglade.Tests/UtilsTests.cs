@@ -184,58 +184,6 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        [Platform(Include = "Win")]
-        public void TestResolveImageStoragePathValidAbsolute()
-        {
-            var contentRootPath = @"C:\Moonglade";
-            var path = @"C:\MoongladeData\Uploads";
-
-            var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
-            Assert.IsTrue(finalPath == @"C:\MoongladeData\Uploads");
-        }
-
-        [Test]
-        [Platform(Include = "Win")]
-        public void TestResolveImageStoragePathValidRelative()
-        {
-            var contentRootPath = @"C:\Moonglade";
-            var path = @"${basedir}\Uploads";
-
-            var finalPath = Utils.ResolveImageStoragePath(contentRootPath, path);
-            Assert.IsTrue(finalPath == @"C:\Moonglade\Uploads");
-        }
-
-        [Test]
-        [Platform(Include = "Win")]
-        public void TestResolveImageStoragePathInvalidRelative()
-        {
-            var contentRootPath = @"C:\Moonglade";
-            var path = @"..\${basedir}\Uploads";
-
-            Assert.Catch<NotSupportedException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
-        }
-
-        [Test]
-        [Platform(Include = "Win")]
-        public void TestResolveImageStoragePathInvalidChar()
-        {
-            var contentRootPath = @"C:\Moonglade";
-            var path = @"${basedir}\Uploads<>|foo";
-
-            Assert.Catch<InvalidOperationException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
-        }
-
-        [TestCase("")]
-        [TestCase(" ")]
-        [TestCase(null)]
-        [Platform(Include = "Win")]
-        public void TestResolveImageStoragePathEmptyParameter(string path)
-        {
-            var contentRootPath = @"C:\Moonglade";
-            Assert.Catch<ArgumentNullException>(() => { Utils.ResolveImageStoragePath(contentRootPath, path); });
-        }
-
-        [Test]
         public void TestRemoveTags()
         {
             var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
