@@ -73,13 +73,13 @@ namespace Moonglade.Pingback
                 if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
                 _logger.LogInformation("Adding received pingback...");
-                var domain = GetDomain(_sourceUrl);
 
+                var uri = new Uri(_sourceUrl);
                 var obj = new PingbackHistory
                 {
                     Id = Guid.NewGuid(),
                     PingTimeUtc = DateTime.UtcNow,
-                    Domain = domain,
+                    Domain = uri.Host,
                     SourceUrl = _sourceUrl,
                     SourceTitle = pingRequest.SourceDocumentInfo.Title,
                     TargetPostId = postIdTitle.Id,
@@ -126,13 +126,6 @@ namespace Moonglade.Pingback
                 _logger.LogError(e, $"Error {nameof(DeletePingbackHistory)}");
                 throw;
             }
-        }
-
-        private static string GetDomain(string sourceUrl)
-        {
-            var start = sourceUrl.IndexOf("://", StringComparison.Ordinal) + 3;
-            var stop = sourceUrl.IndexOf("/", start, StringComparison.Ordinal);
-            return sourceUrl[start..stop].Replace("www.", string.Empty);
         }
 
         private bool ValidatePingRequest(string requestBody)
