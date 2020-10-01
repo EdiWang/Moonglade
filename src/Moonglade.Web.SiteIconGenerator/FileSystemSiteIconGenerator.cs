@@ -58,12 +58,14 @@ namespace Moonglade.Web.SiteIconGenerator
             // Here comes the extras, Apple, always so special!
             ResizeImageToFile(sourceImagePath, 192, 192, Path.Join(directory, "apple-icon.png"), ImageFormat.Png);
             ResizeImageToFile(sourceImagePath, 192, 192, Path.Join(directory, "apple-icon-precomposed.png"), ImageFormat.Png);
-            
+
             // This will save actually a PNG file.
             // ResizeImageToFile(sourceImagePath, 16, 16, Path.Join(directory, "favicon.ico"), ImageFormat.Icon);
             // Must use this:
             GenerateStandardFaviconIco(Path.Join(directory, "favicon-16x16.png"), Path.Join(directory, "favicon.ico"));
         }
+
+        private static readonly object FileLock = new object();
 
         private static void GenerateStandardFaviconIco(string originImagePath, string icoFilePath)
         {
@@ -73,8 +75,11 @@ namespace Moonglade.Web.SiteIconGenerator
                 using var image = new Bitmap(fs);
                 var ico = Converter.BitmapToIcon(image);
                 using var icoFs = new FileStream(icoFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                ico.Save(icoFs);
-                icoFs.Flush();
+                lock (FileLock)
+                {
+                    ico.Save(icoFs);
+                    icoFs.Flush();
+                }
             }
         }
 
