@@ -426,5 +426,26 @@ namespace Moonglade.Core
             Html = 1,
             Text = 2
         }
+
+        public static IEnumerable<string> GetEnvironmentTags()
+        {
+            var tagsEnv = Environment.GetEnvironmentVariable("MOONGLADE_TAGS");
+            if (string.IsNullOrWhiteSpace(tagsEnv))
+            {
+                yield return string.Empty;
+                yield break;
+            }
+
+            var tagRegex = new Regex(@"^[a-zA-Z0-9-#@$()\[\]/]+$");
+            var tags = tagsEnv.Split(',');
+            foreach (string tag in tags)
+            {
+                var t = tag.Trim();
+                if (tagRegex.IsMatch(t))
+                {
+                    yield return t;
+                }
+            }
+        }
     }
 }

@@ -335,5 +335,47 @@ namespace Moonglade.Tests
                 Utils.ResolveCanonicalUrl("996ICU", "251");
             });
         }
+
+        [TestCase("")]
+        [TestCase("DC1")]
+        [TestCase("DC1,DC2")]
+        [TestCase("DC1, DC2")]
+        [TestCase("DC1, DC2,DC3")]
+        [TestCase("DC[1], DC-2, DC#3, DC@4, DC$5, DC(6), DC/7")]
+        public void TestGetEnvironmentTagsValid(string tags)
+        {
+            Environment.SetEnvironmentVariable("MOONGLADE_TAGS", tags, EnvironmentVariableTarget.Process);
+            var envTags = Utils.GetEnvironmentTags();
+            Assert.IsNotNull(envTags);
+
+            var list = tags.Split(',').Select(p => p.Trim());
+            foreach (var tag in list)
+            {
+                Assert.IsTrue(envTags.Contains(tag));
+            }
+        }
+
+        [TestCase("DC%1")]
+        [TestCase("DC 1")]
+        [TestCase("DC*1")]
+        [TestCase("DC^1")]
+        [TestCase("DC^1")]
+        [TestCase("DC+1")]
+        [TestCase("DC=1")]
+        [TestCase("DC!1")]
+        [TestCase("DC`1")]
+        [TestCase("DC~1")]
+        [TestCase("DC'1")]
+        [TestCase("DC?1")]
+        [TestCase("DC{1}")]
+        public void TestGetEnvironmentTagsInvalid(string invalidTag)
+        {
+            Environment.SetEnvironmentVariable("MOONGLADE_TAGS", $"DC1, DC2, {invalidTag}", EnvironmentVariableTarget.Process);
+            var envTags = Utils.GetEnvironmentTags();
+            Assert.IsNotNull(envTags);
+
+            Assert.IsTrue(envTags.Count() == 2);
+            Assert.IsTrue(!envTags.Contains(invalidTag));
+        }
     }
 }
