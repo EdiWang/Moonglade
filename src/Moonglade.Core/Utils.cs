@@ -432,11 +432,20 @@ namespace Moonglade.Core
             var tagsEnv = Environment.GetEnvironmentVariable("MOONGLADE_TAGS");
             if (string.IsNullOrWhiteSpace(tagsEnv))
             {
-                return new[] { string.Empty };
+                yield return string.Empty;
+                yield break;
             }
 
-            var tags = tagsEnv.Split(',').Select(p => p.Trim());
-            return tags;
+            var tagRegex = new Regex("(?!-)([a-z0-9-]+)");
+            var tags = tagsEnv.Split(',');
+            foreach (string tag in tags)
+            {
+                var t = tag.Trim();
+                if (tagRegex.IsMatch(t))
+                {
+                    yield return t;
+                }
+            }
         }
     }
 }

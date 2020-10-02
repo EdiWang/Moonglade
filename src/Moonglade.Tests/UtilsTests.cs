@@ -341,7 +341,7 @@ namespace Moonglade.Tests
         [TestCase("DC1,DC2")]
         [TestCase("DC1, DC2")]
         [TestCase("DC1, DC2,DC3")]
-        public void TestGetEnvironmentTags(string tags)
+        public void TestGetEnvironmentTagsValid(string tags)
         {
             Environment.SetEnvironmentVariable("MOONGLADE_TAGS", tags, EnvironmentVariableTarget.Process);
             var envTags = Utils.GetEnvironmentTags();
