@@ -24,7 +24,8 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MOONGLADE_TAGS": "local, dev"
       },
       "applicationUrl": "https://localhost:1055;http://localhost:1050"
     }

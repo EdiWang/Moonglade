@@ -255,8 +255,15 @@ namespace Moonglade.Web
                 endpoints.MapGet("/ping", async context =>
                 {
                     context.Response.Headers.Add("X-Moonglade-Version", Utils.AppVersion);
-                    await context.Response.WriteAsync(
-                        $"Moonglade Version: {Utils.AppVersion}, .NET Core {Environment.Version}", Encoding.UTF8);
+                    var obj = new
+                    {
+                        MoongladeVersion = Utils.AppVersion,
+                        DotNetVersion = Environment.Version.ToString(),
+                        EnvironmentTags = Utils.GetEnvironmentTags()
+                    };
+
+                    var json = System.Text.Json.JsonSerializer.Serialize(obj);
+                    await context.Response.WriteAsync(json, Encoding.UTF8);
                 });
                 endpoints.MapControllerRoute(
                     "default",
