@@ -436,7 +436,7 @@ namespace Moonglade.Core
                 yield break;
             }
 
-            var tagRegex = new Regex("(?!-)([a-z0-9-]+)");
+            var tagRegex = new Regex(@"^[a-zA-Z0-9-#@$()\[\]/]+$");
             var tags = tagsEnv.Split(',');
             foreach (string tag in tags)
             {
