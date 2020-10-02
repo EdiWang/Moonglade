@@ -42,12 +42,9 @@ namespace Moonglade.Pingback
 
                 var pingRequest = new PingRequest
                 {
-                    SourceDocumentInfo = new SourceDocumentInfo
-                    {
-                        Title = title,
-                        ContainsHtml = containsHtml,
-                        SourceHasLink = sourceHasLink
-                    },
+                    Title = title,
+                    ContainsHtml = containsHtml,
+                    SourceHasLink = sourceHasLink,
                     TargetUrl = targetUrl,
                     SourceUrl = sourceUrl
                 };

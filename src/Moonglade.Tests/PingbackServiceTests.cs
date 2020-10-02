@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moonglade.Model;
 using Moonglade.Pingback;
 using Moq;
 using NUnit.Framework;
@@ -92,10 +91,7 @@ namespace Moonglade.Tests
             var tcs = new TaskCompletionSource<PingRequest>();
             tcs.SetResult(new PingRequest
             {
-                SourceDocumentInfo = new SourceDocumentInfo
-                {
-                    SourceHasLink = false
-                }
+                SourceHasLink = false
             });
 
             _pingSourceInspectorMock
@@ -117,11 +113,8 @@ namespace Moonglade.Tests
             var tcs = new TaskCompletionSource<PingRequest>();
             tcs.SetResult(new PingRequest
             {
-                SourceDocumentInfo = new SourceDocumentInfo
-                {
-                    SourceHasLink = true,
-                    ContainsHtml = true
-                }
+                SourceHasLink = true,
+                ContainsHtml = true
             });
 
             _pingSourceInspectorMock
@@ -143,11 +136,8 @@ namespace Moonglade.Tests
             var tcsPr = new TaskCompletionSource<PingRequest>();
             tcsPr.SetResult(new PingRequest
             {
-                SourceDocumentInfo = new SourceDocumentInfo
-                {
-                    SourceHasLink = true,
-                    ContainsHtml = false
-                }
+                SourceHasLink = true,
+                ContainsHtml = false
             });
 
             var tcsPt = new TaskCompletionSource<(Guid Id, string Title)>();
@@ -173,11 +163,8 @@ namespace Moonglade.Tests
             var tcsPr = new TaskCompletionSource<PingRequest>();
             tcsPr.SetResult(new PingRequest
             {
-                SourceDocumentInfo = new SourceDocumentInfo
-                {
-                    SourceHasLink = true,
-                    ContainsHtml = false
-                }
+                SourceHasLink = true,
+                ContainsHtml = false
             });
 
             _pingSourceInspectorMock

@@ -50,12 +50,12 @@ namespace Moonglade.Pingback
 
                 var pingRequest = await _pingSourceInspector.ExamineSourceAsync(_sourceUrl, _targetUrl);
                 if (null == pingRequest) return PingbackResponse.InvalidPingRequest;
-                if (!pingRequest.SourceDocumentInfo.SourceHasLink)
+                if (!pingRequest.SourceHasLink)
                 {
                     _logger.LogError("Pingback error: The source URI does not contain a link to the target URI.");
                     return PingbackResponse.Error17SourceNotContainTargetUri;
                 }
-                if (pingRequest.SourceDocumentInfo.ContainsHtml)
+                if (pingRequest.ContainsHtml)
                 {
                     _logger.LogWarning("Spam detected on current Pingback...");
                     return PingbackResponse.SpamDetectedFakeNotFound;
@@ -81,7 +81,7 @@ namespace Moonglade.Pingback
                     PingTimeUtc = DateTime.UtcNow,
                     Domain = uri.Host,
                     SourceUrl = _sourceUrl,
-                    SourceTitle = pingRequest.SourceDocumentInfo.Title,
+                    SourceTitle = pingRequest.Title,
                     TargetPostId = postIdTitle.Id,
                     TargetPostTitle = postIdTitle.Title,
                     SourceIp = ip

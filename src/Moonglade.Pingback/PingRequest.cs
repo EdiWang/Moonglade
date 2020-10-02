@@ -6,6 +6,10 @@
 
         public string TargetUrl { get; set; }
 
-        public SourceDocumentInfo SourceDocumentInfo { get; set; }
+        public string Title { get; set; }
+
+        public bool ContainsHtml { get; set; }
+
+        public bool SourceHasLink { get; set; }
     }
 }
