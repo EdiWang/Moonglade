@@ -335,5 +335,23 @@ namespace Moonglade.Tests
                 Utils.ResolveCanonicalUrl("996ICU", "251");
             });
         }
+
+        [TestCase("")]
+        [TestCase("DC1")]
+        [TestCase("DC1,DC2")]
+        [TestCase("DC1, DC2")]
+        [TestCase("DC1, DC2,DC3")]
+        public void TestGetEnvironmentTags(string tags)
+        {
+            Environment.SetEnvironmentVariable("MOONGLADE_TAGS", tags, EnvironmentVariableTarget.Process);
+            var envTags = Utils.GetEnvironmentTags();
+            Assert.IsNotNull(envTags);
+
+            var list = tags.Split(',').Select(p => p.Trim());
+            foreach (var tag in list)
+            {
+                Assert.IsTrue(envTags.Contains(tag));
+            }
+        }
     }
 }
