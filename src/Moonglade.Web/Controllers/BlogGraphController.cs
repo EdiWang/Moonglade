@@ -52,10 +52,8 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Tags()
         {
-            var response = await _tagService.GetAllAsync();
-            if (response.IsSuccess) return Ok(response.Item);
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            var tags = await _tagService.GetAllAsync();
+            return Ok(tags);
         }
 
         [HttpGet("categories")]

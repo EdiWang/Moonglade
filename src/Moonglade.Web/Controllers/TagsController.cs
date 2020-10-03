@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,67 +29,75 @@ namespace Moonglade.Web.Controllers
         [Route("")]
         public async Task<IActionResult> Index()
         {
-            var response = await _tagService.GetTagCountListAsync();
-            if (!response.IsSuccess)
+            try
+            {
+                var tags = await _tagService.GetTagCountListAsync();
+                return View(tags);
+            }
+            catch (Exception e)
             {
                 SetFriendlyErrorMessage();
+                Logger.LogError(e, e.Message);
+                return View();
             }
-            return View(response.Item);
         }
 
         [Route("list/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> List(string normalizedName)
         {
-            var tagResponse = _tagService.Get(normalizedName);
-            if (!tagResponse.IsSuccess)
+            try
             {
+                var tagResponse = _tagService.Get(normalizedName);
+                if (tagResponse == null) return NotFound();
+
+                ViewBag.TitlePrefix = tagResponse.DisplayName;
+                var postResponse = await _postService.GetByTagAsync(tagResponse.Id);
+                if (!postResponse.IsSuccess)
+                {
+                    SetFriendlyErrorMessage();
+                    return View();
+                }
+
+                var posts = postResponse.Item;
+                return View(posts);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
                 SetFriendlyErrorMessage();
                 return View();
             }
-
-            if (tagResponse.Item == null) return NotFound();
-
-            ViewBag.TitlePrefix = tagResponse.Item.DisplayName;
-            var postResponse = await _postService.GetByTagAsync(tagResponse.Item.Id);
-            if (!postResponse.IsSuccess)
-            {
-                SetFriendlyErrorMessage();
-                return View();
-            }
-
-            var posts = postResponse.Item;
-            return View(posts);
         }
 
         [Route("get-all-tag-names")]
         public async Task<IActionResult> GetAllTagNames()
         {
             var tagNames = await _tagService.GetAllNamesAsync();
-            return Json(tagNames.Item);
+            return Json(tagNames);
         }
 
         [Authorize]
         [Route("manage")]
         public async Task<IActionResult> Manage()
         {
-            var response = await _tagService.GetAllAsync();
-            return response.IsSuccess ? View("~/Views/Admin/ManageTags.cshtml", response.Item) : ServerError();
+            var tags = await _tagService.GetAllAsync();
+            return View("~/Views/Admin/ManageTags.cshtml", tags);
         }
 
         [Authorize]
         [HttpPost("update")]
         public async Task<IActionResult> Update(int tagId, string newTagName)
         {
-            var response = await _tagService.UpdateAsync(tagId, newTagName);
-            return response.IsSuccess ? Json(new { tagId, newTagName }) : ServerError();
+            await _tagService.UpdateAsync(tagId, newTagName);
+            return Json(new { tagId, newTagName });
         }
 
         [Authorize]
         [HttpPost("delete")]
         public async Task<IActionResult> Delete(int tagId)
         {
-            var response = await _tagService.DeleteAsync(tagId);
-            return response.IsSuccess ? Json(tagId) : ServerError();
+            await _tagService.DeleteAsync(tagId);
+            return Json(tagId);
         }
     }
 }
