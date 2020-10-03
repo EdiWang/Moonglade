@@ -46,10 +46,7 @@ namespace Moonglade.Web.Controllers
                 return View();
             }
 
-            if (tagResponse.Item == null)
-            {
-                return NotFound();
-            }
+            if (tagResponse.Item == null) return NotFound();
 
             ViewBag.TitlePrefix = tagResponse.Item.DisplayName;
             var postResponse = await _postService.GetByTagAsync(tagResponse.Item.Id);

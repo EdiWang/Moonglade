@@ -63,54 +63,52 @@ namespace Moonglade.Web.Controllers
             }
 
             var post = postResponse.Item;
-            if (null != post)
+            if (null == post) return NotFound();
+
+            var editViewModel = new PostEditViewModel
             {
-                var editViewModel = new PostEditViewModel
-                {
-                    PostId = post.Id,
-                    IsPublished = post.IsPublished,
-                    EditorContent = post.RawPostContent,
-                    Slug = post.Slug,
-                    Title = post.Title,
-                    EnableComment = post.CommentEnabled,
-                    ExposedToSiteMap = post.ExposedToSiteMap,
-                    FeedIncluded = post.IsFeedIncluded,
-                    ContentLanguageCode = post.ContentLanguageCode
-                };
+                PostId = post.Id,
+                IsPublished = post.IsPublished,
+                EditorContent = post.RawPostContent,
+                Slug = post.Slug,
+                Title = post.Title,
+                EnableComment = post.CommentEnabled,
+                ExposedToSiteMap = post.ExposedToSiteMap,
+                FeedIncluded = post.IsFeedIncluded,
+                ContentLanguageCode = post.ContentLanguageCode
+            };
 
-                if (post.PubDateUtc != null)
-                {
-                    editViewModel.PublishDate = _dateTimeResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
-                }
-
-                var tagStr = post.Tags
-                                 .Select(p => p.DisplayName)
-                                 .Aggregate(string.Empty, (current, item) => current + item + ",");
-
-                tagStr = tagStr.TrimEnd(',');
-                editViewModel.Tags = tagStr;
-
-                var catResponse = await _categoryService.GetAllAsync();
-                if (!catResponse.IsSuccess)
-                {
-                    return ServerError("Unsuccessful response from _categoryService.GetAllAsync().");
-                }
-
-                var catList = catResponse.Item;
-                if (null != catList && catList.Count > 0)
-                {
-                    var cbCatList = catList.Select(p =>
-                        new CheckBoxViewModel(
-                            p.DisplayName,
-                            p.Id.ToString(),
-                            post.Categories.Any(q => q.Id == p.Id)));
-                    editViewModel.CategoryList = cbCatList;
-                }
-
-                return View("CreateOrEdit", editViewModel);
+            if (post.PubDateUtc != null)
+            {
+                editViewModel.PublishDate = _dateTimeResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
             }
 
-            return NotFound();
+            var tagStr = post.Tags
+                .Select(p => p.DisplayName)
+                .Aggregate(string.Empty, (current, item) => current + item + ",");
+
+            tagStr = tagStr.TrimEnd(',');
+            editViewModel.Tags = tagStr;
+
+            var catResponse = await _categoryService.GetAllAsync();
+            if (!catResponse.IsSuccess)
+            {
+                return ServerError("Unsuccessful response from _categoryService.GetAllAsync().");
+            }
+
+            var catList = catResponse.Item;
+            if (null != catList && catList.Count > 0)
+            {
+                var cbCatList = catList.Select(p =>
+                    new CheckBoxViewModel(
+                        p.DisplayName,
+                        p.Id.ToString(),
+                        post.Categories.Any(q => q.Id == p.Id)));
+                editViewModel.CategoryList = cbCatList;
+            }
+
+            return View("CreateOrEdit", editViewModel);
+
         }
 
         [Authorize]
@@ -124,63 +122,63 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    var tagList = string.IsNullOrWhiteSpace(model.Tags)
-                                             ? new string[] { }
-                                             : model.Tags.Split(',').ToArray();
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return Json(new FailedResponse("Invalid ModelState"));
+                }
 
-                    var request = new EditPostRequest(model.PostId)
-                    {
-                        Title = model.Title.Trim(),
-                        Slug = model.Slug.Trim(),
-                        EditorContent = model.EditorContent,
-                        EnableComment = model.EnableComment,
-                        ExposedToSiteMap = model.ExposedToSiteMap,
-                        IsFeedIncluded = model.FeedIncluded,
-                        ContentLanguageCode = model.ContentLanguageCode,
-                        IsPublished = model.IsPublished,
-                        Tags = tagList,
-                        CategoryIds = model.SelectedCategoryIds
-                    };
+                var tagList = string.IsNullOrWhiteSpace(model.Tags)
+                    ? new string[] { }
+                    : model.Tags.Split(',').ToArray();
 
-                    var tzDate = _dateTimeResolver.GetNowOfTimeZone();
-                    if (model.ChangePublishDate &&
-                        model.PublishDate.HasValue &&
-                        model.PublishDate <= tzDate &&
-                        model.PublishDate.GetValueOrDefault().Year >= 1975)
-                    {
-                        request.PublishDate = model.PublishDate;
-                    }
+                var request = new EditPostRequest(model.PostId)
+                {
+                    Title = model.Title.Trim(),
+                    Slug = model.Slug.Trim(),
+                    EditorContent = model.EditorContent,
+                    EnableComment = model.EnableComment,
+                    ExposedToSiteMap = model.ExposedToSiteMap,
+                    IsFeedIncluded = model.FeedIncluded,
+                    ContentLanguageCode = model.ContentLanguageCode,
+                    IsPublished = model.IsPublished,
+                    Tags = tagList,
+                    CategoryIds = model.SelectedCategoryIds
+                };
 
-                    var response = model.PostId == Guid.Empty ?
-                        await _postService.CreateAsync(request) :
-                        await _postService.UpdateAsync(request);
+                var tzDate = _dateTimeResolver.GetNowOfTimeZone();
+                if (model.ChangePublishDate &&
+                    model.PublishDate.HasValue &&
+                    model.PublishDate <= tzDate &&
+                    model.PublishDate.GetValueOrDefault().Year >= 1975)
+                {
+                    request.PublishDate = model.PublishDate;
+                }
 
-                    if (response.IsSuccess)
-                    {
-                        if (model.IsPublished)
-                        {
-                            Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
+                var response = model.PostId == Guid.Empty ?
+                    await _postService.CreateAsync(request) :
+                    await _postService.UpdateAsync(request);
 
-                            var pubDate = response.Item.PubDateUtc.GetValueOrDefault();
-                            var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
-
-                            if (_blogConfig.AdvancedSettings.EnablePingBackSend)
-                            {
-                                _ = Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
-                            }
-                        }
-
-                        return Json(new { PostId = response.Item.Id });
-                    }
-
+                if (!response.IsSuccess)
+                {
                     Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     return Json(new FailedResponse(response.Message));
                 }
 
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new FailedResponse("Invalid ModelState"));
+                if (model.IsPublished)
+                {
+                    Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
+
+                    var pubDate = response.Item.PubDateUtc.GetValueOrDefault();
+                    var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
+
+                    if (_blogConfig.AdvancedSettings.EnablePingBackSend)
+                    {
+                        _ = Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
+                    }
+                }
+
+                return Json(new { PostId = response.Item.Id });
             }
             catch (Exception ex)
             {
@@ -209,7 +207,6 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Delete(Guid postId)
         {
             var response = await _postService.DeleteAsync(postId, true);
-
             return response.IsSuccess ? Json(postId) : ServerError();
         }
 

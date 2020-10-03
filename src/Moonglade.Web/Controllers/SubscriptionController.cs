@@ -65,10 +65,7 @@ namespace Moonglade.Web.Controllers
 
                 await _syndicationFeedService.RefreshFeedFileAsync(true);
 
-                if (!System.IO.File.Exists(atomDataFile))
-                {
-                    return NotFound();
-                }
+                if (!System.IO.File.Exists(atomDataFile)) return NotFound();
             }
 
             if (System.IO.File.Exists(atomDataFile))

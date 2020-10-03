@@ -56,12 +56,9 @@ namespace Moonglade.Web.Controllers
         [HttpPost("search")]
         public IActionResult Index(string term)
         {
-            if (!string.IsNullOrWhiteSpace(term))
-            {
-                return RedirectToAction(nameof(SearchGet), new { term });
-            }
-
-            return RedirectToAction("Index", "Post");
+            return !string.IsNullOrWhiteSpace(term) ?
+                RedirectToAction(nameof(SearchGet), new { term }) :
+                RedirectToAction("Index", "Post");
         }
 
         [HttpGet("search/{term}")]

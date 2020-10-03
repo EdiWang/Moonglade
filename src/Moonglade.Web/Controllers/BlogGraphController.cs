@@ -53,10 +53,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Tags()
         {
             var response = await _tagService.GetAllAsync();
-            if (response.IsSuccess)
-            {
-                return Ok(response.Item);
-            }
+            if (response.IsSuccess) return Ok(response.Item);
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -67,10 +64,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Categories()
         {
             var response = await _categoryService.GetAllAsync();
-            if (response.IsSuccess)
-            {
-                return Ok(response.Item);
-            }
+            if (response.IsSuccess) return Ok(response.Item);
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }

@@ -42,17 +42,11 @@ namespace Moonglade.Web.Controllers
         [Route("list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> List(string routeName, int page = 1)
         {
-            if (string.IsNullOrWhiteSpace(routeName))
-            {
-                return NotFound();
-            }
+            if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
 
             var pageSize = _blogConfig.ContentSettings.PostListPageSize;
             var catResponse = await _categoryService.GetAsync(routeName);
-            if (!catResponse.IsSuccess)
-            {
-                return ServerError($"Unsuccessful response: {catResponse.Message}");
-            }
+            if (!catResponse.IsSuccess) return ServerError($"Unsuccessful response: {catResponse.Message}");
 
             var cat = catResponse.Item;
             if (null == cat)

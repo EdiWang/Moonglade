@@ -56,10 +56,7 @@ namespace Moonglade.Web.Controllers
                 };
 
                 var response = await _menuService.CreateAsync(request);
-                if (response.IsSuccess)
-                {
-                    return Json(response);
-                }
+                if (response.IsSuccess) return Json(response);
 
                 Logger.LogError($"Create menu failed: {response.Message}");
                 ModelState.AddModelError("", response.Message);
@@ -81,10 +78,7 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogInformation($"Deleting Menu id: {id}");
                 var response = await _menuService.DeleteAsync(id);
-                if (response.IsSuccess)
-                {
-                    return Json(id);
-                }
+                if (response.IsSuccess) return Json(id);
 
                 Logger.LogError(response.Message);
                 return ServerError();
@@ -100,22 +94,19 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var r = await _menuService.GetAsync(id);
-            if (r.IsSuccess && null != r.Item)
+            if (!r.IsSuccess || null == r.Item) return NotFound();
+
+            var model = new MenuEditViewModel
             {
-                var model = new MenuEditViewModel
-                {
-                    Id = r.Item.Id,
-                    DisplayOrder = r.Item.DisplayOrder,
-                    Icon = r.Item.Icon,
-                    Title = r.Item.Title,
-                    Url = r.Item.Url,
-                    IsOpenInNewTab = r.Item.IsOpenInNewTab
-                };
+                Id = r.Item.Id,
+                DisplayOrder = r.Item.DisplayOrder,
+                Icon = r.Item.Icon,
+                Title = r.Item.Title,
+                Url = r.Item.Url,
+                IsOpenInNewTab = r.Item.IsOpenInNewTab
+            };
 
-                return Json(model);
-            }
-
-            return NotFound();
+            return Json(model);
         }
 
         [Authorize]
@@ -137,10 +128,7 @@ namespace Moonglade.Web.Controllers
 
                 var response = await _menuService.UpdateAsync(request);
 
-                if (response.IsSuccess)
-                {
-                    return Json(response);
-                }
+                if (response.IsSuccess) return Json(response);
 
                 Logger.LogError($"Edit menu failed: {response.Message}");
                 ModelState.AddModelError("", response.Message);

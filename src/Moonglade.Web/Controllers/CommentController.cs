@@ -133,10 +133,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> SetApprovalStatus(Guid commentId)
         {
             var response = await _commentService.ToggleApprovalStatusAsync(new[] { commentId });
-            if (response.IsSuccess)
-            {
-                return Json(commentId);
-            }
+            if (response.IsSuccess) return Json(commentId);
 
             Response.StatusCode = StatusCodes.Status500InternalServerError;
             return Json(response.ResponseCode);

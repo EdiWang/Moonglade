@@ -35,10 +35,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> Index(string slug)
         {
-            if (string.IsNullOrWhiteSpace(slug))
-            {
-                return BadRequest();
-            }
+            if (string.IsNullOrWhiteSpace(slug)) return BadRequest();
 
             var pageResponse = await _cache.GetOrCreateAsync(CacheDivision.Page, slug.ToLower(), async entry =>
             {
@@ -56,10 +53,7 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            if (!pageResponse.Item.IsPublished)
-            {
-                return NotFound();
-            }
+            if (!pageResponse.Item.IsPublished) return NotFound();
 
             return View(pageResponse.Item);
         }
@@ -104,11 +98,7 @@ namespace Moonglade.Web.Controllers
         {
             var response = await _customPageService.GetAsync(id);
             if (!response.IsSuccess) return ServerError();
-
-            if (response.Item == null)
-            {
-                return NotFound();
-            }
+            if (response.Item == null) return NotFound();
 
             var model = new CustomPageEditViewModel
             {

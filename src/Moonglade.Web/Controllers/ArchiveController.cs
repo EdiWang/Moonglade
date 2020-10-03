@@ -25,10 +25,8 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var response = await _postArchiveService.ListAsync();
-            if (!response.IsSuccess)
-            {
-                SetFriendlyErrorMessage();
-            }
+            if (!response.IsSuccess) SetFriendlyErrorMessage();
+
             return View(response.Item);
         }
 
@@ -36,10 +34,7 @@ namespace Moonglade.Web.Controllers
         [Route("{year:int:length(4)}/{month:int:range(1,12)}")]
         public async Task<IActionResult> List(int year, int? month)
         {
-            if (year > DateTime.UtcNow.Year)
-            {
-                return BadRequest();
-            }
+            if (year > DateTime.UtcNow.Year) return BadRequest();
 
             IReadOnlyList<PostListEntry> model;
 

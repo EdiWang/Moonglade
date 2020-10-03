@@ -114,33 +114,34 @@ namespace Moonglade.Web.Controllers
         [HttpPost("general-settings")]
         public async Task<IActionResult> General(GeneralSettingsViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
-                _blogConfig.GeneralSettings.MetaDescription = model.MetaDescription;
-                _blogConfig.GeneralSettings.CanonicalPrefix = model.CanonicalPrefix;
-                _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
-                _blogConfig.GeneralSettings.Copyright = model.Copyright;
-                _blogConfig.GeneralSettings.LogoText = model.LogoText;
-                _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
-                _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-                _blogConfig.GeneralSettings.TimeZoneUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
-                _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
-                _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
-                _blogConfig.GeneralSettings.OwnerName = model.OwnerName;
-                _blogConfig.GeneralSettings.Description = model.OwnerDescription;
-                _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
-                _blogConfig.GeneralSettings.AutoDarkLightTheme = model.AutoDarkLightTheme;
-                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
-
-                _blogConfig.RequireRefresh();
-
-                Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
-
-                return Json(response);
+                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
             }
-            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+
+            _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
+            _blogConfig.GeneralSettings.MetaDescription = model.MetaDescription;
+            _blogConfig.GeneralSettings.CanonicalPrefix = model.CanonicalPrefix;
+            _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
+            _blogConfig.GeneralSettings.Copyright = model.Copyright;
+            _blogConfig.GeneralSettings.LogoText = model.LogoText;
+            _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
+            _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
+            _blogConfig.GeneralSettings.TimeZoneUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
+            _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
+            _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
+            _blogConfig.GeneralSettings.OwnerName = model.OwnerName;
+            _blogConfig.GeneralSettings.Description = model.OwnerDescription;
+            _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
+            _blogConfig.GeneralSettings.AutoDarkLightTheme = model.AutoDarkLightTheme;
+            var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
+
+            _blogConfig.RequireRefresh();
+
+            Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
+
+            return Json(response);
         }
 
         [HttpGet("content")]
@@ -167,30 +168,30 @@ namespace Moonglade.Web.Controllers
         [HttpPost("content")]
         public async Task<IActionResult> Content(ContentSettingsViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
-                _blogConfig.ContentSettings.EnableComments = model.EnableComments;
-                _blogConfig.ContentSettings.RequireCommentReview = model.RequireCommentReview;
-                _blogConfig.ContentSettings.EnableWordFilter = model.EnableWordFilter;
-                _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
-                _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
-                _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
-                _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
-                _blogConfig.ContentSettings.ShowCalloutSection = model.ShowCalloutSection;
-                _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
-                _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
-                _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
-                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
-                _blogConfig.RequireRefresh();
-
-                Logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
-
-                return Json(response);
-
+                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
             }
-            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+
+            _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
+            _blogConfig.ContentSettings.EnableComments = model.EnableComments;
+            _blogConfig.ContentSettings.RequireCommentReview = model.RequireCommentReview;
+            _blogConfig.ContentSettings.EnableWordFilter = model.EnableWordFilter;
+            _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
+            _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
+            _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
+            _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
+            _blogConfig.ContentSettings.ShowCalloutSection = model.ShowCalloutSection;
+            _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
+            _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
+            _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
+            var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
+            _blogConfig.RequireRefresh();
+
+            Logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
+
+            return Json(response);
         }
 
         #region Email Settings
@@ -213,24 +214,25 @@ namespace Moonglade.Web.Controllers
         [HttpPost("notification")]
         public async Task<IActionResult> Notification(NotificationSettingsViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var settings = _blogConfig.NotificationSettings;
-                settings.AdminEmail = model.AdminEmail;
-                settings.EmailDisplayName = model.EmailDisplayName;
-                settings.EnableEmailSending = model.EnableEmailSending;
-                settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
-                settings.SendEmailOnNewComment = model.SendEmailOnNewComment;
-
-                var response = await _blogConfig.SaveConfigurationAsync(settings);
-                _blogConfig.RequireRefresh();
-
-                Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
-
-                return Json(response);
+                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
             }
-            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+
+            var settings = _blogConfig.NotificationSettings;
+            settings.AdminEmail = model.AdminEmail;
+            settings.EmailDisplayName = model.EmailDisplayName;
+            settings.EnableEmailSending = model.EnableEmailSending;
+            settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
+            settings.SendEmailOnNewComment = model.SendEmailOnNewComment;
+
+            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            _blogConfig.RequireRefresh();
+
+            Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
+
+            return Json(response);
         }
 
         [HttpPost("send-test-email")]
@@ -269,25 +271,26 @@ namespace Moonglade.Web.Controllers
         [HttpPost("subscription")]
         public async Task<IActionResult> Subscription(SubscriptionSettingsViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var settings = _blogConfig.FeedSettings;
-                settings.AuthorName = model.AuthorName;
-                settings.RssCopyright = model.RssCopyright;
-                settings.RssDescription = model.RssDescription;
-                settings.RssItemCount = model.RssItemCount;
-                settings.RssTitle = model.RssTitle;
-                settings.UseFullContent = model.UseFullContent;
-
-                var response = await _blogConfig.SaveConfigurationAsync(settings);
-                _blogConfig.RequireRefresh();
-
-                Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
-
-                return Json(response);
+                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
             }
-            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+
+            var settings = _blogConfig.FeedSettings;
+            settings.AuthorName = model.AuthorName;
+            settings.RssCopyright = model.RssCopyright;
+            settings.RssDescription = model.RssDescription;
+            settings.RssItemCount = model.RssItemCount;
+            settings.RssTitle = model.RssTitle;
+            settings.UseFullContent = model.UseFullContent;
+
+            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            _blogConfig.RequireRefresh();
+
+            Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
+
+            return Json(response);
         }
 
         #endregion
@@ -312,23 +315,24 @@ namespace Moonglade.Web.Controllers
         [HttpPost("watermark")]
         public async Task<IActionResult> Watermark(WatermarkSettingsViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var settings = _blogConfig.WatermarkSettings;
-                settings.IsEnabled = model.IsEnabled;
-                settings.KeepOriginImage = model.KeepOriginImage;
-                settings.FontSize = model.FontSize;
-                settings.WatermarkText = model.WatermarkText;
-
-                var response = await _blogConfig.SaveConfigurationAsync(settings);
-                _blogConfig.RequireRefresh();
-
-                Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
-
-                return Json(response);
+                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
             }
-            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+
+            var settings = _blogConfig.WatermarkSettings;
+            settings.IsEnabled = model.IsEnabled;
+            settings.KeepOriginImage = model.KeepOriginImage;
+            settings.FontSize = model.FontSize;
+            settings.WatermarkText = model.WatermarkText;
+
+            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            _blogConfig.RequireRefresh();
+
+            Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
+
+            return Json(response);
         }
 
         #endregion
@@ -339,37 +343,38 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> FriendLink()
         {
             var response = await _friendLinkService.GetAllAsync();
-            if (response.IsSuccess)
+            if (!response.IsSuccess)
             {
-                var vm = new FriendLinkSettingsViewModelWrap
-                {
-                    FriendLinkSettingsViewModel = new FriendLinkSettingsViewModel
-                    {
-                        ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
-                    },
-                    FriendLinks = response.Item
-                };
-
-                return View(vm);
+                SetFriendlyErrorMessage();
+                return View();
             }
 
-            SetFriendlyErrorMessage();
-            return View();
+            var vm = new FriendLinkSettingsViewModelWrap
+            {
+                FriendLinkSettingsViewModel = new FriendLinkSettingsViewModel
+                {
+                    ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
+                },
+                FriendLinks = response.Item
+            };
+
+            return View(vm);
         }
 
         [HttpPost("friendlink")]
         public async Task<IActionResult> FriendLink(FriendLinkSettingsViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var fs = _blogConfig.FriendLinksSettings;
-                fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
-
-                var response = await _blogConfig.SaveConfigurationAsync(fs);
-                _blogConfig.RequireRefresh();
-                return Json(response);
+                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
             }
-            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+
+            var fs = _blogConfig.FriendLinksSettings;
+            fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
+
+            var response = await _blogConfig.SaveConfigurationAsync(fs);
+            _blogConfig.RequireRefresh();
+            return Json(response);
         }
 
         [HttpPost("friendlink/create")]
@@ -377,15 +382,11 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var response = await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
-                    if (response.IsSuccess)
-                    {
-                        return Json(response);
-                    }
-                    ModelState.AddModelError(string.Empty, response.Message);
-                }
+                if (!ModelState.IsValid) return BadRequest();
+
+                var response = await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
+                if (response.IsSuccess) return Json(response);
+                ModelState.AddModelError(string.Empty, response.Message);
 
                 return BadRequest();
             }
@@ -402,19 +403,20 @@ namespace Moonglade.Web.Controllers
             try
             {
                 var response = await _friendLinkService.GetAsync(id);
-                if (response.IsSuccess)
+                if (!response.IsSuccess)
                 {
-                    var obj = new FriendLinkEditViewModel
-                    {
-                        Id = response.Item.Id,
-                        LinkUrl = response.Item.LinkUrl,
-                        Title = response.Item.Title
-                    };
-
-                    return Json(obj);
+                    ModelState.AddModelError(string.Empty, response.Message);
+                    return BadRequest();
                 }
-                ModelState.AddModelError(string.Empty, response.Message);
-                return BadRequest();
+
+                var obj = new FriendLinkEditViewModel
+                {
+                    Id = response.Item.Id,
+                    LinkUrl = response.Item.LinkUrl,
+                    Title = response.Item.Title
+                };
+
+                return Json(obj);
             }
             catch (Exception e)
             {
@@ -429,11 +431,9 @@ namespace Moonglade.Web.Controllers
             try
             {
                 var response = await _friendLinkService.UpdateAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
-                if (response.IsSuccess)
-                {
-                    return Json(response);
-                }
+                if (response.IsSuccess) return Json(response);
                 ModelState.AddModelError(string.Empty, response.Message);
+
                 return BadRequest();
             }
             catch (Exception e)
@@ -519,10 +519,7 @@ namespace Moonglade.Web.Controllers
                 try
                 {
                     using var bmp = new Bitmap(new MemoryStream(base64Chars));
-                    if (bmp.Height != bmp.Width)
-                    {
-                        return BadRequest();
-                    }
+                    if (bmp.Height != bmp.Width) return BadRequest();
                 }
                 catch (Exception e)
                 {
@@ -573,21 +570,22 @@ namespace Moonglade.Web.Controllers
         [HttpPost("advanced")]
         public async Task<IActionResult> Advanced(AdvancedSettingsViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var settings = _blogConfig.AdvancedSettings;
-                settings.DNSPrefetchEndpoint = model.DNSPrefetchEndpoint;
-                settings.RobotsTxtContent = model.RobotsTxtContent;
-                settings.EnablePingBackSend = model.EnablePingbackSend;
-                settings.EnablePingBackReceive = model.EnablePingbackReceive;
-
-                var response = await _blogConfig.SaveConfigurationAsync(settings);
-                _blogConfig.RequireRefresh();
-
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
-                return Json(response);
+                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
             }
-            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+
+            var settings = _blogConfig.AdvancedSettings;
+            settings.DNSPrefetchEndpoint = model.DNSPrefetchEndpoint;
+            settings.RobotsTxtContent = model.RobotsTxtContent;
+            settings.EnablePingBackSend = model.EnablePingbackSend;
+            settings.EnablePingBackReceive = model.EnablePingbackReceive;
+
+            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            _blogConfig.RequireRefresh();
+
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
+            return Json(response);
         }
 
         [HttpPost("shutdown")]
@@ -637,21 +635,22 @@ namespace Moonglade.Web.Controllers
         [HttpPost("security")]
         public async Task<IActionResult> Security(SecuritySettingsViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var settings = _blogConfig.SecuritySettings;
-                settings.WarnExternalLink = model.WarnExternalLink;
-                settings.AllowScriptsInCustomPage = model.AllowScriptsInCustomPage;
-                settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
-                settings.EnablePostRawEndpoint = model.EnablePostRawEndpoint;
-
-                var response = await _blogConfig.SaveConfigurationAsync(settings);
-                _blogConfig.RequireRefresh();
-
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
-                return Json(response);
+                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
             }
-            return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+
+            var settings = _blogConfig.SecuritySettings;
+            settings.WarnExternalLink = model.WarnExternalLink;
+            settings.AllowScriptsInCustomPage = model.AllowScriptsInCustomPage;
+            settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
+            settings.EnablePostRawEndpoint = model.EnablePostRawEndpoint;
+
+            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            _blogConfig.RequireRefresh();
+
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
+            return Json(response);
         }
 
         #endregion
@@ -669,10 +668,7 @@ namespace Moonglade.Web.Controllers
                     return View();
                 }
 
-                if (page < 0)
-                {
-                    return BadRequest();
-                }
+                if (page < 0) return BadRequest();
 
                 var skip = (page - 1) * 20;
 
@@ -700,10 +696,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!AppSettings.EnableAudit)
-                {
-                    return BadRequest();
-                }
+                if (!AppSettings.EnableAudit) return BadRequest();
 
                 var response = await _blogAudit.ClearAuditLog();
                 return response.IsSuccess ?
@@ -767,40 +760,38 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid) return Conflict(ModelState);
+
+                if (cachedObjectValues.Contains("MCO_IMEM"))
                 {
-                    if (cachedObjectValues.Contains("MCO_IMEM"))
-                    {
-                        cache.RemoveAllCache();
-                    }
-
-                    if (cachedObjectValues.Contains("MCO_OPML"))
-                    {
-                        var opmlDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
-                        DeleteIfExists(opmlDataFile);
-                    }
-
-                    if (cachedObjectValues.Contains("MCO_FEED"))
-                    {
-                        var feedDir = Path.Join($"{SiteDataDirectory}", "feed");
-                        DeleteIfExists(feedDir);
-                    }
-
-                    if (cachedObjectValues.Contains("MCO_OPSH"))
-                    {
-                        var openSearchDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpenSearchFileName}");
-                        DeleteIfExists(openSearchDataFile);
-                    }
-
-                    if (cachedObjectValues.Contains("MCO_SICO"))
-                    {
-                        DeleteIfExists(SiteIconDirectory);
-                    }
-
-                    return Ok();
+                    cache.RemoveAllCache();
                 }
 
-                return Conflict(ModelState);
+                if (cachedObjectValues.Contains("MCO_OPML"))
+                {
+                    var opmlDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
+                    DeleteIfExists(opmlDataFile);
+                }
+
+                if (cachedObjectValues.Contains("MCO_FEED"))
+                {
+                    var feedDir = Path.Join($"{SiteDataDirectory}", "feed");
+                    DeleteIfExists(feedDir);
+                }
+
+                if (cachedObjectValues.Contains("MCO_OPSH"))
+                {
+                    var openSearchDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpenSearchFileName}");
+                    DeleteIfExists(openSearchDataFile);
+                }
+
+                if (cachedObjectValues.Contains("MCO_SICO"))
+                {
+                    DeleteIfExists(SiteIconDirectory);
+                }
+
+                return Ok();
+
             }
             catch (Exception e)
             {

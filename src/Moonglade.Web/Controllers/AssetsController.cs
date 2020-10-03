@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
             IOptions<ImageStorageSettings> imageStorageSettings,
             IBlogImageStorage imageStorage,
             IBlogConfig blogConfig,
-            ISiteIconGenerator siteIconGenerator, 
+            ISiteIconGenerator siteIconGenerator,
             IWebHostEnvironment env) : base(logger, settings)
         {
             _blogConfig = blogConfig;
@@ -79,10 +79,7 @@ namespace Moonglade.Web.Controllers
                     return imgBytesResponse;
                 });
 
-                if (imageEntry.IsSuccess)
-                {
-                    return File(imageEntry.Item.ImageBytes, imageEntry.Item.ImageContentType);
-                }
+                if (imageEntry.IsSuccess) return File(imageEntry.Item.ImageBytes, imageEntry.Item.ImageContentType);
 
                 Logger.LogError($"Error getting image, filename: {filename}, {imageEntry.Message}");
 
@@ -160,16 +157,17 @@ namespace Moonglade.Web.Controllers
 
                 Logger.LogInformation($"Image '{primaryFileName}' uloaded.");
 
-                if (response.IsSuccess)
+                if (!response.IsSuccess)
                 {
-                    return Json(new
-                    {
-                        location = $"/uploads/{response.Item}",
-                        filename = response.Item
-                    });
+                    Logger.LogError(response.Message);
+                    return ServerError();
                 }
-                Logger.LogError(response.Message);
-                return ServerError();
+
+                return Json(new
+                {
+                    location = $"/uploads/{response.Item}",
+                    filename = response.Item
+                });
             }
             catch (Exception e)
             {
@@ -333,7 +331,7 @@ namespace Moonglade.Web.Controllers
         // Credits: https://github.com/Anduin2017/Blog
         [ResponseCache(Duration = 3600)]
         [Route("/manifest.json")]
-        public async Task<IActionResult> Manifest([FromServices]IWebHostEnvironment hostEnvironment)
+        public async Task<IActionResult> Manifest([FromServices] IWebHostEnvironment hostEnvironment)
         {
             var themeColor = await Utils.GetThemeColorAsync(hostEnvironment.WebRootPath, _blogConfig.GeneralSettings.ThemeFileName);
 
