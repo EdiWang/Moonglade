@@ -176,7 +176,6 @@ Key | Data Type | Description
 ```AllowExternalScripts``` | ```bool``` | If CSP should enable external JavaScript links
 ```CaptchaSettings:ImageWidth``` | ```int``` | Pixel Width of Captcha Image
 ```CaptchaSettings:ImageHeight``` | ```int``` | Pixel Height of Captcha Image
-```DefaultLangCode``` | ```string``` | Default language code for editing posts (e.g. ```en-us```)
 ```Editor``` | ```string``` | ```HTML``` or ```Markdown```
 ```EnforceHttps``` | ```bool``` | Force website use HTTPS
 ```EnableAudit``` | ```bool``` | Enable Audit Log or not
