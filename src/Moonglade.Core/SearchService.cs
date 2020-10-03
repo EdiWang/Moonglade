@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -26,32 +25,29 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public Task<Response<IReadOnlyList<PostListEntry>>> SearchAsync(string keyword)
+        public async Task<IReadOnlyList<PostListEntry>> SearchAsync(string keyword)
         {
-            return TryExecuteAsync<IReadOnlyList<PostListEntry>>(async () =>
+            if (string.IsNullOrWhiteSpace(keyword))
             {
-                if (string.IsNullOrWhiteSpace(keyword))
+                throw new ArgumentNullException(keyword);
+            }
+
+            var postList = SearchByKeyword(keyword);
+
+            var resultList = await postList.Select(p => new PostListEntry
+            {
+                Title = p.Title,
+                Slug = p.Slug,
+                ContentAbstract = p.ContentAbstract,
+                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
+                Tags = p.PostTag.Select(pt => new Tag
                 {
-                    throw new ArgumentNullException(keyword);
-                }
+                    NormalizedName = pt.Tag.NormalizedName,
+                    DisplayName = pt.Tag.DisplayName
+                })
+            }).ToListAsync();
 
-                var postList = SearchByKeyword(keyword);
-
-                var resultList = await postList.Select(p => new PostListEntry
-                {
-                    Title = p.Title,
-                    Slug = p.Slug,
-                    ContentAbstract = p.ContentAbstract,
-                    PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-                    Tags = p.PostTag.Select(pt => new Tag
-                    {
-                        NormalizedName = pt.Tag.NormalizedName,
-                        DisplayName = pt.Tag.DisplayName
-                    })
-                }).ToListAsync();
-
-                return new SuccessResponse<IReadOnlyList<PostListEntry>>(resultList);
-            }, keyParameter: keyword);
+            return resultList;
         }
 
         private IQueryable<PostEntity> SearchByKeyword(string keyword)

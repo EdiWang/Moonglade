@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -64,20 +65,26 @@ namespace Moonglade.Web.Controllers
         [HttpGet("search/{term}")]
         public async Task<IActionResult> SearchGet(string term)
         {
-            if (!string.IsNullOrWhiteSpace(term))
+            try
             {
+                if (string.IsNullOrWhiteSpace(term))
+                {
+                    return RedirectToAction("Index", "Post");
+                }
+
                 Logger.LogInformation("Searching post for keyword: " + term);
 
                 ViewBag.TitlePrefix = term;
 
-                var response = await _searchService.SearchAsync(term);
-                if (!response.IsSuccess)
-                {
-                    SetFriendlyErrorMessage();
-                }
-                return View("Index", response.Item);
+                var posts = await _searchService.SearchAsync(term);
+                return View("Index", posts);
             }
-            return RedirectToAction("Index", "Post");
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
+                SetFriendlyErrorMessage();
+                return View("Index");
+            }
         }
 
         private async Task WriteOpenSearchFileAsync()
