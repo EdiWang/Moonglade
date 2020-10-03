@@ -48,7 +48,7 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task<Response> SendTestNotificationAsync()
+        public async Task<Response> TestNotificationAsync()
         {
             if (!IsEnabled)
             {
@@ -77,11 +77,11 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task SendNewCommentNotificationAsync(CommentDetailedItem model, Func<string, string> funcCommentContentFormat)
+        public async Task NotifyNewCommentAsync(CommentDetailedItem model, Func<string, string> funcCommentContentFormat)
         {
             if (!IsEnabled)
             {
-                _logger.LogWarning($"Skipped {nameof(SendNewCommentNotificationAsync)} because Email sending is disabled.");
+                _logger.LogWarning($"Skipped {nameof(NotifyNewCommentAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
                 return;
             }
@@ -106,11 +106,11 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink)
+        public async Task NotifyCommentReplyAsync(CommentReplyDetail model, string postLink)
         {
             if (!IsEnabled)
             {
-                _logger.LogWarning($"Skipped {nameof(SendCommentReplyNotificationAsync)} because Email sending is disabled.");
+                _logger.LogWarning($"Skipped {nameof(NotifyCommentReplyAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
                 return;
             }
@@ -133,11 +133,11 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task SendPingNotificationAsync(PingbackHistory model)
+        public async Task NotifyPingbackAsync(PingbackHistory model)
         {
             if (!IsEnabled)
             {
-                _logger.LogWarning($"Skipped {nameof(SendPingNotificationAsync)} because Email sending is disabled.");
+                _logger.LogWarning($"Skipped {nameof(NotifyPingbackAsync)} because Email sending is disabled.");
                 await Task.CompletedTask;
                 return;
             }

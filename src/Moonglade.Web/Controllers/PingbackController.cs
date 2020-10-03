@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
             var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
             var response = await _pingbackService.ProcessReceivedPayloadAsync(requestBody, ip,
-                history => _notificationClient.SendPingNotificationAsync(history));
+                history => _notificationClient.NotifyPingbackAsync(history));
 
             Logger.LogInformation($"Pingback Processor Response: {response}");
             return new PingbackResult(response);

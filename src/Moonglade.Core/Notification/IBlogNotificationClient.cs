@@ -8,12 +8,12 @@ namespace Moonglade.Core.Notification
 {
     public interface IBlogNotificationClient
     {
-        Task<Response> SendTestNotificationAsync();
+        Task<Response> TestNotificationAsync();
 
-        Task SendNewCommentNotificationAsync(CommentDetailedItem model, Func<string, string> funcCommentContentFormat);
+        Task NotifyNewCommentAsync(CommentDetailedItem model, Func<string, string> funcCommentContentFormat);
 
-        Task SendCommentReplyNotificationAsync(CommentReplyDetail model, string postLink);
+        Task NotifyCommentReplyAsync(CommentReplyDetail model, string postLink);
 
-        Task SendPingNotificationAsync(PingbackHistory model);
+        Task NotifyPingbackAsync(PingbackHistory model);
     }
 }

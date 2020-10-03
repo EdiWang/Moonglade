@@ -77,7 +77,7 @@ namespace Moonglade.Web.Controllers
                         {
                             _ = Task.Run(async () =>
                               {
-                                  await _notificationClient.SendNewCommentNotificationAsync(response.Item, s => Utils.ConvertMarkdownContent(s, Utils.MarkdownConvertType.Html));
+                                  await _notificationClient.NotifyNewCommentAsync(response.Item, s => Utils.ConvertMarkdownContent(s, Utils.MarkdownConvertType.Html));
                               });
                         }
                         var cResponse = new CommentResponse(true,
@@ -164,7 +164,7 @@ namespace Moonglade.Web.Controllers
                 var postLink = GetPostUrl(linkGenerator, response.Item.PubDateUtc, response.Item.Slug);
                 _ = Task.Run(async () =>
                 {
-                    await _notificationClient.SendCommentReplyNotificationAsync(response.Item, postLink);
+                    await _notificationClient.NotifyCommentReplyAsync(response.Item, postLink);
                 });
             }
 

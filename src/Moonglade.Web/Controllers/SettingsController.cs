@@ -241,7 +241,7 @@ namespace Moonglade.Web.Controllers
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> SendTestEmail([FromServices] IBlogNotificationClient notificationClient)
         {
-            var response = await notificationClient.SendTestNotificationAsync();
+            var response = await notificationClient.TestNotificationAsync();
             if (!response.IsSuccess)
             {
                 Response.StatusCode = StatusCodes.Status500InternalServerError;
