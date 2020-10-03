@@ -160,7 +160,8 @@ namespace Moonglade.Web.Controllers
                 ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
                 CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
                 ShowPostFooter = _blogConfig.ContentSettings.ShowPostFooter,
-                PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch
+                PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch,
+                DefaultLangCode = _blogConfig.ContentSettings.DefaultLangCode
             };
             return View(vm);
         }
@@ -185,6 +186,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
             _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
             _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
+            _blogConfig.ContentSettings.DefaultLangCode = model.DefaultLangCode;
             var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
             _blogConfig.RequireRefresh();
 

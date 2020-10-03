@@ -257,7 +257,7 @@ namespace Moonglade.Web.Controllers
                 EnableComment = true,
                 ExposedToSiteMap = true,
                 FeedIncluded = true,
-                ContentLanguageCode = AppSettings.DefaultLangCode
+                ContentLanguageCode = _blogConfig.ContentSettings.DefaultLangCode
             };
 
             var catList = await _categoryService.GetAllAsync();
