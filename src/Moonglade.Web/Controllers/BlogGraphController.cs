@@ -63,10 +63,8 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Categories()
         {
-            var response = await _categoryService.GetAllAsync();
-            if (response.IsSuccess) return Ok(response.Item);
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            var cats = await _categoryService.GetAllAsync();
+            return Ok(cats);
         }
 
         [HttpGet("posts/segment/published")]

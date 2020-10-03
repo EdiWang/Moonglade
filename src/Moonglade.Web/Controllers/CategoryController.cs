@@ -45,10 +45,8 @@ namespace Moonglade.Web.Controllers
             if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
 
             var pageSize = _blogConfig.ContentSettings.PostListPageSize;
-            var catResponse = await _categoryService.GetAsync(routeName);
-            if (!catResponse.IsSuccess) return ServerError($"Unsuccessful response: {catResponse.Message}");
+            var cat = await _categoryService.GetAsync(routeName);
 
-            var cat = catResponse.Item;
             if (null == cat)
             {
                 Logger.LogWarning($"Category '{routeName}' not found.");
@@ -77,13 +75,7 @@ namespace Moonglade.Web.Controllers
             try
             {
                 var allCats = await _categoryService.GetAllAsync();
-                if (!allCats.IsSuccess)
-                {
-                    ViewBag.HasError = true;
-                    ViewBag.ErrorMessage = allCats.Message;
-                    return View(viewLocation, new CategoryManageViewModel());
-                }
-                return View(viewLocation, new CategoryManageViewModel { Categories = allCats.Item });
+                return View(viewLocation, new CategoryManageViewModel { Categories = allCats });
             }
             catch (Exception e)
             {
@@ -110,17 +102,10 @@ namespace Moonglade.Web.Controllers
                     DisplayName = model.DisplayName
                 };
 
-                var response = await _categoryService.CreateAsync(request);
-                if (response.IsSuccess)
-                {
-                    DeleteOpmlFile();
-                    return Json(response);
-                }
+                await _categoryService.CreateAsync(request);
+                DeleteOpmlFile();
 
-                Logger.LogError($"Create category failed: {response.Message}");
-                ModelState.AddModelError("", response.Message);
-                return BadRequest("Create category failed");
-
+                return Json(model);
             }
             catch (Exception e)
             {
@@ -135,15 +120,15 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var r = await _categoryService.GetAsync(id);
-            if (!r.IsSuccess || null == r.Item) return NotFound();
+            var cat = await _categoryService.GetAsync(id);
+            if (null == cat) return NotFound();
 
             var model = new CategoryEditViewModel
             {
-                Id = r.Item.Id,
-                DisplayName = r.Item.DisplayName,
-                RouteName = r.Item.RouteName,
-                Note = r.Item.Note
+                Id = cat.Id,
+                DisplayName = cat.DisplayName,
+                RouteName = cat.RouteName,
+                Note = cat.Note
             };
 
             return Json(model);
@@ -164,17 +149,10 @@ namespace Moonglade.Web.Controllers
                     DisplayName = model.DisplayName
                 };
 
-                var response = await _categoryService.UpdateAsync(request);
+                await _categoryService.UpdateAsync(request);
 
-                if (response.IsSuccess)
-                {
-                    DeleteOpmlFile();
-                    return Json(response);
-                }
-
-                Logger.LogError($"Edit category failed: {response.Message}");
-                ModelState.AddModelError("", response.Message);
-                return Conflict(ModelState);
+                DeleteOpmlFile();
+                return Json(model);
             }
             catch (Exception e)
             {
@@ -192,15 +170,10 @@ namespace Moonglade.Web.Controllers
             try
             {
                 Logger.LogInformation($"Deleting category id: {id}");
-                var response = await _categoryService.DeleteAsync(id);
-                if (response.IsSuccess)
-                {
-                    DeleteOpmlFile();
-                    return Json(id);
-                }
+                await _categoryService.DeleteAsync(id);
+                DeleteOpmlFile();
 
-                Logger.LogError(response.Message);
-                return ServerError();
+                return Json(id);
             }
             catch (Exception e)
             {

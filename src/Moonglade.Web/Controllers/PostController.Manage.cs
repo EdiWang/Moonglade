@@ -90,16 +90,10 @@ namespace Moonglade.Web.Controllers
             tagStr = tagStr.TrimEnd(',');
             editViewModel.Tags = tagStr;
 
-            var catResponse = await _categoryService.GetAllAsync();
-            if (!catResponse.IsSuccess)
+            var cats = await _categoryService.GetAllAsync();
+            if (cats.Count > 0)
             {
-                return ServerError("Unsuccessful response from _categoryService.GetAllAsync().");
-            }
-
-            var catList = catResponse.Item;
-            if (null != catList && catList.Count > 0)
-            {
-                var cbCatList = catList.Select(p =>
+                var cbCatList = cats.Select(p =>
                     new CheckBoxViewModel(
                         p.DisplayName,
                         p.Id.ToString(),
@@ -261,9 +255,9 @@ namespace Moonglade.Web.Controllers
             };
 
             var catList = await _categoryService.GetAllAsync();
-            if (null != catList.Item && catList.Item.Any())
+            if (catList.Count > 0)
             {
-                var cbCatList = catList.Item.Select(p =>
+                var cbCatList = catList.Select(p =>
                     new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false));
                 view.CategoryList = cbCatList;
             }
