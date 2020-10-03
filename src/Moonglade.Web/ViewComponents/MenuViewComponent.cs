@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
 
@@ -15,14 +16,16 @@ namespace Moonglade.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var response = await _menuService.GetAllAsync();
-            if (response.IsSuccess)
+            try
             {
-                return View(response.Item);
+                var response = await _menuService.GetAllAsync();
+                return View(response);
             }
-
-            ViewBag.ComponentErrorMessage = response.Message;
-            return View("~/Views/Shared/ComponentError.cshtml");
+            catch (Exception e)
+            {
+                ViewBag.ComponentErrorMessage = e.Message;
+                return View("~/Views/Shared/ComponentError.cshtml");
+            }
         }
     }
 }

@@ -28,12 +28,10 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage")]
         public async Task<IActionResult> Manage([FromServices] MenuService menuService)
         {
-            var menuItemsResp = await menuService.GetAllAsync();
-            if (!menuItemsResp.IsSuccess) return ServerError(menuItemsResp.Message);
-
+            var menuItems = await menuService.GetAllAsync();
             var model = new MenuManageViewModel
             {
-                MenuItems = menuItemsResp.Item
+                MenuItems = menuItems
             };
 
             return View("~/Views/Admin/ManageMenu.cshtml", model);
@@ -56,11 +54,7 @@ namespace Moonglade.Web.Controllers
                 };
 
                 var response = await _menuService.CreateAsync(request);
-                if (response.IsSuccess) return Json(response);
-
-                Logger.LogError($"Create menu failed: {response.Message}");
-                ModelState.AddModelError("", response.Message);
-                return Conflict(ModelState);
+                return Json(response);
             }
             catch (Exception e)
             {
@@ -77,11 +71,8 @@ namespace Moonglade.Web.Controllers
             try
             {
                 Logger.LogInformation($"Deleting Menu id: {id}");
-                var response = await _menuService.DeleteAsync(id);
-                if (response.IsSuccess) return Json(id);
-
-                Logger.LogError(response.Message);
-                return ServerError();
+                await _menuService.DeleteAsync(id);
+                return Json(id);
             }
             catch (Exception e)
             {
@@ -93,17 +84,17 @@ namespace Moonglade.Web.Controllers
         [HttpGet("edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var r = await _menuService.GetAsync(id);
-            if (!r.IsSuccess || null == r.Item) return NotFound();
+            var menu = await _menuService.GetAsync(id);
+            if (null == menu) return NotFound();
 
             var model = new MenuEditViewModel
             {
-                Id = r.Item.Id,
-                DisplayOrder = r.Item.DisplayOrder,
-                Icon = r.Item.Icon,
-                Title = r.Item.Title,
-                Url = r.Item.Url,
-                IsOpenInNewTab = r.Item.IsOpenInNewTab
+                Id = menu.Id,
+                DisplayOrder = menu.DisplayOrder,
+                Icon = menu.Icon,
+                Title = menu.Title,
+                Url = menu.Url,
+                IsOpenInNewTab = menu.IsOpenInNewTab
             };
 
             return Json(model);
@@ -127,13 +118,7 @@ namespace Moonglade.Web.Controllers
                 };
 
                 var response = await _menuService.UpdateAsync(request);
-
-                if (response.IsSuccess) return Json(response);
-
-                Logger.LogError($"Edit menu failed: {response.Message}");
-                ModelState.AddModelError("", response.Message);
-                return Conflict(ModelState);
-
+                return Json(response);
             }
             catch (Exception e)
             {
