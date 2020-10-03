@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Data.Entities;
@@ -25,26 +24,24 @@ namespace Moonglade.Core
             _postRepository = postRepository;
         }
 
-        public Task<Response<IReadOnlyList<Archive>>> ListAsync()
+        public async Task<IReadOnlyList<Archive>> ListAsync()
         {
-            return TryExecuteAsync<IReadOnlyList<Archive>>(async () =>
+            if (!_postRepository.Any(p => p.IsPublished && !p.IsDeleted))
             {
-                if (!_postRepository.Any(p =>
-                    p.IsPublished && !p.IsDeleted))
-                    return new SuccessResponse<IReadOnlyList<Archive>>();
+                return new List<Archive>();
+            }
 
-                var spec = new PostSpec(PostPublishStatus.Published);
-                var list = await _postRepository.SelectAsync(spec, post => new
-                {
-                    post.PubDateUtc.Value.Year,
-                    post.PubDateUtc.Value.Month
-                }, monthList => new Archive(
-                    monthList.Key.Year,
-                    monthList.Key.Month,
-                    monthList.Count()));
+            var spec = new PostSpec(PostPublishStatus.Published);
+            var list = await _postRepository.SelectAsync(spec, post => new
+            {
+                post.PubDateUtc.Value.Year,
+                post.PubDateUtc.Value.Month
+            }, monthList => new Archive(
+                monthList.Key.Year,
+                monthList.Key.Month,
+                monthList.Count()));
 
-                return new SuccessResponse<IReadOnlyList<Archive>>(list);
-            });
+            return list;
         }
 
         public async Task<IReadOnlyList<PostListEntry>> ListPostsAsync(int year, int month = 0)

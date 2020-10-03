@@ -24,10 +24,17 @@ namespace Moonglade.Web.Controllers
         [Route("")]
         public async Task<IActionResult> Index()
         {
-            var response = await _postArchiveService.ListAsync();
-            if (!response.IsSuccess) SetFriendlyErrorMessage();
-
-            return View(response.Item);
+            try
+            {
+                var archives = await _postArchiveService.ListAsync();
+                return View(archives);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
+                SetFriendlyErrorMessage();
+                return View();
+            }
         }
 
         [Route("{year:int:length(4)}")]
