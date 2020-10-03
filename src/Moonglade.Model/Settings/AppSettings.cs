@@ -8,7 +8,6 @@ namespace Moonglade.Model.Settings
         public CaptchaSettings CaptchaSettings { get; set; }
         public int PostAbstractWords { get; set; }
         public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
-        public string DefaultLangCode { get; set; }
         public bool EnableOpenGraph { get; set; }
         public bool EnableWebApi { get; set; }
         public bool EnableAudit { get; set; }
