@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -112,7 +111,7 @@ namespace Moonglade.Web.Controllers
                 if (!ModelState.IsValid)
                 {
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new FailedResponse("Invalid ModelState"));
+                    return Json("Invalid ModelState");
                 }
 
                 var tagList = string.IsNullOrWhiteSpace(model.Tags)
@@ -165,7 +164,7 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogError(ex, "Error Creating New Post.");
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json(new FailedResponse(ex.Message));
+                return Json(ex.Message);
             }
         }
 

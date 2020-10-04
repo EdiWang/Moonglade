@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -116,7 +115,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+                return BadRequest();
             }
 
             _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
@@ -171,7 +170,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+                return BadRequest();
             }
 
             _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
@@ -219,7 +218,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+                return BadRequest();
             }
 
             var settings = _blogConfig.NotificationSettings;
@@ -272,7 +271,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+                return BadRequest();
             }
 
             var settings = _blogConfig.FeedSettings;
@@ -316,7 +315,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+                return BadRequest();
             }
 
             var settings = _blogConfig.WatermarkSettings;
@@ -368,7 +367,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+                return BadRequest();
             }
 
             var fs = _blogConfig.FriendLinksSettings;
@@ -564,7 +563,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+                return BadRequest();
             }
 
             var settings = _blogConfig.AdvancedSettings;
@@ -627,7 +626,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new FailedResponse((int)FaultCode.InvalidModelState, "Invalid ModelState"));
+                return BadRequest();
             }
 
             var settings = _blogConfig.SecuritySettings;

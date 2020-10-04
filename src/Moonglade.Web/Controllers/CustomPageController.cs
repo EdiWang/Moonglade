@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -118,7 +117,7 @@ namespace Moonglade.Web.Controllers
                 if (!ModelState.IsValid)
                 {
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new FailedResponse("Invalid ModelState"));
+                    return Json("Invalid ModelState");
                 }
 
                 if (InvalidPageRouteNames.Contains(model.Slug.ToLower()))
@@ -151,7 +150,7 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogError(e, "Error Create or Edit CustomPage.");
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json(new FailedResponse(e.Message));
+                return Json(e.Message);
             }
         }
 
