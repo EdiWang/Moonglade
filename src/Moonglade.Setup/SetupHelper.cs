@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reflection;
 using Dapper;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.Data.SqlClient;
 
 namespace Moonglade.Setup
@@ -50,98 +49,65 @@ namespace Moonglade.Setup
         /// <summary>
         /// Execute SQL to build database schema
         /// </summary>
-        public Response SetupDatabase()
+        public void SetupDatabase()
         {
-            try
+            using var conn = new SqlConnection(DatabaseConnectionString);
+            var sql = GetEmbeddedSqlScript("schema-mssql-140");
+            if (!string.IsNullOrWhiteSpace(sql))
             {
-                using var conn = new SqlConnection(DatabaseConnectionString);
-                var sql = GetEmbeddedSqlScript("schema-mssql-140");
-                if (!string.IsNullOrWhiteSpace(sql))
-                {
-                    conn.Execute(sql);
-                    return new SuccessResponse();
-                }
-                return new FailedResponse("Database Schema Script is empty.");
+                conn.Execute(sql);
             }
-            catch (Exception e)
-            {
-                return new FailedResponse(e.Message);
-            }
+            throw new InvalidOperationException("Database Schema Script is empty.");
         }
 
         /// <summary>
         /// Clear all data in database but preserve tables schema
         /// </summary>
-        public Response ClearData()
+        public void ClearData()
         {
-            try
-            {
-                using var conn = new SqlConnection(DatabaseConnectionString);
-                // Clear Relation Tables
-                conn.Execute("DELETE FROM PostTag");
-                conn.Execute("DELETE FROM PostCategory");
-                conn.Execute("DELETE FROM CommentReply");
+            using var conn = new SqlConnection(DatabaseConnectionString);
+            // Clear Relation Tables
+            conn.Execute("DELETE FROM PostTag");
+            conn.Execute("DELETE FROM PostCategory");
+            conn.Execute("DELETE FROM CommentReply");
 
-                // Clear Individual Tables
-                conn.Execute("DELETE FROM Category");
-                conn.Execute("DELETE FROM Tag");
-                conn.Execute("DELETE FROM Comment");
-                conn.Execute("DELETE FROM FriendLink");
-                conn.Execute("DELETE FROM PingbackHistory");
-                conn.Execute("DELETE FROM PostExtension");
-                conn.Execute("DELETE FROM PostPublish");
-                conn.Execute("DELETE FROM Post");
-                conn.Execute("DELETE FROM Menu");
+            // Clear Individual Tables
+            conn.Execute("DELETE FROM Category");
+            conn.Execute("DELETE FROM Tag");
+            conn.Execute("DELETE FROM Comment");
+            conn.Execute("DELETE FROM FriendLink");
+            conn.Execute("DELETE FROM PingbackHistory");
+            conn.Execute("DELETE FROM PostExtension");
+            conn.Execute("DELETE FROM Post");
+            conn.Execute("DELETE FROM Menu");
 
-                // Clear Configuration Table
-                conn.Execute("DELETE FROM BlogConfiguration");
+            // Clear Configuration Table
+            conn.Execute("DELETE FROM BlogConfiguration");
 
-                // Clear AuditLog Table
-                conn.Execute("DELETE FROM AuditLog");
-                return new SuccessResponse();
-            }
-            catch (Exception e)
-            {
-                return new FailedResponse(e.Message);
-            }
+            // Clear AuditLog Table
+            conn.Execute("DELETE FROM AuditLog");
         }
 
-        public Response ResetDefaultConfiguration()
+        public void ResetDefaultConfiguration()
         {
-            try
+            using var conn = new SqlConnection(DatabaseConnectionString);
+            var sql = GetEmbeddedSqlScript("init-blogconfiguration");
+            if (!string.IsNullOrWhiteSpace(sql))
             {
-                using var conn = new SqlConnection(DatabaseConnectionString);
-                var sql = GetEmbeddedSqlScript("init-blogconfiguration");
-                if (!string.IsNullOrWhiteSpace(sql))
-                {
-                    conn.Execute(sql);
-                    return new SuccessResponse();
-                }
-                return new FailedResponse("SQL Script is empty.");
+                conn.Execute(sql);
             }
-            catch (Exception e)
-            {
-                return new FailedResponse(e.Message);
-            }
+            throw new InvalidDataException("SQL Script is empty.");
         }
 
-        public Response InitSampleData()
+        public void InitSampleData()
         {
-            try
+            using var conn = new SqlConnection(DatabaseConnectionString);
+            var sql = GetEmbeddedSqlScript("init-sampledata");
+            if (!string.IsNullOrWhiteSpace(sql))
             {
-                using var conn = new SqlConnection(DatabaseConnectionString);
-                var sql = GetEmbeddedSqlScript("init-sampledata");
-                if (!string.IsNullOrWhiteSpace(sql))
-                {
-                    conn.Execute(sql);
-                    return new SuccessResponse();
-                }
-                return new FailedResponse("SQL Script is empty.");
+                conn.Execute(sql);
             }
-            catch (Exception e)
-            {
-                return new FailedResponse(e.Message);
-            }
+            throw new InvalidDataException("SQL Script is empty.");
         }
 
         public bool TestDatabaseConnection(Action<Exception> errorLogAction = null)

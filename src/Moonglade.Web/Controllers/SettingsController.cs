@@ -595,9 +595,7 @@ namespace Moonglade.Web.Controllers
 
             var conn = configuration.GetConnectionString(Constants.DbConnectionName);
             var setupHelper = new SetupHelper(conn);
-            var response = setupHelper.ClearData();
-
-            if (!response.IsSuccess) return ServerError(response.Message);
+            setupHelper.ClearData();
 
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "System reset.");
 
