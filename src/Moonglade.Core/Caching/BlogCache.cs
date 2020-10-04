@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,14 +26,14 @@ namespace Moonglade.Core.Caching
          * Post              | { "<guid>", "<guid>", "<guid"> ... }
          * General           | { "avatar", ... }
          */
-        public Dictionary<string, IList<string>> CacheDivision { get; }
+        public ConcurrentDictionary<string, IList<string>> CacheDivision { get; }
 
         private readonly IMemoryCache _memoryCache;
 
         public BlogCache(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
-            CacheDivision = new Dictionary<string, IList<string>>();
+            CacheDivision = new ConcurrentDictionary<string, IList<string>>();
         }
 
         public TItem GetOrCreate<TItem>(CacheDivision division, string key, Func<ICacheEntry, TItem> factory)
@@ -86,7 +87,7 @@ namespace Moonglade.Core.Caching
 
             if (!CacheDivision.ContainsKey(divisionKey))
             {
-                CacheDivision.Add(divisionKey, new[] { cacheKey }.ToList());
+                CacheDivision.TryAdd(divisionKey, new[] {cacheKey}.ToList());
             }
 
             if (!CacheDivision[divisionKey].Contains(cacheKey))
