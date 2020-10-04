@@ -2,7 +2,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.ImageStorage.Providers
@@ -21,7 +20,7 @@ namespace Moonglade.ImageStorage.Providers
             _path = imgConfig.Path;
         }
 
-        public async Task<Response<ImageInfo>> GetAsync(string fileName)
+        public async Task<ImageInfo> GetAsync(string fileName)
         {
             try
             {
@@ -29,7 +28,10 @@ namespace Moonglade.ImageStorage.Providers
 
                 if (!File.Exists(imagePath))
                 {
-                    return new FailedResponse<ImageInfo>((int)ImageResponseCode.ImageNotExistInFileSystem);
+                    // Can not throw FileNotFoundException,
+                    // because hackers may request a large number of 404 images
+                    // to flood .NET runtime with exceptions and take out the server
+                    return null;
                 }
 
                 var extension = Path.GetExtension(imagePath);
@@ -43,20 +45,16 @@ namespace Moonglade.ImageStorage.Providers
                     ImageExtensionName = fileType
                 };
 
-                return new SuccessResponse<ImageInfo>(imageInfo);
+                return imageInfo;
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting image file {fileName}");
-                return new FailedResponse<ImageInfo>((int)ImageResponseCode.GeneralException)
-                {
-                    Exception = e,
-                    Message = e.Message
-                };
+                throw;
             }
         }
 
-        public async Task<Response> DeleteAsync(string fileName)
+        public async Task DeleteAsync(string fileName)
         {
             try
             {
@@ -65,18 +63,12 @@ namespace Moonglade.ImageStorage.Providers
                 if (File.Exists(imagePath))
                 {
                     File.Delete(imagePath);
-                    return new SuccessResponse();
                 }
-                return new FailedResponse<ImageInfo>((int)ImageResponseCode.ImageNotExistInFileSystem);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error deleting image file {fileName}");
-                return new FailedResponse<ImageInfo>((int)ImageResponseCode.GeneralException)
-                {
-                    Exception = e,
-                    Message = e.Message
-                };
+                throw;
             }
         }
 
@@ -88,28 +80,22 @@ namespace Moonglade.ImageStorage.Providers
             return buff;
         }
 
-        public async Task<Response<string>> InsertAsync(string fileName, byte[] imageBytes)
+        public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
         {
             try
             {
                 var fullPath = Path.Join(_path, fileName);
 
-                await using (var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
-                    4096, true))
-                {
-                    await sourceStream.WriteAsync(imageBytes, 0, imageBytes.Length);
-                }
+                await using var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
+                    4096, true);
+                await sourceStream.WriteAsync(imageBytes, 0, imageBytes.Length);
 
-                return new SuccessResponse<string>(fileName);
+                return fileName;
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error writing image file {fileName}");
-                return new FailedResponse<string>((int)ImageResponseCode.GeneralException)
-                {
-                    Exception = e,
-                    Message = e.Message
-                };
+                throw;
             }
         }
 

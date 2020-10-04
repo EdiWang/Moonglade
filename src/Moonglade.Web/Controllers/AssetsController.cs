@@ -79,13 +79,16 @@ namespace Moonglade.Web.Controllers
                     return imgBytesResponse;
                 });
 
-                if (imageEntry.IsSuccess) return File(imageEntry.Item.ImageBytes, imageEntry.Item.ImageContentType);
+                if (null == imageEntry)
+                {
+                    Logger.LogError($"Error getting image, filename: {filename}");
 
-                Logger.LogError($"Error getting image, filename: {filename}, {imageEntry.Message}");
+                    return _blogConfig.ContentSettings.UseFriendlyNotFoundImage
+                        ? (IActionResult)File("~/images/image-not-found.png", "image/png")
+                        : NotFound();
+                }
 
-                return _blogConfig.ContentSettings.UseFriendlyNotFoundImage
-                    ? (IActionResult)File("~/images/image-not-found.png", "image/png")
-                    : NotFound();
+                return File(imageEntry.ImageBytes, imageEntry.ImageContentType);
             }
             catch (Exception e)
             {
@@ -144,7 +147,7 @@ namespace Moonglade.Web.Controllers
                         _blogConfig.WatermarkSettings.FontSize);
                 }
 
-                var response = await _imageStorage.InsertAsync(primaryFileName,
+                var finalFileName = await _imageStorage.InsertAsync(primaryFileName,
                     watermarkedStream != null ?
                         watermarkedStream.ToArray() :
                         stream.ToArray());
@@ -157,16 +160,10 @@ namespace Moonglade.Web.Controllers
 
                 Logger.LogInformation($"Image '{primaryFileName}' uloaded.");
 
-                if (!response.IsSuccess)
-                {
-                    Logger.LogError(response.Message);
-                    return ServerError();
-                }
-
                 return Json(new
                 {
-                    location = $"/uploads/{response.Item}",
-                    filename = response.Item
+                    location = $"/uploads/{finalFileName}",
+                    filename = finalFileName
                 });
             }
             catch (Exception e)

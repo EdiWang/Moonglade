@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.ImageStorage.Providers
@@ -33,7 +32,7 @@ namespace Moonglade.ImageStorage.Providers
             }
         }
 
-        public async Task<Response<string>> InsertAsync(string fileName, byte[] imageBytes)
+        public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
         {
             try
             {
@@ -59,66 +58,56 @@ namespace Moonglade.ImageStorage.Providers
                     _ => blobHttpHeader.ContentType
                 };
 
-                await using (var fileStream = new MemoryStream(imageBytes))
-                {
-                    var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader);
+                await using var fileStream = new MemoryStream(imageBytes);
+                var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader);
 
-                    _logger.LogInformation($"Uploaded image file '{fileName}' to Azure Blob Storage, ETag '{uploadedBlob.Value.ETag}'. Yeah, the best cloud!");
-                }
+                _logger.LogInformation($"Uploaded image file '{fileName}' to Azure Blob Storage, ETag '{uploadedBlob.Value.ETag}'. Yeah, the best cloud!");
 
-
-                return new SuccessResponse<string>(fileName);
+                return fileName;
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error uploading file {fileName} to Azure, it must be my problem, not Microsoft.");
-                return new FailedResponse<string>((int)ImageResponseCode.GeneralException, e.Message, e);
+                throw;
             }
         }
 
-        public async Task<Response> DeleteAsync(string fileName)
+        public async Task DeleteAsync(string fileName)
         {
             try
             {
-                var ok = await _container.DeleteBlobIfExistsAsync(fileName);
-                if (ok)
-                {
-                    return new SuccessResponse();
-                }
-                return new FailedResponse((int)ImageResponseCode.ImageNotExistInAzureBlob);
+                await _container.DeleteBlobIfExistsAsync(fileName);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error deleting file {fileName} on Azure, it must be my problem, not Microsoft.");
-                return new FailedResponse((int)ImageResponseCode.GeneralException)
-                {
-                    Exception = e,
-                    Message = e.Message
-                };
+                throw;
             }
         }
 
-        public async Task<Response<ImageInfo>> GetAsync(string fileName)
+        public async Task<ImageInfo> GetAsync(string fileName)
         {
             var blobClient = _container.GetBlobClient(fileName);
             await using var memoryStream = new MemoryStream();
             var extension = Path.GetExtension(fileName);
             if (string.IsNullOrWhiteSpace(extension))
             {
-                return new FailedResponse<ImageInfo>((int)ImageResponseCode.ExtensionNameIsNull);
+                throw new ArgumentException("File extension is empty");
             }
-
-            // This needs to try-catch 404 status now :(
-            // See https://github.com/Azure/azure-sdk-for-net/issues/8952
-            //var exists = await blobClient.ExistsAsync();
-            //if (!exists)
-            //{
-            //    _logger.LogWarning($"Blob {fileName} not exist.");
-            //    return new FailedResponse<ImageInfo>((int)ImageResponseCode.ImageNotExistInAzureBlob);
-            //}
 
             try
             {
+                var exists = await blobClient.ExistsAsync();
+                if (!exists)
+                {
+                    _logger.LogWarning($"Blob {fileName} not exist.");
+
+                    // Can not throw FileNotFoundException,
+                    // because hackers may request a large number of 404 images
+                    // to flood .NET runtime with exceptions and take out the server
+                    return null;
+                }
+
                 await blobClient.DownloadToAsync(memoryStream);
                 var arr = memoryStream.ToArray();
 
@@ -129,15 +118,11 @@ namespace Moonglade.ImageStorage.Providers
                     ImageExtensionName = fileType
                 };
 
-                return new SuccessResponse<ImageInfo>(imageInfo);
+                return imageInfo;
             }
             catch (Azure.RequestFailedException e)
             {
-                if (e.Status == 404)
-                {
-                    return new FailedResponse<ImageInfo>((int)ImageResponseCode.ImageNotExistInAzureBlob);
-                }
-
+                _logger.LogError(e, $"Error getting image '{fileName}' in blob container '{_container.Name}'");
                 throw;
             }
         }
