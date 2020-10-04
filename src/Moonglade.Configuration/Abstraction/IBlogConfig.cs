@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 
 namespace Moonglade.Configuration.Abstraction
 {
@@ -14,7 +13,7 @@ namespace Moonglade.Configuration.Abstraction
         AdvancedSettings AdvancedSettings { get; set; }
         SecuritySettings SecuritySettings { get; set; }
 
-        Task<Response> SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings;
+        Task SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings;
 
         void RequireRefresh();
     }

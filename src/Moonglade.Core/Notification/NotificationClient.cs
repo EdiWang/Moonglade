@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
@@ -48,11 +47,12 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task<Response> TestNotificationAsync()
+        public async Task TestNotificationAsync()
         {
             if (!IsEnabled)
             {
-                return new FailedResponse((int)FaultCode.EmailSendingDisabled, "Email Sending is disabled.");
+                _logger.LogWarning($"Skipped {nameof(TestNotificationAsync)} because Email sending is disabled.");
+                return;
             }
 
             try
@@ -61,19 +61,20 @@ namespace Moonglade.Core.Notification
                     new NotificationRequest<EmptyPayload>(MailMesageTypes.TestMail, EmptyPayload.Default));
                 var response = await _httpClient.SendAsync(req);
 
-                //response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
                     var dataStr = await response.Content.ReadAsStringAsync();
-                    return new SuccessResponse { Message = dataStr };
+                    _logger.LogInformation($"Test email is sent, server response: '{dataStr}'");
                 }
-
-                return new FailedResponse((int)FaultCode.ApiError, response.StatusCode.ToString());
+                else
+                {
+                    throw new Exception($"Test email sending failed, response code: '{response.StatusCode}'");
+                }
             }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse((int)FaultCode.GeneralException, e.Message);
+                throw;
             }
         }
 
@@ -82,7 +83,6 @@ namespace Moonglade.Core.Notification
             if (!IsEnabled)
             {
                 _logger.LogWarning($"Skipped {nameof(NotifyNewCommentAsync)} because Email sending is disabled.");
-                await Task.CompletedTask;
                 return;
             }
 
@@ -111,7 +111,6 @@ namespace Moonglade.Core.Notification
             if (!IsEnabled)
             {
                 _logger.LogWarning($"Skipped {nameof(NotifyCommentReplyAsync)} because Email sending is disabled.");
-                await Task.CompletedTask;
                 return;
             }
 
@@ -138,7 +137,6 @@ namespace Moonglade.Core.Notification
             if (!IsEnabled)
             {
                 _logger.LogWarning($"Skipped {nameof(NotifyPingbackAsync)} because Email sending is disabled.");
-                await Task.CompletedTask;
                 return;
             }
 

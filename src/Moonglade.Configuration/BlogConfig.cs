@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Dapper;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -75,9 +74,9 @@ namespace Moonglade.Configuration
             _hasInitialized = true;
         }
 
-        public async Task<Response> SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings
+        public async Task SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings
         {
-            async Task<int> SetConfiguration(string key, string value)
+            async Task SetConfiguration(string key, string value)
             {
                 var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
                 await using var conn = new SqlConnection(connStr);
@@ -86,19 +85,18 @@ namespace Moonglade.Configuration
                           $"{nameof(BlogConfiguration.LastModifiedTimeUtc)} = @lastModifiedTimeUtc " +
                           $"WHERE {nameof(BlogConfiguration.CfgKey)} = @key";
 
-                return await conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
+                await conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
             }
 
             try
             {
                 var json = JsonSerializer.Serialize(blogSettings);
-                var rows = await SetConfiguration(typeof(T).Name, json);
-                return new Response(rows > 0);
+                await SetConfiguration(typeof(T).Name, json);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse((int)FaultCode.GeneralException, e.Message, e);
+                throw;
             }
         }
 

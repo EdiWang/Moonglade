@@ -134,14 +134,14 @@ namespace Moonglade.Web.Controllers
             _blogConfig.GeneralSettings.Description = model.OwnerDescription;
             _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
             _blogConfig.GeneralSettings.AutoDarkLightTheme = model.AutoDarkLightTheme;
-            var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
 
+            await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
             _blogConfig.RequireRefresh();
 
             Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
 
-            return Json(response);
+            return Json(true);
         }
 
         [HttpGet("content")]
@@ -187,13 +187,14 @@ namespace Moonglade.Web.Controllers
             _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
             _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
             _blogConfig.ContentSettings.DefaultLangCode = model.DefaultLangCode;
-            var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
+
+            await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
             _blogConfig.RequireRefresh();
 
             Logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
 
-            return Json(response);
+            return Json(true);
         }
 
         #region Email Settings
@@ -228,25 +229,21 @@ namespace Moonglade.Web.Controllers
             settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
             settings.SendEmailOnNewComment = model.SendEmailOnNewComment;
 
-            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
             Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
 
-            return Json(response);
+            return Json(true);
         }
 
         [HttpPost("send-test-email")]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> SendTestEmail([FromServices] IBlogNotificationClient notificationClient)
         {
-            var response = await notificationClient.TestNotificationAsync();
-            if (!response.IsSuccess)
-            {
-                Response.StatusCode = StatusCodes.Status500InternalServerError;
-            }
-            return Json(response);
+            await notificationClient.TestNotificationAsync();
+            return Json(true);
         }
 
         #endregion
@@ -286,13 +283,13 @@ namespace Moonglade.Web.Controllers
             settings.RssTitle = model.RssTitle;
             settings.UseFullContent = model.UseFullContent;
 
-            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
             Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
-            return Json(response);
+            return Json(true);
         }
 
         #endregion
@@ -328,13 +325,13 @@ namespace Moonglade.Web.Controllers
             settings.FontSize = model.FontSize;
             settings.WatermarkText = model.WatermarkText;
 
-            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
             Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
-            return Json(response);
+            return Json(true);
         }
 
         #endregion
@@ -377,9 +374,9 @@ namespace Moonglade.Web.Controllers
             var fs = _blogConfig.FriendLinksSettings;
             fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
 
-            var response = await _blogConfig.SaveConfigurationAsync(fs);
+            await _blogConfig.SaveConfigurationAsync(fs);
             _blogConfig.RequireRefresh();
-            return Json(response);
+            return Json(true);
         }
 
         [HttpPost("friendlink/create")]
@@ -480,13 +477,13 @@ namespace Moonglade.Web.Controllers
                 }
 
                 _blogConfig.GeneralSettings.AvatarBase64 = base64Img;
-                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
+                await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
                 _blogConfig.RequireRefresh();
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
 
-                return Json(response);
+                return Json(true);
             }
             catch (Exception e)
             {
@@ -523,7 +520,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 _blogConfig.GeneralSettings.SiteIconBase64 = base64Img;
-                var response = await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
+                await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
                 _blogConfig.RequireRefresh();
 
                 if (Directory.Exists(SiteIconDirectory))
@@ -534,7 +531,7 @@ namespace Moonglade.Web.Controllers
                 Logger.LogInformation($"User '{User.Identity.Name}' updated site icon.");
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
 
-                return Json(response);
+                return Json(true);
             }
             catch (Exception e)
             {
@@ -576,11 +573,11 @@ namespace Moonglade.Web.Controllers
             settings.EnablePingBackSend = model.EnablePingbackSend;
             settings.EnablePingBackReceive = model.EnablePingbackReceive;
 
-            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
-            return Json(response);
+            return Json(true);
         }
 
         [HttpPost("shutdown")]
@@ -641,11 +638,11 @@ namespace Moonglade.Web.Controllers
             settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
             settings.EnablePostRawEndpoint = model.EnablePostRawEndpoint;
 
-            var response = await _blogConfig.SaveConfigurationAsync(settings);
+            await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
-            return Json(response);
+            return Json(true);
         }
 
         #endregion
