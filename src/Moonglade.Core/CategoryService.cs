@@ -26,9 +26,9 @@ namespace Moonglade.Core
             _blogAudit = blogAudit;
         }
 
-        public async Task<IReadOnlyList<Category>> GetAllAsync()
+        public Task<IReadOnlyList<Category>> GetAllAsync()
         {
-            var list = await _categoryRepository.SelectAsync(c => new Category
+            var list = _categoryRepository.SelectAsync(c => new Category
             {
                 Id = c.Id,
                 DisplayName = c.DisplayName,

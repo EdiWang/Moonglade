@@ -33,9 +33,9 @@ namespace Moonglade.Core
             return item;
         }
 
-        public async Task<IReadOnlyList<Menu>> GetAllAsync()
+        public Task<IReadOnlyList<Menu>> GetAllAsync()
         {
-            var list = await _menuRepository.SelectAsync(p => new Menu
+            var list = _menuRepository.SelectAsync(p => new Menu
             {
                 Id = p.Id,
                 DisplayOrder = p.DisplayOrder,

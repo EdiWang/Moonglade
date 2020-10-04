@@ -44,7 +44,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public async Task<IReadOnlyList<PostListEntry>> ListPostsAsync(int year, int month = 0)
+        public Task<IReadOnlyList<PostListEntry>> ListPostsAsync(int year, int month = 0)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
@@ -59,7 +59,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostSpec(year, month);
-            var list = await _postRepository.SelectAsync(spec, p => new PostListEntry
+            var list = _postRepository.SelectAsync(spec, p => new PostListEntry
             {
                 Title = p.Title,
                 Slug = p.Slug,
