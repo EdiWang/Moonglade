@@ -140,7 +140,7 @@ namespace Moonglade.Web.Controllers
             Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
 
-            return Json(true);
+            return Ok();
         }
 
         [HttpGet("content")]
@@ -193,7 +193,7 @@ namespace Moonglade.Web.Controllers
             Logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
 
-            return Json(true);
+            return Ok();
         }
 
         #region Email Settings
@@ -234,7 +234,7 @@ namespace Moonglade.Web.Controllers
             Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
 
-            return Json(true);
+            return Ok();
         }
 
         [HttpPost("send-test-email")]
@@ -288,7 +288,7 @@ namespace Moonglade.Web.Controllers
             Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
-            return Json(true);
+            return Ok();
         }
 
         #endregion
@@ -330,7 +330,7 @@ namespace Moonglade.Web.Controllers
             Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
-            return Json(true);
+            return Ok();
         }
 
         #endregion
@@ -375,7 +375,7 @@ namespace Moonglade.Web.Controllers
 
             await _blogConfig.SaveConfigurationAsync(fs);
             _blogConfig.RequireRefresh();
-            return Json(true);
+            return Ok();
         }
 
         [HttpPost("friendlink/create")]
@@ -576,7 +576,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.RequireRefresh();
 
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
-            return Json(true);
+            return Ok();
         }
 
         [HttpPost("shutdown")]
@@ -639,7 +639,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.RequireRefresh();
 
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
-            return Json(true);
+            return Ok();
         }
 
         #endregion

@@ -345,11 +345,11 @@ var onUpdateSettingsSuccess = function (context) {
 };
 
 var onUpdateSettingsFailed = function (context) {
-    var msg = context.responseJSON.message;
+    var errCode = context.status;
     if (window.toastr) {
-        window.toastr.error(`Server Error: ${msg}`);
+        window.toastr.error(`Error: ${errCode}`);
     } else {
-        alert(`Error Code: ${msg}`);
+        alert(`Error Code: ${errCode}`);
     }
 };
 

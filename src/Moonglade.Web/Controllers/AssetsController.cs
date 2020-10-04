@@ -103,13 +103,11 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (null == file)
+                if (null == file || file.Length <= 0)
                 {
                     Logger.LogError("file is null.");
                     return BadRequest();
                 }
-
-                if (file.Length <= 0) return BadRequest();
 
                 var name = Path.GetFileName(file.FileName);
                 if (name == null) return BadRequest();
@@ -137,7 +135,6 @@ namespace Moonglade.Web.Controllers
                         SkipWatermarkForSmallImages = true,
                         SmallImagePixelsThreshold = Constants.SmallImagePixelsThreshold
                     };
-                    Logger.LogInformation($"Adding watermark onto image '{primaryFileName}'");
 
                     watermarkedStream = watermarker.AddWatermark(
                         _blogConfig.WatermarkSettings.WatermarkText,
@@ -232,20 +229,17 @@ namespace Moonglade.Web.Controllers
             }
 
             var iconPath = Path.Join(SiteIconDirectory, filename.ToLower());
-            if (System.IO.File.Exists(iconPath))
-            {
-                var contentType = "image/png";
-                var ext = Path.GetExtension(filename);
-                contentType = ext switch
-                {
-                    ".png" => "image/png",
-                    ".ico" => "image/x-icon",
-                    _ => contentType
-                };
-                return PhysicalFile(iconPath, contentType);
-            }
+            if (!System.IO.File.Exists(iconPath)) return NotFound();
 
-            return NotFound();
+            var contentType = "image/png";
+            var ext = Path.GetExtension(filename);
+            contentType = ext switch
+            {
+                ".png" => "image/png",
+                ".ico" => "image/x-icon",
+                _ => contentType
+            };
+            return PhysicalFile(iconPath, contentType);
         }
 
         [Authorize]
