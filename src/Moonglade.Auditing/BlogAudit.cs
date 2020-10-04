@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Edi.Practice.RequestResponseModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -29,14 +28,11 @@ namespace Moonglade.Auditing
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<Response> AddAuditEntry(EventType eventType, AuditEventId auditEventId, string message)
+        public async Task AddAuditEntry(EventType eventType, AuditEventId auditEventId, string message)
         {
             try
             {
-                if (!IsAuditLogEnabled())
-                {
-                    return new FailedResponse("Audit Log is disabled.");
-                }
+                if (!IsAuditLogEnabled()) { return; }
 
                 (string username, string ipv4) = GetUsernameAndIp();
 
@@ -60,25 +56,21 @@ namespace Moonglade.Auditing
                 var sql = @"INSERT INTO AuditLog([EventId],[EventType],[EventTimeUtc],[WebUsername],[IpAddressV4],[MachineName],[Message])
                             VALUES(@EventId, @EventType, @EventTimeUtc, @Username, @IpAddressV4, @MachineName, @Message)";
 
-                int rows = await conn.ExecuteAsync(sql, auditEntry);
-                return new Response(rows > 0);
+                await conn.ExecuteAsync(sql, auditEntry);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return new FailedResponse((int)FaultCode.GeneralException, e.Message, e);
             }
         }
 
-        public async Task<Response<(IReadOnlyList<AuditEntry> Entries, int Count)>> GetAuditEntries(
+        public async Task<(IReadOnlyList<AuditEntry> Entries, int Count)> GetAuditEntries(
             int skip, int take, EventType? eventType = null, AuditEventId? eventId = null)
         {
-            try
-            {
-                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-                await using var conn = new SqlConnection(connStr);
+            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+            await using var conn = new SqlConnection(connStr);
 
-                var sql = @"SELECT al.EventId, 
+            var sql = @"SELECT al.EventId, 
                                    al.EventType, 
                                    al.EventTimeUtc, 
                                    al.[Message],
@@ -100,53 +92,34 @@ namespace Moonglade.Auditing
                             AND(@EventType IS NULL OR al.EventType = @EventType)
                             AND(@EventId IS NULL OR al.EventId = @EventId);";
 
-                using var multi = await conn.QueryMultipleAsync(sql, new
-                {
-                    eventType,
-                    eventId,
-                    skip,
-                    take
-                });
-
-                var entries = multi.Read<AuditEntry>().ToList();
-                var count = multi.ReadFirstOrDefault<int>();
-                var returnType = (entries, count);
-
-                return new SuccessResponse<(IReadOnlyList<AuditEntry> Entries, int Count)>(returnType);
-            }
-            catch (Exception e)
+            using var multi = await conn.QueryMultipleAsync(sql, new
             {
-                _logger.LogError(e, e.Message);
-                return new FailedResponse<(IReadOnlyList<AuditEntry> Entries, int Count)>((int)FaultCode.GeneralException, e.Message, e);
-            }
+                eventType,
+                eventId,
+                skip,
+                take
+            });
+
+            var entries = multi.Read<AuditEntry>().ToList();
+            var count = multi.ReadFirstOrDefault<int>();
+            var returnType = (entries, count);
+
+            return returnType;
         }
 
-        public async Task<Response> ClearAuditLog()
+        public async Task ClearAuditLog()
         {
-            try
-            {
-                if (!IsAuditLogEnabled())
-                {
-                    return new FailedResponse("Audit Log is disabled.");
-                }
+            if (!IsAuditLogEnabled()) { return; }
 
-                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-                await using var conn = new SqlConnection(connStr);
+            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+            await using var conn = new SqlConnection(connStr);
 
-                var sql = "DELETE FROM AuditLog";
-                int rows = await conn.ExecuteAsync(sql);
+            var sql = "DELETE FROM AuditLog";
+            await conn.ExecuteAsync(sql);
 
-                // Make sure who ever doing this can't get away with it
-                (string username, string ipv4) = GetUsernameAndIp();
-                await AddAuditEntry(EventType.General, AuditEventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
-
-                return new Response(rows > 0);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                return new FailedResponse((int)FaultCode.GeneralException, e.Message, e);
-            }
+            // Make sure who ever doing this can't get away with it
+            (string username, string ipv4) = GetUsernameAndIp();
+            await AddAuditEntry(EventType.General, AuditEventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
         }
 
         private (string Username, string Ipv4) GetUsernameAndIp()

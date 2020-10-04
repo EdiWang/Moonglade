@@ -667,15 +667,10 @@ namespace Moonglade.Web.Controllers
 
                 var skip = (page - 1) * 20;
 
-                var response = await _blogAudit.GetAuditEntries(skip, 20);
-                if (response.IsSuccess)
-                {
-                    var auditEntriesAsIPagedList = new StaticPagedList<AuditEntry>(response.Item.Entries, page, 20, response.Item.Count);
-                    return View(auditEntriesAsIPagedList);
-                }
+                var entries = await _blogAudit.GetAuditEntries(skip, 20);
+                var auditEntriesAsIPagedList = new StaticPagedList<AuditEntry>(entries.Entries, page, 20, entries.Count);
 
-                SetFriendlyErrorMessage();
-                return View();
+                return View(auditEntriesAsIPagedList);
             }
             catch (Exception e)
             {
@@ -693,10 +688,8 @@ namespace Moonglade.Web.Controllers
             {
                 if (!AppSettings.EnableAudit) return BadRequest();
 
-                var response = await _blogAudit.ClearAuditLog();
-                return response.IsSuccess ?
-                    RedirectToAction("AuditLogs") :
-                    ServerError(response.Message);
+                await _blogAudit.ClearAuditLog();
+                return RedirectToAction("AuditLogs");
             }
             catch (Exception e)
             {
