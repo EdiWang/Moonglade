@@ -24,8 +24,8 @@ namespace Moonglade.Web.ViewComponents
         {
             try
             {
-                var response = await _friendLinkService.GetAllAsync();
-                return View(response.IsSuccess ? response.Item : new List<FriendLink>());
+                var links = await _friendLinkService.GetAllAsync();
+                return View(links ?? new List<FriendLink>());
             }
             catch (Exception e)
             {

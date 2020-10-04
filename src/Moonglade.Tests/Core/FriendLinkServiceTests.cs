@@ -27,17 +27,17 @@ namespace Moonglade.Tests.Core
             _auditMock = new Mock<IBlogAudit>();
         }
 
-        [TestCase("", "", ExpectedResult = false)]
-        [TestCase("996", "", ExpectedResult = false)]
-        [TestCase("", "icu", ExpectedResult = false)]
-        [TestCase("dotnet", "955", ExpectedResult = false)]
-        public async Task<bool> TestAddFriendLinkAsyncInvalidParameter(string title, string linkUrl)
+        [TestCase("")]
+        [TestCase("955")]
+        public void TestAddFriendLinkAsyncInvalidParameter(string linkUrl)
         {
             var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
             var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object, _auditMock.Object);
 
-            var fdLinkResponse = await svc.AddAsync(title, linkUrl);
-            return fdLinkResponse.IsSuccess;
+            Assert.Throws<InvalidOperationException>(async () =>
+            {
+                await svc.AddAsync("title", linkUrl);
+            });
         }
 
         [Test]
@@ -58,21 +58,21 @@ namespace Moonglade.Tests.Core
 
             var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object, _auditMock.Object);
 
-            var fdLinkResponse = await svc.AddAsync("Choice of 955", "https://dot.net");
-            Assert.IsTrue(fdLinkResponse.IsSuccess);
+            await svc.AddAsync("Choice of 955", "https://dot.net");
+            Assert.Pass();
         }
 
-        [TestCase("", "", ExpectedResult = false)]
-        [TestCase("Java", "", ExpectedResult = false)]
-        [TestCase("", "ICU", ExpectedResult = false)]
-        [TestCase("dotnet", "955", ExpectedResult = false)]
-        public async Task<bool> UpdateFriendLinkAsyncInvalidParameter(string title, string linkUrl)
+        [TestCase("")]
+        [TestCase("955")]
+        public void UpdateFriendLinkAsyncInvalidParameter(string linkUrl)
         {
             var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
             var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object, _auditMock.Object);
 
-            var fdLinkResponse = await svc.UpdateAsync(Guid.NewGuid(), title, linkUrl);
-            return fdLinkResponse.IsSuccess;
+            Assert.Throws<InvalidOperationException>(async () =>
+            {
+                await svc.UpdateAsync(Guid.NewGuid(), "title", linkUrl);
+            });
         }
     }
 }

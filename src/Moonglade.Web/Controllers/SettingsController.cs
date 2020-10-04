@@ -344,23 +344,26 @@ namespace Moonglade.Web.Controllers
         [HttpGet("friendlink")]
         public async Task<IActionResult> FriendLink()
         {
-            var response = await _friendLinkService.GetAllAsync();
-            if (!response.IsSuccess)
+            try
             {
+                var links = await _friendLinkService.GetAllAsync();
+                var vm = new FriendLinkSettingsViewModelWrap
+                {
+                    FriendLinkSettingsViewModel = new FriendLinkSettingsViewModel
+                    {
+                        ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
+                    },
+                    FriendLinks = links
+                };
+
+                return View(vm);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
                 SetFriendlyErrorMessage();
                 return View();
             }
-
-            var vm = new FriendLinkSettingsViewModelWrap
-            {
-                FriendLinkSettingsViewModel = new FriendLinkSettingsViewModel
-                {
-                    ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
-                },
-                FriendLinks = response.Item
-            };
-
-            return View(vm);
         }
 
         [HttpPost("friendlink")]
@@ -386,11 +389,8 @@ namespace Moonglade.Web.Controllers
             {
                 if (!ModelState.IsValid) return BadRequest();
 
-                var response = await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
-                if (response.IsSuccess) return Json(response);
-                ModelState.AddModelError(string.Empty, response.Message);
-
-                return BadRequest();
+                await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
+                return Json(viewModel);
             }
             catch (Exception e)
             {
@@ -404,18 +404,14 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                var response = await _friendLinkService.GetAsync(id);
-                if (!response.IsSuccess)
-                {
-                    ModelState.AddModelError(string.Empty, response.Message);
-                    return BadRequest();
-                }
+                var link = await _friendLinkService.GetAsync(id);
+                if (null == link) return BadRequest();
 
                 var obj = new FriendLinkEditViewModel
                 {
-                    Id = response.Item.Id,
-                    LinkUrl = response.Item.LinkUrl,
-                    Title = response.Item.Title
+                    Id = link.Id,
+                    LinkUrl = link.LinkUrl,
+                    Title = link.Title
                 };
 
                 return Json(obj);
@@ -432,11 +428,8 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                var response = await _friendLinkService.UpdateAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
-                if (response.IsSuccess) return Json(response);
-                ModelState.AddModelError(string.Empty, response.Message);
-
-                return BadRequest();
+                await _friendLinkService.UpdateAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
+                return Json(viewModel);
             }
             catch (Exception e)
             {
@@ -448,8 +441,8 @@ namespace Moonglade.Web.Controllers
         [HttpPost("friendlink/delete")]
         public async Task<IActionResult> DeleteFriendLink(Guid id)
         {
-            var response = await _friendLinkService.DeleteAsync(id);
-            return response.IsSuccess ? Json(id) : ServerError();
+            await _friendLinkService.DeleteAsync(id);
+            return Json(id);
         }
 
         #endregion
