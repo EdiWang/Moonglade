@@ -27,19 +27,6 @@ namespace Moonglade.Tests.Core
             _auditMock = new Mock<IBlogAudit>();
         }
 
-        [TestCase("")]
-        [TestCase("955")]
-        public void TestAddFriendLinkAsyncInvalidParameter(string linkUrl)
-        {
-            var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
-            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object, _auditMock.Object);
-
-            Assert.Throws<InvalidOperationException>(async () =>
-            {
-                await svc.AddAsync("title", linkUrl);
-            });
-        }
-
         [Test]
         public async Task TestAddFriendLinkAsyncValid()
         {
@@ -60,19 +47,6 @@ namespace Moonglade.Tests.Core
 
             await svc.AddAsync("Choice of 955", "https://dot.net");
             Assert.Pass();
-        }
-
-        [TestCase("")]
-        [TestCase("955")]
-        public void UpdateFriendLinkAsyncInvalidParameter(string linkUrl)
-        {
-            var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
-            var svc = new FriendLinkService(_loggerMock.Object, _appSettingsMock.Object, friendlinkRepositoryMock.Object, _auditMock.Object);
-
-            Assert.Throws<InvalidOperationException>(async () =>
-            {
-                await svc.UpdateAsync(Guid.NewGuid(), "title", linkUrl);
-            });
         }
     }
 }
