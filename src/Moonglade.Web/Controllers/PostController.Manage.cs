@@ -56,13 +56,7 @@ namespace Moonglade.Web.Controllers
         [Route("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var postResponse = await _postService.GetAsync(id);
-            if (!postResponse.IsSuccess)
-            {
-                return ServerError();
-            }
-
-            var post = postResponse.Item;
+            var post = await _postService.GetAsync(id);
             if (null == post) return NotFound();
 
             var editViewModel = new PostEditViewModel
@@ -102,7 +96,6 @@ namespace Moonglade.Web.Controllers
             }
 
             return View("CreateOrEdit", editViewModel);
-
         }
 
         [Authorize]
@@ -149,30 +142,24 @@ namespace Moonglade.Web.Controllers
                     request.PublishDate = model.PublishDate;
                 }
 
-                var response = model.PostId == Guid.Empty ?
+                var postEntity = model.PostId == Guid.Empty ?
                     await _postService.CreateAsync(request) :
                     await _postService.UpdateAsync(request);
 
-                if (!response.IsSuccess)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    return Json(new FailedResponse(response.Message));
-                }
-
                 if (model.IsPublished)
                 {
-                    Logger.LogInformation($"Trying to Ping URL for post: {response.Item.Id}");
+                    Logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 
-                    var pubDate = response.Item.PubDateUtc.GetValueOrDefault();
-                    var link = GetPostUrl(linkGenerator, pubDate, response.Item.Slug);
+                    var pubDate = postEntity.PubDateUtc.GetValueOrDefault();
+                    var link = GetPostUrl(linkGenerator, pubDate, postEntity.Slug);
 
                     if (_blogConfig.AdvancedSettings.EnablePingBackSend)
                     {
-                        _ = Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, response.Item.PostContent); });
+                        _ = Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, postEntity.PostContent); });
                     }
                 }
 
-                return Json(new { PostId = response.Item.Id });
+                return Json(new { PostId = postEntity.Id });
             }
             catch (Exception ex)
             {
@@ -189,8 +176,8 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/restore")]
         public async Task<IActionResult> Restore(Guid postId)
         {
-            var response = await _postService.RestoreDeletedAsync(postId);
-            return response.IsSuccess ? Json(postId) : ServerError();
+            await _postService.RestoreDeletedAsync(postId);
+            return Json(postId);
         }
 
         [Authorize]
@@ -200,8 +187,8 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/delete")]
         public async Task<IActionResult> Delete(Guid postId)
         {
-            var response = await _postService.DeleteAsync(postId, true);
-            return response.IsSuccess ? Json(postId) : ServerError();
+            await _postService.DeleteAsync(postId, true);
+            return Json(postId);
         }
 
         [Authorize]
@@ -209,8 +196,8 @@ namespace Moonglade.Web.Controllers
         [HttpPost("manage/delete-from-recycle")]
         public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
         {
-            var response = await _postService.DeleteAsync(postId);
-            return response.IsSuccess ? Json(postId) : ServerError();
+            await _postService.DeleteAsync(postId);
+            return Json(postId);
         }
 
         [Authorize]

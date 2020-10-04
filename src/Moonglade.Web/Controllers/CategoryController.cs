@@ -58,7 +58,7 @@ namespace Moonglade.Web.Controllers
             ViewBag.CategoryDescription = cat.Note;
 
             var postCount = _blogCache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
-                entry => _postService.CountByCategoryId(cat.Id).Item);
+                entry => _postService.CountByCategoryId(cat.Id));
 
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 

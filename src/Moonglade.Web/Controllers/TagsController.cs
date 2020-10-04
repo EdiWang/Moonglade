@@ -51,14 +51,8 @@ namespace Moonglade.Web.Controllers
                 if (tagResponse == null) return NotFound();
 
                 ViewBag.TitlePrefix = tagResponse.DisplayName;
-                var postResponse = await _postService.GetByTagAsync(tagResponse.Id);
-                if (!postResponse.IsSuccess)
-                {
-                    SetFriendlyErrorMessage();
-                    return View();
-                }
+                var posts = await _postService.GetByTagAsync(tagResponse.Id);
 
-                var posts = postResponse.Item;
                 return View(posts);
             }
             catch (Exception e)

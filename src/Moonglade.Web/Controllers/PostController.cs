@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
             {
                 var pagesize = _blogConfig.ContentSettings.PostListPageSize;
                 var postList = await _postService.GetPagedPostsAsync(pagesize, page);
-                var postCount = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts().Item);
+                var postCount = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts());
 
                 var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pagesize, postCount);
                 return View(postsAsIPagedList);
@@ -76,10 +76,8 @@ namespace Moonglade.Web.Controllers
             }
 
             var slugInfo = new PostSlugInfo(year, month, day, slug);
-            var rsp = await _postService.GetAsync(slugInfo);
-            if (!rsp.IsSuccess) return ServerError(rsp.Message);
+            var post = await _postService.GetAsync(slugInfo);
 
-            var post = rsp.Item;
             if (post == null)
             {
                 Logger.LogWarning($"Post not found, parameter '{year}/{month}/{day}/{slug}'.");
@@ -108,16 +106,12 @@ namespace Moonglade.Web.Controllers
             switch (raw.ToLower())
             {
                 case "meta":
-                    var rspMeta = await _postService.GetSegmentAsync(slugInfo);
-                    return !rspMeta.IsSuccess
-                        ? ServerError(rspMeta.Message)
-                        : Json(rspMeta.Item);
+                    var meta = await _postService.GetSegmentAsync(slugInfo);
+                    return Json(meta);
 
                 case "content":
-                    var rspContent = await _postService.GetRawContentAsync(slugInfo);
-                    return !rspContent.IsSuccess
-                        ? ServerError(rspContent.Message)
-                        : Content(rspContent.Item, "text/plain");
+                    var content = await _postService.GetRawContentAsync(slugInfo);
+                    return Content(content, "text/plain");
             }
 
             return BadRequest();
@@ -127,10 +121,7 @@ namespace Moonglade.Web.Controllers
         [Route("preview/{postId}")]
         public async Task<IActionResult> Preview(Guid postId)
         {
-            var rsp = await _postService.GetDraftPreviewAsync(postId);
-            if (!rsp.IsSuccess) return ServerError(rsp.Message);
-
-            var post = rsp.Item;
+            var post = await _postService.GetDraftPreviewAsync(postId);
             if (post == null)
             {
                 Logger.LogWarning($"Post not found, parameter '{postId}'.");
@@ -150,11 +141,8 @@ namespace Moonglade.Web.Controllers
         {
             if (DNT || HasCookie(CookieNames.Hit, postId.ToString())) return Ok();
 
-            var response = await _postService.UpdateStatisticAsync(postId);
-            if (response.IsSuccess)
-            {
-                SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
-            }
+            await _postService.UpdateStatisticAsync(postId);
+            SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
 
             return Ok();
         }
@@ -166,11 +154,8 @@ namespace Moonglade.Web.Controllers
             if (DNT) return Ok();
             if (HasCookie(CookieNames.Liked, postId.ToString())) return Conflict();
 
-            var response = await _postService.UpdateStatisticAsync(postId, 1);
-            if (response.IsSuccess)
-            {
-                SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
-            }
+            await _postService.UpdateStatisticAsync(postId, 1);
+            SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
 
             return Ok();
         }
