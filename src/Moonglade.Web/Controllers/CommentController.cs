@@ -3,7 +3,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
@@ -49,63 +48,50 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    // Validate BasicCaptcha Code
-                    if (!captcha.ValidateCaptchaCode(model.NewCommentViewModel.CaptchaCode, HttpContext.Session))
-                    {
-                        Logger.LogWarning("Wrong Captcha Code");
-                        ModelState.AddModelError(nameof(model.NewCommentViewModel.CaptchaCode), "Wrong Captcha Code");
-
-                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        var cResponse = new CommentResponse(false, CommentResponseCode.WrongCaptcha);
-                        return Json(cResponse);
-                    }
-
-                    var commentPostModel = model.NewCommentViewModel;
-                    var response = await _commentService.CreateAsync(new NewCommentRequest(commentPostModel.PostId)
-                    {
-                        Username = commentPostModel.Username,
-                        Content = commentPostModel.Content,
-                        Email = commentPostModel.Email,
-                        IpAddress = HttpContext.Connection.RemoteIpAddress.ToString()
-                    });
-
-                    if (response.IsSuccess)
-                    {
-                        if (_blogConfig.NotificationSettings.SendEmailOnNewComment && null != _notificationClient)
-                        {
-                            _ = Task.Run(async () =>
-                              {
-                                  await _notificationClient.NotifyNewCommentAsync(response.Item, s => Utils.ConvertMarkdownContent(s, Utils.MarkdownConvertType.Html));
-                              });
-                        }
-                        var cResponse = new CommentResponse(true,
-                            _blogConfig.ContentSettings.RequireCommentReview ?
-                            CommentResponseCode.Success :
-                            CommentResponseCode.SuccessNonReview);
-
-                        return Json(cResponse);
-                    }
-
-                    CommentResponse failedResponse;
-                    switch (response.ResponseCode)
-                    {
-                        case (int)FaultCode.CommentDisabled:
-                            Logger.LogWarning("Comment is disabled in settings, but user somehow called NewComment() method.");
-                            Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                            failedResponse = new CommentResponse(false, CommentResponseCode.CommentDisabled);
-                            break;
-                        default:
-                            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            failedResponse = new CommentResponse(false, CommentResponseCode.UnknownError);
-                            break;
-                    }
-                    return Json(failedResponse);
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return Json(new CommentResponse(false, CommentResponseCode.InvalidModel));
                 }
 
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new CommentResponse(false, CommentResponseCode.InvalidModel));
+                if (!_blogConfig.ContentSettings.EnableComments)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return Json(new CommentResponse(false, CommentResponseCode.CommentDisabled));
+                }
+
+                // Validate BasicCaptcha Code
+                if (!captcha.ValidateCaptchaCode(model.NewCommentViewModel.CaptchaCode, HttpContext.Session))
+                {
+                    Logger.LogWarning("Wrong Captcha Code");
+                    ModelState.AddModelError(nameof(model.NewCommentViewModel.CaptchaCode), "Wrong Captcha Code");
+
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return Json(new CommentResponse(false, CommentResponseCode.WrongCaptcha));
+                }
+
+                var commentPostModel = model.NewCommentViewModel;
+                var response = await _commentService.CreateAsync(new NewCommentRequest(commentPostModel.PostId)
+                {
+                    Username = commentPostModel.Username,
+                    Content = commentPostModel.Content,
+                    Email = commentPostModel.Email,
+                    IpAddress = HttpContext.Connection.RemoteIpAddress.ToString()
+                });
+
+                if (_blogConfig.NotificationSettings.SendEmailOnNewComment && null != _notificationClient)
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        await _notificationClient.NotifyNewCommentAsync(response, s => Utils.ConvertMarkdownContent(s, Utils.MarkdownConvertType.Html));
+                    });
+                }
+                var cResponse = new CommentResponse(true,
+                    _blogConfig.ContentSettings.RequireCommentReview ?
+                        CommentResponseCode.Success :
+                        CommentResponseCode.SuccessNonReview);
+
+                return Json(cResponse);
             }
             catch (Exception e)
             {
@@ -124,7 +110,7 @@ namespace Moonglade.Web.Controllers
             const int pageSize = 10;
             var commentList = await _commentService.GetPagedCommentAsync(pageSize, page);
             var commentsAsIPagedList =
-                new StaticPagedList<CommentDetailedItem>(commentList.Item, page, pageSize, _commentService.CountComments());
+                new StaticPagedList<CommentDetailedItem>(commentList, page, pageSize, _commentService.CountComments());
             return View("~/Views/Admin/ManageComments.cshtml", commentsAsIPagedList);
         }
 
@@ -132,43 +118,38 @@ namespace Moonglade.Web.Controllers
         [HttpPost("set-approval-status")]
         public async Task<IActionResult> SetApprovalStatus(Guid commentId)
         {
-            var response = await _commentService.ToggleApprovalStatusAsync(new[] { commentId });
-            if (response.IsSuccess) return Json(commentId);
-
-            Response.StatusCode = StatusCodes.Status500InternalServerError;
-            return Json(response.ResponseCode);
+            await _commentService.ToggleApprovalStatusAsync(new[] { commentId });
+            return Json(commentId);
         }
 
         [Authorize]
         [HttpPost("delete")]
         public async Task<IActionResult> Delete(Guid commentId)
         {
-            var response = await _commentService.DeleteAsync(new[] { commentId });
-            return response.IsSuccess ? Json(commentId) : Json(false);
+            await _commentService.DeleteAsync(new[] { commentId });
+            return Json(commentId);
         }
 
         [Authorize]
         [HttpPost("reply")]
         public async Task<IActionResult> Reply(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
-            var response = await _commentService.AddReply(commentId, replyContent);
-
-            if (!response.IsSuccess)
+            if (!_blogConfig.ContentSettings.EnableComments)
             {
-                Response.StatusCode = StatusCodes.Status500InternalServerError;
-                return Json(response);
+                return Forbid();
             }
 
-            if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(response.Item.Email))
+            var reply = await _commentService.AddReply(commentId, replyContent);
+            if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
             {
-                var postLink = GetPostUrl(linkGenerator, response.Item.PubDateUtc, response.Item.Slug);
+                var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
                 _ = Task.Run(async () =>
                 {
-                    await _notificationClient.NotifyCommentReplyAsync(response.Item, postLink);
+                    await _notificationClient.NotifyCommentReplyAsync(reply, postLink);
                 });
             }
 
-            return Json(response.Item);
+            return Json(reply);
         }
 
         #endregion

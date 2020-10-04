@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Edi.Practice.RequestResponseModel;
 using Edi.WordFilter;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -63,189 +62,158 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Response<IReadOnlyList<CommentDetailedItem>>> GetPagedCommentAsync(int pageSize, int pageIndex)
+        public Task<IReadOnlyList<CommentDetailedItem>> GetPagedCommentAsync(int pageSize, int pageIndex)
         {
-            return TryExecuteAsync<IReadOnlyList<CommentDetailedItem>>(async () =>
+            if (pageSize < 1)
             {
-                if (pageSize < 1)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
-                }
+                throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
+            }
 
-                var spec = new CommentSpec(pageSize, pageIndex);
-                var comments = await _commentRepository.SelectAsync(spec, p => new CommentDetailedItem
+            var spec = new CommentSpec(pageSize, pageIndex);
+            var comments = _commentRepository.SelectAsync(spec, p => new CommentDetailedItem
+            {
+                Id = p.Id,
+                CommentContent = p.CommentContent,
+                CreateOnUtc = p.CreateOnUtc,
+                Email = p.Email,
+                IpAddress = p.IPAddress,
+                Username = p.Username,
+                IsApproved = p.IsApproved,
+                PostTitle = p.Post.Title,
+                CommentReplies = p.CommentReply.Select(cr => new CommentReplyDigest
                 {
-                    Id = p.Id,
-                    CommentContent = p.CommentContent,
-                    CreateOnUtc = p.CreateOnUtc,
-                    Email = p.Email,
-                    IpAddress = p.IPAddress,
-                    Username = p.Username,
-                    IsApproved = p.IsApproved,
-                    PostTitle = p.Post.Title,
-                    CommentReplies = p.CommentReply.Select(cr => new CommentReplyDigest
-                    {
-                        ReplyContent = cr.ReplyContent,
-                        ReplyTimeUtc = cr.ReplyTimeUtc
-                    }).ToList()
-                });
-
-                return new SuccessResponse<IReadOnlyList<CommentDetailedItem>>(comments);
+                    ReplyContent = cr.ReplyContent,
+                    ReplyTimeUtc = cr.ReplyTimeUtc
+                }).ToList()
             });
+
+            return comments;
         }
 
-        public Task<Response> ToggleApprovalStatusAsync(Guid[] commentIds)
+        public async Task ToggleApprovalStatusAsync(Guid[] commentIds)
         {
-            return TryExecuteAsync(async () =>
+            if (null == commentIds || !commentIds.Any())
             {
-                if (null == commentIds || !commentIds.Any())
-                {
-                    throw new ArgumentNullException(nameof(commentIds));
-                }
+                throw new ArgumentNullException(nameof(commentIds));
+            }
 
-                var spec = new CommentSpec(commentIds);
-                var comments = await _commentRepository.GetAsync(spec);
-                foreach (var cmt in comments)
-                {
-                    cmt.IsApproved = !cmt.IsApproved;
-                    await _commentRepository.UpdateAsync(cmt);
+            var spec = new CommentSpec(commentIds);
+            var comments = await _commentRepository.GetAsync(spec);
+            foreach (var cmt in comments)
+            {
+                cmt.IsApproved = !cmt.IsApproved;
+                await _commentRepository.UpdateAsync(cmt);
 
-                    string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
-                    Logger.LogInformation(logMessage);
-                    await _blogAudit.AddAuditEntry(
-                        EventType.Content, cmt.IsApproved ? AuditEventId.CommentApproval : AuditEventId.CommentDisapproval, logMessage);
-                }
-
-                return new SuccessResponse();
-            });
+                string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
+                Logger.LogInformation(logMessage);
+                await _blogAudit.AddAuditEntry(
+                    EventType.Content, cmt.IsApproved ? AuditEventId.CommentApproval : AuditEventId.CommentDisapproval, logMessage);
+            }
         }
 
-        public Task<Response> DeleteAsync(Guid[] commentIds)
+        public async Task DeleteAsync(Guid[] commentIds)
         {
-            return TryExecuteAsync(async () =>
+            if (null == commentIds || !commentIds.Any())
             {
-                if (null == commentIds || !commentIds.Any())
+                throw new ArgumentNullException(nameof(commentIds));
+            }
+
+            var spec = new CommentSpec(commentIds);
+            var comments = await _commentRepository.GetAsync(spec);
+            foreach (var cmt in comments)
+            {
+                // 1. Delete all replies
+                var cReplies = await _commentReplyRepository.GetAsync(new CommentReplySpec(cmt.Id));
+                if (cReplies.Any())
                 {
-                    throw new ArgumentNullException(nameof(commentIds));
+                    _commentReplyRepository.Delete(cReplies);
                 }
 
-                var spec = new CommentSpec(commentIds);
-                var comments = await _commentRepository.GetAsync(spec);
-                foreach (var cmt in comments)
-                {
-                    // 1. Delete all replies
-                    var cReplies = await _commentReplyRepository.GetAsync(new CommentReplySpec(cmt.Id));
-                    if (cReplies.Any())
-                    {
-                        _commentReplyRepository.Delete(cReplies);
-                    }
-
-                    // 2. Delete comment itself
-                    _commentRepository.Delete(cmt);
-                    await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
-                }
-
-                return new SuccessResponse();
-            });
+                // 2. Delete comment itself
+                _commentRepository.Delete(cmt);
+                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
+            }
         }
 
-        public Task<Response<CommentDetailedItem>> CreateAsync(NewCommentRequest request)
+        public async Task<CommentDetailedItem> CreateAsync(NewCommentRequest request)
         {
-            return TryExecuteAsync<CommentDetailedItem>(async () =>
+            if (_blogConfig.ContentSettings.EnableWordFilter)
             {
-                // 1. Check comment enabled or not
-                if (!_blogConfig.ContentSettings.EnableComments)
-                {
-                    return new FailedResponse<CommentDetailedItem>((int)FaultCode.CommentDisabled);
-                }
+                var dw = _blogConfig.ContentSettings.DisharmonyWords;
+                var maskWordFilter = new MaskWordFilter(new StringWordSource(dw));
+                request.Username = maskWordFilter.FilterContent(request.Username);
+                request.Content = maskWordFilter.FilterContent(request.Content);
+            }
 
-                // 2. Harmonize banned keywords
-                if (_blogConfig.ContentSettings.EnableWordFilter)
-                {
-                    var dw = _blogConfig.ContentSettings.DisharmonyWords;
-                    var maskWordFilter = new MaskWordFilter(new StringWordSource(dw));
-                    request.Username = maskWordFilter.FilterContent(request.Username);
-                    request.Content = maskWordFilter.FilterContent(request.Content);
-                }
+            var model = new CommentEntity
+            {
+                Id = Guid.NewGuid(),
+                Username = request.Username,
+                CommentContent = request.Content,
+                PostId = request.PostId,
+                CreateOnUtc = DateTime.UtcNow,
+                Email = request.Email,
+                IPAddress = request.IpAddress,
+                IsApproved = !_blogConfig.ContentSettings.RequireCommentReview
+            };
 
-                var model = new CommentEntity
-                {
-                    Id = Guid.NewGuid(),
-                    Username = request.Username,
-                    CommentContent = request.Content,
-                    PostId = request.PostId,
-                    CreateOnUtc = DateTime.UtcNow,
-                    Email = request.Email,
-                    IPAddress = request.IpAddress,
-                    IsApproved = !_blogConfig.ContentSettings.RequireCommentReview
-                };
+            await _commentRepository.AddAsync(model);
 
-                await _commentRepository.AddAsync(model);
+            var spec = new PostSpec(request.PostId, false);
+            var postTitle = _postRepository.SelectFirstOrDefault(spec, p => p.Title);
 
-                var spec = new PostSpec(request.PostId, false);
-                var postTitle = _postRepository.SelectFirstOrDefault(spec, p => p.Title);
+            var item = new CommentDetailedItem
+            {
+                Id = model.Id,
+                CommentContent = model.CommentContent,
+                CreateOnUtc = model.CreateOnUtc,
+                Email = model.Email,
+                IpAddress = model.IPAddress,
+                IsApproved = model.IsApproved,
+                PostTitle = postTitle,
+                Username = model.Username
+            };
 
-                var item = new CommentDetailedItem
-                {
-                    Id = model.Id,
-                    CommentContent = model.CommentContent,
-                    CreateOnUtc = model.CreateOnUtc,
-                    Email = model.Email,
-                    IpAddress = model.IPAddress,
-                    IsApproved = model.IsApproved,
-                    PostTitle = postTitle,
-                    Username = model.Username
-                };
-
-                return new SuccessResponse<CommentDetailedItem>(item);
-            });
+            return item;
         }
 
-        public Task<Response<CommentReplyDetail>> AddReply(Guid commentId, string replyContent)
+        public async Task<CommentReplyDetail> AddReply(Guid commentId, string replyContent)
         {
-            return TryExecuteAsync<CommentReplyDetail>(async () =>
+            var cmt = await _commentRepository.GetAsync(commentId);
+
+            if (null == cmt)
             {
-                if (!_blogConfig.ContentSettings.EnableComments)
-                {
-                    return new FailedResponse<CommentReplyDetail>((int)FaultCode.CommentDisabled);
-                }
+                throw new InvalidOperationException($"Comment {commentId} is not found.");
+            }
 
-                var cmt = await _commentRepository.GetAsync(commentId);
+            var id = Guid.NewGuid();
+            var model = new CommentReplyEntity
+            {
+                Id = id,
+                ReplyContent = replyContent,
+                ReplyTimeUtc = DateTime.UtcNow,
+                CommentId = commentId
+            };
 
-                if (null == cmt)
-                {
-                    return new FailedResponse<CommentReplyDetail>((int)FaultCode.CommentNotFound);
-                }
+            await _commentReplyRepository.AddAsync(model);
 
-                var id = Guid.NewGuid();
-                var model = new CommentReplyEntity
-                {
-                    Id = id,
-                    ReplyContent = replyContent,
-                    ReplyTimeUtc = DateTime.UtcNow,
-                    CommentId = commentId
-                };
+            var detail = new CommentReplyDetail
+            {
+                CommentContent = cmt.CommentContent,
+                CommentId = commentId,
+                Email = cmt.Email,
+                Id = model.Id,
+                PostId = cmt.PostId,
+                PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
+                ReplyContent = model.ReplyContent,
+                ReplyContentHtml = Utils.ConvertMarkdownContent(model.ReplyContent, Utils.MarkdownConvertType.Html),
+                ReplyTimeUtc = model.ReplyTimeUtc,
+                Slug = cmt.Post.Slug,
+                Title = cmt.Post.Title
+            };
 
-                await _commentReplyRepository.AddAsync(model);
-
-                var detail = new CommentReplyDetail
-                {
-                    CommentContent = cmt.CommentContent,
-                    CommentId = commentId,
-                    Email = cmt.Email,
-                    Id = model.Id,
-                    PostId = cmt.PostId,
-                    PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
-                    ReplyContent = model.ReplyContent,
-                    ReplyContentHtml = Utils.ConvertMarkdownContent(model.ReplyContent, Utils.MarkdownConvertType.Html),
-                    ReplyTimeUtc = model.ReplyTimeUtc,
-                    Slug = cmt.Post.Slug,
-                    Title = cmt.Post.Title
-                };
-
-                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
-                return new SuccessResponse<CommentReplyDetail>(detail);
-            });
+            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
+            return detail;
         }
     }
 }
