@@ -6,11 +6,11 @@ using Microsoft.Data.SqlClient;
 
 namespace Moonglade.Setup
 {
-    public class SetupHelper
+    public class SetupRunner
     {
         public string DatabaseConnectionString { get; set; }
 
-        public SetupHelper(string databaseConnectionString)
+        public SetupRunner(string databaseConnectionString)
         {
             if (string.IsNullOrWhiteSpace(databaseConnectionString))
             {
@@ -127,7 +127,7 @@ namespace Moonglade.Setup
 
         private static string GetEmbeddedSqlScript(string scriptName)
         {
-            var assembly = typeof(SetupHelper).GetTypeInfo().Assembly;
+            var assembly = typeof(SetupRunner).GetTypeInfo().Assembly;
             using var stream = assembly.GetManifestResourceStream($"Moonglade.Setup.Data.{scriptName}.sql");
             if (stream == null) return null;
             using var reader = new StreamReader(stream);

@@ -34,11 +34,11 @@ namespace Moonglade.Web.Middleware
             }
 
             var conn = configuration.GetConnectionString(Constants.DbConnectionName);
-            var setupHelper = new SetupHelper(conn);
+            var setupHelper = new SetupRunner(conn);
 
             if (!setupHelper.TestDatabaseConnection(exception =>
             {
-                logger.LogCritical(exception, $"Error {nameof(SetupHelper.TestDatabaseConnection)}, connection string: {conn}");
+                logger.LogCritical(exception, $"Error {nameof(SetupRunner.TestDatabaseConnection)}, connection string: {conn}");
             }))
             {
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;

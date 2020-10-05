@@ -607,7 +607,7 @@ namespace Moonglade.Web.Controllers
             Logger.LogWarning($"System reset is requested by '{User.Identity.Name}', IP: {HttpContext.Connection.RemoteIpAddress}. Nonce value: {nonce}");
 
             var conn = configuration.GetConnectionString(Constants.DbConnectionName);
-            var setupHelper = new SetupHelper(conn);
+            var setupHelper = new SetupRunner(conn);
             setupHelper.ClearData();
 
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "System reset.");

@@ -12,17 +12,17 @@ namespace Moonglade.Tests
         {
             Assert.Throws(typeof(ArgumentNullException), () =>
             {
-                var helper = new SetupHelper(null);
+                var helper = new SetupRunner(null);
             });
 
             Assert.Throws(typeof(ArgumentNullException), () =>
             {
-                var helper = new SetupHelper(string.Empty);
+                var helper = new SetupRunner(string.Empty);
             });
 
             Assert.Throws(typeof(ArgumentNullException), () =>
             {
-                var helper = new SetupHelper(" ");
+                var helper = new SetupRunner(" ");
             });
         }
 
@@ -30,7 +30,7 @@ namespace Moonglade.Tests
         public void TestInstanceCreationGoodConnectionString()
         {
             const string connStr = "Server=(localdb)\\MSSQLLocalDB;Database=moonglade-dev;Trusted_Connection=True;";
-            var helper = new SetupHelper(connStr);
+            var helper = new SetupRunner(connStr);
             Assert.IsTrue(helper.DatabaseConnectionString == connStr);
         }
     }
