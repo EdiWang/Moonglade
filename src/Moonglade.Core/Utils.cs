@@ -110,19 +110,6 @@ namespace Moonglade.Core
             return result;
         }
 
-        public static IDictionary<string, string> GetThemes()
-        {
-            var dic = new Dictionary<string, string>
-            {
-                {"Word Blue", "word-blue.css"},
-                {"Excel Green", "excel-green.css"},
-                {"PowerPoint Orange", "powerpoint-orange.css"},
-                {"OneNote Purple", "onenote-purple.css"},
-                {"Outlook Blue", "outlook-blue.css"}
-            };
-            return dic;
-        }
-
         public enum UrlScheme
         {
             Http,

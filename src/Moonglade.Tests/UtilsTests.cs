@@ -49,13 +49,6 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestGetThemes()
-        {
-            var themes = Utils.GetThemes();
-            Assert.IsTrue(themes.All(t => t.Value.EndsWith(".css")));
-        }
-
-        [Test]
         public void TryParseBase64Success()
         {
             var ok = Utils.TryParseBase64("xDgItVa0ujLKxGsoMV1+MmxBrpo997mXbeXngqIx13o=", out var base64);
