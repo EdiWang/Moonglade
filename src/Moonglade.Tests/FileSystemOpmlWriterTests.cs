@@ -13,13 +13,9 @@ namespace Moonglade.Tests
         [Test]
         public async Task TestWriteOpmlFileAsync()
         {
-            var catInfos = new List<OpmlCategory>
+            var catInfos = new List<KeyValuePair<string, string>>
             {
-                new OpmlCategory
-                {
-                    DisplayName = "Work 996",
-                    Title = "work-996"
-                }
+                new KeyValuePair<string, string>("Work 996", "work-996")
             };
             var siteRootUrl = "https://996.icu";
 
