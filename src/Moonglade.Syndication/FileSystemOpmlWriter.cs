@@ -45,11 +45,11 @@ namespace Moonglade.Syndication
                     // open OUTLINE
                     writer.WriteStartElement("outline");
 
-                    writer.WriteAttributeString("title", cat.DisplayName);
-                    writer.WriteAttributeString("text", cat.Title);
+                    writer.WriteAttributeString("title", cat.Key);
+                    writer.WriteAttributeString("text", cat.Value);
                     writer.WriteAttributeString("type", "rss");
-                    writer.WriteAttributeString("xmlUrl", opmlDoc.CategoryXmlUrlTemplate.Replace("[catTitle]", cat.Title).ToLower());
-                    writer.WriteAttributeString("htmlUrl", opmlDoc.CategoryHtmlUrlTemplate.Replace("[catTitle]", cat.Title).ToLower());
+                    writer.WriteAttributeString("xmlUrl", opmlDoc.CategoryXmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
+                    writer.WriteAttributeString("htmlUrl", opmlDoc.CategoryHtmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
 
                     // close OUTLINE
                     await writer.WriteEndElementAsync();

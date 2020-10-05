@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
@@ -50,11 +51,7 @@ namespace Moonglade.Web.Controllers
                 Logger.LogInformation($"OPML file not found, writing new file on {opmlDataFile}");
 
                 var cats = await _categoryService.GetAllAsync();
-                var catInfos = cats.Select(c => new OpmlCategory
-                {
-                    DisplayName = c.DisplayName,
-                    Title = c.RouteName
-                });
+                var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
 
                 var oi = new OpmlDoc
                 {

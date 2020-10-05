@@ -14,6 +14,6 @@ namespace Moonglade.Syndication
 
         public string CategoryHtmlUrlTemplate { get; set; }
 
-        public IEnumerable<OpmlCategory> CategoryInfo { get; set; }
+        public IEnumerable<KeyValuePair<string, string>> CategoryInfo { get; set; }
     }
 }
