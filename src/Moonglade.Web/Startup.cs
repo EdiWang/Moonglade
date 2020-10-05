@@ -29,7 +29,6 @@ using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Pingback;
 using Moonglade.Syndication;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
