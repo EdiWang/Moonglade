@@ -80,36 +80,6 @@ namespace Moonglade.Core
             return result;
         }
 
-        public static string RemoveWhiteSpaceFromStylesheets(string body)
-        {
-            if (string.IsNullOrWhiteSpace(body))
-            {
-                return string.Empty;
-            }
-
-            body = Regex.Replace(body, "[a-zA-Z]+#", "#");
-            body = Regex.Replace(body, @"[\n\r]+\s*", string.Empty);
-            body = Regex.Replace(body, @"\s+", " ");
-            body = Regex.Replace(body, @"\s?([:,;{}])\s?", "$1");
-            body = body.Replace(";}", "}");
-            body = Regex.Replace(body, @"([\s:]0)(px|pt|%|em)", "$1");
-            // Remove comments from CSS
-            body = Regex.Replace(body, @"/\*[\d\D]*?\*/", string.Empty);
-            return body;
-        }
-
-        public static string RemoveScriptTagFromHtml(string html)
-        {
-            if (string.IsNullOrWhiteSpace(html))
-            {
-                return string.Empty;
-            }
-
-            var regex = new Regex("\\<script(.+?)\\</script\\>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            var result = regex.Replace(html, string.Empty);
-            return result;
-        }
-
         public enum UrlScheme
         {
             Http,

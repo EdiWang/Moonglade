@@ -89,25 +89,6 @@ namespace Moonglade.Tests
             Assert.AreEqual(string.Empty, output);
         }
 
-        [Test]
-        public void TestRemoveScriptTagFromHtml()
-        {
-            var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><script>console.info('hey');</script><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
-            var output = Utils.RemoveScriptTagFromHtml(html);
-
-            Assert.IsTrue(output == @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>");
-        }
-
-        [Test]
-        public void TestRemoveWhiteSpaceFromStylesheets()
-        {
-            var css = @"h1 {
-                            color: red;
-                        }";
-            var output = Utils.RemoveWhiteSpaceFromStylesheets(css);
-            Assert.IsTrue(output == "h1{color:red}");
-        }
-
         [TestCase('f', ExpectedResult = true)]
         [TestCase('0', ExpectedResult = false)]
         [TestCase('`', ExpectedResult = false)]

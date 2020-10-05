@@ -8,7 +8,7 @@
 
 @section head{
     <style>
-        @Html.Raw(Utils.RemoveWhiteSpaceFromStylesheets(Model.CssContent))
+        @Html.Raw(CustomPageService.RemoveWhiteSpaceFromStylesheets(Model.CssContent))
     </style>
 }
 
@@ -29,5 +29,5 @@
 }
 else
 {
-    @Html.Raw(Utils.RemoveScriptTagFromHtml(Model.RawHtmlContent))
+    @Html.Raw(CustomPageService.RemoveScriptTagFromHtml(Model.RawHtmlContent))
 }
