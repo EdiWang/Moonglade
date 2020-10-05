@@ -179,7 +179,6 @@ Key | Data Type | Description
 ```Editor``` | ```string``` | ```HTML``` or ```Markdown```
 ```EnforceHttps``` | ```bool``` | Force website use HTTPS
 ```EnableAudit``` | ```bool``` | Enable Audit Log or not
-```EnableOpenGraph``` | ```bool``` | Enable Open Graph
 ```EnableWebApi``` | ```bool``` | Enable REST API
 ```CacheSlidingExpirationMinutes:Post``` | ```int``` | Time for cached posts to expire
 ```CacheSlidingExpirationMinutes:Page``` | ```int``` | Time for cached pages to expire
