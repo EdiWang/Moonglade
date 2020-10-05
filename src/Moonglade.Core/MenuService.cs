@@ -75,7 +75,7 @@ namespace Moonglade.Core
                 throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
             }
 
-            var sUrl = Utils.SterilizeMenuLink(request.Url.Trim());
+            var sUrl = SterilizeMenuLink(request.Url.Trim());
             Logger.LogInformation($"Sterilized URL from '{request.Url}' to '{sUrl}'");
 
             menu.Title = request.Title.Trim();
@@ -118,6 +118,61 @@ namespace Moonglade.Core
                 Url = entity.Url.Trim(),
                 IsOpenInNewTab = entity.IsOpenInNewTab
             };
+        }
+
+        public static string SterilizeMenuLink(string rawUrl)
+        {
+            bool IsUnderLocalSlash()
+            {
+                // Allows "/" or "/foo" but not "//" or "/\".
+                if (rawUrl[0] == '/')
+                {
+                    // url is exactly "/"
+                    if (rawUrl.Length == 1)
+                    {
+                        return true;
+                    }
+
+                    // url doesn't start with "//" or "/\"
+                    if (rawUrl[1] != '/' && rawUrl[1] != '\\')
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                return false;
+            }
+
+            string invalidReturn = "#";
+            if (string.IsNullOrWhiteSpace(rawUrl))
+            {
+                return invalidReturn;
+            }
+
+            if (!rawUrl.IsValidUrl())
+            {
+                return IsUnderLocalSlash() ? rawUrl : invalidReturn;
+            }
+
+            var uri = new Uri(rawUrl);
+            if (uri.IsLoopback)
+            {
+                // localhost, 127.0.0.1
+                return invalidReturn;
+            }
+
+            if (uri.HostNameType == UriHostNameType.IPv4)
+            {
+                // Disallow LAN IP (e.g. 192.168.0.1, 10.0.0.1)
+                if (Utils.IsPrivateIP(uri.Host))
+                {
+                    return invalidReturn;
+                }
+            }
+
+            return rawUrl;
         }
     }
 }
