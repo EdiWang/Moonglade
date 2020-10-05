@@ -9,7 +9,7 @@ trigger:
 jobs:
 - job: ASPNETCore
   pool:
-    vmImage: 'ubuntu-latest'
+    vmImage: 'windows-latest'
   steps:
   # - task: UseDotNet@2
   #   inputs:
