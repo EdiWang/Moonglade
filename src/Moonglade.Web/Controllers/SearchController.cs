@@ -20,7 +20,7 @@ namespace Moonglade.Web.Controllers
         private readonly SearchService _searchService;
 
         public SearchController(
-            ILogger<OpmlController> logger,
+            ILogger<SearchController> logger,
             IOptions<AppSettings> settings,
             SearchService searchService,
             IBlogConfig blogConfig)
