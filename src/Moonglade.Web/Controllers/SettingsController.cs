@@ -566,7 +566,8 @@ namespace Moonglade.Web.Controllers
                 DNSPrefetchEndpoint = settings.DNSPrefetchEndpoint,
                 RobotsTxtContent = settings.RobotsTxtContent,
                 EnablePingbackSend = settings.EnablePingBackSend,
-                EnablePingbackReceive = settings.EnablePingBackReceive
+                EnablePingbackReceive = settings.EnablePingBackReceive,
+                EnableOpenGraph = settings.EnableOpenGraph
             };
 
             return View(vm);
@@ -585,6 +586,7 @@ namespace Moonglade.Web.Controllers
             settings.RobotsTxtContent = model.RobotsTxtContent;
             settings.EnablePingBackSend = model.EnablePingbackSend;
             settings.EnablePingBackReceive = model.EnablePingbackReceive;
+            settings.EnableOpenGraph = model.EnableOpenGraph;
 
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();

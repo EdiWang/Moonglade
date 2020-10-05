@@ -19,5 +19,8 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Enable Pingback Receive")]
         public bool EnablePingbackReceive { get; set; }
+
+        [Display(Name = "Enable OpenGraph")]
+        public bool EnableOpenGraph { get; set; }
     }
 }
