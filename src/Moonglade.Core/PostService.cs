@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -145,7 +146,7 @@ namespace Moonglade.Core
 
             if (null != postSlugModel)
             {
-                postSlugModel.RawPostContent = Utils.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
+                postSlugModel.RawPostContent = AddLazyLoadToImgTag(postSlugModel.RawPostContent);
             }
 
             return postSlugModel;
@@ -227,7 +228,7 @@ namespace Moonglade.Core
 
                 if (null != postSlugModel)
                 {
-                    postSlugModel.RawPostContent = Utils.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
+                    postSlugModel.RawPostContent = AddLazyLoadToImgTag(postSlugModel.RawPostContent);
                 }
 
                 return postSlugModel;
@@ -324,7 +325,7 @@ namespace Moonglade.Core
                 CommentEnabled = request.EnableComment,
                 Id = Guid.NewGuid(),
                 PostContent = request.EditorContent,
-                ContentAbstract = Utils.GetPostAbstract(
+                ContentAbstract = GetPostAbstract(
                                         request.EditorContent,
                                         AppSettings.PostAbstractWords,
                                         AppSettings.Editor == EditorChoice.Markdown),
@@ -383,7 +384,7 @@ namespace Moonglade.Core
             {
                 foreach (var item in request.Tags)
                 {
-                    if (!Utils.ValidateTagName(item))
+                    if (!TagService.ValidateTagName(item))
                     {
                         continue;
                     }
@@ -394,7 +395,7 @@ namespace Moonglade.Core
                         var newTag = new TagEntity
                         {
                             DisplayName = item,
-                            NormalizedName = Utils.NormalizeTagName(item)
+                            NormalizedName = TagService.NormalizeTagName(item)
                         };
 
                         tag = await _tagRepository.AddAsync(newTag);
@@ -426,7 +427,7 @@ namespace Moonglade.Core
 
             postModel.CommentEnabled = request.EnableComment;
             postModel.PostContent = request.EditorContent;
-            postModel.ContentAbstract = Utils.GetPostAbstract(
+            postModel.ContentAbstract = GetPostAbstract(
                                         request.EditorContent,
                                         AppSettings.PostAbstractWords,
                                         AppSettings.Editor == EditorChoice.Markdown);
@@ -464,7 +465,7 @@ namespace Moonglade.Core
                 await _tagRepository.AddAsync(new TagEntity
                 {
                     DisplayName = item,
-                    NormalizedName = Utils.NormalizeTagName(item)
+                    NormalizedName = TagService.NormalizeTagName(item)
                 });
 
                 await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
@@ -477,7 +478,7 @@ namespace Moonglade.Core
             {
                 foreach (var tagName in request.Tags)
                 {
-                    if (!Utils.ValidateTagName(tagName))
+                    if (!TagService.ValidateTagName(tagName))
                     {
                         continue;
                     }
@@ -562,6 +563,36 @@ namespace Moonglade.Core
             {
                 _cache.Remove(CacheDivision.Post, guid.ToString());
             }
+        }
+
+        public static string GetPostAbstract(string rawContent, int wordCount, bool useMarkdown = false)
+        {
+            var plainText = useMarkdown ?
+                Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Text) :
+                Utils.RemoveTags(rawContent);
+
+            var result = plainText.Ellipsize(wordCount);
+            return result;
+        }
+
+        public static string AddLazyLoadToImgTag(string rawHtmlContent)
+        {
+            // Replace ONLY IMG tag's src to data-src
+            // Otherwise embedded videos will blow up
+
+            if (string.IsNullOrWhiteSpace(rawHtmlContent)) return rawHtmlContent;
+            var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
+            var newStr = imgSrcRegex.Replace(rawHtmlContent, match =>
+            {
+                if (!match.Value.Contains("loading"))
+                {
+                    return match.Value.Replace("src",
+                        @"loading=""lazy"" src");
+                }
+
+                return match.Value;
+            });
+            return newStr;
         }
     }
 }

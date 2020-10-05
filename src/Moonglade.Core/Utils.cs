@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -125,16 +123,6 @@ namespace Moonglade.Core
             _ => false
         };
 
-        public static string GetMonthNameByNumber(int number)
-        {
-            if (number > 12 || number < 1)
-            {
-                return string.Empty;
-            }
-
-            return CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
-        }
-
         public static string FormatCopyright2Html(string copyrightCode)
         {
             if (string.IsNullOrWhiteSpace(copyrightCode))
@@ -226,16 +214,6 @@ namespace Moonglade.Core
             path = path.Trim();
 
             return url.TrimEnd('/') + "/" + path.TrimStart('/');
-        }
-
-        public static string GetPostAbstract(string rawContent, int wordCount, bool useMarkdown = false)
-        {
-            var plainText = useMarkdown ?
-                            ConvertMarkdownContent(rawContent, MarkdownConvertType.Text) :
-                            RemoveTags(rawContent);
-
-            var result = plainText.Ellipsize(wordCount);
-            return result;
         }
 
         public static string Ellipsize(this string text, int characterCount)
@@ -338,62 +316,6 @@ namespace Moonglade.Core
             {
                 return false;
             }
-        }
-
-        private static readonly Tuple<string, string>[] TagNormalizeSourceTable =
-        {
-            Tuple.Create(".", "dot"),
-            Tuple.Create("#", "sharp"),
-            Tuple.Create(" ", "-")
-        };
-
-        public static string NormalizeTagName(string orgTagName)
-        {
-            return ReplaceWithStringBuilder(orgTagName, TagNormalizeSourceTable).ToLower();
-        }
-
-        public static bool ValidateTagName(string tagDisplayName)
-        {
-            if (string.IsNullOrWhiteSpace(tagDisplayName))
-            {
-                return false;
-            }
-
-            // Regex performance best practice
-            // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
-
-            const string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
-            return Regex.IsMatch(tagDisplayName, pattern);
-        }
-
-        private static string ReplaceWithStringBuilder(string value, IEnumerable<Tuple<string, string>> toReplace)
-        {
-            var result = new StringBuilder(value);
-            foreach (var (item1, item2) in toReplace)
-            {
-                result.Replace(item1, item2);
-            }
-            return result.ToString();
-        }
-
-        public static string AddLazyLoadToImgTag(string rawHtmlContent)
-        {
-            // Replace ONLY IMG tag's src to data-src
-            // Otherwise embedded videos will blow up
-
-            if (string.IsNullOrWhiteSpace(rawHtmlContent)) return rawHtmlContent;
-            var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
-            var newStr = imgSrcRegex.Replace(rawHtmlContent, match =>
-            {
-                if (!match.Value.Contains("loading"))
-                {
-                    return match.Value.Replace("src",
-                        @"loading=""lazy"" src");
-                }
-
-                return match.Value;
-            });
-            return newStr;
         }
 
         public static string ConvertMarkdownContent(string markdown, MarkdownConvertType type, bool disableHtml = true)

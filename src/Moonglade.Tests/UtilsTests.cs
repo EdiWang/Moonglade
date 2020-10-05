@@ -15,25 +15,6 @@ namespace Moonglade.Tests
             Assert.IsNotNull(ver);
         }
 
-        [TestCase(1, ExpectedResult = "January")]
-        [TestCase(2, ExpectedResult = "February")]
-        [TestCase(3, ExpectedResult = "March")]
-        [TestCase(4, ExpectedResult = "April")]
-        [TestCase(5, ExpectedResult = "May")]
-        [TestCase(6, ExpectedResult = "June")]
-        [TestCase(7, ExpectedResult = "July")]
-        [TestCase(8, ExpectedResult = "August")]
-        [TestCase(9, ExpectedResult = "September")]
-        [TestCase(10, ExpectedResult = "October")]
-        [TestCase(11, ExpectedResult = "November")]
-        [TestCase(12, ExpectedResult = "December")]
-        [TestCase(-128, ExpectedResult = "")]
-        [TestCase(128, ExpectedResult = "")]
-        public string TestGetMonthNameByNumber(int number)
-        {
-            return Utils.GetMonthNameByNumber(number);
-        }
-
         [TestCase(null, ExpectedResult = null)]
         [TestCase("", ExpectedResult = "")]
         [TestCase(" ", ExpectedResult = " ")]
@@ -111,30 +92,6 @@ namespace Moonglade.Tests
             Assert.IsTrue(themes.All(t => t.Value.EndsWith(".css")));
         }
 
-        [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
-        [TestCase("C#", ExpectedResult = "csharp")]
-        [TestCase("955", ExpectedResult = "955")]
-        public string TestNormalizeTagName(string str)
-        {
-            return Utils.NormalizeTagName(str);
-        }
-
-        [TestCase("C", ExpectedResult = true)]
-        [TestCase("C++", ExpectedResult = true)]
-        [TestCase("C#", ExpectedResult = true)]
-        [TestCase("Java", ExpectedResult = true)]
-        [TestCase("996", ExpectedResult = true)]
-        [TestCase(".NET", ExpectedResult = true)]
-        [TestCase("C Sharp", ExpectedResult = true)]
-        [TestCase("Cup<T>", ExpectedResult = false)]
-        [TestCase("(1)", ExpectedResult = false)]
-        [TestCase("usr/bin", ExpectedResult = false)]
-        [TestCase("", ExpectedResult = false)]
-        public bool TestValidateTagName(string tagDisplayName)
-        {
-            return Utils.ValidateTagName(tagDisplayName);
-        }
-
         [Test]
         public void TryParseBase64Success()
         {
@@ -149,29 +106,6 @@ namespace Moonglade.Tests
             var ok = Utils.TryParseBase64("Learn Java and work 996!", out var base64);
             Assert.IsFalse(ok);
             Assert.IsNull(base64);
-        }
-
-        [Test]
-        public void TestLazyLoadToImgTag()
-        {
-            const string html = @"<p>Work 996 and have some fu bao!</p><img src=""icu.jpg"" /><video src=""java996.mp4""></video>";
-            var result = Utils.AddLazyLoadToImgTag(html);
-            Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>");
-        }
-
-        [Test]
-        public void TestLazyLoadToImgTagExistLoading()
-        {
-            const string html = @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>";
-            var result = Utils.AddLazyLoadToImgTag(html);
-            Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>");
-        }
-
-        [Test]
-        public void TestLazyLoadToImgTagEmpty()
-        {
-            var result = Utils.AddLazyLoadToImgTag(string.Empty);
-            Assert.IsTrue(result == string.Empty);
         }
 
         [Test]
@@ -242,15 +176,6 @@ namespace Moonglade.Tests
         public string TestEllipsize(string str)
         {
             return str.Ellipsize(10);
-        }
-
-        [Test]
-        public void TestGetPostAbstract()
-        {
-            var html = @"<p>Microsoft</p> <p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
-            var result = Utils.GetPostAbstract(html, 16);
-            var expected = "Microsoft Rocks!" + "\u00A0\u2026";
-            Assert.IsTrue(result == expected);
         }
 
         [TestCase("https://dot.net/955", ExpectedResult = true)]

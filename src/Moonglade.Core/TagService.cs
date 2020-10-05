@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
@@ -48,7 +51,7 @@ namespace Moonglade.Core
             if (null == tag) return;
 
             tag.DisplayName = newName;
-            tag.NormalizedName = Utils.NormalizeTagName(newName);
+            tag.NormalizedName = NormalizeTagName(newName);
             await _tagRepository.UpdateAsync(tag);
             await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
         }
@@ -98,6 +101,42 @@ namespace Moonglade.Core
                 NormalizedName = t.NormalizedName,
                 Degree = t.PostTag.Count
             });
+        }
+
+        private static readonly Tuple<string, string>[] TagNormalizeSourceTable =
+        {
+            Tuple.Create(".", "dot"),
+            Tuple.Create("#", "sharp"),
+            Tuple.Create(" ", "-")
+        };
+
+        public static string NormalizeTagName(string orgTagName)
+        {
+            return ReplaceWithStringBuilder(orgTagName, TagNormalizeSourceTable).ToLower();
+        }
+
+        private static string ReplaceWithStringBuilder(string value, IEnumerable<Tuple<string, string>> toReplace)
+        {
+            var result = new StringBuilder(value);
+            foreach (var (item1, item2) in toReplace)
+            {
+                result.Replace(item1, item2);
+            }
+            return result.ToString();
+        }
+
+        public static bool ValidateTagName(string tagDisplayName)
+        {
+            if (string.IsNullOrWhiteSpace(tagDisplayName))
+            {
+                return false;
+            }
+
+            // Regex performance best practice
+            // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
+
+            const string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
+            return Regex.IsMatch(tagDisplayName, pattern);
         }
     }
 }
