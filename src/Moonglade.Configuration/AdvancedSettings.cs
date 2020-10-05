@@ -11,5 +11,7 @@ namespace Moonglade.Configuration
         public bool EnablePingBackSend { get; set; }
 
         public bool EnablePingBackReceive { get; set; }
+
+        public bool EnableOpenGraph { get; set; }
     }
 }

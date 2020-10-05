@@ -24,7 +24,7 @@
     }
 
     @await RenderSectionAsync("meta", false)
-    @if (Settings.Value.EnableOpenGraph)
+    @if (BlogConfig.AdvancedSettings.EnableOpenGraph)
     {
         if (IsSectionDefined("opengraph"))
         {
