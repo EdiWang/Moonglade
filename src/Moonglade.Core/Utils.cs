@@ -17,8 +17,13 @@ namespace Moonglade.Core
 
         public static async Task<string> GetThemeColorAsync(string webRootPath, string currentTheme)
         {
-            var cssPath = Path.Join(webRootPath, "css", "theme", currentTheme);
+            var color = AppDomain.CurrentDomain.GetData("CurrentThemeColor")?.ToString();
+            if (!string.IsNullOrWhiteSpace(color))
+            {
+                return color;
+            }
 
+            var cssPath = Path.Join(webRootPath, "css", "theme", currentTheme);
             if (File.Exists(cssPath))
             {
                 var lines = await File.ReadAllLinesAsync(cssPath);
@@ -30,11 +35,11 @@ namespace Moonglade.Core
                     if (match.Success)
                     {
                         var colorHex = match.Captures[0].Value;
+                        AppDomain.CurrentDomain.SetData("CurrentThemeColor", colorHex);
                         return colorHex;
                     }
                 }
             }
-
             return "#FFFFFF";
         }
 

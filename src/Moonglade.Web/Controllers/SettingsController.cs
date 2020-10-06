@@ -151,6 +151,8 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
             _blogConfig.RequireRefresh();
 
+            AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
+
             Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
 
