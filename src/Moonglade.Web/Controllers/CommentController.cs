@@ -124,18 +124,10 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete(Guid commentId)
-        {
-            await _commentService.DeleteAsync(new[] { commentId });
-            return Json(commentId);
-        }
-
-        [Authorize]
-        [HttpPost("delete-batch")]
-        public async Task<IActionResult> DeleteBatch(Guid[] commentIds)
+        public async Task<IActionResult> Delete(Guid[] commentIds)
         {
             await _commentService.DeleteAsync(commentIds);
-            return Ok();
+            return Json(commentIds);
         }
 
         [Authorize]
