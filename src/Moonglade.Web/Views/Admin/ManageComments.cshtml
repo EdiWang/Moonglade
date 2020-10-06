@@ -16,8 +16,21 @@
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
-                ajaxPostWithCSRFToken("delete", { commentId: cid }, function (data) {
-                    $(`#panel-comment-${data}`).slideUp();
+                ajaxPostWithCSRFToken("delete", { commentIds: [cid] }, function (data) {
+                    $(`#panel-comment-${cid}`).slideUp();
+                });
+            });
+
+            $(".btn-delete-selected").click(function () {
+                var cids = [];
+                $('.chk-cid:checked').each(function () {
+                    cids.push($(this).data('cid'));
+                });
+
+                ajaxPostWithCSRFToken("delete", { commentIds: cids }, function (data) {
+                    $.each(cids, function (index, value) {
+                        $(`#panel-comment-${value}`).slideUp();
+                    });
                 });
             });
 
@@ -74,11 +87,22 @@
 }
 else
 {
+    <div class="mb-3">
+        <a href="javascript:;" class="btn btn-outline-danger btn-delete-selected">
+            <span class="icon-bin"></span> Delete Selected Item(s)
+        </a>
+    </div>
+
     foreach (var item in Model)
     {
         <div id="panel-comment-@item.Id" class="card mb-4">
             <div class="card-body">
                 <div class="float-right">
+                    <div class="custom-control custom-checkbox mb-2 text-right">
+                        <input type="checkbox" class="custom-control-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
+                        <label class="custom-control-label" for="comment-item-chk-@item.Id"></label>
+                    </div>
+
                     <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
                         <span class="icon-star-full"></span>
                     </a>

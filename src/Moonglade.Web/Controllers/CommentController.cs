@@ -124,10 +124,10 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete(Guid commentId)
+        public async Task<IActionResult> Delete(Guid[] commentIds)
         {
-            await _commentService.DeleteAsync(new[] { commentId });
-            return Json(commentId);
+            await _commentService.DeleteAsync(commentIds);
+            return Json(commentIds);
         }
 
         [Authorize]
