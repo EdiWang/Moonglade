@@ -131,6 +131,14 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
+        [HttpPost("delete-batch")]
+        public async Task<IActionResult> DeleteBatch(Guid[] commentIds)
+        {
+            await _commentService.DeleteAsync(commentIds);
+            return Ok();
+        }
+
+        [Authorize]
         [HttpPost("reply")]
         public async Task<IActionResult> Reply(Guid commentId, string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
