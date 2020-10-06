@@ -320,15 +320,16 @@ namespace Moonglade.Core
 
         public async Task<PostEntity> CreateAsync(CreatePostRequest request)
         {
-            var postModel = new PostEntity
+            var abs = GetPostAbstract(
+                request.EditorContent, AppSettings.PostAbstractWords,
+                AppSettings.Editor == EditorChoice.Markdown);
+
+            var post = new PostEntity
             {
                 CommentEnabled = request.EnableComment,
                 Id = Guid.NewGuid(),
                 PostContent = request.EditorContent,
-                ContentAbstract = GetPostAbstract(
-                                        request.EditorContent,
-                                        AppSettings.PostAbstractWords,
-                                        AppSettings.Editor == EditorChoice.Markdown),
+                ContentAbstract = abs,
                 CreateOnUtc = DateTime.UtcNow,
                 Slug = request.Slug.ToLower().Trim(),
                 Title = request.Title.Trim(),
@@ -352,15 +353,15 @@ namespace Moonglade.Core
             // - The LINQ expression 'where (Convert([p]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
             // Why EF Core this diao yang?
             if (_postRepository.Any(p =>
-                p.Slug == postModel.Slug &&
+                p.Slug == post.Slug &&
                 p.PubDateUtc != null &&
                 p.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
                 p.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
                 p.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
             {
                 var uid = Guid.NewGuid();
-                postModel.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
-                Logger.LogInformation($"Found conflict for post slug, generated new slug: {postModel.Slug}");
+                post.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
+                Logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
             }
 
             // add categories
@@ -370,10 +371,10 @@ namespace Moonglade.Core
                 {
                     if (_categoryRepository.Any(c => c.Id == cid))
                     {
-                        postModel.PostCategory.Add(new PostCategoryEntity
+                        post.PostCategory.Add(new PostCategoryEntity
                         {
                             CategoryId = cid,
-                            PostId = postModel.Id
+                            PostId = post.Id
                         });
                     }
                 }
@@ -403,31 +404,31 @@ namespace Moonglade.Core
                             $"Tag '{tag.NormalizedName}' created.");
                     }
 
-                    postModel.PostTag.Add(new PostTagEntity
+                    post.PostTag.Add(new PostTagEntity
                     {
                         TagId = tag.Id,
-                        PostId = postModel.Id
+                        PostId = post.Id
                     });
                 }
             }
 
-            await _postRepository.AddAsync(postModel);
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostCreated, $"Post created, id: {postModel.Id}");
+            await _postRepository.AddAsync(post);
+            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PostCreated, $"Post created, id: {post.Id}");
 
-            return postModel;
+            return post;
         }
 
         public async Task<PostEntity> UpdateAsync(EditPostRequest request)
         {
-            var postModel = await _postRepository.GetAsync(request.Id);
-            if (null == postModel)
+            var post = await _postRepository.GetAsync(request.Id);
+            if (null == post)
             {
                 throw new InvalidOperationException($"Post {request.Id} is not found.");
             }
 
-            postModel.CommentEnabled = request.EnableComment;
-            postModel.PostContent = request.EditorContent;
-            postModel.ContentAbstract = GetPostAbstract(
+            post.CommentEnabled = request.EnableComment;
+            post.PostContent = request.EditorContent;
+            post.ContentAbstract = GetPostAbstract(
                                         request.EditorContent,
                                         AppSettings.PostAbstractWords,
                                         AppSettings.Editor == EditorChoice.Markdown);
@@ -436,28 +437,28 @@ namespace Moonglade.Core
             // postModel.IsPublished = request.IsPublished;
             // Edit draft -> save and publish, ignore false case because #221
             bool isNewPublish = false;
-            if (request.IsPublished && !postModel.IsPublished)
+            if (request.IsPublished && !post.IsPublished)
             {
-                postModel.IsPublished = true;
-                postModel.PubDateUtc = DateTime.UtcNow;
+                post.IsPublished = true;
+                post.PubDateUtc = DateTime.UtcNow;
 
                 isNewPublish = true;
             }
 
             // #325: Allow changing publish date for published posts
-            if (request.PublishDate != null && postModel.PubDateUtc.HasValue)
+            if (request.PublishDate != null && post.PubDateUtc.HasValue)
             {
-                var tod = postModel.PubDateUtc.Value.TimeOfDay;
+                var tod = post.PubDateUtc.Value.TimeOfDay;
                 var adjustedDate = _dateTimeResolver.ToUtc(request.PublishDate.Value);
-                postModel.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
+                post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
             }
 
-            postModel.Slug = request.Slug;
-            postModel.Title = request.Title;
-            postModel.ExposedToSiteMap = request.ExposedToSiteMap;
-            postModel.LastModifiedUtc = DateTime.UtcNow;
-            postModel.IsFeedIncluded = request.IsFeedIncluded;
-            postModel.ContentLanguageCode = request.ContentLanguageCode;
+            post.Slug = request.Slug;
+            post.Title = request.Title;
+            post.ExposedToSiteMap = request.ExposedToSiteMap;
+            post.LastModifiedUtc = DateTime.UtcNow;
+            post.IsFeedIncluded = request.IsFeedIncluded;
+            post.ContentLanguageCode = request.ContentLanguageCode;
 
             // 1. Add new tags to tag lib
             foreach (var item in request.Tags.Where(item => !_tagRepository.Any(p => p.DisplayName == item)))
@@ -473,7 +474,7 @@ namespace Moonglade.Core
             }
 
             // 2. update tags
-            postModel.PostTag.Clear();
+            post.PostTag.Clear();
             if (request.Tags.Any())
             {
                 foreach (var tagName in request.Tags)
@@ -484,40 +485,40 @@ namespace Moonglade.Core
                     }
 
                     var tag = await _tagRepository.GetAsync(t => t.DisplayName == tagName);
-                    if (tag != null) postModel.PostTag.Add(new PostTagEntity
+                    if (tag != null) post.PostTag.Add(new PostTagEntity
                     {
-                        PostId = postModel.Id,
+                        PostId = post.Id,
                         TagId = tag.Id
                     });
                 }
             }
 
             // 3. update categories
-            postModel.PostCategory.Clear();
+            post.PostCategory.Clear();
             if (null != request.CategoryIds && request.CategoryIds.Length > 0)
             {
                 foreach (var cid in request.CategoryIds)
                 {
                     if (_categoryRepository.Any(c => c.Id == cid))
                     {
-                        postModel.PostCategory.Add(new PostCategoryEntity
+                        post.PostCategory.Add(new PostCategoryEntity
                         {
-                            PostId = postModel.Id,
+                            PostId = post.Id,
                             CategoryId = cid
                         });
                     }
                 }
             }
 
-            await _postRepository.UpdateAsync(postModel);
+            await _postRepository.UpdateAsync(post);
 
             await _blogAudit.AddAuditEntry(
                 EventType.Content,
                 isNewPublish ? AuditEventId.PostPublished : AuditEventId.PostUpdated,
-                $"Post updated, id: {postModel.Id}");
+                $"Post updated, id: {post.Id}");
 
             _cache.Remove(CacheDivision.Post, request.Id.ToString());
-            return postModel;
+            return post;
         }
 
         public async Task RestoreDeletedAsync(Guid postId)
