@@ -220,7 +220,7 @@ namespace Moonglade.Core
             }
         }
 
-        public static string ConvertMarkdownContent(string markdown, MarkdownConvertType type, bool disableHtml = true)
+        public static string MarkdownToContent(string markdown, MarkdownConvertType type, bool disableHtml = true)
         {
             var pipeline = new MarkdownPipelineBuilder()
                 .UsePipeTables()

@@ -100,7 +100,7 @@ else
                     }
                 </h6>
                 <div class="mdrendered-comment-content">
-                    @Html.Raw(Utils.ConvertMarkdownContent(item.CommentContent, Utils.MarkdownConvertType.Html))
+                    @Html.Raw(Utils.MarkdownToContent(item.CommentContent, Utils.MarkdownConvertType.Html))
                 </div>
                 <div class="text-muted">
                     @item.PostTitle
@@ -133,7 +133,7 @@ else
                                 <strong>@Localizer["You Replied"]</strong>
                             </div>
                             <div class="mb-2">
-                                @Html.Raw(Utils.ConvertMarkdownContent(reply.ReplyContent, Utils.MarkdownConvertType.Html))
+                                @Html.Raw(Utils.MarkdownToContent(reply.ReplyContent, Utils.MarkdownConvertType.Html))
                             </div>
                             <div class="text-muted">@DateTimeResolver.ToTimeZone(reply.ReplyTimeUtc)</div>
                         </div>

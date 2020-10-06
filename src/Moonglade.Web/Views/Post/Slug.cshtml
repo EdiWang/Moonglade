@@ -170,7 +170,7 @@
     <section class="post-content clearfix">
         @if (ec == EditorChoice.Markdown)
         {
-            @Html.Raw(Utils.ConvertMarkdownContent(Model.PostModel.RawPostContent, Utils.MarkdownConvertType.Html, false))
+            @Html.Raw(Utils.MarkdownToContent(Model.PostModel.RawPostContent, Utils.MarkdownConvertType.Html, false))
         }
         else
         {

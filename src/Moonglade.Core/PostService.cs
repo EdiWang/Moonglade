@@ -568,7 +568,7 @@ namespace Moonglade.Core
         public static string GetPostAbstract(string rawContent, int wordCount, bool useMarkdown = false)
         {
             var plainText = useMarkdown ?
-                Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Text) :
+                Utils.MarkdownToContent(rawContent, Utils.MarkdownConvertType.Text) :
                 Utils.RemoveTags(rawContent);
 
             var result = plainText.Ellipsize(wordCount);

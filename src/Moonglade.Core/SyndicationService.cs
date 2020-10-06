@@ -141,7 +141,7 @@ namespace Moonglade.Core
         private string FormatPostContent(string rawContent)
         {
             return AppSettings.Editor == EditorChoice.Markdown ? 
-                Utils.ConvertMarkdownContent(rawContent, Utils.MarkdownConvertType.Html, false) : 
+                Utils.MarkdownToContent(rawContent, Utils.MarkdownConvertType.Html, false) : 
                 rawContent;
         }
     }

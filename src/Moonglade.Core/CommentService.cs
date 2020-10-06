@@ -206,7 +206,7 @@ namespace Moonglade.Core
                 PostId = cmt.PostId,
                 PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
                 ReplyContent = model.ReplyContent,
-                ReplyContentHtml = Utils.ConvertMarkdownContent(model.ReplyContent, Utils.MarkdownConvertType.Html),
+                ReplyContentHtml = Utils.MarkdownToContent(model.ReplyContent, Utils.MarkdownConvertType.Html),
                 ReplyTimeUtc = model.ReplyTimeUtc,
                 Slug = cmt.Post.Slug,
                 Title = cmt.Post.Title

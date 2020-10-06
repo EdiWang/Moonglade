@@ -47,7 +47,7 @@
                         <span class="text-muted float-right"> @DateTimeResolver.ToTimeZone(item.CreateOnUtc).ToString("yyyy-M-d HH:mm")</span>
                     </div>
                     <div class="card-body">
-                        @Html.Raw(Utils.ConvertMarkdownContent(item.CommentContent, Utils.MarkdownConvertType.Html))
+                        @Html.Raw(Utils.MarkdownToContent(item.CommentContent, Utils.MarkdownConvertType.Html))
                         <div>
                             @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
                             {
@@ -60,7 +60,7 @@
                                         <span class="float-right text-muted">Replied at @DateTimeResolver.ToTimeZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
                                     <p>
-                                        @Html.Raw(Utils.ConvertMarkdownContent(reply.ReplyContent, Utils.MarkdownConvertType.Html))
+                                        @Html.Raw(Utils.MarkdownToContent(reply.ReplyContent, Utils.MarkdownConvertType.Html))
                                     </p>
                                 </div>
                             }
