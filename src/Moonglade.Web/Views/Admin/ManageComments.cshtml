@@ -12,7 +12,7 @@
 @Html.AntiForgeryToken()
 
 @section scripts{
-<script>
+    <script>
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
@@ -22,7 +22,16 @@
             });
 
             $(".btn-delete-selected").click(function () {
-                console.info("1");
+                var cids = [];
+                $('.chk-cid:checked').each(function () {
+                    cids.push($(this).data('cid'));
+                });
+
+                ajaxPostWithCSRFToken("delete", { commentIds: cids }, function (data) {
+                    $.each(cids, function (index, value) {
+                        $(`#panel-comment-${value}`).slideUp();
+                    });
+                });
             });
 
             $(".btn-reply").click(function () {
@@ -89,6 +98,11 @@ else
         <div id="panel-comment-@item.Id" class="card mb-4">
             <div class="card-body">
                 <div class="float-right">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
+                        <label class="custom-control-label" for="comment-item-chk-@item.Id"></label>
+                    </div>
+
                     <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
                         <span class="icon-star-full"></span>
                     </a>
