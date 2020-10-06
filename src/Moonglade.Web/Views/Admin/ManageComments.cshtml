@@ -12,13 +12,17 @@
 @Html.AntiForgeryToken()
 
 @section scripts{
-    <script>
+<script>
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
                 ajaxPostWithCSRFToken("delete", { commentIds: [cid] }, function (data) {
                     $(`#panel-comment-${cid}`).slideUp();
                 });
+            });
+
+            $(".btn-delete-selected").click(function () {
+                console.info("1");
             });
 
             $(".btn-reply").click(function () {
@@ -74,6 +78,12 @@
 }
 else
 {
+    <div class="mb-3">
+        <a href="javascript:;" class="btn btn-outline-danger btn-delete-selected">
+            <span class="icon-bin"></span> Delete Selected Item(s)
+        </a>
+    </div>
+
     foreach (var item in Model)
     {
         <div id="panel-comment-@item.Id" class="card mb-4">
