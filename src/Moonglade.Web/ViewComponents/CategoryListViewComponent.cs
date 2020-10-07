@@ -14,11 +14,16 @@ namespace Moonglade.Web.ViewComponents
             _categoryService = categoryService;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(bool isMenu)
         {
             try
             {
                 var cats = await _categoryService.GetAllAsync();
+                if (isMenu)
+                {
+                    return View("CatMenu", cats);
+                }
+
                 return View(cats);
             }
             catch (Exception e)

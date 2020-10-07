@@ -92,7 +92,7 @@
                                     <span class="icon-book"></span>
                                     <strong>@Localizer["Categories"]</strong>
                                 </a>
-                                @await Component.InvokeAsync("CategoryMenu")
+                                @await Component.InvokeAsync("CategoryList", new { isMenu = true })
                             </li>
                         }
 

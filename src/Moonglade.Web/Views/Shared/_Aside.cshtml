@@ -39,7 +39,7 @@
     <section class="cat-list mb-4">
         <div class="card">
             <div class="card-header">@Localizer["Categories"]</div>
-            @await Component.InvokeAsync("CategoryList")
+            @await Component.InvokeAsync("CategoryList", new { isMenu = false })
         </div>
     </section>
 
