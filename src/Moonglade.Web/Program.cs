@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 using Moonglade.Model;
-using NLog.Web;
 
 namespace Moonglade.Web
 {
@@ -13,29 +13,28 @@ namespace Moonglade.Web
     {
         public static void Main(string[] args)
         {
-            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Info($"Moonglade Version {Utils.AppVersion}\n" +
-                            $"Directory: {Environment.CurrentDirectory} \n" +
-                            $"x64 Process: {Environment.Is64BitProcess} \n" +
-                            $"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
-                            $"User Name: {Environment.UserName}");
+                var info = $"Moonglade Version {Utils.AppVersion}\n" +
+                           $"Directory: {Environment.CurrentDirectory} \n" +
+                           $"x64 Process: {Environment.Is64BitProcess} \n" +
+                           $"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
+                           $"User Name: {Environment.UserName}";
+                Console.WriteLine(info);
+                Trace.WriteLine(info);
 
                 var tmp = CreateDataDirectories();
                 AppDomain.CurrentDomain.SetData(Constants.DataDirectory, tmp);
-                logger.Info($"Using data directory '{tmp}'");
+
+                Trace.WriteLine($"Using data directory '{tmp}'");
 
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Error starting moonglade :(");
+                Trace.WriteLine(ex.Message);
+                Console.WriteLine("Error starting moonglade: " + ex.Message);
                 throw;
-            }
-            finally
-            {
-                NLog.LogManager.Shutdown();
             }
         }
 
@@ -51,14 +50,14 @@ namespace Moonglade.Web
                                   logging.SetMinimumLevel(LogLevel.Trace);
                               });
 
-                    bool runsInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-                    if (!runsInDocker)
-                    {
-                        // Because NLog may not be able to write files and find correct directory in a docker conatiner
-                        // So only non-container environments are enabled for NLog
-                        // Docker can still use Console log
-                        webBuilder.UseNLog();
-                    }
+                    //bool runsInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+                    //if (!runsInDocker)
+                    //{
+                    //    // Because NLog may not be able to write files and find correct directory in a docker conatiner
+                    //    // So only non-container environments are enabled for NLog
+                    //    // Docker can still use Console log
+                    //    webBuilder.UseNLog();
+                    //}
                 });
 
         private static string CreateDataDirectories()
