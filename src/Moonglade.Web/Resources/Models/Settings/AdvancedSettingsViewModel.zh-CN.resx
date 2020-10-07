@@ -120,6 +120,9 @@
   <data name="DNS Prefetch Endpoint" xml:space="preserve">
     <value>DNS 预加载终端地址</value>
   </data>
+  <data name="Enable OpenGraph" xml:space="preserve">
+    <value>启用 OpenGraph</value>
+  </data>
   <data name="Enable Pingback Receive" xml:space="preserve">
     <value>启用 Pingback 接受</value>
   </data>
