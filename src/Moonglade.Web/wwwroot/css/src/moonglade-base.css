@@ -255,6 +255,7 @@ label {
     background-color: var(--accent-color1);
     font-size: 0.75rem;
     padding: 5px 10px;
+    border-radius: 3px;
 }
 
     .post-summary-tags a:hover {
@@ -347,6 +348,7 @@ label {
     margin-bottom: 10px;
     margin-right: 1px;
     padding: 5px 10px;
+    border-radius: 3px;
 }
 
     .toptags-list a:hover {
