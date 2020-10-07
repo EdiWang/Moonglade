@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
+using Moonglade.Core.Caching;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -15,27 +16,33 @@ namespace Moonglade.Core
         private readonly IRepository<CategoryEntity> _categoryRepository;
         private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
         private readonly IBlogAudit _blogAudit;
+        private readonly IBlogCache _cache;
 
         public CategoryService(ILogger<CategoryService> logger,
             IRepository<CategoryEntity> categoryRepository,
             IRepository<PostCategoryEntity> postCategoryRepository,
-            IBlogAudit blogAudit) : base(logger)
+            IBlogAudit blogAudit, 
+            IBlogCache cache) : base(logger)
         {
             _categoryRepository = categoryRepository;
             _postCategoryRepository = postCategoryRepository;
             _blogAudit = blogAudit;
+            _cache = cache;
         }
 
         public Task<IReadOnlyList<Category>> GetAllAsync()
         {
-            var list = _categoryRepository.SelectAsync(c => new Category
+            return _cache.GetOrCreateAsync(CacheDivision.General, "allcats", async entry =>
             {
-                Id = c.Id,
-                DisplayName = c.DisplayName,
-                RouteName = c.RouteName,
-                Note = c.Note
+                var list = await _categoryRepository.SelectAsync(c => new Category
+                {
+                    Id = c.Id,
+                    DisplayName = c.DisplayName,
+                    RouteName = c.RouteName,
+                    Note = c.Note
+                });
+                return list;
             });
-            return list;
         }
 
         public Task<Category> GetAsync(string categoryName)
@@ -78,6 +85,8 @@ namespace Moonglade.Core
             };
 
             await _categoryRepository.AddAsync(category);
+            _cache.Remove(CacheDivision.General, "allcats");
+
             await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryCreated, $"Category '{category.RouteName}' created");
         }
 
@@ -93,6 +102,8 @@ namespace Moonglade.Core
             }
 
             _categoryRepository.Delete(id);
+            _cache.Remove(CacheDivision.General, "allcats");
+
             await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Category '{id}' deleted.");
         }
 
@@ -106,6 +117,8 @@ namespace Moonglade.Core
             cat.Note = editCategoryRequest.Note.Trim();
 
             await _categoryRepository.UpdateAsync(cat);
+            _cache.Remove(CacheDivision.General, "allcats");
+
             await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryUpdated, $"Category '{editCategoryRequest.Id}' updated.");
         }
     }

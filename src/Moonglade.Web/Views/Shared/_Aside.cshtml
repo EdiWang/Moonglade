@@ -39,12 +39,10 @@
     <section class="cat-list mb-4">
         <div class="card">
             <div class="card-header">@Localizer["Categories"]</div>
-            <cache expires-after="@TimeSpan.FromMinutes(60)">
-                @await Component.InvokeAsync("CategoryList")
-            </cache>
+            @await Component.InvokeAsync("CategoryList")
         </div>
     </section>
-    
+
     @if (Settings.Value.AsideWidgets["LangSelection"])
     {
         <section class="lang-selection mb-4">
@@ -53,7 +51,7 @@
             </div>
         </section>
     }
-    
+
     @if (BlogConfig.SecuritySettings.ShowAdminLoginButton)
     {
         <div class="text-center">

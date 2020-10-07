@@ -92,9 +92,7 @@
                                     <span class="icon-book"></span>
                                     <strong>@Localizer["Categories"]</strong>
                                 </a>
-                                <cache expires-after="@TimeSpan.FromMinutes(60)">
-                                    @await Component.InvokeAsync("CategoryMenu")
-                                </cache>
+                                @await Component.InvokeAsync("CategoryMenu")
                             </li>
                         }
 
