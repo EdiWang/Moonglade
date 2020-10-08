@@ -6,7 +6,7 @@ namespace Moonglade.Pingback
 {
     public interface IPingbackService
     {
-        Task<PingbackResponse> ProcessReceivedPayloadAsync(string requestBody, string ip, Action<PingbackHistory> pingSuccessAction);
+        Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackHistory> pingSuccessAction);
         Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync();
         Task DeletePingbackHistory(Guid id);
     }

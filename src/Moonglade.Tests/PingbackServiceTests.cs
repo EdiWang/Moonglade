@@ -49,7 +49,7 @@ namespace Moonglade.Tests
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
-            var result = await pingbackService.ProcessReceivedPayloadAsync(requestBody, "10.0.0.1", null);
+            var result = await pingbackService.ReceivePingAsync(requestBody, "10.0.0.1", null);
             return result;
         }
 
@@ -62,7 +62,7 @@ namespace Moonglade.Tests
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
-            var result = await pingbackService.ProcessReceivedPayloadAsync("<hello></hello>", "10.0.0.1", null);
+            var result = await pingbackService.ReceivePingAsync("<hello></hello>", "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
         }
 
@@ -81,7 +81,7 @@ namespace Moonglade.Tests
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
-            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
         }
 
@@ -103,7 +103,7 @@ namespace Moonglade.Tests
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
-            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.Error17SourceNotContainTargetUri);
         }
 
@@ -126,7 +126,7 @@ namespace Moonglade.Tests
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
-            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.SpamDetectedFakeNotFound);
         }
 
@@ -153,7 +153,7 @@ namespace Moonglade.Tests
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
-            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.Error32TargetUriNotExist);
         }
 
@@ -187,7 +187,7 @@ namespace Moonglade.Tests
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
-            var result = await pingbackService.ProcessReceivedPayloadAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.Error48PingbackAlreadyRegistered);
         }
     }

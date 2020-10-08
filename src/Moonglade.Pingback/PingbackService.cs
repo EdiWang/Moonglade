@@ -31,7 +31,7 @@ namespace Moonglade.Pingback
             DatabaseConnectionString = configuration.GetConnectionString(Constants.DbConnectionName);
         }
 
-        public async Task<PingbackResponse> ProcessReceivedPayloadAsync(string requestBody, string ip, Action<PingbackHistory> pingSuccessAction)
+        public async Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackHistory> pingSuccessAction)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Moonglade.Pingback
             }
             catch (Exception e)
             {
-                _logger.LogError(e, nameof(ProcessReceivedPayloadAsync));
+                _logger.LogError(e, nameof(ReceivePingAsync));
                 return PingbackResponse.GenericError;
             }
         }

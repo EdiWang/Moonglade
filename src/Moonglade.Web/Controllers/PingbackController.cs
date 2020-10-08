@@ -48,7 +48,7 @@ namespace Moonglade.Web.Controllers
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
             var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
-            var response = await _pingbackService.ProcessReceivedPayloadAsync(requestBody, ip,
+            var response = await _pingbackService.ReceivePingAsync(requestBody, ip,
                 history => _notificationClient.NotifyPingbackAsync(history));
 
             Logger.LogInformation($"Pingback Processor Response: {response}");
