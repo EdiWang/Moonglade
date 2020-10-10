@@ -15,11 +15,8 @@ namespace Moonglade.Core.Notification
     public class NotificationClient : IBlogNotificationClient
     {
         private readonly HttpClient _httpClient;
-
-        public bool IsEnabled { get; set; }
-
+        private readonly bool _isEnabled;
         private readonly ILogger<NotificationClient> _logger;
-
         private readonly IBlogConfig _blogConfig;
 
         public NotificationClient(
@@ -42,14 +39,14 @@ namespace Moonglade.Core.Notification
 
                 if (_blogConfig.NotificationSettings.EnableEmailSending)
                 {
-                    IsEnabled = true;
+                    _isEnabled = true;
                 }
             }
         }
 
         public async Task TestNotificationAsync()
         {
-            if (!IsEnabled)
+            if (!_isEnabled)
             {
                 _logger.LogWarning($"Skipped {nameof(TestNotificationAsync)} because Email sending is disabled.");
                 return;
@@ -80,7 +77,7 @@ namespace Moonglade.Core.Notification
 
         public async Task NotifyCommentAsync(CommentDetailedItem model, Func<string, string> contentFormat)
         {
-            if (!IsEnabled)
+            if (!_isEnabled)
             {
                 _logger.LogWarning($"Skipped {nameof(NotifyCommentAsync)} because Email sending is disabled.");
                 return;
@@ -108,7 +105,7 @@ namespace Moonglade.Core.Notification
 
         public async Task NotifyCommentReplyAsync(CommentReplyDetail model, string postLink)
         {
-            if (!IsEnabled)
+            if (!_isEnabled)
             {
                 _logger.LogWarning($"Skipped {nameof(NotifyCommentReplyAsync)} because Email sending is disabled.");
                 return;
@@ -134,7 +131,7 @@ namespace Moonglade.Core.Notification
 
         public async Task NotifyPingbackAsync(PingbackHistory model)
         {
-            if (!IsEnabled)
+            if (!_isEnabled)
             {
                 _logger.LogWarning($"Skipped {nameof(NotifyPingbackAsync)} because Email sending is disabled.");
                 return;
