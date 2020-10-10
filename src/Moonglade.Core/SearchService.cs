@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -84,6 +86,39 @@ namespace Moonglade.Core
                 writer.WriteAttributeString("type", "text/html");
                 writer.WriteAttributeString("template", $"{siteRootUrl}/search/{{searchTerms}}");
                 await writer.WriteEndElementAsync();
+
+                await writer.WriteEndElementAsync();
+            }
+            await fs.FlushAsync();
+        }
+
+        public async Task WriteSiteMapFileAsync(string siteRootUrl, string siteDataDirectory)
+        {
+            var openSearchDataFile = Path.Join($"{siteDataDirectory}", $"{Constants.SiteMapFileName}");
+            await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
+               FileAccess.Write, FileShare.None, 4096, true);
+            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
+            using (var writer = XmlWriter.Create(fs, writerSettings))
+            {
+                await writer.WriteStartDocumentAsync();
+                writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+                // TODO: Add sitemap content
+
+                // Posts
+                var spec = new PostSpec(PostPublishStatus.Published);
+                var posts = await _postRepository.SelectAsync(spec, p => new { p.Slug, p.PubDateUtc });
+
+                foreach (var item in posts)
+                {
+                    var pubDate = item.PubDateUtc.GetValueOrDefault();
+
+                    writer.WriteStartElement("url");
+                    writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{item.Slug.ToLower()}");
+                    writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                    writer.WriteElementString("changefreq", "monthly");
+                    writer.WriteEndElement();
+                }
 
                 await writer.WriteEndElementAsync();
             }

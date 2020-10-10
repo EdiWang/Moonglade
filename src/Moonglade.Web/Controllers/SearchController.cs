@@ -47,6 +47,30 @@ namespace Moonglade.Web.Controllers
             return NotFound();
         }
 
+        [Route("sitemap.xml")]
+        public async Task<IActionResult> SiteMap()
+        {
+            var siteMapDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.SiteMapFileName}");
+            if (!System.IO.File.Exists(siteMapDataFile))
+            {
+                Logger.LogInformation($"SiteMap file not found, writing new file on {siteMapDataFile}");
+
+                await _searchService.WriteSiteMapFileAsync(SiteRootUrl, SiteDataDirectory);
+                if (!System.IO.File.Exists(siteMapDataFile))
+                {
+                    Logger.LogError("SiteMap file still not found, what the heck?!");
+                    return NotFound();
+                }
+            }
+
+            if (System.IO.File.Exists(siteMapDataFile))
+            {
+                return PhysicalFile(siteMapDataFile, "text/xml");
+            }
+
+            return NotFound();
+        }
+
         [HttpPost("search")]
         public IActionResult Index(string term)
         {
