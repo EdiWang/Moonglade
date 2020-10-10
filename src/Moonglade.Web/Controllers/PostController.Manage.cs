@@ -99,6 +99,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/createoredit")]
+        [ServiceFilter(typeof(DeleteSiteMapCache))]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
         [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
@@ -170,6 +171,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [ServiceFilter(typeof(DeleteSiteMapCache))]
         [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
         [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
         [HttpPost("manage/restore")]
@@ -181,6 +183,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [ServiceFilter(typeof(DeleteSiteMapCache))]
         [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
         [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
         [HttpPost("manage/delete")]
@@ -192,6 +195,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [ServiceFilter(typeof(DeleteSiteMapCache))]
         [HttpPost("manage/delete-from-recycle")]
         public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
         {
@@ -201,6 +205,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
+        [ServiceFilter(typeof(DeleteSiteMapCache))]
         [HttpGet("manage/empty-recycle-bin")]
         public async Task<IActionResult> EmptyRecycleBin()
         {
