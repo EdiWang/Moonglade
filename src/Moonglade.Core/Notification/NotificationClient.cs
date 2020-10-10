@@ -78,27 +78,27 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task NotifyNewCommentAsync(CommentDetailedItem model, Func<string, string> funcCommentContentFormat)
+        public async Task NotifyCommentAsync(CommentDetailedItem model, Func<string, string> contentFormat)
         {
             if (!IsEnabled)
             {
-                _logger.LogWarning($"Skipped {nameof(NotifyNewCommentAsync)} because Email sending is disabled.");
+                _logger.LogWarning($"Skipped {nameof(NotifyCommentAsync)} because Email sending is disabled.");
                 return;
             }
 
             try
             {
-                var req = new NewCommentPayload(
+                var req = new CommentPayload(
                     model.Username,
                     model.Email,
                     model.IpAddress,
                     model.PostTitle,
-                    funcCommentContentFormat(model.CommentContent),
+                    contentFormat(model.CommentContent),
                     model.CreateOnUtc
                 );
 
                 await SendNotificationRequest(
-                    new NotificationRequest<NewCommentPayload>(MailMesageTypes.NewCommentNotification, req));
+                    new NotificationRequest<CommentPayload>(MailMesageTypes.NewCommentNotification, req));
             }
             catch (Exception e)
             {
