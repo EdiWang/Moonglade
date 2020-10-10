@@ -97,6 +97,7 @@ namespace Moonglade.Web
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<DeleteSubscriptionCache>();
+            services.AddScoped<DeleteSiteMapCache>();
             services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
 
             services.AddScoped<IExportManager, ExportManager>();
