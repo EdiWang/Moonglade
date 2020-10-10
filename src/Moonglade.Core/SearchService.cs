@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -20,16 +22,19 @@ namespace Moonglade.Core
     public class SearchService : BlogService
     {
         private readonly IRepository<PostEntity> _postRepository;
+        private readonly IRepository<CustomPageEntity> _pageRepository;
         private readonly IBlogConfig _blogConfig;
 
         public SearchService(
             ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepository,
-            IBlogConfig blogConfig) : base(logger, settings)
+            IBlogConfig blogConfig,
+            IRepository<CustomPageEntity> pageRepository) : base(logger, settings)
         {
             _postRepository = postRepository;
             _blogConfig = blogConfig;
+            _pageRepository = pageRepository;
         }
 
         public async Task<IReadOnlyList<PostListEntry>> SearchAsync(string keyword)
@@ -59,7 +64,7 @@ namespace Moonglade.Core
 
         public async Task WriteOpenSearchFileAsync(string siteRootUrl, string siteDataDirectory)
         {
-            var openSearchDataFile = Path.Join($"{siteDataDirectory}", $"{Constants.OpenSearchFileName}");
+            var openSearchDataFile = Path.Join(siteDataDirectory, Constants.OpenSearchFileName);
 
             await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
                 FileAccess.Write, FileShare.None, 4096, true);
@@ -83,6 +88,75 @@ namespace Moonglade.Core
                 writer.WriteStartElement("Url");
                 writer.WriteAttributeString("type", "text/html");
                 writer.WriteAttributeString("template", $"{siteRootUrl}/search/{{searchTerms}}");
+                await writer.WriteEndElementAsync();
+
+                await writer.WriteEndElementAsync();
+            }
+            await fs.FlushAsync();
+        }
+
+        public async Task WriteSiteMapFileAsync(string siteRootUrl, string siteDataDirectory)
+        {
+            var openSearchDataFile = Path.Join(siteDataDirectory, Constants.SiteMapFileName);
+            await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
+               FileAccess.Write, FileShare.None, 4096, true);
+            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
+            using (var writer = XmlWriter.Create(fs, writerSettings))
+            {
+                await writer.WriteStartDocumentAsync();
+                writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+                // TODO: Add sitemap content
+
+                // Posts
+                var spec = new PostSpec(PostPublishStatus.Published);
+                var posts = await _postRepository.SelectAsync(spec, p => new
+                {
+                    p.Slug,
+                    p.PubDateUtc,
+                    p.ExposedToSiteMap
+                });
+
+                foreach (var item in posts.Where(p => p.ExposedToSiteMap))
+                {
+                    var pubDate = item.PubDateUtc.GetValueOrDefault();
+
+                    writer.WriteStartElement("url");
+                    writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{item.Slug.ToLower()}");
+                    writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                    writer.WriteElementString("changefreq", "monthly");
+                    await writer.WriteEndElementAsync();
+                }
+
+                // Pages
+                var pages = await _pageRepository.SelectAsync(page => new
+                {
+                    page.CreateOnUtc,
+                    page.Slug,
+                    page.IsPublished
+                });
+
+                foreach (var item in pages.Where(p => p.IsPublished))
+                {
+                    writer.WriteStartElement("url");
+                    writer.WriteElementString("loc", $"{siteRootUrl}/page/{item.Slug.ToLower()}");
+                    writer.WriteElementString("lastmod", item.CreateOnUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                    writer.WriteElementString("changefreq", "monthly");
+                    await writer.WriteEndElementAsync();
+                }
+
+                // Tag
+                writer.WriteStartElement("url");
+                writer.WriteElementString("loc", $"{siteRootUrl}/tags");
+                writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                writer.WriteElementString("changefreq", "monthly");
+                await writer.WriteEndElementAsync();
+
+                // Archive
+                writer.WriteStartElement("url");
+                writer.WriteElementString("loc", $"{siteRootUrl}/archive");
+                writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                writer.WriteElementString("changefreq", "monthly");
                 await writer.WriteEndElementAsync();
 
                 await writer.WriteEndElementAsync();

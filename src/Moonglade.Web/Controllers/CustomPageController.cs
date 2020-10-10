@@ -10,6 +10,7 @@ using Moonglade.Core;
 using Moonglade.Core.Caching;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
@@ -110,6 +111,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/createoredit")]
+        [ServiceFilter(typeof(DeleteSiteMapCache))]
         public async Task<IActionResult> CreateOrEdit(CustomPageEditViewModel model)
         {
             try
