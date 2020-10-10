@@ -57,7 +57,7 @@ namespace Moonglade.Core.Notification
 
             try
             {
-                var req = BuildNotificationRequest(() =>
+                var req = BuildRequest(() =>
                     new NotificationRequest<EmptyPayload>(MailMesageTypes.TestMail, EmptyPayload.Default));
                 var response = await _httpClient.SendAsync(req);
 
@@ -97,7 +97,7 @@ namespace Moonglade.Core.Notification
                     model.CreateOnUtc
                 );
 
-                await SendNotificationRequest(
+                await SendAsync(
                     new NotificationRequest<CommentPayload>(MailMesageTypes.NewCommentNotification, req));
             }
             catch (Exception e)
@@ -123,7 +123,7 @@ namespace Moonglade.Core.Notification
                     model.ReplyContentHtml,
                     postLink);
 
-                await SendNotificationRequest(
+                await SendAsync(
                     new NotificationRequest<CommentReplyPayload>(MailMesageTypes.AdminReplyNotification, req));
             }
             catch (Exception e)
@@ -150,7 +150,7 @@ namespace Moonglade.Core.Notification
                     model.SourceUrl,
                     model.SourceTitle);
 
-                await SendNotificationRequest(new NotificationRequest<PingPayload>(MailMesageTypes.BeingPinged, req));
+                await SendAsync(new NotificationRequest<PingPayload>(MailMesageTypes.BeingPinged, req));
             }
             catch (Exception e)
             {
@@ -158,9 +158,9 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        private async Task SendNotificationRequest<T>(NotificationRequest<T> request, [CallerMemberName] string callerMemberName = "") where T : class
+        private async Task SendAsync<T>(NotificationRequest<T> request, [CallerMemberName] string callerMemberName = "") where T : class
         {
-            var req = BuildNotificationRequest(() => request);
+            var req = BuildRequest(() => request);
             var response = await _httpClient.SendAsync(req);
             if (!response.IsSuccessStatusCode)
             {
@@ -168,7 +168,7 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        private HttpRequestMessage BuildNotificationRequest<T>(Func<NotificationRequest<T>> request) where T : class
+        private HttpRequestMessage BuildRequest<T>(Func<NotificationRequest<T>> request) where T : class
         {
             var nf = request();
             nf.EmailDisplayName = _blogConfig.NotificationSettings.EmailDisplayName;
