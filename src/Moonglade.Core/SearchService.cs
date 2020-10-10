@@ -145,6 +145,20 @@ namespace Moonglade.Core
                     await writer.WriteEndElementAsync();
                 }
 
+                // Tag
+                writer.WriteStartElement("url");
+                writer.WriteElementString("loc", $"{siteRootUrl}/tags");
+                writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                writer.WriteElementString("changefreq", "monthly");
+                await writer.WriteEndElementAsync();
+
+                // Archive
+                writer.WriteStartElement("url");
+                writer.WriteElementString("loc", $"{siteRootUrl}/archive");
+                writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                writer.WriteElementString("changefreq", "monthly");
+                await writer.WriteEndElementAsync();
+
                 await writer.WriteEndElementAsync();
             }
             await fs.FlushAsync();
