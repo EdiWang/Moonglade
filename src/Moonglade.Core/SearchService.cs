@@ -64,7 +64,7 @@ namespace Moonglade.Core
 
         public async Task WriteOpenSearchFileAsync(string siteRootUrl, string siteDataDirectory)
         {
-            var openSearchDataFile = Path.Join($"{siteDataDirectory}", $"{Constants.OpenSearchFileName}");
+            var openSearchDataFile = Path.Join(siteDataDirectory, Constants.OpenSearchFileName);
 
             await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
                 FileAccess.Write, FileShare.None, 4096, true);
@@ -97,7 +97,7 @@ namespace Moonglade.Core
 
         public async Task WriteSiteMapFileAsync(string siteRootUrl, string siteDataDirectory)
         {
-            var openSearchDataFile = Path.Join($"{siteDataDirectory}", $"{Constants.SiteMapFileName}");
+            var openSearchDataFile = Path.Join(siteDataDirectory, Constants.SiteMapFileName);
             await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
                FileAccess.Write, FileShare.None, 4096, true);
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
