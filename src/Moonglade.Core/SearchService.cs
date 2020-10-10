@@ -22,16 +22,19 @@ namespace Moonglade.Core
     public class SearchService : BlogService
     {
         private readonly IRepository<PostEntity> _postRepository;
+        private readonly IRepository<CustomPageEntity> _pageRepository;
         private readonly IBlogConfig _blogConfig;
 
         public SearchService(
             ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepository,
-            IBlogConfig blogConfig) : base(logger, settings)
+            IBlogConfig blogConfig,
+            IRepository<CustomPageEntity> pageRepository) : base(logger, settings)
         {
             _postRepository = postRepository;
             _blogConfig = blogConfig;
+            _pageRepository = pageRepository;
         }
 
         public async Task<IReadOnlyList<PostListEntry>> SearchAsync(string keyword)
@@ -107,9 +110,14 @@ namespace Moonglade.Core
 
                 // Posts
                 var spec = new PostSpec(PostPublishStatus.Published);
-                var posts = await _postRepository.SelectAsync(spec, p => new { p.Slug, p.PubDateUtc });
+                var posts = await _postRepository.SelectAsync(spec, p => new
+                {
+                    p.Slug,
+                    p.PubDateUtc,
+                    p.ExposedToSiteMap
+                });
 
-                foreach (var item in posts)
+                foreach (var item in posts.Where(p => p.ExposedToSiteMap))
                 {
                     var pubDate = item.PubDateUtc.GetValueOrDefault();
 
@@ -117,7 +125,24 @@ namespace Moonglade.Core
                     writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{item.Slug.ToLower()}");
                     writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
                     writer.WriteElementString("changefreq", "monthly");
-                    writer.WriteEndElement();
+                    await writer.WriteEndElementAsync();
+                }
+
+                // Pages
+                var pages = await _pageRepository.SelectAsync(page => new
+                {
+                    page.CreateOnUtc,
+                    page.Slug,
+                    page.IsPublished
+                });
+
+                foreach (var item in pages.Where(p => p.IsPublished))
+                {
+                    writer.WriteStartElement("url");
+                    writer.WriteElementString("loc", $"{siteRootUrl}/page/{item.Slug.ToLower()}");
+                    writer.WriteElementString("lastmod", item.CreateOnUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                    writer.WriteElementString("changefreq", "monthly");
+                    await writer.WriteEndElementAsync();
                 }
 
                 await writer.WriteEndElementAsync();
