@@ -109,7 +109,6 @@ namespace Moonglade.Web
             TelemetryConfiguration configuration)
         {
             _logger = logger;
-            var enforceHttps = bool.Parse(_appSettings["EnforceHttps"]);
             var allowExtScripts = bool.Parse(_appSettings[nameof(AppSettings.AllowExternalScripts)]);
 
             // Support Chinese contents
@@ -142,10 +141,6 @@ namespace Moonglade.Web
                 .AddContentTypeOptionsNoSniff()
                 .AddContentSecurityPolicy(csp =>
                 {
-                    if (enforceHttps)
-                    {
-                        csp.AddUpgradeInsecureRequests();
-                    }
                     csp.AddFormAction().Self();
 
                     if (!allowExtScripts)
@@ -185,15 +180,10 @@ namespace Moonglade.Web
             }
             else
             {
-                app.UseExceptionHandler("/error");
-                app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
-            }
-
-            if (enforceHttps)
-            {
-                _logger.LogInformation("HTTPS is enforced.");
                 app.UseHttpsRedirection();
                 app.UseHsts();
+                app.UseExceptionHandler("/error");
+                app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
             }
 
             app.UseRequestLocalization(new RequestLocalizationOptions
