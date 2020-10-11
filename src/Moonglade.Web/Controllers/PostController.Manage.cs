@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Moonglade.Core.Caching;
+using Moonglade.Caching;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Pingback;

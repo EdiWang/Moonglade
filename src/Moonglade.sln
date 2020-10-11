@@ -59,6 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 		..\Deployment\uninstall.sh = ..\Deployment\uninstall.sh
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Caching", "Moonglade.Caching\Moonglade.Caching.csproj", "{BBC1C4FB-52C8-4E89-BED5-B461298A652B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{B6B1EDB2-8DAC-4D46-AF84-7673408F5F53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6B1EDB2-8DAC-4D46-AF84-7673408F5F53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6B1EDB2-8DAC-4D46-AF84-7673408F5F53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBC1C4FB-52C8-4E89-BED5-B461298A652B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBC1C4FB-52C8-4E89-BED5-B461298A652B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBC1C4FB-52C8-4E89-BED5-B461298A652B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBC1C4FB-52C8-4E89-BED5-B461298A652B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,6 +152,7 @@ Global
 		{DB2020AF-391A-4D5F-8037-541462DAEEE8} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{B6B1EDB2-8DAC-4D46-AF84-7673408F5F53} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{F2B7F09C-55B8-4A24-9CCB-9883C0B72DF1} = {BE685106-CE96-4A43-A161-3425565C6A9D}
+		{BBC1C4FB-52C8-4E89-BED5-B461298A652B} = {97439361-03B4-46C9-BC06-49F76BA57879}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}

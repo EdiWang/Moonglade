@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -15,9 +14,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
+using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Core.Caching;
 using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
