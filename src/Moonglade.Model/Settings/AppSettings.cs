@@ -14,6 +14,7 @@ namespace Moonglade.Model.Settings
         public Dictionary<string, bool> SystemNavMenus { get; set; }
         public Dictionary<string, bool> AsideWidgets { get; set; }
         public NotificationSettings Notification { get; set; }
+        public SiteMapSettings SiteMap { get; set; }
 
         public AppSettings()
         {
@@ -24,6 +25,7 @@ namespace Moonglade.Model.Settings
                 ImageWidth = 100
             };
             Notification = new NotificationSettings();
+            SiteMap = new SiteMapSettings();
         }
     }
 }
