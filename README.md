@@ -177,7 +177,6 @@ Key | Data Type | Description
 ```CaptchaSettings:ImageWidth``` | ```int``` | Pixel Width of Captcha Image
 ```CaptchaSettings:ImageHeight``` | ```int``` | Pixel Height of Captcha Image
 ```Editor``` | ```string``` | ```HTML``` or ```Markdown```
-```EnforceHttps``` | ```bool``` | Force website use HTTPS
 ```EnableAudit``` | ```bool``` | Enable Audit Log or not
 ```EnableWebApi``` | ```bool``` | Enable REST API
 ```CacheSlidingExpirationMinutes:Post``` | ```int``` | Time for cached posts to expire
