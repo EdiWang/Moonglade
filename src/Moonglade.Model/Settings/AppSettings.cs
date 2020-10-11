@@ -15,6 +15,7 @@ namespace Moonglade.Model.Settings
         public Dictionary<string, bool> AsideWidgets { get; set; }
         public NotificationSettings Notification { get; set; }
         public SiteMapSettings SiteMap { get; set; }
+        public BlogTheme[] Themes { get; set; }
 
         public AppSettings()
         {
@@ -26,6 +27,7 @@ namespace Moonglade.Model.Settings
             };
             Notification = new NotificationSettings();
             SiteMap = new SiteMapSettings();
+            Themes = new BlogTheme[] { };
         }
     }
 }

@@ -76,29 +76,16 @@ namespace Moonglade.Web.Controllers
         [HttpGet("general-settings")]
         public IActionResult General()
         {
-            static IDictionary<string, string> GetThemes()
-            {
-                var dic = new Dictionary<string, string>
-                {
-                    {"Word Blue", "word-blue.css"},
-                    {"Excel Green", "excel-green.css"},
-                    {"PowerPoint Orange", "powerpoint-orange.css"},
-                    {"OneNote Purple", "onenote-purple.css"},
-                    {"Outlook Blue", "outlook-blue.css"}
-                };
-                return dic;
-            }
-
             var tzList = _dateTimeResolver.ListTimeZones().Select(t => new SelectListItem
             {
                 Text = t.DisplayName,
                 Value = t.Id
             });
 
-            var tmList = GetThemes().Select(t => new SelectListItem
+            var tmList = AppSettings.Themes.Select(t => new SelectListItem
             {
-                Text = t.Key,
-                Value = t.Value
+                Text = t.Name,
+                Value = t.CssFile
             });
 
             var vm = new GeneralSettingsViewModel
