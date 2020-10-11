@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
@@ -23,19 +22,15 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
-using Moonglade.Caching;
 using Moonglade.Core;
-using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Extensions;
-using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.SiteIconGenerator;
-using Polly;
 
 #endregion
 
@@ -60,7 +55,8 @@ namespace Moonglade.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBlogConfiguration(_appSettings);
-            services.AddMemoryCache();
+            services.AddBlogCache();
+
             services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
 
             services.AddSession(options =>
@@ -96,33 +92,12 @@ namespace Moonglade.Web
             services.AddImageStorage(_configuration, _environment);
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IBlogAudit, BlogAudit>();
-            services.AddScoped<DeleteSubscriptionCache>();
-            services.AddScoped<DeleteSiteMapCache>();
             services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
-
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
-            services.AddSingleton<IBlogCache, BlogCache>();
             services.AddSessionBasedCaptcha();
-
-            var asm = Assembly.GetAssembly(typeof(BlogService));
-            if (null != asm)
-            {
-                var types = asm.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));
-                foreach (var t in types)
-                {
-                    services.AddScoped(t, t);
-                }
-            }
-
-            services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
-                    .AddTransientHttpErrorPolicy(builder =>
-                            builder.WaitAndRetryAsync(3, retryCount =>
-                            TimeSpan.FromSeconds(Math.Pow(2, retryCount)),
-                                (result, span, retryCount, context) =>
-                                {
-                                    _logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
-                                }));
+            services.AddBlogServices();
+            services.AddBlogNotification(_logger);
 
             services.AddDataStorage(_configuration.GetConnectionString(Constants.DbConnectionName));
         }

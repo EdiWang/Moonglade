@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Core.Notification;
 using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DateTimeOps;
@@ -13,6 +18,8 @@ using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.Providers;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback;
+using Moonglade.Web.Filters;
+using Polly;
 
 namespace Moonglade.Web.Extensions
 {
@@ -39,6 +46,39 @@ namespace Moonglade.Web.Extensions
                             TimeSpan.FromSeconds(30),
                             null);
                     }));
+        }
+
+        public static void AddBlogCache(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddSingleton<IBlogCache, BlogCache>();
+            services.AddScoped<DeleteSubscriptionCache>();
+            services.AddScoped<DeleteSiteMapCache>();
+        }
+
+        public static void AddBlogNotification(this IServiceCollection services, ILogger logger)
+        {
+            services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
+                .AddTransientHttpErrorPolicy(builder =>
+                    builder.WaitAndRetryAsync(3, retryCount =>
+                            TimeSpan.FromSeconds(Math.Pow(2, retryCount)),
+                        (result, span, retryCount, context) =>
+                        {
+                            logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
+                        }));
+        }
+
+        public static void AddBlogServices(this IServiceCollection services)
+        {
+            var asm = Assembly.GetAssembly(typeof(BlogService));
+            if (null != asm)
+            {
+                var types = asm.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));
+                foreach (var t in types)
+                {
+                    services.AddScoped(t, t);
+                }
+            }
         }
 
         public static void AddPingback(this IServiceCollection services)
