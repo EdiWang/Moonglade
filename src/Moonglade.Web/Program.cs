@@ -20,13 +20,11 @@ namespace Moonglade.Web
                            $"x64 Process: {Environment.Is64BitProcess} \n" +
                            $"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
                            $"User Name: {Environment.UserName}";
-                Console.WriteLine(info);
-                Trace.WriteLine(info);
+                WriteMessage(info);
 
                 var tmp = CreateDataDirectories();
                 AppDomain.CurrentDomain.SetData(Constants.DataDirectory, tmp);
-
-                Trace.WriteLine($"Using data directory '{tmp}'");
+                WriteMessage($"Using data directory '{tmp}'");
 
                 CreateHostBuilder(args).Build().Run();
             }
@@ -106,6 +104,12 @@ namespace Moonglade.Web
 
             CleanDataCache(moongladeAppDataPath);
             return moongladeAppDataPath;
+        }
+
+        private static void WriteMessage(string message)
+        {
+            Trace.WriteLine(message);
+            Console.WriteLine(message);
         }
     }
 }
