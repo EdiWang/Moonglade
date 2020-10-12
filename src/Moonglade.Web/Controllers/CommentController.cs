@@ -110,7 +110,7 @@ namespace Moonglade.Web.Controllers
             const int pageSize = 10;
             var commentList = await _commentService.GetCommentsAsync(pageSize, page);
             var commentsAsIPagedList =
-                new StaticPagedList<CommentDetailedItem>(commentList, page, pageSize, _commentService.CountComments());
+                new StaticPagedList<CommentDetailedItem>(commentList, page, pageSize, _commentService.Count());
             return View("~/Views/Admin/ManageComments.cshtml", commentsAsIPagedList);
         }
 

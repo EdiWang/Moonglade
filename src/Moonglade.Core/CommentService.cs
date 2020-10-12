@@ -18,30 +18,30 @@ namespace Moonglade.Core
     public class CommentService : BlogService
     {
         private readonly IBlogConfig _blogConfig;
+        private readonly IBlogAudit _blogAudit;
 
         private readonly IRepository<PostEntity> _postRepository;
         private readonly IRepository<CommentEntity> _commentRepository;
         private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
-        private readonly IBlogAudit _blogAudit;
 
         public CommentService(
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
+            IBlogAudit blogAudit,
             IRepository<CommentEntity> commentRepository,
             IRepository<CommentReplyEntity> commentReplyRepository,
-            IRepository<PostEntity> postRepository,
-            IBlogAudit blogAudit) : base(logger, settings)
+            IRepository<PostEntity> postRepository) : base(logger, settings)
         {
             _blogConfig = blogConfig;
+            _blogAudit = blogAudit;
 
             _commentRepository = commentRepository;
             _commentReplyRepository = commentReplyRepository;
             _postRepository = postRepository;
-            _blogAudit = blogAudit;
         }
 
-        public int CountComments()
+        public int Count()
         {
             return _commentRepository.Count(c => true);
         }

@@ -171,6 +171,7 @@ namespace Moonglade.Web
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();
+            app.UseMiddleware<BlogGraphAPIGuardMiddleware>();
 
             if (_environment.IsDevelopment())
             {
@@ -200,20 +201,6 @@ namespace Moonglade.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Path.StartsWithSegments("/api")
-                    && !bool.Parse(_appSettings[nameof(AppSettings.EnableWebApi)]))
-                {
-                    context.Response.StatusCode = StatusCodes.Status501NotImplemented;
-                    await context.Response.WriteAsync("API is disabled", Encoding.UTF8);
-                }
-                else
-                {
-                    await next.Invoke();
-                }
-            });
 
             app.UseEndpoints(endpoints =>
             {
