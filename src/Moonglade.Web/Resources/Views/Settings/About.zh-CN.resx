@@ -144,6 +144,9 @@
   <data name="Moonglade Configuration" xml:space="preserve">
     <value>Moonglade 配置</value>
   </data>
+  <data name="Running Docker Container" xml:space="preserve">
+    <value>运行在 Docker 容器中</value>
+  </data>
   <data name="Server Information" xml:space="preserve">
     <value>服务器信息</value>
   </data>

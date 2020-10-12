@@ -48,6 +48,10 @@
                 <td>@Localizer["Worker Process"]</td>
                 <td>@Process.GetCurrentProcess().ProcessName</td>
             </tr>
+            <tr>
+                <td>@Localizer["Running Docker Container"]</td>
+                <td>@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
+            </tr>
         </tbody>
     </table>
 </div>
