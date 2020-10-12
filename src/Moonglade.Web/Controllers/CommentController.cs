@@ -83,7 +83,7 @@ namespace Moonglade.Web.Controllers
                 {
                     _ = Task.Run(async () =>
                     {
-                        await _notificationClient.NotifyCommentAsync(response, s => Utils.MarkdownToContent(s, Utils.MarkdownConvertType.Html));
+                        await _notificationClient.NotifyCommentAsync(response, s => BlogContentProcessor.MarkdownToContent(s, BlogContentProcessor.MarkdownConvertType.Html));
                     });
                 }
                 var cResponse = new CommentResponse(true,
@@ -108,7 +108,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Manage(int page = 1)
         {
             const int pageSize = 10;
-            var commentList = await _commentService.GetPagedCommentAsync(pageSize, page);
+            var commentList = await _commentService.GetCommentsAsync(pageSize, page);
             var commentsAsIPagedList =
                 new StaticPagedList<CommentDetailedItem>(commentList, page, pageSize, _commentService.CountComments());
             return View("~/Views/Admin/ManageComments.cshtml", commentsAsIPagedList);

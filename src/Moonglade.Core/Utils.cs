@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Markdig;
 
 namespace Moonglade.Core
 {
@@ -169,40 +168,6 @@ namespace Moonglade.Core
             return c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == ' ';
         }
 
-        public static string RemoveTags(string html)
-        {
-            if (string.IsNullOrEmpty(html))
-            {
-                return string.Empty;
-            }
-
-            var result = new char[html.Length];
-
-            var cursor = 0;
-            var inside = false;
-            foreach (var current in html)
-            {
-                switch (current)
-                {
-                    case '<':
-                        inside = true;
-                        continue;
-                    case '>':
-                        inside = false;
-                        continue;
-                }
-
-                if (!inside)
-                {
-                    result[cursor++] = current;
-                }
-            }
-
-            var stringResult = new string(result, 0, cursor);
-
-            return stringResult.Replace("&nbsp;", " ");
-        }
-
         public static bool TryParseBase64(string input, out byte[] base64Array)
         {
             base64Array = null;
@@ -223,35 +188,6 @@ namespace Moonglade.Core
             {
                 return false;
             }
-        }
-
-        public static string MarkdownToContent(string markdown, MarkdownConvertType type, bool disableHtml = true)
-        {
-            var pipeline = new MarkdownPipelineBuilder()
-                .UsePipeTables()
-                .UseBootstrap();
-
-            if (disableHtml)
-            {
-                pipeline.DisableHtml();
-            }
-
-            var result = type switch
-            {
-                MarkdownConvertType.None => markdown,
-                MarkdownConvertType.Html => Markdown.ToHtml(markdown, pipeline.Build()),
-                MarkdownConvertType.Text => Markdown.ToPlainText(markdown, pipeline.Build()),
-                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-            };
-
-            return result;
-        }
-
-        public enum MarkdownConvertType
-        {
-            None = 0,
-            Html = 1,
-            Text = 2
         }
 
         public static IEnumerable<string> GetEnvironmentTags()

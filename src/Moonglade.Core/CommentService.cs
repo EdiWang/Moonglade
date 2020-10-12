@@ -46,7 +46,7 @@ namespace Moonglade.Core
             return _commentRepository.Count(c => true);
         }
 
-        public Task<IReadOnlyList<CommentItem>> GetSelectedCommentsOfPostAsync(Guid postId)
+        public Task<IReadOnlyList<CommentItem>> GetSelectedCommentsAsync(Guid postId)
         {
             return _commentRepository.SelectAsync(new CommentSpec(postId), c => new CommentItem
             {
@@ -62,7 +62,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<CommentDetailedItem>> GetPagedCommentAsync(int pageSize, int pageIndex)
+        public Task<IReadOnlyList<CommentDetailedItem>> GetCommentsAsync(int pageSize, int pageIndex)
         {
             if (pageSize < 1)
             {
@@ -206,7 +206,7 @@ namespace Moonglade.Core
                 PostId = cmt.PostId,
                 PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
                 ReplyContent = model.ReplyContent,
-                ReplyContentHtml = Utils.MarkdownToContent(model.ReplyContent, Utils.MarkdownConvertType.Html),
+                ReplyContentHtml = BlogContentProcessor.MarkdownToContent(model.ReplyContent, BlogContentProcessor.MarkdownConvertType.Html),
                 ReplyTimeUtc = model.ReplyTimeUtc,
                 Slug = cmt.Post.Slug,
                 Title = cmt.Post.Title

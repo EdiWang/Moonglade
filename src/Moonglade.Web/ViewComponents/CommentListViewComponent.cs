@@ -28,7 +28,7 @@ namespace Moonglade.Web.ViewComponents
                     return View("Error");
                 }
 
-                var comments = await _commentService.GetSelectedCommentsOfPostAsync(postId);
+                var comments = await _commentService.GetSelectedCommentsAsync(postId);
                 return View(comments);
             }
             catch (Exception e)

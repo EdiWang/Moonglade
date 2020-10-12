@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -146,7 +145,7 @@ namespace Moonglade.Core
 
             if (null != postSlugModel)
             {
-                postSlugModel.RawPostContent = AddLazyLoadToImgTag(postSlugModel.RawPostContent);
+                postSlugModel.RawPostContent = BlogContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
             }
 
             return postSlugModel;
@@ -228,7 +227,7 @@ namespace Moonglade.Core
 
                 if (null != postSlugModel)
                 {
-                    postSlugModel.RawPostContent = AddLazyLoadToImgTag(postSlugModel.RawPostContent);
+                    postSlugModel.RawPostContent = BlogContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
                 }
 
                 return postSlugModel;
@@ -320,7 +319,7 @@ namespace Moonglade.Core
 
         public async Task<PostEntity> CreateAsync(CreatePostRequest request)
         {
-            var abs = GetPostAbstract(
+            var abs = BlogContentProcessor.GetPostAbstract(
                 request.EditorContent, AppSettings.PostAbstractWords,
                 AppSettings.Editor == EditorChoice.Markdown);
 
@@ -428,7 +427,7 @@ namespace Moonglade.Core
 
             post.CommentEnabled = request.EnableComment;
             post.PostContent = request.EditorContent;
-            post.ContentAbstract = GetPostAbstract(
+            post.ContentAbstract = BlogContentProcessor.GetPostAbstract(
                                         request.EditorContent,
                                         AppSettings.PostAbstractWords,
                                         AppSettings.Editor == EditorChoice.Markdown);
@@ -564,36 +563,6 @@ namespace Moonglade.Core
             {
                 _cache.Remove(CacheDivision.Post, guid.ToString());
             }
-        }
-
-        public static string GetPostAbstract(string rawContent, int wordCount, bool useMarkdown = false)
-        {
-            var plainText = useMarkdown ?
-                Utils.MarkdownToContent(rawContent, Utils.MarkdownConvertType.Text) :
-                Utils.RemoveTags(rawContent);
-
-            var result = plainText.Ellipsize(wordCount);
-            return result;
-        }
-
-        public static string AddLazyLoadToImgTag(string rawHtmlContent)
-        {
-            // Replace ONLY IMG tag's src to data-src
-            // Otherwise embedded videos will blow up
-
-            if (string.IsNullOrWhiteSpace(rawHtmlContent)) return rawHtmlContent;
-            var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
-            var newStr = imgSrcRegex.Replace(rawHtmlContent, match =>
-            {
-                if (!match.Value.Contains("loading"))
-                {
-                    return match.Value.Replace("src",
-                        @"loading=""lazy"" src");
-                }
-
-                return match.Value;
-            });
-            return newStr;
         }
     }
 }

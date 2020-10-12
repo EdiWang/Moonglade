@@ -64,31 +64,6 @@ namespace Moonglade.Tests
             Assert.IsNull(base64);
         }
 
-        [Test]
-        public void TestMdContentToHtml()
-        {
-            var md = "A quick brown **fox** jumped over the lazy dog.";
-            var result = Utils.MarkdownToContent(md, Utils.MarkdownConvertType.Html);
-
-            Assert.IsTrue(result == "<p>A quick brown <strong>fox</strong> jumped over the lazy dog.</p>\n");
-        }
-
-        [Test]
-        public void TestRemoveTags()
-        {
-            var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
-            var output = Utils.RemoveTags(html);
-
-            Assert.IsTrue(output == "MicrosoftRocks!Azure  The best cloud!");
-        }
-
-        [Test]
-        public void TestRemoveTagsEmpty()
-        {
-            var output = Utils.RemoveTags(string.Empty);
-            Assert.AreEqual(string.Empty, output);
-        }
-
         [TestCase('f', ExpectedResult = true)]
         [TestCase('0', ExpectedResult = false)]
         [TestCase('`', ExpectedResult = false)]
