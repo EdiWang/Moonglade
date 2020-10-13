@@ -56,27 +56,21 @@ else
                     <div class="card-header">@Localizer["Notification Options"]</div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <label asp-for="EnableEmailSending" class="control-label"></label>
-                            <div class="material-switch float-right">
-                                <input @(Model.EnableEmailSending ? "checked=\"checked\"" : "") id="EnableEmailSending" name="EnableEmailSending" type="checkbox" value="true">
-                                <label for="EnableEmailSending" class="label-success"></label>
-                                <input name="EnableEmailSending" type="hidden" value="false">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" asp-for="EnableEmailSending" class="custom-control-input">
+                                <label asp-for="EnableEmailSending" class="custom-control-label"></label>
                             </div>
                         </li>
                         <li class="list-group-item">
-                            <label asp-for="SendEmailOnCommentReply" class="control-label"></label>
-                            <div class="material-switch float-right">
-                                <input @(Model.SendEmailOnCommentReply ? "checked=\"checked\"" : "") id="SendEmailOnCommentReply" name="SendEmailOnCommentReply" type="checkbox" value="true">
-                                <label for="SendEmailOnCommentReply" class="label-success"></label>
-                                <input name="SendEmailOnCommentReply" type="hidden" value="false">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" asp-for="SendEmailOnCommentReply" class="custom-control-input">
+                                <label asp-for="SendEmailOnCommentReply" class="custom-control-label"></label>
                             </div>
                         </li>
                         <li class="list-group-item">
-                            <label asp-for="SendEmailOnNewComment" class="control-label"></label>
-                            <div class="material-switch float-right">
-                                <input @(Model.SendEmailOnNewComment ? "checked=\"checked\"" : "") id="SendEmailOnNewComment" name="SendEmailOnNewComment" type="checkbox" value="true">
-                                <label for="SendEmailOnNewComment" class="label-success"></label>
-                                <input name="SendEmailOnNewComment" type="hidden" value="false">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" asp-for="SendEmailOnNewComment" class="custom-control-input">
+                                <label asp-for="SendEmailOnNewComment" class="custom-control-label"></label>
                             </div>
                         </li>
                     </ul>
