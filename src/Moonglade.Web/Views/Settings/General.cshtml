@@ -1,9 +1,16 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
-
+@using Moonglade.DateTimeOps
+@inject IDateTimeResolver DateTimeResolver
 @model GeneralSettingsViewModel
 @{
+    var tzList = DateTimeResolver.ListTimeZones().Select(t => new SelectListItem
+    {
+        Text = t.DisplayName,
+        Value = t.Id
+    });
+
     var tmList = Settings.Value.Themes.Select(t => new SelectListItem
     {
         Text = t.Name,
@@ -107,7 +114,7 @@
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="SelectedUtcOffset">@Localizer["Time Zone"]</label>
                                     </div>
-                                    <select class="custom-select" asp-for="SelectedTimeZoneId" asp-items="@Model.TimeZoneList"></select>
+                                    <select class="custom-select" asp-for="SelectedTimeZoneId" asp-items="@tzList"></select>
                                 </div>
                                 <small class="form-text text-muted">@Localizer["Blog posts will use this time zone as date and time display."]</small>
                             </div>

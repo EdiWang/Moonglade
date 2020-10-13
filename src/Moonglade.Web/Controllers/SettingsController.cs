@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -38,7 +37,6 @@ namespace Moonglade.Web.Controllers
 
         private readonly FriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
-        private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IBlogAudit _blogAudit;
 
         #endregion
@@ -48,12 +46,10 @@ namespace Moonglade.Web.Controllers
             IOptionsSnapshot<AppSettings> settings,
             FriendLinkService friendLinkService,
             IBlogConfig blogConfig,
-            IDateTimeResolver dateTimeResolver,
             IBlogAudit blogAudit)
             : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _dateTimeResolver = dateTimeResolver;
             _blogAudit = blogAudit;
 
             _friendLinkService = friendLinkService;
@@ -73,14 +69,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("general-settings")]
-        public IActionResult General()
+        public IActionResult General([FromServices] IDateTimeResolver dateTimeResolver)
         {
-            var tzList = _dateTimeResolver.ListTimeZones().Select(t => new SelectListItem
-            {
-                Text = t.DisplayName,
-                Value = t.Id
-            });
-
             var vm = new GeneralSettingsViewModel
             {
                 LogoText = _blogConfig.GeneralSettings.LogoText,
@@ -95,8 +85,7 @@ namespace Moonglade.Web.Controllers
                 OwnerDescription = _blogConfig.GeneralSettings.Description,
                 OwnerShortDescription = _blogConfig.GeneralSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
-                SelectedUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
-                TimeZoneList = tzList,
+                SelectedUtcOffset = dateTimeResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
                 SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
                 AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };
@@ -104,7 +93,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("general-settings")]
-        public async Task<IActionResult> General(GeneralSettingsViewModel model)
+        public async Task<IActionResult> General(GeneralSettingsViewModel model, [FromServices] IDateTimeResolver dateTimeResolver)
         {
             if (!ModelState.IsValid)
             {
@@ -119,7 +108,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.GeneralSettings.LogoText = model.LogoText;
             _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
             _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-            _blogConfig.GeneralSettings.TimeZoneUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
+            _blogConfig.GeneralSettings.TimeZoneUtcOffset = dateTimeResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
             _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
             _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
             _blogConfig.GeneralSettings.OwnerName = model.OwnerName;

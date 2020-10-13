@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Models.Settings
@@ -68,8 +66,6 @@ namespace Moonglade.Web.Models.Settings
 
         [MaxLength(64)]
         public string SelectedTimeZoneId { get; set; }
-
-        public IEnumerable<SelectListItem> TimeZoneList { get; set; }
 
         [Display(Name = "Auto Light / Dark theme regarding client system settings")]
         public bool AutoDarkLightTheme { get; set; }
