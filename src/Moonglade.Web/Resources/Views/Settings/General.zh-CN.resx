@@ -132,6 +132,9 @@
   <data name="Blog Identity" xml:space="preserve">
     <value>博客身份</value>
   </data>
+  <data name="Blog posts will use this time zone as date and time display." xml:space="preserve">
+    <value>博客会使用该时区显示文章日期及时间</value>
+  </data>
   <data name="Blog posts will use this time zone as date display." xml:space="preserve">
     <value>博客文章会使用该时区作为时间及日期显示</value>
   </data>
