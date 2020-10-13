@@ -92,27 +92,21 @@
                 <div class="card-header">@Localizer["Options"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <label asp-for="EnableComment" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.EnableComment ? "checked=\"checked\"" : "") id="EnableComment" name="EnableComment" type="checkbox" value="true">
-                            <label for="EnableComment" class="label-success"></label>
-                            <input name="EnableComment" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="EnableComment" class="custom-control-input">
+                            <label asp-for="EnableComment" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="FeedIncluded" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.FeedIncluded ? "checked=\"checked\"" : "") id="FeedIncluded" name="FeedIncluded" type="checkbox" value="true">
-                            <label for="FeedIncluded" class="label-success"></label>
-                            <input name="FeedIncluded" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="FeedIncluded" class="custom-control-input">
+                            <label asp-for="FeedIncluded" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="ExposedToSiteMap" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.ExposedToSiteMap ? "checked=\"checked\"" : "") id="ExposedToSiteMap" name="ExposedToSiteMap" type="checkbox" value="true">
-                            <label for="ExposedToSiteMap" class="label-success"></label>
-                            <input name="ExposedToSiteMap" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="ExposedToSiteMap" class="custom-control-input">
+                            <label asp-for="ExposedToSiteMap" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
