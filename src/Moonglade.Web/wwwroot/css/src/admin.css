@@ -164,50 +164,6 @@ div.mce-fullscreen {
                 color: var(--white);
             }
 
-.material-switch > input[type="checkbox"] {
-    display: none;
-}
-
-.material-switch > label {
-    cursor: pointer;
-    height: 0;
-    position: relative;
-    width: 40px;
-}
-
-    .material-switch > label::before {
-        background: rgb(0, 0, 0);
-        content: '';
-        height: 16px;
-        margin-top: -8px;
-        opacity: 0.3;
-        position: absolute;
-        transition: all 0.4s ease-in-out;
-        width: 40px;
-    }
-
-    .material-switch > label::after {
-        background: var(--gray-2);
-        content: '';
-        height: 24px;
-        left: -4px;
-        margin-top: -8px;
-        position: absolute;
-        top: -4px;
-        transition: all 0.3s ease-in-out;
-        width: 15px;
-    }
-
-.material-switch > input[type="checkbox"]:checked + label::before {
-    background: inherit;
-    opacity: 0.5;
-}
-
-.material-switch > input[type="checkbox"]:checked + label::after {
-    background: inherit;
-    left: 25px;
-}
-
 .table .table-item-w10 {
     width: 10%;
 }
