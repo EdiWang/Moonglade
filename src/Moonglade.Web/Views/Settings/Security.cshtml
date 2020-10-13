@@ -19,37 +19,30 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header">@Localizer["Security Settings"]</div>
+
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <label asp-for="WarnExternalLink" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.WarnExternalLink ? "checked=\"checked\"" : "") id="WarnExternalLink" name="WarnExternalLink" type="checkbox" value="true">
-                            <label for="WarnExternalLink" class="label-success"></label>
-                            <input name="WarnExternalLink" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="WarnExternalLink" class="custom-control-input">
+                            <label asp-for="WarnExternalLink" class="custom-control-label" ></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="AllowScriptsInCustomPage" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.AllowScriptsInCustomPage ? "checked=\"checked\"" : "") id="AllowScriptsInCustomPage" name="AllowScriptsInCustomPage" type="checkbox" value="true">
-                            <label for="AllowScriptsInCustomPage" class="label-success"></label>
-                            <input name="AllowScriptsInCustomPage" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="AllowScriptsInCustomPage" class="custom-control-input">
+                            <label asp-for="AllowScriptsInCustomPage" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="ShowAdminLoginButton" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.ShowAdminLoginButton ? "checked=\"checked\"" : "") id="ShowAdminLoginButton" name="ShowAdminLoginButton" type="checkbox" value="true">
-                            <label for="ShowAdminLoginButton" class="label-success"></label>
-                            <input name="ShowAdminLoginButton" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="ShowAdminLoginButton" class="custom-control-input">
+                            <label asp-for="ShowAdminLoginButton" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="EnablePostRawEndpoint" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.EnablePostRawEndpoint ? "checked=\"checked\"" : "") id="EnablePostRawEndpoint" name="EnablePostRawEndpoint" type="checkbox" value="true">
-                            <label for="EnablePostRawEndpoint" class="label-success"></label>
-                            <input name="EnablePostRawEndpoint" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="EnablePostRawEndpoint" class="custom-control-input">
+                            <label asp-for="EnablePostRawEndpoint" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
