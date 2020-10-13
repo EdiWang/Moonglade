@@ -64,32 +64,6 @@ namespace Moonglade.Tests
             Assert.IsNull(base64);
         }
 
-        [TestCase('f', ExpectedResult = true)]
-        [TestCase('0', ExpectedResult = false)]
-        [TestCase('`', ExpectedResult = false)]
-        [TestCase('#', ExpectedResult = false)]
-        public bool TestIsLetter(char c)
-        {
-            return c.IsLetter();
-        }
-
-        [TestCase(' ', ExpectedResult = true)]
-        [TestCase('0', ExpectedResult = false)]
-        [TestCase('a', ExpectedResult = false)]
-        [TestCase('A', ExpectedResult = false)]
-        public bool TestIsSpace(char c)
-        {
-            return c.IsSpace();
-        }
-
-        [TestCase("A 996 programmer went to heaven.", ExpectedResult = "A 996" + "\u00A0\u2026")]
-        [TestCase("Fu bao", ExpectedResult = "Fu bao")]
-        [TestCase("", ExpectedResult = "")]
-        public string TestEllipsize(string str)
-        {
-            return str.Ellipsize(10);
-        }
-
         [TestCase("https://dot.net/955", ExpectedResult = true)]
         [TestCase("https://edi.wang", ExpectedResult = true)]
         [TestCase("http://javato.net", ExpectedResult = true)]
