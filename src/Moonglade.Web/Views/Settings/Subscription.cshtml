@@ -48,11 +48,9 @@
                 <div class="card-header">@Localizer["Advanced"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <label asp-for="UseFullContent" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.UseFullContent ? "checked=\"checked\"" : "") id="UseFullContent" name="UseFullContent" type="checkbox" value="true">
-                            <label for="UseFullContent" class="label-success"></label>
-                            <input name="UseFullContent" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="UseFullContent" class="custom-control-input">
+                            <label asp-for="UseFullContent" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
