@@ -3,6 +3,13 @@
 }
 
 @model GeneralSettingsViewModel
+@{
+    var tmList = Settings.Value.Themes.Select(t => new SelectListItem
+    {
+        Text = t.Name,
+        Value = t.CssFile
+    });
+}
 
 @section scripts{
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
@@ -86,7 +93,7 @@
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="SelectedThemeFileName">@Localizer["Theme"]</label>
                                     </div>
-                                    <select class="custom-select" asp-for="SelectedThemeFileName" asp-items="@Model.ThemeList"></select>
+                                    <select class="custom-select" asp-for="SelectedThemeFileName" asp-items="@tmList"></select>
                                 </div>
                             </div>
                             <div class="form-group">

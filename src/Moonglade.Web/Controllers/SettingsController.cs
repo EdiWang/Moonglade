@@ -81,12 +81,6 @@ namespace Moonglade.Web.Controllers
                 Value = t.Id
             });
 
-            var tmList = AppSettings.Themes.Select(t => new SelectListItem
-            {
-                Text = t.Name,
-                Value = t.CssFile
-            });
-
             var vm = new GeneralSettingsViewModel
             {
                 LogoText = _blogConfig.GeneralSettings.LogoText,
@@ -104,8 +98,7 @@ namespace Moonglade.Web.Controllers
                 SelectedUtcOffset = _dateTimeResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
                 TimeZoneList = tzList,
                 SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
-                AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme,
-                ThemeList = tmList
+                AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };
             return View(vm);
         }
