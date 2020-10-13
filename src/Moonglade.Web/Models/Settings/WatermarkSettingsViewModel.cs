@@ -14,6 +14,7 @@ namespace Moonglade.Web.Models.Settings
 
         [Required]
         [Display(Name = "Font Size")]
+        [Range(8, 32)]
         public int FontSize { get; set; }
 
         [Required]

@@ -21,19 +21,15 @@
                 <div class="card-header">@Localizer["General"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <label asp-for="IsEnabled" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.IsEnabled ? "checked=\"checked\"" : "") id="IsEnabled" name="IsEnabled" type="checkbox" value="true">
-                            <label for="IsEnabled" class="label-success"></label>
-                            <input name="IsEnabled" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="IsEnabled" class="custom-control-input">
+                            <label asp-for="IsEnabled" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="KeepOriginImage" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.KeepOriginImage ? "checked=\"checked\"" : "") id="KeepOriginImage" name="KeepOriginImage" type="checkbox" value="true">
-                            <label for="KeepOriginImage" class="label-success"></label>
-                            <input name="KeepOriginImage" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="KeepOriginImage" class="custom-control-input">
+                            <label asp-for="KeepOriginImage" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
