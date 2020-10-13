@@ -168,19 +168,15 @@
                 <div class="card-header">Options</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <label asp-for="HideSidebar" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.HideSidebar ? "checked=\" checked\"" : "") id="HideSidebar" name="HideSidebar" type="checkbox" value="true">
-                            <label for="HideSidebar" class="label-success"></label>
-                            <input name="HideSidebar" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="HideSidebar" class="custom-control-input">
+                            <label asp-for="HideSidebar" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="IsPublished" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.IsPublished ? "checked=\" checked\"" : "") id="IsPublished" name="IsPublished" type="checkbox" value="true">
-                            <label for="IsPublished" class="label-success"></label>
-                            <input name="IsPublished" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="IsPublished" class="custom-control-input">
+                            <label asp-for="IsPublished" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
