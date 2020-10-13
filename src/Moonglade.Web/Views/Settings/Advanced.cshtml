@@ -35,33 +35,21 @@
                 <div class="card-header">@Localizer["Advanced Settings"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <label asp-for="EnablePingbackSend" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.EnablePingbackSend ? "checked=\"checked\"" : "")
-                                   id="@nameof(Model.EnablePingbackSend)"
-                                   name="@nameof(Model.EnablePingbackSend)" type="checkbox" value="true">
-                            <label for="@nameof(Model.EnablePingbackSend)" class="label-success"></label>
-                            <input name="@nameof(Model.EnablePingbackSend)" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="EnablePingbackSend" class="custom-control-input">
+                            <label asp-for="EnablePingbackSend" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="EnablePingbackReceive" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.EnablePingbackReceive ? "checked=\"checked\"" : "")
-                                   id="@nameof(Model.EnablePingbackReceive)"
-                                   name="@nameof(Model.EnablePingbackReceive)" type="checkbox" value="true">
-                            <label for="@nameof(Model.EnablePingbackReceive)" class="label-success"></label>
-                            <input name="@nameof(Model.EnablePingbackReceive)" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="EnablePingbackReceive" class="custom-control-input">
+                            <label asp-for="EnablePingbackReceive" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <label asp-for="EnableOpenGraph" class="control-label"></label>
-                        <div class="material-switch float-right">
-                            <input @(Model.EnableOpenGraph ? "checked=\"checked\"" : "")
-                                   id="@nameof(Model.EnableOpenGraph)"
-                                   name="@nameof(Model.EnableOpenGraph)" type="checkbox" value="true">
-                            <label for="@nameof(Model.EnableOpenGraph)" class="label-success"></label>
-                            <input name="@nameof(Model.EnableOpenGraph)" type="hidden" value="false">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="EnableOpenGraph" class="custom-control-input">
+                            <label asp-for="EnableOpenGraph" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
