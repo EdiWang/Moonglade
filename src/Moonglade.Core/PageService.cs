@@ -14,13 +14,13 @@ namespace Moonglade.Core
 {
     public class PageService : BlogService
     {
-        private readonly IRepository<CustomPageEntity> _customPageRepository;
+        private readonly IRepository<PageEntity> _customPageRepository;
         private readonly IBlogAudit _blogAudit;
 
         public PageService(
             ILogger<PageService> logger,
             IOptions<AppSettings> settings,
-            IRepository<CustomPageEntity> customPageRepository,
+            IRepository<PageEntity> customPageRepository,
             IBlogAudit blogAudit) : base(logger, settings)
         {
             _customPageRepository = customPageRepository;
@@ -57,7 +57,7 @@ namespace Moonglade.Core
         public async Task<Guid> CreateAsync(CreatePageRequest request)
         {
             var uid = Guid.NewGuid();
-            var customPage = new CustomPageEntity
+            var customPage = new PageEntity
             {
                 Id = uid,
                 Title = request.Title.Trim(),
@@ -141,7 +141,7 @@ namespace Moonglade.Core
             return result;
         }
 
-        private static Page EntityToPage(CustomPageEntity entity)
+        private static Page EntityToPage(PageEntity entity)
         {
             if (null == entity)
             {

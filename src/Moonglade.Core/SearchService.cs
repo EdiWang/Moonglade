@@ -22,7 +22,7 @@ namespace Moonglade.Core
     public class SearchService : BlogService
     {
         private readonly IRepository<PostEntity> _postRepository;
-        private readonly IRepository<CustomPageEntity> _pageRepository;
+        private readonly IRepository<PageEntity> _pageRepository;
         private readonly IBlogConfig _blogConfig;
 
         public SearchService(
@@ -30,7 +30,7 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepository,
             IBlogConfig blogConfig,
-            IRepository<CustomPageEntity> pageRepository) : base(logger, settings)
+            IRepository<PageEntity> pageRepository) : base(logger, settings)
         {
             _postRepository = postRepository;
             _blogConfig = blogConfig;

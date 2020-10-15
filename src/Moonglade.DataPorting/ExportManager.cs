@@ -14,7 +14,7 @@ namespace Moonglade.DataPorting
         private readonly IRepository<CategoryEntity> _catRepository;
         private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
         //private readonly IRepository<PingbackHistoryEntity> _pingbackRepository;
-        private readonly IRepository<CustomPageEntity> _pageRepository;
+        private readonly IRepository<PageEntity> _pageRepository;
         private readonly IRepository<PostEntity> _postRepository;
 
         public ExportManager(
@@ -22,7 +22,7 @@ namespace Moonglade.DataPorting
             IRepository<CategoryEntity> catRepository,
             IRepository<FriendLinkEntity> friendlinkRepository,
             //IRepository<PingbackHistoryEntity> pingbackRepository,
-            IRepository<CustomPageEntity> pageRepository,
+            IRepository<PageEntity> pageRepository,
             IRepository<PostEntity> postRepository)
         {
             _tagRepository = tagRepository;
@@ -80,7 +80,7 @@ namespace Moonglade.DataPorting
                     throw new NotImplementedException("Pingback export is not supported for now.");
 
                 case ExportDataType.Pages:
-                    var pgExp = new ZippedJsonExporter<CustomPageEntity>(_pageRepository, "moonglade-pages");
+                    var pgExp = new ZippedJsonExporter<PageEntity>(_pageRepository, "moonglade-pages");
                     var pgExportData = await pgExp.ExportData(p => new
                     {
                         p.Title,

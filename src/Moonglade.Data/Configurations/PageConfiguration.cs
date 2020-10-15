@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class CustomPageConfiguration : IEntityTypeConfiguration<CustomPageEntity>
+    public class PageConfiguration : IEntityTypeConfiguration<PageEntity>
     {
-        public void Configure(EntityTypeBuilder<CustomPageEntity> builder)
+        public void Configure(EntityTypeBuilder<PageEntity> builder)
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.Title).HasMaxLength(128);

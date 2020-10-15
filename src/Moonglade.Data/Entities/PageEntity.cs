@@ -2,7 +2,7 @@ using System;
 
 namespace Moonglade.Data.Entities
 {
-    public class CustomPageEntity
+    public class PageEntity
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
