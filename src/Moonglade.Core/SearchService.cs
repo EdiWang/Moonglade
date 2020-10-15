@@ -107,17 +107,14 @@ namespace Moonglade.Core
                 writer.WriteStartElement("urlset", AppSettings.SiteMap.UrlSetNamespace);
 
                 // Posts
-                var spec = new PostSpec(PostPublishStatus.Published);
+                var spec = new PostSitePageSpec();
                 var posts = await _postRepository.SelectAsync(spec, p => new
                 {
                     p.Slug,
-                    p.PubDateUtc,
-                    p.ExposedToSiteMap
+                    p.PubDateUtc
                 });
 
-                foreach (var item in posts
-                    .Where(p => p.ExposedToSiteMap)
-                    .OrderByDescending(p => p.PubDateUtc))
+                foreach (var item in posts.OrderByDescending(p => p.PubDateUtc))
                 {
                     var pubDate = item.PubDateUtc.GetValueOrDefault();
 
