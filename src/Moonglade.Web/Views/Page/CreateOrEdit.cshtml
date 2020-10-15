@@ -2,7 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@model CustomPageEditViewModel
+@model PageEditViewModel
 
 @{
     <script>
@@ -199,6 +199,6 @@
         {
             <button class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
         }
-        <a asp-controller="CustomPage" asp-action="Manage" class="btn btn-light">@Localizer["Cancel"]</a>
+        <a asp-controller="Page" asp-action="Manage" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>
 </form>

@@ -2,7 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
-@model IReadOnlyList<Moonglade.Model.CustomPageSegment>
+@model IReadOnlyList<Moonglade.Model.PageSegment>
 
 @section scripts{
     <script>
@@ -26,7 +26,7 @@
 
 <h3>
     @Localizer["Pages"]
-    <a class="btn btn-outline-success float-right" asp-controller="CustomPage" asp-action="Create">
+    <a class="btn btn-outline-success float-right" asp-controller="Page" asp-action="Create">
         <span class="icon-plus"></span>
         @Localizer["New"]
     </a>
@@ -52,7 +52,7 @@
                     </small>
                 </div>
                 <div class="card-footer">
-                    <a class="btn btn-primary btn-sm btn-edit" asp-controller="CustomPage" asp-action="Edit" asp-route-id="@customPage.Id">
+                    <a class="btn btn-primary btn-sm btn-edit" asp-controller="Page" asp-action="Edit" asp-route-id="@customPage.Id">
                         <span class="icon-pencil"></span>
                     </a>
                     <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" data-slug="@customPage.RouteName" href="javascript:;">

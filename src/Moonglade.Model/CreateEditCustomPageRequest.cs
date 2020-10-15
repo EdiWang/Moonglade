@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class CreateCustomPageRequest
+    public class CreatePageRequest
     {
         public string Title { get; set; }
         public string Slug { get; set; }
@@ -13,11 +13,11 @@ namespace Moonglade.Model
         public bool IsPublished { get; set; }
     }
 
-    public class EditCustomPageRequest : CreateCustomPageRequest
+    public class EditPageRequest : CreatePageRequest
     {
         public Guid Id { get; }
 
-        public EditCustomPageRequest(Guid id)
+        public EditPageRequest(Guid id)
         {
             Id = id;
         }

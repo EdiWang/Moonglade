@@ -16,20 +16,20 @@ using Moonglade.Web.Models;
 namespace Moonglade.Web.Controllers
 {
     [Route("page")]
-    public class CustomPageController : BlogController
+    public class PageController : BlogController
     {
         private readonly IBlogCache _cache;
-        private readonly CustomPageService _customPageService;
+        private readonly PageService _pageService;
         private static string[] InvalidPageRouteNames => new[] { "index", "manage" };
 
-        public CustomPageController(
-            ILogger<CustomPageController> logger,
+        public PageController(
+            ILogger<PageController> logger,
             IOptions<AppSettings> settings,
             IBlogCache cache,
-            CustomPageService customPageService) : base(logger, settings)
+            PageService pageService) : base(logger, settings)
         {
             _cache = cache;
-            _customPageService = customPageService;
+            _pageService = pageService;
         }
 
         [HttpGet("{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
@@ -41,7 +41,7 @@ namespace Moonglade.Web.Controllers
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Page"]);
 
-                var p = await _customPageService.GetAsync(slug);
+                var p = await _pageService.GetAsync(slug);
                 return p;
             });
 
@@ -60,7 +60,7 @@ namespace Moonglade.Web.Controllers
         [Route("preview/{pageId}")]
         public async Task<IActionResult> Preview(Guid pageId)
         {
-            var page = await _customPageService.GetAsync(pageId);
+            var page = await _pageService.GetAsync(pageId);
             if (page == null)
             {
                 Logger.LogWarning($"Page not found, parameter '{pageId}'.");
@@ -75,7 +75,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage")]
         public async Task<IActionResult> Manage()
         {
-            var pageSegments = await _customPageService.ListSegmentAsync();
+            var pageSegments = await _pageService.ListSegmentAsync();
             return View("~/Views/Admin/ManageCustomPage.cshtml", pageSegments);
         }
 
@@ -83,7 +83,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/create")]
         public IActionResult Create()
         {
-            var model = new CustomPageEditViewModel();
+            var model = new PageEditViewModel();
             return View("CreateOrEdit", model);
         }
 
@@ -91,10 +91,10 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var page = await _customPageService.GetAsync(id);
+            var page = await _pageService.GetAsync(id);
             if (page == null) return NotFound();
 
-            var model = new CustomPageEditViewModel
+            var model = new PageEditViewModel
             {
                 Id = page.Id,
                 Title = page.Title,
@@ -112,7 +112,7 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [HttpPost("manage/createoredit")]
         [ServiceFilter(typeof(DeleteSiteMapCache))]
-        public async Task<IActionResult> CreateOrEdit(CustomPageEditViewModel model)
+        public async Task<IActionResult> CreateOrEdit(PageEditViewModel model)
         {
             try
             {
@@ -128,7 +128,7 @@ namespace Moonglade.Web.Controllers
                     return View("CreateOrEdit", model);
                 }
 
-                var req = new EditCustomPageRequest(model.Id)
+                var req = new EditPageRequest(model.Id)
                 {
                     HtmlContent = model.RawHtmlContent,
                     CssContent = model.CssContent,
@@ -140,8 +140,8 @@ namespace Moonglade.Web.Controllers
                 };
 
                 var uid = model.Id == Guid.Empty ?
-                    await _customPageService.CreateAsync(req) :
-                    await _customPageService.UpdateAsync(req);
+                    await _pageService.CreateAsync(req) :
+                    await _pageService.UpdateAsync(req);
 
                 Logger.LogInformation($"User '{User.Identity.Name}' updated custom page id '{uid}'");
                 _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
@@ -162,7 +162,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                await _customPageService.DeleteAsync(pageId);
+                await _pageService.DeleteAsync(pageId);
 
                 _cache.Remove(CacheDivision.Page, slug.ToLower());
                 return Json(pageId);

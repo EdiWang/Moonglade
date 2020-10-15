@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class CustomPageSegment
+    public class PageSegment
     {
         public Guid Id { get; set; }
 

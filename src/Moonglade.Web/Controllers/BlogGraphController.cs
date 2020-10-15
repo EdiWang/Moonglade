@@ -24,21 +24,21 @@ namespace Moonglade.Web.Controllers
         private readonly TagService _tagService;
         private readonly CategoryService _categoryService;
         private readonly PostService _postService;
-        private readonly CustomPageService _customPageService;
+        private readonly PageService _pageService;
 
         public BlogGraphController(
             ILogger<BlogGraphController> logger,
             TagService tagService,
             CategoryService categoryService,
             PostService postService,
-            CustomPageService customPageService)
+            PageService pageService)
         {
             _logger = logger;
 
             _tagService = tagService;
             _categoryService = categoryService;
             _postService = postService;
-            _customPageService = customPageService;
+            _pageService = pageService;
         }
 
         [HttpGet("version")]
@@ -84,11 +84,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("pages/segment/published")]
-        [ProducesResponseType(typeof(IEnumerable<CustomPageSegment>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<PageSegment>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SegmentPages()
         {
-            var pageSegments = await _customPageService.ListSegmentAsync();
+            var pageSegments = await _pageService.ListSegmentAsync();
             if (pageSegments != null)
             {
                 // for security, only allow published pages to be listed to third party API calls

@@ -12,13 +12,13 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class CustomPageService : BlogService
+    public class PageService : BlogService
     {
         private readonly IRepository<CustomPageEntity> _customPageRepository;
         private readonly IBlogAudit _blogAudit;
 
-        public CustomPageService(
-            ILogger<CustomPageService> logger,
+        public PageService(
+            ILogger<PageService> logger,
             IOptions<AppSettings> settings,
             IRepository<CustomPageEntity> customPageRepository,
             IBlogAudit blogAudit) : base(logger, settings)
@@ -27,24 +27,24 @@ namespace Moonglade.Core
             _blogAudit = blogAudit;
         }
 
-        public async Task<CustomPage> GetAsync(Guid pageId)
+        public async Task<Page> GetAsync(Guid pageId)
         {
             var entity = await _customPageRepository.GetAsync(pageId);
-            var item = EntityToCustomPage(entity);
+            var item = EntityToPage(entity);
             return item;
         }
 
-        public async Task<CustomPage> GetAsync(string slug)
+        public async Task<Page> GetAsync(string slug)
         {
             var loweredRouteName = slug.ToLower();
             var entity = await _customPageRepository.GetAsync(p => p.Slug == loweredRouteName);
-            var item = EntityToCustomPage(entity);
+            var item = EntityToPage(entity);
             return item;
         }
 
-        public Task<IReadOnlyList<CustomPageSegment>> ListSegmentAsync()
+        public Task<IReadOnlyList<PageSegment>> ListSegmentAsync()
         {
-            return _customPageRepository.SelectAsync(page => new CustomPageSegment
+            return _customPageRepository.SelectAsync(page => new PageSegment
             {
                 Id = page.Id,
                 CreateOnUtc = page.CreateOnUtc,
@@ -54,7 +54,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Guid> CreateAsync(CreateCustomPageRequest request)
+        public async Task<Guid> CreateAsync(CreatePageRequest request)
         {
             var uid = Guid.NewGuid();
             var customPage = new CustomPageEntity
@@ -76,7 +76,7 @@ namespace Moonglade.Core
             return uid;
         }
 
-        public async Task<Guid> UpdateAsync(EditCustomPageRequest request)
+        public async Task<Guid> UpdateAsync(EditPageRequest request)
         {
             var page = await _customPageRepository.GetAsync(request.Id);
             if (null == page)
@@ -141,14 +141,14 @@ namespace Moonglade.Core
             return result;
         }
 
-        private static CustomPage EntityToCustomPage(CustomPageEntity entity)
+        private static Page EntityToPage(CustomPageEntity entity)
         {
             if (null == entity)
             {
                 return null;
             }
 
-            return new CustomPage
+            return new Page
             {
                 Id = entity.Id,
                 Title = entity.Title.Trim(),

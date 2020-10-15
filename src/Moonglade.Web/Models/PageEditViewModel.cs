@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Models
 {
-    public class CustomPageEditViewModel
+    public class PageEditViewModel
     {
         [HiddenInput]
         public Guid Id { get; set; }
@@ -41,7 +41,7 @@ namespace Moonglade.Web.Models
         [Display(Name = "Published")]
         public bool IsPublished { get; set; }
 
-        public CustomPageEditViewModel()
+        public PageEditViewModel()
         {
             Id = Guid.Empty;
             HideSidebar = true;

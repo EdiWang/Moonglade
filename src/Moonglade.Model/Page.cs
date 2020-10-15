@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class CustomPage
+    public class Page
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
