@@ -349,6 +349,7 @@ label {
     margin-right: 1px;
     padding: 5px 10px;
     border-radius: 3px;
+    color: var(--white);
 }
 
     .toptags-list a:hover {
