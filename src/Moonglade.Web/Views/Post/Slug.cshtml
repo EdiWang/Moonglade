@@ -253,14 +253,14 @@
                                           required></textarea>
                             </div>
                             <div class="row">
-                                <div class="col">
+                                <div class="col-9">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Assets")" data-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
                                         </div>
                                         <input type="text"
                                                asp-for="NewCommentViewModel.CaptchaCode"
-                                               class="form-control"
+                                               class="form-control input-captcha"
                                                placeholder="Captcha Code"
                                                autocomplete="off"
                                                minlength="4"
@@ -268,7 +268,7 @@
                                                required />
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col-3">
                                     <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">
                                         @Localizer["Submit"]
                                     </button>

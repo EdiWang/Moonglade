@@ -343,6 +343,10 @@ label {
     line-height: 1px;
 }
 
+.input-captcha {
+    max-width: 160px;
+}
+
 .toptags-list a {
     background-color: var(--accent-color1);
     margin-bottom: 10px;
