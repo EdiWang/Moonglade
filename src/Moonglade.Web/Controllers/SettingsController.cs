@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("set-lang")]
+        [HttpGet("set-lang")]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
             Response.Cookies.Append(

@@ -3,7 +3,7 @@
 <footer id="moonglade-footer" class="bg-accent2 pt-4 pb-4">
     <div class="container">
         <div class="row">
-            <div class="col-md-3 col-sm-3">
+            <section id="footer-copyright" class="col-md-3 col-sm-3">
                 <div class="mb-3">
                     @Html.Raw(Utils.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright))
                 </div>
@@ -12,24 +12,24 @@
                     <br />
                     Developed by <a href="https://edi.wang" target="_blank">Edi Wang</a>
                 </small>
-            </div>
+            </section>
 
             @if (BlogConfig.FriendLinksSettings.ShowFriendLinksSection)
             {
-                <div class="col-md-3 col-sm-3 d-none d-sm-block">
+                <section id="footer-friendlink" class="col-md-3 col-sm-3 d-none d-sm-block">
                     <cache expires-after="@TimeSpan.FromMinutes(60)">
                         @await Component.InvokeAsync("FriendLink")
                     </cache>
-                </div>
+                </section>
             }
 
-            <div class="col-md-3 col-sm-3">
+            <section id="footer-customize" class="col-md-3 col-sm-3 d-none d-sm-block">
                 @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
-            </div>
+            </section>
 
-            <div class="col-md-3 col-sm-3">
+            <section id="footer-language" class="col-md-3 col-sm-3 d-none d-sm-block">
                 @await Html.PartialAsync("_SelectLanguagePartial")
-            </div>
+            </section>
         </div>
     </div>
 </footer>

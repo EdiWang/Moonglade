@@ -6,18 +6,16 @@
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .Select(c => new { Value = c.Name, c.NativeName })
         .ToList();
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
 }
 
-<div title="@requestCulture?.Provider?.GetType().Name">
-    <form id="selectLanguage" asp-controller="Settings"
-          asp-action="SetLanguage" asp-route-returnUrl="@returnUrl"
-          method="post" class="form-horizontal" role="form">
-        <select name="culture" class="form-control"
-                onchange="this.form.submit();"
-                asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems">
-        </select>
-    </form>
-</div>
+<ul class="list-unstyled">
+    @foreach (var item in cultureItems)
+    {
+        <li>
+            <a asp-controller="Settings" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" asp-route-culture="@item.Value">@item.NativeName</a>
+        </li>
+    }
+</ul>
