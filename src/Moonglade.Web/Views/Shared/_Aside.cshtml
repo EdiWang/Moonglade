@@ -43,15 +43,6 @@
         </div>
     </section>
 
-    @if (Settings.Value.AsideWidgets["LangSelection"])
-    {
-        <section class="lang-selection mb-4">
-            <div class="card">
-                @await Html.PartialAsync("_SelectLanguagePartial")
-            </div>
-        </section>
-    }
-    
     <section class="aside-subscription text-center mb-4">
         <a class="btn btn-sm btn-round btn-outline-secondary mr-2" href="#" data-toggle="modal" data-target="#subscriptionmodal">
             <span class="icon-rss"></span>

@@ -26,6 +26,10 @@
             <div class="col-md-3 col-sm-3">
                 @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
             </div>
+
+            <div class="col-md-3 col-sm-3">
+                @await Html.PartialAsync("_SelectLanguagePartial")
+            </div>
         </div>
     </div>
 </footer>
