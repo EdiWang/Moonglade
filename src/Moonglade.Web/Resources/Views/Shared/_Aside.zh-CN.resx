@@ -129,4 +129,10 @@
   <data name="Top Tags" xml:space="preserve">
     <value>热门标签</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="Latest Posts" xml:space="preserve">
+    <value>最新文章</value>
+  </data>
 </root>
