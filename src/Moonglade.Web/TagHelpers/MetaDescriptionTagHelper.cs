@@ -14,7 +14,8 @@ namespace Moonglade.Web.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "meta";
-            output.Attributes.SetAttribute("description", Description.Trim());
+            output.Attributes.SetAttribute("name", "description");
+            output.Attributes.SetAttribute("content", Description.Trim());
         }
     }
 }
