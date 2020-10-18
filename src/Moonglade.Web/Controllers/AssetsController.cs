@@ -130,12 +130,9 @@ namespace Moonglade.Web.Controllers
                 MemoryStream watermarkedStream = null;
                 if (_blogConfig.WatermarkSettings.IsEnabled && ext != ".gif")
                 {
-                    using var watermarker = new ImageWatermarker(stream, ext)
-                    {
-                        SkipWatermarkForSmallImages = true,
-                        SmallImagePixelsThreshold = Constants.SmallImagePixelsThreshold
-                    };
+                    using var watermarker = new ImageWatermarker(stream, ext);
 
+                    watermarker.SkipImageSize(Constants.SmallImagePixelsThreshold);
                     watermarkedStream = watermarker.AddWatermark(
                         _blogConfig.WatermarkSettings.WatermarkText,
                         Color.FromArgb(128, 128, 128, 128),
