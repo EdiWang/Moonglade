@@ -3,7 +3,7 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "tinymce@5.4.2",
+      "library": "tinymce@5.5.1",
       "destination": "wwwroot/lib/tinymce"
     },
     {
