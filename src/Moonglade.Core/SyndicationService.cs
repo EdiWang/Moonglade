@@ -49,7 +49,7 @@ namespace Moonglade.Core
 
                 var itemCollection = await GetFeedEntriesAsync(cat.Id);
 
-                var rw = new SyndicationFeedGenerator
+                var rw = new FeedGenerator
                 {
                     HostUrl = _baseUrl,
                     HeadTitle = _blogConfig.FeedSettings.RssTitle,
@@ -73,7 +73,7 @@ namespace Moonglade.Core
             Logger.LogInformation("Start refreshing feed for posts.");
             var itemCollection = await GetFeedEntriesAsync();
 
-            var rw = new SyndicationFeedGenerator
+            var rw = new FeedGenerator
             {
                 HostUrl = _baseUrl,
                 HeadTitle = _blogConfig.FeedSettings.RssTitle,

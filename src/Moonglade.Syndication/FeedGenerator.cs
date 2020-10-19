@@ -10,9 +10,9 @@ using Microsoft.SyndicationFeed.Rss;
 
 namespace Moonglade.Syndication
 {
-    public class SyndicationFeedGenerator : ISyndicationFeedGenerator, IRssSyndicationGenerator, IAtomSyndicationGenerator
+    public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
     {
-        public SyndicationFeedGenerator()
+        public FeedGenerator()
         {
             FeedItemCollection = new List<FeedEntry>();
         }

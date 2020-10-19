@@ -2,7 +2,7 @@
 
 namespace Moonglade.Syndication
 {
-    public interface ISyndicationFeedGenerator
+    public interface IFeedGenerator
     {
         string Copyright { get; set; }
         string Generator { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Moonglade.Syndication
 {
-    public interface IRssSyndicationGenerator
+    public interface IRssGenerator
     {
         Task WriteRss20FileAsync(string path);
     }

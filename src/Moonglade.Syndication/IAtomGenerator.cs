@@ -2,7 +2,7 @@
 
 namespace Moonglade.Syndication
 {
-    public interface IAtomSyndicationGenerator
+    public interface IAtomGenerator
     {
         Task WriteAtom10FileAsync(string path);
     }

@@ -15,7 +15,7 @@ namespace Moonglade.Tests
         {
             var itemCollection = new List<FeedEntry>();
 
-            var rw = new SyndicationFeedGenerator
+            var rw = new FeedGenerator
             {
                 HostUrl = "https://996.icu",
                 HeadTitle = "996 ICU",
@@ -37,7 +37,7 @@ namespace Moonglade.Tests
         [Test]
         public async Task TestRss20WithCollection()
         {
-            var rw = new SyndicationFeedGenerator
+            var rw = new FeedGenerator
             {
                 HostUrl = "https://996.icu",
                 HeadTitle = "996 ICU",
@@ -61,7 +61,7 @@ namespace Moonglade.Tests
         {
             var itemCollection = new List<FeedEntry>();
 
-            var rw = new SyndicationFeedGenerator
+            var rw = new FeedGenerator
             {
                 HostUrl = "https://996.icu",
                 HeadTitle = "996 ICU",
@@ -85,7 +85,7 @@ namespace Moonglade.Tests
         {
             var itemCollection = new List<FeedEntry>();
 
-            var rw = new SyndicationFeedGenerator
+            var rw = new FeedGenerator
             {
                 HostUrl = "https://996.icu",
                 HeadTitle = "996 ICU",
