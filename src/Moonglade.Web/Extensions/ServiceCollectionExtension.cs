@@ -145,6 +145,15 @@ namespace Moonglade.Web.Extensions
                     services.AddSingleton(s => new FileSystemImageConfiguration(fullPath));
                     services.AddSingleton<IBlogImageStorage, FileSystemImageStorage>();
                     break;
+                case "miniostorage":
+                    var endPoint = imageStorage.MinioStorageSettings.EndPoint;
+                    var accessKey = imageStorage.MinioStorageSettings.AccessKey;
+                    var secretKey = imageStorage.MinioStorageSettings.SecretKey;
+                    var bucketName = imageStorage.MinioStorageSettings.BucketName;
+                    var withSSL = imageStorage.MinioStorageSettings.WithSSL;
+                    services.AddSingleton(s => new MinioBlobConfiguration(endPoint, accessKey, secretKey, bucketName, withSSL));
+                    services.AddSingleton<IBlogImageStorage, MinioBlobImageStorage>();
+                    break;
                 default:
                     var msg = $"Provider {imageStorageProvider} is not supported.";
                     throw new NotSupportedException(msg);
