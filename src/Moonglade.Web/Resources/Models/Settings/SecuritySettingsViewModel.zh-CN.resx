@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Allow javascript in custom pages" xml:space="preserve">
-    <value>允许自定义页面中执JavaScript代码</value>
+  <data name="Allow javascript in pages" xml:space="preserve">
+    <value>允许页面中执JavaScript代码</value>
   </data>
   <data name="Enable raw endpoint for posts" xml:space="preserve">
     <value>启用文章RAW信息终端</value>

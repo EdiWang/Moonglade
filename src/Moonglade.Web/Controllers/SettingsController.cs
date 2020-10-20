@@ -599,7 +599,7 @@ namespace Moonglade.Web.Controllers
             var vm = new SecuritySettingsViewModel
             {
                 WarnExternalLink = settings.WarnExternalLink,
-                AllowScriptsInCustomPage = settings.AllowScriptsInCustomPage,
+                AllowScriptsInPage = settings.AllowScriptsInPage,
                 ShowAdminLoginButton = settings.ShowAdminLoginButton,
                 EnablePostRawEndpoint = settings.EnablePostRawEndpoint
             };
@@ -617,7 +617,7 @@ namespace Moonglade.Web.Controllers
 
             var settings = _blogConfig.SecuritySettings;
             settings.WarnExternalLink = model.WarnExternalLink;
-            settings.AllowScriptsInCustomPage = model.AllowScriptsInCustomPage;
+            settings.AllowScriptsInPage = model.AllowScriptsInPage;
             settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
             settings.EnablePostRawEndpoint = model.EnablePostRawEndpoint;
 
