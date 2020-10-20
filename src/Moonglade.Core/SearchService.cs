@@ -97,8 +97,8 @@ namespace Moonglade.Core
 
         public async Task WriteSiteMapFileAsync(string siteRootUrl, string siteDataDirectory)
         {
-            var openSearchDataFile = Path.Join(siteDataDirectory, Constants.SiteMapFileName);
-            await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
+            var siteMapFile = Path.Join(siteDataDirectory, Constants.SiteMapFileName);
+            await using var fs = new FileStream(siteMapFile, FileMode.Create,
                FileAccess.Write, FileShare.None, 4096, true);
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
             using (var writer = XmlWriter.Create(fs, writerSettings))
