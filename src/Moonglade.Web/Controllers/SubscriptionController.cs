@@ -38,14 +38,14 @@ namespace Moonglade.Web.Controllers
         [Route("/opml")]
         public async Task<IActionResult> Opml()
         {
-            var feedDirectoryPath = Path.Join($"{SiteDataDirectory}", "feed");
+            var feedDirectoryPath = Path.Join($"{DataDirectory}", "feed");
             if (!Directory.Exists(feedDirectoryPath))
             {
                 Directory.CreateDirectory(feedDirectoryPath);
                 Logger.LogInformation($"Created directory '{feedDirectoryPath}'");
             }
 
-            var opmlDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
+            var opmlDataFile = Path.Join($"{DataDirectory}", $"{Constants.OpmlFileName}");
             if (!System.IO.File.Exists(opmlDataFile))
             {
                 Logger.LogInformation($"OPML file not found, writing new file on {opmlDataFile}");
@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
                     CategoryHtmlUrlTemplate = $"{SiteRootUrl}/category/list/[catTitle]"
                 };
 
-                var path = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
+                var path = Path.Join($"{DataDirectory}", $"{Constants.OpmlFileName}");
                 await _fileSystemOpmlWriter.WriteOpmlFileAsync(path, oi);
                 Logger.LogInformation("OPML file write completed.");
 
@@ -86,8 +86,8 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Rss(string routeName = null)
         {
             var rssDataFile = string.IsNullOrWhiteSpace(routeName) ?
-                Path.Join($"{SiteDataDirectory}", "feed", "posts.xml") :
-                Path.Join($"{SiteDataDirectory}", "feed", $"posts-category-{routeName}.xml");
+                Path.Join($"{DataDirectory}", "feed", "posts.xml") :
+                Path.Join($"{DataDirectory}", "feed", $"posts-category-{routeName}.xml");
 
             if (!System.IO.File.Exists(rssDataFile))
             {
@@ -119,7 +119,7 @@ namespace Moonglade.Web.Controllers
         [Route("atom")]
         public async Task<IActionResult> Atom()
         {
-            var atomDataFile = Path.Join($"{SiteDataDirectory}", "feed", "posts-atom.xml");
+            var atomDataFile = Path.Join($"{DataDirectory}", "feed", "posts-atom.xml");
             if (!System.IO.File.Exists(atomDataFile))
             {
                 Logger.LogInformation($"Atom file not found, writing new file on {atomDataFile}");

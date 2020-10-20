@@ -18,9 +18,9 @@ namespace Moonglade.Web.Controllers
 
         protected string SiteRootUrl => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
-        protected string SiteDataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
+        protected string DataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
 
-        protected string SiteIconDirectory => Path.Join(SiteDataDirectory, "siteicons");
+        protected string SiteIconDirectory => Path.Join(DataDirectory, "siteicons");
 
         protected bool DNT => (bool)HttpContext.Items["DNT"];
 

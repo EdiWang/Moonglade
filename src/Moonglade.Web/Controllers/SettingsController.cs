@@ -737,19 +737,19 @@ namespace Moonglade.Web.Controllers
 
                 if (cachedObjectValues.Contains("MCO_OPML"))
                 {
-                    var opmlDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
+                    var opmlDataFile = Path.Join($"{DataDirectory}", $"{Constants.OpmlFileName}");
                     DeleteIfExists(opmlDataFile);
                 }
 
                 if (cachedObjectValues.Contains("MCO_FEED"))
                 {
-                    var feedDir = Path.Join($"{SiteDataDirectory}", "feed");
+                    var feedDir = Path.Join($"{DataDirectory}", "feed");
                     DeleteIfExists(feedDir);
                 }
 
                 if (cachedObjectValues.Contains("MCO_OPSH"))
                 {
-                    var openSearchDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpenSearchFileName}");
+                    var openSearchDataFile = Path.Join($"{DataDirectory}", $"{Constants.OpenSearchFileName}");
                     DeleteIfExists(openSearchDataFile);
                 }
 

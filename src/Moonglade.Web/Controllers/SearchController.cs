@@ -27,12 +27,12 @@ namespace Moonglade.Web.Controllers
         [Route("opensearch")]
         public async Task<IActionResult> OpenSearch()
         {
-            var openSearchDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.OpenSearchFileName}");
+            var openSearchDataFile = Path.Join($"{DataDirectory}", $"{Constants.OpenSearchFileName}");
             if (!System.IO.File.Exists(openSearchDataFile))
             {
                 Logger.LogInformation($"OpenSearch file not found, writing new file on {openSearchDataFile}");
 
-                await _searchService.WriteOpenSearchFileAsync(SiteRootUrl, SiteDataDirectory);
+                await _searchService.WriteOpenSearchFileAsync(SiteRootUrl, DataDirectory);
                 if (!System.IO.File.Exists(openSearchDataFile))
                 {
                     Logger.LogError("OpenSearch file still not found, what the heck?!");
@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
         [Route("sitemap.xml")]
         public async Task<IActionResult> SiteMap([FromServices] IBlogConfig blogConfig)
         {
-            var siteMapDataFile = Path.Join($"{SiteDataDirectory}", $"{Constants.SiteMapFileName}");
+            var siteMapDataFile = Path.Join($"{DataDirectory}", $"{Constants.SiteMapFileName}");
             if (!System.IO.File.Exists(siteMapDataFile))
             {
                 Logger.LogInformation($"SiteMap file not found, writing new file on {siteMapDataFile}");
@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
                     url = canonicalUrl;
                 }
 
-                await _searchService.WriteSiteMapFileAsync(url, SiteDataDirectory);
+                await _searchService.WriteSiteMapFileAsync(url, DataDirectory);
 
                 if (!System.IO.File.Exists(siteMapDataFile))
                 {

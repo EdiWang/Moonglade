@@ -186,7 +186,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                var path = Path.Join($"{SiteDataDirectory}", $"{Constants.OpmlFileName}");
+                var path = Path.Join($"{DataDirectory}", $"{Constants.OpmlFileName}");
                 System.IO.File.Delete(path);
                 Logger.LogInformation("OPML file is deleted.");
             }
