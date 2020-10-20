@@ -55,11 +55,11 @@ namespace Moonglade.Web.Controllers
             try
             {
                 var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-                var postList = await _postService.GetPagedPostsAsync(pagesize, page);
-                var postCount = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts());
+                var posts = await _postService.GetPagedPostsAsync(pagesize, page);
+                var count = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts());
 
-                var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pagesize, postCount);
-                return View(postsAsIPagedList);
+                var list = new StaticPagedList<PostListEntry>(posts, page, pagesize, count);
+                return View(list);
             }
             catch (Exception e)
             {
@@ -195,7 +195,23 @@ namespace Moonglade.Web.Controllers
         [Route("manage/create")]
         public async Task<IActionResult> Create()
         {
-            var view = await GetCreatePostModelAsync();
+            var view = new PostEditViewModel
+            {
+                IsPublished = false,
+                EnableComment = true,
+                ExposedToSiteMap = true,
+                FeedIncluded = true,
+                ContentLanguageCode = _blogConfig.ContentSettings.DefaultLangCode
+            };
+
+            var cats = await _categoryService.GetAllAsync();
+            if (cats.Count > 0)
+            {
+                var cbCatList = cats.Select(p =>
+                    new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false));
+                view.CategoryList = cbCatList;
+            }
+
             return View("CreateOrEdit", view);
         }
 
@@ -206,7 +222,7 @@ namespace Moonglade.Web.Controllers
             var post = await _postService.GetAsync(id);
             if (null == post) return NotFound();
 
-            var editViewModel = new PostEditViewModel
+            var viewModel = new PostEditViewModel
             {
                 PostId = post.Id,
                 IsPublished = post.IsPublished,
@@ -221,7 +237,7 @@ namespace Moonglade.Web.Controllers
 
             if (post.PubDateUtc != null)
             {
-                editViewModel.PublishDate = _dateTimeResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
+                viewModel.PublishDate = _dateTimeResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
             }
 
             var tagStr = post.Tags
@@ -229,7 +245,7 @@ namespace Moonglade.Web.Controllers
                 .Aggregate(string.Empty, (current, item) => current + item + ",");
 
             tagStr = tagStr.TrimEnd(',');
-            editViewModel.Tags = tagStr;
+            viewModel.Tags = tagStr;
 
             var cats = await _categoryService.GetAllAsync();
             if (cats.Count > 0)
@@ -239,10 +255,10 @@ namespace Moonglade.Web.Controllers
                         p.DisplayName,
                         p.Id.ToString(),
                         post.Categories.Any(q => q.Id == p.Id)));
-                editViewModel.CategoryList = cbCatList;
+                viewModel.CategoryList = cbCatList;
             }
 
-            return View("CreateOrEdit", editViewModel);
+            return View("CreateOrEdit", viewModel);
         }
 
         [Authorize]
@@ -263,7 +279,7 @@ namespace Moonglade.Web.Controllers
                     return Json("Invalid ModelState");
                 }
 
-                var tagList = string.IsNullOrWhiteSpace(model.Tags)
+                var tags = string.IsNullOrWhiteSpace(model.Tags)
                     ? new string[] { }
                     : model.Tags.Split(',').ToArray();
 
@@ -277,7 +293,7 @@ namespace Moonglade.Web.Controllers
                     IsFeedIncluded = model.FeedIncluded,
                     ContentLanguageCode = model.ContentLanguageCode,
                     IsPublished = model.IsPublished,
-                    Tags = tagList,
+                    Tags = tags,
                     CategoryIds = model.SelectedCategoryIds
                 };
 
@@ -405,29 +421,6 @@ namespace Moonglade.Web.Controllers
             };
 
             Response.Cookies.Append(cookieName.ToString(), id, options);
-        }
-
-        private async Task<PostEditViewModel> GetCreatePostModelAsync()
-        {
-            var view = new PostEditViewModel
-            {
-                PostId = Guid.Empty,
-                IsPublished = false,
-                EnableComment = true,
-                ExposedToSiteMap = true,
-                FeedIncluded = true,
-                ContentLanguageCode = _blogConfig.ContentSettings.DefaultLangCode
-            };
-
-            var catList = await _categoryService.GetAllAsync();
-            if (catList.Count > 0)
-            {
-                var cbCatList = catList.Select(p =>
-                    new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false));
-                view.CategoryList = cbCatList;
-            }
-
-            return view;
         }
 
         #endregion
