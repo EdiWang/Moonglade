@@ -14,9 +14,9 @@ namespace Moonglade.Web.Controllers
     {
         protected ILogger<ControllerBase> Logger { get; }
 
-        protected AppSettings AppSettings { get; set; }
+        protected AppSettings Settings { get; set; }
 
-        protected string SiteRootUrl => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+        protected string RootUrl => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
         protected string DataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
 
@@ -29,7 +29,7 @@ namespace Moonglade.Web.Controllers
             IOptions<AppSettings> settings = null)
         {
             if (null != logger) Logger = logger;
-            if (null != settings) AppSettings = settings.Value;
+            if (null != settings) Settings = settings.Value;
         }
 
         [Route("server-error")]

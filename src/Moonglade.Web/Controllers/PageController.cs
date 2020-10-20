@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
 
             var page = await _cache.GetOrCreateAsync(CacheDivision.Page, slug.ToLower(), async entry =>
             {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Page"]);
+                entry.SlidingExpiration = TimeSpan.FromMinutes(Settings.CacheSlidingExpirationMinutes["Page"]);
 
                 var p = await _pageService.GetAsync(slug);
                 return p;

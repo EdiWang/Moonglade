@@ -28,10 +28,10 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage")]
         public async Task<IActionResult> Manage([FromServices] MenuService menuService)
         {
-            var menuItems = await menuService.GetAllAsync();
+            var menus = await menuService.GetAllAsync();
             var model = new MenuManageViewModel
             {
-                MenuItems = menuItems
+                MenuItems = menus
             };
 
             return View("~/Views/Admin/ManageMenu.cshtml", model);

@@ -15,7 +15,7 @@ namespace Moonglade.Web.Controllers
 {
     public class SubscriptionController : BlogController
     {
-        private readonly SyndicationService _syndicationFeedService;
+        private readonly SyndicationService _syndicationService;
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
         private readonly IFileSystemOpmlWriter _fileSystemOpmlWriter;
@@ -23,13 +23,13 @@ namespace Moonglade.Web.Controllers
         public SubscriptionController(
             ILogger<SubscriptionController> logger,
             IOptions<AppSettings> settings,
-            SyndicationService syndicationFeedService,
+            SyndicationService syndicationService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
             IFileSystemOpmlWriter fileSystemOpmlWriter)
             : base(logger, settings)
         {
-            _syndicationFeedService = syndicationFeedService;
+            _syndicationService = syndicationService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
             _fileSystemOpmlWriter = fileSystemOpmlWriter;
@@ -38,17 +38,17 @@ namespace Moonglade.Web.Controllers
         [Route("/opml")]
         public async Task<IActionResult> Opml()
         {
-            var feedDirectoryPath = Path.Join($"{DataDirectory}", "feed");
-            if (!Directory.Exists(feedDirectoryPath))
+            var feedPath = Path.Join(DataDirectory, "feed");
+            if (!Directory.Exists(feedPath))
             {
-                Directory.CreateDirectory(feedDirectoryPath);
-                Logger.LogInformation($"Created directory '{feedDirectoryPath}'");
+                Directory.CreateDirectory(feedPath);
+                Logger.LogInformation($"Created directory '{feedPath}'");
             }
 
-            var opmlDataFile = Path.Join($"{DataDirectory}", $"{Constants.OpmlFileName}");
-            if (!System.IO.File.Exists(opmlDataFile))
+            var opmlFile = Path.Join(DataDirectory, Constants.OpmlFileName);
+            if (!System.IO.File.Exists(opmlFile))
             {
-                Logger.LogInformation($"OPML file not found, writing new file on {opmlDataFile}");
+                Logger.LogInformation($"OPML file not found, writing new file on {opmlFile}");
 
                 var cats = await _categoryService.GetAllAsync();
                 var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
@@ -57,26 +57,26 @@ namespace Moonglade.Web.Controllers
                 {
                     SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
                     CategoryInfo = catInfos,
-                    HtmlUrl = $"{SiteRootUrl}/post",
-                    XmlUrl = $"{SiteRootUrl}/rss",
-                    CategoryXmlUrlTemplate = $"{SiteRootUrl}/rss/category/[catTitle]",
-                    CategoryHtmlUrlTemplate = $"{SiteRootUrl}/category/list/[catTitle]"
+                    HtmlUrl = $"{RootUrl}/post",
+                    XmlUrl = $"{RootUrl}/rss",
+                    CategoryXmlUrlTemplate = $"{RootUrl}/rss/category/[catTitle]",
+                    CategoryHtmlUrlTemplate = $"{RootUrl}/category/list/[catTitle]"
                 };
 
-                var path = Path.Join($"{DataDirectory}", $"{Constants.OpmlFileName}");
+                var path = Path.Join(DataDirectory, Constants.OpmlFileName);
                 await _fileSystemOpmlWriter.WriteOpmlFileAsync(path, oi);
                 Logger.LogInformation("OPML file write completed.");
 
-                if (!System.IO.File.Exists(opmlDataFile))
+                if (!System.IO.File.Exists(opmlFile))
                 {
                     Logger.LogInformation("OPML file still not found, something just went very very wrong...");
                     return NotFound();
                 }
             }
 
-            if (System.IO.File.Exists(opmlDataFile))
+            if (System.IO.File.Exists(opmlFile))
             {
-                return PhysicalFile(opmlDataFile, "text/xml");
+                return PhysicalFile(opmlFile, "text/xml");
             }
 
             return NotFound();
@@ -86,8 +86,8 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Rss(string routeName = null)
         {
             var rssDataFile = string.IsNullOrWhiteSpace(routeName) ?
-                Path.Join($"{DataDirectory}", "feed", "posts.xml") :
-                Path.Join($"{DataDirectory}", "feed", $"posts-category-{routeName}.xml");
+                Path.Join(DataDirectory, "feed", "posts.xml") :
+                Path.Join(DataDirectory, "feed", $"posts-category-{routeName}.xml");
 
             if (!System.IO.File.Exists(rssDataFile))
             {
@@ -95,11 +95,11 @@ namespace Moonglade.Web.Controllers
 
                 if (string.IsNullOrWhiteSpace(routeName))
                 {
-                    await _syndicationFeedService.RefreshFeedFileAsync(false);
+                    await _syndicationService.RefreshFeedFileAsync(false);
                 }
                 else
                 {
-                    await _syndicationFeedService.RefreshRssFilesAsync(routeName.ToLower());
+                    await _syndicationService.RefreshRssFilesAsync(routeName.ToLower());
                 }
 
                 if (!System.IO.File.Exists(rssDataFile))
@@ -119,12 +119,12 @@ namespace Moonglade.Web.Controllers
         [Route("atom")]
         public async Task<IActionResult> Atom()
         {
-            var atomDataFile = Path.Join($"{DataDirectory}", "feed", "posts-atom.xml");
+            var atomDataFile = Path.Join(DataDirectory, "feed", "posts-atom.xml");
             if (!System.IO.File.Exists(atomDataFile))
             {
                 Logger.LogInformation($"Atom file not found, writing new file on {atomDataFile}");
 
-                await _syndicationFeedService.RefreshFeedFileAsync(true);
+                await _syndicationService.RefreshFeedFileAsync(true);
 
                 if (!System.IO.File.Exists(atomDataFile)) return NotFound();
             }

@@ -108,10 +108,10 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Manage(int page = 1)
         {
             const int pageSize = 10;
-            var commentList = await _commentService.GetCommentsAsync(pageSize, page);
-            var commentsAsIPagedList =
-                new StaticPagedList<CommentDetailedItem>(commentList, page, pageSize, _commentService.Count());
-            return View("~/Views/Admin/ManageComments.cshtml", commentsAsIPagedList);
+            var comments = await _commentService.GetCommentsAsync(pageSize, page);
+            var list =
+                new StaticPagedList<CommentDetailedItem>(comments, page, pageSize, _commentService.Count());
+            return View("~/Views/Admin/ManageComments.cshtml", list);
         }
 
         [Authorize]

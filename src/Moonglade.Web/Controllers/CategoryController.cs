@@ -70,12 +70,12 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage")]
         public async Task<IActionResult> Manage()
         {
-            string viewLocation = "~/Views/Admin/ManageCategory.cshtml";
+            string viewPath = "~/Views/Admin/ManageCategory.cshtml";
 
             try
             {
-                var allCats = await _categoryService.GetAllAsync();
-                return View(viewLocation, new CategoryManageViewModel { Categories = allCats });
+                var cats = await _categoryService.GetAllAsync();
+                return View(viewPath, new CategoryManageViewModel { Categories = cats });
             }
             catch (Exception e)
             {
@@ -83,7 +83,7 @@ namespace Moonglade.Web.Controllers
 
                 ViewBag.HasError = true;
                 ViewBag.ErrorMessage = e.Message;
-                return View(viewLocation, new CategoryManageViewModel());
+                return View(viewPath, new CategoryManageViewModel());
             }
         }
 

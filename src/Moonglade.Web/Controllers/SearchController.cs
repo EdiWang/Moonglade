@@ -32,7 +32,7 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogInformation($"OpenSearch file not found, writing new file on {openSearchDataFile}");
 
-                await _searchService.WriteOpenSearchFileAsync(SiteRootUrl, DataDirectory);
+                await _searchService.WriteOpenSearchFileAsync(RootUrl, DataDirectory);
                 if (!System.IO.File.Exists(openSearchDataFile))
                 {
                     Logger.LogError("OpenSearch file still not found, what the heck?!");
@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogInformation($"SiteMap file not found, writing new file on {siteMapDataFile}");
 
-                var url = SiteRootUrl;
+                var url = RootUrl;
                 var canonicalUrl = blogConfig.GeneralSettings.CanonicalPrefix;
                 if (!string.IsNullOrWhiteSpace(canonicalUrl))
                 {

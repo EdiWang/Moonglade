@@ -637,7 +637,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!AppSettings.EnableAudit)
+                if (!Settings.EnableAudit)
                 {
                     ViewBag.AuditLogDisabled = true;
                     return View();
@@ -648,9 +648,9 @@ namespace Moonglade.Web.Controllers
                 var skip = (page - 1) * 20;
 
                 var entries = await _blogAudit.GetAuditEntries(skip, 20);
-                var auditEntriesAsIPagedList = new StaticPagedList<AuditEntry>(entries.Entries, page, 20, entries.Count);
+                var list = new StaticPagedList<AuditEntry>(entries.Entries, page, 20, entries.Count);
 
-                return View(auditEntriesAsIPagedList);
+                return View(list);
             }
             catch (Exception e)
             {
@@ -666,7 +666,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!AppSettings.EnableAudit) return BadRequest();
+                if (!Settings.EnableAudit) return BadRequest();
 
                 await _blogAudit.ClearAuditLog();
                 return RedirectToAction("AuditLogs");

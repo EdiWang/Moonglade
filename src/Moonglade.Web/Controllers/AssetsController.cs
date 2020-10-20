@@ -74,7 +74,7 @@ namespace Moonglade.Web.Controllers
                 {
                     Logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
-                    entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Image"]);
+                    entry.SlidingExpiration = TimeSpan.FromMinutes(Settings.CacheSlidingExpirationMinutes["Image"]);
                     var imgBytesResponse = await _imageStorage.GetAsync(filename);
                     return imgBytesResponse;
                 });
@@ -172,8 +172,8 @@ namespace Moonglade.Web.Controllers
         [Route("get-captcha-image")]
         public IActionResult GetCaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
-            var w = AppSettings.CaptchaSettings.ImageWidth;
-            var h = AppSettings.CaptchaSettings.ImageHeight;
+            var w = Settings.CaptchaSettings.ImageWidth;
+            var h = Settings.CaptchaSettings.ImageHeight;
 
             // prevent crazy size
             if (w > 640) w = 640;
