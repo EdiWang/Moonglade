@@ -158,6 +158,21 @@ You can also choose File System for image storage, but this will make your site 
 ```
 The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the website's current directory. 
 
+#### [Minio Blob Storage](https://min.io/) (Free)
+
+You need to hava an [**Minio Server**](https://docs.min.io/). 
+
+```json
+"Provider": "miniostorage"
+"MinioStorageSettings": {
+  "EndPoint": "Minio Server Endpoint(eg:localhost:9600)",
+  "AccessKey": "Your Access Key",
+  "SecretKey": "Your Secret Key",
+  "BucketName": "Your BucketName",
+  "WithSSL": false,
+}
+```
+
 ### 📧 Email Notification
 
 If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Notification Azure Function](https://github.com/EdiWang/Moonglade.Notification) first, and then set the values in ```appsettings.[env].json``` or in your runtime environment variables.
