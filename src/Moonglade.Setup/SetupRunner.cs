@@ -57,7 +57,10 @@ namespace Moonglade.Setup
             {
                 conn.Execute(sql);
             }
-            throw new InvalidOperationException("Database Schema Script is empty.");
+            else
+            {
+                throw new InvalidOperationException("Database Schema Script is empty.");
+            }
         }
 
         /// <summary>
@@ -96,7 +99,10 @@ namespace Moonglade.Setup
             {
                 conn.Execute(sql);
             }
-            throw new InvalidDataException("SQL Script is empty.");
+            else
+            {
+                throw new InvalidDataException("SQL Script is empty.");
+            }
         }
 
         public void InitSampleData()
@@ -107,7 +113,10 @@ namespace Moonglade.Setup
             {
                 conn.Execute(sql);
             }
-            throw new InvalidDataException("SQL Script is empty.");
+            else
+            {
+                throw new InvalidDataException("SQL Script is empty.");
+            }
         }
 
         public bool TestDatabaseConnection(Action<Exception> errorLogAction = null)
