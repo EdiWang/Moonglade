@@ -99,6 +99,7 @@ namespace Moonglade.Tests.Web
             });
 
             _webHostEnvMock.Setup(p => p.WebRootPath).Returns(@"C:\35\404\996\251");
+            _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
 
             var ctl = new AssetsController(
                 _loggerMock.Object,
