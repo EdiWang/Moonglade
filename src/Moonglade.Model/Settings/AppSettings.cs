@@ -16,6 +16,7 @@ namespace Moonglade.Model.Settings
         public NotificationSettings Notification { get; set; }
         public SiteMapSettings SiteMap { get; set; }
         public BlogTheme[] Themes { get; set; }
+        public ManifestIcon[] ManifestIcons { get; set; }
 
         public AppSettings()
         {
@@ -28,6 +29,7 @@ namespace Moonglade.Model.Settings
             Notification = new NotificationSettings();
             SiteMap = new SiteMapSettings();
             Themes = new BlogTheme[] { };
+            ManifestIcons = new ManifestIcon[] { };
         }
     }
 }

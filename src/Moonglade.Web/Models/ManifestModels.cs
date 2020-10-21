@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Models
 {
@@ -16,7 +17,7 @@ namespace Moonglade.Web.Models
         [JsonPropertyName("start_url")]
         public string StartUrl { get; set; }
 
-        public List<ManifestIcon> Icons { get; set; }
+        public IEnumerable<ManifestIcon> Icons { get; set; }
 
         [JsonPropertyName("background_color")]
         public string BackgroundColor { get; set; }
@@ -26,21 +27,5 @@ namespace Moonglade.Web.Models
 
         public string Display { get; set; }
         public string Orientation { get; set; }
-    }
-
-    public class ManifestIcon
-    {
-        public string Src { get; set; }
-        public string Sizes { get; set; }
-        public string Type { get; set; }
-        public string Density { get; set; }
-
-        public ManifestIcon(string srcTemplate, int sizePixel, string density)
-        {
-            Sizes = $"{sizePixel}x{sizePixel}";
-            Type = "image/png";
-            Density = density;
-            Src = string.Format(srcTemplate, Sizes);
-        }
     }
 }

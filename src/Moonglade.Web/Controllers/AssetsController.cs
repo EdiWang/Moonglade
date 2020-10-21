@@ -334,15 +334,7 @@ namespace Moonglade.Web.Controllers
                 Name = _blogConfig.GeneralSettings.SiteTitle,
                 Description = _blogConfig.GeneralSettings.SiteTitle,
                 StartUrl = "/",
-                Icons = new List<ManifestIcon>
-                {
-                    new ManifestIcon("/android-icon-{0}.png",36,"0.75"),
-                    new ManifestIcon("/android-icon-{0}.png",48,"1.0"),
-                    new ManifestIcon("/android-icon-{0}.png",72,"1.5"),
-                    new ManifestIcon("/android-icon-{0}.png",96,"2.0"),
-                    new ManifestIcon("/android-icon-{0}.png",144,"3.0"),
-                    new ManifestIcon("/android-icon-{0}.png",192,"4.0")
-                },
+                Icons = Settings.ManifestIcons,
                 BackgroundColor = themeColor,
                 ThemeColor = themeColor,
                 Display = "standalone",
