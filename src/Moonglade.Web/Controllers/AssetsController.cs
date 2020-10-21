@@ -30,7 +30,7 @@ namespace Moonglade.Web.Controllers
         private readonly IBlogImageStorage _imageStorage;
         private readonly ISiteIconGenerator _siteIconGenerator;
         private readonly IWebHostEnvironment _env;
-        private readonly CDNSettings _cdnSettings;
+        private readonly ImageStorageSettings _imageStorageSettings;
 
         public AssetsController(
             ILogger<AssetsController> logger,
@@ -45,7 +45,7 @@ namespace Moonglade.Web.Controllers
             _siteIconGenerator = siteIconGenerator;
             _env = env;
             _imageStorage = imageStorage;
-            _cdnSettings = imageStorageSettings.Value?.CDNSettings;
+            _imageStorageSettings = imageStorageSettings.Value;
         }
 
         #region Blog Post Images
@@ -64,9 +64,9 @@ namespace Moonglade.Web.Controllers
 
                 Logger.LogTrace($"Requesting image file {filename}");
 
-                if (_cdnSettings.EnableCDNRedirect)
+                if (_imageStorageSettings.CDNSettings.EnableCDNRedirect)
                 {
-                    var imageUrl = Utils.CombineUrl(_cdnSettings.CDNEndpoint, filename);
+                    var imageUrl = Utils.CombineUrl(_imageStorageSettings.CDNSettings.CDNEndpoint, filename);
                     return Redirect(imageUrl);
                 }
 
@@ -113,7 +113,13 @@ namespace Moonglade.Web.Controllers
                 if (name == null) return BadRequest();
 
                 var ext = Path.GetExtension(name).ToLower();
-                var allowedImageFormats = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" };
+                var allowedImageFormats = _imageStorageSettings.AllowedExtensions;
+
+                if (null == allowedImageFormats || !allowedImageFormats.Any())
+                {
+                    throw new InvalidDataException($"{nameof(ImageStorageSettings.AllowedExtensions)} is empty.");
+                }
+
                 if (!allowedImageFormats.Contains(ext))
                 {
                     Logger.LogError($"Invalid file extension: {ext}");
@@ -128,17 +134,26 @@ namespace Moonglade.Web.Controllers
 
                 // Add watermark
                 MemoryStream watermarkedStream = null;
-                if (_blogConfig.WatermarkSettings.IsEnabled && ext != ".gif")
+                if (_blogConfig.WatermarkSettings.IsEnabled)
                 {
-                    using var watermarker = new ImageWatermarker(stream, ext);
+                    if (null == _imageStorageSettings.NoWatermarkExtensions 
+                        || _imageStorageSettings.NoWatermarkExtensions.All(
+                            p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
+                    {
+                        using var watermarker = new ImageWatermarker(stream, ext);
 
-                    watermarker.SkipImageSize(Constants.SmallImagePixelsThreshold);
-                    watermarkedStream = watermarker.AddWatermark(
-                        _blogConfig.WatermarkSettings.WatermarkText,
-                        Color.FromArgb(128, 128, 128, 128),
-                        WatermarkPosition.BottomRight,
-                        15,
-                        _blogConfig.WatermarkSettings.FontSize);
+                        watermarker.SkipImageSize(Constants.SmallImagePixelsThreshold);
+                        watermarkedStream = watermarker.AddWatermark(
+                            _blogConfig.WatermarkSettings.WatermarkText,
+                            Color.FromArgb(128, 128, 128, 128),
+                            WatermarkPosition.BottomRight,
+                            15,
+                            _blogConfig.WatermarkSettings.FontSize);
+                    }
+                    else
+                    {
+                        Logger.LogInformation($"Skipped watermark for extension name: {ext}");
+                    }
                 }
 
                 var finalFileName = await _imageStorage.InsertAsync(primaryFileName,

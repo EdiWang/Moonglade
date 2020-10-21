@@ -2,6 +2,10 @@
 {
     public class ImageStorageSettings
     {
+        public string[] AllowedExtensions { get; set; }
+
+        public string[] NoWatermarkExtensions { get; set; }
+
         public string Provider { get; set; }
 
         public AzureStorageSettings AzureStorageSettings { get; set; }
