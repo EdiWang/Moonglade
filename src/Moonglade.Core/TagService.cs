@@ -112,17 +112,12 @@ namespace Moonglade.Core
 
         public static string NormalizeTagName(string orgTagName)
         {
-            return ReplaceWithStringBuilder(orgTagName, TagNormalizeSourceTable).ToLower();
-        }
-
-        private static string ReplaceWithStringBuilder(string value, IEnumerable<Tuple<string, string>> toReplace)
-        {
-            var result = new StringBuilder(value);
-            foreach (var (item1, item2) in toReplace)
+            var result = new StringBuilder(orgTagName);
+            foreach (var (item1, item2) in TagNormalizeSourceTable)
             {
                 result.Replace(item1, item2);
             }
-            return result.ToString();
+            return result.ToString().ToLower();
         }
 
         public static bool ValidateTagName(string tagDisplayName)
