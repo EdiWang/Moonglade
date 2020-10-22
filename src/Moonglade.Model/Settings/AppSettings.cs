@@ -5,6 +5,7 @@ namespace Moonglade.Model.Settings
     public class AppSettings
     {
         public EditorChoice Editor { get; set; }
+        public int[] WatermarkARGB { get; set; }
         public CaptchaSettings CaptchaSettings { get; set; }
         public int PostAbstractWords { get; set; }
         public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }

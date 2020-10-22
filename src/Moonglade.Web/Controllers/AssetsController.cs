@@ -101,6 +101,11 @@ namespace Moonglade.Web.Controllers
         [HttpPost("upload-image"), IgnoreAntiforgeryToken]
         public async Task<IActionResult> UploadImageAsync(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
         {
+            bool IsValidColorValue(int colorValue)
+            {
+                return colorValue >= 0 && colorValue <= 255;
+            }
+
             try
             {
                 if (null == file || file.Length <= 0)
@@ -136,16 +141,28 @@ namespace Moonglade.Web.Controllers
                 MemoryStream watermarkedStream = null;
                 if (_blogConfig.WatermarkSettings.IsEnabled)
                 {
-                    if (null == _imageStorageSettings.NoWatermarkExtensions 
+                    if (null == _imageStorageSettings.NoWatermarkExtensions
                         || _imageStorageSettings.NoWatermarkExtensions.All(
                             p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
                     {
                         using var watermarker = new ImageWatermarker(stream, ext);
-
                         watermarker.SkipImageSize(Constants.SmallImagePixelsThreshold);
+
+                        // Get ARGB values
+                        var colorArray = Settings.WatermarkARGB;
+                        if (colorArray.Length != 4)
+                        {
+                            throw new InvalidDataException($"'{nameof(Settings.WatermarkARGB)}' must be an integer array with 4 items.");
+                        }
+
+                        if (colorArray.Any(c => !IsValidColorValue(c)))
+                        {
+                            throw new InvalidDataException($"'{nameof(Settings.WatermarkARGB)}' values must all fall in range 0-255.");
+                        }
+
                         watermarkedStream = watermarker.AddWatermark(
                             _blogConfig.WatermarkSettings.WatermarkText,
-                            Color.FromArgb(128, 128, 128, 128),
+                            Color.FromArgb(colorArray[0], colorArray[1], colorArray[2], colorArray[3]),
                             WatermarkPosition.BottomRight,
                             15,
                             _blogConfig.WatermarkSettings.FontSize);
