@@ -123,4 +123,22 @@
   <data name="User Account" xml:space="preserve">
     <value>用户账户</value>
   </data>
+  <data name="Username" xml:space="preserve">
+    <value>用户名</value>
+  </data>
+  <data name="Last Login IP" xml:space="preserve">
+    <value>最后登录 IP</value>
+  </data>
+  <data name="Last Login Time (UTC)" xml:space="preserve">
+    <value>最后登录时间 (UTC)</value>
+  </data>
+  <data name="Create Time (UTC)" xml:space="preserve">
+    <value>创建时间 (UTC)</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="It's recommend to use Azure Active Directory over local account. Azure provides way more secure and easy user management capabilities." xml:space="preserve">
+    <value>强烈推荐使用 Azure Active Directory 而不是本地账户。 Azure 提供了更高安全性以及便捷的账户管理功能。</value>
+  </data>
 </root>
