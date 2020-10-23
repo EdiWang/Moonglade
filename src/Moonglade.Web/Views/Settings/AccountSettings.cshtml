@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
-@model IReadOnlyList<Moonglade.Model.Account>
+@model AccountManageViewModel
 
 @section scripts{
     <script>
@@ -22,7 +22,7 @@
     @Localizer["It's recommend to use Azure Active Directory over local account. Azure provides way more secure and easy user management capabilities."]
 </div>
 
-@if (null != Model && Model.Any())
+@if (null != Model.Accounts && Model.Accounts.Any())
 {
     <table class="table table-bordered mt-3">
         <thead>
@@ -35,7 +35,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.OrderBy(p => p.Username))
+            @foreach (var item in Model.Accounts.OrderBy(p => p.Username))
             {
                 <tr id="tr-@item.Id">
                     <td>@item.Username</td>

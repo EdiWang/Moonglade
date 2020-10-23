@@ -773,7 +773,9 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> AccountSettings([FromServices] LocalAccountService accountService)
         {
             var accounts = await accountService.GetAllAsync();
-            return View(accounts);
+            var vm = new AccountManageViewModel { Accounts = accounts };
+
+            return View(vm);
         }
 
         #endregion
