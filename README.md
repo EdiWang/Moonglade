@@ -92,7 +92,7 @@ Set ```Authentication:Provider``` to ```"Local"``` and assign a pair of username
   "Provider": "Local",
   "Local": {
     "Username": "admin",
-    "Password": "admin123",
+    "Password": "admin123"
   }
 }
 ```
@@ -144,7 +144,7 @@ You need to hava an [**Minio Server**](https://docs.min.io/).
   "AccessKey": "Your Access Key",
   "SecretKey": "Your Secret Key",
   "BucketName": "Your BucketName",
-  "WithSSL": false,
+  "WithSSL": false
 }
 ```
 
