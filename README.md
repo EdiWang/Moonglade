@@ -8,8 +8,6 @@ The [.NET Core](https://dotnet.microsoft.com/) blog system of [edi.wang](https:/
 
 ## 📦 Deployment
 
-> The system design DOES NOT couple with Azure, but the blog works best on Azure. Every part of the system, like Authentication and Image Storage, can be configured to use non-Azure options.
-
 ### ☁ Full Deploy on Azure (Recommend)
 
 This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure with only ~$300 USD/month.
@@ -22,34 +20,11 @@ This diagram shows a recommended full feature Azure deployment for Moonglade. It
 
 ### 🐋 Quick Deploy on Azure with/out Docker 
 
-If you just want to quickly get it running on Azure without knowing every detail. You can have a minimal deployment that use Docker Container to run on App Service (Linux) by executing the quick start deployment script in PowerShell Core:
-
-`./Deployment/AzureAppServiceDeploy.ps1`
-
-Please edit the script file and replace these items with your own values:
-
-```powershell
-# Replace with your own values
-$subscriptionName = "Microsoft MVP"
-$rsgName = "Moonglade-Test-RSG"
-$regionName = "East Asia"
-$webAppName = "moonglade-test-web"
-$aspName = "moonglade-test-plan"
-$storageAccountName = "moongladeteststorage"
-$storageContainerName = "moongladetestimages"
-$sqlServerName = "moongladetestsqlsvr"
-$sqlServerUsername = "moonglade"
-$sqlServerPassword = "DotNetM00n8!@d3"
-$sqlDatabaseName = "moonglade-test-db"
-$cdnProfileName = "moonglade-test-cdn"
-[bool] $useLinuxPlanWithDocker = 1
-```
-
-Set `$useLinuxPlanWithDocker` to `1` will use Docker on Linux App Service plan, it will be a ready to run deployment. Set it to `0` will only deploy infrastructure without the application code, and leave the deployment in your control.
+Follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure-with-out-Docker)
 
 ### 🐧 Quick Deploy on Linux
 
-To quickly get it running on a new Linux machine without Docker, please follow the steps [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Install-on-Linux-Machine).
+To quickly get it running on a new Linux machine without Docker, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Install-on-Linux-Machine).
 
 ## 🐵 Development
 
