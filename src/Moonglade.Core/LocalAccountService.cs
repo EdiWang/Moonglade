@@ -33,6 +33,21 @@ namespace Moonglade.Core
             return item;
         }
 
+        public Task<IReadOnlyList<Account>> GetAllAsync()
+        {
+            var list = _accountRepository.SelectAsync(p => new Account
+            {
+                Id = p.Id,
+                CreateOnUtc = p.CreateOnUtc,
+                LastLoginIp = p.LastLoginIp,
+                LastLoginTimeUtc = p.LastLoginTimeUtc,
+                PasswordHash = p.PasswordHash,
+                Username = p.Username
+            });
+
+            return list;
+        }
+
         public static string HashPassword(string plainMessage)
         {
             if (string.IsNullOrWhiteSpace(plainMessage))
