@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+@model IReadOnlyList<Moonglade.Model.Account>
+
+@section scripts{
+    <script>
+
+    </script>
+}
+
+<h3>
+    @Localizer["User Account"]
+    <a class="btn btn-outline-success float-right" href="javascript:initCreateAccount();">
+        <span class="icon-plus"></span>
+        @Localizer["Create"]
+    </a>
+</h3>
+<hr />
+
+<div class="alert alert-info">
+    @Localizer["It's recommend to use Azure Active Directory over local account. Azure provides way more secure and easy user management capabilities."]
+</div>
+
+@if (null != Model && Model.Any())
+{
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>@Localizer["Username"]</th>
+                <th>@Localizer["Last Login IP"]</th>
+                <th>@Localizer["Last Login Time (UTC)"]</th>
+                <th>@Localizer["Create Time (UTC)"]</th>
+                <th>@Localizer["Action"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderBy(p => p.Username))
+            {
+                <tr id="tr-@item.Id">
+                    <td>@item.Username</td>
+                    <td>@item.LastLoginIp</td>
+                    <td>@item.LastLoginTimeUtc</td>
+                    <td>@item.CreateOnUtc</td>
+                    <td>
+                        <a href="javascript:;" data-menuid="@item.Id" class="btn btn-sm btn-primary btn-updatepwd">Reset Password</a>
+                        <a href="javascript:;" data-menuid="@item.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
+                        <span id="span-processing-@item.Id" style="display: none">...</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<p class="text-muted">Check out <a href="https://azure.microsoft.com/en-us/services/active-directory?WT.mc_id=AZ-MVP-5002809">Azure Active Directoy</a> and empower your blog to achieve more!</p>

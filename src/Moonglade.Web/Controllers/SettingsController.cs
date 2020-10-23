@@ -766,5 +766,16 @@ namespace Moonglade.Web.Controllers
                 return ServerError(e.Message);
             }
         }
+
+        #region Account
+
+        [HttpGet("account")]
+        public async Task<IActionResult> AccountSettings([FromServices] LocalAccountService accountService)
+        {
+            var accounts = await accountService.GetAllAsync();
+            return View(accounts);
+        }
+
+        #endregion
     }
 }

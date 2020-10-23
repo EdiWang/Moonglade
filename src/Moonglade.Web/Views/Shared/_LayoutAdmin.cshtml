@@ -1,9 +1,12 @@
 ﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+@inject IOptions<AuthenticationSettings> AuthOptions;
 
 @using Moonglade.Core
+@using Moonglade.Web.Authentication
 @{
     var currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData?.Values["action"]?.ToString();
 }
 <!DOCTYPE html>
 <html>
@@ -75,10 +78,17 @@
                         <span class="icon-list"></span>
                         @Localizer["Menus"]
                     </a>
-                    <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" ? "active" : null)">
+                    <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" && currentAction != "AccountSettings" ? "active" : null)">
                         <span class="icon-cog"></span>
                         @Localizer["Settings"]
                     </a>
+                    @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
+                    {
+                        <a asp-controller="Settings" asp-action="AccountSettings" class="list-group-item list-group-item-action @(currentController == "Settings" && currentAction == "AccountSettings" ? "active" : null)">
+                            <span class="icon-user"></span>
+                            @Localizer["Account"]
+                        </a>
+                    }
                 </div>
             </section>
 
