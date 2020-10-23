@@ -39,7 +39,7 @@ namespace Moonglade.Core
                 Id = p.Id,
                 CreateOnUtc = p.CreateOnUtc,
                 LastLoginIp = p.LastLoginIp,
-                LastLoginTimeUtc = p.LastLoginTimeUtc,
+                LastLoginTimeUtc = p.LastLoginTimeUtc.GetValueOrDefault(),
                 Username = p.Username
             });
 
@@ -145,7 +145,7 @@ namespace Moonglade.Core
                 Id = entity.Id,
                 CreateOnUtc = entity.CreateOnUtc,
                 LastLoginIp = entity.LastLoginIp.Trim(),
-                LastLoginTimeUtc = entity.LastLoginTimeUtc,
+                LastLoginTimeUtc = entity.LastLoginTimeUtc.GetValueOrDefault(),
                 Username = entity.Username.Trim()
             };
         }

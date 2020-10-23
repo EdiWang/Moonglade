@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
+using Moonglade.Core;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Models;
 
@@ -21,16 +22,18 @@ namespace Moonglade.Web.Controllers
     public class AdminController : BlogController
     {
         private readonly AuthenticationSettings _authenticationSettings;
-
+        private readonly LocalAccountService _localAccountService;
         private readonly IBlogAudit _blogAudit;
 
         public AdminController(
             ILogger<AdminController> logger,
             IOptions<AuthenticationSettings> authSettings,
-            IBlogAudit blogAudit)
+            IBlogAudit blogAudit,
+            LocalAccountService localAccountService)
             : base(logger)
         {
             _blogAudit = blogAudit;
+            _localAccountService = localAccountService;
             _authenticationSettings = authSettings.Value;
         }
 
@@ -80,8 +83,7 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (model.Username == _authenticationSettings.Local.Username &&
-                        model.Password == _authenticationSettings.Local.Password)
+                    if (await _localAccountService.ValidateAsync(model.Username, model.Password))
                     {
                         var claims = new List<Claim>
                         {
