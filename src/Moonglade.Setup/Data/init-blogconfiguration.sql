@@ -8,3 +8,6 @@ INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (5, 
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (6, 'FriendLinksSettings', '{"ShowFriendLinksSection":true}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (7, 'AdvancedSettings', '{"DNSPrefetchEndpoint":"","EnableOpenGraph":true,"EnablePingBackSend":true,"EnablePingBackReceive":true}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (8, 'SecuritySettings', '{"WarnExternalLink":true,"AllowScriptsInPage":false,"ShowAdminLoginButton":false,"EnablePostRawEndpoint":true}', GETDATE())
+
+DELETE FROM LocalAccount
+INSERT LocalAccount(Id, Username, PasswordHash, CreateOnUtc) VALUES (NEWID(), 'admin', 'JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=', GETDATE())
