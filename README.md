@@ -67,7 +67,7 @@ Build and run `./src/Moonglade.sln`
 
 - Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"** (For local debugging, also add URL to https://localhost:1055/signin-oidc)
-- Check `ID Tokens` checkbox under 'Advanced settings'.
+- Check `ID Tokens` checkbox under the 'Authentication' page in Azure Portal.
 - Copy ```appId``` to set as ```AzureAd:ClientId``` in **appsettings.[env].json** file
 
 ```json
