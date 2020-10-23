@@ -73,6 +73,25 @@ namespace Moonglade.Core
             return uid;
         }
 
+        public async Task UpdatePasswordAsync(Guid id, string clearPassword)
+        {
+            if (string.IsNullOrWhiteSpace(clearPassword))
+            {
+                throw new ArgumentNullException(nameof(clearPassword), "clearPassword must not be empty.");
+            }
+
+            var account = await _accountRepository.GetAsync(id);
+            if (null == account)
+            {
+                throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
+            }
+
+            account.PasswordHash = HashPassword(clearPassword);
+            await _accountRepository.UpdateAsync(account);
+
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountPasswordUpdated, $"Account password for '{id}' updated.");
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             var account = await _accountRepository.GetAsync(id);
