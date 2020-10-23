@@ -46,7 +46,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public async Task<bool> ValidateAsync(string username, string inputPassword)
+        public async Task<Guid> ValidateAsync(string username, string inputPassword)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -59,7 +59,20 @@ namespace Moonglade.Core
             }
 
             var account = await _accountRepository.GetAsync(p => p.Username == username);
-            return account.PasswordHash == HashPassword(inputPassword.Trim());
+            var valid = account.PasswordHash == HashPassword(inputPassword.Trim());
+            return valid ? account.Id : Guid.Empty;
+        }
+
+        public async Task LogSuccessLoginAsync(Guid id, string ipAddress)
+        {
+            var entity = await _accountRepository.GetAsync(id);
+            if (null != entity)
+            {
+                entity.LastLoginIp = ipAddress.Trim();
+                entity.LastLoginTimeUtc = DateTime.UtcNow;
+            }
+
+            await _accountRepository.UpdateAsync(entity);
         }
 
         public async Task<Guid> CreateAsync(string username, string clearPassword)

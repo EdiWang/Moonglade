@@ -83,7 +83,8 @@ namespace Moonglade.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (await _localAccountService.ValidateAsync(model.Username, model.Password))
+                    var uid = await _localAccountService.ValidateAsync(model.Username, model.Password);
+                    if (uid != Guid.Empty)
                     {
                         var claims = new List<Claim>
                         {
@@ -94,12 +95,14 @@ namespace Moonglade.Web.Controllers
                         var p = new ClaimsPrincipal(ci);
 
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
+                        await _localAccountService.LogSuccessLoginAsync(uid,
+                            HttpContext.Connection.RemoteIpAddress.ToString());
 
                         var successMessage = $@"Authentication success for local account ""{model.Username}""";
 
                         Logger.LogInformation(successMessage);
                         await _blogAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginSuccessLocal, successMessage);
-
+                        
                         return RedirectToAction("Index");
                     }
                     ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
