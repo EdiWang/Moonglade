@@ -45,7 +45,8 @@
         <thead>
             <tr>
                 <th>@Localizer["Title"]</th>
-                <th class="table-item-w20">@Localizer["Created"]</th>
+                <th class="table-item-w20">@Localizer["Published"]</th>
+                <th class="table-item-w10">@Localizer["Hits"]</th>
                 <th class="table-item-w20">@Localizer["Options"]</th>
             </tr>
         </thead>
@@ -62,8 +63,11 @@
                             @post.Title
                         </a>
                     </td>
-                    <td data-sort="@post.CreateOnUtc.ToString("yyyyMMddHHmmss")">
-                        @post.CreateOnUtc
+                    <td data-sort="@post.PubDateUtc.GetValueOrDefault().ToString("yyyyMMddHHmmss")">
+                        @post.PubDateUtc
+                    </td>
+                    <td>
+                        @post.Hits
                     </td>
                     <td>
                         <a class="btn btn-primary btn-sm btn-edit" asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id">
