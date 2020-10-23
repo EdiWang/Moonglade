@@ -40,11 +40,37 @@ namespace Moonglade.Core
                 CreateOnUtc = p.CreateOnUtc,
                 LastLoginIp = p.LastLoginIp,
                 LastLoginTimeUtc = p.LastLoginTimeUtc,
-                PasswordHash = p.PasswordHash,
                 Username = p.Username
             });
 
             return list;
+        }
+
+        public async Task<Guid> CreateAsync(string username, string clearPassword)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException(nameof(username), "username must not be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(clearPassword))
+            {
+                throw new ArgumentNullException(nameof(clearPassword), "clearPassword must not be empty.");
+            }
+
+            var uid = Guid.NewGuid();
+            var account = new LocalAccountEntity
+            {
+                Id = uid,
+                CreateOnUtc = DateTime.UtcNow,
+                Username = username.Trim(),
+                PasswordHash = HashPassword(clearPassword.Trim())
+            };
+
+            await _accountRepository.AddAsync(account);
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountCreated, $"Account '{account.Id}' created.");
+
+            return uid;
         }
 
         public async Task DeleteAsync(Guid id)
@@ -85,7 +111,6 @@ namespace Moonglade.Core
                 CreateOnUtc = entity.CreateOnUtc,
                 LastLoginIp = entity.LastLoginIp.Trim(),
                 LastLoginTimeUtc = entity.LastLoginTimeUtc,
-                PasswordHash = entity.PasswordHash,
                 Username = entity.Username.Trim()
             };
         }
