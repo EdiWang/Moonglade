@@ -103,7 +103,7 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task NotifyCommentReplyAsync(CommentReplyDetail model, string postLink)
+        public async Task NotifyCommentReplyAsync(CommentReply model, string postLink)
         {
             if (!_isEnabled)
             {

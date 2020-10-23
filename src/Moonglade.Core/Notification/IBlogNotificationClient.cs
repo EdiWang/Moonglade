@@ -11,7 +11,7 @@ namespace Moonglade.Core.Notification
 
         Task NotifyCommentAsync(CommentDetailedItem model, Func<string, string> contentFormat);
 
-        Task NotifyCommentReplyAsync(CommentReplyDetail model, string postLink);
+        Task NotifyCommentReplyAsync(CommentReply model, string postLink);
 
         Task NotifyPingbackAsync(PingbackHistory model);
     }

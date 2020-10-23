@@ -71,7 +71,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var commentPostModel = model.NewCommentViewModel;
-                var response = await _commentService.CreateAsync(new NewCommentRequest(commentPostModel.PostId)
+                var response = await _commentService.CreateAsync(new CommentRequest(commentPostModel.PostId)
                 {
                     Username = commentPostModel.Username,
                     Content = commentPostModel.Content,

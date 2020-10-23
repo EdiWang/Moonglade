@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class NewCommentRequest
+    public class CommentRequest
     {
         public Guid PostId { get; }
 
@@ -14,7 +14,7 @@ namespace Moonglade.Model
 
         public string IpAddress { get; set; }
 
-        public NewCommentRequest(Guid postId)
+        public CommentRequest(Guid postId)
         {
             PostId = postId;
         }

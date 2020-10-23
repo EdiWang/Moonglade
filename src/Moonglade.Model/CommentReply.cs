@@ -9,7 +9,7 @@ namespace Moonglade.Model
         public string ReplyContentHtml { get; set; }
     }
 
-    public class CommentReplyDetail : CommentReplyDigest
+    public class CommentReply : CommentReplyDigest
     {
         public Guid Id { get; set; }
         public Guid CommentId { get; set; }

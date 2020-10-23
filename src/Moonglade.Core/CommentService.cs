@@ -135,7 +135,7 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task<CommentDetailedItem> CreateAsync(NewCommentRequest request)
+        public async Task<CommentDetailedItem> CreateAsync(CommentRequest request)
         {
             if (_blogConfig.ContentSettings.EnableWordFilter)
             {
@@ -177,7 +177,7 @@ namespace Moonglade.Core
             return item;
         }
 
-        public async Task<CommentReplyDetail> AddReply(Guid commentId, string replyContent)
+        public async Task<CommentReply> AddReply(Guid commentId, string replyContent)
         {
             var cmt = await _commentRepository.GetAsync(commentId);
 
@@ -197,7 +197,7 @@ namespace Moonglade.Core
 
             await _commentReplyRepository.AddAsync(model);
 
-            var detail = new CommentReplyDetail
+            var detail = new CommentReply
             {
                 CommentContent = cmt.CommentContent,
                 CommentId = commentId,
