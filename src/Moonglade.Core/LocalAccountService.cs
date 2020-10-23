@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
@@ -20,6 +21,14 @@ namespace Moonglade.Core
         {
             _accountRepository = accountRepository;
             _blogAudit = blogAudit;
+        }
+
+        public static string HashPassword(string plainMessage)
+        {
+            var data = Encoding.UTF8.GetBytes(plainMessage);
+            using HashAlgorithm sha = new SHA256Managed();
+            sha.TransformFinalBlock(data, 0, data.Length);
+            return Convert.ToBase64String(sha.Hash);
         }
     }
 }
