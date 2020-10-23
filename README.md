@@ -76,7 +76,7 @@ Build and run `./src/Moonglade.sln`
   "AzureAd": {
     "Domain": "{YOUR-VALUE}",
     "TenantId": "{YOUR-VALUE}",
-    "ClientId": "{YOUR-VALUE}",
+    "ClientId": "{YOUR-VALUE}"
   }
 }
 ```
