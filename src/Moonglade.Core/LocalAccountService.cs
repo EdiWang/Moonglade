@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -46,6 +45,18 @@ namespace Moonglade.Core
             });
 
             return list;
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var account = await _accountRepository.GetAsync(id);
+            if (null == account)
+            {
+                throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
+            }
+
+            _accountRepository.Delete(id);
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsDeleteAccount, $"Account '{id}' deleted.");
         }
 
         public static string HashPassword(string plainMessage)
