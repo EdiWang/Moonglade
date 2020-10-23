@@ -46,16 +46,32 @@ namespace Moonglade.Core
             return list;
         }
 
+        public async Task<bool> ValidateAsync(string username, string inputPassword)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException(nameof(username), "value must not be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(inputPassword))
+            {
+                throw new ArgumentNullException(nameof(inputPassword), "value must not be empty.");
+            }
+
+            var account = await _accountRepository.GetAsync(p => p.Username == username);
+            return account.PasswordHash == HashPassword(inputPassword.Trim());
+        }
+
         public async Task<Guid> CreateAsync(string username, string clearPassword)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
-                throw new ArgumentNullException(nameof(username), "username must not be empty.");
+                throw new ArgumentNullException(nameof(username), "value must not be empty.");
             }
 
             if (string.IsNullOrWhiteSpace(clearPassword))
             {
-                throw new ArgumentNullException(nameof(clearPassword), "clearPassword must not be empty.");
+                throw new ArgumentNullException(nameof(clearPassword), "value must not be empty.");
             }
 
             var uid = Guid.NewGuid();
@@ -77,7 +93,7 @@ namespace Moonglade.Core
         {
             if (string.IsNullOrWhiteSpace(clearPassword))
             {
-                throw new ArgumentNullException(nameof(clearPassword), "clearPassword must not be empty.");
+                throw new ArgumentNullException(nameof(clearPassword), "value must not be empty.");
             }
 
             var account = await _accountRepository.GetAsync(id);
