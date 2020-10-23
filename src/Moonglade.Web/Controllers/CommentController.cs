@@ -83,7 +83,7 @@ namespace Moonglade.Web.Controllers
                 {
                     _ = Task.Run(async () =>
                     {
-                        await _notificationClient.NotifyCommentAsync(response, s => BlogContentProcessor.MarkdownToContent(s, BlogContentProcessor.MarkdownConvertType.Html));
+                        await _notificationClient.NotifyCommentAsync(response, s => ContentProcessor.MarkdownToContent(s, ContentProcessor.MarkdownConvertType.Html));
                     });
                 }
                 var cResponse = new CommentResponse(true,
@@ -118,7 +118,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("set-approval-status")]
         public async Task<IActionResult> SetApprovalStatus(Guid commentId)
         {
-            await _commentService.ToggleApprovalStatusAsync(new[] { commentId });
+            await _commentService.ToggleApprovalAsync(new[] { commentId });
             return Json(commentId);
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Moonglade.Model
 {
-    public class CommentItem
+    public class Comment
     {
         public string Username { get; set; }
 
@@ -16,7 +16,7 @@ namespace Moonglade.Model
         public IReadOnlyList<CommentReplyDigest> CommentReplies { get; set; }
     }
 
-    public class CommentDetailedItem : CommentItem
+    public class CommentDetailedItem : Comment
     {
         public Guid Id { get; set; }
         public string IpAddress { get; set; }

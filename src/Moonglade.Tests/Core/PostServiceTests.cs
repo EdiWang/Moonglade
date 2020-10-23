@@ -13,14 +13,14 @@ namespace Moonglade.Tests.Core
         public void TestLazyLoadToImgTagExistLoading()
         {
             const string html = @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>";
-            var result = BlogContentProcessor.AddLazyLoadToImgTag(html);
+            var result = ContentProcessor.AddLazyLoadToImgTag(html);
             Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>");
         }
 
         [Test]
         public void TestLazyLoadToImgTagEmpty()
         {
-            var result = BlogContentProcessor.AddLazyLoadToImgTag(string.Empty);
+            var result = ContentProcessor.AddLazyLoadToImgTag(string.Empty);
             Assert.IsTrue(result == string.Empty);
         }
     }

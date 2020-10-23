@@ -6,7 +6,7 @@ using Markdig;
 
 namespace Moonglade.Core
 {
-    public static class BlogContentProcessor
+    public static class ContentProcessor
     {
         public static string AddLazyLoadToImgTag(string rawHtmlContent)
         {

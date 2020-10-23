@@ -101,7 +101,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("upload-image"), IgnoreAntiforgeryToken]
         public async Task<IActionResult> UploadImageAsync(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
         {
-            bool IsValidColorValue(int colorValue)
+            static bool IsValidColorValue(int colorValue)
             {
                 return colorValue >= 0 && colorValue <= 255;
             }

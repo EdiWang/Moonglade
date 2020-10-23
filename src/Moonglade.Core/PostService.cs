@@ -145,7 +145,7 @@ namespace Moonglade.Core
 
             if (null != postSlugModel)
             {
-                postSlugModel.RawPostContent = BlogContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
+                postSlugModel.RawPostContent = ContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
             }
 
             return postSlugModel;
@@ -227,7 +227,7 @@ namespace Moonglade.Core
 
                 if (null != postSlugModel)
                 {
-                    postSlugModel.RawPostContent = BlogContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
+                    postSlugModel.RawPostContent = ContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
                 }
 
                 return postSlugModel;
@@ -319,7 +319,7 @@ namespace Moonglade.Core
 
         public async Task<PostEntity> CreateAsync(CreatePostRequest request)
         {
-            var abs = BlogContentProcessor.GetPostAbstract(
+            var abs = ContentProcessor.GetPostAbstract(
                 request.EditorContent, AppSettings.PostAbstractWords,
                 AppSettings.Editor == EditorChoice.Markdown);
 
@@ -427,7 +427,7 @@ namespace Moonglade.Core
 
             post.CommentEnabled = request.EnableComment;
             post.PostContent = request.EditorContent;
-            post.ContentAbstract = BlogContentProcessor.GetPostAbstract(
+            post.ContentAbstract = ContentProcessor.GetPostAbstract(
                                         request.EditorContent,
                                         AppSettings.PostAbstractWords,
                                         AppSettings.Editor == EditorChoice.Markdown);

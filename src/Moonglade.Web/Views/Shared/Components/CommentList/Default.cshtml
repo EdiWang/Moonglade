@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Core
 @using Moonglade.DateTimeOps
 @using Moonglade.Web.HtmlHelpers
-@model IReadOnlyList<Moonglade.Model.CommentItem>
+@model IReadOnlyList<Moonglade.Model.Comment>
 @inject IDateTimeResolver DateTimeResolver
 
 @{
@@ -47,7 +47,7 @@
                         <span class="text-muted float-right"> @DateTimeResolver.ToTimeZone(item.CreateOnUtc).ToString("yyyy-M-d HH:mm")</span>
                     </div>
                     <div class="card-body">
-                        @Html.Raw(BlogContentProcessor.MarkdownToContent(item.CommentContent, BlogContentProcessor.MarkdownConvertType.Html))
+                        @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
                         <div>
                             @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
                             {
@@ -60,7 +60,7 @@
                                         <span class="float-right text-muted">Replied at @DateTimeResolver.ToTimeZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
                                     <p>
-                                        @Html.Raw(BlogContentProcessor.MarkdownToContent(reply.ReplyContent, BlogContentProcessor.MarkdownConvertType.Html))
+                                        @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
                                     </p>
                                 </div>
                             }

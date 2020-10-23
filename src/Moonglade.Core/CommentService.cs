@@ -46,9 +46,9 @@ namespace Moonglade.Core
             return _commentRepository.Count(c => true);
         }
 
-        public Task<IReadOnlyList<CommentItem>> GetSelectedCommentsAsync(Guid postId)
+        public Task<IReadOnlyList<Comment>> GetSelectedCommentsAsync(Guid postId)
         {
-            return _commentRepository.SelectAsync(new CommentSpec(postId), c => new CommentItem
+            return _commentRepository.SelectAsync(new CommentSpec(postId), c => new Comment
             {
                 CommentContent = c.CommentContent,
                 CreateOnUtc = c.CreateOnUtc,
@@ -90,7 +90,7 @@ namespace Moonglade.Core
             return comments;
         }
 
-        public async Task ToggleApprovalStatusAsync(Guid[] commentIds)
+        public async Task ToggleApprovalAsync(Guid[] commentIds)
         {
             if (null == commentIds || !commentIds.Any())
             {
@@ -206,7 +206,7 @@ namespace Moonglade.Core
                 PostId = cmt.PostId,
                 PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
                 ReplyContent = model.ReplyContent,
-                ReplyContentHtml = BlogContentProcessor.MarkdownToContent(model.ReplyContent, BlogContentProcessor.MarkdownConvertType.Html),
+                ReplyContentHtml = ContentProcessor.MarkdownToContent(model.ReplyContent, ContentProcessor.MarkdownConvertType.Html),
                 ReplyTimeUtc = model.ReplyTimeUtc,
                 Slug = cmt.Post.Slug,
                 Title = cmt.Post.Title
