@@ -778,6 +778,15 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
+        [HttpPost("account/delete")]
+        public async Task<IActionResult> DeleteAccount(Guid id, [FromServices] LocalAccountService accountService)
+        {
+            // TODO: Check current account, check last account
+
+            await accountService.DeleteAsync(id);
+            return Json(id);
+        }
+
         #endregion
     }
 }
