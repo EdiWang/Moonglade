@@ -23,37 +23,46 @@
         @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
     }
 
-    <section class="top-tags mb-4">
-        <div class="card">
-            <div class="card-header">@Localizer["Top Tags"]</div>
-            <div class="card-body">
-                <cache expires-after="@TimeSpan.FromMinutes(60)">
-                    @await Component.InvokeAsync("HotTags")
-                </cache>
-                <hr />
-                <a asp-controller="Tags" asp-action="Index" class="card-link">@Localizer["All Tags"]</a>
+    @if (Settings.Value.AsideWidgets["TopTags"])
+    {
+        <section class="top-tags mb-4">
+            <div class="card">
+                <div class="card-header">@Localizer["Top Tags"]</div>
+                <div class="card-body">
+                    <cache expires-after="@TimeSpan.FromMinutes(60)">
+                        @await Component.InvokeAsync("HotTags")
+                    </cache>
+                    <hr />
+                    <a asp-controller="Tags" asp-action="Index" class="card-link">@Localizer["All Tags"]</a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    }
 
-    <section class="cat-list mb-4">
-        <div class="card">
-            <div class="card-header">@Localizer["Categories"]</div>
-            @await Component.InvokeAsync("CategoryList", new { isMenu = false })
-        </div>
-    </section>
+    @if (Settings.Value.AsideWidgets["CategoryList"])
+    {
+        <section class="cat-list mb-4">
+            <div class="card">
+                <div class="card-header">@Localizer["Categories"]</div>
+                @await Component.InvokeAsync("CategoryList", new { isMenu = false })
+            </div>
+        </section>
+    }
 
-    <section class="aside-subscription text-center mb-4">
-        <a class="btn btn-sm btn-round btn-outline-secondary mr-2" href="#" data-toggle="modal" data-target="#subscriptionmodal">
-            <span class="icon-rss"></span>
-            RSS / Atom
-        </a>
+    @if (Settings.Value.AsideWidgets["SubscriptionButtons"])
+    {
+        <section class="aside-subscription text-center mb-4">
+            <a class="btn btn-sm btn-round btn-outline-secondary mr-2" href="#" data-toggle="modal" data-target="#subscriptionmodal">
+                <span class="icon-rss"></span>
+                RSS / Atom
+            </a>
 
-        <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm btn-round btn-outline-secondary" target="_blank">
-            <span class="icon-embed2"></span>
-            OPML
-        </a>
-    </section>
+            <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm btn-round btn-outline-secondary" target="_blank">
+                <span class="icon-embed2"></span>
+                OPML
+            </a>
+        </section>
+    }
 
     @if (BlogConfig.SecuritySettings.ShowAdminLoginButton)
     {
@@ -63,35 +72,38 @@
     }
 </aside>
 
-<div class="modal fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title" id="subscriptionmodalLabel">RSS / Atom Feed</h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-4">
-                    <div class="col-6">
-                        <a asp-controller="Subscription" asp-action="rss" class="btn btn-block btn-outline-success">
-                            @Localizer["Latest Posts"] (RSS)
-                        </a>
+@if (Settings.Value.AsideWidgets["SubscriptionButtons"])
+{
+    <div class="modal fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="subscriptionmodalLabel">RSS / Atom Feed</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <a asp-controller="Subscription" asp-action="rss" class="btn btn-block btn-outline-success">
+                                @Localizer["Latest Posts"] (RSS)
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a asp-controller="Subscription" asp-action="Atom" class="btn btn-block btn-outline-success">
+                                @Localizer["Latest Posts"] (Atom)
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <a asp-controller="Subscription" asp-action="Atom" class="btn btn-block btn-outline-success">
-                            @Localizer["Latest Posts"] (Atom)
-                        </a>
+                    <div class="row">
+                        @await Component.InvokeAsync("RssList")
                     </div>
                 </div>
-                <div class="row">
-                    @await Component.InvokeAsync("RssList")
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
             </div>
         </div>
     </div>
-</div>
+}
