@@ -4,7 +4,7 @@ CREATE TABLE [LocalAccount](
 [Username] [varchar](32) NULL,
 [PasswordHash] [nvarchar](64) NULL,
 [LastLoginTimeUtc] [datetime] NULL,
-[LastLoginIp] [nvarchar] NULL,
+[LastLoginIp] [nvarchar](64) NULL,
 [CreateOnUtc] [datetime] NOT NULL)
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'BlogConfiguration')
