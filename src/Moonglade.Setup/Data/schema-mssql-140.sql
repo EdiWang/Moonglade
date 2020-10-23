@@ -1,8 +1,8 @@
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'LocalAccount')
 CREATE TABLE [LocalAccount](
 [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
-[Username] [varchar](32) NULL,
-[PasswordHash] [nvarchar](64) NULL,
+[Username] [varchar](32) NOT NULL,
+[PasswordHash] [nvarchar](64) NOT NULL,
 [LastLoginTimeUtc] [datetime] NULL,
 [LastLoginIp] [nvarchar](64) NULL,
 [CreateOnUtc] [datetime] NOT NULL)
