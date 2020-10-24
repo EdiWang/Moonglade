@@ -150,4 +150,7 @@
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>重置密码</value>
+  </data>
 </root>
