@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 using Moonglade.Model;
 
 namespace Moonglade.Web.Models.Settings
@@ -20,11 +18,15 @@ namespace Moonglade.Web.Models.Settings
 
     public class AccountEditViewModel
     {
-        [HiddenInput]
-        public Guid Id { get; set; }
+        [Display(Name = "Username")]
+        [MinLength(2), MaxLength(32)]
+        [RegularExpression("[a-z0-9]+")]
+        public string Username { get; set; }
 
-        [Display(Name = "New Password")]
+        [Display(Name = "Password")]
         [MaxLength(32)]
-        public string NewPassword { get; set; }
+        [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Password must be minimum eight characters, at least one letter and one number")]
+        public string Password { get; set; }
     }
 }

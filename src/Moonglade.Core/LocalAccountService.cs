@@ -44,7 +44,7 @@ namespace Moonglade.Core
                 Id = p.Id,
                 CreateOnUtc = p.CreateOnUtc,
                 LastLoginIp = p.LastLoginIp,
-                LastLoginTimeUtc = p.LastLoginTimeUtc.GetValueOrDefault(),
+                LastLoginTimeUtc = p.LastLoginTimeUtc,
                 Username = p.Username
             });
 

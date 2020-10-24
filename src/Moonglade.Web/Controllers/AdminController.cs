@@ -89,7 +89,8 @@ namespace Moonglade.Web.Controllers
                         var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name, model.Username),
-                            new Claim(ClaimTypes.Role, "Administrator")
+                            new Claim(ClaimTypes.Role, "Administrator"),
+                            new Claim("uid", uid.ToString())
                         };
                         var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var p = new ClaimsPrincipal(ci);
@@ -97,7 +98,7 @@ namespace Moonglade.Web.Controllers
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
                         await _localAccountService.LogSuccessLoginAsync(uid,
                             HttpContext.Connection.RemoteIpAddress.ToString());
-                        HttpContext.Session.SetString("uid", uid.ToString());
+                        //HttpContext.Session.SetString("uid", uid.ToString());
 
                         var successMessage = $@"Authentication success for local account ""{model.Username}""";
 

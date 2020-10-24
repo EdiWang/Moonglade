@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Http
 @model AccountManageViewModel
 @{
-    var currentUid = Context.Session.GetString("uid");
+    var currentUidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
 }
 
 @section scripts{
@@ -18,12 +18,34 @@
             });
         });
 
-        function deleteAccount(accountId) {
-            $(`#span-processing-${accountId}`).show();
-            ajaxPostWithCSRFToken("/settings/account/delete", { id: accountId }, function (data) {
-                $(`#tr-${data}`).hide();
-            });
+        function deleteAccount(accountid) {
+            $(`#span-processing-${accountid}`).show();
+            ajaxPostWithCSRFToken("/admin/settings/account/delete",
+                { id: accountid },
+                function (data) {
+                    $(`#tr-${data}`).hide();
+                });
         }
+
+        function initCreateAccount() {
+            $("#edit-form")[0].reset();
+            $('#editAccountModal').modal();
+        }
+
+        $(".btn-submit").click(function () {
+            if ($("#edit-form").valid()) {
+                ajaxPostWithCSRFToken(`/admin/settings/account/create`,
+                    {
+                        "Username": $("#AccountEditViewModel_Username").val(),
+                        "Password": $("#AccountEditViewModel_Password").val()
+                    },
+                    function (data) {
+                        $("#edit-form")[0].reset();
+                        $("#editAccountModal").modal('hide');
+                        window.location.reload();
+                    });
+            }
+        });
     </script>
 }
 
@@ -61,11 +83,11 @@
                     <td>@item.LastLoginTimeUtc</td>
                     <td>@item.CreateOnUtc</td>
                     <td>
-                        <a href="javascript:;" data-accountId="@item.Id" class="btn btn-sm btn-primary btn-updatepwd">Reset Password</a>
+                        <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-primary btn-updatepwd">Reset Password</a>
 
-                        @if (currentUid != item.Id.ToString())
+                        @if (null != currentUidClaim && currentUidClaim.Value != item.Id.ToString())
                         {
-                            <a href="javascript:;" data-accountId="@item.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
+                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
                             <span id="span-processing-@item.Id" style="display: none">...</span>
                         }
                     </td>
@@ -76,3 +98,37 @@
 }
 
 <p class="text-muted">Check out <a href="https://azure.microsoft.com/en-us/services/active-directory?WT.mc_id=AZ-MVP-5002809">Azure Active Directoy</a> and empower your blog to achieve more!</p>
+
+
+<div class="modal fade" id="editAccountModal" tabindex="-1" role="dialog" aria-labelledby="editAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAccountModalLabel">@Localizer["Account Information"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="edit-form" method="post">
+                <div class="modal-body">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="AccountEditViewModel.Username" class="control-label"></label>
+                        <input asp-for="AccountEditViewModel.Username" class="form-control" />
+                        <span asp-validation-for="AccountEditViewModel.Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AccountEditViewModel.Password" class="control-label"></label>
+                        <input asp-for="AccountEditViewModel.Password" class="form-control" />
+                        <span asp-validation-for="AccountEditViewModel.Password" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

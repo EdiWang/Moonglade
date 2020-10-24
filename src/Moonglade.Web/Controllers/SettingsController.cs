@@ -778,16 +778,30 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
+        [HttpPost("account/create")]
+        public async Task<IActionResult> Create(AccountEditViewModel model, [FromServices] LocalAccountService accountService)
+        {
+            if (!ModelState.IsValid) return BadRequest("Invalid ModelState");
+            if (accountService.Exist(model.Username))
+            {
+                ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
+                return Conflict(ModelState);
+            }
+            
+            var uid = await accountService.CreateAsync(model.Username, model.Password);
+            return Json(uid);
+        }
+
         [HttpPost("account/delete")]
         public async Task<IActionResult> DeleteAccount(Guid id, [FromServices] LocalAccountService accountService)
         {
-            var currentUid = HttpContext.Session.GetString("uid");
-            if (string.IsNullOrWhiteSpace(currentUid))
+            var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
+            if (null == uidClaim || string.IsNullOrWhiteSpace(uidClaim.Value))
             {
                 return ServerError("Can not get current uid.");
             }
 
-            if (id.ToString() == currentUid)
+            if (id.ToString() == uidClaim.Value)
             {
                 return Conflict("Can not delete current user.");
             }
