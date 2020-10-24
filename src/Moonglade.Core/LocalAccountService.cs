@@ -80,6 +80,12 @@ namespace Moonglade.Core
             await _accountRepository.UpdateAsync(entity);
         }
 
+        public bool Exist(string username)
+        {
+            var exist = _accountRepository.Any(p => p.Username == username.ToLower());
+            return exist;
+        }
+
         public async Task<Guid> CreateAsync(string username, string clearPassword)
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -97,7 +103,7 @@ namespace Moonglade.Core
             {
                 Id = uid,
                 CreateOnUtc = DateTime.UtcNow,
-                Username = username.Trim(),
+                Username = username.ToLower().Trim(),
                 PasswordHash = HashPassword(clearPassword.Trim())
             };
 
