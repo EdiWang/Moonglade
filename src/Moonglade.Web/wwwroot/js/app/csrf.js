@@ -28,6 +28,12 @@ function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
                 });
 
                 toastr.error(errorMessage);
+            },
+            500: function (responseObject, textStatus, jqXHR) {
+                toastr.error('Server went boom.');
+            },
+            503: function(responseObject, textStatus, jqXHR) {
+                toastr.error('Server went boom boom.');
             }
         },
         dataType: 'json'
