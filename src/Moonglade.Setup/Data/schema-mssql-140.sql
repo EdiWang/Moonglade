@@ -1,3 +1,12 @@
+IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'LocalAccount')
+CREATE TABLE [LocalAccount](
+[Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
+[Username] [varchar](32) NOT NULL,
+[PasswordHash] [nvarchar](64) NOT NULL,
+[LastLoginTimeUtc] [datetime] NULL,
+[LastLoginIp] [nvarchar](64) NULL,
+[CreateOnUtc] [datetime] NOT NULL)
+
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'BlogConfiguration')
 CREATE TABLE [BlogConfiguration](
 [Id] [int] PRIMARY KEY CLUSTERED NOT NULL,

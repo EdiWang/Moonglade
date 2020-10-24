@@ -17,6 +17,9 @@
         SettingsSavedWatermark = 2005,
         SettingsSavedFriendLink = 2006,
         SettingsSavedAdvanced = 2007,
+        SettingsDeleteAccount = 2008,
+        SettingsAccountCreated = 2009,
+        SettingsAccountPasswordUpdated = 2010,
 
         PostCreated = 3001,
         PostPublished = 3002,

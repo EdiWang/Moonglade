@@ -117,43 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Admin" xml:space="preserve">
-    <value>管理</value>
+  <data name="Create" xml:space="preserve">
+    <value>新建</value>
   </data>
-  <data name="Categories" xml:space="preserve">
-    <value>分类</value>
+  <data name="User Account" xml:space="preserve">
+    <value>用户账户</value>
   </data>
-  <data name="Comments" xml:space="preserve">
-    <value>评论</value>
+  <data name="Username" xml:space="preserve">
+    <value>用户名</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>主页</value>
+  <data name="Last Login IP" xml:space="preserve">
+    <value>最后登录 IP</value>
   </data>
-  <data name="Issue or Suggestion" xml:space="preserve">
-    <value>问题或建议</value>
+  <data name="Last Login Time (UTC)" xml:space="preserve">
+    <value>最后登录时间 (UTC)</value>
   </data>
-  <data name="Menus" xml:space="preserve">
-    <value>菜单</value>
+  <data name="Create Time (UTC)" xml:space="preserve">
+    <value>创建时间 (UTC)</value>
   </data>
-  <data name="Pages" xml:space="preserve">
-    <value>页面</value>
+  <data name="Action" xml:space="preserve">
+    <value>操作</value>
   </data>
-  <data name="Pingbacks" xml:space="preserve">
-    <value>引用</value>
+  <data name="It's recommend to use Azure Active Directory over local account. Azure provides way more secure and easy user management capabilities." xml:space="preserve">
+    <value>强烈推荐使用 Azure Active Directory 而不是本地账户。 Azure 提供了更高安全性以及便捷的账户管理功能。</value>
   </data>
-  <data name="Posts" xml:space="preserve">
-    <value>文章</value>
+  <data name="Account Information" xml:space="preserve">
+    <value>账号信息</value>
   </data>
-  <data name="Settings" xml:space="preserve">
-    <value>设置</value>
+  <data name="Submit" xml:space="preserve">
+    <value>提交</value>
   </data>
-  <data name="Sign Out" xml:space="preserve">
-    <value>登出</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
   </data>
-  <data name="Tags" xml:space="preserve">
-    <value>标签</value>
-  </data>
-  <data name="Account" xml:space="preserve">
-    <value>账户</value>
+  <data name="Reset Password" xml:space="preserve">
+    <value>重置密码</value>
   </data>
 </root>

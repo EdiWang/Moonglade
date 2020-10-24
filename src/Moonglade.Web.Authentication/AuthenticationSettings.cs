@@ -8,8 +8,6 @@ namespace Moonglade.Web.Authentication
 
         public AzureAdOption AzureAd { get; set; }
 
-        public LocalAccountOption Local { get; set; }
-
         public IReadOnlyCollection<ApiKey> ApiKeys { get; set; }
 
         public AuthenticationSettings()

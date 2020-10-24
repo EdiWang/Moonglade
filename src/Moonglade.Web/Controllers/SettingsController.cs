@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -766,5 +767,78 @@ namespace Moonglade.Web.Controllers
                 return ServerError(e.Message);
             }
         }
+
+        #region Account
+
+        [HttpGet("account")]
+        public async Task<IActionResult> AccountSettings([FromServices] LocalAccountService accountService)
+        {
+            var accounts = await accountService.GetAllAsync();
+            var vm = new AccountManageViewModel { Accounts = accounts };
+
+            return View(vm);
+        }
+
+        [HttpPost("account/create")]
+        public async Task<IActionResult> CreateAccount(AccountEditViewModel model, [FromServices] LocalAccountService accountService)
+        {
+            if (!ModelState.IsValid) return BadRequest("Invalid ModelState");
+            if (accountService.Exist(model.Username))
+            {
+                ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
+                return Conflict(ModelState);
+            }
+            
+            var uid = await accountService.CreateAsync(model.Username, model.Password);
+            return Json(uid);
+        }
+
+        [HttpPost("account/delete")]
+        public async Task<IActionResult> DeleteAccount(Guid id, [FromServices] LocalAccountService accountService)
+        {
+            var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
+            if (null == uidClaim || string.IsNullOrWhiteSpace(uidClaim.Value))
+            {
+                return ServerError("Can not get current uid.");
+            }
+
+            if (id.ToString() == uidClaim.Value)
+            {
+                return Conflict("Can not delete current user.");
+            }
+
+            var count = accountService.Count();
+            if (count == 1)
+            {
+                return Conflict("Can not delete last account.");
+            }
+
+            await accountService.DeleteAsync(id);
+            return Json(id);
+        }
+
+        [HttpPost("account/reset-password")]
+        public async Task<IActionResult> ResetAccountPassword(Guid id, string newPassword, [FromServices] LocalAccountService accountService)
+        {
+            if (id == Guid.Empty)
+            {
+                return Conflict("Id can not be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                return Conflict("newPassword can not be empty.");
+            }
+
+            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"))
+            {
+                return Conflict("Password must be minimum eight characters, at least one letter and one number");
+            }
+
+            await accountService.UpdatePasswordAsync(id, newPassword);
+            return Json(id);
+        }
+
+        #endregion
     }
 }
