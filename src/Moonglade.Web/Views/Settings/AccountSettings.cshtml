@@ -1,7 +1,11 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
+@using Microsoft.AspNetCore.Http
 @model AccountManageViewModel
+@{
+    var currentUid = Context.Session.GetString("uid");
+}
 
 @section scripts{
     <script>
@@ -58,8 +62,12 @@
                     <td>@item.CreateOnUtc</td>
                     <td>
                         <a href="javascript:;" data-accountId="@item.Id" class="btn btn-sm btn-primary btn-updatepwd">Reset Password</a>
-                        <a href="javascript:;" data-accountId="@item.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
-                        <span id="span-processing-@item.Id" style="display: none">...</span>
+
+                        @if (currentUid != item.Id.ToString())
+                        {
+                            <a href="javascript:;" data-accountId="@item.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
+                            <span id="span-processing-@item.Id" style="display: none">...</span>
+                        }
                     </td>
                 </tr>
             }

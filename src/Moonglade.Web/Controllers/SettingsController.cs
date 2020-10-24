@@ -781,7 +781,22 @@ namespace Moonglade.Web.Controllers
         [HttpPost("account/delete")]
         public async Task<IActionResult> DeleteAccount(Guid id, [FromServices] LocalAccountService accountService)
         {
-            // TODO: Check current account, check last account
+            var currentUid = HttpContext.Session.GetString("uid");
+            if (string.IsNullOrWhiteSpace(currentUid))
+            {
+                return ServerError("Can not get current uid.");
+            }
+
+            if (id.ToString() == currentUid)
+            {
+                return Conflict("Can not delete current user.");
+            }
+
+            var count = accountService.Count();
+            if (count == 1)
+            {
+                return Conflict("Can not delete last account.");
+            }
 
             await accountService.DeleteAsync(id);
             return Json(id);

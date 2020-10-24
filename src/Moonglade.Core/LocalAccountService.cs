@@ -25,6 +25,11 @@ namespace Moonglade.Core
             _blogAudit = blogAudit;
         }
 
+        public int Count()
+        {
+            return _accountRepository.Count(p => true);
+        }
+
         public async Task<Account> GetAsync(Guid id)
         {
             var entity = await _accountRepository.GetAsync(id);
