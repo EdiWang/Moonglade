@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -779,7 +780,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("account/create")]
-        public async Task<IActionResult> Create(AccountEditViewModel model, [FromServices] LocalAccountService accountService)
+        public async Task<IActionResult> CreateAccount(AccountEditViewModel model, [FromServices] LocalAccountService accountService)
         {
             if (!ModelState.IsValid) return BadRequest("Invalid ModelState");
             if (accountService.Exist(model.Username))
@@ -813,6 +814,28 @@ namespace Moonglade.Web.Controllers
             }
 
             await accountService.DeleteAsync(id);
+            return Json(id);
+        }
+
+        [HttpPost("account/reset-password")]
+        public async Task<IActionResult> ResetAccountPassword(Guid id, string newPassword, [FromServices] LocalAccountService accountService)
+        {
+            if (id == Guid.Empty)
+            {
+                return Conflict("Id can not be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                return Conflict("newPassword can not be empty.");
+            }
+
+            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"))
+            {
+                return Conflict("Password must be minimum eight characters, at least one letter and one number");
+            }
+
+            await accountService.UpdatePasswordAsync(id, newPassword);
             return Json(id);
         }
 
