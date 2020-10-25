@@ -176,6 +176,8 @@ Key | Data Type | Description
 ```SystemNavMenus:Tags``` | ```bool``` | Show 'Tags' Menu
 ```SystemNavMenus:Archive``` | ```bool``` | Show 'Archive' Menu
 
+For security headers, please refer to [this wiki](https://github.com/EdiWang/Moonglade/wiki/Security-Headers-(CSP,-XSS,-etc.))
+
 ## 🎉 Blog Protocols or Standards
 
 - [X] RSS
