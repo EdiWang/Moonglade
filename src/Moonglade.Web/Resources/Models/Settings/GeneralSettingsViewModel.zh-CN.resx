@@ -156,4 +156,28 @@
   <data name="Your Name" xml:space="preserve">
     <value>博主名字</value>
   </data>
+  <data name="Please enter keyword" xml:space="preserve">
+    <value>请输入关键词</value>
+  </data>
+  <data name="Please enter description" xml:space="preserve">
+    <value>请输入描述</value>
+  </data>
+  <data name="Please enter blog title" xml:space="preserve">
+    <value>请输入博客标题</value>
+  </data>
+  <data name="Please enter copyright" xml:space="preserve">
+    <value>请输入版权信息</value>
+  </data>
+  <data name="Please enter logo text" xml:space="preserve">
+    <value>请输入Logo文字</value>
+  </data>
+  <data name="Please enter short description" xml:space="preserve">
+    <value>请输入短简介</value>
+  </data>
+  <data name="Please enter your description" xml:space="preserve">
+    <value>请输入您的简介</value>
+  </data>
+  <data name="Please enter your name" xml:space="preserve">
+    <value>请输入您的名字</value>
+  </data>
 </root>

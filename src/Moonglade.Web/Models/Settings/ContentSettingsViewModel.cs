@@ -4,11 +4,9 @@ namespace Moonglade.Web.Models.Settings
 {
     public class ContentSettingsViewModel
     {
-        [Required]
         [Display(Name = "Enable Comments")]
         public bool EnableComments { get; set; }
 
-        [Required]
         [Display(Name = "Comments Require Blog Admin Review and Approval")]
         public bool RequireCommentReview { get; set; }
 
@@ -18,11 +16,9 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(2048)]
         public string DisharmonyWords { get; set; }
 
-        [Required]
         [Display(Name = "Enable Word Filter")]
         public bool EnableWordFilter { get; set; }
 
-        [Required]
         [Display(Name = "Use Friendly 404 Image")]
         public bool UseFriendlyNotFoundImage { get; set; }
 
@@ -36,7 +32,6 @@ namespace Moonglade.Web.Models.Settings
         [Range(1, 50, ErrorMessage = "Tag amount can only range from 1-50")]
         public int HotTagAmount { get; set; }
 
-        [Required]
         [Display(Name = "Enable Gravatar in Comment List")]
         public bool EnableGravatar { get; set; }
 

@@ -5,12 +5,12 @@ namespace Moonglade.Web.Models.Settings
 {
     public class GeneralSettingsViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Please enter keyword")]
         [Display(Name = "Meta Keyword")]
         [MaxLength(1024)]
         public string MetaKeyword { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter description")]
         [Display(Name = "Meta Description")]
         [MaxLength(1024)]
         public string MetaDescription { get; set; }
@@ -20,34 +20,34 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(64)]
         public string CanonicalPrefix { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter logo text")]
         [Display(Name = "Logo Text")]
         [MaxLength(16)]
         public string LogoText { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter copyright")]
         [RegularExpression(@"[a-zA-Z0-9\s.\-\[\]]+", ErrorMessage = "Only letters, numbers, - and [] are allowed.")]
         [Display(Name = "Copyright")]
         [MaxLength(64)]
         public string Copyright { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter blog title")]
         [Display(Name = "Blog Title")]
         [MaxLength(16)]
         public string SiteTitle { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your name")]
         [Display(Name = "Your Name")]
         [MaxLength(32)]
         public string OwnerName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your description")]
         [Display(Name = "Your Description")]
         [DataType(DataType.MultilineText)]
         [MaxLength(256)]
         public string OwnerDescription { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter short description")]
         [Display(Name = "Short Description")]
         [MaxLength(32)]
         public string OwnerShortDescription { get; set; }
