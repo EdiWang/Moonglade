@@ -68,7 +68,7 @@ Build and run `./src/Moonglade.sln`
 - Register an App in **Azure Active Directory**
 - Set Redirection URI to **"https://yourdomain/signin-oidc"** (For local debugging, also add URL to https://localhost:1055/signin-oidc)
 - Check `ID Tokens` checkbox under the 'Authentication' page in Azure Portal.
-- Copy ```appId``` to set as ```AzureAd:ClientId``` in **appsettings.[env].json** file
+- Copy `appId` to set as `AzureAd:ClientId` in **appsettings.[env].json** file
 
 ```json
 "Authentication": {
@@ -92,7 +92,7 @@ Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/s
 ```
 
 ### 🖼 Image Storage
-```AppSettings:ImageStorage``` controls how blog post images are stored.
+`AppSettings:ImageStorage` controls how blog post images are stored.
 
 #### [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) (Preferred)
 
@@ -154,8 +154,8 @@ If you need email notification for new comments, new replies and pingbacks, you 
 ```
 ### 🔩 Others
 
-For other settings, please refer to [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
-For security headers, please refer to [Security Headers (CSP, XSS, etc.)](https://github.com/EdiWang/Moonglade/wiki/Security-Headers-(CSP,-XSS,-etc.))
+- [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
+- [Security Headers (CSP, XSS, etc.)](https://github.com/EdiWang/Moonglade/wiki/Security-Headers-(CSP,-XSS,-etc.))
 
 ## 🎉 Blog Protocols or Standards
 
