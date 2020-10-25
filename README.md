@@ -83,17 +83,11 @@ Build and run `./src/Moonglade.sln`
 
 #### Local Account (Alternative)
 
-Set ```Authentication:Provider``` to ```"Local"``` and assign a pair of username and password. 
-
-*Password is not encrypted, use it at your own risk.*
+Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/settings/account`
 
 ```json
 "Authentication": {
-  "Provider": "Local",
-  "Local": {
-    "Username": "admin",
-    "Password": "admin123"
-  }
+  "Provider": "Local"
 }
 ```
 
