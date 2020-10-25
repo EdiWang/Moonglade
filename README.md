@@ -52,8 +52,8 @@ Example
 
 Build and run `./src/Moonglade.sln`
 - Admin entrance: `/admin`
-- Default Admin username: `admin`
-- Default Admin password: `admin123`
+- Default username: `admin`
+- Default password: `admin123`
 
 ## ⚙ Configuration
 
@@ -152,25 +152,10 @@ If you need email notification for new comments, new replies and pingbacks, you 
   "AzureFunctionEndpoint": "{PROD-ENV-VARIABLE}"
 }
 ```
+### 🔩 Others
 
-### 🖥 System Setttings
-
-Key | Data Type | Description
---- | --- | ---
-```CaptchaSettings:ImageWidth``` | ```int``` | Pixel Width of Captcha Image
-```CaptchaSettings:ImageHeight``` | ```int``` | Pixel Height of Captcha Image
-```Editor``` | ```string``` | ```HTML``` or ```Markdown```
-```EnableAudit``` | ```bool``` | Enable Audit Log or not
-```EnableWebApi``` | ```bool``` | Enable REST API
-```CacheSlidingExpirationMinutes:Post``` | ```int``` | Time for cached posts to expire
-```CacheSlidingExpirationMinutes:Page``` | ```int``` | Time for cached pages to expire
-```CacheSlidingExpirationMinutes:Image``` | ```int``` | Time for cached image to expire
-```PostAbstractWords``` | ```int``` | How may words to show in post list abstract
-```SystemNavMenus:Categories``` | ```bool``` | Show 'Categories' Menu
-```SystemNavMenus:Tags``` | ```bool``` | Show 'Tags' Menu
-```SystemNavMenus:Archive``` | ```bool``` | Show 'Archive' Menu
-
-For security headers, please refer to [this wiki](https://github.com/EdiWang/Moonglade/wiki/Security-Headers-(CSP,-XSS,-etc.))
+For other settings, please refer to [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
+For security headers, please refer to [Security Headers (CSP, XSS, etc.)](https://github.com/EdiWang/Moonglade/wiki/Security-Headers-(CSP,-XSS,-etc.))
 
 ## 🎉 Blog Protocols or Standards
 
