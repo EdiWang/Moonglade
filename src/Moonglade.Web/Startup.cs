@@ -167,7 +167,10 @@ namespace Moonglade.Web
 
             app.UseRobotsTxt();
 
-            TryUseUrlRewrite(app);
+            app.UseRewriter(new RewriteOptions()
+                .AddRedirect("(.*)/$", "$1")
+                .AddRedirect("(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)", "/"));
+
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();
@@ -222,22 +225,6 @@ namespace Moonglade.Web
                     "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-        }
-
-        private void TryUseUrlRewrite(IApplicationBuilder app)
-        {
-            try
-            {
-                var options = new RewriteOptions()
-                    .AddRedirect("(.*)/$", "$1")
-                    .AddRedirect("(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)", "/");
-
-                app.UseRewriter(options);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, nameof(TryUseUrlRewrite));
-            }
         }
     }
 }
