@@ -162,6 +162,9 @@
   <data name="Tag amount can only range from 1-50" xml:space="preserve">
     <value>标签数量必须在1-50之间</value>
   </data>
+  <data name="This field is required." xml:space="preserve">
+    <value>必填</value>
+  </data>
   <data name="Use Friendly 404 Image" xml:space="preserve">
     <value>启用友好404图片</value>
   </data>

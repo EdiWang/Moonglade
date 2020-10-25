@@ -117,28 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Password" xml:space="preserve">
-    <value>密码</value>
+  <data name="Author Name" xml:space="preserve">
+    <value>作者名字</value>
   </data>
-  <data name="Password must be at least 8 characters" xml:space="preserve">
-    <value>密码至少需要8位</value>
+  <data name="Copyright" xml:space="preserve">
+    <value>版权信息</value>
   </data>
-  <data name="Password must be minimum eight characters, at least one letter and one number" xml:space="preserve">
-    <value>密码至少8位，且必须包含至少一个英文字母及一个数字</value>
+  <data name="Description" xml:space="preserve">
+    <value>描述</value>
   </data>
-  <data name="Please enter a password." xml:space="preserve">
-    <value>请输入密码</value>
+  <data name="RSS Items" xml:space="preserve">
+    <value>RSS 条目显示数量</value>
   </data>
-  <data name="Please enter a username." xml:space="preserve">
-    <value>请输入用户名</value>
+  <data name="Title" xml:space="preserve">
+    <value>标题</value>
   </data>
-  <data name="Username" xml:space="preserve">
-    <value>用户名</value>
-  </data>
-  <data name="Username must be at least 2 characters" xml:space="preserve">
-    <value>用户名必须为至少两个字符</value>
-  </data>
-  <data name="Username must be lower case letters or numbers." xml:space="preserve">
-    <value>用户名必须为小写英文字母或数字</value>
+  <data name="Use full blog post content instead of abstract" xml:space="preserve">
+    <value>显示全文而非摘要</value>
   </data>
 </root>
