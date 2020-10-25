@@ -1,17 +1,15 @@
 ﻿@using Moonglade.Core
 @using Microsoft.AspNetCore.Builder
-@using Microsoft.AspNetCore.Localization
 
 @inject IOptions<RequestLocalizationOptions> LocOptions
 @{
-    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName })
         .ToList();
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
 }
 
-<footer id="moonglade-footer" class="bg-accent2 pt-4 pb-4">
+<footer id="blog-footer" class="bg-accent2 pt-4 pb-4">
     <div class="container">
         <div class="row">
             <section id="footer-copyright" class="col-md-3 col-sm-3">
@@ -25,6 +23,10 @@
                 </small>
             </section>
 
+            <section id="footer-customize" class="col-md-3 col-sm-3 d-none d-sm-block">
+                @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
+            </section>
+
             @if (BlogConfig.FriendLinksSettings.ShowFriendLinksSection)
             {
                 <section id="footer-friendlink" class="col-md-3 col-sm-3 d-none d-sm-block">
@@ -33,10 +35,6 @@
                     </cache>
                 </section>
             }
-
-            <section id="footer-customize" class="col-md-3 col-sm-3 d-none d-sm-block">
-                @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
-            </section>
 
             <section id="footer-language" class="col-md-3 col-sm-3 d-none d-sm-block">
                 <ul class="list-unstyled">

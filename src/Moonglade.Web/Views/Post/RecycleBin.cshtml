@@ -57,11 +57,11 @@
                 <tr id="tr-@post.Id">
                     <td>@post.Title</td>
                     <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy HH:mm")</td>
-                    <td>
-                        <a class="btn btn-sm btn-primary btn-restore" data-postid="@post.Id" href="javascript:;">
+                    <td class="p-2">
+                        <a class="btn btn-sm btn-outline-primary btn-restore" data-postid="@post.Id" href="javascript:;">
                             <span class="icon-undo2"></span> @Localizer["Restore"]
                         </a>
-                        <a class="btn btn-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
+                        <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
                             <span class="icon-bin"></span> @Localizer["Delete"]
                         </a>
                         <span id="span-processing-@post.Id" style="display: none">...</span>
