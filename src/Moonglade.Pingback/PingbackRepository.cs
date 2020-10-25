@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dapper;
@@ -42,8 +41,8 @@ namespace Moonglade.Pingback
         public async Task SavePingbackRecordAsync(PingbackHistory request, IDbConnection conn)
         {
             var sql = $"INSERT INTO {nameof(PingbackHistory)}" +
-                      $"(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
-                      $"VALUES (@id, @domain, @sourceUrl, @sourceTitle, @sourceIp, @targetPostId, @pingTimeUtc, @targetPostTitle)";
+                      "(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
+                      "VALUES (@id, @domain, @sourceUrl, @sourceTitle, @sourceIp, @targetPostId, @pingTimeUtc, @targetPostTitle)";
             await conn.ExecuteAsync(sql, request);
         }
 
@@ -71,9 +70,9 @@ namespace Moonglade.Pingback
         public async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
         {
             var sql = $"SELECT TOP 1 1 FROM {nameof(PingbackHistory)} ph " +
-                      $"WHERE ph.TargetPostId = @postId " +
-                      $"AND ph.SourceUrl = @sourceUrl " +
-                      $"AND ph.SourceIp = @sourceIp";
+                      "WHERE ph.TargetPostId = @postId " +
+                      "AND ph.SourceUrl = @sourceUrl " +
+                      "AND ph.SourceIp = @sourceIp";
             var result = await conn.ExecuteScalarAsync<int>(sql, new { postId, sourceUrl, sourceIp });
             return result == 1;
         }

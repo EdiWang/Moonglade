@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Model
+﻿namespace Moonglade.Model
 {
     public class PostSlug : Post
     {

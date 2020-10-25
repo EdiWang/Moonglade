@@ -98,7 +98,6 @@ namespace Moonglade.Web.Controllers
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
                         await _localAccountService.LogSuccessLoginAsync(uid,
                             HttpContext.Connection.RemoteIpAddress.ToString());
-                        //HttpContext.Session.SetString("uid", uid.ToString());
 
                         var successMessage = $@"Authentication success for local account ""{model.Username}""";
 
