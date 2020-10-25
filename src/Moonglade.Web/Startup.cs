@@ -109,7 +109,6 @@ namespace Moonglade.Web
             TelemetryConfiguration configuration)
         {
             _logger = logger;
-            var allowExtScripts = bool.Parse(_appSettings[nameof(AppSettings.AllowExternalScripts)]);
 
             // Support Chinese contents
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -134,36 +133,6 @@ namespace Moonglade.Web
             {
                 _logger.LogInformation("Moonglade stopped.");
             });
-
-            app.UseSecurityHeaders(new HeaderPolicyCollection()
-                .AddFrameOptionsSameOrigin()
-                .AddXssProtectionEnabled()
-                .AddContentTypeOptionsNoSniff()
-                .AddContentSecurityPolicy(csp =>
-                {
-                    csp.AddFormAction().Self();
-
-                    if (!allowExtScripts)
-                    {
-                        csp.AddScriptSrc()
-                            .Self()
-                            .UnsafeInline()
-                            .UnsafeEval()
-                            // Whitelist Azure Application Insights
-                            .From("https://*.vo.msecnd.net")
-                            .From("https://*.services.visualstudio.com");
-                    }
-                })
-                .AddFeaturePolicy(builder =>
-                {
-                    builder.AddCamera().None();
-                    builder.AddMicrophone().None();
-                    builder.AddPayment().None();
-                    builder.AddUsb().None();
-                    builder.AddAccelerometer().None();
-                })
-                .RemoveServerHeader()
-            );
 
             app.UseRobotsTxt();
 

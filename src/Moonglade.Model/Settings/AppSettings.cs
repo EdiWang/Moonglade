@@ -11,7 +11,6 @@ namespace Moonglade.Model.Settings
         public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
         public bool EnableWebApi { get; set; }
         public bool EnableAudit { get; set; }
-        public bool AllowExternalScripts { get; set; }
         public Dictionary<string, bool> SystemNavMenus { get; set; }
         public Dictionary<string, bool> AsideWidgets { get; set; }
         public NotificationSettings Notification { get; set; }

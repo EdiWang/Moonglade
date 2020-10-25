@@ -163,7 +163,6 @@ If you need email notification for new comments, new replies and pingbacks, you 
 
 Key | Data Type | Description
 --- | --- | ---
-```AllowExternalScripts``` | ```bool``` | If CSP should enable external JavaScript links
 ```CaptchaSettings:ImageWidth``` | ```int``` | Pixel Width of Captcha Image
 ```CaptchaSettings:ImageHeight``` | ```int``` | Pixel Height of Captcha Image
 ```Editor``` | ```string``` | ```HTML``` or ```Markdown```
