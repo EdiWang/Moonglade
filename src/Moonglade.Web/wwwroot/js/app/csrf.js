@@ -16,8 +16,14 @@ function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
             funcSuccess(data);
         },
         statusCode: {
+            400: function (responseObject, textStatus, jqXHR) {
+                toastr.error('Bad request');
+            },
+            401: function (responseObject, textStatus, jqXHR) {
+                toastr.error('Unauthorized');
+            },
             404: function (responseObject, textStatus, jqXHR) {
-                toastr.error('Endpoint not found.');
+                toastr.error('Endpoint not found');
             },
             409: function (responseObject, textStatus, jqXHR) {
                 var json = responseObject.responseJSON;
@@ -30,10 +36,10 @@ function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
                 toastr.error(errorMessage);
             },
             500: function (responseObject, textStatus, jqXHR) {
-                toastr.error('Server went boom.');
+                toastr.error('Server went boom');
             },
             503: function(responseObject, textStatus, jqXHR) {
-                toastr.error('Server went boom boom.');
+                toastr.error('Server went boom boom');
             }
         },
         dataType: 'json'

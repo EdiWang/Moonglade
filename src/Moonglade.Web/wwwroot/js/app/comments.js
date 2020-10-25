@@ -13,42 +13,40 @@ var onCommentComplete = function () {
     $(btnSubmitComment).removeAttr('disabled');
 };
 
-var onCommentSuccess = function (context) {
+var onCommentSuccess = function (data, s, x) {
     postSlug.resetCaptchaImage();
     $('#form-comment')[0].reset();
 
-    var respCode = context.responseCode;
-    if (respCode === 100) {
+    var httpCode = x.status;
+    if (httpCode === 201) {
         $('#thx-for-comment').show();
     }
-    if (respCode === 101) {
+    if (httpCode === 200) {
         $('#thx-for-comment-non-review').show();
     }
 };
 
 var onCommentFailed = function (context) {
     $('#thx-for-comment').hide();
-    var errorCode = context.responseJSON.responseCode;
+
+    var httpCode = context.status;
     if (window.toastr) {
-        if (errorCode === 200) {
-            window.toastr.error('Server Error');
+        if (httpCode === 400) {
+            window.toastr.error('Invalid input.');
         }
-        if (errorCode === 300) {
+        if (httpCode === 403) {
+            window.toastr.error('Comment is disabled.');
+        }
+        if (httpCode === 409) {
             window.toastr.error('Incorrect Captcha Code');
             postSlug.resetCaptchaImage();
             $('#CommentPostModel_CaptchaCode').val('');
             $('#CommentPostModel_CaptchaCode').focus();
         }
-        if (errorCode === 400) {
-            window.toastr.error('Your email domain has been blocked due to spam comments.');
-        }
-        if (errorCode === 500) {
-            window.toastr.error('Comment is disabled.');
-        }
-        if (errorCode === 600) {
-            window.toastr.error('Invalid input.');
+        if (httpCode === 500 || httpCode === 503) {
+            window.toastr.error('Server went boom');
         }
     } else {
-        alert(`Error Code: ${errorCode}`);
+        alert(`Error ${httpCode}: ${errorCode}`);
     }
 };

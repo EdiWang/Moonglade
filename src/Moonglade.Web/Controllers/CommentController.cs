@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Microsoft.AspNetCore.Authorization;
@@ -43,39 +42,26 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewComment(PostSlugViewModelWrapper model,
-            [FromServices] ISessionBasedCaptcha captcha)
+        public async Task<IActionResult> NewComment(
+            PostSlugViewModelWrapper model, [FromServices] ISessionBasedCaptcha captcha)
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new CommentResponse(false, CommentResponseCode.InvalidModel));
-                }
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-                if (!_blogConfig.ContentSettings.EnableComments)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    return Json(new CommentResponse(false, CommentResponseCode.CommentDisabled));
-                }
-
-                // Validate BasicCaptcha Code
                 if (!captcha.ValidateCaptchaCode(model.NewCommentViewModel.CaptchaCode, HttpContext.Session))
                 {
-                    Logger.LogWarning("Wrong Captcha Code");
                     ModelState.AddModelError(nameof(model.NewCommentViewModel.CaptchaCode), "Wrong Captcha Code");
-
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new CommentResponse(false, CommentResponseCode.WrongCaptcha));
+                    return Conflict(ModelState);
                 }
 
-                var commentPostModel = model.NewCommentViewModel;
-                var response = await _commentService.CreateAsync(new CommentRequest(commentPostModel.PostId)
+                var newComment = model.NewCommentViewModel;
+                var response = await _commentService.CreateAsync(new CommentRequest(newComment.PostId)
                 {
-                    Username = commentPostModel.Username,
-                    Content = commentPostModel.Content,
-                    Email = commentPostModel.Email,
+                    Username = newComment.Username,
+                    Content = newComment.Content,
+                    Email = newComment.Email,
                     IpAddress = HttpContext.Connection.RemoteIpAddress.ToString()
                 });
 
@@ -83,21 +69,22 @@ namespace Moonglade.Web.Controllers
                 {
                     _ = Task.Run(async () =>
                     {
-                        await _notificationClient.NotifyCommentAsync(response, s => ContentProcessor.MarkdownToContent(s, ContentProcessor.MarkdownConvertType.Html));
+                        await _notificationClient.NotifyCommentAsync(response,
+                            s => ContentProcessor.MarkdownToContent(s, ContentProcessor.MarkdownConvertType.Html));
                     });
                 }
-                var cResponse = new CommentResponse(true,
-                    _blogConfig.ContentSettings.RequireCommentReview ?
-                        CommentResponseCode.Success :
-                        CommentResponseCode.SuccessNonReview);
 
-                return Json(cResponse);
+                if (_blogConfig.ContentSettings.RequireCommentReview)
+                {
+                    return Created("moonglade://empty", response);
+                }
+
+                return Ok();
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Error NewComment");
-                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json(new CommentResponse(false, CommentResponseCode.UnknownError));
+                return ServerError(e.Message);
             }
         }
 
