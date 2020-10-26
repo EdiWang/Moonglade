@@ -46,7 +46,7 @@ namespace Moonglade.Core
             return _commentRepository.Count(c => true);
         }
 
-        public Task<IReadOnlyList<Comment>> GetSelectedCommentsAsync(Guid postId)
+        public Task<IReadOnlyList<Comment>> GetApprovedCommentsAsync(Guid postId)
         {
             return _commentRepository.SelectAsync(new CommentSpec(postId), c => new Comment
             {

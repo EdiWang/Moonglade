@@ -57,7 +57,7 @@ namespace Moonglade.Core
         public async Task<Guid> CreateAsync(CreatePageRequest request)
         {
             var uid = Guid.NewGuid();
-            var customPage = new PageEntity
+            var page = new PageEntity
             {
                 Id = uid,
                 Title = request.Title.Trim(),
@@ -70,8 +70,8 @@ namespace Moonglade.Core
                 IsPublished = request.IsPublished
             };
 
-            await _customPageRepository.AddAsync(customPage);
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PageCreated, $"Page '{customPage.Id}' created.");
+            await _customPageRepository.AddAsync(page);
+            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PageCreated, $"Page '{page.Id}' created.");
 
             return uid;
         }
