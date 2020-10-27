@@ -76,7 +76,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Manage()
         {
             var pageSegments = await _pageService.ListSegmentAsync();
-            return View("~/Views/Admin/ManageCustomPage.cshtml", pageSegments);
+            return View("~/Views/Admin/ManagePage.cshtml", pageSegments);
         }
 
         [Authorize]

@@ -123,8 +123,8 @@
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="Create" xml:space="preserve">
-    <value>创建</value>
+  <data name="New" xml:space="preserve">
+    <value>新建</value>
   </data>
   <data name="Icon" xml:space="preserve">
     <value>图标</value>

@@ -129,4 +129,7 @@
   <data name="Watermark Text" xml:space="preserve">
     <value>水印文字</value>
   </data>
+  <data name="Please enter watermark text" xml:space="preserve">
+    <value>请输入水印文字</value>
+  </data>
 </root>
