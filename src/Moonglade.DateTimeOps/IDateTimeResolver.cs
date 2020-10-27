@@ -5,7 +5,8 @@ namespace Moonglade.DateTimeOps
 {
     public interface IDateTimeResolver
     {
-        DateTime GetNowOfTimeZone();
+        DateTime NowOfTimeZone { get; }
+
         DateTime ToTimeZone(DateTime utcDateTime);
         DateTime ToUtc(DateTime userDateTime);
         IEnumerable<TimeZoneInfo> ListTimeZones();

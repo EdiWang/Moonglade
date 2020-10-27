@@ -79,7 +79,7 @@ namespace Moonglade.Tests
             var tSpan = "8:00:00";
             var resolver = new DateTimeResolver(tSpan);
             var utc = DateTime.UtcNow;
-            var dt = resolver.GetNowOfTimeZone();
+            var dt = resolver.NowOfTimeZone;
             Assert.AreEqual(utc.AddHours(8).Date, dt.Date);
             Assert.AreEqual(utc.AddHours(8).Hour, dt.Hour);
             Assert.AreEqual(utc.AddHours(8).Minute, dt.Minute);

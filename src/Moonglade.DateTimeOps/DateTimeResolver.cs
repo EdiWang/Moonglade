@@ -14,10 +14,7 @@ namespace Moonglade.DateTimeOps
             TimeZoneUtcOffset = timeZoneUtcOffset;
         }
 
-        public DateTime GetNowOfTimeZone()
-        {
-            return UtcToZoneTime(DateTime.UtcNow, TimeZoneUtcOffset);
-        }
+        public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, TimeZoneUtcOffset);
 
         public DateTime ToTimeZone(DateTime utcDateTime)
         {

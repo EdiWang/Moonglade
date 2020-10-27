@@ -297,7 +297,7 @@ namespace Moonglade.Web.Controllers
                     CategoryIds = model.SelectedCategoryIds
                 };
 
-                var tzDate = _dateTimeResolver.GetNowOfTimeZone();
+                var tzDate = _dateTimeResolver.NowOfTimeZone;
                 if (model.ChangePublishDate &&
                     model.PublishDate.HasValue &&
                     model.PublishDate <= tzDate &&
