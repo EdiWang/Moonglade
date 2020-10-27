@@ -13,20 +13,20 @@ namespace Moonglade.Core
 {
     public class CategoryService : BlogService
     {
-        private readonly IRepository<CategoryEntity> _categoryRepository;
-        private readonly IRepository<PostCategoryEntity> _postCategoryRepository;
-        private readonly IBlogAudit _blogAudit;
+        private readonly IRepository<CategoryEntity> _catRepo;
+        private readonly IRepository<PostCategoryEntity> _postCatRepo;
+        private readonly IBlogAudit _audit;
         private readonly IBlogCache _cache;
 
         public CategoryService(ILogger<CategoryService> logger,
-            IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostCategoryEntity> postCategoryRepository,
-            IBlogAudit blogAudit, 
+            IRepository<CategoryEntity> catRepo,
+            IRepository<PostCategoryEntity> postCatRepo,
+            IBlogAudit audit, 
             IBlogCache cache) : base(logger)
         {
-            _categoryRepository = categoryRepository;
-            _postCategoryRepository = postCategoryRepository;
-            _blogAudit = blogAudit;
+            _catRepo = catRepo;
+            _postCatRepo = postCatRepo;
+            _audit = audit;
             _cache = cache;
         }
 
@@ -34,7 +34,7 @@ namespace Moonglade.Core
         {
             return _cache.GetOrCreateAsync(CacheDivision.General, "allcats", async entry =>
             {
-                var list = await _categoryRepository.SelectAsync(c => new Category
+                var list = await _catRepo.SelectAsync(c => new Category
                 {
                     Id = c.Id,
                     DisplayName = c.DisplayName,
@@ -47,7 +47,7 @@ namespace Moonglade.Core
 
         public Task<Category> GetAsync(string categoryName)
         {
-            return _categoryRepository.SelectFirstOrDefaultAsync(
+            return _catRepo.SelectFirstOrDefaultAsync(
                 new CategorySpec(categoryName), category =>
                     new Category
                     {
@@ -58,10 +58,10 @@ namespace Moonglade.Core
                     });
         }
 
-        public Task<Category> GetAsync(Guid categoryId)
+        public Task<Category> GetAsync(Guid id)
         {
-            return _categoryRepository.SelectFirstOrDefaultAsync(
-                new CategorySpec(categoryId), category =>
+            return _catRepo.SelectFirstOrDefaultAsync(
+                new CategorySpec(id), category =>
                     new Category
                     {
                         DisplayName = category.DisplayName,
@@ -71,55 +71,55 @@ namespace Moonglade.Core
                     });
         }
 
-        public async Task CreateAsync(CreateCategoryRequest createCategoryRequest)
+        public async Task CreateAsync(CreateCategoryRequest createRequest)
         {
-            var exists = _categoryRepository.Any(c => c.RouteName == createCategoryRequest.RouteName);
+            var exists = _catRepo.Any(c => c.RouteName == createRequest.RouteName);
             if (exists) return;
 
             var category = new CategoryEntity
             {
                 Id = Guid.NewGuid(),
-                RouteName = createCategoryRequest.RouteName.Trim(),
-                Note = createCategoryRequest.Note.Trim(),
-                DisplayName = createCategoryRequest.DisplayName.Trim()
+                RouteName = createRequest.RouteName.Trim(),
+                Note = createRequest.Note.Trim(),
+                DisplayName = createRequest.DisplayName.Trim()
             };
 
-            await _categoryRepository.AddAsync(category);
+            await _catRepo.AddAsync(category);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryCreated, $"Category '{category.RouteName}' created");
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryCreated, $"Category '{category.RouteName}' created");
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var exists = _categoryRepository.Any(c => c.Id == id);
+            var exists = _catRepo.Any(c => c.Id == id);
             if (!exists) return;
 
-            var pcs = await _postCategoryRepository.GetAsync(pc => pc.CategoryId == id);
+            var pcs = await _postCatRepo.GetAsync(pc => pc.CategoryId == id);
             if (null != pcs)
             {
-                await _postCategoryRepository.DeleteAsync(pcs);
+                await _postCatRepo.DeleteAsync(pcs);
             }
 
-            _categoryRepository.Delete(id);
+            _catRepo.Delete(id);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Category '{id}' deleted.");
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Category '{id}' deleted.");
         }
 
-        public async Task UpdateAsync(EditCategoryRequest editCategoryRequest)
+        public async Task UpdateAsync(EditCategoryRequest editRequest)
         {
-            var cat = await _categoryRepository.GetAsync(editCategoryRequest.Id);
+            var cat = await _catRepo.GetAsync(editRequest.Id);
             if (null == cat) return;
 
-            cat.RouteName = editCategoryRequest.RouteName.Trim();
-            cat.DisplayName = editCategoryRequest.DisplayName.Trim();
-            cat.Note = editCategoryRequest.Note.Trim();
+            cat.RouteName = editRequest.RouteName.Trim();
+            cat.DisplayName = editRequest.DisplayName.Trim();
+            cat.Note = editRequest.Note.Trim();
 
-            await _categoryRepository.UpdateAsync(cat);
+            await _catRepo.UpdateAsync(cat);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryUpdated, $"Category '{editCategoryRequest.Id}' updated.");
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryUpdated, $"Category '{editRequest.Id}' updated.");
         }
     }
 }

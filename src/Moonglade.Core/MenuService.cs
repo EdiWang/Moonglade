@@ -13,29 +13,29 @@ namespace Moonglade.Core
 {
     public class MenuService : BlogService
     {
-        private readonly IRepository<MenuEntity> _menuRepository;
-        private readonly IBlogAudit _blogAudit;
+        private readonly IRepository<MenuEntity> _menuRepo;
+        private readonly IBlogAudit _audit;
 
         public MenuService(
             ILogger<MenuService> logger,
             IOptions<AppSettings> settings,
-            IRepository<MenuEntity> menuRepository,
-            IBlogAudit blogAudit) : base(logger, settings)
+            IRepository<MenuEntity> menuRepo,
+            IBlogAudit audit) : base(logger, settings)
         {
-            _menuRepository = menuRepository;
-            _blogAudit = blogAudit;
+            _menuRepo = menuRepo;
+            _audit = audit;
         }
 
         public async Task<Menu> GetAsync(Guid id)
         {
-            var entity = await _menuRepository.GetAsync(id);
+            var entity = await _menuRepo.GetAsync(id);
             var item = EntityToMenuModel(entity);
             return item;
         }
 
         public Task<IReadOnlyList<Menu>> GetAllAsync()
         {
-            var list = _menuRepository.SelectAsync(p => new Menu
+            var list = _menuRepo.SelectAsync(p => new Menu
             {
                 Id = p.Id,
                 DisplayOrder = p.DisplayOrder,
@@ -61,15 +61,15 @@ namespace Moonglade.Core
                 IsOpenInNewTab = request.IsOpenInNewTab
             };
 
-            await _menuRepository.AddAsync(menu);
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, $"Menu '{menu.Id}' created.");
+            await _menuRepo.AddAsync(menu);
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, $"Menu '{menu.Id}' created.");
 
             return uid;
         }
 
         public async Task<Guid> UpdateAsync(EditMenuRequest request)
         {
-            var menu = await _menuRepository.GetAsync(request.Id);
+            var menu = await _menuRepo.GetAsync(request.Id);
             if (null == menu)
             {
                 throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
@@ -84,22 +84,22 @@ namespace Moonglade.Core
             menu.Icon = request.Icon;
             menu.IsOpenInNewTab = request.IsOpenInNewTab;
 
-            await _menuRepository.UpdateAsync(menu);
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
+            await _menuRepo.UpdateAsync(menu);
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
 
             return menu.Id;
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var menu = await _menuRepository.GetAsync(id);
+            var menu = await _menuRepo.GetAsync(id);
             if (null == menu)
             {
                 throw new InvalidOperationException($"MenuEntity with Id '{id}' not found.");
             }
 
-            _menuRepository.Delete(id);
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Menu '{id}' deleted.");
+            _menuRepo.Delete(id);
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Menu '{id}' deleted.");
         }
 
         private static Menu EntityToMenuModel(MenuEntity entity)

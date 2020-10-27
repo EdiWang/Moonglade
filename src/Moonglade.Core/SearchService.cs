@@ -21,20 +21,20 @@ namespace Moonglade.Core
 {
     public class SearchService : BlogService
     {
-        private readonly IRepository<PostEntity> _postRepository;
-        private readonly IRepository<PageEntity> _pageRepository;
+        private readonly IRepository<PostEntity> _postRepo;
+        private readonly IRepository<PageEntity> _pageRepo;
         private readonly IBlogConfig _blogConfig;
 
         public SearchService(
             ILogger<PostService> logger,
             IOptions<AppSettings> settings,
-            IRepository<PostEntity> postRepository,
+            IRepository<PostEntity> postRepo,
             IBlogConfig blogConfig,
-            IRepository<PageEntity> pageRepository) : base(logger, settings)
+            IRepository<PageEntity> pageRepo) : base(logger, settings)
         {
-            _postRepository = postRepository;
+            _postRepo = postRepo;
             _blogConfig = blogConfig;
-            _pageRepository = pageRepository;
+            _pageRepo = pageRepo;
         }
 
         public async Task<IReadOnlyList<PostListEntry>> SearchAsync(string keyword)
@@ -108,7 +108,7 @@ namespace Moonglade.Core
 
                 // Posts
                 var spec = new PostSitePageSpec();
-                var posts = await _postRepository.SelectAsync(spec, p => new
+                var posts = await _postRepo.SelectAsync(spec, p => new
                 {
                     p.Slug,
                     p.PubDateUtc
@@ -126,7 +126,7 @@ namespace Moonglade.Core
                 }
 
                 // Pages
-                var pages = await _pageRepository.SelectAsync(page => new
+                var pages = await _pageRepo.SelectAsync(page => new
                 {
                     page.CreateOnUtc,
                     page.Slug,
@@ -163,7 +163,7 @@ namespace Moonglade.Core
 
         private IQueryable<PostEntity> SearchByKeyword(string keyword)
         {
-            var query = _postRepository.GetAsQueryable()
+            var query = _postRepo.GetAsQueryable()
                                        .Where(p => !p.IsDeleted && p.IsPublished).AsNoTracking();
 
             var str = Regex.Replace(keyword, @"\s+", " ");

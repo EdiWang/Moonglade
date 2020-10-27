@@ -14,22 +14,22 @@ namespace Moonglade.Core
 {
     public class FriendLinkService : BlogService
     {
-        private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
-        private readonly IBlogAudit _blogAudit;
+        private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
+        private readonly IBlogAudit _audit;
 
         public FriendLinkService(
             ILogger<FriendLinkService> logger,
             IOptions<AppSettings> settings,
-            IRepository<FriendLinkEntity> friendlinkRepository,
-            IBlogAudit blogAudit) : base(logger, settings)
+            IRepository<FriendLinkEntity> friendlinkRepo,
+            IBlogAudit audit) : base(logger, settings)
         {
-            _friendlinkRepository = friendlinkRepository;
-            _blogAudit = blogAudit;
+            _friendlinkRepo = friendlinkRepo;
+            _audit = audit;
         }
 
         public Task<FriendLink> GetAsync(Guid id)
         {
-            var item = _friendlinkRepository.SelectFirstOrDefaultAsync(
+            var item = _friendlinkRepo.SelectFirstOrDefaultAsync(
                 new FriendLinkSpec(id), f => new FriendLink
                 {
                     Id = f.Id,
@@ -41,7 +41,7 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<FriendLink>> GetAllAsync()
         {
-            var item = _friendlinkRepository.SelectAsync(f => new FriendLink
+            var item = _friendlinkRepo.SelectAsync(f => new FriendLink
             {
                 Id = f.Id,
                 LinkUrl = f.LinkUrl,
@@ -64,14 +64,14 @@ namespace Moonglade.Core
                 Title = title
             };
 
-            await _friendlinkRepository.AddAsync(fdLink);
-            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+            await _friendlinkRepo.AddAsync(fdLink);
+            await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            await _friendlinkRepository.DeleteAsync(id);
-            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+            await _friendlinkRepo.DeleteAsync(id);
+            await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
         }
 
         public async Task UpdateAsync(Guid id, string newTitle, string newLinkUrl)
@@ -81,14 +81,14 @@ namespace Moonglade.Core
                 throw new InvalidOperationException($"{nameof(newLinkUrl)} is not a valid url.");
             }
 
-            var fdlink = await _friendlinkRepository.GetAsync(id);
+            var fdlink = await _friendlinkRepo.GetAsync(id);
             if (null != fdlink)
             {
                 fdlink.Title = newTitle;
                 fdlink.LinkUrl = newLinkUrl;
 
-                await _friendlinkRepository.UpdateAsync(fdlink);
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+                await _friendlinkRepo.UpdateAsync(fdlink);
+                await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
             }
         }
     }

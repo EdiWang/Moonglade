@@ -21,20 +21,20 @@ namespace Moonglade.Core
         private readonly string _baseUrl;
 
         private readonly IBlogConfig _blogConfig;
-        private readonly IRepository<CategoryEntity> _categoryRepository;
-        private readonly IRepository<PostEntity> _postRepository;
+        private readonly IRepository<CategoryEntity> _catRepo;
+        private readonly IRepository<PostEntity> _postRepo;
 
         public SyndicationService(
             ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IHttpContextAccessor httpContextAccessor,
-            IRepository<CategoryEntity> categoryRepository,
-            IRepository<PostEntity> postRepository) : base(logger, settings)
+            IRepository<CategoryEntity> catRepo,
+            IRepository<PostEntity> postRepo) : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _categoryRepository = categoryRepository;
-            _postRepository = postRepository;
+            _catRepo = catRepo;
+            _postRepo = postRepo;
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
@@ -42,7 +42,7 @@ namespace Moonglade.Core
 
         public async Task RefreshRssFilesAsync(string categoryName)
         {
-            var cat = await _categoryRepository.GetAsync(c => c.RouteName == categoryName);
+            var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
             if (null != cat)
             {
                 Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
@@ -113,7 +113,7 @@ namespace Moonglade.Core
             }
 
             var postSpec = new PostSpec(categoryId, top);
-            var list = await _postRepository.SelectAsync(postSpec, p => p.PubDateUtc != null ? new FeedEntry
+            var list = await _postRepo.SelectAsync(postSpec, p => p.PubDateUtc != null ? new FeedEntry
             {
                 Id = p.Id.ToString(),
                 Title = p.Title,

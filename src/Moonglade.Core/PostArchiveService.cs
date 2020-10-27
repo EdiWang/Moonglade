@@ -14,25 +14,25 @@ namespace Moonglade.Core
 {
     public class PostArchiveService : BlogService
     {
-        private readonly IRepository<PostEntity> _postRepository;
+        private readonly IRepository<PostEntity> _postRepo;
 
         public PostArchiveService(
             ILogger<PostArchiveService> logger,
             IOptions<AppSettings> settings,
-            IRepository<PostEntity> postRepository) : base(logger, settings)
+            IRepository<PostEntity> postRepo) : base(logger, settings)
         {
-            _postRepository = postRepository;
+            _postRepo = postRepo;
         }
 
         public async Task<IReadOnlyList<Archive>> ListAsync()
         {
-            if (!_postRepository.Any(p => p.IsPublished && !p.IsDeleted))
+            if (!_postRepo.Any(p => p.IsPublished && !p.IsDeleted))
             {
                 return new List<Archive>();
             }
 
             var spec = new PostSpec(PostPublishStatus.Published);
-            var list = await _postRepository.SelectAsync(spec, post => new
+            var list = await _postRepo.SelectAsync(spec, post => new
             {
                 post.PubDateUtc.Value.Year,
                 post.PubDateUtc.Value.Month
@@ -59,7 +59,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostSpec(year, month);
-            var list = _postRepository.SelectAsync(spec, p => new PostListEntry
+            var list = _postRepo.SelectAsync(spec, p => new PostListEntry
             {
                 Title = p.Title,
                 Slug = p.Slug,

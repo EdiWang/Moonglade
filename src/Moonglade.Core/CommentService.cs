@@ -18,37 +18,37 @@ namespace Moonglade.Core
     public class CommentService : BlogService
     {
         private readonly IBlogConfig _blogConfig;
-        private readonly IBlogAudit _blogAudit;
+        private readonly IBlogAudit _audit;
 
-        private readonly IRepository<PostEntity> _postRepository;
-        private readonly IRepository<CommentEntity> _commentRepository;
-        private readonly IRepository<CommentReplyEntity> _commentReplyRepository;
+        private readonly IRepository<PostEntity> _postRepo;
+        private readonly IRepository<CommentEntity> _commentRepo;
+        private readonly IRepository<CommentReplyEntity> _commentReplyRepo;
 
         public CommentService(
             ILogger<CommentService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
-            IBlogAudit blogAudit,
-            IRepository<CommentEntity> commentRepository,
-            IRepository<CommentReplyEntity> commentReplyRepository,
-            IRepository<PostEntity> postRepository) : base(logger, settings)
+            IBlogAudit audit,
+            IRepository<CommentEntity> commentRepo,
+            IRepository<CommentReplyEntity> commentReplyRepo,
+            IRepository<PostEntity> postRepo) : base(logger, settings)
         {
             _blogConfig = blogConfig;
-            _blogAudit = blogAudit;
+            _audit = audit;
 
-            _commentRepository = commentRepository;
-            _commentReplyRepository = commentReplyRepository;
-            _postRepository = postRepository;
+            _commentRepo = commentRepo;
+            _commentReplyRepo = commentReplyRepo;
+            _postRepo = postRepo;
         }
 
         public int Count()
         {
-            return _commentRepository.Count(c => true);
+            return _commentRepo.Count(c => true);
         }
 
         public Task<IReadOnlyList<Comment>> GetApprovedCommentsAsync(Guid postId)
         {
-            return _commentRepository.SelectAsync(new CommentSpec(postId), c => new Comment
+            return _commentRepo.SelectAsync(new CommentSpec(postId), c => new Comment
             {
                 CommentContent = c.CommentContent,
                 CreateOnUtc = c.CreateOnUtc,
@@ -70,7 +70,7 @@ namespace Moonglade.Core
             }
 
             var spec = new CommentSpec(pageSize, pageIndex);
-            var comments = _commentRepository.SelectAsync(spec, p => new CommentDetailedItem
+            var comments = _commentRepo.SelectAsync(spec, p => new CommentDetailedItem
             {
                 Id = p.Id,
                 CommentContent = p.CommentContent,
@@ -98,15 +98,15 @@ namespace Moonglade.Core
             }
 
             var spec = new CommentSpec(commentIds);
-            var comments = await _commentRepository.GetAsync(spec);
+            var comments = await _commentRepo.GetAsync(spec);
             foreach (var cmt in comments)
             {
                 cmt.IsApproved = !cmt.IsApproved;
-                await _commentRepository.UpdateAsync(cmt);
+                await _commentRepo.UpdateAsync(cmt);
 
                 string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
                 Logger.LogInformation(logMessage);
-                await _blogAudit.AddAuditEntry(
+                await _audit.AddAuditEntry(
                     EventType.Content, cmt.IsApproved ? AuditEventId.CommentApproval : AuditEventId.CommentDisapproval, logMessage);
             }
         }
@@ -119,19 +119,19 @@ namespace Moonglade.Core
             }
 
             var spec = new CommentSpec(commentIds);
-            var comments = await _commentRepository.GetAsync(spec);
+            var comments = await _commentRepo.GetAsync(spec);
             foreach (var cmt in comments)
             {
                 // 1. Delete all replies
-                var cReplies = await _commentReplyRepository.GetAsync(new CommentReplySpec(cmt.Id));
+                var cReplies = await _commentReplyRepo.GetAsync(new CommentReplySpec(cmt.Id));
                 if (cReplies.Any())
                 {
-                    _commentReplyRepository.Delete(cReplies);
+                    _commentReplyRepo.Delete(cReplies);
                 }
 
                 // 2. Delete comment itself
-                _commentRepository.Delete(cmt);
-                await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
+                _commentRepo.Delete(cmt);
+                await _audit.AddAuditEntry(EventType.Content, AuditEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
             }
         }
 
@@ -157,10 +157,10 @@ namespace Moonglade.Core
                 IsApproved = !_blogConfig.ContentSettings.RequireCommentReview
             };
 
-            await _commentRepository.AddAsync(model);
+            await _commentRepo.AddAsync(model);
 
             var spec = new PostSpec(request.PostId, false);
-            var postTitle = _postRepository.SelectFirstOrDefault(spec, p => p.Title);
+            var postTitle = _postRepo.SelectFirstOrDefault(spec, p => p.Title);
 
             var item = new CommentDetailedItem
             {
@@ -179,7 +179,7 @@ namespace Moonglade.Core
 
         public async Task<CommentReply> AddReply(Guid commentId, string replyContent)
         {
-            var cmt = await _commentRepository.GetAsync(commentId);
+            var cmt = await _commentRepo.GetAsync(commentId);
 
             if (null == cmt)
             {
@@ -195,7 +195,7 @@ namespace Moonglade.Core
                 CommentId = commentId
             };
 
-            await _commentReplyRepository.AddAsync(model);
+            await _commentReplyRepo.AddAsync(model);
 
             var detail = new CommentReply
             {
@@ -212,7 +212,7 @@ namespace Moonglade.Core
                 Title = cmt.Post.Title
             };
 
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
             return detail;
         }
     }

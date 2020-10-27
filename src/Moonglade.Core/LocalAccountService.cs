@@ -13,33 +13,33 @@ namespace Moonglade.Core
 {
     public class LocalAccountService : BlogService
     {
-        private readonly IRepository<LocalAccountEntity> _accountRepository;
-        private readonly IBlogAudit _blogAudit;
+        private readonly IRepository<LocalAccountEntity> _accountRepo;
+        private readonly IBlogAudit _audit;
 
         public LocalAccountService(
             ILogger<LocalAccountService> logger,
-            IRepository<LocalAccountEntity> accountRepository,
-            IBlogAudit blogAudit) : base(logger)
+            IRepository<LocalAccountEntity> accountRepo,
+            IBlogAudit audit) : base(logger)
         {
-            _accountRepository = accountRepository;
-            _blogAudit = blogAudit;
+            _accountRepo = accountRepo;
+            _audit = audit;
         }
 
         public int Count()
         {
-            return _accountRepository.Count(p => true);
+            return _accountRepo.Count(p => true);
         }
 
         public async Task<Account> GetAsync(Guid id)
         {
-            var entity = await _accountRepository.GetAsync(id);
+            var entity = await _accountRepo.GetAsync(id);
             var item = EntityToAccountModel(entity);
             return item;
         }
 
         public Task<IReadOnlyList<Account>> GetAllAsync()
         {
-            var list = _accountRepository.SelectAsync(p => new Account
+            var list = _accountRepo.SelectAsync(p => new Account
             {
                 Id = p.Id,
                 CreateOnUtc = p.CreateOnUtc,
@@ -63,26 +63,26 @@ namespace Moonglade.Core
                 throw new ArgumentNullException(nameof(inputPassword), "value must not be empty.");
             }
 
-            var account = await _accountRepository.GetAsync(p => p.Username == username);
+            var account = await _accountRepo.GetAsync(p => p.Username == username);
             var valid = account.PasswordHash == HashPassword(inputPassword.Trim());
             return valid ? account.Id : Guid.Empty;
         }
 
         public async Task LogSuccessLoginAsync(Guid id, string ipAddress)
         {
-            var entity = await _accountRepository.GetAsync(id);
+            var entity = await _accountRepo.GetAsync(id);
             if (null != entity)
             {
                 entity.LastLoginIp = ipAddress.Trim();
                 entity.LastLoginTimeUtc = DateTime.UtcNow;
             }
 
-            await _accountRepository.UpdateAsync(entity);
+            await _accountRepo.UpdateAsync(entity);
         }
 
         public bool Exist(string username)
         {
-            var exist = _accountRepository.Any(p => p.Username == username.ToLower());
+            var exist = _accountRepo.Any(p => p.Username == username.ToLower());
             return exist;
         }
 
@@ -107,8 +107,8 @@ namespace Moonglade.Core
                 PasswordHash = HashPassword(clearPassword.Trim())
             };
 
-            await _accountRepository.AddAsync(account);
-            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountCreated, $"Account '{account.Id}' created.");
+            await _accountRepo.AddAsync(account);
+            await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountCreated, $"Account '{account.Id}' created.");
 
             return uid;
         }
@@ -120,28 +120,28 @@ namespace Moonglade.Core
                 throw new ArgumentNullException(nameof(clearPassword), "value must not be empty.");
             }
 
-            var account = await _accountRepository.GetAsync(id);
+            var account = await _accountRepo.GetAsync(id);
             if (null == account)
             {
                 throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
             }
 
             account.PasswordHash = HashPassword(clearPassword);
-            await _accountRepository.UpdateAsync(account);
+            await _accountRepo.UpdateAsync(account);
 
-            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountPasswordUpdated, $"Account password for '{id}' updated.");
+            await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountPasswordUpdated, $"Account password for '{id}' updated.");
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var account = await _accountRepository.GetAsync(id);
+            var account = await _accountRepo.GetAsync(id);
             if (null == account)
             {
                 throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
             }
 
-            _accountRepository.Delete(id);
-            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsDeleteAccount, $"Account '{id}' deleted.");
+            _accountRepo.Delete(id);
+            await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsDeleteAccount, $"Account '{id}' deleted.");
         }
 
         public static string HashPassword(string plainMessage)

@@ -26,10 +26,10 @@ namespace Moonglade.Web.Filters
             }
         }
 
-        private bool IsMachineUA(string userAgent)
+        private static bool IsMachineUA(string userAgent)
         {
             var uaParser = Parser.GetDefault();
-            ClientInfo c = uaParser.Parse(userAgent);
+            var c = uaParser.Parse(userAgent);
             return c.Device.IsSpider;
         }
     }

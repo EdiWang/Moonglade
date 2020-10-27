@@ -14,22 +14,22 @@ namespace Moonglade.Core
 {
     public class PageService : BlogService
     {
-        private readonly IRepository<PageEntity> _customPageRepository;
-        private readonly IBlogAudit _blogAudit;
+        private readonly IRepository<PageEntity> _pageRepo;
+        private readonly IBlogAudit _audit;
 
         public PageService(
             ILogger<PageService> logger,
             IOptions<AppSettings> settings,
-            IRepository<PageEntity> customPageRepository,
-            IBlogAudit blogAudit) : base(logger, settings)
+            IRepository<PageEntity> pageRepo,
+            IBlogAudit audit) : base(logger, settings)
         {
-            _customPageRepository = customPageRepository;
-            _blogAudit = blogAudit;
+            _pageRepo = pageRepo;
+            _audit = audit;
         }
 
         public async Task<Page> GetAsync(Guid pageId)
         {
-            var entity = await _customPageRepository.GetAsync(pageId);
+            var entity = await _pageRepo.GetAsync(pageId);
             var item = EntityToPage(entity);
             return item;
         }
@@ -37,14 +37,14 @@ namespace Moonglade.Core
         public async Task<Page> GetAsync(string slug)
         {
             var loweredRouteName = slug.ToLower();
-            var entity = await _customPageRepository.GetAsync(p => p.Slug == loweredRouteName);
+            var entity = await _pageRepo.GetAsync(p => p.Slug == loweredRouteName);
             var item = EntityToPage(entity);
             return item;
         }
 
         public Task<IReadOnlyList<PageSegment>> ListSegmentAsync()
         {
-            return _customPageRepository.SelectAsync(page => new PageSegment
+            return _pageRepo.SelectAsync(page => new PageSegment
             {
                 Id = page.Id,
                 CreateOnUtc = page.CreateOnUtc,
@@ -70,15 +70,15 @@ namespace Moonglade.Core
                 IsPublished = request.IsPublished
             };
 
-            await _customPageRepository.AddAsync(page);
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PageCreated, $"Page '{page.Id}' created.");
+            await _pageRepo.AddAsync(page);
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.PageCreated, $"Page '{page.Id}' created.");
 
             return uid;
         }
 
         public async Task<Guid> UpdateAsync(EditPageRequest request)
         {
-            var page = await _customPageRepository.GetAsync(request.Id);
+            var page = await _pageRepo.GetAsync(request.Id);
             if (null == page)
             {
                 throw new InvalidOperationException($"CustomPageEntity with Id '{request.Id}' not found.");
@@ -93,22 +93,22 @@ namespace Moonglade.Core
             page.UpdatedOnUtc = DateTime.UtcNow;
             page.IsPublished = request.IsPublished;
 
-            await _customPageRepository.UpdateAsync(page);
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, $"Page '{request.Id}' updated.");
+            await _pageRepo.UpdateAsync(page);
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, $"Page '{request.Id}' updated.");
 
             return page.Id;
         }
 
         public async Task DeleteAsync(Guid pageId)
         {
-            var page = await _customPageRepository.GetAsync(pageId);
+            var page = await _pageRepo.GetAsync(pageId);
             if (null == page)
             {
                 throw new InvalidOperationException($"CustomPageEntity with Id '{pageId}' not found.");
             }
 
-            await _customPageRepository.DeleteAsync(pageId);
-            await _blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PageDeleted, $"Page '{pageId}' deleted.");
+            await _pageRepo.DeleteAsync(pageId);
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.PageDeleted, $"Page '{pageId}' deleted.");
         }
 
         public static string RemoveWhiteSpaceFromStylesheets(string body)
