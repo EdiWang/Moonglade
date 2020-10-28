@@ -49,7 +49,13 @@ namespace Moonglade.Web
             _configuration = configuration;
             _environment = env;
             _appSettings = _configuration.GetSection(nameof(AppSettings));
-            _supportedCultures = new[] { "en-US", "zh-CN" }.Select(p => new CultureInfo(p)).ToList();
+
+            // Workaround stupid ASP.NET Core "by design" issue
+            // https://github.com/aspnet/Configuration/issues/451
+            _supportedCultures = _appSettings.GetSection("SupportedCultures")
+                .GetChildren()
+                .Select(p => new CultureInfo(p.Value))
+                .ToList();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -83,9 +89,9 @@ namespace Moonglade.Web
 
             services.AddAntiforgery(options =>
             {
-                const string cookieBaseName = "CSRF-TOKEN-MOONGLADE";
-                options.Cookie.Name = $"X-{cookieBaseName}";
-                options.FormFieldName = $"{cookieBaseName}-FORM";
+                const string csrfCookieName = "CSRF-TOKEN-MOONGLADE";
+                options.Cookie.Name = $"X-{csrfCookieName}";
+                options.FormFieldName = $"{csrfCookieName}-FORM";
             });
 
             services.AddPingback();
