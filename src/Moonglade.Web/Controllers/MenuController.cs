@@ -3,10 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Core;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Controllers
@@ -19,8 +17,7 @@ namespace Moonglade.Web.Controllers
 
         public MenuController(
             ILogger<ControllerBase> logger,
-            IOptions<AppSettings> settings,
-            MenuService menuService) : base(logger, settings)
+            MenuService menuService) : base(logger)
         {
             _menuService = menuService;
         }

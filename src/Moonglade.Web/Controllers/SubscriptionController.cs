@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 
 namespace Moonglade.Web.Controllers
@@ -22,12 +20,11 @@ namespace Moonglade.Web.Controllers
 
         public SubscriptionController(
             ILogger<SubscriptionController> logger,
-            IOptions<AppSettings> settings,
             SyndicationService syndicationService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
             IFileSystemOpmlWriter fileSystemOpmlWriter)
-            : base(logger, settings)
+            : base(logger)
         {
             _syndicationService = syndicationService;
             _categoryService = categoryService;

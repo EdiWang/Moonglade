@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core.Notification;
-using Moonglade.Model.Settings;
 using Moonglade.Pingback;
 using Moonglade.Pingback.Mvc;
 
@@ -24,11 +22,10 @@ namespace Moonglade.Web.Controllers
 
         public PingbackController(
             ILogger<PingbackController> logger,
-            IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IPingbackService pingbackService,
             IBlogNotificationClient notificationClient)
-            : base(logger, settings)
+            : base(logger)
         {
             _blogConfig = blogConfig;
             _pingbackService = pingbackService;

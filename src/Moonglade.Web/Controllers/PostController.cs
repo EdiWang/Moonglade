@@ -7,14 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.DateTimeOps;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 using Moonglade.Pingback;
 using Moonglade.Pingback.Mvc;
 using Moonglade.Web.Filters;
@@ -34,13 +32,12 @@ namespace Moonglade.Web.Controllers
 
         public PostController(
             ILogger<PostController> logger,
-            IOptions<AppSettings> settings,
             PostService postService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
             IDateTimeResolver dateTimeResolver,
             IBlogCache cache)
-            : base(logger, settings)
+            : base(logger)
         {
             _postService = postService;
             _categoryService = categoryService;

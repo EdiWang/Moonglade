@@ -5,12 +5,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Core.Notification;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 using X.PagedList;
 
@@ -29,11 +27,10 @@ namespace Moonglade.Web.Controllers
 
         public CommentController(
             ILogger<CommentController> logger,
-            IOptions<AppSettings> settings,
             CommentService commentService,
             IBlogConfig blogConfig,
             IBlogNotificationClient notificationClient = null)
-            : base(logger, settings)
+            : base(logger)
         {
             _blogConfig = blogConfig;
 

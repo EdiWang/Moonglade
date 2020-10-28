@@ -30,6 +30,7 @@ namespace Moonglade.Web.Controllers
         private readonly ISiteIconGenerator _siteIconGenerator;
         private readonly IWebHostEnvironment _env;
         private readonly ImageStorageSettings _imageStorageSettings;
+        private readonly AppSettings _settings;
 
         public AssetsController(
             ILogger<AssetsController> logger,
@@ -38,8 +39,9 @@ namespace Moonglade.Web.Controllers
             IBlogImageStorage imageStorage,
             IBlogConfig blogConfig,
             ISiteIconGenerator siteIconGenerator,
-            IWebHostEnvironment env) : base(logger, settings)
+            IWebHostEnvironment env) : base(logger)
         {
+            _settings = settings.Value;
             _blogConfig = blogConfig;
             _siteIconGenerator = siteIconGenerator;
             _env = env;
@@ -73,7 +75,7 @@ namespace Moonglade.Web.Controllers
                 {
                     Logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
-                    entry.SlidingExpiration = TimeSpan.FromMinutes(Settings.CacheSlidingExpirationMinutes["Image"]);
+                    entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Image"]);
                     var imgBytesResponse = await _imageStorage.GetAsync(filename);
                     return imgBytesResponse;
                 });
@@ -148,15 +150,15 @@ namespace Moonglade.Web.Controllers
                         watermarker.SkipImageSize(Constants.SmallImagePixelsThreshold);
 
                         // Get ARGB values
-                        var colorArray = Settings.WatermarkARGB;
+                        var colorArray = _settings.WatermarkARGB;
                         if (colorArray.Length != 4)
                         {
-                            throw new InvalidDataException($"'{nameof(Settings.WatermarkARGB)}' must be an integer array with 4 items.");
+                            throw new InvalidDataException($"'{nameof(_settings.WatermarkARGB)}' must be an integer array with 4 items.");
                         }
 
                         if (colorArray.Any(c => !IsValidColorValue(c)))
                         {
-                            throw new InvalidDataException($"'{nameof(Settings.WatermarkARGB)}' values must all fall in range 0-255.");
+                            throw new InvalidDataException($"'{nameof(_settings.WatermarkARGB)}' values must all fall in range 0-255.");
                         }
 
                         watermarkedStream = watermarker.AddWatermark(
@@ -203,8 +205,8 @@ namespace Moonglade.Web.Controllers
         [Route("get-captcha-image")]
         public IActionResult GetCaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
-            var w = Settings.CaptchaSettings.ImageWidth;
-            var h = Settings.CaptchaSettings.ImageHeight;
+            var w = _settings.CaptchaSettings.ImageWidth;
+            var h = _settings.CaptchaSettings.ImageHeight;
 
             // prevent crazy size
             if (w > 640) w = 640;
@@ -365,7 +367,7 @@ namespace Moonglade.Web.Controllers
                 Name = _blogConfig.GeneralSettings.SiteTitle,
                 Description = _blogConfig.GeneralSettings.SiteTitle,
                 StartUrl = "/",
-                Icons = Settings.ManifestIcons,
+                Icons = _settings.ManifestIcons,
                 BackgroundColor = themeColor,
                 ThemeColor = themeColor,
                 Display = "standalone",

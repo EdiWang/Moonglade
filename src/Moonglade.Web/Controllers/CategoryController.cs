@@ -4,12 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 using X.PagedList;
 
@@ -25,12 +23,11 @@ namespace Moonglade.Web.Controllers
 
         public CategoryController(
             ILogger<CategoryController> logger,
-            IOptions<AppSettings> settings,
             CategoryService categoryService,
             PostService postService,
             IBlogConfig blogConfig,
             IBlogCache blogCache)
-            : base(logger, settings)
+            : base(logger)
         {
             _postService = postService;
             _categoryService = categoryService;

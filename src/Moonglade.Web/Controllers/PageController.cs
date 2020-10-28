@@ -20,14 +20,17 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IBlogCache _cache;
         private readonly PageService _pageService;
+        private readonly AppSettings _settings;
+
         private static string[] InvalidPageRouteNames => new[] { "index", "manage" };
 
         public PageController(
             ILogger<PageController> logger,
             IOptions<AppSettings> settings,
             IBlogCache cache,
-            PageService pageService) : base(logger, settings)
+            PageService pageService) : base(logger)
         {
+            _settings = settings.Value;
             _cache = cache;
             _pageService = pageService;
         }
@@ -39,7 +42,7 @@ namespace Moonglade.Web.Controllers
 
             var page = await _cache.GetOrCreateAsync(CacheDivision.Page, slug.ToLower(), async entry =>
             {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(Settings.CacheSlidingExpirationMinutes["Page"]);
+                entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Page"]);
 
                 var p = await _pageService.GetAsync(slug);
                 return p;

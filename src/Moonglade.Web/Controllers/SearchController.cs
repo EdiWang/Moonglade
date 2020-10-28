@@ -3,11 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
@@ -17,9 +15,8 @@ namespace Moonglade.Web.Controllers
 
         public SearchController(
             ILogger<SearchController> logger,
-            IOptions<AppSettings> settings,
             SearchService searchService)
-            : base(logger, settings)
+            : base(logger)
         {
             _searchService = searchService;
         }

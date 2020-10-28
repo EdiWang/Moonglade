@@ -3,9 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Core;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
@@ -17,10 +15,9 @@ namespace Moonglade.Web.Controllers
 
         public TagsController(
             ILogger<TagsController> logger,
-            IOptions<AppSettings> settings,
             TagService tagService,
             PostService postService)
-            : base(logger, settings)
+            : base(logger)
         {
             _tagService = tagService;
             _postService = postService;

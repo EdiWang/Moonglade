@@ -37,6 +37,7 @@ namespace Moonglade.Web.Controllers
         #region Private Fields
 
         private readonly FriendLinkService _friendLinkService;
+        private readonly AppSettings _settings;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
 
@@ -48,8 +49,9 @@ namespace Moonglade.Web.Controllers
             FriendLinkService friendLinkService,
             IBlogConfig blogConfig,
             IBlogAudit blogAudit)
-            : base(logger, settings)
+            : base(logger)
         {
+            _settings = settings.Value;
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
 
@@ -638,7 +640,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!Settings.EnableAudit)
+                if (!_settings.EnableAudit)
                 {
                     ViewBag.AuditLogDisabled = true;
                     return View();
@@ -667,7 +669,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!Settings.EnableAudit) return BadRequest();
+                if (!_settings.EnableAudit) return BadRequest();
 
                 await _blogAudit.ClearAuditLog();
                 return RedirectToAction("AuditLogs");
