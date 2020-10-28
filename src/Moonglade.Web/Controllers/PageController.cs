@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +24,10 @@ namespace Moonglade.Web.Controllers
         private readonly PageService _pageService;
         private readonly AppSettings _settings;
 
-        private static string[] InvalidPageRouteNames => new[] { "index", "manage" };
+        private static IEnumerable<string> ReservedRouteNames => 
+            typeof(PageController)
+                .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+                .Select(p => p.Name.ToLower());
 
         public PageController(
             ILogger<PageController> logger,
@@ -125,7 +130,7 @@ namespace Moonglade.Web.Controllers
                     return Json("Invalid ModelState");
                 }
 
-                if (InvalidPageRouteNames.Contains(model.Slug.ToLower()))
+                if (ReservedRouteNames.Contains(model.Slug.ToLower()))
                 {
                     ModelState.AddModelError(nameof(model.Slug), "Reserved Slug.");
                     return View("CreateOrEdit", model);
