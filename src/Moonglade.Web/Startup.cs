@@ -142,10 +142,6 @@ namespace Moonglade.Web
 
             app.UseRobotsTxt();
 
-            app.UseRewriter(new RewriteOptions()
-                .AddRedirect("(.*)/$", "$1")
-                .AddRedirect("(index|default).(aspx?|htm|s?html|php|pl|jsp|cfm)", "/"));
-
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();
