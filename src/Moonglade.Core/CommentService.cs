@@ -197,7 +197,7 @@ namespace Moonglade.Core
 
             await _commentReplyRepo.AddAsync(model);
 
-            var detail = new CommentReply
+            var reply = new CommentReply
             {
                 CommentContent = cmt.CommentContent,
                 CommentId = commentId,
@@ -213,7 +213,7 @@ namespace Moonglade.Core
             };
 
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.CommentReplied, $"Replied comment id '{commentId}'");
-            return detail;
+            return reply;
         }
     }
 }
