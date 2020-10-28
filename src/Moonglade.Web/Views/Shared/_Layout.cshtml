@@ -66,7 +66,10 @@
     <script src="~/js/dist/app-js-bundle.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("head", false)
     <environment include="Production">
-        @Html.Raw(JavaScriptSnippet.FullScript)
+        @if (!(bool)Context.Items["DNT"])
+        {
+            @Html.Raw(JavaScriptSnippet.FullScript)
+        }
     </environment>
     <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
 </head>
