@@ -34,6 +34,8 @@ namespace Moonglade.Configuration
 
         public SecuritySettings SecuritySettings { get; set; }
 
+        public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+
         private bool _hasInitialized;
 
         public BlogConfig(
@@ -51,6 +53,7 @@ namespace Moonglade.Configuration
             FriendLinksSettings = new FriendLinksSettings();
             AdvancedSettings = new AdvancedSettings();
             SecuritySettings = new SecuritySettings();
+            CustomStyleSheetSettings = new CustomStyleSheetSettings();
 
             Initialize();
         }
@@ -70,6 +73,7 @@ namespace Moonglade.Configuration
             FriendLinksSettings = JsonSerializer.Deserialize<FriendLinksSettings>(cfgDic[nameof(FriendLinksSettings)], jsonOptions);
             AdvancedSettings = JsonSerializer.Deserialize<AdvancedSettings>(cfgDic[nameof(AdvancedSettings)], jsonOptions);
             SecuritySettings = JsonSerializer.Deserialize<SecuritySettings>(cfgDic[nameof(SecuritySettings)], jsonOptions);
+            CustomStyleSheetSettings = JsonSerializer.Deserialize<CustomStyleSheetSettings>(cfgDic[nameof(CustomStyleSheetSettings)], jsonOptions);
 
             _hasInitialized = true;
         }
