@@ -126,3 +126,14 @@ h1.post-title, .post-content h1 {
         border-right-color: var(--transparent-dark-2);
         border-width: 8px;
     }
+
+
+@media (max-width: 767px) {
+    h1.post-title, .post-content h1 {
+        font-size: 1.4rem;
+    }
+
+    .post-content h2 {
+        font-size: 1.3rem;
+    }
+}

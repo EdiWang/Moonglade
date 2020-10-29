@@ -26,7 +26,7 @@
     <div class="comment-list row">
         @foreach (var item in Model.OrderBy(m => m.CreateOnUtc))
         {
-            <div class="col-md-1 col-sm-1 col-2 mb-3">
+            <div class="col-md-1 mb-3 d-none d-sm-block">
                 @if (BlogConfig.ContentSettings.EnableGravatar && !string.IsNullOrWhiteSpace(item.Email))
                 {
                     <div class="user-avatar">
@@ -40,7 +40,7 @@
                     </div>
                 }
             </div>
-            <div class="col-md-11 col-sm-11 col-10 mb-3">
+            <div class="col-md-11 mb-3">
                 <div class="card comment-item">
                     <div class="card-header">
                         <strong>@item.Username</strong>
@@ -55,7 +55,7 @@
                                 <div class="reply-container">
                                     <div>
                                         <strong>
-                                            Blog Author Replied:
+                                            Author
                                         </strong>
                                         <span class="float-right text-muted">Replied at @DateTimeResolver.ToTimeZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
