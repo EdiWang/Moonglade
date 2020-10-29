@@ -657,7 +657,7 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
-            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
             return Ok();
         }
 
