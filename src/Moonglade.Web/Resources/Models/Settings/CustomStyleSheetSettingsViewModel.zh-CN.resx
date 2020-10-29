@@ -117,43 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="About" xml:space="preserve">
-    <value>关于</value>
-  </data>
-  <data name="Advanced" xml:space="preserve">
-    <value>高级</value>
-  </data>
-  <data name="Audit Logs" xml:space="preserve">
-    <value>审计日志</value>
-  </data>
-  <data name="Content" xml:space="preserve">
-    <value>内容</value>
-  </data>
-  <data name="Friend Links" xml:space="preserve">
-    <value>友情链接</value>
-  </data>
-  <data name="General" xml:space="preserve">
-    <value>通用</value>
-  </data>
-  <data name="Import &amp;amp; Export Data" xml:space="preserve">
-    <value>导出导入数据</value>
-  </data>
-  <data name="Notification" xml:space="preserve">
-    <value>通知</value>
-  </data>
-  <data name="Security" xml:space="preserve">
-    <value>安全</value>
-  </data>
-  <data name="Settings" xml:space="preserve">
-    <value>设置</value>
-  </data>
-  <data name="Subscription" xml:space="preserve">
-    <value>订阅</value>
-  </data>
-  <data name="Watermark" xml:space="preserve">
-    <value>水印</value>
-  </data>
-  <data name="Custom CSS" xml:space="preserve">
-    <value>自定义 CSS</value>
+  <data name="Enable Custom CSS" xml:space="preserve">
+    <value>使用自定义 CSS</value>
   </data>
 </root>

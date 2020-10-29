@@ -20,6 +20,7 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 using Moonglade.Web.SiteIconGenerator;
+using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
@@ -374,6 +375,34 @@ namespace Moonglade.Web.Controllers
                 Orientation = "portrait"
             };
             return Json(model);
+        }
+
+        [HttpGet("custom.css")]
+        public IActionResult CustomCss()
+        {
+            if (!_blogConfig.CustomStyleSheetSettings.EnableCustomCss)
+            {
+                return NotFound();
+            }
+
+            var cssCode = _blogConfig.CustomStyleSheetSettings.CssCode;
+            if (cssCode.Length > 10240)
+            {
+                return Conflict("CSS Code length exceeded 10240 characters, refuse to load");
+            }
+
+            var uglifiedCss = Uglify.Css(cssCode);
+            if (uglifiedCss.HasErrors)
+            {
+                foreach (var err in uglifiedCss.Errors)
+                {
+                    ModelState.AddModelError("CSS", err.ToString());
+                }
+
+                return Conflict("Invalid CSS Code");
+            }
+
+            return Content(uglifiedCss.Code, "text/css");
         }
     }
 }

@@ -1,0 +1,105 @@
+﻿@model CustomStyleSheetSettingsViewModel
+
+@{
+    Layout = "_LayoutAdmin";
+}
+@Html.AntiForgeryToken()
+
+@{
+    <script>
+        var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.CssCode)).ToString().ToLower());
+    </script>
+}
+
+@section scripts{
+    <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
+    <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
+    <script>
+        var cssContentEditor = null;
+
+        require(['vs/editor/editor.main'], function () {
+            initCssEditor();
+        });
+
+        var initCssEditor = function () {
+            var cssContentEditorDiv = document.getElementById('CssContentEditor');
+            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
+                language: 'css'
+            });
+            cssContentEditor.layout();
+
+            if (needLoadInitValues) {
+                var cssValue = $("#CssCode").val();
+                window.cssContentEditor.setValue(cssValue);
+            }
+        }
+
+        var assignEditorValues = function () {
+            var cssValue = window.cssContentEditor.getValue();
+            $("#CssCode").val(cssValue);
+        }
+
+        $("#btn-submit").click(function (e) {
+            assignEditorValues();
+            if (!$("#form-settings").valid()) {
+                e.preventDefault();
+            }
+        });
+    </script>
+}
+
+@section head{
+    <style>
+        .monaco-target {
+            border: 1px solid #dee2e6;
+            width: 100%;
+            min-height: 512px;
+        }
+    </style>
+}
+
+<partial name="_SettingsHeader" />
+
+<form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet"
+      data-ajax-begin="onUpdateSettingsBegin"
+      data-ajax-complete="onUpdateSettingsComplete"
+      data-ajax-failure="onUpdateSettingsFailed"
+      data-ajax-success="onUpdateSettingsSuccess"
+      data-ajax="true"
+      data-ajax-method="POST">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <div class="row">
+        <div class="col-md-9 col-xl-10">
+            <div>
+                <span asp-validation-for="CssCode" class="text-danger"></span>
+            </div>
+
+            <div id="CssContentEditor" class="monaco-target">
+
+            </div>
+            <textarea asp-for="CssCode" class="settings-csscontent-textarea d-none"></textarea>
+        </div>
+
+        <div class="col-md-3 col-xl-2">
+            <div class="card mb-4">
+                <div class="card-header">Options</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="EnableCustomCss" class="custom-control-input">
+                            <label asp-for="EnableCustomCss" class="custom-control-label"></label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div>
+        <button type="submit" class="btn btn-success" id="btn-submit">
+            @Localizer["Save"]
+        </button>
+    </div>
+</form>
