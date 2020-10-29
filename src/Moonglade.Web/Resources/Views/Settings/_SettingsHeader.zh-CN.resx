@@ -153,4 +153,7 @@
   <data name="Watermark" xml:space="preserve">
     <value>水印</value>
   </data>
+  <data name="Custom CSS" xml:space="preserve">
+    <value>自定义 CSS</value>
+  </data>
 </root>
