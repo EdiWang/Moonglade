@@ -129,7 +129,7 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task NotifyPingbackAsync(PingbackHistory model)
+        public async Task NotifyPingbackAsync(PingbackRecord model)
         {
             if (!_isEnabled)
             {

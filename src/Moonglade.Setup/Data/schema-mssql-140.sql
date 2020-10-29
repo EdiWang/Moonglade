@@ -45,8 +45,8 @@ CREATE TABLE [FriendLink](
 [Title] [nvarchar](64) NULL,
 [LinkUrl] [nvarchar](256) NULL)
 
-IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PingbackHistory')
-CREATE TABLE [PingbackHistory](
+IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'Pingback')
+CREATE TABLE [Pingback](
 [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
 [Domain] [nvarchar](256) NULL,
 [SourceUrl] [nvarchar](256) NULL,

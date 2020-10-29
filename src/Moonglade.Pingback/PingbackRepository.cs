@@ -10,8 +10,8 @@ namespace Moonglade.Pingback
     public interface IPingbackRepository
     {
         Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn);
-        Task SavePingbackRecordAsync(PingbackHistory request, IDbConnection conn);
-        Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync(IDbConnection conn);
+        Task SavePingbackRecordAsync(PingbackRecord request, IDbConnection conn);
+        Task<IEnumerable<PingbackRecord>> GetPingbackHistoryAsync(IDbConnection conn);
         Task DeletePingbackHistory(Guid id, IDbConnection conn);
         Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn);
     }
@@ -38,41 +38,41 @@ namespace Moonglade.Pingback
             return p;
         }
 
-        public async Task SavePingbackRecordAsync(PingbackHistory request, IDbConnection conn)
+        public async Task SavePingbackRecordAsync(PingbackRecord request, IDbConnection conn)
         {
-            var sql = $"INSERT INTO {nameof(PingbackHistory)}" +
+            var sql = "INSERT INTO Pingback" +
                       "(Id, Domain, SourceUrl, SourceTitle, SourceIp, TargetPostId, PingTimeUtc, TargetPostTitle) " +
                       "VALUES (@id, @domain, @sourceUrl, @sourceTitle, @sourceIp, @targetPostId, @pingTimeUtc, @targetPostTitle)";
             await conn.ExecuteAsync(sql, request);
         }
 
-        public async Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync(IDbConnection conn)
+        public async Task<IEnumerable<PingbackRecord>> GetPingbackHistoryAsync(IDbConnection conn)
         {
-            var sql = $"SELECT ph.{nameof(PingbackHistory.Id)}, " +
-                          $"ph.{nameof(PingbackHistory.Domain)}, " +
-                          $"ph.{nameof(PingbackHistory.SourceUrl)}, " +
-                          $"ph.{nameof(PingbackHistory.SourceTitle)}, " +
-                          $"ph.{nameof(PingbackHistory.TargetPostId)}, " +
-                          $"ph.{nameof(PingbackHistory.TargetPostTitle)}, " +
-                          $"ph.{nameof(PingbackHistory.PingTimeUtc)} " +
-                          $"FROM {nameof(PingbackHistory)} ph";
+            var sql = $"SELECT p.{nameof(PingbackRecord.Id)}, " +
+                          $"p.{nameof(PingbackRecord.Domain)}, " +
+                          $"p.{nameof(PingbackRecord.SourceUrl)}, " +
+                          $"p.{nameof(PingbackRecord.SourceTitle)}, " +
+                          $"p.{nameof(PingbackRecord.TargetPostId)}, " +
+                          $"p.{nameof(PingbackRecord.TargetPostTitle)}, " +
+                          $"p.{nameof(PingbackRecord.PingTimeUtc)} " +
+                          "FROM Pingback p";
 
-            var list = await conn.QueryAsync<PingbackHistory>(sql);
+            var list = await conn.QueryAsync<PingbackRecord>(sql);
             return list;
         }
 
         public async Task DeletePingbackHistory(Guid id, IDbConnection conn)
         {
-            var sql = $"DELETE FROM {nameof(PingbackHistory)} WHERE Id = @id";
+            var sql = "DELETE FROM Pingback WHERE Id = @id";
             await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
         {
-            var sql = $"SELECT TOP 1 1 FROM {nameof(PingbackHistory)} ph " +
-                      "WHERE ph.TargetPostId = @postId " +
-                      "AND ph.SourceUrl = @sourceUrl " +
-                      "AND ph.SourceIp = @sourceIp";
+            var sql = "SELECT TOP 1 1 FROM Pingback p " +
+                          "WHERE p.TargetPostId = @postId " +
+                          "AND p.SourceUrl = @sourceUrl " +
+                          "AND p.SourceIp = @sourceIp";
             var result = await conn.ExecuteScalarAsync<int>(sql, new { postId, sourceUrl, sourceIp });
             return result == 1;
         }
