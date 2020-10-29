@@ -113,7 +113,7 @@ namespace Moonglade.Web.Extensions
                 // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
 
                 var endpoint = imageStorage.CDNSettings.CDNEndpoint;
-                var isValidEndpoint = endpoint.IsValidUrl(Utils.UrlScheme.Https);
+                var isValidEndpoint = endpoint.IsValidUrl(UrlExtension.UrlScheme.Https);
                 if (!isValidEndpoint)
                 {
                     throw new UriFormatException("CDN Endpoint is not a valid HTTPS Url.");

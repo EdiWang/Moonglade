@@ -57,7 +57,7 @@ namespace Moonglade.Tests.Web
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
                 _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object, 
+                _siteIconGeneratorMock.Object,
                 _webHostEnvMock.Object);
 
             var memCacheMock = new Mock<IMemoryCache>();
@@ -65,7 +65,7 @@ namespace Moonglade.Tests.Web
             Assert.IsInstanceOf(typeof(RedirectResult), result);
             if (result is RedirectResult rdResult)
             {
-                var resultUrl = Utils.CombineUrl(_imageStorageSettingsMock.Object.Value.CDNSettings.CDNEndpoint, filename);
+                var resultUrl = _imageStorageSettingsMock.Object.Value.CDNSettings.CDNEndpoint.CombineUrl(filename);
                 Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
             }
         }
@@ -107,7 +107,7 @@ namespace Moonglade.Tests.Web
                 _imageStorageSettingsMock.Object,
                 _asyncImageStorageProviderMock.Object,
                 _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object, 
+                _siteIconGeneratorMock.Object,
                 _webHostEnvMock.Object);
 
             var result = await ctl.Manifest(_webHostEnvMock.Object);

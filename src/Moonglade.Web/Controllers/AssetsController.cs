@@ -67,7 +67,7 @@ namespace Moonglade.Web.Controllers
 
                 if (_imageStorageSettings.CDNSettings.EnableCDNRedirect)
                 {
-                    var imageUrl = Utils.CombineUrl(_imageStorageSettings.CDNSettings.CDNEndpoint, filename);
+                    var imageUrl = _imageStorageSettings.CDNSettings.CDNEndpoint.CombineUrl(filename);
                     return Redirect(imageUrl);
                 }
 

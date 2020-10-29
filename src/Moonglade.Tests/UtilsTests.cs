@@ -64,64 +64,6 @@ namespace Moonglade.Tests
             Assert.IsNull(base64);
         }
 
-        [TestCase("https://dot.net/955", ExpectedResult = true)]
-        [TestCase("https://edi.wang", ExpectedResult = true)]
-        [TestCase("http://javato.net", ExpectedResult = true)]
-        [TestCase("http://996.icu", Utils.UrlScheme.Http, ExpectedResult = true)]
-        [TestCase("http://996.icu", Utils.UrlScheme.Https, ExpectedResult = false)]
-        [TestCase("a quick brown fox jumped over the lazy dog.", ExpectedResult = false)]
-        [TestCase("http://a\\b", ExpectedResult = false)]
-        public bool TestIsValidUrl(string str, Utils.UrlScheme urlScheme = Utils.UrlScheme.All)
-        {
-            return str.IsValidUrl(urlScheme);
-        }
-
-        [Test]
-        public void TestIsValidUrlUnknownSchema()
-        {
-            Assert.Throws(typeof(ArgumentOutOfRangeException), () =>
-            {
-                "https://996.icu".IsValidUrl((Utils.UrlScheme)4);
-            });
-        }
-
-        [TestCase("https://996.icu", ExpectedResult = true)]
-        [TestCase("http://996.rip", ExpectedResult = false)]
-        public bool TestIsValidUrlHttps(string str)
-        {
-            return str.IsValidUrl(Utils.UrlScheme.Https);
-        }
-
-        [TestCase("https://996.icu", ExpectedResult = false)]
-        [TestCase("http://996.rip", ExpectedResult = true)]
-        public bool TestIsValidUrlHttp(string str)
-        {
-            return str.IsValidUrl(Utils.UrlScheme.Http);
-        }
-
-        [TestCase("http://usejava.com/996/", "icu.png", ExpectedResult = "http://usejava.com/996/icu.png")]
-        [TestCase("https://dot.net/", "955.png", ExpectedResult = "https://dot.net/955.png")]
-        [TestCase("https://mayun.lie", "fubao.png", ExpectedResult = "https://mayun.lie/fubao.png")]
-        [TestCase("http://996.icu/", "/reject/fubao", ExpectedResult = "http://996.icu/reject/fubao")]
-        [TestCase("http://996.rip", "/dont-use-java", ExpectedResult = "http://996.rip/dont-use-java")]
-        public string TestCombineUrl(string url, string path)
-        {
-            var result = Utils.CombineUrl(url, path);
-            return result;
-        }
-
-        [TestCase("", "")]
-        [TestCase("", " ")]
-        [TestCase(" ", "")]
-        [TestCase(" ", " ")]
-        public void TestCombineUrlEmptyOrWhitespace(string url, string path)
-        {
-            Assert.Throws(typeof(ArgumentNullException), () =>
-            {
-                var result = Utils.CombineUrl(url, path);
-            });
-        }
-
         [TestCase("https://edi.wang", null, ExpectedResult = "https://edi.wang/")]
         [TestCase("https://edi.wang", "", ExpectedResult = "https://edi.wang/")]
         [TestCase("https://edi.wang", " ", ExpectedResult = "https://edi.wang/")]
