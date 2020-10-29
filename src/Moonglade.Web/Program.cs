@@ -30,8 +30,7 @@ namespace Moonglade.Web
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message);
-                Console.WriteLine("Error starting moonglade: " + ex.Message);
+                WriteMessage(ex.Message);
                 throw;
             }
         }
@@ -55,10 +54,7 @@ namespace Moonglade.Web
             {
                 try
                 {
-                    if (File.Exists(path))
-                    {
-                        File.Delete(path);
-                    }
+                    if (File.Exists(path)) File.Delete(path);
                 }
                 catch
                 {
