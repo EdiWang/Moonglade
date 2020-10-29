@@ -31,7 +31,7 @@ namespace Moonglade.Pingback
             DatabaseConnectionString = configuration.GetConnectionString(Constants.DbConnectionName);
         }
 
-        public async Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackHistory> pingSuccessAction)
+        public async Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackRecord> pingSuccessAction)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace Moonglade.Pingback
                 _logger.LogInformation("Adding received pingback...");
 
                 var uri = new Uri(_sourceUrl);
-                var obj = new PingbackHistory
+                var obj = new PingbackRecord
                 {
                     Id = Guid.NewGuid(),
                     PingTimeUtc = DateTime.UtcNow,
@@ -99,7 +99,7 @@ namespace Moonglade.Pingback
             }
         }
 
-        public async Task<IEnumerable<PingbackHistory>> GetPingbackHistoryAsync()
+        public async Task<IEnumerable<PingbackRecord>> GetPingbackHistoryAsync()
         {
             try
             {

@@ -2,7 +2,7 @@
 
 namespace Moonglade.Pingback
 {
-    public class PingbackHistory
+    public class PingbackRecord
     {
         public Guid Id { get; set; }
         public string Domain { get; set; }

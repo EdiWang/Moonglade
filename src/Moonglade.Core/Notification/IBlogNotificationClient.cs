@@ -13,6 +13,6 @@ namespace Moonglade.Core.Notification
 
         Task NotifyCommentReplyAsync(CommentReply model, string postLink);
 
-        Task NotifyPingbackAsync(PingbackHistory model);
+        Task NotifyPingbackAsync(PingbackRecord model);
     }
 }
