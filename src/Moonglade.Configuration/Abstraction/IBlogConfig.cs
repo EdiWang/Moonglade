@@ -12,6 +12,7 @@ namespace Moonglade.Configuration.Abstraction
         FriendLinksSettings FriendLinksSettings { get; set; }
         AdvancedSettings AdvancedSettings { get; set; }
         SecuritySettings SecuritySettings { get; set; }
+        CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
         Task SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings;
 

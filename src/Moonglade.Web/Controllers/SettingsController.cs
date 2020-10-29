@@ -613,16 +613,46 @@ namespace Moonglade.Web.Controllers
         [HttpPost("security")]
         public async Task<IActionResult> Security(SecuritySettingsViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid) return BadRequest();
 
             var settings = _blogConfig.SecuritySettings;
             settings.WarnExternalLink = model.WarnExternalLink;
             settings.AllowScriptsInPage = model.AllowScriptsInPage;
             settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
             settings.EnablePostRawEndpoint = model.EnablePostRawEndpoint;
+
+            await _blogConfig.SaveConfigurationAsync(settings);
+            _blogConfig.RequireRefresh();
+
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
+            return Ok();
+        }
+
+        #endregion
+
+        #region CustomCss
+
+        [HttpGet("custom-css")]
+        public IActionResult CustomStyleSheet()
+        {
+            var settings = _blogConfig.CustomStyleSheetSettings;
+            var vm = new CustomStyleSheetSettingsViewModel
+            {
+                EnableCustomCss = settings.EnableCustomCss,
+                CssCode = settings.CssCode
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost("custom-css")]
+        public async Task<IActionResult> CustomStyleSheet(CustomStyleSheetSettingsViewModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var settings = _blogConfig.CustomStyleSheetSettings;
+            settings.EnableCustomCss = model.EnableCustomCss;
+            settings.CssCode = model.CssCode;
 
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
@@ -723,10 +753,7 @@ namespace Moonglade.Web.Controllers
         {
             static void DeleteIfExists(string path)
             {
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path);
-                }
+                if (Directory.Exists(path)) Directory.Delete(path);
             }
 
             try
@@ -790,7 +817,7 @@ namespace Moonglade.Web.Controllers
                 ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
                 return Conflict(ModelState);
             }
-            
+
             var uid = await accountService.CreateAsync(model.Username, model.Password);
             return Json(uid);
         }
