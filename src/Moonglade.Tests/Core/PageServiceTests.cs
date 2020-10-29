@@ -17,15 +17,5 @@ namespace Moonglade.Tests.Core
 
             Assert.IsTrue(output == @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>");
         }
-
-        [Test]
-        public void TestRemoveWhiteSpaceFromStylesheets()
-        {
-            var css = @"h1 {
-                            color: red;
-                        }";
-            var output = PageService.RemoveWhiteSpaceFromStylesheets(css);
-            Assert.IsTrue(output == "h1{color:red}");
-        }
     }
 }

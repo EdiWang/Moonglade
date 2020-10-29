@@ -14,6 +14,7 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
+using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
@@ -24,7 +25,7 @@ namespace Moonglade.Web.Controllers
         private readonly PageService _pageService;
         private readonly AppSettings _settings;
 
-        private static IEnumerable<string> ReservedRouteNames => 
+        private static IEnumerable<string> ReservedRouteNames =>
             typeof(PageController)
                 .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
                 .Select(p => p.Name.ToLower());
@@ -61,7 +62,8 @@ namespace Moonglade.Web.Controllers
 
             if (!page.IsPublished) return NotFound();
 
-            return View(page);
+            var vm = ToPageViewModel(page);
+            return View(vm);
         }
 
         [Authorize]
@@ -76,7 +78,9 @@ namespace Moonglade.Web.Controllers
             }
 
             ViewBag.IsDraftPreview = true;
-            return View("Index", page);
+
+            var vm = ToPageViewModel(page);
+            return View("Index", vm);
         }
 
         [Authorize]
@@ -136,6 +140,19 @@ namespace Moonglade.Web.Controllers
                     return View("CreateOrEdit", model);
                 }
 
+                if (!string.IsNullOrWhiteSpace(model.CssContent))
+                {
+                    var uglifyTest = Uglify.Css(model.CssContent);
+                    if (uglifyTest.HasErrors)
+                    {
+                        foreach (var err in uglifyTest.Errors)
+                        {
+                            ModelState.AddModelError(model.CssContent, err.ToString());
+                        }
+                        return BadRequest(ModelState);
+                    }
+                }
+
                 var req = new EditPageRequest(model.Id)
                 {
                     HtmlContent = model.RawHtmlContent,
@@ -180,6 +197,28 @@ namespace Moonglade.Web.Controllers
                 Logger.LogError(e, $"Error Delete CustomPage, Id: {pageId}.");
                 return ServerError();
             }
+        }
+
+        private static PageViewModel ToPageViewModel(Page page)
+        {
+            var vm = new PageViewModel
+            {
+                Title = page.Title,
+                RawHtmlContent = page.RawHtmlContent,
+                HideSidebar = page.HideSidebar,
+                MetaDescription = page.MetaDescription
+            };
+
+            if (!string.IsNullOrWhiteSpace(page.CssContent))
+            {
+                var uglifyResult = Uglify.Css(page.CssContent);
+                if (!uglifyResult.HasErrors)
+                {
+                    vm.CSS = uglifyResult.Code;
+                }
+            }
+
+            return vm;
         }
     }
 }

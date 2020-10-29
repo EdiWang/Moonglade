@@ -1,5 +1,5 @@
 ﻿@using Moonglade.Core
-@model Moonglade.Model.Page
+@model PageViewModel
 
 @{
     ViewBag.TitlePrefix = Model.Title;
@@ -7,9 +7,12 @@
 }
 
 @section head{
-    <style>
-        @Html.Raw(PageService.RemoveWhiteSpaceFromStylesheets(Model.CssContent))
-    </style>
+    @if (!string.IsNullOrWhiteSpace(Model.CSS))
+    {
+        <style>
+            @Html.Raw(Model.CSS)
+        </style>
+    }
 }
 
 @section metadescription{
