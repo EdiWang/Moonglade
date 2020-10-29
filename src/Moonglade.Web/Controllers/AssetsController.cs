@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -374,6 +375,19 @@ namespace Moonglade.Web.Controllers
                 Orientation = "portrait"
             };
             return Json(model);
+        }
+
+        [HttpGet("custom.css")]
+        public IActionResult CustomCss()
+        {
+            if (!_blogConfig.CustomStyleSheetSettings.EnableCustomCss)
+            {
+                return Conflict("Custom CSS is disabled");
+            }
+
+            // TODO: Minify css code
+            var cssCode = _blogConfig.CustomStyleSheetSettings.CssCode;
+            return Content(cssCode, "text/css");
         }
     }
 }
