@@ -26,6 +26,7 @@ using Moonglade.Setup;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
+using NUglify;
 using X.PagedList;
 
 namespace Moonglade.Web.Controllers
@@ -648,9 +649,26 @@ namespace Moonglade.Web.Controllers
         [HttpPost("custom-css")]
         public async Task<IActionResult> CustomStyleSheet(CustomStyleSheetSettingsViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var settings = _blogConfig.CustomStyleSheetSettings;
+
+            if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
+            {
+                ModelState.AddModelError(nameof(CustomStyleSheetSettingsViewModel.CssCode), "CSS Code is required");
+                return BadRequest(ModelState);
+            }
+
+            var uglifyTest = Uglify.Css(model.CssCode);
+            if (uglifyTest.HasErrors)
+            {
+                foreach (var err in uglifyTest.Errors)
+                {
+                    ModelState.AddModelError(model.CssCode, err.ToString());
+                }
+                return BadRequest(ModelState);
+            }
+
             settings.EnableCustomCss = model.EnableCustomCss;
             settings.CssCode = model.CssCode;
 

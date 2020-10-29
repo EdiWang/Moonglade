@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -21,6 +20,7 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Models;
 using Moonglade.Web.SiteIconGenerator;
+using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
@@ -382,12 +382,27 @@ namespace Moonglade.Web.Controllers
         {
             if (!_blogConfig.CustomStyleSheetSettings.EnableCustomCss)
             {
-                return Conflict("Custom CSS is disabled");
+                return NotFound();
             }
 
-            // TODO: Minify css code
             var cssCode = _blogConfig.CustomStyleSheetSettings.CssCode;
-            return Content(cssCode, "text/css");
+            if (cssCode.Length > 10240)
+            {
+                return Conflict("CSS Code length exceeded 10240 characters, refuse to load");
+            }
+
+            var uglifiedCss = Uglify.Css(cssCode);
+            if (uglifiedCss.HasErrors)
+            {
+                foreach (var err in uglifiedCss.Errors)
+                {
+                    ModelState.AddModelError("CSS", err.ToString());
+                }
+
+                return Conflict("Invalid CSS Code");
+            }
+
+            return Content(uglifiedCss.Code, "text/css");
         }
     }
 }
