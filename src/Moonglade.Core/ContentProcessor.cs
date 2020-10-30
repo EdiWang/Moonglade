@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Markdig;
+using NUglify;
 
 namespace Moonglade.Core
 {
@@ -43,6 +44,12 @@ namespace Moonglade.Core
                 return string.Empty;
             }
 
+            var result = Uglify.HtmlToText(html);
+            return !result.HasErrors ? result.Code.Trim() : RemoveTagsBackup(html);
+        }
+
+        public static string RemoveTagsBackup(string html)
+        {
             var result = new char[html.Length];
 
             var cursor = 0;

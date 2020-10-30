@@ -38,10 +38,10 @@ namespace Moonglade.Tests
         [Test]
         public void TestRemoveTags()
         {
-            var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
+            var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure&nbsp;<br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
             var output = ContentProcessor.RemoveTags(html);
 
-            Assert.IsTrue(output == "MicrosoftRocks!Azure  The best cloud!");
+            Assert.IsTrue(output == "Microsoft Rocks! Azure  The best cloud!");
         }
 
         [Test]
