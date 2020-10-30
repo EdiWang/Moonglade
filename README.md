@@ -63,33 +63,13 @@ Build and run `./src/Moonglade.sln`
 
 ### 🛡 Authentication
 
-#### [Azure Active Directory]((https://azure.microsoft.com/en-us/services/active-directory/)) (Preferred)
+#### [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
 
-- Register an App in **Azure Active Directory**
-- Set Redirection URI to **"https://yourdomain/signin-oidc"** (For local debugging, also add URL to https://localhost:1055/signin-oidc)
-- Check `ID Tokens` checkbox under the 'Authentication' page in Azure Portal.
-- Copy `appId` to set as `AzureAd:ClientId` in **appsettings.[env].json** file
-
-```json
-"Authentication": {
-  "Provider": "AzureAD",
-  "AzureAd": {
-    "Domain": "{YOUR-VALUE}",
-    "TenantId": "{YOUR-VALUE}",
-    "ClientId": "{YOUR-VALUE}"
-  }
-}
-```
+See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Azure-Active-Directory-Authentication)
 
 #### Local Account (Alternative)
 
 Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/settings/account`
-
-```json
-"Authentication": {
-  "Provider": "Local"
-}
-```
 
 ### 🖼 Image Storage
 `AppSettings:ImageStorage` controls how blog post images are stored.
