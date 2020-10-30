@@ -59,7 +59,7 @@ namespace Moonglade.Web.Controllers
                     Username = newComment.Username,
                     Content = newComment.Content,
                     Email = newComment.Email,
-                    IpAddress = HttpContext.Connection.RemoteIpAddress.ToString()
+                    IpAddress = DNT ? "N/A" : HttpContext.Connection.RemoteIpAddress.ToString()
                 });
 
                 if (_blogConfig.NotificationSettings.SendEmailOnNewComment && null != _notificationClient)
