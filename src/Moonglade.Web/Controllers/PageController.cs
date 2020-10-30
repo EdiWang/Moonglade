@@ -128,16 +128,12 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json("Invalid ModelState");
-                }
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
                 if (ReservedRouteNames.Contains(model.Slug.ToLower()))
                 {
                     ModelState.AddModelError(nameof(model.Slug), "Reserved Slug.");
-                    return View("CreateOrEdit", model);
+                    return Conflict(ModelState);
                 }
 
                 if (!string.IsNullOrWhiteSpace(model.CssContent))

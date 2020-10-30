@@ -11,6 +11,17 @@ function slugify(text) {
         .replace(/ +/g, '-');
 }
 
+function buildErrorMessage(responseObject) {
+    var json = responseObject.responseJSON;
+    var errorMessage = 'Error(s):\n\r';
+
+    Object.keys(json).forEach(function (k) {
+        errorMessage += (k + ': ' + json[k]) + '\n\r';
+    });
+
+    return errorMessage;
+}
+
 function ImageUploader(targetName, hw, imgMimeType) {
     var imgDataUrl = '';
 
@@ -448,7 +459,8 @@ var onPageCreateEditSuccess = function (data) {
 };
 
 var onPageCreateEditFailed = function (context) {
-    var message = context.responseJSON.message;
+    var message = buildErrorMessage(context);
+
     if (window.toastr) {
         window.toastr.error(message);
     } else {

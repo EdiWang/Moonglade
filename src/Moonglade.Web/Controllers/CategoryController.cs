@@ -90,7 +90,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) return BadRequest("Invalid ModelState");
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
                 var request = new CreateCategoryRequest
                 {
@@ -137,7 +137,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) return BadRequest();
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
                 var request = new EditCategoryRequest(model.Id)
                 {
