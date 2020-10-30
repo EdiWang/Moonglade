@@ -416,7 +416,7 @@ var onClearCacheSuccess = function (context) {
 };
 
 var onClearCacheFailed = function (context) {
-    var msg = context.responseJSON.message;
+    var msg = buildErrorMessage(context);
     if (window.toastr) {
         window.toastr.error(`Server Error: ${msg}`);
     } else {
@@ -450,7 +450,7 @@ var onPostCreateEditSuccess = function (data) {
 };
 
 var onPostCreateEditFailed = function (context) {
-    var message = context.responseJSON.message;
+    var message = buildErrorMessage(context);
     if (window.toastr) {
         window.toastr.error(message);
     } else {

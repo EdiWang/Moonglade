@@ -694,7 +694,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!_settings.EnableAudit) return BadRequest(ModelState);
+                if (!_settings.EnableAudit) return Conflict("Audit is disabled");
 
                 await _blogAudit.ClearAuditLog();
                 return RedirectToAction("AuditLogs");

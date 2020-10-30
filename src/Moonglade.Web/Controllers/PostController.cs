@@ -270,11 +270,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json("Invalid ModelState");
-                }
+                if (!ModelState.IsValid) return Conflict(ModelState);
 
                 var tags = string.IsNullOrWhiteSpace(model.Tags)
                     ? new string[] { }
