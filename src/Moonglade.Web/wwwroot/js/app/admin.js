@@ -12,14 +12,22 @@ function slugify(text) {
 }
 
 function buildErrorMessage(responseObject) {
-    var json = responseObject.responseJSON;
-    var errorMessage = 'Error(s):\n\r';
+    if (responseObject.responseJSON) {
+        var json = responseObject.responseJSON;
+        var errorMessage = 'Error(s):\n\r';
 
-    Object.keys(json).forEach(function (k) {
-        errorMessage += (k + ': ' + json[k]) + '\n\r';
-    });
+        Object.keys(json).forEach(function (k) {
+            errorMessage += (k + ': ' + json[k]) + '\n\r';
+        });
 
-    return errorMessage;
+        return errorMessage;
+    }
+
+    if (responseObject.responseText) {
+        return responseObject.responseText.trim();
+    }
+
+    return responseObject.status;
 }
 
 function ImageUploader(targetName, hw, imgMimeType) {
@@ -43,9 +51,29 @@ function ImageUploader(targetName, hw, imgMimeType) {
                     d = new Date();
                     $(`.blogadmin-${targetName}`).attr('src', `/${targetName}?${d.getTime()}`);
                 },
+                statusCode: {
+                    400: function (responseObject, textStatus, jqXHR) {
+                        var message = buildErrorMessage(responseObject);
+                        toastr.error(message);
+                    },
+                    401: function (responseObject, textStatus, jqXHR) {
+                        toastr.error('Unauthorized');
+                    },
+                    404: function (responseObject, textStatus, jqXHR) {
+                        toastr.error('Endpoint not found');
+                    },
+                    409: function (responseObject, textStatus, jqXHR) {
+                        var message = buildErrorMessage(responseObject);
+                        toastr.error(message);
+                    },
+                    500: function (responseObject, textStatus, jqXHR) {
+                        toastr.error('Server went boom');
+                    },
+                    503: function (responseObject, textStatus, jqXHR) {
+                        toastr.error('Server went boom boom');
+                    }
+                },
                 error: function (xhr, status, err) {
-                    console.error(err);
-                    toastr.error('Upload failed.');
                     $(`#btn-upload-${targetName}`).removeClass('disabled');
                     $(`#btn-upload-${targetName}`).removeAttr('disabled');
                 }
@@ -356,11 +384,12 @@ var onUpdateSettingsSuccess = function (context) {
 };
 
 var onUpdateSettingsFailed = function (context) {
-    var errCode = context.status;
+    var message = buildErrorMessage(context);
+
     if (window.toastr) {
-        window.toastr.error(`Error: ${errCode}`);
+        window.toastr.error(message);
     } else {
-        alert(`Error Code: ${errCode}`);
+        alert(message);
     }
 };
 
