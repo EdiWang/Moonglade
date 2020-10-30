@@ -45,7 +45,10 @@ namespace Moonglade.Core
             }
 
             var result = Uglify.HtmlToText(html);
-            return !result.HasErrors ? result.Code.Trim() : RemoveTagsBackup(html);
+
+            return !result.HasErrors && !string.IsNullOrWhiteSpace(result.Code)
+                ? result.Code.Trim()
+                : RemoveTagsBackup(html);
         }
 
         public static string RemoveTagsBackup(string html)
