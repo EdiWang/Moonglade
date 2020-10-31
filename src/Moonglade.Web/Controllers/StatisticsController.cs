@@ -12,12 +12,12 @@ namespace Moonglade.Web.Controllers
     [ApiController]
     public class StatisticsController : ControllerBase
     {
-        private readonly PostService _postService;
+        private readonly IBlogStatistics _statistics;
         private bool DNT => (bool)HttpContext.Items["DNT"];
 
-        public StatisticsController(PostService postService)
+        public StatisticsController(IBlogStatistics statistics)
         {
-            _postService = postService;
+            _statistics = statistics;
         }
 
         [HttpPost("hit")]
@@ -29,7 +29,7 @@ namespace Moonglade.Web.Controllers
             if (postId == Guid.Empty) return BadRequest("postId is empty");
             if (DNT || HasCookie(CookieNames.Hit, postId.ToString())) return Ok();
 
-            await _postService.UpdateStatisticAsync(postId);
+            await _statistics.UpdateStatisticAsync(postId);
             SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
 
             return Ok();
@@ -45,7 +45,7 @@ namespace Moonglade.Web.Controllers
             if (DNT) return Ok();
             if (HasCookie(CookieNames.Liked, postId.ToString())) return Conflict();
 
-            await _postService.UpdateStatisticAsync(postId, 1);
+            await _statistics.UpdateStatisticAsync(postId, 1);
             SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
 
             return Ok();

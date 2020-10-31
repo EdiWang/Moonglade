@@ -79,6 +79,8 @@ namespace Moonglade.Web.Extensions
                     services.AddScoped(t, t);
                 }
             }
+
+            services.AddScoped<IBlogStatistics, BlogStatistics>();
         }
 
         public static void AddPingback(this IServiceCollection services)

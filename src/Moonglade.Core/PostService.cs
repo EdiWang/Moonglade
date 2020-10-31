@@ -24,7 +24,6 @@ namespace Moonglade.Core
         #region Repository Objects
 
         private readonly IRepository<PostEntity> _postRepo;
-        private readonly IRepository<PostExtensionEntity> _postExtensionRepo;
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IRepository<CategoryEntity> _catRepo;
@@ -35,7 +34,6 @@ namespace Moonglade.Core
         public PostService(ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepo,
-            IRepository<PostExtensionEntity> postExtensionRepo,
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
             IRepository<CategoryEntity> catRepo,
@@ -45,7 +43,6 @@ namespace Moonglade.Core
             IBlogCache cache) : base(logger, settings)
         {
             _postRepo = postRepo;
-            _postExtensionRepo = postExtensionRepo;
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
             _catRepo = catRepo;
@@ -61,24 +58,6 @@ namespace Moonglade.Core
             _postCatRepo.Count(c => c.CategoryId == catId
                                           && c.Post.IsPublished
                                           && !c.Post.IsDeleted);
-
-
-        public async Task UpdateStatisticAsync(Guid postId, int likes = 0)
-        {
-            var pp = await _postExtensionRepo.GetAsync(postId);
-            if (pp == null) return;
-
-            if (likes > 0)
-            {
-                pp.Likes += likes;
-            }
-            else
-            {
-                pp.Hits += 1;
-            }
-
-            await _postExtensionRepo.UpdateAsync(pp);
-        }
 
         public Task<Post> GetAsync(Guid id)
         {
