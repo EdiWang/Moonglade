@@ -24,6 +24,14 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
+        public async Task TestGetEmptyGuid()
+        {
+            var ctl = new StatisticsController(_statisticsMock.Object);
+            var result = await ctl.Get(Guid.Empty);
+            Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
+        }
+
+        [Test]
         public async Task TestHitEmptyGuid()
         {
             var ctl = new StatisticsController(_statisticsMock.Object);
