@@ -1,14 +1,10 @@
 ﻿var postSlug = {
     registerRatingButtons: function (pid) {
         $('.btn-ratings').click(function () {
-            ajaxPostWithCSRFToken('/post/like', { postId: pid }, function (data) {
-                if (data.isSuccess) {
-                    var oldVal = parseInt($('.likehits-num').text(), 10);
-                    $('.likehits-num').html(++oldVal);
-                    $('.btn-ratings').attr('disabled', 'disabled');
-                } else {
-                    window.toastr.warning(data.message);
-                }
+            ajaxPostWithCSRFToken('/api/statistics/like', { postId: pid }, function (data) {
+                var oldVal = parseInt($('.likehits-num').text(), 10);
+                $('.likehits-num').html(++oldVal);
+                $('.btn-ratings').attr('disabled', 'disabled');
             });
         });
     },

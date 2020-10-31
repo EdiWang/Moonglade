@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
@@ -112,31 +111,6 @@ namespace Moonglade.Web.Controllers
             ViewBag.TitlePrefix = $"{post.Title}";
             ViewBag.IsDraftPreview = true;
             return View("Slug", viewModel);
-        }
-
-        [HttpPost("hit")]
-        [DisallowSpiderUA]
-        public async Task<IActionResult> Hit([FromForm] Guid postId)
-        {
-            if (DNT || HasCookie(CookieNames.Hit, postId.ToString())) return Ok();
-
-            await _postService.UpdateStatisticAsync(postId);
-            SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
-
-            return Ok();
-        }
-
-        [HttpPost("like")]
-        [DisallowSpiderUA]
-        public async Task<IActionResult> Like([FromForm] Guid postId)
-        {
-            if (DNT) return Ok();
-            if (HasCookie(CookieNames.Liked, postId.ToString())) return Conflict();
-
-            await _postService.UpdateStatisticAsync(postId, 1);
-            SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
-
-            return Ok();
         }
 
         #region Management
@@ -361,36 +335,6 @@ namespace Moonglade.Web.Controllers
             };
 
             return View(vm);
-        }
-
-        #endregion
-
-        #region Helper Methods
-
-        private bool HasCookie(CookieNames cookieName, string id)
-        {
-            var viewCookie = HttpContext.Request.Cookies[cookieName.ToString()];
-            if (viewCookie != null)
-            {
-                return viewCookie == id;
-            }
-            return false;
-        }
-
-        private void SetPostTrackingCookie(CookieNames cookieName, string id)
-        {
-            var options = new CookieOptions
-            {
-                Expires = DateTime.UtcNow.AddDays(1),
-                SameSite = SameSiteMode.Strict,
-                Secure = Request.IsHttps,
-
-                // Mark as essential to pass GDPR
-                // https://docs.microsoft.com/en-us/aspnet/core/security/gdpr?view=aspnetcore-2.1
-                IsEssential = true
-            };
-
-            Response.Cookies.Append(cookieName.ToString(), id, options);
         }
 
         #endregion

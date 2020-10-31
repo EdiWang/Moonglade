@@ -73,7 +73,7 @@
                         postSlug.resetCaptchaImage();
                     });
 
-                    ajaxPostWithCSRFToken("/post/hit",
+                    ajaxPostWithCSRFToken("/api/statistics/hit",
                         { postId: pid },
                         function(data) {
                             console.info("updated post hit");
