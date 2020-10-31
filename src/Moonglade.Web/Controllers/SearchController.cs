@@ -82,7 +82,7 @@ namespace Moonglade.Web.Controllers
         {
             return !string.IsNullOrWhiteSpace(term) ?
                 RedirectToAction(nameof(SearchGet), new { term }) :
-                RedirectToAction("Index", "Post");
+                RedirectToAction("Index", "Home");
         }
 
         [HttpGet("search/{term}")]
@@ -92,7 +92,7 @@ namespace Moonglade.Web.Controllers
             {
                 if (string.IsNullOrWhiteSpace(term))
                 {
-                    return RedirectToAction("Index", "Post");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 Logger.LogInformation("Searching post for keyword: " + term);
