@@ -29,7 +29,8 @@
       "wwwroot/js/3rd/jquery.unobtrusive-ajax.min.js",
       "wwwroot/js/3rd/bootstrap-tagsinput.min.js",
       "wwwroot/js/3rd/jquery.are-you-sure.min.js",
-      "wwwroot/js/app/admin.js"
+      "wwwroot/js/app/admin.js",
+      "wwwroot/js/app/settings.js"
     ]
   },
   {
