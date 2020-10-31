@@ -21,9 +21,10 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(Guid postId)
         {
-            if (postId == Guid.Empty) return BadRequest("postId is empty");
+            if (postId == Guid.Empty) return BadRequest($"{nameof(postId)} is empty");
 
             var numbers = await _statistics.GetStatisticAsync(postId);
             return Ok(new { numbers.Hits, numbers.Likes });
