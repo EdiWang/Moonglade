@@ -9,8 +9,6 @@ $(function () {
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
 
-    $('.site-qrcode').qrcode(document.location.origin);
-
     if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         $('div.container').addClass('container-fluid').removeClass('container');
     }
