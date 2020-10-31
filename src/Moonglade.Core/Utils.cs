@@ -60,11 +60,17 @@ namespace Moonglade.Core
                 newUri.ToString() :
                 string.Empty;
         }
-
-        // Regex.IsMatch(ip, @"(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)")
-        // Regex has bad performance, this is better
+        
+        /// <summary>
+        /// Test an IPv4 address is LAN or not.
+        /// </summary>
+        /// <param name="ip">IPv4 address</param>
+        /// <returns>bool</returns>
         public static bool IsPrivateIP(string ip) => IPAddress.Parse(ip).GetAddressBytes() switch
         {
+            // Regex.IsMatch(ip, @"(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)")
+            // Regex has bad performance, this is better
+
             var x when x[0] == 192 && x[1] == 168 => true,
             var x when x[0] == 10 => true,
             var x when x[0] == 127 => true,
@@ -106,6 +112,10 @@ namespace Moonglade.Core
             }
         }
 
+        /// <summary>
+        /// Get values from `MOONGLADE_TAGS` Environment Variable
+        /// </summary>
+        /// <returns>string values</returns>
         public static IEnumerable<string> GetEnvironmentTags()
         {
             var tagsEnv = Environment.GetEnvironmentVariable("MOONGLADE_TAGS");
