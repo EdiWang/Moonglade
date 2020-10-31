@@ -80,7 +80,7 @@ namespace Moonglade.Tests.Web
             if (result is RedirectToActionResult rdResult)
             {
                 Assert.That(rdResult.ActionName, Is.EqualTo("Index"));
-                Assert.That(rdResult.ControllerName, Is.EqualTo("Post"));
+                Assert.That(rdResult.ControllerName, Is.EqualTo("Home"));
             }
         }
 
