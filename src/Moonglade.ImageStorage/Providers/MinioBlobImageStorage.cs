@@ -23,6 +23,10 @@ namespace Moonglade.ImageStorage.Providers
                 _logger = logger;
 
                 _client = new MinioClient(blobConfiguration.EndPoint, blobConfiguration.AccessKey, blobConfiguration.SecretKey);
+                if(blobConfiguration.WithSSL)
+                {
+                    _client = _client.WithSSL();
+                }
                 _bucketName = blobConfiguration.BucketName;
 
                 logger.LogInformation($"Created {nameof(MinioBlobImageStorage)} at {blobConfiguration.EndPoint}");
