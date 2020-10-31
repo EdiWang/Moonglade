@@ -54,6 +54,14 @@
         $(function() {
             var pid = $("article").data("postid");
 
+            $.get("/api/statistics?postId=" + pid,
+                function(data) {
+                    $('.post-hit-number-text').text(data.hits);
+                    if ($('.likehits-num')) {
+                        $('.likehits-num').text(data.likes);
+                    }
+                });
+
             postSlug.registerRatingButtons(pid);
             postSlug.resizeImages();
             postSlug.applyImageZooming();
@@ -127,7 +135,7 @@
                 }
                 | @BlogConfig.GeneralSettings.TimeZoneId
             </strong>
-            <span class="text-muted float-right post-hit-number">@Model.PostModel.Hits @Localizer["Reads"]</span>
+            <span class="text-muted float-right post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
         </div>
 
         <div class="hidden-print">

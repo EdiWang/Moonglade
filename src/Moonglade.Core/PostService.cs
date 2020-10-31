@@ -187,8 +187,6 @@ namespace Moonglade.Core
                     }).ToArray(),
 
                     RawPostContent = post.PostContent,
-                    Hits = post.PostExtension.Hits,
-                    Likes = post.PostExtension.Likes,
 
                     Tags = post.PostTag.Select(pt => pt.Tag)
                         .Select(p => new Tag

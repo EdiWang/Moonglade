@@ -20,6 +20,15 @@ namespace Moonglade.Web.Controllers
             _statistics = statistics;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get(Guid postId)
+        {
+            if (postId == Guid.Empty) return BadRequest("postId is empty");
+
+            var numbers = await _statistics.GetStatisticAsync(postId);
+            return Ok(new { numbers.Hits, numbers.Likes });
+        }
+
         [HttpPost("hit")]
         [DisallowSpiderUA]
         [ProducesResponseType(StatusCodes.Status200OK)]

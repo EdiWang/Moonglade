@@ -7,6 +7,8 @@ namespace Moonglade.Core
 {
     public interface IBlogStatistics
     {
+        Task<(int Hits, int Likes)> GetStatisticAsync(Guid postId);
+
         Task UpdateStatisticAsync(Guid postId, int likes = 0);
     }
 
@@ -17,6 +19,12 @@ namespace Moonglade.Core
         public BlogStatistics(IRepository<PostExtensionEntity> postExtensionRepo)
         {
             _postExtensionRepo = postExtensionRepo;
+        }
+
+        public async Task<(int Hits, int Likes)> GetStatisticAsync(Guid postId)
+        {
+            var pp = await _postExtensionRepo.GetAsync(postId);
+            return (pp.Hits, pp.Likes);
         }
 
         public async Task UpdateStatisticAsync(Guid postId, int likes = 0)
