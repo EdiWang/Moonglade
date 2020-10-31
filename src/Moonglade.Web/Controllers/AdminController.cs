@@ -58,7 +58,7 @@ namespace Moonglade.Web.Controllers
             switch (_authenticationSettings.Provider)
             {
                 case AuthenticationProvider.AzureAD:
-                    var redirectUrl = Url.Action(nameof(PostController.Index), "Post");
+                    var redirectUrl = Url.Action(nameof(HomeController.Index), "Home");
                     return Challenge(
                         new AuthenticationProperties { RedirectUri = redirectUrl },
                         OpenIdConnectDefaults.AuthenticationScheme);
@@ -152,14 +152,14 @@ namespace Moonglade.Web.Controllers
                     throw new ArgumentOutOfRangeException();
             }
 
-            return RedirectToAction("Index", "Post");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet("signedout")]
         [AllowAnonymous]
         public IActionResult SignedOut()
         {
-            return RedirectToAction(nameof(PostController.Index), "Post");
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         [AllowAnonymous]

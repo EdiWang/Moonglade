@@ -17,52 +17,29 @@ using Moonglade.Pingback;
 using Moonglade.Pingback.Mvc;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
-using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
     [Route("post")]
-    public partial class PostController : BlogController
+    public class PostController : BlogController
     {
         private readonly PostService _postService;
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
-        private readonly IBlogCache _cache;
 
         public PostController(
             ILogger<PostController> logger,
             PostService postService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
-            IDateTimeResolver dateTimeResolver,
-            IBlogCache cache)
+            IDateTimeResolver dateTimeResolver)
             : base(logger)
         {
             _postService = postService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
             _dateTimeResolver = dateTimeResolver;
-            _cache = cache;
-        }
-
-        [Route(""), Route("/")]
-        public async Task<IActionResult> Index(int page = 1)
-        {
-            try
-            {
-                var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-                var posts = await _postService.GetPagedPostsAsync(pagesize, page);
-                var count = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts());
-
-                var list = new StaticPagedList<PostListEntry>(posts, page, pagesize, count);
-                return View(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error getting post list.");
-                return ServerError("Error getting post list.");
-            }
         }
 
         [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
