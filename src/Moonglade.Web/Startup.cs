@@ -88,9 +88,10 @@ namespace Moonglade.Web
 
             services.AddAntiforgery(options =>
             {
-                const string csrfCookieName = "CSRF-TOKEN-MOONGLADE";
-                options.Cookie.Name = $"X-{csrfCookieName}";
-                options.FormFieldName = $"{csrfCookieName}-FORM";
+                const string csrfName = "CSRF-TOKEN-MOONGLADE";
+                options.Cookie.Name = $"X-{csrfName}";
+                options.FormFieldName = $"{csrfName}-FORM";
+                options.HeaderName = "XSRF-TOKEN";
             });
 
             services.AddPingback();

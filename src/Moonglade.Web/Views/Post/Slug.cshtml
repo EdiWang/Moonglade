@@ -54,14 +54,7 @@
         $(function() {
             var pid = $("article").data("postid");
 
-            $.get("/api/statistics/" + pid,
-                function(data) {
-                    $('.post-hit-number-text').text(data.hits);
-                    if ($('.likehits-num')) {
-                        $('.likehits-num').text(data.likes);
-                    }
-                });
-
+            postSlug.getStatistics(pid);
             postSlug.registerRatingButtons(pid);
             postSlug.resizeImages();
             postSlug.applyImageZooming();
@@ -81,11 +74,7 @@
                         postSlug.resetCaptchaImage();
                     });
 
-                    ajaxPostWithCSRFToken(`/api/statistics/${pid}`,
-                        { isLike: false },
-                        function(data) {
-                            console.info("updated post hit");
-                        });
+                    postSlug.postStatistics(pid, false);
 
                     $('#post-qrcode').qrcode(document.URL);
                 </text>

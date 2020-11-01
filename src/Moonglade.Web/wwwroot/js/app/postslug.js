@@ -1,11 +1,50 @@
 ﻿var postSlug = {
+    getStatistics: function (pid) {
+        const uri = `/api/statistics/${pid}`;
+        fetch(uri)
+            .then(response => response.json())
+            .then(data => {
+                $('.post-hit-number-text').text(data.hits);
+                if ($('.likehits-num')) {
+                    $('.likehits-num').text(data.likes);
+                }
+            })
+            .catch(err => {
+                toastr.error(err);
+                console.error(err);
+            });
+    },
+    postStatistics: function (pid, isLike) {
+        const req = {
+            postId: pid,
+            isLike: isLike
+        };
+        const csrfValue = $(`input[name=${csrfFieldName}]`).val();
+
+        fetch(`/api/statistics`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'XSRF-TOKEN': csrfValue
+            },
+            body: JSON.stringify(req)
+        })
+            .then(() => {
+                if (isLike) {
+                    let oldVal = parseInt($('.likehits-num').text(), 10);
+                    $('.likehits-num').html(++oldVal);
+                    $('.btn-ratings').attr('disabled', 'disabled');
+                }
+            })
+            .catch(err => {
+                toastr.error(err);
+                console.error(err);
+            });
+    },
     registerRatingButtons: function (pid) {
         $('.btn-ratings').click(function () {
-            ajaxPostWithCSRFToken(`/api/statistics/${pid}`, { isLike: true }, function (data) {
-                var oldVal = parseInt($('.likehits-num').text(), 10);
-                $('.likehits-num').html(++oldVal);
-                $('.btn-ratings').attr('disabled', 'disabled');
-            });
+            postSlug.postStatistics(pid, true);
         });
     },
     resetCaptchaImage: function () {

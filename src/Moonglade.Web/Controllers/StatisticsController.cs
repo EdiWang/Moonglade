@@ -31,26 +31,26 @@ namespace Moonglade.Web.Controllers
             return Ok(new { Hits, Likes });
         }
 
-        [HttpPost("{postId}")]
+        [HttpPost]
         [DisallowSpiderUA]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post(Guid postId, [FromForm] bool isLike = false)
+        public async Task<IActionResult> Post(StatisticsRequest request)
         {
-            if (postId == Guid.Empty) return BadRequest("postId is empty");
+            if (request.PostId == Guid.Empty) return BadRequest($"{nameof(request.PostId)} is empty");
             if (DNT) return Ok();
 
-            if (isLike)
+            if (request.IsLike)
             {
-                if (HasCookie(CookieNames.Liked, postId.ToString())) return Conflict();
+                if (HasCookie(CookieNames.Liked, request.PostId.ToString())) return Conflict();
             }
             else
             {
-                if (HasCookie(CookieNames.Hit, postId.ToString())) return Ok();
+                if (HasCookie(CookieNames.Hit, request.PostId.ToString())) return Ok();
             }
 
-            await _statistics.UpdateStatisticAsync(postId, isLike ? 1 : 0);
-            SetPostTrackingCookie(isLike ? CookieNames.Liked : CookieNames.Hit, postId.ToString());
+            await _statistics.UpdateStatisticAsync(request.PostId, request.IsLike ? 1 : 0);
+            SetPostTrackingCookie(request.IsLike ? CookieNames.Liked : CookieNames.Hit, request.PostId.ToString());
 
             return Ok();
         }
@@ -80,5 +80,12 @@ namespace Moonglade.Web.Controllers
 
             Response.Cookies.Append(cookieName.ToString(), id, options);
         }
+    }
+
+    public class StatisticsRequest
+    {
+        public Guid PostId { get; set; }
+
+        public bool IsLike { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace Moonglade.Tests.Web
         public async Task TestHitEmptyGuid()
         {
             var ctl = new StatisticsController(_statisticsMock.Object);
-            var result = await ctl.Post(Guid.Empty);
+            var result = await ctl.Post(new StatisticsRequest { PostId = Guid.Empty, IsLike = false });
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
 
@@ -42,7 +42,7 @@ namespace Moonglade.Tests.Web
         public async Task TestLikeEmptyGuid()
         {
             var ctl = new StatisticsController(_statisticsMock.Object);
-            var result = await ctl.Post(Guid.Empty, true);
+            var result = await ctl.Post(new StatisticsRequest { PostId = Guid.Empty, IsLike = true });
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
 
@@ -55,7 +55,7 @@ namespace Moonglade.Tests.Web
                 ControllerContext = { HttpContext = ctx }
             };
 
-            var result = await ctl.Post(Guid.NewGuid());
+            var result = await ctl.Post(new StatisticsRequest { PostId = Guid.NewGuid(), IsLike = false });
             Assert.IsInstanceOf(typeof(OkResult), result);
         }
 
@@ -68,7 +68,7 @@ namespace Moonglade.Tests.Web
                 ControllerContext = { HttpContext = ctx }
             };
 
-            var result = await ctl.Post(Guid.NewGuid(), true);
+            var result = await ctl.Post(new StatisticsRequest { PostId = Guid.NewGuid(), IsLike = true });
             Assert.IsInstanceOf(typeof(OkResult), result);
         }
 
@@ -90,7 +90,7 @@ namespace Moonglade.Tests.Web
                 ControllerContext = { HttpContext = httpContextMock.Object }
             };
 
-            var result = await ctl.Post(uid);
+            var result = await ctl.Post(new StatisticsRequest { PostId = uid, IsLike = false });
             Assert.IsInstanceOf(typeof(OkResult), result);
         }
 
@@ -105,7 +105,7 @@ namespace Moonglade.Tests.Web
                 ControllerContext = { HttpContext = ctx }
             };
 
-            var result = await ctl.Post(uid);
+            var result = await ctl.Post(new StatisticsRequest { PostId = uid, IsLike = false });
             Assert.IsInstanceOf(typeof(OkResult), result);
         }
 
@@ -127,7 +127,7 @@ namespace Moonglade.Tests.Web
                 ControllerContext = { HttpContext = httpContextMock.Object }
             };
 
-            var result = await ctl.Post(uid, true);
+            var result = await ctl.Post(new StatisticsRequest { PostId = uid, IsLike = true });
             Assert.IsInstanceOf(typeof(ConflictResult), result);
         }
 
