@@ -1,4 +1,5 @@
 ﻿@using System.Diagnostics
+@using Moonglade.Core
 @using Moonglade.Model
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
@@ -11,14 +12,12 @@
 </h3>
 <hr />
 
-<div class="card mb-4">
-    <div class="card-header">
-        @Localizer["Server Information"]
-    </div>
+<div class="mb-4">
+    <h5>@Localizer["Server Information"]</h5>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>@Localizer["Item"]</th>
+                <th class="w-25">@Localizer["Item"]</th>
                 <th>@Localizer["Value"]</th>
             </tr>
         </thead>
@@ -59,18 +58,22 @@
     </table>
 </div>
 
-<div class="card mb-4">
-    <div class="card-header">
+<div class="mb-1">
+    <h5>
         @Localizer["Moonglade Configuration"]
-    </div>
+    </h5>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>@Localizer["Item"]</th>
+                <th class="w-25">@Localizer["Item"]</th>
                 <th>@Localizer["Value"]</th>
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td>@Localizer["Version"]</td>
+                <td>@Utils.AppVersion</td>
+            </tr>
             <tr>
                 <td>@Localizer["Data Directory"]</td>
                 <td>@AppDomain.CurrentDomain.GetData(Constants.DataDirectory)</td>
