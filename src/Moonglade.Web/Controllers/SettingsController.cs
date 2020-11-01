@@ -57,7 +57,7 @@ namespace Moonglade.Web.Controllers
             _friendLinkService = friendLinkService;
         }
 
-        [HttpGet("general-settings")]
+        [HttpGet("general")]
         public IActionResult General([FromServices] IDateTimeResolver dateTimeResolver)
         {
             var vm = new GeneralSettingsViewModel
@@ -81,7 +81,7 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("general-settings")]
+        [HttpPost("general")]
         public async Task<IActionResult> General(GeneralSettingsViewModel model, [FromServices] IDateTimeResolver dateTimeResolver)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
