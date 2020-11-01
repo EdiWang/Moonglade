@@ -12,6 +12,7 @@ function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
         url: url,
         headers: {},
         data: makeCSRFExtendedData(pData),
+        dataType: 'json',
         success: function (data) {
             funcSuccess(data);
         },
@@ -36,8 +37,7 @@ function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
             503: function(responseObject, textStatus, jqXHR) {
                 toastr.error('Server went boom boom');
             }
-        },
-        dataType: 'json'
+        }
     };
     options.headers[csrfFieldName] = $(`input[name=${csrfFieldName}]`).val();
     $.ajax(options);

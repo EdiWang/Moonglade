@@ -52,3 +52,22 @@ function getResponsiveBreakpoint() {
     $el.remove();
     return env;
 };
+
+function buildErrorMessage(responseObject) {
+    if (responseObject.responseJSON) {
+        var json = responseObject.responseJSON;
+        var errorMessage = 'Error(s):\n\r';
+
+        Object.keys(json).forEach(function (k) {
+            errorMessage += (k + ': ' + json[k]) + '\n\r';
+        });
+
+        return errorMessage;
+    }
+
+    if (responseObject.responseText) {
+        return responseObject.responseText.trim();
+    }
+
+    return responseObject.status;
+}

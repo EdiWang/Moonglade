@@ -54,7 +54,7 @@
         $(function() {
             var pid = $("article").data("postid");
 
-            $.get("/api/statistics?postId=" + pid,
+            $.get("/api/statistics/" + pid,
                 function(data) {
                     $('.post-hit-number-text').text(data.hits);
                     if ($('.likehits-num')) {
@@ -81,8 +81,8 @@
                         postSlug.resetCaptchaImage();
                     });
 
-                    ajaxPostWithCSRFToken("/api/statistics/hit",
-                        { postId: pid },
+                    ajaxPostWithCSRFToken(`/api/statistics/${pid}`,
+                        { isLike: false },
                         function(data) {
                             console.info("updated post hit");
                         });

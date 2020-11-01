@@ -1,7 +1,7 @@
 ﻿var postSlug = {
     registerRatingButtons: function (pid) {
         $('.btn-ratings').click(function () {
-            ajaxPostWithCSRFToken('/api/statistics/like', { postId: pid }, function (data) {
+            ajaxPostWithCSRFToken(`/api/statistics/${pid}`, { isLike: true }, function (data) {
                 var oldVal = parseInt($('.likehits-num').text(), 10);
                 $('.likehits-num').html(++oldVal);
                 $('.btn-ratings').attr('disabled', 'disabled');

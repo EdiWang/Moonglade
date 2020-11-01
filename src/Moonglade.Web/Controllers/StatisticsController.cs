@@ -8,8 +8,8 @@ using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers
 {
-    [Route("api/statistics")]
     [ApiController]
+    [Route("api/[controller]")]
     public class StatisticsController : ControllerBase
     {
         private readonly IBlogStatistics _statistics;
@@ -20,50 +20,40 @@ namespace Moonglade.Web.Controllers
             _statistics = statistics;
         }
 
-        [HttpGet]
+        [HttpGet("{postId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get(Guid postId)
         {
             if (postId == Guid.Empty) return BadRequest($"{nameof(postId)} is empty");
 
-            var numbers = await _statistics.GetStatisticAsync(postId);
-            return Ok(new { numbers.Hits, numbers.Likes });
+            var (Hits, Likes) = await _statistics.GetStatisticAsync(postId);
+            return Ok(new { Hits, Likes });
         }
 
-        [HttpPost("hit")]
+        [HttpPost("{postId}")]
         [DisallowSpiderUA]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Hit([FromForm] Guid postId)
-        {
-            if (postId == Guid.Empty) return BadRequest("postId is empty");
-            if (DNT || HasCookie(CookieNames.Hit, postId.ToString())) return Ok();
-
-            await _statistics.UpdateStatisticAsync(postId);
-            SetPostTrackingCookie(CookieNames.Hit, postId.ToString());
-
-            return Ok();
-        }
-
-        [HttpPost("like")]
-        [DisallowSpiderUA]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Like([FromForm] Guid postId)
+        public async Task<IActionResult> Post(Guid postId, [FromForm] bool isLike = false)
         {
             if (postId == Guid.Empty) return BadRequest("postId is empty");
             if (DNT) return Ok();
-            if (HasCookie(CookieNames.Liked, postId.ToString())) return Conflict();
 
-            await _statistics.UpdateStatisticAsync(postId, 1);
-            SetPostTrackingCookie(CookieNames.Liked, postId.ToString());
+            if (isLike)
+            {
+                if (HasCookie(CookieNames.Liked, postId.ToString())) return Conflict();
+            }
+            else
+            {
+                if (HasCookie(CookieNames.Hit, postId.ToString())) return Ok();
+            }
+
+            await _statistics.UpdateStatisticAsync(postId, isLike ? 1 : 0);
+            SetPostTrackingCookie(isLike ? CookieNames.Liked : CookieNames.Hit, postId.ToString());
 
             return Ok();
         }
-
-        #region Helper Methods
 
         private bool HasCookie(CookieNames cookieName, string id)
         {
@@ -90,7 +80,5 @@ namespace Moonglade.Web.Controllers
 
             Response.Cookies.Append(cookieName.ToString(), id, options);
         }
-
-        #endregion
     }
 }
