@@ -17,7 +17,7 @@
 
         function deletePage(pageid, slug) {
             $(`#span-processing-${pageid}`).show();
-            ajaxPostWithCSRFToken("manage/delete", { pageid: pageid, slug: slug }, function (data) {
+            ajaxPostWithCSRFToken("/page/manage/delete", { pageid: pageid, slug: slug }, function (data) {
                 $(`#card-${data}`).hide();
             });
         }

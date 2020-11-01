@@ -12,8 +12,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Core;
+using Moonglade.Model;
+using Moonglade.Pingback;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Models;
+using Moonglade.Web.Models.Settings;
+using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
@@ -174,6 +178,67 @@ namespace Moonglade.Web.Controllers
         public IActionResult About()
         {
             return View();
+        }
+
+        [HttpGet("category")]
+        public async Task<IActionResult> Category([FromServices] CategoryService categoryService)
+        {
+            try
+            {
+                var cats = await categoryService.GetAllAsync();
+                return View(new CategoryManageViewModel { Categories = cats });
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, $"Error {nameof(Category)}()");
+
+                ViewBag.HasError = true;
+                ViewBag.ErrorMessage = e.Message;
+                return View(new CategoryManageViewModel());
+            }
+        }
+
+        [HttpGet("page")]
+        public async Task<IActionResult> Page([FromServices] PageService pageService)
+        {
+            var pageSegments = await pageService.ListSegmentAsync();
+            return View(pageSegments);
+        }
+
+        [Route("tags")]
+        public async Task<IActionResult> Tags([FromServices] TagService tagService)
+        {
+            var tags = await tagService.GetAllAsync();
+            return View(tags);
+        }
+
+        [Route("comments")]
+        public async Task<IActionResult> Comments([FromServices] CommentService commentService, int page = 1)
+        {
+            const int pageSize = 10;
+            var comments = await commentService.GetCommentsAsync(pageSize, page);
+            var list =
+                new StaticPagedList<CommentDetailedItem>(comments, page, pageSize, commentService.Count());
+            return View(list);
+        }
+
+        [HttpGet("menu")]
+        public async Task<IActionResult> Menu([FromServices] MenuService menuService)
+        {
+            var menus = await menuService.GetAllAsync();
+            var model = new MenuManageViewModel
+            {
+                MenuItems = menus
+            };
+
+            return View(model);
+        }
+
+        [Route("pingback")]
+        public async Task<IActionResult> Pingback([FromServices] IPingbackService pingbackService)
+        {
+            var list = await pingbackService.GetPingbackHistoryAsync();
+            return View(list);
         }
 
         #endregion

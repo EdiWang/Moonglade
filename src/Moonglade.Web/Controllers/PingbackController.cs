@@ -53,14 +53,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("manage")]
-        public async Task<IActionResult> Manage()
-        {
-            var list = await _pingbackService.GetPingbackHistoryAsync();
-            return View("~/Views/Admin/ManagePingback.cshtml", list);
-        }
-
-        [Authorize]
         [HttpPost("delete")]
         public async Task<IActionResult> Delete(Guid pingbackId, [FromServices] IBlogAudit blogAudit)
         {

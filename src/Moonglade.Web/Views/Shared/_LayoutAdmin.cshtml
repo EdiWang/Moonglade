@@ -77,27 +77,27 @@
                         <span class="icon-file-text2"></span>
                         @Localizer["Posts"]
                     </a>
-                    <a asp-controller="Category" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Category" ? "active" : null)">
+                    <a asp-controller="Admin" asp-action="Category" class="list-group-item list-group-item-action @(currentAction == "Category" ? "active" : null)">
                         <span class="icon-folder"></span>
                         @Localizer["Categories"]
                     </a>
-                    <a asp-controller="Comment" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Comment" ? "active" : null)">
+                    <a asp-controller="Admin" asp-action="Comments" class="list-group-item list-group-item-action @(currentAction == "Comments" ? "active" : null)">
                         <span class="icon-bubbles3"></span>
                         @Localizer["Comments"]
                     </a>
-                    <a asp-controller="Tags" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Tags" ? "active" : null)">
+                    <a asp-controller="Admin" asp-action="Tags" class="list-group-item list-group-item-action @(currentAction == "Tags" ? "active" : null)">
                         <span class="icon-price-tag"></span>
                         @Localizer["Tags"]
                     </a>
-                    <a asp-controller="Page" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Page" ? "active" : null)">
+                    <a asp-controller="Admin" asp-action="Page" class="list-group-item list-group-item-action @(currentController == "Page" || currentAction == "Page" ? "active" : null)">
                         <span class="icon-file-empty"></span>
                         @Localizer["Pages"]
                     </a>
-                    <a asp-controller="Pingback" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Pingback" ? "active" : null)">
+                    <a asp-controller="Admin" asp-action="Pingback" class="list-group-item list-group-item-action @(currentAction == "Pingback" ? "active" : null)">
                         <span class="icon-earth"></span>
                         @Localizer["Pingbacks"]
                     </a>
-                    <a asp-controller="Menu" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Menu" ? "active" : null)">
+                    <a asp-controller="Admin" asp-action="Menu" class="list-group-item list-group-item-action @(currentAction == "Menu" ? "active" : null)">
                         <span class="icon-list"></span>
                         @Localizer["Menus"]
                     </a>

@@ -64,27 +64,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("manage")]
-        public async Task<IActionResult> Manage()
-        {
-            string viewPath = "~/Views/Admin/ManageCategory.cshtml";
-
-            try
-            {
-                var cats = await _categoryService.GetAllAsync();
-                return View(viewPath, new CategoryManageViewModel { Categories = cats });
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(Manage)}()");
-
-                ViewBag.HasError = true;
-                ViewBag.ErrorMessage = e.Message;
-                return View(viewPath, new CategoryManageViewModel());
-            }
-        }
-
-        [Authorize]
         [HttpPost("manage/create")]
         public async Task<IActionResult> Create(CategoryEditViewModel model)
         {

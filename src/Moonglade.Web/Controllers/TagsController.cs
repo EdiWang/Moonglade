@@ -68,14 +68,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("manage")]
-        public async Task<IActionResult> Manage()
-        {
-            var tags = await _tagService.GetAllAsync();
-            return View("~/Views/Admin/ManageTags.cshtml", tags);
-        }
-
-        [Authorize]
         [HttpPost("update")]
         public async Task<IActionResult> Update(int tagId, string newTagName)
         {

@@ -21,7 +21,7 @@
 
         function deleteCat(catid) {
             $(`#span-processing-${catid}`).show();
-            ajaxPostWithCSRFToken("manage/delete", { id: catid }, function (data) {
+            ajaxPostWithCSRFToken("/category/manage/delete", { id: catid }, function (data) {
                 $(`#card-${data}`).hide();
             });
         }
@@ -33,7 +33,7 @@
         }
 
         function editCat(id) {
-            $.get(`manage/edit/${id}`, function (data) {
+            $.get(`/category/manage/edit/${id}`, function (data) {
                 $("#CategoryEditViewModel_Id").val(data.id);
                 $("#CategoryEditViewModel_RouteName").val(data.routeName);
                 $("#CategoryEditViewModel_DisplayName").val(data.displayName);
@@ -53,7 +53,7 @@
                     action = "edit";
                 }
 
-                ajaxPostWithCSRFToken(`manage/${action}`,
+                ajaxPostWithCSRFToken(`/category/manage/${action}`,
                     {
                         "Id": $("#CategoryEditViewModel_Id").val(),
                         "RouteName": $("#CategoryEditViewModel_RouteName").val(),

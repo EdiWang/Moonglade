@@ -15,7 +15,7 @@
             var tagid = $(this).data("tagid");
             var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
             if (cfm) {
-                ajaxPostWithCSRFToken("delete",
+                ajaxPostWithCSRFToken("/tags/delete",
                     {
                         tagId: tagid
                     }, function (data) {
@@ -27,7 +27,7 @@
         $(".span-tagcontent-editable").blur(function () {
             var tagId = $(this).data("tagid");
             var newTagName = $(this).text().trim();
-            ajaxPostWithCSRFToken("update",
+            ajaxPostWithCSRFToken("/tags/update",
                 {
                     tagId: tagId,
                     newTagName: newTagName

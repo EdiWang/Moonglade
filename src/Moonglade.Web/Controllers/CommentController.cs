@@ -10,7 +10,6 @@ using Moonglade.Core;
 using Moonglade.Core.Notification;
 using Moonglade.Model;
 using Moonglade.Web.Models;
-using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
@@ -86,17 +85,6 @@ namespace Moonglade.Web.Controllers
         }
 
         #region Management
-
-        [Authorize]
-        [Route("manage")]
-        public async Task<IActionResult> Manage(int page = 1)
-        {
-            const int pageSize = 10;
-            var comments = await _commentService.GetCommentsAsync(pageSize, page);
-            var list =
-                new StaticPagedList<CommentDetailedItem>(comments, page, pageSize, _commentService.Count());
-            return View("~/Views/Admin/ManageComments.cshtml", list);
-        }
 
         [Authorize]
         [HttpPost("set-approval-status")]

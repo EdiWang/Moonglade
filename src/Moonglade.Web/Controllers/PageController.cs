@@ -84,14 +84,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("manage")]
-        public async Task<IActionResult> Manage()
-        {
-            var pageSegments = await _pageService.ListSegmentAsync();
-            return View("~/Views/Admin/ManagePage.cshtml", pageSegments);
-        }
-
-        [Authorize]
         [HttpGet("manage/create")]
         public IActionResult Create()
         {

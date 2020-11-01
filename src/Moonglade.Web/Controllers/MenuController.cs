@@ -22,18 +22,6 @@ namespace Moonglade.Web.Controllers
             _menuService = menuService;
         }
 
-        [HttpGet("manage")]
-        public async Task<IActionResult> Manage([FromServices] MenuService menuService)
-        {
-            var menus = await menuService.GetAllAsync();
-            var model = new MenuManageViewModel
-            {
-                MenuItems = menus
-            };
-
-            return View("~/Views/Admin/ManageMenu.cshtml", model);
-        }
-
         [HttpPost("create")]
         public async Task<IActionResult> Create(MenuEditViewModel model)
         {
