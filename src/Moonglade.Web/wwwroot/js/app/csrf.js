@@ -1,17 +1,10 @@
 ﻿var csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
-function makeCSRFExtendedData(data) {
-    var options = {};
-    options[csrfFieldName] = $(`input[name=${csrfFieldName}]`).val();
-    var extData = $.extend(data, options);
-    return extData;
-}
-
 function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
     var options = {
         type: 'POST',
         url: url,
         headers: {},
-        data: makeCSRFExtendedData(pData),
+        data: pData,
         dataType: 'json',
         success: function (data) {
             funcSuccess(data);
@@ -39,6 +32,6 @@ function ajaxPostWithCSRFToken(url, pData, funcSuccess) {
             }
         }
     };
-    options.headers[csrfFieldName] = $(`input[name=${csrfFieldName}]`).val();
+    options.headers['XSRF-TOKEN'] = $(`input[name=${csrfFieldName}]`).val();
     $.ajax(options);
 }

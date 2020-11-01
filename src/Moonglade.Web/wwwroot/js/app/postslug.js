@@ -30,17 +30,17 @@
             },
             body: JSON.stringify(req)
         })
-            .then(() => {
-                if (isLike) {
-                    let oldVal = parseInt($('.likehits-num').text(), 10);
-                    $('.likehits-num').html(++oldVal);
-                    $('.btn-ratings').attr('disabled', 'disabled');
-                }
-            })
-            .catch(err => {
-                toastr.error(err);
-                console.error(err);
-            });
+        .then(() => {
+            if (isLike) {
+                let oldVal = parseInt($('.likehits-num').text(), 10);
+                $('.likehits-num').html(++oldVal);
+                $('.btn-ratings').attr('disabled', 'disabled');
+            }
+        })
+        .catch(err => {
+            toastr.error(err);
+            console.error(err);
+        });
     },
     registerRatingButtons: function (pid) {
         $('.btn-ratings').click(function () {
