@@ -123,6 +123,9 @@
   <data name="64 Bit Process" xml:space="preserve">
     <value>64位进程</value>
   </data>
+  <data name="About" xml:space="preserve">
+    <value>关于</value>
+  </data>
   <data name="App Base Directory" xml:space="preserve">
     <value>应用根目录</value>
   </data>
