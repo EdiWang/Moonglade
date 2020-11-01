@@ -13,12 +13,15 @@
 
 @section scripts{
     <script>
+        const csrfValue = $(`input[name=${csrfFieldName}]`).val();
+
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
-                ajaxPostWithCSRFToken("/api/comment/delete", { commentIds: [cid] }, function (data) {
-                    $(`#panel-comment-${cid}`).slideUp();
-                });
+                callApi('/api/comment/delete', 'DELETE', [cid],
+                    (success) => {
+                        $(`#panel-comment-${cid}`).slideUp();
+                    });
             });
 
             $(".btn-delete-selected").click(function () {
@@ -27,11 +30,12 @@
                     cids.push($(this).data('cid'));
                 });
 
-                ajaxPostWithCSRFToken("/api/comment/delete", { commentIds: cids }, function (data) {
-                    $.each(cids, function (index, value) {
-                        $(`#panel-comment-${value}`).slideUp();
+                callApi('/api/comment/delete', 'DELETE', cids,
+                    (success) => {
+                        $.each(cids, function (index, value) {
+                            $(`#panel-comment-${value}`).slideUp();
+                        });
                     });
-                });
             });
 
             $(".btn-reply").click(function () {
@@ -52,7 +56,7 @@
             });
 
             $(".btn-approve").click(function () {
-                ajaxPostWithCSRFToken("/api/comment/set-approval-status", { commentId: $(this).data("commentid") }, function (data) {
+                ajaxPostWithCSRFToken(`/api/comment/set-approval-status/${$(this).data("commentid")}`, {}, function (data) {
                     $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-outline-success');
                     $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-success');
                 });

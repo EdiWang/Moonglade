@@ -83,23 +83,31 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("set-approval-status")]
+        [HttpPost("set-approval-status/{commentId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SetApprovalStatus([FromForm] Guid commentId)
+        public async Task<IActionResult> SetApprovalStatus(Guid commentId)
         {
-            if (commentId == Guid.Empty) return BadRequest("commentId is empty");
+            if (commentId == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(commentId), "value is empty");
+                return BadRequest(ModelState);
+            }
 
             await _commentService.ToggleApprovalAsync(new[] { commentId });
             return Ok(commentId);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete([FromForm] Guid[] commentIds)
+        public async Task<IActionResult> Delete([FromBody] Guid[] commentIds)
         {
-            if (commentIds.Length == 0) return BadRequest("commentIds is empty");
+            if (commentIds.Length == 0)
+            {
+                ModelState.AddModelError(nameof(commentIds), "value is empty");
+                return BadRequest(ModelState);
+            }
 
             await _commentService.DeleteAsync(commentIds);
             return Ok(commentIds);
@@ -112,8 +120,9 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Reply(
             [FromForm] Guid commentId, [FromForm] string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
-            if (commentId == Guid.Empty) return BadRequest("commentId is empty");
-            if (string.IsNullOrWhiteSpace(replyContent)) return BadRequest("replyContent is empty");
+            if (commentId == Guid.Empty) ModelState.AddModelError(nameof(commentId), "value is empty");
+            if (string.IsNullOrWhiteSpace(replyContent)) ModelState.AddModelError(nameof(replyContent), "value is empty");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 

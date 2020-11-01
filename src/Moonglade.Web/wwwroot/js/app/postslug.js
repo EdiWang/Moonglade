@@ -19,28 +19,15 @@
             postId: pid,
             isLike: isLike
         };
-        const csrfValue = $(`input[name=${csrfFieldName}]`).val();
 
-        fetch(`/api/statistics`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'XSRF-TOKEN': csrfValue
-            },
-            body: JSON.stringify(req)
-        })
-        .then(() => {
-            if (isLike) {
-                let oldVal = parseInt($('.likehits-num').text(), 10);
-                $('.likehits-num').html(++oldVal);
-                $('.btn-ratings').attr('disabled', 'disabled');
-            }
-        })
-        .catch(err => {
-            toastr.error(err);
-            console.error(err);
-        });
+        callApi('/api/statistics', 'POST', req,
+            (success) => {
+                if (isLike) {
+                    let oldVal = parseInt($('.likehits-num').text(), 10);
+                    $('.likehits-num').html(++oldVal);
+                    $('.btn-ratings').attr('disabled', 'disabled');
+                }
+            });
     },
     registerRatingButtons: function (pid) {
         $('.btn-ratings').click(function () {

@@ -25,7 +25,11 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get(Guid postId)
         {
-            if (postId == Guid.Empty) return BadRequest($"{nameof(postId)} is empty");
+            if (postId == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(postId), "value is empty");
+                return BadRequest(ModelState);
+            }
 
             var (Hits, Likes) = await _statistics.GetStatisticAsync(postId);
             return Ok(new { Hits, Likes });
@@ -37,7 +41,12 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post(StatisticsRequest request)
         {
-            if (request.PostId == Guid.Empty) return BadRequest($"{nameof(request.PostId)} is empty");
+            if (request.PostId == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(request.PostId), "value is empty");
+                return BadRequest(ModelState);
+            }
+
             if (DNT) return Ok();
 
             if (request.IsLike)
