@@ -141,9 +141,6 @@
   <data name="Posts" xml:space="preserve">
     <value>文章</value>
   </data>
-  <data name="Sign Out" xml:space="preserve">
-    <value>登出</value>
-  </data>
   <data name="Tags" xml:space="preserve">
     <value>标签</value>
   </data>

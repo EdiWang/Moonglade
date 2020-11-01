@@ -1,8 +1,7 @@
 ﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
-@inject IOptions<AuthenticationSettings> AuthOptions;
+@inject IOptions<AuthenticationSettings> AuthOptions
 
-@using Moonglade.Core
 @using Moonglade.Web.Authentication
 @{
     var currentController = ViewContext.RouteData?.Values["controller"]?.ToString();
@@ -51,21 +50,22 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Settings" asp-action="About">
+                    <a class="nav-link" asp-controller="Admin" asp-action="About">
                         <span class="icon-list"></span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Admin" asp-action="SignOut" title="Sign Out">
+                        <span class="icon-enter"></span>
+                    </a>
+                </li>
             </ul>
-            
+
             <span class="navbar-text">
                 <img src="@Url.Action("Avatar", "Assets")"
                      alt="@BlogConfig.GeneralSettings.OwnerName"
                      class="rounded-circle admin-nav-head-pic mr-1" />
                 @User.Identity.Name
-                
-                <a class="ml-2" asp-controller="Admin" asp-action="SignOut">
-                    @Localizer["Sign Out"]
-                </a>
             </span>
         </div>
     </nav>

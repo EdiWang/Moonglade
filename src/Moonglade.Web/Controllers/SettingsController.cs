@@ -692,12 +692,6 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        [HttpGet("settings-about")]
-        public IActionResult About()
-        {
-            return View();
-        }
-
         #region DataPorting
 
         [HttpGet("data-porting")]
