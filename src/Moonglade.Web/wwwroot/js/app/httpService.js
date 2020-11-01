@@ -47,8 +47,12 @@ function callApi(uri, method, request, funcDone) {
         },
         credentials: 'include',
         body: JSON.stringify(request)
-    }).then(async (response) => await handleHttpError(response)).then((response) => {
-        funcDone(response);
+    }).then(async (response) => {
+        if (!response.ok) {
+            await handleHttpError(response);
+        } else {
+            funcDone(response);
+        }
     }).catch(err => {
         toastr.error(err);
         console.error(err);
@@ -56,10 +60,6 @@ function callApi(uri, method, request, funcDone) {
 }
 
 async function handleHttpError(response) {
-    if (response.ok) {
-        return;
-    }
-
     switch (response.status) {
         case 400:
             toastr.error(await buildErrorMessage2(response));
