@@ -136,16 +136,25 @@
 }
 
 .admin-body {
-    padding-top: 0;
 }
 
 .admin-body-wrapper {
     overflow-x: hidden;
 }
 
+.admin-navbar {
+    box-shadow: inherit !important;
+}
+
+.admin-nav-head-pic {
+    border: 1px solid var(--transparent-light-50);
+    height: 24px;
+    width: 24px;
+}
+
 .admin-nav {
-    background-color: var(--accent-color2);
-    width: 260px;
+    background-color: var(--gray-1);
+    width: 190px;
     min-height: 100vh;
     margin-left: -15rem;
     -webkit-transition: margin .25s ease-out;
@@ -154,9 +163,14 @@
     transition: margin .25s ease-out;
 }
 
+.admin-nav .list-group-item.active {
+    color: #000;
+}
+
 .admin-main {
     overflow-y: scroll;
     min-width: 100vw;
+    box-shadow: 0 0 12px var(--gray-3);
 }
 
 @media (min-width: 768px) {
@@ -196,17 +210,14 @@ hr.admin-nav-divider {
 .admin-nav-section .list-group-item {
     background-color: transparent;
     border: 0 none;
-    color: var(--transparent-light-50);
 }
 
     .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
-        background-color: var(--accent-color1);
-        color: var(--white);
+        background-color: var(--gray-3);
     }
 
 .admin-nav-link:active {
-    color: var(--white);
 }
 
 .admin-main .validation-summary-errors ul {

@@ -32,22 +32,45 @@
     @await RenderSectionAsync("head", false)
 </head>
 <body class="admin-body">
-    <div class="d-flex admin-body-wrapper">
-        <aside class="admin-nav">
-            <div class="admin-avatar d-flex justify-content-center mt-4">
+    <nav class="admin-navbar navbar fixed-top navbar-expand-lg navbar-dark bg-accent2">
+        <a class="navbar-brand" asp-action="Index" asp-controller="Admin">@BlogConfig.GeneralSettings.SiteTitle</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index" target="_blank">
+                        <span class="icon-home"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Settings" asp-action="General">
+                        <span class="icon-cog"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Settings" asp-action="About">
+                        <span class="icon-list"></span>
+                    </a>
+                </li>
+            </ul>
+            
+            <span class="navbar-text">
                 <img src="@Url.Action("Avatar", "Assets")"
                      alt="@BlogConfig.GeneralSettings.OwnerName"
-                     class="rounded-circle blogger-head-pic" />
-            </div>
-            <div class="admin-user-info text-center mt-3 mb-3 text-light">
-                <h4>
-                    @BlogConfig.GeneralSettings.OwnerName
-                </h4>
-                <p class="small color-transparent-white-50">@User.Identity.Name</p>
-            </div>
-
-            <hr class="admin-nav-divider" />
-
+                     class="rounded-circle admin-nav-head-pic mr-1" />
+                @User.Identity.Name
+                
+                <a class="ml-2" asp-controller="Admin" asp-action="SignOut">
+                    @Localizer["Sign Out"]
+                </a>
+            </span>
+        </div>
+    </nav>
+    <div class="d-flex admin-body-wrapper">
+        <aside class="admin-nav">
             <section class="admin-nav-section mt-3 mb-3">
                 <div class="list-group list-group-flush">
                     <a asp-controller="Post" asp-action="Manage" class="list-group-item list-group-item-action @(currentController == "Post" ? "active" : null)">
@@ -78,10 +101,6 @@
                         <span class="icon-list"></span>
                         @Localizer["Menus"]
                     </a>
-                    <a asp-controller="Settings" asp-action="General" class="list-group-item list-group-item-action @(currentController == "Settings" && currentAction != "AccountSettings" ? "active" : null)">
-                        <span class="icon-cog"></span>
-                        @Localizer["Settings"]
-                    </a>
                     @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
                     {
                         <a asp-controller="Settings" asp-action="AccountSettings" class="list-group-item list-group-item-action @(currentController == "Settings" && currentAction == "AccountSettings" ? "active" : null)">
@@ -91,23 +110,8 @@
                     }
                 </div>
             </section>
-
-            <hr class="admin-nav-divider" />
-
-            <div class="text-center mt-3">
-                <a href="/" target="_blank" class="btn btn-sm btn-success">
-                    <span class="icon-home"></span> @Localizer["Home"]
-                </a>
-                <a asp-controller="Admin" asp-action="SignOut" class="btn btn-sm btn-danger">
-                    <span class="icon-enter"></span> @Localizer["Sign Out"]
-                </a>
-            </div>
-            <p class="color-transparent-white-50 mt-4 small text-center">
-                Moonglade @Utils.AppVersion <br />
-                <a class="link-transparent" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">@Localizer["Issue or Suggestion"]</a>
-            </p>
         </aside>
-        <div class="admin-main pt-4">
+        <div class="admin-main pt-4 pr-3 pl-3">
             <div class="container-fluid">
                 @RenderBody()
             </div>
