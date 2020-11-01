@@ -33,6 +33,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("hit")]
         [DisallowSpiderUA]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Hit([FromForm] Guid postId)
         {
@@ -48,6 +49,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("like")]
         [DisallowSpiderUA]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Like([FromForm] Guid postId)
         {

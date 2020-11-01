@@ -16,7 +16,7 @@
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
-                ajaxPostWithCSRFToken("/comment/delete", { commentIds: [cid] }, function (data) {
+                ajaxPostWithCSRFToken("/api/comment/delete", { commentIds: [cid] }, function (data) {
                     $(`#panel-comment-${cid}`).slideUp();
                 });
             });
@@ -27,7 +27,7 @@
                     cids.push($(this).data('cid'));
                 });
 
-                ajaxPostWithCSRFToken("/comment/delete", { commentIds: cids }, function (data) {
+                ajaxPostWithCSRFToken("/api/comment/delete", { commentIds: cids }, function (data) {
                     $.each(cids, function (index, value) {
                         $(`#panel-comment-${value}`).slideUp();
                     });
@@ -43,7 +43,7 @@
                 var cid = $(this).data("commentid");
                 var replyContent = $(`#replycontent-${cid}`).val();
 
-                ajaxPostWithCSRFToken("/comment/reply", { commentId: cid, replyContent: replyContent }, function (data) {
+                ajaxPostWithCSRFToken("/api/comment/reply", { commentId: cid, replyContent: replyContent }, function (data) {
                     $(`#panel-comment-${data.commentId} .reply-ui`).slideUp();
                     $(`#panel-comment-${data.commentId} .reply-list`).prepend(
                         `<hr /><div class="reply-container"><div><strong>Reply</strong><span class="pull-right text-muted">${data.replyTimeUtc
@@ -52,7 +52,7 @@
             });
 
             $(".btn-approve").click(function () {
-                ajaxPostWithCSRFToken("/comment/set-approval-status", { commentId: $(this).data("commentid") }, function (data) {
+                ajaxPostWithCSRFToken("/api/comment/set-approval-status", { commentId: $(this).data("commentid") }, function (data) {
                     $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-outline-success');
                     $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-success');
                 });
