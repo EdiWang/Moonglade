@@ -170,6 +170,12 @@ namespace Moonglade.Web.Controllers
             return View();
         }
 
+        [HttpGet("about")]
+        public IActionResult About()
+        {
+            return View();
+        }
+
         #endregion
 
         // Keep session from expire when writing a very long post

@@ -129,9 +129,6 @@
   <data name="Home" xml:space="preserve">
     <value>主页</value>
   </data>
-  <data name="Issue or Suggestion" xml:space="preserve">
-    <value>问题或建议</value>
-  </data>
   <data name="Menus" xml:space="preserve">
     <value>菜单</value>
   </data>
@@ -143,12 +140,6 @@
   </data>
   <data name="Posts" xml:space="preserve">
     <value>文章</value>
-  </data>
-  <data name="Settings" xml:space="preserve">
-    <value>设置</value>
-  </data>
-  <data name="Sign Out" xml:space="preserve">
-    <value>登出</value>
   </data>
   <data name="Tags" xml:space="preserve">
     <value>标签</value>
