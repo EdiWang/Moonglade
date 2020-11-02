@@ -442,3 +442,12 @@ function editFriendLink(id) {
         $("#editFriendlinkModal").modal();
     });
 }
+
+function deleteAccount(accountid) {
+    $(`#span-processing-${accountid}`).show();
+
+    callApi(`/admin/settings/account/${accountid}`, 'DELETE', {},
+        (resp) => {
+            $(`#tr-${accountid}`).hide();
+        });
+}

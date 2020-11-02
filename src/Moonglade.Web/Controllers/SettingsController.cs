@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -775,7 +776,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("account/create")]
-        public async Task<IActionResult> CreateAccount(AccountEditViewModel model, [FromServices] LocalAccountService accountService)
+        public async Task<IActionResult> CreateAccount([FromBody] AccountEditViewModel model, [FromServices] LocalAccountService accountService)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (accountService.Exist(model.Username))
@@ -784,13 +785,19 @@ namespace Moonglade.Web.Controllers
                 return Conflict(ModelState);
             }
 
-            var uid = await accountService.CreateAsync(model.Username, model.Password);
-            return Json(uid);
+            await accountService.CreateAsync(model.Username, model.Password);
+            return Ok();
         }
 
-        [HttpPost("account/delete")]
+        [HttpDelete("account/{id:guid}")]
         public async Task<IActionResult> DeleteAccount(Guid id, [FromServices] LocalAccountService accountService)
         {
+            if (id == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(id), "value is empty");
+                return BadRequest(ModelState);
+            }
+
             var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
             if (null == uidClaim || string.IsNullOrWhiteSpace(uidClaim.Value))
             {
@@ -809,31 +816,31 @@ namespace Moonglade.Web.Controllers
             }
 
             await accountService.DeleteAsync(id);
-            return Json(id);
+            return Ok();
         }
 
-        [HttpPost("account/reset-password")]
-        public async Task<IActionResult> ResetAccountPassword(Guid id, string newPassword, [FromServices] LocalAccountService accountService)
+        [HttpPost("account/{id:guid}/reset-password")]
+        public async Task<IActionResult> ResetAccountPassword(
+            Guid id, [FromBody] ResetPasswordRequest request, [FromServices] LocalAccountService accountService)
         {
-            if (id == Guid.Empty)
-            {
-                return Conflict("Id can not be empty.");
-            }
+            if (id == Guid.Empty) ModelState.AddModelError(nameof(id), "value is empty");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (string.IsNullOrWhiteSpace(newPassword))
-            {
-                return Conflict("newPassword can not be empty.");
-            }
-
-            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"))
+            if (!Regex.IsMatch(request.NewPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"))
             {
                 return Conflict("Password must be minimum eight characters, at least one letter and one number");
             }
 
-            await accountService.UpdatePasswordAsync(id, newPassword);
-            return Json(id);
+            await accountService.UpdatePasswordAsync(id, request.NewPassword);
+            return Ok();
         }
 
         #endregion
+    }
+
+    public class ResetPasswordRequest
+    {
+        [Required]
+        public string NewPassword { get; set; }
     }
 }

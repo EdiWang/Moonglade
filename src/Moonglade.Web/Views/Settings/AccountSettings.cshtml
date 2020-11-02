@@ -10,43 +10,35 @@
 @section scripts{
     <script>
         var cid = '';
-        $(function () {
-            $(".btn-delete").click(function () {
+        $(function() {
+            $(".btn-delete").click(function() {
                 var cfm = confirm("Delete Confirmation?");
                 if (cfm) {
                     deleteAccount($(this).data("accountid"));
                 }
             });
 
-            $(".btn-updatepwd").click(function () {
+            $(".btn-updatepwd").click(function() {
                 $("#resetpassword-form")[0].reset();
                 $('#resetPasswordModal').modal();
                 cid = $(this).data("accountid");
             });
         });
 
-        function deleteAccount(accountid) {
-            $(`#span-processing-${accountid}`).show();
-            ajaxPostWithCSRFToken("/admin/settings/account/delete",
-                { id: accountid },
-                function (data) {
-                    $(`#tr-${data}`).hide();
-                });
-        }
-
         function initCreateAccount() {
             $("#edit-form")[0].reset();
             $('#editAccountModal').modal();
         }
 
-        $(".btn-submit").click(function () {
+        $(".btn-submit").click(function() {
             if ($("#edit-form").valid()) {
-                ajaxPostWithCSRFToken(`/admin/settings/account/create`,
+                callApi(`/admin/settings/account/create`,
+                    'POST',
                     {
                         "Username": $("#AccountEditViewModel_Username").val(),
                         "Password": $("#AccountEditViewModel_Password").val()
                     },
-                    function (data) {
+                    (resp) => {
                         $("#edit-form")[0].reset();
                         $("#editAccountModal").modal('hide');
                         window.location.reload();
@@ -54,19 +46,18 @@
             }
         });
 
-        $(".btn-resetpwd").click(function () {
+        $(".btn-resetpwd").click(function() {
             if ($("#resetpassword-form").valid()) {
-                ajaxPostWithCSRFToken(`/admin/settings/account/reset-password`,
+                callApi(`/admin/settings/account/${cid}/reset-password`,
+                    'POST',
                     {
-                        "id": cid,
                         "newPassword": $("#NewPassword").val()
                     },
-                    function (data) {
+                    (resp) => {
                         $("#resetpassword-form")[0].reset();
                         $("#resetPasswordModal").modal('hide');
                         toastr.success('Password updated.');
                     });
-
                 cid = '';
             }
         });
