@@ -15,10 +15,12 @@
         });
 
         function deletePost(postid) {
-            $("#span-processing-" + postid).show();
-            ajaxPostWithCSRFToken("delete", { postid: postid }, function (data) {
-                $("#tr-" + data).hide();
-            });
+            $(`#span-processing-${postid}`).show();
+
+            callApi(`/post/${postid}/recycle`, 'DELETE', {},
+                (resp) => {
+                    $(`#tr-${postid}`).hide();
+                });
         }
     </script>
 }

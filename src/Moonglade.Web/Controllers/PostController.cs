@@ -294,21 +294,21 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(DeleteSiteMapCache))]
         [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
         [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
-        [HttpPost("manage/delete")]
+        [HttpDelete("{postId:guid}/recycle")]
         public async Task<IActionResult> Delete(Guid postId)
         {
             await _postService.DeleteAsync(postId, true);
-            return Json(postId);
+            return Ok();
         }
 
         [Authorize]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [ServiceFilter(typeof(DeleteSiteMapCache))]
-        [HttpPost("manage/delete-from-recycle")]
+        [HttpDelete("{postId:guid}/destroy")]
         public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
         {
             await _postService.DeleteAsync(postId);
-            return Json(postId);
+            return Ok();
         }
 
         [Authorize]

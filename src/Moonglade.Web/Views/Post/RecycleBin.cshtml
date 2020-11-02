@@ -19,16 +19,18 @@
         });
 
         function deletePost(postid) {
-            $("#span-processing-" + postid).show();
-            ajaxPostWithCSRFToken("delete-from-recycle", { postid: postid }, function (data) {
-                $("#tr-" + data).hide();
-            });
+            $(`#span-processing-${postid}`).show();
+
+            callApi(`/post/${postid}/destroy`, 'DELETE', {},
+                (resp) => {
+                    $(`#tr-${postid}`).hide();
+                });
         }
 
         function restorePost(postid) {
-            $("#span-processing-" + postid).show();
+            $(`#span-processing-${postid}`).show();
             ajaxPostWithCSRFToken("restore", { postid: postid }, function (data) {
-                $("#tr-" + data).hide();
+                $(`#tr-${data}`).hide();
             });
         }
     </script>
