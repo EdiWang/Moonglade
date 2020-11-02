@@ -282,11 +282,17 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(DeleteSiteMapCache))]
         [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
         [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
-        [HttpPost("manage/restore")]
+        [HttpPost("{postId:guid}/restore")]
         public async Task<IActionResult> Restore(Guid postId)
         {
+            if (postId == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(postId), "value is empty");
+                return BadRequest(ModelState);
+            }
+
             await _postService.RestoreDeletedAsync(postId);
-            return Json(postId);
+            return Ok();
         }
 
         [Authorize]
@@ -297,6 +303,12 @@ namespace Moonglade.Web.Controllers
         [HttpDelete("{postId:guid}/recycle")]
         public async Task<IActionResult> Delete(Guid postId)
         {
+            if (postId == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(postId), "value is empty");
+                return BadRequest(ModelState);
+            }
+
             await _postService.DeleteAsync(postId, true);
             return Ok();
         }
@@ -307,6 +319,12 @@ namespace Moonglade.Web.Controllers
         [HttpDelete("{postId:guid}/destroy")]
         public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
         {
+            if (postId == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(postId), "value is empty");
+                return BadRequest(ModelState);
+            }
+
             await _postService.DeleteAsync(postId);
             return Ok();
         }

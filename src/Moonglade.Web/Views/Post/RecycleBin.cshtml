@@ -17,22 +17,6 @@
                 restorePost($(this).data("postid"));
             });
         });
-
-        function deletePost(postid) {
-            $(`#span-processing-${postid}`).show();
-
-            callApi(`/post/${postid}/destroy`, 'DELETE', {},
-                (resp) => {
-                    $(`#tr-${postid}`).hide();
-                });
-        }
-
-        function restorePost(postid) {
-            $(`#span-processing-${postid}`).show();
-            ajaxPostWithCSRFToken("restore", { postid: postid }, function (data) {
-                $(`#tr-${data}`).hide();
-            });
-        }
     </script>
 }
 <partial name="_PostManageHeader" />

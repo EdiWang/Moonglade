@@ -391,3 +391,21 @@ var onPageCreateEditFailed = function (context) {
         alert(`Error: ${message}`);
     }
 };
+
+function deletePost(postid) {
+    $(`#span-processing-${postid}`).show();
+    callApi(`/post/${postid}/destroy`, 'DELETE', {},
+        (resp) => {
+            $(`#tr-${postid}`).hide();
+            toastr.success('Post deleted');
+        });
+}
+
+function restorePost(postid) {
+    $(`#span-processing-${postid}`).show();
+    callApi(`/post/${postid}/restore`, 'POST', {},
+        (resp) => {
+            $(`#tr-${postid}`).hide();
+            toastr.success('Post restored');
+        });
+}
