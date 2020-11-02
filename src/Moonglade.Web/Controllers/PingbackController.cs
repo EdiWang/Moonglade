@@ -53,13 +53,13 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("delete")]
+        [HttpDelete("{pingbackId:guid}")]
         public async Task<IActionResult> Delete(Guid pingbackId, [FromServices] IBlogAudit blogAudit)
         {
             await _pingbackService.DeletePingbackHistory(pingbackId);
             await blogAudit.AddAuditEntry(EventType.Content, AuditEventId.PingbackDeleted,
                 $"Pingback '{pingbackId}' deleted.");
-            return Json(pingbackId);
+            return Ok();
         }
     }
 }
