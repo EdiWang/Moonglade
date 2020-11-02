@@ -62,10 +62,12 @@
             });
 
             $(".btn-approve").click(function () {
-                ajaxPostWithCSRFToken(`/api/comment/set-approval-status/${$(this).data("commentid")}`, {}, function (data) {
-                    $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-outline-success');
-                    $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-success');
-                });
+                callApi(`/api/comment/set-approval-status/${$(this).data("commentid")}`, 'POST', {},
+                    async (resp) => {
+                        var data = await resp.json();
+                        $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-outline-success');
+                        $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-success');
+                    });
             });
         });
     </script>
