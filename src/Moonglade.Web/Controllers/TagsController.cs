@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -69,10 +70,12 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("update")]
-        public async Task<IActionResult> Update(int tagId, string newTagName)
+        public async Task<IActionResult> Update([FromBody] EditTagRequest request)
         {
-            await _tagService.UpdateAsync(tagId, newTagName);
-            return Json(new { tagId, newTagName });
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            await _tagService.UpdateAsync(request.TagId, request.NewName);
+            return Ok();
         }
 
         [Authorize]
@@ -82,5 +85,14 @@ namespace Moonglade.Web.Controllers
             await _tagService.DeleteAsync(tagId);
             return Ok();
         }
+    }
+
+    public class EditTagRequest
+    {
+        [Range(1, 9999)]
+        public int TagId { get; set; }
+
+        [Required]
+        public string NewName { get; set; }
     }
 }

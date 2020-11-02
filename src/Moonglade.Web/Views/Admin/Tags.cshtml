@@ -18,6 +18,7 @@
                 callApi(`/tags/${tagid}`, 'DELETE', {},
                     (resp) => {
                         $(`#li-tag-${tagid}`).hide();
+                        toastr.success('Tag deleted');
                     });
             }
         });
@@ -25,14 +26,13 @@
         $(".span-tagcontent-editable").blur(function () {
             var tagId = $(this).data("tagid");
             var newTagName = $(this).text().trim();
-            ajaxPostWithCSRFToken("/tags/update",
-                {
-                    tagId: tagId,
-                    newTagName: newTagName
-                },
-                function (data) {
-                    $(`#li-tag-${data.tagId}`).addClass("updated");
-                });
+
+            callApi(`/tags/update`, 'POST', {
+                tagId: tagId,
+                newName: newTagName
+            }, (resp) => {
+                toastr.success('Tag updated');
+            });
         });
     </script>
 }
