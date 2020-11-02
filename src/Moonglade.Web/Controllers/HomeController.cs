@@ -81,6 +81,33 @@ namespace Moonglade.Web.Controllers
             }
         }
 
+        [Route("category/list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        public async Task<IActionResult> CategoryList([FromServices] CategoryService categoryService, string routeName, int page = 1)
+        {
+            if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
+
+            var pageSize = _blogConfig.ContentSettings.PostListPageSize;
+            var cat = await categoryService.GetAsync(routeName);
+
+            if (null == cat)
+            {
+                Logger.LogWarning($"Category '{routeName}' not found.");
+                return NotFound();
+            }
+
+            ViewBag.CategoryDisplayName = cat.DisplayName;
+            ViewBag.CategoryRouteName = cat.RouteName;
+            ViewBag.CategoryDescription = cat.Note;
+
+            var postCount = _cache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
+                entry => _postService.CountByCategoryId(cat.Id));
+
+            var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
+
+            var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pageSize, postCount);
+            return View(postsAsIPagedList);
+        }
+
         [HttpGet("set-lang")]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {

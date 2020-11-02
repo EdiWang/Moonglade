@@ -4,66 +4,24 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moonglade.Caching;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Web.Models;
-using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
+    [Authorize]
     [Route("category")]
     public class CategoryController : BlogController
     {
-        private readonly PostService _postService;
         private readonly CategoryService _categoryService;
-        private readonly IBlogConfig _blogConfig;
-        private readonly IBlogCache _blogCache;
 
-        public CategoryController(
-            ILogger<CategoryController> logger,
-            CategoryService categoryService,
-            PostService postService,
-            IBlogConfig blogConfig,
-            IBlogCache blogCache)
+        public CategoryController(ILogger<CategoryController> logger, CategoryService categoryService)
             : base(logger)
         {
-            _postService = postService;
             _categoryService = categoryService;
-
-            _blogConfig = blogConfig;
-            _blogCache = blogCache;
         }
 
-        [Route("list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> List(string routeName, int page = 1)
-        {
-            if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
-
-            var pageSize = _blogConfig.ContentSettings.PostListPageSize;
-            var cat = await _categoryService.GetAsync(routeName);
-
-            if (null == cat)
-            {
-                Logger.LogWarning($"Category '{routeName}' not found.");
-                return NotFound();
-            }
-
-            ViewBag.CategoryDisplayName = cat.DisplayName;
-            ViewBag.CategoryRouteName = cat.RouteName;
-            ViewBag.CategoryDescription = cat.Note;
-
-            var postCount = _blogCache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
-                entry => _postService.CountByCategoryId(cat.Id));
-
-            var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
-
-            var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pageSize, postCount);
-            return View(postsAsIPagedList);
-        }
-
-        [Authorize]
         [HttpPost("manage/create")]
         public async Task<IActionResult> Create(CategoryEditViewModel model)
         {
@@ -92,7 +50,6 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [Authorize]
         [HttpGet("manage/edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -110,7 +67,6 @@ namespace Moonglade.Web.Controllers
             return Json(model);
         }
 
-        [Authorize]
         [HttpPost("manage/edit")]
         public async Task<IActionResult> Edit(CategoryEditViewModel model)
         {
@@ -139,7 +95,6 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [Authorize]
         [HttpPost("manage/delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
