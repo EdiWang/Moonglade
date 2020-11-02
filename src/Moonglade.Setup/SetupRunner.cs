@@ -89,6 +89,9 @@ namespace Moonglade.Setup
 
             // Clear AuditLog Table
             conn.Execute("DELETE FROM AuditLog");
+
+            // Clear LocalAccount Table
+            conn.Execute("DELETE FROM LocalAccount");
         }
 
         public void ResetDefaultConfiguration()
