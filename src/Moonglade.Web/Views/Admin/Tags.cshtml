@@ -15,11 +15,9 @@
             var tagid = $(this).data("tagid");
             var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
             if (cfm) {
-                ajaxPostWithCSRFToken("/tags/delete",
-                    {
-                        tagId: tagid
-                    }, function (data) {
-                        $(`#li-tag-${data}`).hide();
+                callApi(`/tags/${tagid}`, 'DELETE', {},
+                    (resp) => {
+                        $(`#li-tag-${tagid}`).hide();
                     });
             }
         });

@@ -76,11 +76,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("delete")]
+        [HttpDelete("{tagId}")]
         public async Task<IActionResult> Delete(int tagId)
         {
             await _tagService.DeleteAsync(tagId);
-            return Json(tagId);
+            return Ok();
         }
     }
 }
