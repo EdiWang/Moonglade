@@ -85,7 +85,6 @@ var onClearCacheFailed = function (context) {
 };
 
 function tryRestartWebsite() {
-    var nonce = Math.floor((Math.random() * 128) + 1);
     callApi(`shutdown`, 'POST', {}, () => { });
     $('.btn-restart').text('Wait...');
     $('.btn-restart').addClass('disabled');
@@ -97,7 +96,6 @@ function tryRestartWebsite() {
 }
 
 function tryResetWebsite() {
-    var nonce = Math.floor((Math.random() * 128) + 1);
     callApi(`reset`, 'POST', {}, () => { });
     $('.btn-reset').text('Wait...');
     $('.btn-reset').addClass('disabled');
