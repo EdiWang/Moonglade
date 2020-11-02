@@ -13,8 +13,6 @@
 
 @section scripts{
     <script>
-        const csrfValue = $(`input[name=${csrfFieldName}]`).val();
-
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
