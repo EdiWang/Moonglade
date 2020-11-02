@@ -334,20 +334,12 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("friendlink/create")]
-        public async Task<IActionResult> CreateFriendLink(FriendLinkEditViewModel viewModel)
+        public async Task<IActionResult> CreateFriendLink([FromBody] FriendLinkEditViewModel viewModel)
         {
-            try
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
-                return Json(viewModel);
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError(string.Empty, e.Message);
-                return ServerError();
-            }
+            await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
+            return Ok(viewModel);
         }
 
         [HttpGet("friendlink/edit/{id:guid}")]
@@ -375,25 +367,25 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("friendlink/edit")]
-        public async Task<IActionResult> EditFriendLink(FriendLinkEditViewModel viewModel)
+        public async Task<IActionResult> EditFriendLink([FromBody] FriendLinkEditViewModel viewModel)
         {
-            try
-            {
-                await _friendLinkService.UpdateAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
-                return Json(viewModel);
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError(string.Empty, e.Message);
-                return ServerError();
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            await _friendLinkService.UpdateAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
+            return Ok(viewModel);
         }
 
-        [HttpPost("friendlink/delete")]
+        [HttpDelete("friendlink/{id:guid}")]
         public async Task<IActionResult> DeleteFriendLink(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(id), "value is empty");
+                return BadRequest(ModelState);
+            }
+
             await _friendLinkService.DeleteAsync(id);
-            return Json(id);
+            return Ok();
         }
 
         #endregion

@@ -19,28 +19,6 @@
             });
         });
 
-        function deleteFriendLink(friendlinkid) {
-            $(`#span-processing-${friendlinkid}`).show();
-            ajaxPostWithCSRFToken("friendlink/delete", { id: friendlinkid }, function (data) {
-                $(`#tr-${data}`).hide();
-            });
-        }
-
-        function initCreateFriendLink() {
-            $("#FriendLinkEditViewModel_Id").val(emptyGuid);
-            $("#edit-form")[0].reset();
-            $('#editFriendlinkModal').modal();
-        }
-
-        function editFriendLink(id) {
-            $.get(`friendlink/edit/${id}`, function (data) {
-                $("#FriendLinkEditViewModel_Id").val(data.id);
-                $("#FriendLinkEditViewModel_Title").val(data.title);
-                $("#FriendLinkEditViewModel_LinkUrl").val(data.linkUrl);
-                $("#editFriendlinkModal").modal();
-            });
-        }
-
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
                 var action = '';
@@ -52,13 +30,13 @@
                     action = "edit";
                 }
 
-                ajaxPostWithCSRFToken(`friendlink/${action}`,
+                callApi(`/admin/settings/friendlink/${action}`, 'POST',
                     {
                         "Id": $("#FriendLinkEditViewModel_Id").val(),
                         "Title": $("#FriendLinkEditViewModel_Title").val(),
                         "LinkUrl": $("#FriendLinkEditViewModel_LinkUrl").val()
                     },
-                    function (data) {
+                    (resp) => {
                         $("#edit-form")[0].reset();
                         $("#editFriendlinkModal").modal('hide');
                         window.location.reload();

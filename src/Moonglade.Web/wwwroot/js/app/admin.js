@@ -409,3 +409,36 @@ function restorePost(postid) {
             toastr.success('Post restored');
         });
 }
+
+function deleteFriendLink(friendlinkid) {
+    $(`#span-processing-${friendlinkid}`).show();
+
+    callApi(`/admin/settings/friendlink/${friendlinkid}`, 'DELETE', {},
+        (resp) => {
+            $(`#tr-${friendlinkid}`).hide();
+        });
+}
+
+function deleteMenu(menuid) {
+    $(`#span-processing-${menuid}`).show();
+
+    callApi(`/api/menu/${menuid}`, 'DELETE', {},
+        (resp) => {
+            $(`#tr-${menuid}`).hide();
+        });
+}
+
+function initCreateFriendLink() {
+    $("#FriendLinkEditViewModel_Id").val(emptyGuid);
+    $("#edit-form")[0].reset();
+    $('#editFriendlinkModal').modal();
+}
+
+function editFriendLink(id) {
+    $.get(`/admin/settings/friendlink/edit/${id}`, function (data) {
+        $("#FriendLinkEditViewModel_Id").val(data.id);
+        $("#FriendLinkEditViewModel_Title").val(data.title);
+        $("#FriendLinkEditViewModel_LinkUrl").val(data.linkUrl);
+        $("#editFriendlinkModal").modal();
+    });
+}

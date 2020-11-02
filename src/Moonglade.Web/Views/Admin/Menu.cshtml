@@ -18,15 +18,6 @@
             });
         });
 
-        function deleteMenu(menuid) {
-            $(`#span-processing-${menuid}`).show();
-
-            callApi(`/api/menu/${menuid}`, 'DELETE', {},
-                (resp) => {
-                    $(`#tr-${menuid}`).hide();
-                });
-        }
-
         function initCreateMenu() {
             $("#MenuEditViewModel_Id").val(emptyGuid);
             $("#edit-form")[0].reset();
