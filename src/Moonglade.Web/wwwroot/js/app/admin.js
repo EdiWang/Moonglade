@@ -451,3 +451,17 @@ function deleteAccount(accountid) {
             $(`#tr-${accountid}`).hide();
         });
 }
+
+function deleteSelectedComments() {
+    var cids = [];
+    $('.chk-cid:checked').each(function () {
+        cids.push($(this).data('cid'));
+    });
+
+    callApi('/api/comment/delete', 'DELETE', cids,
+        (success) => {
+            $.each(cids, function (index, value) {
+                $(`#panel-comment-${value}`).slideUp();
+            });
+        });
+};

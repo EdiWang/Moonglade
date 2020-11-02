@@ -22,20 +22,6 @@
                     });
             });
 
-            $(".btn-delete-selected").click(function () {
-                var cids = [];
-                $('.chk-cid:checked').each(function () {
-                    cids.push($(this).data('cid'));
-                });
-
-                callApi('/api/comment/delete', 'DELETE', cids,
-                    (success) => {
-                        $.each(cids, function (index, value) {
-                            $(`#panel-comment-${value}`).slideUp();
-                        });
-                    });
-            });
-
             $(".btn-reply").click(function () {
                 var cid = $(this).data("commentid");
                 $(`#panel-comment-${cid} .reply-ui`).show();
@@ -86,6 +72,9 @@
 
 <h3>
     @Localizer["Comments"]
+    <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected float-right">
+        <span class="icon-bin"></span> @Localizer["Delete Selected Item(s)"]
+    </a>
 </h3>
 <hr />
 
@@ -97,12 +86,6 @@
 }
 else
 {
-    <div class="mb-3">
-        <a href="javascript:;" class="btn btn-outline-danger btn-delete-selected">
-            <span class="icon-bin"></span> @Localizer["Delete Selected Item(s)"]
-        </a>
-    </div>
-
     foreach (var item in Model)
     {
         <div id="panel-comment-@item.Id" class="card mb-4">
