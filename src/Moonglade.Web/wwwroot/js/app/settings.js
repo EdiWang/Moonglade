@@ -4,13 +4,13 @@
     $('#a-send-test-mail').attr('disabled', 'disabled');
 
     $.post('/admin/settings/send-test-email',
-            function (data) {
-                if (data.isSuccess) {
-                    window.toastr.success('Email is sent.');
-                } else {
-                    window.toastr.error(data.message);
-                }
-            })
+        function (data) {
+            if (data.isSuccess) {
+                window.toastr.success('Email is sent.');
+            } else {
+                window.toastr.error(data.message);
+            }
+        })
         .fail(function (xhr, status, error) {
             var responseJson = $.parseJSON(xhr.responseText);
             window.toastr.error(responseJson.message);
@@ -86,7 +86,7 @@ var onClearCacheFailed = function (context) {
 
 function tryRestartWebsite() {
     var nonce = Math.floor((Math.random() * 128) + 1);
-    ajaxPostWithCSRFToken('shutdown', { nonce }, function () { });
+    callApi(`shutdown`, 'POST', {}, () => { });
     $('.btn-restart').text('Wait...');
     $('.btn-restart').addClass('disabled');
     $('.btn-restart').attr('disabled', 'disabled');
@@ -98,7 +98,7 @@ function tryRestartWebsite() {
 
 function tryResetWebsite() {
     var nonce = Math.floor((Math.random() * 128) + 1);
-    ajaxPostWithCSRFToken('reset', { nonce }, function () { });
+    callApi(`reset`, 'POST', {}, () => { });
     $('.btn-reset').text('Wait...');
     $('.btn-reset').addClass('disabled');
     $('.btn-reset').attr('disabled', 'disabled');

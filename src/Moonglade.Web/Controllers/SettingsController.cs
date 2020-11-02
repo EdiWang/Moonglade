@@ -525,17 +525,17 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("shutdown")]
-        public IActionResult Shutdown(int nonce, [FromServices] IHostApplicationLifetime applicationLifetime)
+        public IActionResult Shutdown([FromServices] IHostApplicationLifetime applicationLifetime)
         {
-            Logger.LogWarning($"Shutdown is requested by '{User.Identity.Name}'. Nonce value: {nonce}");
+            Logger.LogWarning($"Shutdown is requested by '{User.Identity.Name}'.");
             applicationLifetime.StopApplication();
-            return Ok();
+            return Accepted();
         }
 
         [HttpPost("reset")]
-        public async Task<IActionResult> Reset(int nonce, [FromServices] IConfiguration configuration, [FromServices] IHostApplicationLifetime applicationLifetime)
+        public async Task<IActionResult> Reset([FromServices] IConfiguration configuration, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
-            Logger.LogWarning($"System reset is requested by '{User.Identity.Name}', IP: {HttpContext.Connection.RemoteIpAddress}. Nonce value: {nonce}");
+            Logger.LogWarning($"System reset is requested by '{User.Identity.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
 
             var conn = configuration.GetConnectionString(Constants.DbConnectionName);
             var setupHelper = new SetupRunner(conn);
@@ -544,7 +544,7 @@ namespace Moonglade.Web.Controllers
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "System reset.");
 
             applicationLifetime.StopApplication();
-            return Ok();
+            return Accepted();
         }
 
         #endregion
