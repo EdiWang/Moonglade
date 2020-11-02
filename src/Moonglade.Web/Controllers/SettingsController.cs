@@ -411,8 +411,7 @@ namespace Moonglade.Web.Controllers
                     using var bmp = new Bitmap(new MemoryStream(base64Chars));
                     if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
                     {
-                        // Normal uploaded avatar should be a 300x300 pixel image
-                        return Conflict("Avatar size must be 300x300.");
+                        return Conflict("Image size must be 300x300.");
                     }
                 }
                 catch (Exception e)
