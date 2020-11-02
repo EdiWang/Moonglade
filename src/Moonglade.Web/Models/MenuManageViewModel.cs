@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Model;
 
-namespace Moonglade.Web.Models.Settings
+namespace Moonglade.Web.Models
 {
     public class MenuManageViewModel
     {
