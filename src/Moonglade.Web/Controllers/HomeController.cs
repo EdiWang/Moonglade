@@ -44,6 +44,43 @@ namespace Moonglade.Web.Controllers
             }
         }
 
+        [Route("tags")]
+        public async Task<IActionResult> Tags([FromServices] TagService tagService)
+        {
+            try
+            {
+                var tags = await tagService.GetTagCountListAsync();
+                return View(tags);
+            }
+            catch (Exception e)
+            {
+                SetFriendlyErrorMessage();
+                Logger.LogError(e, e.Message);
+                return View();
+            }
+        }
+
+        [Route("tags/list/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        public async Task<IActionResult> TagList(string normalizedName, [FromServices] TagService tagService)
+        {
+            try
+            {
+                var tagResponse = tagService.Get(normalizedName);
+                if (tagResponse == null) return NotFound();
+
+                ViewBag.TitlePrefix = tagResponse.DisplayName;
+                var posts = await _postService.GetByTagAsync(tagResponse.Id);
+
+                return View(posts);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
+                SetFriendlyErrorMessage();
+                return View();
+            }
+        }
+
         [HttpGet("set-lang")]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {

@@ -61,8 +61,8 @@ else
                 if (weight >= 0)
                 {
                     <li class="d-inline-block">
-                        <a asp-controller="Tags"
-                           asp-action="List"
+                        <a asp-controller="Home"
+                           asp-action="TagList"
                            asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedName.ToLower())"
                            class="weight@(weight) d-block mr-2" title="@(tag.Degree)">
                             @tag.DisplayName.Replace("-", " ")

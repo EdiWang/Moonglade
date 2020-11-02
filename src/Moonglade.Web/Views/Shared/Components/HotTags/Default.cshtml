@@ -3,6 +3,6 @@
 <div class="toptags-list">
     @foreach (var item in Model)
     {
-        <a asp-controller="Tags" asp-action="List" asp-route-normalizedName="@item.NormalizedName" rel="@item.Degree" class="d-inline-block text-white">@item.DisplayName</a>
+        <a asp-controller="Home" asp-action="TagList" asp-route-normalizedName="@item.NormalizedName" rel="@item.Degree" class="d-inline-block text-white">@item.DisplayName</a>
     }
 </div>

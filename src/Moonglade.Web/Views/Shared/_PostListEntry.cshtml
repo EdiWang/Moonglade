@@ -33,8 +33,8 @@
             <div class="post-summary-tags pt-2">
                 @foreach (var tag in Model.Tags)
                 {
-                    <a asp-controller="Tags"
-                       asp-action="List"
+                    <a asp-controller="Home"
+                       asp-action="TagList"
                        asp-route-normalizedName="@tag.NormalizedName"
                        class="d-inline-block text-white mr-2">
                         @tag.DisplayName

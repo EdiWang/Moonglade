@@ -135,8 +135,8 @@
                         <span class="toptags-list">
                             @foreach (var item in Model.PostModel.Tags)
                             {
-                                <a asp-controller="Tags"
-                                   asp-action="List"
+                                <a asp-controller="Home"
+                                   asp-action="TagList"
                                    asp-route-normalizedName="@item.NormalizedName" class="text-white">@item.DisplayName</a>
                             }
                         </span>
@@ -192,8 +192,8 @@
             <span class="toptags-list toptags-list-sm">
                 @foreach (var item in Model.PostModel.Tags)
                 {
-                    <a asp-controller="Tags"
-                       asp-action="List"
+                    <a asp-controller="Home"
+                       asp-action="TagList"
                        asp-route-normalizedName="@item.NormalizedName">@item.DisplayName</a>
                 }
             </span>
