@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\MoongladeCommon.props" />
+  <Import Project="..\Common.props" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
