@@ -16,7 +16,7 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/comment")]
+    [Route("api/[controller]")]
     public class CommentController : ControllerBase
     {
         #region Private Fields

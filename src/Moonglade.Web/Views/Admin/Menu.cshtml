@@ -20,9 +20,11 @@
 
         function deleteMenu(menuid) {
             $(`#span-processing-${menuid}`).show();
-            ajaxPostWithCSRFToken("/navmenu/delete", { id: menuid }, function (data) {
-                $(`#tr-${data}`).hide();
-            });
+
+            callApi(`/api/menu/${menuid}`, 'DELETE', {},
+                (resp) => {
+                    $(`#tr-${menuid}`).hide();
+                });
         }
 
         function initCreateMenu() {
@@ -32,17 +34,19 @@
         }
 
         function editMenu(id) {
-            $.get(`/navmenu/edit/${id}`, function (data) {
-                $("#MenuEditViewModel_Id").val(data.id);
-                $("#MenuEditViewModel_Title").val(data.title);
-                $("#MenuEditViewModel_Url").val(data.url);
-                $("#MenuEditViewModel_Icon").val(data.icon);
-                $("#MenuEditViewModel_DisplayOrder").val(data.displayOrder);
-                if (data.isOpenInNewTab) {
-                    $("#MenuEditViewModel_IsOpenInNewTab").prop('checked', 'checked');
-                }
-                $("#editMenuModal").modal();
-            });
+            callApi(`/api/menu/edit/${id}`, 'GET', {},
+                async (resp) => {
+                    var data = await resp.json();
+                    $("#MenuEditViewModel_Id").val(data.id);
+                    $("#MenuEditViewModel_Title").val(data.title);
+                    $("#MenuEditViewModel_Url").val(data.url);
+                    $("#MenuEditViewModel_Icon").val(data.icon);
+                    $("#MenuEditViewModel_DisplayOrder").val(data.displayOrder);
+                    if (data.isOpenInNewTab) {
+                        $("#MenuEditViewModel_IsOpenInNewTab").prop('checked', 'checked');
+                    }
+                    $("#editMenuModal").modal();
+                });
         }
 
         $(".btn-submit").click(function () {
@@ -56,16 +60,16 @@
                     action = "edit";
                 }
 
-                ajaxPostWithCSRFToken(`/navmenu/${action}`,
+                callApi(`/api/menu/${action}`, 'POST',
                     {
                         "Id": $("#MenuEditViewModel_Id").val(),
                         "Title": $("#MenuEditViewModel_Title").val(),
                         "Url": $("#MenuEditViewModel_Url").val(),
                         "Icon": $("#MenuEditViewModel_Icon").val(),
-                        "DisplayOrder": $("#MenuEditViewModel_DisplayOrder").val(),
+                        "DisplayOrder": parseInt($("#MenuEditViewModel_DisplayOrder").val()),
                         "IsOpenInNewTab": $('#MenuEditViewModel_IsOpenInNewTab').prop('checked')
                     },
-                    function (data) {
+                    (resp) => {
                         $("#edit-form")[0].reset();
                         $("#editMenuModal").modal('hide');
                         window.location.reload();

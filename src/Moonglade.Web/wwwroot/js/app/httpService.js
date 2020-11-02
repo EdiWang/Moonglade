@@ -46,7 +46,7 @@ function callApi(uri, method, request, funcDone) {
             'XSRF-TOKEN': csrfValue
         },
         credentials: 'include',
-        body: JSON.stringify(request)
+        body: method === 'GET' ? null : JSON.stringify(request)
     }).then(async (response) => {
         if (!response.ok) {
             await handleHttpError(response);

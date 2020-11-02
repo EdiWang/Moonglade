@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Web.Models.Settings;
@@ -10,63 +10,47 @@ using Moonglade.Web.Models.Settings;
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
-    [Route("navmenu")]
-    public class MenuController : BlogController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MenuController : ControllerBase
     {
         private readonly MenuService _menuService;
 
-        public MenuController(
-            ILogger<ControllerBase> logger,
-            MenuService menuService) : base(logger)
+        public MenuController(MenuService menuService)
         {
             _menuService = menuService;
         }
 
         [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Create(MenuEditViewModel model)
         {
-            try
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var request = new CreateMenuRequest
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                DisplayOrder = model.DisplayOrder,
+                Icon = model.Icon,
+                Title = model.Title,
+                Url = model.Url,
+                IsOpenInNewTab = model.IsOpenInNewTab
+            };
 
-                var request = new CreateMenuRequest
-                {
-                    DisplayOrder = model.DisplayOrder,
-                    Icon = model.Icon,
-                    Title = model.Title,
-                    Url = model.Url,
-                    IsOpenInNewTab = model.IsOpenInNewTab
-                };
-
-                var response = await _menuService.CreateAsync(request);
-                return Json(response);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Create Nav Menu.");
-
-                ModelState.AddModelError("", e.Message);
-                return ServerError(e.Message);
-            }
+            var response = await _menuService.CreateAsync(request);
+            return Ok(response);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            try
-            {
-                Logger.LogInformation($"Deleting Menu id: {id}");
-                await _menuService.DeleteAsync(id);
-                return Json(id);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Delete Menu.");
-                return ServerError();
-            }
+            await _menuService.DeleteAsync(id);
+            return Ok();
         }
 
         [HttpGet("edit/{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit(Guid id)
         {
             var menu = await _menuService.GetAsync(id);
@@ -82,36 +66,27 @@ namespace Moonglade.Web.Controllers
                 IsOpenInNewTab = menu.IsOpenInNewTab
             };
 
-            return Json(model);
+            return Ok(model);
         }
 
-        [Authorize]
         [HttpPost("edit")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(MenuEditViewModel model)
         {
-            try
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var request = new EditMenuRequest(model.Id)
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                Title = model.Title,
+                DisplayOrder = model.DisplayOrder,
+                Icon = model.Icon,
+                Url = model.Url,
+                IsOpenInNewTab = model.IsOpenInNewTab
+            };
 
-                var request = new EditMenuRequest(model.Id)
-                {
-                    Title = model.Title,
-                    DisplayOrder = model.DisplayOrder,
-                    Icon = model.Icon,
-                    Url = model.Url,
-                    IsOpenInNewTab = model.IsOpenInNewTab
-                };
-
-                var response = await _menuService.UpdateAsync(request);
-                return Json(response);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Editing Menu.");
-
-                ModelState.AddModelError("", e.Message);
-                return ServerError();
-            }
+            await _menuService.UpdateAsync(request);
+            return Ok();
         }
     }
 }
