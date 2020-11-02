@@ -22,9 +22,9 @@ function ImageUploader(targetName, hw, imgMimeType) {
             var rawData = { base64Img: imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '') };
             $.ajax({
                 type: 'POST',
-                headers: { csrfFieldName: $(`input[name=${csrfFieldName}]`).val() },
+                headers: { 'XSRF-TOKEN': $(`input[name=${csrfFieldName}]`).val() },
                 url: uploadUrl,
-                data: makeCSRFExtendedData(rawData),
+                data: rawData,
                 success: function (data) {
                     console.info(data);
                     $(`#${targetName}modal`).modal('hide');
