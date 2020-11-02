@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Microsoft.AspNetCore.Authorization;
@@ -117,16 +118,14 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Reply(
-            [FromForm] Guid commentId, [FromForm] string replyContent, [FromServices] LinkGenerator linkGenerator)
+        public async Task<IActionResult> Reply(ReplyRequest request, [FromServices] LinkGenerator linkGenerator)
         {
-            if (commentId == Guid.Empty) ModelState.AddModelError(nameof(commentId), "value is empty");
-            if (string.IsNullOrWhiteSpace(replyContent)) ModelState.AddModelError(nameof(replyContent), "value is empty");
+            if (request.CommentId == Guid.Empty) ModelState.AddModelError(nameof(request.CommentId), "value is empty");
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            var reply = await _commentService.AddReply(commentId, replyContent);
+            var reply = await _commentService.AddReply(request.CommentId, request.ReplyContent);
             if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
             {
                 var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
@@ -151,5 +150,13 @@ namespace Moonglade.Web.Controllers
                 });
             return link;
         }
+    }
+
+    public class ReplyRequest
+    {
+        public Guid CommentId { get; set; }
+
+        [Required]
+        public string ReplyContent { get; set; }
     }
 }

@@ -47,12 +47,18 @@
                 var cid = $(this).data("commentid");
                 var replyContent = $(`#replycontent-${cid}`).val();
 
-                ajaxPostWithCSRFToken("/api/comment/reply", { commentId: cid, replyContent: replyContent }, function (data) {
-                    $(`#panel-comment-${data.commentId} .reply-ui`).slideUp();
-                    $(`#panel-comment-${data.commentId} .reply-list`).prepend(
-                        `<hr /><div class="reply-container"><div><strong>Reply</strong><span class="pull-right text-muted">${data.replyTimeUtc
-                        }</span></div><p>${data.replyContentHtml}</p></div>`);
-                });
+                callApi('/api/comment/reply', 'POST',
+                    {
+                        commentId: cid,
+                        replyContent: replyContent
+                    },
+                    async (resp) => {
+                        var data = await resp.json();
+                        $(`#panel-comment-${data.commentId} .reply-ui`).slideUp();
+                        $(`#panel-comment-${data.commentId} .reply-list`).prepend(
+                            `<hr /><div class="reply-container"><div><strong>Reply</strong><span class="pull-right text-muted">${data.replyTimeUtc
+                            }</span></div><p>${data.replyContentHtml}</p></div>`);
+                    });
             });
 
             $(".btn-approve").click(function () {
