@@ -2,35 +2,36 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 
 namespace Moonglade.Web.Controllers
 {
-    [Route("tags")]
-    public class TagsController : BlogController
+    [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TagsController : ControllerBase
     {
         private readonly TagService _tagService;
 
-        public TagsController(
-            ILogger<TagsController> logger,
-            TagService tagService)
-            : base(logger)
+        public TagsController(TagService tagService)
         {
             _tagService = tagService;
         }
 
-        [Route("get-all-tag-names")]
-        public async Task<IActionResult> GetAllTagNames()
+        [HttpGet("names")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Names()
         {
             var tagNames = await _tagService.GetAllNamesAsync();
-            return Json(tagNames);
+            return Ok(tagNames);
         }
 
-        [Authorize]
         [HttpPost("update")]
-        public async Task<IActionResult> Update([FromBody] EditTagRequest request)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(EditTagRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -38,10 +39,17 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpDelete("{tagId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int tagId)
         {
+            if (tagId <= 0 || tagId > 9999)
+            {
+                ModelState.AddModelError(nameof(tagId), "Value out of range");
+                return BadRequest(ModelState);
+            }
+
             await _tagService.DeleteAsync(tagId);
             return Ok();
         }

@@ -15,7 +15,7 @@
             var tagid = $(this).data("tagid");
             var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
             if (cfm) {
-                callApi(`/tags/${tagid}`, 'DELETE', {},
+                callApi(`/api/tags/${tagid}`, 'DELETE', {},
                     (resp) => {
                         $(`#li-tag-${tagid}`).hide();
                         toastr.success('Tag deleted');
@@ -27,7 +27,7 @@
             var tagId = $(this).data("tagid");
             var newTagName = $(this).text().trim();
 
-            callApi(`/tags/update`, 'POST', {
+            callApi(`/api/tags/update`, 'POST', {
                 tagId: tagId,
                 newName: newTagName
             }, (resp) => {

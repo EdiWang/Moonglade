@@ -229,7 +229,7 @@ var postEditor = {
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             prefetch: {
-                url: '/tags/get-all-tag-names',
+                url: '/api/tags/names',
                 filter: function (list) {
                     return $.map(list, function (tagname) {
                         return { name: tagname };
