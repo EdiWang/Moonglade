@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
@@ -11,46 +12,43 @@ using Moonglade.Web.Models;
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
-    [Route("category")]
-    public class CategoryController : BlogController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CategoryController : ControllerBase
     {
+        private readonly ILogger<CategoryController> _logger;
         private readonly CategoryService _categoryService;
+        private static string DataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
 
         public CategoryController(ILogger<CategoryController> logger, CategoryService categoryService)
-            : base(logger)
         {
+            _logger = logger;
             _categoryService = categoryService;
         }
 
-        [HttpPost("manage/create")]
+        [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CategoryEditViewModel model)
         {
-            try
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var request = new CreateCategoryRequest
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                RouteName = model.RouteName,
+                Note = model.Note,
+                DisplayName = model.DisplayName
+            };
 
-                var request = new CreateCategoryRequest
-                {
-                    RouteName = model.RouteName,
-                    Note = model.Note,
-                    DisplayName = model.DisplayName
-                };
+            await _categoryService.CreateAsync(request);
+            DeleteOpmlFile();
 
-                await _categoryService.CreateAsync(request);
-                DeleteOpmlFile();
-
-                return Json(model);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Create Category.");
-
-                ModelState.AddModelError("", e.Message);
-                return ServerError(e.Message);
-            }
+            return Ok(model);
         }
 
-        [HttpGet("manage/edit/{id:guid}")]
+        [HttpGet("edit/{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit(Guid id)
         {
             var cat = await _categoryService.GetAsync(id);
@@ -64,53 +62,44 @@ namespace Moonglade.Web.Controllers
                 Note = cat.Note
             };
 
-            return Json(model);
+            return Ok(model);
         }
 
-        [HttpPost("manage/edit")]
+        [HttpPost("edit")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(CategoryEditViewModel model)
         {
-            try
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var request = new EditCategoryRequest(model.Id)
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                RouteName = model.RouteName,
+                Note = model.Note,
+                DisplayName = model.DisplayName
+            };
 
-                var request = new EditCategoryRequest(model.Id)
-                {
-                    RouteName = model.RouteName,
-                    Note = model.Note,
-                    DisplayName = model.DisplayName
-                };
+            await _categoryService.UpdateAsync(request);
 
-                await _categoryService.UpdateAsync(request);
-
-                DeleteOpmlFile();
-                return Json(model);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Create Category.");
-
-                ModelState.AddModelError("", e.Message);
-                return ServerError();
-            }
+            DeleteOpmlFile();
+            return Ok(model);
         }
 
-        [HttpPost("manage/delete")]
+        [HttpDelete("delete/{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            try
+            if (id == Guid.Empty)
             {
-                Logger.LogInformation($"Deleting category id: {id}");
-                await _categoryService.DeleteAsync(id);
-                DeleteOpmlFile();
+                ModelState.AddModelError(nameof(id), "value is empty");
+                return BadRequest(ModelState);
+            }
 
-                return Json(id);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error Delete Category.");
-                return ServerError();
-            }
+            await _categoryService.DeleteAsync(id);
+            DeleteOpmlFile();
+
+            return Ok();
         }
 
         private void DeleteOpmlFile()
@@ -119,12 +108,12 @@ namespace Moonglade.Web.Controllers
             {
                 var path = Path.Join($"{DataDirectory}", $"{Constants.OpmlFileName}");
                 System.IO.File.Delete(path);
-                Logger.LogInformation("OPML file is deleted.");
+                _logger.LogInformation("OPML file is deleted.");
             }
             catch (Exception e)
             {
                 // Log the error and do not block the application
-                Logger.LogError(e, "Error Delete OPML File.");
+                _logger.LogError(e, "Error Delete OPML File.");
             }
         }
     }

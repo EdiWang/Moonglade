@@ -21,9 +21,12 @@
 
         function deleteCat(catid) {
             $(`#span-processing-${catid}`).show();
-            ajaxPostWithCSRFToken("/category/manage/delete", { id: catid }, function (data) {
-                $(`#card-${data}`).hide();
-            });
+
+            callApi(`/api/category/delete/${catid}`, 'DELETE', {},
+                (resp) => {
+                    $(`#card-${catid}`).hide();
+                    toastr.success('Category deleted');
+                });
         }
 
         function initCreateCategory() {
@@ -33,13 +36,15 @@
         }
 
         function editCat(id) {
-            $.get(`/category/manage/edit/${id}`, function (data) {
-                $("#CategoryEditViewModel_Id").val(data.id);
-                $("#CategoryEditViewModel_RouteName").val(data.routeName);
-                $("#CategoryEditViewModel_DisplayName").val(data.displayName);
-                $("#CategoryEditViewModel_Note").val(data.note);
-                $("#editCatModal").modal();
-            });
+            callApi(`/api/category/edit/${id}`, 'GET', {},
+                async (resp) => {
+                    var data = await resp.json();
+                    $("#CategoryEditViewModel_Id").val(data.id);
+                    $("#CategoryEditViewModel_RouteName").val(data.routeName);
+                    $("#CategoryEditViewModel_DisplayName").val(data.displayName);
+                    $("#CategoryEditViewModel_Note").val(data.note);
+                    $("#editCatModal").modal();
+                });
         }
 
         $(".btn-submit").click(function () {
@@ -53,14 +58,14 @@
                     action = "edit";
                 }
 
-                ajaxPostWithCSRFToken(`/category/manage/${action}`,
+                callApi(`/api/category/${action}`, 'POST',
                     {
                         "Id": $("#CategoryEditViewModel_Id").val(),
                         "RouteName": $("#CategoryEditViewModel_RouteName").val(),
                         "DisplayName": $("#CategoryEditViewModel_DisplayName").val(),
                         "Note": $("#CategoryEditViewModel_Note").val()
                     },
-                    function (data) {
+                    (resp) => {
                         $("#edit-form")[0].reset();
                         $("#editCatModal").modal('hide');
                         window.location.reload();
