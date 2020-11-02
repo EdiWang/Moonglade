@@ -170,21 +170,13 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("manage/delete")]
+        [HttpDelete("{pageId:guid}/{slug}")]
         public async Task<IActionResult> Delete(Guid pageId, string slug)
         {
-            try
-            {
-                await _pageService.DeleteAsync(pageId);
+            await _pageService.DeleteAsync(pageId);
 
-                _cache.Remove(CacheDivision.Page, slug.ToLower());
-                return Json(pageId);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error Delete CustomPage, Id: {pageId}.");
-                return ServerError();
-            }
+            _cache.Remove(CacheDivision.Page, slug.ToLower());
+            return Ok();
         }
 
         private static PageViewModel ToPageViewModel(Page page)

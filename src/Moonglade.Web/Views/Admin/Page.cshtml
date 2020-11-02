@@ -17,9 +17,14 @@
 
         function deletePage(pageid, slug) {
             $(`#span-processing-${pageid}`).show();
-            ajaxPostWithCSRFToken("/page/manage/delete", { pageid: pageid, slug: slug }, function (data) {
-                $(`#card-${data}`).hide();
-            });
+
+            callApi(`/page/${pageid}/${slug}`,
+                'DELETE',
+                {},
+                (resp) => {
+                    $(`#card-${pageid}`).hide();
+                    toastr.success("Page deleted");
+                });
         }
     </script>
 }
