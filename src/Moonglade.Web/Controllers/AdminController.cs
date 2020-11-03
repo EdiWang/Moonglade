@@ -107,7 +107,7 @@ namespace Moonglade.Web.Controllers
 
                         Logger.LogInformation(successMessage);
                         await _blogAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginSuccessLocal, successMessage);
-                        
+
                         return RedirectToAction("Index");
                     }
                     ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
@@ -183,19 +183,8 @@ namespace Moonglade.Web.Controllers
         [HttpGet("category")]
         public async Task<IActionResult> Category([FromServices] CategoryService categoryService)
         {
-            try
-            {
-                var cats = await categoryService.GetAllAsync();
-                return View(new CategoryManageViewModel { Categories = cats });
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, $"Error {nameof(Category)}()");
-
-                ViewBag.HasError = true;
-                ViewBag.ErrorMessage = e.Message;
-                return View(new CategoryManageViewModel());
-            }
+            var cats = await categoryService.GetAllAsync();
+            return View(new CategoryManageViewModel { Categories = cats });
         }
 
         [HttpGet("page")]

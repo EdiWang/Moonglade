@@ -52,42 +52,35 @@
 </h3>
 <hr />
 
-@if (null != ViewBag.HasError && ViewBag.HasError)
-{
-    <div class="alert alert-danger">
-        @ViewBag.ErrorMessage
-    </div>
-}
-else
-{
-    @Html.AntiForgeryToken()
 
-    <div class="card-columns card-columns-categories">
-        @foreach (var cat in Model.Categories.OrderBy(m => m.DisplayName))
-        {
-            <div class="card mb-4" id="card-@cat.Id">
-                <div class="card-body">
-                    <h6 class="card-title">
-                        <a asp-controller="Home" asp-action="CategoryList" asp-route-routeName="@cat.RouteName" target="_blank">
-                            @cat.DisplayName
-                        </a>
-                    </h6>
+@Html.AntiForgeryToken()
 
-                    <p class="mt-2 h-30px">
-                        @cat.Note
-                    </p>
+<div class="card-columns card-columns-categories">
+    @foreach (var cat in Model.Categories.OrderBy(m => m.DisplayName))
+    {
+        <div class="card mb-4" id="card-@cat.Id">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <a asp-controller="Home" asp-action="CategoryList" asp-route-routeName="@cat.RouteName" target="_blank">
+                        @cat.DisplayName
+                    </a>
+                </h6>
 
-                    <small class="text-muted">@cat.RouteName</small>
-                </div>
-                <div class="card-footer">
-                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-primary btn-edit"><span class="icon-pencil"></span></a>
-                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
-                    <span id="span-processing-@cat.Id" style="display: none">...</span>
-                </div>
+                <p class="mt-2 h-30px">
+                    @cat.Note
+                </p>
+
+                <small class="text-muted">@cat.RouteName</small>
             </div>
-        }
-    </div>
-}
+            <div class="card-footer">
+                <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-primary btn-edit"><span class="icon-pencil"></span></a>
+                <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
+                <span id="span-processing-@cat.Id" style="display: none">...</span>
+            </div>
+        </div>
+    }
+</div>
+
 
 <div class="modal fade" id="editCatModal" tabindex="-1" role="dialog" aria-labelledby="editCatModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
