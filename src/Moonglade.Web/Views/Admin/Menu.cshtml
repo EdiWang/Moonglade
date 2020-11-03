@@ -5,40 +5,14 @@
 
 @section scripts{
     <script>
-        $(function () {
-            $(".btn-delete").click(function () {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deleteMenu($(this).data("menuid"));
-                }
-            });
-
-            $(".btn-edit").click(function () {
-                editMenu($(this).data("menuid"));
-            });
+        $(".btn-delete").click(function () {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) deleteMenu($(this).data("menuid"));
         });
 
-        function initCreateMenu() {
-            $("#MenuEditViewModel_Id").val(emptyGuid);
-            $("#edit-form")[0].reset();
-            $('#editMenuModal').modal();
-        }
-
-        function editMenu(id) {
-            callApi(`/api/menu/edit/${id}`, 'GET', {},
-                async (resp) => {
-                    var data = await resp.json();
-                    $("#MenuEditViewModel_Id").val(data.id);
-                    $("#MenuEditViewModel_Title").val(data.title);
-                    $("#MenuEditViewModel_Url").val(data.url);
-                    $("#MenuEditViewModel_Icon").val(data.icon);
-                    $("#MenuEditViewModel_DisplayOrder").val(data.displayOrder);
-                    if (data.isOpenInNewTab) {
-                        $("#MenuEditViewModel_IsOpenInNewTab").prop('checked', 'checked');
-                    }
-                    $("#editMenuModal").modal();
-                });
-        }
+        $(".btn-edit").click(function () {
+            editMenu($(this).data("menuid"));
+        });
 
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {

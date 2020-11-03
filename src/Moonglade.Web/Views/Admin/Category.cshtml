@@ -6,46 +6,14 @@
 
 @section scripts{
     <script>
-        $(function () {
-            $(".btn-delete").click(function () {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deleteCat($(this).data("catid"));
-                }
-            });
-
-            $(".btn-edit").click(function () {
-                editCat($(this).data("catid"));
-            });
+        $(".btn-delete").click(function () {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) deleteCat($(this).data("catid"));
         });
 
-        function deleteCat(catid) {
-            $(`#span-processing-${catid}`).show();
-
-            callApi(`/api/category/delete/${catid}`, 'DELETE', {},
-                (resp) => {
-                    $(`#card-${catid}`).hide();
-                    toastr.success('Category deleted');
-                });
-        }
-
-        function initCreateCategory() {
-            $("#CategoryEditViewModel_Id").val(emptyGuid);
-            $("#edit-form")[0].reset();
-            $('#editCatModal').modal();
-        }
-
-        function editCat(id) {
-            callApi(`/api/category/edit/${id}`, 'GET', {},
-                async (resp) => {
-                    var data = await resp.json();
-                    $("#CategoryEditViewModel_Id").val(data.id);
-                    $("#CategoryEditViewModel_RouteName").val(data.routeName);
-                    $("#CategoryEditViewModel_DisplayName").val(data.displayName);
-                    $("#CategoryEditViewModel_Note").val(data.note);
-                    $("#editCatModal").modal();
-                });
-        }
+        $(".btn-edit").click(function () {
+            editCat($(this).data("catid"));
+        });
 
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {

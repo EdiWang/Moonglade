@@ -9,23 +9,9 @@
         $(function () {
             $(".btn-delete").click(function () {
                 var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deletePage($(this).data("pageid"), $(this).data("slug"));
-                }
+                if (cfm) deletePage($(this).data("pageid"), $(this).data("slug"));
             });
         });
-
-        function deletePage(pageid, slug) {
-            $(`#span-processing-${pageid}`).show();
-
-            callApi(`/page/${pageid}/${slug}`,
-                'DELETE',
-                {},
-                (resp) => {
-                    $(`#card-${pageid}`).hide();
-                    toastr.success("Page deleted");
-                });
-        }
     </script>
 }
 

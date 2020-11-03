@@ -13,26 +13,17 @@
 
 @section scripts{
     <script>
-        $(function () {
-            $(".btn-delete").click(function () {
-                deletePingback($(this).data("pingbackid"));
-            });
+        $(".btn-delete").click(function () {
+            deletePingback($(this).data("pingbackid"));
+        });
 
+        $(function () {
             $("#pingbacks-table").DataTable({
                 "order": [[3, "desc"]],
                 "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
                 "pageLength": 10
             });
         });
-
-        function deletePingback(pingbackId) {
-            $(`#span-processing-${pingbackId}`).show();
-
-            callApi(`/pingback/${pingbackId}`, 'DELETE', {},
-                (resp) => {
-                    $(`#pingback-box-${pingbackId}`).slideUp();
-                });
-        }
     </script>
 }
 

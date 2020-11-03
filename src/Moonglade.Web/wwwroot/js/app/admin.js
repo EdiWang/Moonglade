@@ -464,4 +464,75 @@ function deleteSelectedComments() {
                 $(`#panel-comment-${value}`).slideUp();
             });
         });
-};
+}
+
+function initCreateCategory() {
+    $("#CategoryEditViewModel_Id").val(emptyGuid);
+    $("#edit-form")[0].reset();
+    $('#editCatModal').modal();
+}
+
+function editCat(id) {
+    callApi(`/api/category/edit/${id}`, 'GET', {},
+        async (resp) => {
+            var data = await resp.json();
+            $("#CategoryEditViewModel_Id").val(data.id);
+            $("#CategoryEditViewModel_RouteName").val(data.routeName);
+            $("#CategoryEditViewModel_DisplayName").val(data.displayName);
+            $("#CategoryEditViewModel_Note").val(data.note);
+            $("#editCatModal").modal();
+        });
+}
+
+function deleteCat(catid) {
+    $(`#span-processing-${catid}`).show();
+
+    callApi(`/api/category/delete/${catid}`, 'DELETE', {},
+        (resp) => {
+            $(`#card-${catid}`).hide();
+            toastr.success('Category deleted');
+        });
+}
+
+function initCreateMenu() {
+    $("#MenuEditViewModel_Id").val(emptyGuid);
+    $("#edit-form")[0].reset();
+    $('#editMenuModal').modal();
+}
+
+function editMenu(id) {
+    callApi(`/api/menu/edit/${id}`, 'GET', {},
+        async (resp) => {
+            var data = await resp.json();
+            $("#MenuEditViewModel_Id").val(data.id);
+            $("#MenuEditViewModel_Title").val(data.title);
+            $("#MenuEditViewModel_Url").val(data.url);
+            $("#MenuEditViewModel_Icon").val(data.icon);
+            $("#MenuEditViewModel_DisplayOrder").val(data.displayOrder);
+            if (data.isOpenInNewTab) {
+                $("#MenuEditViewModel_IsOpenInNewTab").prop('checked', 'checked');
+            }
+            $("#editMenuModal").modal();
+        });
+}
+
+function deletePage(pageid, slug) {
+    $(`#span-processing-${pageid}`).show();
+
+    callApi(`/page/${pageid}/${slug}`,
+        'DELETE',
+        {},
+        (resp) => {
+            $(`#card-${pageid}`).hide();
+            toastr.success("Page deleted");
+        });
+}
+
+function deletePingback(pingbackId) {
+    $(`#span-processing-${pingbackId}`).show();
+
+    callApi(`/pingback/${pingbackId}`, 'DELETE', {},
+        (resp) => {
+            $(`#pingback-box-${pingbackId}`).slideUp();
+        });
+}
