@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
@@ -13,9 +14,11 @@ using Moonglade.Pingback.Mvc;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiController]
     [Route("pingback")]
-    public class PingbackController : BlogController
+    public class PingbackController : ControllerBase
     {
+        private readonly ILogger<PingbackController> _logger;
         private readonly IBlogConfig _blogConfig;
         private readonly IPingbackService _pingbackService;
         private readonly IBlogNotificationClient _notificationClient;
@@ -25,20 +28,20 @@ namespace Moonglade.Web.Controllers
             IBlogConfig blogConfig,
             IPingbackService pingbackService,
             IBlogNotificationClient notificationClient)
-            : base(logger)
         {
+            _logger = logger;
             _blogConfig = blogConfig;
             _pingbackService = pingbackService;
             _notificationClient = notificationClient;
         }
 
-        [HttpPost("")]
+        [HttpPost]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Index()
         {
             if (!_blogConfig.AdvancedSettings.EnablePingBackReceive)
             {
-                Logger.LogInformation("Pingback receive is disabled");
+                _logger.LogInformation("Pingback receive is disabled");
                 return Forbid();
             }
 
@@ -48,12 +51,13 @@ namespace Moonglade.Web.Controllers
             var response = await _pingbackService.ReceivePingAsync(requestBody, ip,
                 history => _notificationClient.NotifyPingbackAsync(history));
 
-            Logger.LogInformation($"Pingback Processor Response: {response}");
+            _logger.LogInformation($"Pingback Processor Response: {response}");
             return new PingbackResult(response);
         }
 
         [Authorize]
         [HttpDelete("{pingbackId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(Guid pingbackId, [FromServices] IBlogAudit blogAudit)
         {
             await _pingbackService.DeletePingbackHistory(pingbackId);
