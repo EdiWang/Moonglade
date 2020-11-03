@@ -18,7 +18,6 @@ using Moonglade.Core;
 using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Web.Models;
 using Moonglade.Web.SiteIconGenerator;
 using NUglify;
 
@@ -254,6 +253,10 @@ namespace Moonglade.Web.Controllers
         [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
         public IActionResult SiteIcon(string filename)
         {
+            // BUG:
+            // When `RefreshSiteIconCache()` is not finished, not all icons are there
+            // And the second request hits this `if` statement
+            // It is `false`, so the requested filename will be 404 because it's not there at this time
             if (!Directory.Exists(SiteIconDirectory) || !Directory.GetFiles(SiteIconDirectory).Any())
             {
                 RefreshSiteIconCache();
