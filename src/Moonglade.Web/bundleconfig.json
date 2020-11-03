@@ -8,7 +8,7 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/dist/app-js-bundle.js",
+    "outputFileName": "wwwroot/js/dist/app-bundle.js",
     "inputFiles": [
       "wwwroot/js/3rd/jquery.min.js",
       "wwwroot/js/3rd/bootstrap.bundle.min.js",
@@ -22,7 +22,7 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/dist/admin-js-bundle.js",
+    "outputFileName": "wwwroot/js/dist/admin-bundle.js",
     "inputFiles": [
       "wwwroot/js/3rd/jquery.validate.min.js",
       "wwwroot/js/3rd/jquery.validate.unobtrusive.min.js",

@@ -63,7 +63,12 @@
     <link type="application/opensearchdescription+xml" rel="search" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/opensearch" />
     <partial name="_Favicons" />
     <link href="~/css/mooglade-css-bundle.min.css" rel="stylesheet" asp-append-version="true" />
-    <script src="~/js/dist/app-js-bundle.min.js" asp-append-version="true"></script>
+    <environment exclude="Development">
+        <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
+    </environment>
+    <environment include="Development">
+        <script src="~/js/dist/app-bundle.js" asp-append-version="true"></script>
+    </environment>
     @await RenderSectionAsync("head", false)
     <environment include="Production">
         @if (!(bool)Context.Items["DNT"])
