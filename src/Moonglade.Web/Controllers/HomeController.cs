@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -106,6 +107,46 @@ namespace Moonglade.Web.Controllers
 
             var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pageSize, postCount);
             return View(postsAsIPagedList);
+        }
+
+        [Route("archive")]
+        public async Task<IActionResult> Archive([FromServices] PostArchiveService postArchiveService)
+        {
+            try
+            {
+                var archives = await postArchiveService.ListAsync();
+                return View(archives);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
+                SetFriendlyErrorMessage();
+                return View();
+            }
+        }
+
+        [Route("archive/{year:int:length(4)}")]
+        [Route("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
+        public async Task<IActionResult> ArchiveList([FromServices] PostArchiveService postArchiveService, int year, int? month)
+        {
+            if (year > DateTime.UtcNow.Year) return BadRequest();
+
+            IReadOnlyList<PostListEntry> model;
+
+            if (null != month)
+            {
+                // {year}/{month}
+                ViewBag.ArchiveInfo = $"{year}.{month}";
+                model = await postArchiveService.ListPostsAsync(year, month.Value);
+            }
+            else
+            {
+                // {year}
+                ViewBag.ArchiveInfo = $"{year}";
+                model = await postArchiveService.ListPostsAsync(year);
+            }
+
+            return View(model);
         }
 
         [HttpGet("set-lang")]
