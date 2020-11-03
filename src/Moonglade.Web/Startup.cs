@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
+using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.DataPorting;
 using Moonglade.Model;
@@ -188,8 +189,7 @@ namespace Moonglade.Web
                         EnvironmentTags = Utils.GetEnvironmentTags()
                     };
 
-                    var json = System.Text.Json.JsonSerializer.Serialize(obj);
-                    await context.Response.WriteAsync(json, Encoding.UTF8);
+                    await context.Response.WriteAsync(obj.ToJson(), Encoding.UTF8);
                 });
                 endpoints.MapControllerRoute(
                     "default",

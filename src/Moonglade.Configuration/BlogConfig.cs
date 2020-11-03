@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -63,17 +62,16 @@ namespace Moonglade.Configuration
             if (_hasInitialized) return;
 
             var cfgDic = GetAllConfigurations();
-            var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            GeneralSettings = JsonSerializer.Deserialize<GeneralSettings>(cfgDic[nameof(GeneralSettings)], jsonOptions);
-            ContentSettings = JsonSerializer.Deserialize<ContentSettings>(cfgDic[nameof(ContentSettings)], jsonOptions);
-            NotificationSettings = JsonSerializer.Deserialize<NotificationSettings>(cfgDic[nameof(NotificationSettings)], jsonOptions);
-            FeedSettings = JsonSerializer.Deserialize<FeedSettings>(cfgDic[nameof(FeedSettings)], jsonOptions);
-            WatermarkSettings = JsonSerializer.Deserialize<WatermarkSettings>(cfgDic[nameof(WatermarkSettings)], jsonOptions);
-            FriendLinksSettings = JsonSerializer.Deserialize<FriendLinksSettings>(cfgDic[nameof(FriendLinksSettings)], jsonOptions);
-            AdvancedSettings = JsonSerializer.Deserialize<AdvancedSettings>(cfgDic[nameof(AdvancedSettings)], jsonOptions);
-            SecuritySettings = JsonSerializer.Deserialize<SecuritySettings>(cfgDic[nameof(SecuritySettings)], jsonOptions);
-            CustomStyleSheetSettings = JsonSerializer.Deserialize<CustomStyleSheetSettings>(cfgDic[nameof(CustomStyleSheetSettings)], jsonOptions);
+            GeneralSettings = cfgDic[nameof(GeneralSettings)].FromJson<GeneralSettings>();
+            ContentSettings = cfgDic[nameof(ContentSettings)].FromJson<ContentSettings>();
+            NotificationSettings = cfgDic[nameof(NotificationSettings)].FromJson<NotificationSettings>();
+            FeedSettings = cfgDic[nameof(FeedSettings)].FromJson<FeedSettings>();
+            WatermarkSettings = cfgDic[nameof(WatermarkSettings)].FromJson<WatermarkSettings>();
+            FriendLinksSettings = cfgDic[nameof(FriendLinksSettings)].FromJson<FriendLinksSettings>();
+            AdvancedSettings = cfgDic[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
+            SecuritySettings = cfgDic[nameof(SecuritySettings)].FromJson<SecuritySettings>();
+            CustomStyleSheetSettings = cfgDic[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
 
             _hasInitialized = true;
         }
@@ -91,10 +89,10 @@ namespace Moonglade.Configuration
 
                 await conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
             }
-            
-            var json = JsonSerializer.Serialize(blogSettings);
+
+            var json = blogSettings.ToJson();
             var task = SetConfiguration(typeof(T).Name, json);
-            
+
             try
             {
                 await task;
