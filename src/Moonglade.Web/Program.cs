@@ -19,7 +19,8 @@ namespace Moonglade.Web
                        $"x64 Process: {Environment.Is64BitProcess} \n" +
                        $"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
                        $"User Name: {Environment.UserName}";
-            WriteMessage(info);
+            Trace.WriteLine(info);
+            Console.WriteLine(info);
 
             var host = CreateHostBuilder(args).Build();
 
@@ -27,17 +28,16 @@ namespace Moonglade.Web
             {
                 var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<Program>();
+
                 try
                 {
-                    var tmp = CreateDataDirectories();
-                    AppDomain.CurrentDomain.SetData(Constants.DataDirectory, tmp);
-                    WriteMessage($"Using data directory '{tmp}'");
+                    var dataDir = CreateDataDirectories();
+                    AppDomain.CurrentDomain.SetData(Constants.DataDirectory, dataDir);
+                    logger.LogInformation($"Using data directory '{dataDir}'");
                 }
                 catch (Exception ex)
                 {
-                    WriteMessage(ex.Message);
-
-                    var logger = loggerFactory.CreateLogger<Program>();
                     logger.LogError(ex, "Moonglade start up boom boom");
                 }
             }
@@ -101,12 +101,6 @@ namespace Moonglade.Web
 
             CleanDataCache(moongladeAppDataPath);
             return moongladeAppDataPath;
-        }
-
-        private static void WriteMessage(string message)
-        {
-            Trace.WriteLine(message);
-            Console.WriteLine(message);
         }
     }
 }
