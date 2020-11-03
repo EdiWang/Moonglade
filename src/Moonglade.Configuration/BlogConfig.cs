@@ -91,11 +91,13 @@ namespace Moonglade.Configuration
 
                 await conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
             }
-
+            
+            var json = JsonSerializer.Serialize(blogSettings);
+            var task = SetConfiguration(typeof(T).Name, json);
+            
             try
             {
-                var json = JsonSerializer.Serialize(blogSettings);
-                await SetConfiguration(typeof(T).Name, json);
+                await task;
             }
             catch (Exception e)
             {
