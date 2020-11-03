@@ -74,9 +74,11 @@ namespace Moonglade.ImageStorage.Providers
 
         public async Task DeleteAsync(string fileName)
         {
+            var task = _container.DeleteBlobIfExistsAsync(fileName);
+
             try
             {
-                await _container.DeleteBlobIfExistsAsync(fileName);
+                await task;
             }
             catch (Exception e)
             {
@@ -94,10 +96,13 @@ namespace Moonglade.ImageStorage.Providers
             {
                 throw new ArgumentException("File extension is empty");
             }
+            
+            var existsTask = blobClient.ExistsAsync();
+            var downloadTask = blobClient.DownloadToAsync(memoryStream);
 
             try
             {
-                var exists = await blobClient.ExistsAsync();
+                var exists = await existsTask;
                 if (!exists)
                 {
                     _logger.LogWarning($"Blob {fileName} not exist.");
@@ -108,7 +113,7 @@ namespace Moonglade.ImageStorage.Providers
                     return null;
                 }
 
-                await blobClient.DownloadToAsync(memoryStream);
+                await downloadTask;
                 var arr = memoryStream.ToArray();
 
                 var fileType = extension.Replace(".", string.Empty);
