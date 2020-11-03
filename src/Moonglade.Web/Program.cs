@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
@@ -13,26 +14,35 @@ namespace Moonglade.Web
     {
         public static void Main(string[] args)
         {
-            try
-            {
-                var info = $"Moonglade Version {Utils.AppVersion}\n" +
-                           $"Directory: {Environment.CurrentDirectory} \n" +
-                           $"x64 Process: {Environment.Is64BitProcess} \n" +
-                           $"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
-                           $"User Name: {Environment.UserName}";
-                WriteMessage(info);
+            var info = $"Moonglade Version {Utils.AppVersion}\n" +
+                       $"Directory: {Environment.CurrentDirectory} \n" +
+                       $"x64 Process: {Environment.Is64BitProcess} \n" +
+                       $"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
+                       $"User Name: {Environment.UserName}";
+            WriteMessage(info);
 
-                var tmp = CreateDataDirectories();
-                AppDomain.CurrentDomain.SetData(Constants.DataDirectory, tmp);
-                WriteMessage($"Using data directory '{tmp}'");
+            var host = CreateHostBuilder(args).Build();
 
-                CreateHostBuilder(args).Build().Run();
-            }
-            catch (Exception ex)
+            using (var scope = host.Services.CreateScope())
             {
-                WriteMessage(ex.Message);
-                throw;
+                var services = scope.ServiceProvider;
+                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                try
+                {
+                    var tmp = CreateDataDirectories();
+                    AppDomain.CurrentDomain.SetData(Constants.DataDirectory, tmp);
+                    WriteMessage($"Using data directory '{tmp}'");
+                }
+                catch (Exception ex)
+                {
+                    WriteMessage(ex.Message);
+
+                    var logger = loggerFactory.CreateLogger<Program>();
+                    logger.LogError(ex, "Moonglade start up boom boom");
+                }
             }
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
