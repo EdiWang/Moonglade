@@ -1,15 +1,15 @@
-﻿using AspNetCoreRateLimit;
+﻿using System.Linq;
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Linq;
 
-namespace Moonglade.Web.Extensions
+namespace Moonglade.Web.Configuration
 {
     // Setup document: https://github.com/stefanprodan/AspNetCoreRateLimit/wiki/IpRateLimitMiddleware#setup
-    public static class AddRateLimitExtension
+    public static class ConfigureRateLimit
     {
         public static IServiceCollection AddRateLimit(this IServiceCollection services, IConfigurationSection rateLimitSection)
         {

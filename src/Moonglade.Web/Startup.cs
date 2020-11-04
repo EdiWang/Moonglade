@@ -28,7 +28,7 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 using Moonglade.Web.Authentication;
-using Moonglade.Web.Extensions;
+using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.SiteIconGenerator;
 
