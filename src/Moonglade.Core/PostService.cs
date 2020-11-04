@@ -372,7 +372,7 @@ namespace Moonglade.Core
                         var newTag = new TagEntity
                         {
                             DisplayName = item,
-                            NormalizedName = TagService.NormalizeTagName(item)
+                            NormalizedName = TagService.NormalizeTagName(item, AppSettings.TagNormalization)
                         };
 
                         tag = await _tagRepo.AddAsync(newTag);
@@ -442,7 +442,7 @@ namespace Moonglade.Core
                 await _tagRepo.AddAsync(new TagEntity
                 {
                     DisplayName = item,
-                    NormalizedName = TagService.NormalizeTagName(item)
+                    NormalizedName = TagService.NormalizeTagName(item, AppSettings.TagNormalization)
                 });
 
                 await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,

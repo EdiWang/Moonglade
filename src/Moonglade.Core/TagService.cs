@@ -4,11 +4,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
+using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
@@ -19,10 +21,11 @@ namespace Moonglade.Core
         private readonly IBlogAudit _audit;
 
         public TagService(
+            IOptions<AppSettings> settings,
             ILogger<TagService> logger,
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
-            IBlogAudit audit) : base(logger)
+            IBlogAudit audit) : base(logger, settings)
         {
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
@@ -51,7 +54,7 @@ namespace Moonglade.Core
             if (null == tag) return;
 
             tag.DisplayName = newName;
-            tag.NormalizedName = NormalizeTagName(newName);
+            tag.NormalizedName = NormalizeTagName(newName, AppSettings.TagNormalization);
             await _tagRepo.UpdateAsync(tag);
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
         }
@@ -103,19 +106,12 @@ namespace Moonglade.Core
             });
         }
 
-        private static readonly Tuple<string, string>[] TagNormalizeSourceTable =
-        {
-            Tuple.Create(".", "dot"),
-            Tuple.Create("#", "sharp"),
-            Tuple.Create(" ", "-")
-        };
-
-        public static string NormalizeTagName(string orgTagName)
+        public static string NormalizeTagName(string orgTagName, TagNormalization[] normalizations)
         {
             var result = new StringBuilder(orgTagName);
-            foreach (var (item1, item2) in TagNormalizeSourceTable)
+            foreach (var item in normalizations)
             {
-                result.Replace(item1, item2);
+                result.Replace(item.Source, item.Target);
             }
             return result.ToString().ToLower();
         }

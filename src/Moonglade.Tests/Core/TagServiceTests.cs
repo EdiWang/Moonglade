@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Moonglade.Core;
+using Moonglade.Model.Settings;
 using NUnit.Framework;
 
 namespace Moonglade.Tests.Core
@@ -14,7 +15,14 @@ namespace Moonglade.Tests.Core
         [TestCase("955", ExpectedResult = "955")]
         public string TestNormalizeTagName(string str)
         {
-            return TagService.NormalizeTagName(str);
+            var dic = new TagNormalization[]
+            {
+                new TagNormalization { Source = " ", Target = "-" },
+                new TagNormalization { Source = "#", Target = "sharp" },
+                new TagNormalization { Source = ".", Target = "dot" }
+            };
+
+            return TagService.NormalizeTagName(str, dic);
         }
 
         [TestCase("C", ExpectedResult = true)]

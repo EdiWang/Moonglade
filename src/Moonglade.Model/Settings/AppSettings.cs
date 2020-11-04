@@ -17,6 +17,7 @@ namespace Moonglade.Model.Settings
         public SiteMapSettings SiteMap { get; set; }
         public BlogTheme[] Themes { get; set; }
         public ManifestIcon[] ManifestIcons { get; set; }
+        public TagNormalization[] TagNormalization { get; set; }
 
         public AppSettings()
         {
@@ -31,5 +32,11 @@ namespace Moonglade.Model.Settings
             Themes = new BlogTheme[] { };
             ManifestIcons = new ManifestIcon[] { };
         }
+    }
+
+    public class TagNormalization
+    {
+        public string Source { get; set; }
+        public string Target { get; set; }
     }
 }
