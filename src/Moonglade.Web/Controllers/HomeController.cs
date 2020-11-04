@@ -29,57 +29,31 @@ namespace Moonglade.Web.Controllers
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            try
-            {
-                var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-                var posts = await _postService.GetPagedPostsAsync(pagesize, page);
-                var count = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts());
+            var pagesize = _blogConfig.ContentSettings.PostListPageSize;
+            var posts = await _postService.GetPagedPostsAsync(pagesize, page);
+            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts());
 
-                var list = new StaticPagedList<PostListEntry>(posts, page, pagesize, count);
-                return View(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error getting post list.");
-                return ServerError("Error getting post list.");
-            }
+            var list = new StaticPagedList<PostListEntry>(posts, page, pagesize, count);
+            return View(list);
         }
 
         [Route("tags")]
         public async Task<IActionResult> Tags([FromServices] TagService tagService)
         {
-            try
-            {
-                var tags = await tagService.GetTagCountListAsync();
-                return View(tags);
-            }
-            catch (Exception e)
-            {
-                SetFriendlyErrorMessage();
-                Logger.LogError(e, e.Message);
-                return View();
-            }
+            var tags = await tagService.GetTagCountListAsync();
+            return View(tags);
         }
 
         [Route("tags/list/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> TagList(string normalizedName, [FromServices] TagService tagService)
         {
-            try
-            {
-                var tagResponse = tagService.Get(normalizedName);
-                if (tagResponse == null) return NotFound();
+            var tagResponse = tagService.Get(normalizedName);
+            if (tagResponse == null) return NotFound();
 
-                ViewBag.TitlePrefix = tagResponse.DisplayName;
-                var posts = await _postService.GetByTagAsync(tagResponse.Id);
+            ViewBag.TitlePrefix = tagResponse.DisplayName;
+            var posts = await _postService.GetByTagAsync(tagResponse.Id);
 
-                return View(posts);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                SetFriendlyErrorMessage();
-                return View();
-            }
+            return View(posts);
         }
 
         [Route("category/list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
@@ -112,17 +86,8 @@ namespace Moonglade.Web.Controllers
         [Route("archive")]
         public async Task<IActionResult> Archive([FromServices] PostArchiveService postArchiveService)
         {
-            try
-            {
-                var archives = await postArchiveService.ListAsync();
-                return View(archives);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                SetFriendlyErrorMessage();
-                return View();
-            }
+            var archives = await postArchiveService.ListAsync();
+            return View(archives);
         }
 
         [Route("archive/{year:int:length(4)}")]

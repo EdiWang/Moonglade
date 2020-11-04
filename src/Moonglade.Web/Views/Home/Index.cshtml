@@ -16,22 +16,15 @@
 </h3>
 <hr />
 
-@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
+@if (Model.Any())
 {
-    <partial name="_ServerErrorMessage" />
+    <partial name="_PostList" />
 }
 else
 {
-    if (Model.Any())
-    {
-        <partial name="_PostList" />
-    }
-    else
-    {
-        <div class="alert alert-info">
-            @Localizer["No Posts."]
-        </div>
-    }
+    <div class="alert alert-info">
+        @Localizer["No Posts."]
+    </div>
 }
 
 <partial name="_LightSwitch" />

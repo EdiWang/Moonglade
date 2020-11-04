@@ -37,47 +37,40 @@
     }
 }
 
-@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
+<h3>
+    @Localizer["Tags"]
+</h3>
+<hr />
+
+@if (Model.Any())
 {
-    <partial name="_ServerErrorMessage" />
+    var tagMax = Model.Select(p => p.Degree).Max();
+
+    <ul class="list-unstyled tagCloud">
+        @foreach (var tag in Model.OrderBy(t => t.DisplayName))
+        {
+            var weightPercent = Convert.ToInt32(tag.Degree) * 1.0 / Convert.ToInt32(tagMax) * 100;
+            var weight = Weight(weightPercent);
+
+            if (weight >= 0)
+            {
+                <li class="d-inline-block">
+                    <a asp-controller="Home"
+                       asp-action="TagList"
+                       asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedName.ToLower())"
+                       class="weight@(weight) d-block mr-2" title="@(tag.Degree)">
+                        @tag.DisplayName.Replace("-", " ")
+                    </a>
+                </li>
+            }
+        }
+    </ul>
 }
 else
 {
-    <h3>
-        @Localizer["Tags"]
-    </h3>
-    <hr />
-
-    if (Model.Any())
-    {
-        var tagMax = Model.Select(p => p.Degree).Max();
-
-        <ul class="list-unstyled tagCloud">
-            @foreach (var tag in Model.OrderBy(t => t.DisplayName))
-            {
-                var weightPercent = Convert.ToInt32(tag.Degree) * 1.0 / Convert.ToInt32(tagMax) * 100;
-                var weight = Weight(weightPercent);
-
-                if (weight >= 0)
-                {
-                    <li class="d-inline-block">
-                        <a asp-controller="Home"
-                           asp-action="TagList"
-                           asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedName.ToLower())"
-                           class="weight@(weight) d-block mr-2" title="@(tag.Degree)">
-                            @tag.DisplayName.Replace("-", " ")
-                        </a>
-                    </li>
-                }
-            }
-        </ul>
-    }
-    else
-    {
-        <div class="alert alert-info">
-            @Localizer["No Tags"]
-        </div>
-    }
+    <div class="alert alert-info">
+        @Localizer["No Tags"]
+    </div>
 }
 
 <partial name="_LightSwitch" />
