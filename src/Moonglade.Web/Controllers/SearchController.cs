@@ -88,26 +88,17 @@ namespace Moonglade.Web.Controllers
         [HttpGet("search/{term}")]
         public async Task<IActionResult> SearchGet(string term)
         {
-            try
+            if (string.IsNullOrWhiteSpace(term))
             {
-                if (string.IsNullOrWhiteSpace(term))
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-
-                Logger.LogInformation("Searching post for keyword: " + term);
-
-                ViewBag.TitlePrefix = term;
-
-                var posts = await _searchService.SearchAsync(term);
-                return View("Index", posts);
+                return RedirectToAction("Index", "Home");
             }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                SetFriendlyErrorMessage();
-                return View("Index");
-            }
+
+            Logger.LogInformation("Searching post for keyword: " + term);
+
+            ViewBag.TitlePrefix = term;
+
+            var posts = await _searchService.SearchAsync(term);
+            return View(posts);
         }
     }
 }

@@ -7,79 +7,72 @@
 
 <partial name="_SettingsHeader" />
 
-@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
+@if (null != ViewBag.AuditLogDisabled && ViewBag.AuditLogDisabled)
 {
-    <partial name="_ServerErrorMessage" />
+    <div class="alert alert-warning">
+        @Localizer["Audit Log is disabled."]
+    </div>
+}
+else if (Model.Any())
+{
+    <a href="javascript:;" class="btn btn-outline-danger" data-toggle="modal" data-target="#clearauditModal">@Localizer["Clear Audit Logs"]</a>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>@Localizer["Event Time (UTC)"]</th>
+                <th>@Localizer["Event Type"]</th>
+                <th>@Localizer["Event Id"]</th>
+                <th>@Localizer["Message"]</th>
+                <th>@Localizer["Username"]</th>
+                <th>@Localizer["Machine Name"]</th>
+                <th>@Localizer["IP Address"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.EventTimeUtc
+                    </td>
+                    <td>
+                        @item.EventType
+                    </td>
+                    <td>
+                        @item.EventId
+                    </td>
+                    <td>
+                        @item.Message
+                    </td>
+                    <td>
+                        @item.Username
+                    </td>
+                    <td>
+                        @item.MachineName
+                    </td>
+                    <td>
+                        @item.IpAddressV4
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @Html.PagedListPager(Model, page => $"?page={page}", new PagedListRenderOptions
+    {
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+        UlElementClasses = new[] { "pagination justify-content-end" },
+        MaximumPageNumbersToDisplay = 5,
+        DisplayEllipsesWhenNotShowingAllPageNumbers = false
+    })
 }
 else
 {
-    if (null != ViewBag.AuditLogDisabled && ViewBag.AuditLogDisabled)
-    {
-        <div class="alert alert-warning">
-            @Localizer["Audit Log is disabled."]
-        </div>
-    }
-    else if (Model.Any())
-    {
-        <a href="javascript:;" class="btn btn-outline-danger" data-toggle="modal" data-target="#clearauditModal">@Localizer["Clear Audit Logs"]</a>
-
-        <table class="table table-bordered mt-3">
-            <thead>
-                <tr>
-                    <th>@Localizer["Event Time (UTC)"]</th>
-                    <th>@Localizer["Event Type"]</th>
-                    <th>@Localizer["Event Id"]</th>
-                    <th>@Localizer["Message"]</th>
-                    <th>@Localizer["Username"]</th>
-                    <th>@Localizer["Machine Name"]</th>
-                    <th>@Localizer["IP Address"]</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @item.EventTimeUtc
-                        </td>
-                        <td>
-                            @item.EventType
-                        </td>
-                        <td>
-                            @item.EventId
-                        </td>
-                        <td>
-                            @item.Message
-                        </td>
-                        <td>
-                            @item.Username
-                        </td>
-                        <td>
-                            @item.MachineName
-                        </td>
-                        <td>
-                            @item.IpAddressV4
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-        @Html.PagedListPager(Model, page => $"?page={page}", new PagedListRenderOptions
-        {
-            LiElementClasses = new[] { "page-item" },
-            PageClasses = new[] { "page-link" },
-            UlElementClasses = new[] { "pagination justify-content-end" },
-            MaximumPageNumbersToDisplay = 5,
-            DisplayEllipsesWhenNotShowingAllPageNumbers = false
-        })
-    }
-    else
-    {
-        <div class="alert alert-info">
-            @Localizer["No Audit Logs."]
-        </div>
-    }
+    <div class="alert alert-info">
+        @Localizer["No Audit Logs."]
+    </div>
 }
 
 <div class="modal fade" id="clearauditModal" tabindex="-1" role="dialog" aria-labelledby="clearauditModalLabel" aria-hidden="true">

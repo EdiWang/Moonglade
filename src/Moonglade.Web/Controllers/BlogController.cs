@@ -35,12 +35,6 @@ namespace Moonglade.Web.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        protected void SetFriendlyErrorMessage()
-        {
-            HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            ViewBag.IsServerError = true;
-        }
-
         protected string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)
         {
             var link = linkGenerator.GetUriByAction(HttpContext, "Slug", "Post",

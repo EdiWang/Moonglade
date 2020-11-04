@@ -299,26 +299,17 @@ namespace Moonglade.Web.Controllers
         [HttpGet("friendlink")]
         public async Task<IActionResult> FriendLink()
         {
-            try
+            var links = await _friendLinkService.GetAllAsync();
+            var vm = new FriendLinkSettingsViewModelWrap
             {
-                var links = await _friendLinkService.GetAllAsync();
-                var vm = new FriendLinkSettingsViewModelWrap
+                FriendLinkSettingsViewModel = new FriendLinkSettingsViewModel
                 {
-                    FriendLinkSettingsViewModel = new FriendLinkSettingsViewModel
-                    {
-                        ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
-                    },
-                    FriendLinks = links
-                };
+                    ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
+                },
+                FriendLinks = links
+            };
 
-                return View(vm);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-                SetFriendlyErrorMessage();
-                return View();
-            }
+            return View(vm);
         }
 
         [HttpPost("friendlink")]
@@ -640,30 +631,20 @@ namespace Moonglade.Web.Controllers
         [HttpGet("auditlogs")]
         public async Task<IActionResult> AuditLogs(int page = 1)
         {
-            try
+            if (!_settings.EnableAudit)
             {
-                if (!_settings.EnableAudit)
-                {
-                    ViewBag.AuditLogDisabled = true;
-                    return View();
-                }
-
-                if (page < 0) return BadRequest(ModelState);
-
-                var skip = (page - 1) * 20;
-
-                var entries = await _blogAudit.GetAuditEntries(skip, 20);
-                var list = new StaticPagedList<AuditEntry>(entries.Entries, page, 20, entries.Count);
-
-                return View(list);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, e.Message);
-
-                SetFriendlyErrorMessage();
+                ViewBag.AuditLogDisabled = true;
                 return View();
             }
+
+            if (page < 0) return BadRequest(ModelState);
+
+            var skip = (page - 1) * 20;
+
+            var entries = await _blogAudit.GetAuditEntries(skip, 20);
+            var list = new StaticPagedList<AuditEntry>(entries.Entries, page, 20, entries.Count);
+
+            return View(list);
         }
 
         [HttpGet("clear-auditlogs")]

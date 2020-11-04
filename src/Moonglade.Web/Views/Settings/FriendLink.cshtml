@@ -83,50 +83,43 @@
     </a>
 </div>
 
-@if (null != ViewBag.IsServerError && ViewBag.IsServerError)
-{
-    <partial name="_ServerErrorMessage" />
-}
-else
-{
-    @Html.AntiForgeryToken()
+@Html.AntiForgeryToken()
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>
-                    @Localizer["Title"]
-                </th>
-                <th>
-                    @Localizer["Link"]
-                </th>
-                <th class="table-item-w20">
-                    @Localizer["Action"]
-                </th>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Localizer["Title"]
+            </th>
+            <th>
+                @Localizer["Link"]
+            </th>
+            <th class="table-item-w20">
+                @Localizer["Action"]
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
+        {
+            <tr id="tr-@item.Id">
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    @item.LinkUrl
+                </td>
+                <td>
+                    <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-primary btn-edit"><span class="icon-pencil"></span></a>
+                    <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
+                    <span id="span-processing-@item.Id" style="display: none">...</span>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
-            {
-                <tr id="tr-@item.Id">
-                    <td>
-                        @item.Title
-                    </td>
-                    <td>
-                        @item.LinkUrl
-                    </td>
-                    <td>
-                        <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-primary btn-edit"><span class="icon-pencil"></span></a>
-                        <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
-                        <span id="span-processing-@item.Id" style="display: none">...</span>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
 
-    <p class="text-muted mt-4">@Localizer["* Note: Friend link cache refreshes every 60 minutes, you may need to wait for some time to see the new data."]</p>
-}
+<p class="text-muted mt-4">@Localizer["* Note: Friend link cache refreshes every 60 minutes, you may need to wait for some time to see the new data."]</p>
 
 <div class="modal fade" id="editFriendlinkModal" tabindex="-1" role="dialog" aria-labelledby="editFriendlinkModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
