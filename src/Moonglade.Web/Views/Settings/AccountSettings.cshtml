@@ -94,15 +94,17 @@
             {
                 <tr id="tr-@item.Id">
                     <td>@item.Username</td>
-                    <td>@item.LastLoginIp</td>
-                    <td>@item.LastLoginTimeUtc</td>
+                    <td>@(item.LastLoginIp ?? "N/A")</td>
+                    <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td>
                     <td>@item.CreateOnUtc</td>
                     <td>
-                        <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-primary btn-updatepwd">Reset Password</a>
+                        <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-primary btn-updatepwd">
+                            <span class="icon-key"></span>
+                        </a>
 
                         @if (null != currentUidClaim && currentUidClaim.Value != item.Id.ToString())
                         {
-                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-danger btn-delete"><span class="icon-bin"></span></a>
+                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
                             <span id="span-processing-@item.Id" style="display: none">...</span>
                         }
                     </td>

@@ -163,9 +163,14 @@
     transition: margin .25s ease-out;
 }
 
-.admin-nav .list-group-item.active {
-    color: #000;
-}
+    .admin-nav .list-group-item span {
+        margin-right: 8px;
+        font-size: 16px;
+    }
+
+    .admin-nav .list-group-item.active {
+        color: #000;
+    }
 
 .admin-main {
     overflow-y: scroll;

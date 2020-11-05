@@ -120,8 +120,8 @@
   <data name="Comments" xml:space="preserve">
     <value>评论</value>
   </data>
-  <data name="Delete Selected Item(s)" xml:space="preserve">
-    <value>删除选中的评论</value>
+  <data name="Delete Selected" xml:space="preserve">
+    <value>删除勾选的评论</value>
   </data>
   <data name="No Comments" xml:space="preserve">
     <value>无评论</value>
