@@ -20,17 +20,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Core;
-using Moonglade.DataPorting;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Syndication;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
-using Moonglade.Web.SiteIconGenerator;
 
 #endregion
 
