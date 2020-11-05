@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
@@ -12,9 +13,12 @@ using Moonglade.Core;
 using Moonglade.Core.Notification;
 using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
+using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
 using Moonglade.Model.Settings;
+using Moonglade.Syndication;
 using Moonglade.Web.Filters;
+using Moonglade.Web.SiteIconGenerator;
 using Polly;
 
 namespace Moonglade.Web.Configuration
@@ -76,7 +80,11 @@ namespace Moonglade.Web.Configuration
                 }
             }
 
+            services.AddScoped<IBlogAudit, BlogAudit>();
+            services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
+            services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IBlogStatistics, BlogStatistics>();
+            services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
         }
     }
 }

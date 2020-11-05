@@ -98,10 +98,6 @@ namespace Moonglade.Web
             services.AddPingback();
             services.AddImageStorage(_configuration, _environment);
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddScoped<IBlogAudit, BlogAudit>();
-            services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
-            services.AddScoped<IExportManager, ExportManager>();
-            services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
             services.AddSessionBasedCaptcha();
             services.AddBlogServices();
             services.AddBlogNotification(_logger);
