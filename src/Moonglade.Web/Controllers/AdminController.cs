@@ -16,7 +16,6 @@ using Moonglade.Model;
 using Moonglade.Pingback;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Models;
-using Moonglade.Web.Models.Settings;
 using X.PagedList;
 
 namespace Moonglade.Web.Controllers
@@ -170,8 +169,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("accessdenied")]
         public IActionResult AccessDenied()
         {
-            HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
-            return View();
+            return Forbid();
         }
 
         [HttpGet("about")]
