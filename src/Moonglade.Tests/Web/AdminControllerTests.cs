@@ -104,8 +104,7 @@ namespace Moonglade.Tests.Web
 
             var result = ctl.AccessDenied();
 
-            Assert.IsInstanceOf(typeof(ViewResult), result);
-            Assert.That(ctl.ControllerContext.HttpContext.Response.StatusCode, Is.EqualTo(403));
+            Assert.IsInstanceOf(typeof(ForbidResult), result);
         }
     }
 }
