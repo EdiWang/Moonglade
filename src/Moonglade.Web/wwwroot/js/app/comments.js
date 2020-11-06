@@ -1,6 +1,9 @@
 ﻿var btnSubmitComment = '#btn-submit-comment';
 
 function submitComment() {
+    $('#thx-for-comment').hide();
+    $('#thx-for-comment-non-review').hide();
+
     $('#loadingIndicator').show();
     $(btnSubmitComment).addClass('disabled');
     $(btnSubmitComment).attr('disabled', 'disabled');
@@ -14,6 +17,7 @@ function submitComment() {
         },
         (success) => {
             $('#comment-form')[0].reset();
+            postSlug.resetCaptchaImage();
 
             var httpCode = success.status;
             if (httpCode === 201) {

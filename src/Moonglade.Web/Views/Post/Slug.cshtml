@@ -48,18 +48,16 @@
 }
 
 @section scripts {
-    <script src="~/js/3rd/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/3rd/highlight.pack.js"></script>
     <script>
         var pid = $("article").data("postid");
+        postSlug.getStatistics(pid);
+        postSlug.registerRatingButtons(pid);
+        postSlug.resizeImages();
+        postSlug.applyImageZooming();
+        postSlug.renderCodeHighlighter();
 
         $(function() {
-            postSlug.getStatistics(pid);
-            postSlug.registerRatingButtons(pid);
-            postSlug.resizeImages();
-            postSlug.applyImageZooming();
-            postSlug.renderCodeHighlighter();
-
             @if (BlogConfig.SecuritySettings.WarnExternalLink)
             {
                 <text>
