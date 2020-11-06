@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Core
 @using Moonglade.DateTimeOps
 
-@model PostSlugViewModelWrapper
+@model Moonglade.Model.PostSlug
 @inject IDateTimeResolver DateTimeResolver
 
 @{
@@ -11,21 +11,21 @@
 }
 
 @section keywords {
-    @if (Model.PostModel.Tags.Length > 0)
+    @if (Model.Tags.Length > 0)
     {
-        <meta name="keywords" content="@string.Join(", ", Model.PostModel.Tags.Select(t => t.NormalizedName))" />
+        <meta name="keywords" content="@string.Join(", ", Model.Tags.Select(t => t.NormalizedName))" />
     }
 }
 
 @section meta {
-    @if (!Model.PostModel.ExposedToSiteMap)
+    @if (!Model.ExposedToSiteMap)
     {
         <meta name="robots" content="noindex, nofollow" />
     }
 
-    <meta name="title" content="@Model.PostModel.Title" />
-    <meta name="displaydate" content="@Model.PostModel.PubDateUtc.GetValueOrDefault().ToString("u")">
-    <meta name="copyright" content="(C) @Model.PostModel.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
+    <meta name="title" content="@Model.Title" />
+    <meta name="displaydate" content="@Model.PubDateUtc.GetValueOrDefault().ToString("u")">
+    <meta name="copyright" content="(C) @Model.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@BlogConfig.GeneralSettings.OwnerName" />
 }
 
@@ -33,9 +33,9 @@
 {
     @section opengraph{
         <meta property="og:site_name" content="@BlogConfig.GeneralSettings.SiteTitle">
-        <meta property="og:title" content="@Model.PostModel.Title">
+        <meta property="og:title" content="@Model.Title">
         <meta property="og:type" content="article" />
-        <meta property="og:description" content="@Model.PostModel.ContentAbstract" />
+        <meta property="og:description" content="@Model.ContentAbstract" />
         @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
         {
             <meta property="og:url" content="@(Utils.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
@@ -44,16 +44,16 @@
 }
 
 @section metadescription{
-    <metadesc description="@Model.PostModel.ContentAbstract" />
+    <metadesc description="@Model.ContentAbstract" />
 }
 
 @section scripts {
     <script src="~/js/3rd/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/3rd/highlight.pack.js"></script>
     <script>
-        $(function() {
-            var pid = $("article").data("postid");
+        var pid = $("article").data("postid");
 
+        $(function() {
             postSlug.getStatistics(pid);
             postSlug.registerRatingButtons(pid);
             postSlug.resizeImages();
@@ -79,6 +79,16 @@
                     $('#post-qrcode').qrcode(document.URL);
                 </text>
             }
+
+            @if (BlogConfig.ContentSettings.EnableComments && Model.CommentEnabled)
+            {
+                <text>
+                    $('#comment-form').on('submit', function (e) {
+                        e.preventDefault();
+                        submitComment();
+                    });
+                </text>
+            }
         });
     </script>
 }
@@ -97,17 +107,17 @@
     </div>
 }
 
-<article class="article-post-slug box border mb-4" data-postid="@Model.PostModel.Id" lang="@Model.PostModel.ContentLanguageCode">
+<article class="article-post-slug box border mb-4" data-postid="@Model.Id" lang="@Model.ContentLanguageCode">
     <header class="post-header">
         <h1 class="post-title">
-            @Model.PostModel.Title
+            @Model.Title
         </h1>
         <hr class="d-none d-md-block post-header-hr" />
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info post-publish-info-mobile bg-light">
-                <time datetime="@Model.PostModel.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PostModel.PubDateUtc">
-                    @DateTimeResolver.ToTimeZone(Model.PostModel.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")
+                <time datetime="@Model.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PubDateUtc">
+                    @DateTimeResolver.ToTimeZone(Model.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")
                 </time>
                 <span>
                     | @BlogConfig.GeneralSettings.TimeZoneId
@@ -117,10 +127,10 @@
 
         <div class="d-none d-md-block post-publish-info mb-2">
             <strong class="text-muted">
-                <time datetime="@Model.PostModel.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PostModel.PubDateUtc">@DateTimeResolver.ToTimeZone(Model.PostModel.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")</time>
-                @if (Model.PostModel.LastModifyOnUtc.HasValue)
+                <time datetime="@Model.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PubDateUtc">@DateTimeResolver.ToTimeZone(Model.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")</time>
+                @if (Model.LastModifyOnUtc.HasValue)
                 {
-                    <span>(@Localizer["Edit on"] @DateTimeResolver.ToTimeZone(Model.PostModel.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
+                    <span>(@Localizer["Edit on"] @DateTimeResolver.ToTimeZone(Model.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
                 }
                 | @BlogConfig.GeneralSettings.TimeZoneId
             </strong>
@@ -130,10 +140,10 @@
         <div class="hidden-print">
             <section class="post-cat-tag-info">
                 <div class="float-right d-none d-md-block">
-                    @if (Model.PostModel.Tags.Length > 0)
+                    @if (Model.Tags.Length > 0)
                     {
                         <span class="toptags-list">
-                            @foreach (var item in Model.PostModel.Tags)
+                            @foreach (var item in Model.Tags)
                             {
                                 <a asp-controller="Home"
                                    asp-action="TagList"
@@ -142,10 +152,10 @@
                         </span>
                     }
                 </div>
-                @if (Model.PostModel.Categories.Length > 0)
+                @if (Model.Categories.Length > 0)
                 {
                     <ul class="d-flex flex-row list-unstyled ul-cat-list-desktop mb-0">
-                        @foreach (var item in Model.PostModel.Categories)
+                        @foreach (var item in Model.Categories)
                         {
                             <li>
                                 <a class="btn btn-sm btn-outline-success"
@@ -167,11 +177,11 @@
     <section class="post-content clearfix">
         @if (ec == EditorChoice.Markdown)
         {
-            @Html.Raw(ContentProcessor.MarkdownToContent(Model.PostModel.RawPostContent, ContentProcessor.MarkdownConvertType.Html, false))
+            @Html.Raw(ContentProcessor.MarkdownToContent(Model.RawPostContent, ContentProcessor.MarkdownConvertType.Html, false))
         }
         else
         {
-            @Html.Raw(Model.PostModel.RawPostContent)
+            @Html.Raw(Model.RawPostContent)
         }
     </section>
     @if (BlogConfig.ContentSettings.ShowPostFooter)
@@ -187,10 +197,10 @@
 
     <div class="tag-mobile d-block d-sm-none">
         <hr />
-        @if (Model.PostModel.Tags.Length > 0)
+        @if (Model.Tags.Length > 0)
         {
             <span class="toptags-list toptags-list-sm">
-                @foreach (var item in Model.PostModel.Tags)
+                @foreach (var item in Model.Tags)
                 {
                     <a asp-controller="Home"
                        asp-action="TagList"
@@ -206,42 +216,35 @@
     <div class="hidden-print">
         @if (BlogConfig.ContentSettings.EnableComments)
         {
-            if (Model.PostModel.CommentEnabled)
+            if (Model.CommentEnabled)
             {
                 <div class="card bg-light comment-form-containter mb-4">
                     <div class="card-header">
                         @Localizer["Comments"]
-                        <span class="badge badge-secondary float-right">@Model.PostModel.CommentCount</span>
+                        <span class="badge badge-secondary float-right">@Model.CommentCount</span>
                     </div>
-                    <form id="form-comment" asp-controller="Comment" asp-action="NewComment"
-                          data-ajax-begin="onCommentBegin"
-                          data-ajax-complete="onCommentComplete"
-                          data-ajax-failure="onCommentFailed"
-                          data-ajax-success="onCommentSuccess"
-                          data-ajax="true"
-                          data-ajax-method="POST">
+                    <form id="comment-form">
                         <div class="card-body">
-                            <input type="hidden" asp-for="NewCommentViewModel.PostId" />
                             <div class="row form-group">
                                 <div class="col-md-4">
                                     <input type="text"
                                            class="form-control"
                                            placeholder="Your name"
-                                           asp-for="NewCommentViewModel.Username"
+                                           id="input-comment-name"
                                            required />
                                 </div>
                                 <div class="col-md-8">
                                     <input type="email"
                                            class="form-control"
                                            placeholder="Email (Optional)"
-                                           asp-for="NewCommentViewModel.Email"
+                                           id="input-comment-email"
                                            data-toggle="tooltip"
                                            data-placement="top"
                                            title="@Localizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]" />
                                 </div>
                             </div>
                             <div class="comment-md-content form-group">
-                                <textarea asp-for="NewCommentViewModel.Content"
+                                <textarea id="input-comment-content"
                                           class="form-control"
                                           cols="60"
                                           rows="4"
@@ -256,7 +259,7 @@
                                             <img id="img-captcha" src="@Url.Action("GetCaptchaImage", "Assets")" data-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
                                         </div>
                                         <input type="text"
-                                               asp-for="NewCommentViewModel.CaptchaCode"
+                                               id="input-comment-captcha"
                                                class="form-control input-captcha"
                                                placeholder="Captcha Code"
                                                autocomplete="off"
@@ -303,10 +306,10 @@
             @Localizer["Refresh the page to see your comment."]
         </div>
 
-        @if (Model.PostModel.CommentCount > 0)
+        @if (Model.CommentCount > 0)
         {
             <section id="comments-list">
-                @await Component.InvokeAsync("CommentList", new { postId = Model.PostModel.Id })
+                @await Component.InvokeAsync("CommentList", new { postId = Model.Id })
             </section>
         }
     </div>

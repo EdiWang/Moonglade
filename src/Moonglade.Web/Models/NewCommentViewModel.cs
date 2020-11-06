@@ -1,14 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Models
 {
     public class NewCommentViewModel
     {
-        [HiddenInput]
-        public Guid PostId { get; set; }
-
         [Required]
         [MaxLength(64)]
         public string Username { get; set; }

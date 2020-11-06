@@ -1,4 +1,4 @@
-﻿@model PostSlugViewModelWrapper
+﻿@model Moonglade.Model.PostSlug
 @{
     bool isDNT = (bool)Context.Items["DNT"];
 }
@@ -25,7 +25,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title" id="qrcodewindowLabel">@Model.PostModel.Title</div>
+                <div class="modal-title" id="qrcodewindowLabel">@Model.Title</div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

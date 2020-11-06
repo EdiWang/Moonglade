@@ -39,31 +39,29 @@ namespace Moonglade.Web.Controllers
             _notificationClient = notificationClient;
         }
 
-        [HttpPost]
+        [HttpPost("{postId:guid}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> NewComment(
-            [FromForm] PostSlugViewModelWrapper model, [FromServices] ISessionBasedCaptcha captcha)
+        public async Task<IActionResult> NewComment(Guid postId, NewCommentViewModel model, [FromServices] ISessionBasedCaptcha captcha)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            if (!captcha.ValidateCaptchaCode(model.NewCommentViewModel.CaptchaCode, HttpContext.Session))
+            if (!captcha.ValidateCaptchaCode(model.CaptchaCode, HttpContext.Session))
             {
-                ModelState.AddModelError(nameof(model.NewCommentViewModel.CaptchaCode), "Wrong Captcha Code");
+                ModelState.AddModelError(nameof(model.CaptchaCode), "Wrong Captcha Code");
                 return Conflict(ModelState);
             }
 
-            var comment = model.NewCommentViewModel;
-            var response = await _commentService.CreateAsync(new CommentRequest(comment.PostId)
+            var response = await _commentService.CreateAsync(new CommentRequest(postId)
             {
-                Username = comment.Username,
-                Content = comment.Content,
-                Email = comment.Email,
+                Username = model.Username,
+                Content = model.Content,
+                Email = model.Email,
                 IpAddress = DNT ? "N/A" : HttpContext.Connection.RemoteIpAddress.ToString()
             });
 

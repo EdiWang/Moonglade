@@ -62,10 +62,8 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            var viewModel = new PostSlugViewModelWrapper(post);
-
             ViewBag.TitlePrefix = $"{post.Title}";
-            return View(viewModel);
+            return View(post);
         }
 
         [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}/{raw:regex(^(meta|content)$)}")]
@@ -106,11 +104,9 @@ namespace Moonglade.Web.Controllers
                 return NotFound();
             }
 
-            var viewModel = new PostSlugViewModelWrapper(post);
-
             ViewBag.TitlePrefix = $"{post.Title}";
             ViewBag.IsDraftPreview = true;
-            return View("Slug", viewModel);
+            return View("Slug", post);
         }
 
         #region Management
