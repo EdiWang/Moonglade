@@ -138,7 +138,7 @@ namespace Moonglade.Web
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();
-            app.UseMiddleware<BlogGraphAPIGuardMiddleware>();
+            app.UseMiddleware<GraphAPIGuardMiddleware>();
 
             if (_environment.IsDevelopment())
             {

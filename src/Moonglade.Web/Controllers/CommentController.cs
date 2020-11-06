@@ -46,7 +46,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> NewComment(Guid postId, NewCommentViewModel model, [FromServices] ISessionBasedCaptcha captcha)
+        public async Task<IActionResult> NewComment(Guid postId, NewCommentModel model, [FromServices] ISessionBasedCaptcha captcha)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();

@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Models
 {
-    public class NewCommentViewModel
+    public class NewCommentModel
     {
         [Required]
         [MaxLength(64)]
