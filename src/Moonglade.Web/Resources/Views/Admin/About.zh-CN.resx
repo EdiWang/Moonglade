@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name=".NET Core Version" xml:space="preserve">
-    <value>.NET Core 版本</value>
+  <data name=".NET Version" xml:space="preserve">
+    <value>.NET 版本</value>
   </data>
   <data name="64 Bit Process" xml:space="preserve">
     <value>64位进程</value>

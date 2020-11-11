@@ -46,7 +46,7 @@ namespace Moonglade.Web
             _environment = env;
             _appSettings = _configuration.GetSection(nameof(AppSettings));
 
-            // Workaround stupid ASP.NET Core "by design" issue
+            // Workaround stupid ASP.NET "by design" issue
             // https://github.com/aspnet/Configuration/issues/451
             _supportedCultures = _appSettings.GetSection("SupportedCultures")
                 .GetChildren()
