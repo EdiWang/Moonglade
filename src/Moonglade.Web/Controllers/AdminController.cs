@@ -132,7 +132,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("signout")]
-        public async Task<IActionResult> SignOut()
+        public async Task<IActionResult> SignOut(int nounce = 1055)
         {
             Logger.LogInformation($"User '{User.Identity?.Name}' signing out.'");
 
