@@ -54,7 +54,7 @@ namespace Moonglade.Web
                               .UseStartup<Startup>()
                               .ConfigureLogging(logging =>
                               {
-                                  logging.SetMinimumLevel(LogLevel.Trace);
+                                  logging.AddAzureWebAppDiagnostics();
                               });
                 });
 
