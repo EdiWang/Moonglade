@@ -46,7 +46,7 @@ namespace Moonglade.ImageStorage.Providers
 
                 var blob = _container.GetBlobClient(fileName);
 
-                // Why .NET Core doesn't have MimeMapping.GetMimeMapping()
+                // Why .NET doesn't have MimeMapping.GetMimeMapping()
                 var blobHttpHeader = new BlobHttpHeaders();
                 var extension = Path.GetExtension(blob.Uri.AbsoluteUri);
                 blobHttpHeader.ContentType = extension.ToLower() switch

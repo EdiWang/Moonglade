@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master) ![Docker Build and Push](https://github.com/EdiWang/Moonglade/workflows/Docker%20Build%20and%20Push/badge.svg)
 
-The [.NET Core](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enabling most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
+The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enabling most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-v4.png)
 
@@ -30,7 +30,7 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 
 Tools | Alternative
 --- | ---
-[.NET Core 3.1 SDK](http://dot.net) | N/A
+[.NET 5.0 SDK](http://dot.net) | N/A
 [Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
 [SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) / LocalDB | N/A
 

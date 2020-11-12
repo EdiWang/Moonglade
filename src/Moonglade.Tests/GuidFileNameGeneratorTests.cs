@@ -65,7 +65,7 @@ namespace Moonglade.Tests
             Assert.AreEqual(gen.Name, nameof(GuidFileNameGenerator));
         }
 
-        [TestCase("Choose .NET Core.png", "")]
+        [TestCase("Choose .NET 5.png", "")]
         [TestCase("And Microsoft Azure.png", null)]
         [TestCase("Stay away from 996.png", " ")]
         public void TestNullEmptyWhiteSpaceAppendix(string name, string appendix)

@@ -14,7 +14,6 @@ namespace Moonglade.Data.Spec
                       p.IsFeedIncluded &&
                       (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)))
         {
-            // AddInclude(p => p);
             ApplyOrderByDescending(p => p.PubDateUtc);
 
             if (top.HasValue)
@@ -30,7 +29,6 @@ namespace Moonglade.Data.Spec
             // Fix #313: Filter out unpublished posts
             AddCriteria(p => p.IsPublished && !p.IsDeleted);
 
-            AddInclude(post => post.Include(p => p));
             ApplyOrderByDescending(p => p.PubDateUtc);
         }
 
@@ -41,7 +39,6 @@ namespace Moonglade.Data.Spec
              !p.IsDeleted)
         {
             AddInclude(post => post
-                .Include(p => p)
                 .Include(p => p.PostExtension)
                 .Include(p => p.Comment)
                 .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
@@ -53,7 +50,6 @@ namespace Moonglade.Data.Spec
             if (includeRelatedData)
             {
                 AddInclude(post => post
-                    .Include(p => p)
                     .Include(p => p.PostTag)
                     .ThenInclude(pt => pt.Tag)
                     .Include(p => p.PostCategory)

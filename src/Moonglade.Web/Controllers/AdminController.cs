@@ -100,7 +100,7 @@ namespace Moonglade.Web.Controllers
 
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
                         await _localAccountService.LogSuccessLoginAsync(uid,
-                            HttpContext.Connection.RemoteIpAddress.ToString());
+                            HttpContext.Connection.RemoteIpAddress?.ToString());
 
                         var successMessage = $@"Authentication success for local account ""{model.Username}""";
 
@@ -132,9 +132,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("signout")]
-        public async Task<IActionResult> SignOut()
+        public async Task<IActionResult> SignOut(int nounce = 1055)
         {
-            Logger.LogInformation($"User '{User.Identity.Name}' signing out.'");
+            Logger.LogInformation($"User '{User.Identity?.Name}' signing out.'");
 
             switch (_authenticationSettings.Provider)
             {
