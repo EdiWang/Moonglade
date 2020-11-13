@@ -16,8 +16,8 @@ namespace Moonglade.Web
         {
             var info = $"Moonglade Version {Utils.AppVersion}\n" +
                        $"Directory: {Environment.CurrentDirectory} \n" +
-                       $"x64 Process: {Environment.Is64BitProcess} \n" +
-                       $"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription} \n" +
+                       $"OS: {Environment.OSVersion.VersionString} \n" +
+                       $"Machine Name: {Environment.MachineName} \n" +
                        $"User Name: {Environment.UserName}";
             Trace.WriteLine(info);
             Console.WriteLine(info);
