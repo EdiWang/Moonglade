@@ -70,7 +70,7 @@ namespace Moonglade.Core
         public async Task<Guid> UpdateAsync(EditMenuRequest request)
         {
             var menu = await _menuRepo.GetAsync(request.Id);
-            if (null == menu)
+            if (menu is null)
             {
                 throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
             }
@@ -104,10 +104,7 @@ namespace Moonglade.Core
 
         private static Menu EntityToMenuModel(MenuEntity entity)
         {
-            if (null == entity)
-            {
-                return null;
-            }
+            if (entity is null) return null;
 
             return new Menu
             {

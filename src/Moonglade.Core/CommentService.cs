@@ -92,7 +92,7 @@ namespace Moonglade.Core
 
         public async Task ToggleApprovalAsync(Guid[] commentIds)
         {
-            if (null == commentIds || !commentIds.Any())
+            if (commentIds is null || !commentIds.Any())
             {
                 throw new ArgumentNullException(nameof(commentIds));
             }
@@ -113,7 +113,7 @@ namespace Moonglade.Core
 
         public async Task DeleteAsync(Guid[] commentIds)
         {
-            if (null == commentIds || !commentIds.Any())
+            if (commentIds is null || !commentIds.Any())
             {
                 throw new ArgumentNullException(nameof(commentIds));
             }
@@ -180,11 +180,7 @@ namespace Moonglade.Core
         public async Task<CommentReply> AddReply(Guid commentId, string replyContent)
         {
             var cmt = await _commentRepo.GetAsync(commentId);
-
-            if (null == cmt)
-            {
-                throw new InvalidOperationException($"Comment {commentId} is not found.");
-            }
+            if (cmt is null) throw new InvalidOperationException($"Comment {commentId} is not found.");
 
             var id = Guid.NewGuid();
             var model = new CommentReplyEntity

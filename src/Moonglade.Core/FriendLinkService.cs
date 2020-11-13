@@ -82,7 +82,7 @@ namespace Moonglade.Core
             }
 
             var fdlink = await _friendlinkRepo.GetAsync(id);
-            if (null != fdlink)
+            if (fdlink is not null)
             {
                 fdlink.Title = newTitle;
                 fdlink.LinkUrl = newLinkUrl;

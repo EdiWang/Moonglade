@@ -60,7 +60,7 @@ namespace Moonglade.Web
 
         private static string CreateDataDirectories()
         {
-            void DeleteDataFile(string path)
+            static void DeleteDataFile(string path)
             {
                 try
                 {
@@ -68,8 +68,7 @@ namespace Moonglade.Web
                 }
                 catch
                 {
-                    // Code blow up le what to do?
-                    // try catch cover it bu jiu OK le!
+                    // ignored
                 }
             }
 
@@ -86,21 +85,21 @@ namespace Moonglade.Web
             // Do NOT create or modify anything under application directory
             // e.g. Azure Deployment using WEBSITE_RUN_FROM_PACKAGE will make website root directory read only.
             var tPath = Path.GetTempPath();
-            var moongladeAppDataPath = Path.Join(tPath, "moonglade", "App_Data");
-            if (Directory.Exists(moongladeAppDataPath))
+            var appDataPath = Path.Join(tPath, "moonglade", "App_Data");
+            if (Directory.Exists(appDataPath))
             {
-                Directory.Delete(moongladeAppDataPath, true);
+                Directory.Delete(appDataPath, true);
             }
-            Directory.CreateDirectory(moongladeAppDataPath);
+            Directory.CreateDirectory(appDataPath);
 
-            var feedDirectoryPath = Path.Join($"{moongladeAppDataPath}", "feed");
+            var feedDirectoryPath = Path.Join($"{appDataPath}", "feed");
             if (!Directory.Exists(feedDirectoryPath))
             {
                 Directory.CreateDirectory(feedDirectoryPath);
             }
 
-            CleanDataCache(moongladeAppDataPath);
-            return moongladeAppDataPath;
+            CleanDataCache(appDataPath);
+            return appDataPath;
         }
     }
 }

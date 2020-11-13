@@ -13,8 +13,8 @@ namespace Moonglade.Core
         public BlogService(ILogger<BlogService> logger = null,
             IOptions<AppSettings> settings = null)
         {
-            if (null != settings) AppSettings = settings.Value;
-            if (null != logger) Logger = logger;
+            if (settings is not null) AppSettings = settings.Value;
+            if (logger is not null) Logger = logger;
         }
     }
 }

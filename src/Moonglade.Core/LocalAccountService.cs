@@ -71,7 +71,7 @@ namespace Moonglade.Core
         public async Task LogSuccessLoginAsync(Guid id, string ipAddress)
         {
             var entity = await _accountRepo.GetAsync(id);
-            if (null != entity)
+            if (entity is not null)
             {
                 entity.LastLoginIp = ipAddress.Trim();
                 entity.LastLoginTimeUtc = DateTime.UtcNow;
@@ -121,7 +121,7 @@ namespace Moonglade.Core
             }
 
             var account = await _accountRepo.GetAsync(id);
-            if (null == account)
+            if (account is null)
             {
                 throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
             }
@@ -135,7 +135,7 @@ namespace Moonglade.Core
         public async Task DeleteAsync(Guid id)
         {
             var account = await _accountRepo.GetAsync(id);
-            if (null == account)
+            if (account is null)
             {
                 throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
             }
@@ -146,10 +146,7 @@ namespace Moonglade.Core
 
         public static string HashPassword(string plainMessage)
         {
-            if (string.IsNullOrWhiteSpace(plainMessage))
-            {
-                return string.Empty;
-            }
+            if (string.IsNullOrWhiteSpace(plainMessage)) return string.Empty;
 
             var data = Encoding.UTF8.GetBytes(plainMessage);
             using HashAlgorithm sha = new SHA256Managed();
@@ -159,10 +156,7 @@ namespace Moonglade.Core
 
         private static Account EntityToAccountModel(LocalAccountEntity entity)
         {
-            if (null == entity)
-            {
-                return null;
-            }
+            if (entity is null) return null;
 
             return new Account
             {

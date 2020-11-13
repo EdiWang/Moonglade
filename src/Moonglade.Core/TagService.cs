@@ -118,10 +118,7 @@ namespace Moonglade.Core
 
         public static bool ValidateTagName(string tagDisplayName)
         {
-            if (string.IsNullOrWhiteSpace(tagDisplayName))
-            {
-                return false;
-            }
+            if (string.IsNullOrWhiteSpace(tagDisplayName)) return false;
 
             // Regex performance best practice
             // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Moonglade.Core
 {
@@ -16,10 +14,7 @@ namespace Moonglade.Core
         public static bool IsValidUrl(this string url, UrlScheme urlScheme = UrlScheme.All)
         {
             var isValidUrl = Uri.TryCreate(url, UriKind.Absolute, out var uriResult);
-            if (!isValidUrl)
-            {
-                return false;
-            }
+            if (!isValidUrl) return false;
 
             isValidUrl &= urlScheme switch
             {

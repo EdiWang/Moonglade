@@ -79,7 +79,7 @@ namespace Moonglade.Core
         public async Task<Guid> UpdateAsync(EditPageRequest request)
         {
             var page = await _pageRepo.GetAsync(request.Id);
-            if (null == page)
+            if (page is null)
             {
                 throw new InvalidOperationException($"CustomPageEntity with Id '{request.Id}' not found.");
             }
@@ -102,7 +102,7 @@ namespace Moonglade.Core
         public async Task DeleteAsync(Guid pageId)
         {
             var page = await _pageRepo.GetAsync(pageId);
-            if (null == page)
+            if (page is null)
             {
                 throw new InvalidOperationException($"CustomPageEntity with Id '{pageId}' not found.");
             }
@@ -113,10 +113,7 @@ namespace Moonglade.Core
 
         public static string RemoveScriptTagFromHtml(string html)
         {
-            if (string.IsNullOrWhiteSpace(html))
-            {
-                return string.Empty;
-            }
+            if (string.IsNullOrWhiteSpace(html)) return string.Empty;
 
             var regex = new Regex("\\<script(.+?)\\</script\\>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
             var result = regex.Replace(html, string.Empty);
@@ -125,10 +122,7 @@ namespace Moonglade.Core
 
         private static Page EntityToPage(PageEntity entity)
         {
-            if (null == entity)
-            {
-                return null;
-            }
+            if (entity is null) return null;
 
             return new Page
             {

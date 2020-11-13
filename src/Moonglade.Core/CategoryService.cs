@@ -21,7 +21,7 @@ namespace Moonglade.Core
         public CategoryService(ILogger<CategoryService> logger,
             IRepository<CategoryEntity> catRepo,
             IRepository<PostCategoryEntity> postCatRepo,
-            IBlogAudit audit, 
+            IBlogAudit audit,
             IBlogCache cache) : base(logger)
         {
             _catRepo = catRepo;
@@ -96,10 +96,7 @@ namespace Moonglade.Core
             if (!exists) return;
 
             var pcs = await _postCatRepo.GetAsync(pc => pc.CategoryId == id);
-            if (null != pcs)
-            {
-                await _postCatRepo.DeleteAsync(pcs);
-            }
+            if (pcs is not null) await _postCatRepo.DeleteAsync(pcs);
 
             _catRepo.Delete(id);
             _cache.Remove(CacheDivision.General, "allcats");
@@ -110,7 +107,7 @@ namespace Moonglade.Core
         public async Task UpdateAsync(EditCategoryRequest editRequest)
         {
             var cat = await _catRepo.GetAsync(editRequest.Id);
-            if (null == cat) return;
+            if (cat is null) return;
 
             cat.RouteName = editRequest.RouteName.Trim();
             cat.DisplayName = editRequest.DisplayName.Trim();

@@ -44,10 +44,7 @@ namespace Moonglade.Core
 
         public static string ResolveCanonicalUrl(string prefix, string path)
         {
-            if (string.IsNullOrWhiteSpace(prefix))
-            {
-                return string.Empty;
-            }
+            if (string.IsNullOrWhiteSpace(prefix)) return string.Empty;
             path ??= string.Empty;
 
             if (!prefix.IsValidUrl())
@@ -60,7 +57,7 @@ namespace Moonglade.Core
                 newUri.ToString() :
                 string.Empty;
         }
-        
+
         /// <summary>
         /// Test an IPv4 address is LAN or not.
         /// </summary>

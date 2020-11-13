@@ -116,15 +116,9 @@ namespace Moonglade.Core
             return trimmed + ellipsis;
         }
 
-        public static bool IsLetter(this char c)
-        {
-            return 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z';
-        }
+        public static bool IsLetter(this char c) => c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
 
-        public static bool IsSpace(this char c)
-        {
-            return c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == ' ';
-        }
+        public static bool IsSpace(this char c) => c is '\r' or '\n' or '\t' or '\f' or ' ';
 
         public static string MarkdownToContent(string markdown, MarkdownConvertType type, bool disableHtml = true)
         {
