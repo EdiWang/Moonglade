@@ -27,7 +27,7 @@ namespace Moonglade.Web.SiteIconGenerator
             }
 
             var ext = Path.GetExtension(sourceImagePath);
-            if (ext is not null && ext.ToLower() != ".png")
+            if (ext is not null && ext.ToLower() is not ".png")
             {
                 throw new FormatException("Source file is not an PNG image.");
             }
