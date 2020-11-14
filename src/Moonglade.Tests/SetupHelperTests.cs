@@ -1,6 +1,6 @@
-﻿using Moonglade.Setup;
+﻿using System;
+using Moonglade.Setup;
 using NUnit.Framework;
-using System;
 
 namespace Moonglade.Tests
 {

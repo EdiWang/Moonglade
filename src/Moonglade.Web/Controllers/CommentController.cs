@@ -65,7 +65,7 @@ namespace Moonglade.Web.Controllers
                 IpAddress = DNT ? "N/A" : HttpContext.Connection.RemoteIpAddress.ToString()
             });
 
-            if (_blogConfig.NotificationSettings.SendEmailOnNewComment && null != _notificationClient)
+            if (_blogConfig.NotificationSettings.SendEmailOnNewComment && _notificationClient is not null)
             {
                 _ = Task.Run(async () =>
                 {

@@ -74,8 +74,7 @@ namespace Moonglade.Pingback
                 }
 
                 var pingUrl = value.FirstOrDefault();
-
-                if (null != pingUrl)
+                if (pingUrl is not null)
                 {
                     Logger?.LogInformation($"Found Ping service URL '{pingUrl}' on target '{sourceUrl}'");
 

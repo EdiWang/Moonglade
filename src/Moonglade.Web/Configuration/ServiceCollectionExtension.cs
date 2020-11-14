@@ -71,7 +71,7 @@ namespace Moonglade.Web.Configuration
         public static void AddBlogServices(this IServiceCollection services)
         {
             var asm = Assembly.GetAssembly(typeof(BlogService));
-            if (null != asm)
+            if (asm is not null)
             {
                 var types = asm.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));
                 foreach (var t in types)

@@ -241,7 +241,7 @@ namespace Moonglade.Web.SiteIconGenerator.IconEncoder
             {
                 return 4;
             }
-            return uniqueColorCount <= 256 ? (ushort) 8 : (ushort) 24;
+            return uniqueColorCount <= 256 ? (ushort)8 : (ushort)24;
         }
 
         private static Rgbquad[] BuildColorTable(Hashtable colors, ushort bpp)

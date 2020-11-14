@@ -8,7 +8,7 @@ namespace Moonglade.Data.Spec
     {
         public CategorySpec(string categoryName) : base(c => c.RouteName == categoryName)
         {
-            
+
         }
 
         public CategorySpec(Guid categoryId) : base(c => c.Id == categoryId)

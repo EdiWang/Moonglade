@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    internal class PostExtensionConfiguration: IEntityTypeConfiguration<PostExtensionEntity>
+    internal class PostExtensionConfiguration : IEntityTypeConfiguration<PostExtensionEntity>
     {
         public void Configure(EntityTypeBuilder<PostExtensionEntity> builder)
         {

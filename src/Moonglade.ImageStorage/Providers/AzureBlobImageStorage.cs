@@ -96,7 +96,7 @@ namespace Moonglade.ImageStorage.Providers
             {
                 throw new ArgumentException("File extension is empty");
             }
-            
+
             var existsTask = blobClient.ExistsAsync();
             var downloadTask = blobClient.DownloadToAsync(memoryStream);
 

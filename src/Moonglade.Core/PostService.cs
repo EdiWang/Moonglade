@@ -122,7 +122,7 @@ namespace Moonglade.Core
                 ContentLanguageCode = post.ContentLanguageCode
             });
 
-            if (null != postSlugModel)
+            if (postSlugModel is not null)
             {
                 postSlugModel.RawPostContent = ContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
             }
@@ -202,7 +202,7 @@ namespace Moonglade.Core
                     CommentCount = post.Comment.Count(c => c.IsApproved)
                 });
 
-                if (null != postSlugModel)
+                if (postSlugModel is not null)
                 {
                     postSlugModel.RawPostContent = ContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
                 }
@@ -341,7 +341,7 @@ namespace Moonglade.Core
             }
 
             // add categories
-            if (null != request.CategoryIds && request.CategoryIds.Length > 0)
+            if (request.CategoryIds is not null and { Length: > 0 })
             {
                 foreach (var cid in request.CategoryIds)
                 {
@@ -357,7 +357,7 @@ namespace Moonglade.Core
             }
 
             // add tags
-            if (null != request.Tags && request.Tags.Length > 0)
+            if (request.Tags is not null and { Length: > 0 })
             {
                 foreach (var item in request.Tags)
                 {
@@ -422,7 +422,7 @@ namespace Moonglade.Core
             }
 
             // #325: Allow changing publish date for published posts
-            if (request.PublishDate != null && post.PubDateUtc.HasValue)
+            if (request.PublishDate is not null && post.PubDateUtc.HasValue)
             {
                 var tod = post.PubDateUtc.Value.TimeOfDay;
                 var adjustedDate = _dateTimeResolver.ToUtc(request.PublishDate.Value);
@@ -461,7 +461,7 @@ namespace Moonglade.Core
                     }
 
                     var tag = await _tagRepo.GetAsync(t => t.DisplayName == tagName);
-                    if (tag != null) post.PostTag.Add(new()
+                    if (tag is not null) post.PostTag.Add(new()
                     {
                         PostId = post.Id,
                         TagId = tag.Id
@@ -471,7 +471,7 @@ namespace Moonglade.Core
 
             // 3. update categories
             post.PostCategory.Clear();
-            if (null != request.CategoryIds && request.CategoryIds.Length > 0)
+            if (request.CategoryIds is not null and { Length: > 0 })
             {
                 foreach (var cid in request.CategoryIds)
                 {

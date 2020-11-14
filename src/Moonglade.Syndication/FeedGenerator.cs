@@ -62,7 +62,7 @@ namespace Moonglade.Syndication
                 }
 
                 // add categories
-                if (null != item.Categories && item.Categories.Length > 0)
+                if (item.Categories is not null and { Length: > 0 })
                 {
                     foreach (var itemCategory in item.Categories)
                     {

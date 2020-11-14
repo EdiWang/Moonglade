@@ -67,10 +67,7 @@ namespace Moonglade.Web.Controllers
         private bool HasCookie(CookieNames cookieName, string id)
         {
             var viewCookie = HttpContext.Request.Cookies[cookieName.ToString()];
-            if (viewCookie != null)
-            {
-                return viewCookie == id;
-            }
+            if (viewCookie is not null) return viewCookie == id;
             return false;
         }
 

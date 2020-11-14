@@ -109,7 +109,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                if (null == file || file.Length <= 0)
+                if (file is null or { Length: <= 0 })
                 {
                     Logger.LogError("file is null.");
                     return BadRequest();
@@ -174,7 +174,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var finalFileName = await _imageStorage.InsertAsync(primaryFileName,
-                    watermarkedStream != null ?
+                    watermarkedStream is not null ?
                         watermarkedStream.ToArray() :
                         stream.ToArray());
 

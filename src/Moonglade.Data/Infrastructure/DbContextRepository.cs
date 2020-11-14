@@ -106,10 +106,7 @@ namespace Moonglade.Data.Infrastructure
         public int Delete(object key)
         {
             var entity = Get(key);
-            if (null != entity)
-            {
-                return Delete(entity);
-            }
+            if (entity is not null) return Delete(entity);
 
             return -1;
         }
@@ -246,10 +243,7 @@ namespace Moonglade.Data.Infrastructure
         public async Task DeleteAsync(object key)
         {
             var entity = await GetAsync(key);
-            if (null != entity)
-            {
-                await DeleteAsync(entity);
-            }
+            if (entity is not null) await DeleteAsync(entity);
         }
 
         public Task<int> CountAsync(ISpecification<T> spec)

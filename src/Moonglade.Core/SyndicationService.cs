@@ -43,7 +43,7 @@ namespace Moonglade.Core
         public async Task RefreshRssFilesAsync(string categoryName)
         {
             var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
-            if (null != cat)
+            if (cat is not null)
             {
                 Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
 
@@ -141,7 +141,7 @@ namespace Moonglade.Core
         private string FormatPostContent(string rawContent)
         {
             return AppSettings.Editor == EditorChoice.Markdown ?
-                ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) : 
+                ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
                 rawContent;
         }
     }

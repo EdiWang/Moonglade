@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -27,7 +27,7 @@ namespace Moonglade.Core
             {
                 var lines = await File.ReadAllLinesAsync(cssPath);
                 var accentColorLine = lines.FirstOrDefault(l => l.Contains("accent-color1"));
-                if (null != accentColorLine)
+                if (accentColorLine is not null)
                 {
                     var regex = new Regex("#(?:[0-9a-f]{3}){1,2}");
                     var match = regex.Match(accentColorLine);

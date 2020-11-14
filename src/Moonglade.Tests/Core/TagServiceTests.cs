@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Moonglade.Core;
+﻿using Moonglade.Core;
 using Moonglade.Model.Settings;
 using NUnit.Framework;
 

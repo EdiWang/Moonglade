@@ -179,7 +179,7 @@ namespace Moonglade.Web.Controllers
                 ContentLanguageCode = post.ContentLanguageCode
             };
 
-            if (post.PubDateUtc != null)
+            if (post.PubDateUtc is not null)
             {
                 viewModel.PublishDate = _dateTimeResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
             }
@@ -220,7 +220,7 @@ namespace Moonglade.Web.Controllers
                 if (!ModelState.IsValid) return Conflict(ModelState);
 
                 var tags = string.IsNullOrWhiteSpace(model.Tags)
-                    ? new string[] { }
+                    ? Array.Empty<string>()
                     : model.Tags.Split(',').ToArray();
 
                 var request = new EditPostRequest(model.PostId)

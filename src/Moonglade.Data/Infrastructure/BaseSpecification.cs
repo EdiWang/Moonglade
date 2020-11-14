@@ -29,7 +29,7 @@ namespace Moonglade.Data.Infrastructure
 
         public void AddCriteria(Expression<Func<T, bool>> criteria)
         {
-            if (null != Criteria)
+            if (Criteria is not null)
             {
                 // TODO: Check if this never gets called because the child class constructor didn't finish executing while invoking AddCriteria()
                 Criteria.AndAlso(criteria);
@@ -84,7 +84,7 @@ namespace Moonglade.Data.Infrastructure
             var right = rightVisitor.Visit(expr2.Body);
 
             return Expression.Lambda<Func<T, bool>>(
-                Expression.AndAlso(left ?? throw new InvalidOperationException(), 
+                Expression.AndAlso(left ?? throw new InvalidOperationException(),
                                         right ?? throw new InvalidOperationException()), parameter);
         }
 

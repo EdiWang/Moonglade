@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
             var pageSize = _blogConfig.ContentSettings.PostListPageSize;
             var cat = await categoryService.GetAsync(routeName);
 
-            if (null == cat)
+            if (cat is null)
             {
                 Logger.LogWarning($"Category '{routeName}' not found.");
                 return NotFound();
@@ -97,7 +97,7 @@ namespace Moonglade.Web.Controllers
 
             IReadOnlyList<PostListEntry> model;
 
-            if (null != month)
+            if (month is not null)
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";

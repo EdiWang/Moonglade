@@ -9,7 +9,7 @@ namespace Moonglade.Data.Infrastructure
             var query = inputQuery;
 
             // modify the IQueryable using the specification's criteria expression
-            if (specification.Criteria != null)
+            if (specification.Criteria is not null)
             {
                 query = query.Where(specification.Criteria);
             }
@@ -22,17 +22,17 @@ namespace Moonglade.Data.Infrastructure
             //query = specification.IncludeStrings.Aggregate(query,
             //    (current, include) => current.Include(include));
 
-            if (null != specification.Include)
+            if (specification.Include is not null)
             {
                 query = specification.Include(query);
             }
 
             // Apply ordering if expressions are set
-            if (specification.OrderBy != null)
+            if (specification.OrderBy is not null)
             {
                 query = query.OrderBy(specification.OrderBy);
             }
-            else if (specification.OrderByDescending != null)
+            else if (specification.OrderByDescending is not null)
             {
                 query = query.OrderByDescending(specification.OrderByDescending);
             }

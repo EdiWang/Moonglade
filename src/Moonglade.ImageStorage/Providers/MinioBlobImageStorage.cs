@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Minio;
-using Minio.Exceptions;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Minio;
+using Minio.Exceptions;
 
 namespace Moonglade.ImageStorage.Providers
 {
@@ -23,7 +23,7 @@ namespace Moonglade.ImageStorage.Providers
                 _logger = logger;
 
                 _client = new(blobConfiguration.EndPoint, blobConfiguration.AccessKey, blobConfiguration.SecretKey);
-                if(blobConfiguration.WithSSL)
+                if (blobConfiguration.WithSSL)
                 {
                     _client = _client.WithSSL();
                 }
@@ -131,10 +131,7 @@ namespace Moonglade.ImageStorage.Providers
 
                 await _client.GetObjectAsync(_bucketName, fileName, (stream) =>
                 {
-                    if (stream != null)
-                    {
-                        stream.CopyTo(memoryStream);
-                    }
+                    if (stream is not null) stream.CopyTo(memoryStream);
                 });
                 var arr = memoryStream.ToArray();
 

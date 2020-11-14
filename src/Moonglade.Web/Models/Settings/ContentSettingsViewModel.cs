@@ -48,7 +48,7 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Post footer HTML Pitch")]
         public string PostFooterHtmlPitch { get; set; }
-        
+
         [Required(ErrorMessage = "This field is required.")]
         [Display(Name = "Default language code")]
         [RegularExpression("^[a-z-]+$", ErrorMessage = "Please enter a lower case ISO language code (e.g. 'en-us')")]

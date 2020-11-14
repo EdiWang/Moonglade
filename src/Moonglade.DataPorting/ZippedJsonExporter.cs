@@ -58,7 +58,7 @@ namespace Moonglade.DataPorting
         private static string CreateExportDirectory(string subDirName)
         {
             var dataDir = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
-            if (null != dataDir)
+            if (dataDir is not null)
             {
                 var path = Path.Join(dataDir, "export", subDirName);
                 if (Directory.Exists(path))

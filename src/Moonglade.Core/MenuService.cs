@@ -93,7 +93,7 @@ namespace Moonglade.Core
         public async Task DeleteAsync(Guid id)
         {
             var menu = await _menuRepo.GetAsync(id);
-            if (null == menu)
+            if (menu is null)
             {
                 throw new InvalidOperationException($"MenuEntity with Id '{id}' not found.");
             }
