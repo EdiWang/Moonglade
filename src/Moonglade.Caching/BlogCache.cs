@@ -33,7 +33,7 @@ namespace Moonglade.Caching
         public BlogCache(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
-            CacheDivision = new ConcurrentDictionary<string, IList<string>>();
+            CacheDivision = new();
         }
 
         public TItem GetOrCreate<TItem>(CacheDivision division, string key, Func<ICacheEntry, TItem> factory)

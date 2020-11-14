@@ -54,7 +54,7 @@ namespace Moonglade.Web.Controllers
                 return p;
             });
 
-            if (page == null)
+            if (page is null)
             {
                 Logger.LogWarning($"Page not found. {nameof(slug)}: '{slug}'");
                 return NotFound();
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Preview(Guid pageId)
         {
             var page = await _pageService.GetAsync(pageId);
-            if (page == null)
+            if (page is null)
             {
                 Logger.LogWarning($"Page not found, parameter '{pageId}'.");
                 return NotFound();
@@ -96,7 +96,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var page = await _pageService.GetAsync(id);
-            if (page == null) return NotFound();
+            if (page is null) return NotFound();
 
             var model = new PageEditViewModel
             {
@@ -156,7 +156,7 @@ namespace Moonglade.Web.Controllers
                     await _pageService.CreateAsync(req) :
                     await _pageService.UpdateAsync(req);
 
-                Logger.LogInformation($"User '{User.Identity.Name}' updated custom page id '{uid}'");
+                Logger.LogInformation($"User '{User?.Identity?.Name}' updated custom page id '{uid}'");
                 _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
 
                 return Json(new { PageId = uid });

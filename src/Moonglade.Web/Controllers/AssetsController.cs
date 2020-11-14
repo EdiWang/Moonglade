@@ -116,7 +116,6 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var name = Path.GetFileName(file.FileName);
-                if (name == null) return BadRequest();
 
                 var ext = Path.GetExtension(name).ToLower();
                 var allowedImageFormats = _imageStorageSettings.AllowedExtensions;
@@ -228,7 +227,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                return cache.GetOrCreate(CacheDivision.General, "avatar", entry =>
+                return cache.GetOrCreate(CacheDivision.General, "avatar", _ =>
                 {
                     Logger.LogTrace("Avatar not on cache, getting new avatar image...");
                     var avatarBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.AvatarBase64);

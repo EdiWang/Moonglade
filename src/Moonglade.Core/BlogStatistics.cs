@@ -30,7 +30,7 @@ namespace Moonglade.Core
         public async Task UpdateStatisticAsync(Guid postId, int likes = 0)
         {
             var pp = await _postExtensionRepo.GetAsync(postId);
-            if (pp == null) return;
+            if (pp is null) return;
 
             if (likes > 0)
             {

@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
             var slugInfo = new PostSlugInfo(year, month, day, slug);
             var post = await _postService.GetAsync(slugInfo);
 
-            if (post == null)
+            if (post is null)
             {
                 Logger.LogWarning($"Post not found, parameter '{year}/{month}/{day}/{slug}'.");
                 return NotFound();
@@ -98,7 +98,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Preview(Guid postId)
         {
             var post = await _postService.GetDraftPreviewAsync(postId);
-            if (post == null)
+            if (post is null)
             {
                 Logger.LogWarning($"Post not found, parameter '{postId}'.");
                 return NotFound();

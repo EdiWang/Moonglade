@@ -127,10 +127,10 @@ namespace Moonglade.Auditing
             var uname = string.Empty;
             var ip = "0.0.0.0";
 
-            if (null != _httpContextAccessor)
+            if (_httpContextAccessor?.HttpContext is not null)
             {
-                uname = _httpContextAccessor.HttpContext.User?.Identity?.Name ?? "N/A";
-                ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                uname = _httpContextAccessor.HttpContext.User.Identity?.Name ?? "N/A";
+                ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
             }
 
             return (uname, ip);

@@ -315,7 +315,7 @@ namespace Moonglade.Core
                 PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
                 IsDeleted = false,
                 IsPublished = request.IsPublished,
-                PostExtension = new PostExtensionEntity
+                PostExtension = new()
                 {
                     Hits = 0,
                     Likes = 0
@@ -347,7 +347,7 @@ namespace Moonglade.Core
                 {
                     if (_catRepo.Any(c => c.Id == cid))
                     {
-                        post.PostCategory.Add(new PostCategoryEntity
+                        post.PostCategory.Add(new()
                         {
                             CategoryId = cid,
                             PostId = post.Id
@@ -380,7 +380,7 @@ namespace Moonglade.Core
                             $"Tag '{tag.NormalizedName}' created.");
                     }
 
-                    post.PostTag.Add(new PostTagEntity
+                    post.PostTag.Add(new()
                     {
                         TagId = tag.Id,
                         PostId = post.Id
@@ -439,7 +439,7 @@ namespace Moonglade.Core
             // 1. Add new tags to tag lib
             foreach (var item in request.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
             {
-                await _tagRepo.AddAsync(new TagEntity
+                await _tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
                     NormalizedName = TagService.NormalizeTagName(item, AppSettings.TagNormalization)
@@ -461,7 +461,7 @@ namespace Moonglade.Core
                     }
 
                     var tag = await _tagRepo.GetAsync(t => t.DisplayName == tagName);
-                    if (tag != null) post.PostTag.Add(new PostTagEntity
+                    if (tag != null) post.PostTag.Add(new()
                     {
                         PostId = post.Id,
                         TagId = tag.Id
@@ -477,7 +477,7 @@ namespace Moonglade.Core
                 {
                     if (_catRepo.Any(c => c.Id == cid))
                     {
-                        post.PostCategory.Add(new PostCategoryEntity
+                        post.PostCategory.Add(new()
                         {
                             PostId = post.Id,
                             CategoryId = cid

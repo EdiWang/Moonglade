@@ -19,7 +19,7 @@ namespace Moonglade.Data.Infrastructure
 
         public Expression<Func<T, bool>> Criteria { get; private set; }
         public Func<IQueryable<T>, IIncludableQueryable<T, object>> Include { get; private set; }
-        public List<string> IncludeStrings { get; } = new List<string>();
+        public List<string> IncludeStrings { get; } = new();
         public Expression<Func<T, object>> OrderBy { get; private set; }
         public Expression<Func<T, object>> OrderByDescending { get; private set; }
 

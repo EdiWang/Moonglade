@@ -31,7 +31,7 @@ namespace Moonglade.Core.Notification
             {
                 if (Uri.IsWellFormedUriString(settings.Value.Notification.AzureFunctionEndpoint, UriKind.Absolute))
                 {
-                    httpClient.BaseAddress = new Uri(settings.Value.Notification.AzureFunctionEndpoint);
+                    httpClient.BaseAddress = new(settings.Value.Notification.AzureFunctionEndpoint);
                 }
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Utils.AppVersion}");

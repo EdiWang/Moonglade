@@ -22,7 +22,7 @@ namespace Moonglade.ImageStorage.Providers
             {
                 _logger = logger;
 
-                _client = new MinioClient(blobConfiguration.EndPoint, blobConfiguration.AccessKey, blobConfiguration.SecretKey);
+                _client = new(blobConfiguration.EndPoint, blobConfiguration.AccessKey, blobConfiguration.SecretKey);
                 if(blobConfiguration.WithSSL)
                 {
                     _client = _client.WithSSL();

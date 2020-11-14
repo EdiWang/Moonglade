@@ -20,8 +20,8 @@ namespace Moonglade.Model
 
         public CreatePostRequest()
         {
-            Tags = new string[] { };
-            CategoryIds = new Guid[] { };
+            Tags = Array.Empty<string>();
+            CategoryIds = Array.Empty<Guid>();
         }
     }
 

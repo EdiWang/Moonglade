@@ -21,7 +21,7 @@ namespace Moonglade.Pingback.Mvc
 
         public Task ExecuteResultAsync(ActionContext context)
         {
-            if (context == null)
+            if (context is null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
