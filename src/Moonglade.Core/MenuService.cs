@@ -131,7 +131,7 @@ namespace Moonglade.Core
                     }
 
                     // url doesn't start with "//" or "/\"
-                    if (rawUrl[1] is not '/' or '\\')
+                    if (rawUrl[1] is not '/' and not '\\')
                     {
                         return true;
                     }
