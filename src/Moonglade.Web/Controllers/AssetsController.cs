@@ -104,7 +104,7 @@ namespace Moonglade.Web.Controllers
         {
             static bool IsValidColorValue(int colorValue)
             {
-                return colorValue >= 0 && colorValue <= 255;
+                return colorValue is >= 0 and <= 255;
             }
 
             try

@@ -52,7 +52,7 @@ namespace Moonglade.Core
                 throw new ArgumentOutOfRangeException(nameof(year));
             }
 
-            if (month > 12 || month < 0)
+            if (month is > 12 or < 0)
             {
                 Logger.LogError($"parameter '{nameof(month)}:{month}' is out of range");
                 throw new ArgumentOutOfRangeException(nameof(month));
