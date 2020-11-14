@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int tagId)
         {
-            if (tagId <= 0 || tagId > 9999)
+            if (tagId is <= 0 or > 9999)
             {
                 ModelState.AddModelError(nameof(tagId), "Value out of range");
                 return BadRequest(ModelState);

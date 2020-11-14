@@ -33,7 +33,7 @@ namespace Moonglade.Caching
         public BlogCache(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
-            CacheDivision = new ConcurrentDictionary<string, IList<string>>();
+            CacheDivision = new();
         }
 
         public TItem GetOrCreate<TItem>(CacheDivision division, string key, Func<ICacheEntry, TItem> factory)
@@ -67,7 +67,7 @@ namespace Moonglade.Caching
             if (!CacheDivision.ContainsKey(division.ToString())) return;
 
             var cacheKeys = CacheDivision[division.ToString()];
-            if (null == cacheKeys || cacheKeys.Count <= 0) return;
+            if (cacheKeys is null or { Count: <= 0 }) return;
 
             foreach (string key in cacheKeys)
             {
@@ -87,7 +87,7 @@ namespace Moonglade.Caching
 
             if (!CacheDivision.ContainsKey(divisionKey))
             {
-                CacheDivision.TryAdd(divisionKey, new[] {cacheKey}.ToList());
+                CacheDivision.TryAdd(divisionKey, new[] { cacheKey }.ToList());
             }
 
             if (!CacheDivision[divisionKey].Contains(cacheKey))

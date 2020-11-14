@@ -52,7 +52,7 @@ namespace Moonglade.Pingback
 
         private async Task SendAsync(Uri sourceUrl, Uri targetUrl)
         {
-            if (sourceUrl == null || targetUrl == null)
+            if (sourceUrl is null || targetUrl is null)
             {
                 return;
             }
@@ -67,15 +67,14 @@ namespace Moonglade.Pingback
                 (string key, IEnumerable<string> value) = response.Headers.FirstOrDefault(
                     h => h.Key.ToLower() == "x-pingback" || h.Key.ToLower() == "pingback");
 
-                if (key == null || value == null)
+                if (key is null || value is null)
                 {
                     Logger?.LogInformation($"Pingback endpoint is not found for URL '{targetUrl}', ping request is terminated.");
                     return;
                 }
 
                 var pingUrl = value.FirstOrDefault();
-
-                if (null != pingUrl)
+                if (pingUrl is not null)
                 {
                     Logger?.LogInformation($"Found Ping service URL '{pingUrl}' on target '{sourceUrl}'");
 
@@ -130,7 +129,7 @@ namespace Moonglade.Pingback
             writer.WriteEndElement();
         }
 
-        private static readonly Regex UrlsRegex = new Regex(
+        private static readonly Regex UrlsRegex = new(
             @"<a.*?href=[""'](?<url>.*?)[""'].*?>(?<name>.*?)</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private static IEnumerable<Uri> GetUrlsFromContent(string content)

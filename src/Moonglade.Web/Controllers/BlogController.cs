@@ -22,7 +22,7 @@ namespace Moonglade.Web.Controllers
 
         public BlogController(ILogger<ControllerBase> logger)
         {
-            if (null != logger) Logger = logger;
+            if (logger is not null) Logger = logger;
         }
 
         [Route("server-error")]

@@ -104,19 +104,18 @@ namespace Moonglade.Web.Controllers
         {
             static bool IsValidColorValue(int colorValue)
             {
-                return colorValue >= 0 && colorValue <= 255;
+                return colorValue is >= 0 and <= 255;
             }
 
             try
             {
-                if (null == file || file.Length <= 0)
+                if (file is null or { Length: <= 0 })
                 {
                     Logger.LogError("file is null.");
                     return BadRequest();
                 }
 
                 var name = Path.GetFileName(file.FileName);
-                if (name == null) return BadRequest();
 
                 var ext = Path.GetExtension(name).ToLower();
                 var allowedImageFormats = _imageStorageSettings.AllowedExtensions;
@@ -175,7 +174,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var finalFileName = await _imageStorage.InsertAsync(primaryFileName,
-                    watermarkedStream != null ?
+                    watermarkedStream is not null ?
                         watermarkedStream.ToArray() :
                         stream.ToArray());
 
@@ -228,7 +227,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                return cache.GetOrCreate(CacheDivision.General, "avatar", entry =>
+                return cache.GetOrCreate(CacheDivision.General, "avatar", _ =>
                 {
                     Logger.LogTrace("Avatar not on cache, getting new avatar image...");
                     var avatarBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.AvatarBase64);

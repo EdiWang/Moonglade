@@ -48,13 +48,13 @@ namespace Moonglade.DateTimeOps
         private DateTime UtcToZoneTime(DateTime utcTime, string timeSpan)
         {
             var span = ParseTimeZone(timeSpan, out var tz);
-            return null != tz ? TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz) : utcTime.AddTicks(span.Ticks);
+            return tz is not null ? TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz) : utcTime.AddTicks(span.Ticks);
         }
 
         private DateTime ZoneTimeToUtc(DateTime zoneTime, string timeSpan)
         {
             var span = ParseTimeZone(timeSpan, out var tz);
-            return null != tz ? TimeZoneInfo.ConvertTimeToUtc(zoneTime, tz) : zoneTime.AddTicks(-1 * span.Ticks);
+            return tz is not null ? TimeZoneInfo.ConvertTimeToUtc(zoneTime, tz) : zoneTime.AddTicks(-1 * span.Ticks);
         }
 
         private TimeSpan ParseTimeZone(string timeSpan, out TimeZoneInfo tz)

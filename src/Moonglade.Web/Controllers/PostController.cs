@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
             var slugInfo = new PostSlugInfo(year, month, day, slug);
             var post = await _postService.GetAsync(slugInfo);
 
-            if (post == null)
+            if (post is null)
             {
                 Logger.LogWarning($"Post not found, parameter '{year}/{month}/{day}/{slug}'.");
                 return NotFound();
@@ -98,7 +98,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Preview(Guid postId)
         {
             var post = await _postService.GetDraftPreviewAsync(postId);
-            if (post == null)
+            if (post is null)
             {
                 Logger.LogWarning($"Post not found, parameter '{postId}'.");
                 return NotFound();
@@ -179,7 +179,7 @@ namespace Moonglade.Web.Controllers
                 ContentLanguageCode = post.ContentLanguageCode
             };
 
-            if (post.PubDateUtc != null)
+            if (post.PubDateUtc is not null)
             {
                 viewModel.PublishDate = _dateTimeResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
             }
@@ -220,7 +220,7 @@ namespace Moonglade.Web.Controllers
                 if (!ModelState.IsValid) return Conflict(ModelState);
 
                 var tags = string.IsNullOrWhiteSpace(model.Tags)
-                    ? new string[] { }
+                    ? Array.Empty<string>()
                     : model.Tags.Split(',').ToArray();
 
                 var request = new EditPostRequest(model.PostId)

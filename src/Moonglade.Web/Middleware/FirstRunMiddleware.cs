@@ -26,7 +26,7 @@ namespace Moonglade.Web.Middleware
             ILogger<FirstRunMiddleware> logger)
         {
             var initFlag = AppDomain.CurrentDomain.GetData(Token);
-            if (null != initFlag)
+            if (initFlag is not null)
             {
                 // Don't need to check bool true or false, exists means everything
                 await _next(httpContext);

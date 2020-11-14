@@ -144,14 +144,14 @@ namespace Moonglade.Pingback
             var list = doc.SelectNodes("methodCall/params/param/value/string") ??
                        doc.SelectNodes("methodCall/params/param/value");
 
-            if (list == null)
+            if (list is null)
             {
                 _logger.LogWarning("Could not find Pingback sourceUrl and targetUrl, request has been terminated.");
                 return false;
             }
 
-            _sourceUrl = list[0].InnerText.Trim();
-            _targetUrl = list[1].InnerText.Trim();
+            _sourceUrl = list[0]?.InnerText.Trim();
+            _targetUrl = list[1]?.InnerText.Trim();
 
             return true;
         }

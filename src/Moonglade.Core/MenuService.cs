@@ -93,7 +93,7 @@ namespace Moonglade.Core
         public async Task DeleteAsync(Guid id)
         {
             var menu = await _menuRepo.GetAsync(id);
-            if (null == menu)
+            if (menu is null)
             {
                 throw new InvalidOperationException($"MenuEntity with Id '{id}' not found.");
             }
@@ -131,12 +131,7 @@ namespace Moonglade.Core
                     }
 
                     // url doesn't start with "//" or "/\"
-                    if (rawUrl[1] != '/' && rawUrl[1] != '\\')
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return rawUrl[1] is not '/' and not '\\';
                 }
 
                 return false;

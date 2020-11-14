@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Moonglade.Model.Settings
 {
@@ -22,15 +23,15 @@ namespace Moonglade.Model.Settings
         public AppSettings()
         {
             // Prevent Null Reference Exception if user didn't assign config values
-            CaptchaSettings = new CaptchaSettings
+            CaptchaSettings = new()
             {
                 ImageHeight = 36,
                 ImageWidth = 100
             };
-            Notification = new NotificationSettings();
-            SiteMap = new SiteMapSettings();
-            Themes = new BlogTheme[] { };
-            ManifestIcons = new ManifestIcon[] { };
+            Notification = new();
+            SiteMap = new();
+            Themes = Array.Empty<BlogTheme>();
+            ManifestIcons = Array.Empty<ManifestIcon>();
         }
     }
 

@@ -7,7 +7,7 @@ namespace Moonglade.Web.Middleware
         public static IApplicationBuilder UseRobotsTxt(this IApplicationBuilder builder)
         {
             return builder.MapWhen(
-                context => context.Request.Path == "/robots.txt", 
+                context => context.Request.Path == "/robots.txt",
                 p => p.UseMiddleware<RobotsTxtMiddleware>());
         }
     }

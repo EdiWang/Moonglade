@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -31,7 +30,7 @@ namespace Moonglade.Web.Controllers
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
             var posts = await _postService.GetPagedPostsAsync(pagesize, page);
-            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", entry => _postService.CountVisiblePosts());
+            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postService.CountVisiblePosts());
 
             var list = new StaticPagedList<PostListEntry>(posts, page, pagesize, count);
             return View(list);
@@ -48,7 +47,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> TagList(string normalizedName, [FromServices] TagService tagService)
         {
             var tagResponse = tagService.Get(normalizedName);
-            if (tagResponse == null) return NotFound();
+            if (tagResponse is null) return NotFound();
 
             ViewBag.TitlePrefix = tagResponse.DisplayName;
             var posts = await _postService.GetByTagAsync(tagResponse.Id);
@@ -64,7 +63,7 @@ namespace Moonglade.Web.Controllers
             var pageSize = _blogConfig.ContentSettings.PostListPageSize;
             var cat = await categoryService.GetAsync(routeName);
 
-            if (null == cat)
+            if (cat is null)
             {
                 Logger.LogWarning($"Category '{routeName}' not found.");
                 return NotFound();
@@ -75,7 +74,7 @@ namespace Moonglade.Web.Controllers
             ViewBag.CategoryDescription = cat.Note;
 
             var postCount = _cache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
-                entry => _postService.CountByCategoryId(cat.Id));
+                _ => _postService.CountByCategoryId(cat.Id));
 
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
@@ -98,7 +97,7 @@ namespace Moonglade.Web.Controllers
 
             IReadOnlyList<PostListEntry> model;
 
-            if (null != month)
+            if (month is not null)
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
@@ -119,8 +118,8 @@ namespace Moonglade.Web.Controllers
         {
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+                CookieRequestCultureProvider.MakeCookieValue(new(culture)),
+                new() { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
 
             return LocalRedirect(returnUrl);

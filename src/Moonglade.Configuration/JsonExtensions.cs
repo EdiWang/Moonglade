@@ -4,7 +4,7 @@ namespace Moonglade.Configuration
 {
     public static class JsonExtensions
     {
-        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true
         };

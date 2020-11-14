@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -27,7 +27,7 @@ namespace Moonglade.Core
             {
                 var lines = await File.ReadAllLinesAsync(cssPath);
                 var accentColorLine = lines.FirstOrDefault(l => l.Contains("accent-color1"));
-                if (null != accentColorLine)
+                if (accentColorLine is not null)
                 {
                     var regex = new Regex("#(?:[0-9a-f]{3}){1,2}");
                     var match = regex.Match(accentColorLine);
@@ -68,10 +68,10 @@ namespace Moonglade.Core
             // Regex.IsMatch(ip, @"(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)")
             // Regex has bad performance, this is better
 
-            var x when x[0] == 192 && x[1] == 168 => true,
-            var x when x[0] == 10 => true,
-            var x when x[0] == 127 => true,
-            var x when x[0] == 172 && x[1] >= 16 && x[1] <= 31 => true,
+            var x when x[0] is 192 && x[1] is 168 => true,
+            var x when x[0] is 10 => true,
+            var x when x[0] is 127 => true,
+            var x when x[0] is 172 && x[1] is >= 16 and <= 31 => true,
             _ => false
         };
 

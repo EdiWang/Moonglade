@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -89,7 +89,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> SegmentPages()
         {
             var pageSegments = await _pageService.ListSegmentAsync();
-            if (pageSegments != null)
+            if (pageSegments is not null)
             {
                 // for security, only allow published pages to be listed to third party API calls
                 var published = pageSegments.Where(p => p.IsPublished);

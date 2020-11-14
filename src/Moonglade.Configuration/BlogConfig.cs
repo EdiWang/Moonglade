@@ -44,15 +44,15 @@ namespace Moonglade.Configuration
             _configuration = configuration;
             _logger = logger;
 
-            ContentSettings = new ContentSettings();
-            GeneralSettings = new GeneralSettings();
-            NotificationSettings = new NotificationSettings();
-            FeedSettings = new FeedSettings();
-            WatermarkSettings = new WatermarkSettings();
-            FriendLinksSettings = new FriendLinksSettings();
-            AdvancedSettings = new AdvancedSettings();
-            SecuritySettings = new SecuritySettings();
-            CustomStyleSheetSettings = new CustomStyleSheetSettings();
+            ContentSettings = new();
+            GeneralSettings = new();
+            NotificationSettings = new();
+            FeedSettings = new();
+            WatermarkSettings = new();
+            FriendLinksSettings = new();
+            AdvancedSettings = new();
+            SecuritySettings = new();
+            CustomStyleSheetSettings = new();
 
             Initialize();
         }

@@ -30,8 +30,8 @@ namespace Moonglade.Web.SiteIconGenerator.IconEncoder
             using var br = new BinaryReader(stream);
             FileHeader.Populate(br);
             Info.Populate(br);
-            ImageData = Info.InfoHeader.BiSizeImage > 0 ? 
-                br.ReadBytes((int)Info.InfoHeader.BiSizeImage) : 
+            ImageData = Info.InfoHeader.BiSizeImage > 0 ?
+                br.ReadBytes((int)Info.InfoHeader.BiSizeImage) :
                 br.ReadBytes((int)(br.BaseStream.Length - br.BaseStream.Position));
         }
 

@@ -21,7 +21,7 @@ namespace Moonglade.ImageStorage.Providers
             {
                 _logger = logger;
 
-                _container = new BlobContainerClient(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
+                _container = new(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
 
                 logger.LogInformation($"Created {nameof(AzureBlobImageStorage)} for account {_container.AccountName} on container {_container.Name}");
             }
@@ -96,7 +96,7 @@ namespace Moonglade.ImageStorage.Providers
             {
                 throw new ArgumentException("File extension is empty");
             }
-            
+
             var existsTask = blobClient.ExistsAsync();
             var downloadTask = blobClient.DownloadToAsync(memoryStream);
 

@@ -16,13 +16,9 @@ namespace Moonglade.Core
             var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
             var newStr = imgSrcRegex.Replace(rawHtmlContent, match =>
             {
-                if (!match.Value.Contains("loading"))
-                {
-                    return match.Value.Replace("src",
-                        @"loading=""lazy"" src");
-                }
-
-                return match.Value;
+                return !match.Value.Contains("loading")
+                ? match.Value.Replace("src", @"loading=""lazy"" src")
+                : match.Value;
             });
             return newStr;
         }

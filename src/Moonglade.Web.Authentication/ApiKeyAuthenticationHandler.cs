@@ -40,7 +40,7 @@ namespace Moonglade.Web.Authentication
                 return await Task.FromResult(AuthenticateResult.NoResult());
             }
 
-            if (null == AuthenticationSettings.ApiKeys || !AuthenticationSettings.ApiKeys.Any())
+            if (AuthenticationSettings.ApiKeys is null || !AuthenticationSettings.ApiKeys.Any())
             {
                 throw new ArgumentNullException(nameof(AuthenticationSettings.ApiKeys), "No API Keys configured.");
             }

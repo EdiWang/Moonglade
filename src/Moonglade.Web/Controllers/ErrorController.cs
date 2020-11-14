@@ -16,7 +16,7 @@ namespace Moonglade.Web.Controllers
 
         public ErrorController(ILogger<ErrorController> logger)
         {
-            if (null != logger) Logger = logger;
+            if (logger is not null) Logger = logger;
         }
 
         [Route("/error")]
@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
             }
 
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            if (exceptionFeature != null)
+            if (exceptionFeature is not null)
             {
                 // Get which route the exception occurred at
                 var routeWhereExceptionOccurred = exceptionFeature.Path;
