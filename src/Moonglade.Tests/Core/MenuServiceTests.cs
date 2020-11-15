@@ -40,7 +40,7 @@ namespace Moonglade.Tests.Core
         [TestCase("javascript:;", ExpectedResult = "#")]
         [TestCase("javascript:while(true){alert('fuck')};", ExpectedResult = "#")]
         [TestCase("blob:https://996.icu/fubao", ExpectedResult = "#")]
-        public string TestSterilizeMenuLink(string rawUrl)
+        public string SterilizeMenuLink(string rawUrl)
         {
             return MenuService.SterilizeMenuLink(rawUrl);
         }
