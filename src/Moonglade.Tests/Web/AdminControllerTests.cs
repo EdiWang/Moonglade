@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -13,6 +14,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests.Web
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class AdminControllerTests
     {
         private Mock<IOptions<AuthenticationSettings>> _authenticationSettingsMock;

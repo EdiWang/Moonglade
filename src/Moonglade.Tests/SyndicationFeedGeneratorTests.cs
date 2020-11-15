@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using Moonglade.Syndication;
@@ -8,6 +9,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class SyndicationFeedGeneratorTests
     {
         [Test]

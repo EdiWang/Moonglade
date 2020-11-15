@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Moonglade.Core;
 using NUnit.Framework;
 
 namespace Moonglade.Tests
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class UrlExtensionTests
     {
         [TestCase("https://dot.net/955", ExpectedResult = true)]

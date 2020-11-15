@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Extensions;
@@ -13,6 +14,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests.Web.Middleware
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class RobotsTxtMiddlewareTests
     {
         [Test]

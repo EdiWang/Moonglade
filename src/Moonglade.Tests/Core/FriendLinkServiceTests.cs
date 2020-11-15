@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,6 +14,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests.Core
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class FriendLinkServiceTests
     {
         private Mock<ILogger<FriendLinkService>> _loggerMock;

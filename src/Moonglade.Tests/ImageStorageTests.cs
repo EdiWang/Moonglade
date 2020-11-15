@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Moonglade.ImageStorage.Providers;
 using NUnit.Framework;
 
 namespace Moonglade.Tests
 {
     [TestFixture]
+    [Platform(Include = "Win")]
+    [ExcludeFromCodeCoverage]
     public class ImageStorageTests
     {
         [Test]
-        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathValidAbsolute()
         {
             var contentRootPath = @"C:\Moonglade";
@@ -19,7 +21,6 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathValidRelative()
         {
             var contentRootPath = @"C:\Moonglade";
@@ -30,7 +31,6 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathInvalidRelative()
         {
             var contentRootPath = @"C:\Moonglade";
@@ -40,7 +40,6 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathInvalidChar()
         {
             var contentRootPath = @"C:\Moonglade";
@@ -52,7 +51,6 @@ namespace Moonglade.Tests
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
-        [Platform(Include = "Win")]
         public void TestResolveImageStoragePathEmptyParameter(string path)
         {
             var contentRootPath = @"C:\Moonglade";

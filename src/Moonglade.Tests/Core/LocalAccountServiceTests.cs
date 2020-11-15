@@ -1,9 +1,11 @@
-﻿using Moonglade.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+using Moonglade.Core;
 using NUnit.Framework;
 
 namespace Moonglade.Tests.Core
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class LocalAccountServiceTests
     {
         [TestCase("", ExpectedResult = "")]

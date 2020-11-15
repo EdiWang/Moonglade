@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Web.Controllers;
 using Moq;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests.Web
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class BlogControllerTests
     {
         private Mock<ILogger<ControllerBase>> _loggerMock;

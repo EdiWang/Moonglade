@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -17,6 +18,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests.Web
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class AssetsControllerTests
     {
         private Mock<ILogger<AssetsController>> _loggerMock;

@@ -1,10 +1,12 @@
-﻿using Moonglade.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+using Moonglade.Core;
 using Moonglade.Model.Settings;
 using NUnit.Framework;
 
 namespace Moonglade.Tests.Core
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class TagServiceTests
     {
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
