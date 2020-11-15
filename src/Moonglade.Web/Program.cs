@@ -74,11 +74,8 @@ namespace Moonglade.Web
 
             void CleanDataCache(string dataDir)
             {
-                var openSearchDataFile = Path.Join($"{dataDir}", $"{Constants.OpenSearchFileName}");
-                var opmlDataFile = Path.Join($"{dataDir}", $"{Constants.OpmlFileName}");
-
-                DeleteDataFile(openSearchDataFile);
-                DeleteDataFile(opmlDataFile);
+                DeleteDataFile(Path.Join(dataDir, Constants.OpenSearchFileName));
+                DeleteDataFile(Path.Join(dataDir, Constants.OpmlFileName));
             }
 
             // Use Temp folder as best practice
@@ -92,7 +89,7 @@ namespace Moonglade.Web
             }
             Directory.CreateDirectory(appDataPath);
 
-            var feedDirectoryPath = Path.Join($"{appDataPath}", "feed");
+            var feedDirectoryPath = Path.Join(appDataPath, "feed");
             if (!Directory.Exists(feedDirectoryPath))
             {
                 Directory.CreateDirectory(feedDirectoryPath);
