@@ -41,7 +41,7 @@ namespace Moonglade.Web.Configuration
         {
             var connStr = configuration.GetConnectionString(Constants.DbConnectionName);
 
-            services.AddScoped<IDbConnection>(c => new SqlConnection(connStr));
+            services.AddTransient<IDbConnection>(c => new SqlConnection(connStr));
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.AddDbContext<BlogDbContext>(options =>
                 options.UseLazyLoadingProxies()

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Model;
 
 namespace Moonglade.Configuration
 {
@@ -15,7 +13,7 @@ namespace Moonglade.Configuration
     {
         private readonly ILogger<BlogConfig> _logger;
 
-        private readonly IConfiguration _configuration;
+        private readonly IDbConnection _dbConnection;
 
         public GeneralSettings GeneralSettings { get; set; }
 
@@ -39,9 +37,9 @@ namespace Moonglade.Configuration
 
         public BlogConfig(
             ILogger<BlogConfig> logger,
-            IConfiguration configuration)
+            IDbConnection dbConnection)
         {
-            _configuration = configuration;
+            _dbConnection = dbConnection;
             _logger = logger;
 
             ContentSettings = new();
@@ -80,14 +78,12 @@ namespace Moonglade.Configuration
         {
             async Task SetConfiguration(string key, string value)
             {
-                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-                await using var conn = new SqlConnection(connStr);
                 var sql = $"UPDATE {nameof(BlogConfiguration)} " +
                           $"SET {nameof(BlogConfiguration.CfgValue)} = @value, " +
                           $"{nameof(BlogConfiguration.LastModifiedTimeUtc)} = @lastModifiedTimeUtc " +
                           $"WHERE {nameof(BlogConfiguration.CfgKey)} = @key";
 
-                await conn.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
+                await _dbConnection.ExecuteAsync(sql, new { key, value, lastModifiedTimeUtc = DateTime.UtcNow });
             }
 
             var json = blogSettings.ToJson();
@@ -113,13 +109,11 @@ namespace Moonglade.Configuration
         {
             try
             {
-                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
-                using var conn = new SqlConnection(connStr);
                 var sql = $"SELECT {nameof(BlogConfiguration.CfgKey)}, " +
                           $"{nameof(BlogConfiguration.CfgValue)} " +
                           $"FROM {nameof(BlogConfiguration)}";
 
-                var data = conn.Query<(string CfgKey, string CfgValue)>(sql);
+                var data = _dbConnection.Query<(string CfgKey, string CfgValue)>(sql);
                 var dic = data.ToDictionary(c => c.CfgKey, c => c.CfgValue);
                 return dic;
             }
