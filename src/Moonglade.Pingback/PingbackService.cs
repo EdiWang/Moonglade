@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using System.Xml;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moonglade.Model;
 
 namespace Moonglade.Pingback
 {
@@ -15,28 +13,26 @@ namespace Moonglade.Pingback
         private readonly IPingSourceInspector _pingSourceInspector;
         private readonly IPingbackRepository _pingbackRepository;
 
-        private string DatabaseConnectionString { get; }
+        private IDbConnection _dbConnection;
         private string _sourceUrl;
         private string _targetUrl;
 
         public PingbackService(
             ILogger<PingbackService> logger,
-            IConfiguration configuration,
+            IDbConnection dbConnection,
             IPingSourceInspector pingSourceInspector,
             IPingbackRepository pingbackRepository)
         {
             _logger = logger;
             _pingSourceInspector = pingSourceInspector;
             _pingbackRepository = pingbackRepository;
-            DatabaseConnectionString = configuration.GetConnectionString(Constants.DbConnectionName);
+            _dbConnection = dbConnection;
         }
 
         public async Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackRecord> pingSuccessAction)
         {
             try
             {
-                await using var conn = new SqlConnection(DatabaseConnectionString);
-
                 if (string.IsNullOrWhiteSpace(requestBody))
                 {
                     _logger.LogError("Pingback requestBody is null");
@@ -61,7 +57,7 @@ namespace Moonglade.Pingback
                     return PingbackResponse.SpamDetectedFakeNotFound;
                 }
 
-                var postIdTitle = await _pingbackRepository.GetPostIdTitle(pingRequest.TargetUrl, conn);
+                var postIdTitle = await _pingbackRepository.GetPostIdTitle(pingRequest.TargetUrl, _dbConnection);
                 if (postIdTitle.Id == Guid.Empty)
                 {
                     _logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
@@ -69,7 +65,7 @@ namespace Moonglade.Pingback
                 }
                 _logger.LogInformation($"Post '{postIdTitle.Id}:{postIdTitle.Title}' is found for ping.");
 
-                var pinged = await _pingbackRepository.HasAlreadyBeenPinged(postIdTitle.Id, pingRequest.SourceUrl, ip, conn);
+                var pinged = await _pingbackRepository.HasAlreadyBeenPinged(postIdTitle.Id, pingRequest.SourceUrl, ip, _dbConnection);
                 if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
                 _logger.LogInformation("Adding received pingback...");
@@ -87,7 +83,7 @@ namespace Moonglade.Pingback
                     SourceIp = ip
                 };
 
-                await _pingbackRepository.SavePingbackRecordAsync(obj, conn);
+                await _pingbackRepository.SavePingbackRecordAsync(obj, _dbConnection);
                 pingSuccessAction?.Invoke(obj);
 
                 return PingbackResponse.Success;
@@ -103,8 +99,7 @@ namespace Moonglade.Pingback
         {
             try
             {
-                await using var conn = new SqlConnection(DatabaseConnectionString);
-                var list = await _pingbackRepository.GetPingbackHistoryAsync(conn);
+                var list = await _pingbackRepository.GetPingbackHistoryAsync(_dbConnection);
                 return list;
             }
             catch (Exception e)
@@ -118,8 +113,7 @@ namespace Moonglade.Pingback
         {
             try
             {
-                await using var conn = new SqlConnection(DatabaseConnectionString);
-                await _pingbackRepository.DeletePingbackHistory(id, conn);
+                await _pingbackRepository.DeletePingbackHistory(id, _dbConnection);
             }
             catch (Exception e)
             {

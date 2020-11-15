@@ -2,7 +2,6 @@
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Pingback;
 using Moq;
@@ -15,7 +14,7 @@ namespace Moonglade.Tests
     public class PingbackServiceTests
     {
         private Mock<ILogger<PingbackService>> _loggerMock;
-        private Mock<IConfiguration> _configurationMock;
+        private Mock<IDbConnection> _dbConnectionMock;
         private Mock<IPingSourceInspector> _pingSourceInspectorMock;
         private Mock<IPingbackRepository> _pingTargetFinderMock;
 
@@ -25,7 +24,7 @@ namespace Moonglade.Tests
         public void Setup()
         {
             _loggerMock = new Mock<ILogger<PingbackService>>();
-            _configurationMock = new Mock<IConfiguration>();
+            _dbConnectionMock = new Mock<IDbConnection>();
             _pingSourceInspectorMock = new Mock<IPingSourceInspector>();
             _pingTargetFinderMock = new Mock<IPingbackRepository>();
             _fakePingRequest = @"<?xml version=""1.0"" encoding=""iso-8859-1""?>
@@ -45,7 +44,7 @@ namespace Moonglade.Tests
         {
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
-                _configurationMock.Object,
+                _dbConnectionMock.Object,
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
@@ -58,7 +57,7 @@ namespace Moonglade.Tests
         {
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
-                _configurationMock.Object,
+                _dbConnectionMock.Object,
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
@@ -77,7 +76,7 @@ namespace Moonglade.Tests
 
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
-                _configurationMock.Object,
+                _dbConnectionMock.Object,
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
@@ -99,7 +98,7 @@ namespace Moonglade.Tests
 
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
-                _configurationMock.Object,
+                _dbConnectionMock.Object,
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
@@ -122,7 +121,7 @@ namespace Moonglade.Tests
 
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
-                _configurationMock.Object,
+                _dbConnectionMock.Object,
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
@@ -149,7 +148,7 @@ namespace Moonglade.Tests
 
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
-                _configurationMock.Object,
+                _dbConnectionMock.Object,
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
@@ -183,7 +182,7 @@ namespace Moonglade.Tests
 
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
-                _configurationMock.Object,
+                _dbConnectionMock.Object,
                 _pingSourceInspectorMock.Object,
                 _pingTargetFinderMock.Object);
 
