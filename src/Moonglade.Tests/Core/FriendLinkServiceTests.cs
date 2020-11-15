@@ -30,7 +30,7 @@ namespace Moonglade.Tests.Core
         }
 
         [Test]
-        public async Task TestAddFriendLinkAsyncValid()
+        public async Task AddFriendLinkAsync_Valid()
         {
             var uid = Guid.NewGuid();
             var friendLinkEntity = new FriendLinkEntity
