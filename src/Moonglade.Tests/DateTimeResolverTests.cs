@@ -10,7 +10,7 @@ namespace Moonglade.Tests
     public class DateTimeResolverTests
     {
         [Test]
-        public void TestInvalidTimeSpanFormat()
+        public void InvalidTimeSpanFormat()
         {
             var resolver = new DateTimeResolver("996ICU");
             var utc = new DateTime(2000, 1, 1, 0, 0, 0);
@@ -22,7 +22,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestGetDateTimeWithUserTZoneZero()
+        public void GetDateTime_UserTZoneZero()
         {
             var resolver = new DateTimeResolver(string.Empty);
 
@@ -33,7 +33,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestGetDateTimeWithUserTZone()
+        public void GetDateTime_UserTZone()
         {
             var tSpan = "02:51:00";
             var resolver = new DateTimeResolver(tSpan);
@@ -45,7 +45,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestGetUtcTimeFromUserTZone()
+        public void GetUtcTimeFromUserTZone()
         {
             var tSpan = "10:55:00";
             var resolver = new DateTimeResolver(tSpan);
@@ -58,7 +58,7 @@ namespace Moonglade.Tests
 
         [Test]
         // [Platform(Include = "Win")]
-        public void TestGetTimeSpanByZoneId()
+        public void GetTimeSpanByZoneId()
         {
             var tSpan = "10:55:00";
             var resolver = new DateTimeResolver(tSpan);
@@ -67,7 +67,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestGetTimeSpanByZoneIdEmpty()
+        public void GetTimeSpanByZoneId_Empty()
         {
             var tSpan = "10:55:00";
             var resolver = new DateTimeResolver(tSpan);
@@ -76,7 +76,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestGetNowWithUserTZone()
+        public void GetNow_UserTZone()
         {
             var tSpan = "8:00:00";
             var resolver = new DateTimeResolver(tSpan);
