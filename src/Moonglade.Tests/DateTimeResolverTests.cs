@@ -57,7 +57,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        [Platform(Include = "Win")]
+        // [Platform(Include = "Win")]
         public void TestGetTimeSpanByZoneId()
         {
             var tSpan = "10:55:00";

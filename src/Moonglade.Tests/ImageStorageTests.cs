@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests
 {
     [TestFixture]
-    [Platform(Include = "Win")]
+    //[Platform(Include = "Win")]
     [ExcludeFromCodeCoverage]
     public class ImageStorageTests
     {
