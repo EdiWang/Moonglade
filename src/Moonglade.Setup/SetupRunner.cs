@@ -130,7 +130,6 @@ namespace Moonglade.Setup
         {
             var assembly = typeof(SetupRunner).GetTypeInfo().Assembly;
             using var stream = assembly.GetManifestResourceStream($"Moonglade.Setup.Data.{scriptName}.sql");
-            if (stream is null) return null;
             using var reader = new StreamReader(stream);
             var sql = reader.ReadToEnd();
             return sql;

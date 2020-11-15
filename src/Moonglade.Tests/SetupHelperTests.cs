@@ -55,5 +55,53 @@ namespace Moonglade.Tests
                 setupHelper.SetupDatabase();
             });
         }
+
+        [Test]
+        public void ClearData_OK()
+        {
+            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
+            var setupHelper = new SetupRunner(mockDbConnection.Object);
+
+            Assert.DoesNotThrow(() =>
+            {
+                setupHelper.ClearData();
+            });
+        }
+
+        [Test]
+        public void ResetDefaultConfiguration_OK()
+        {
+            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
+            var setupHelper = new SetupRunner(mockDbConnection.Object);
+
+            Assert.DoesNotThrow(() =>
+            {
+                setupHelper.ResetDefaultConfiguration();
+            });
+        }
+
+        [Test]
+        public void InitSampleData_OK()
+        {
+            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
+            var setupHelper = new SetupRunner(mockDbConnection.Object);
+
+            Assert.DoesNotThrow(() =>
+            {
+                setupHelper.InitSampleData();
+            });
+        }
+
+        [Test]
+        public void InitFirstRun_OK()
+        {
+            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
+            var setupHelper = new SetupRunner(mockDbConnection.Object);
+
+            Assert.DoesNotThrow(() =>
+            {
+                setupHelper.InitFirstRun();
+            });
+        }
     }
 }
