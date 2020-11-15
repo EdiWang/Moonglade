@@ -41,7 +41,7 @@ namespace Moonglade.Tests
         [TestCase(" ", ExpectedResult = PingbackResponse.GenericError)]
         [TestCase("", ExpectedResult = PingbackResponse.GenericError)]
         [TestCase(null, ExpectedResult = PingbackResponse.GenericError)]
-        public async Task<PingbackResponse> TestProcessReceivedPayloadAsyncEmptyRequest(string requestBody)
+        public async Task<PingbackResponse> ProcessReceivedPayload_EmptyRequest(string requestBody)
         {
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
@@ -54,7 +54,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestProcessReceivedPayloadAsyncNoMethod()
+        public async Task ProcessReceivedPayload_NoMethod()
         {
             var pingbackService = new PingbackService(
                 _loggerMock.Object,
@@ -67,7 +67,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestProcessReceivedPayloadAsyncInvalidRequest()
+        public async Task ProcessReceivedPayload_InvalidRequest()
         {
             var tcs = new TaskCompletionSource<PingRequest>();
             tcs.SetResult(null);
@@ -86,7 +86,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestProcessReceivedPayloadAsyncError17()
+        public async Task ProcessReceivedPayload_Error17()
         {
             var tcs = new TaskCompletionSource<PingRequest>();
             tcs.SetResult(new PingRequest
@@ -108,7 +108,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestProcessReceivedPayloadAsyncSpam()
+        public async Task ProcessReceivedPayload_Spam()
         {
             var tcs = new TaskCompletionSource<PingRequest>();
             tcs.SetResult(new PingRequest
@@ -131,7 +131,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestProcessReceivedPayloadAsyncTargetNotFound()
+        public async Task ProcessReceivedPayload_TargetNotFound()
         {
             var tcsPr = new TaskCompletionSource<PingRequest>();
             tcsPr.SetResult(new PingRequest
@@ -158,7 +158,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestProcessReceivedPayloadAsyncAlreadyPinged()
+        public async Task ProcessReceivedPayload_AlreadyPinged()
         {
             var tcsPr = new TaskCompletionSource<PingRequest>();
             tcsPr.SetResult(new PingRequest
