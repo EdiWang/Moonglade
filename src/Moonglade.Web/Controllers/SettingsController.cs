@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -523,12 +524,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("reset")]
-        public async Task<IActionResult> Reset([FromServices] IConfiguration configuration, [FromServices] IHostApplicationLifetime applicationLifetime)
+        public async Task<IActionResult> Reset([FromServices] IDbConnection dbConnection, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
             Logger.LogWarning($"System reset is requested by '{User.Identity.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
 
-            var conn = configuration.GetConnectionString(Constants.DbConnectionName);
-            var setupHelper = new SetupRunner(conn);
+            var setupHelper = new SetupRunner(dbConnection);
             setupHelper.ClearData();
 
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "System reset.");

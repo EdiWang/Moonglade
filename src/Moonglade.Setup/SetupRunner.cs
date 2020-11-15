@@ -1,23 +1,18 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.Reflection;
 using Dapper;
-using Microsoft.Data.SqlClient;
 
 namespace Moonglade.Setup
 {
     public class SetupRunner
     {
-        public string DatabaseConnectionString { get; set; }
+        private readonly IDbConnection conn;
 
-        public SetupRunner(string databaseConnectionString)
+        public SetupRunner(IDbConnection dbConnection)
         {
-            if (string.IsNullOrWhiteSpace(databaseConnectionString))
-            {
-                throw new ArgumentNullException(nameof(databaseConnectionString));
-            }
-
-            DatabaseConnectionString = databaseConnectionString;
+            conn = dbConnection;
         }
 
         public void InitFirstRun()
@@ -33,7 +28,6 @@ namespace Moonglade.Setup
         /// </summary>
         public bool IsFirstRun()
         {
-            using var conn = new SqlConnection(DatabaseConnectionString);
             var tableExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
                                                       "FROM INFORMATION_SCHEMA.TABLES " +
                                                       "WHERE TABLE_NAME = N'BlogConfiguration'") == 1;
@@ -51,7 +45,6 @@ namespace Moonglade.Setup
         /// </summary>
         public void SetupDatabase()
         {
-            using var conn = new SqlConnection(DatabaseConnectionString);
             var sql = GetEmbeddedSqlScript("schema-mssql-140");
             if (!string.IsNullOrWhiteSpace(sql))
             {
@@ -68,7 +61,6 @@ namespace Moonglade.Setup
         /// </summary>
         public void ClearData()
         {
-            using var conn = new SqlConnection(DatabaseConnectionString);
             // Clear Relation Tables
             conn.Execute("DELETE FROM PostTag");
             conn.Execute("DELETE FROM PostCategory");
@@ -96,7 +88,6 @@ namespace Moonglade.Setup
 
         public void ResetDefaultConfiguration()
         {
-            using var conn = new SqlConnection(DatabaseConnectionString);
             var sql = GetEmbeddedSqlScript("init-blogconfiguration");
             if (!string.IsNullOrWhiteSpace(sql))
             {
@@ -110,7 +101,6 @@ namespace Moonglade.Setup
 
         public void InitSampleData()
         {
-            using var conn = new SqlConnection(DatabaseConnectionString);
             var sql = GetEmbeddedSqlScript("init-sampledata");
             if (!string.IsNullOrWhiteSpace(sql))
             {
@@ -126,7 +116,6 @@ namespace Moonglade.Setup
         {
             try
             {
-                using var conn = new SqlConnection(DatabaseConnectionString);
                 var result = conn.ExecuteScalar<int>("SELECT 1");
                 return result == 1;
             }

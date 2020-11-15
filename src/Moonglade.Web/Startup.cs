@@ -97,8 +97,7 @@ namespace Moonglade.Web
             services.AddSessionBasedCaptcha();
             services.AddBlogServices();
             services.AddBlogNotification(_logger);
-
-            services.AddDataStorage(_configuration.GetConnectionString(Constants.DbConnectionName));
+            services.AddDataStorage(_configuration);
         }
 
         public void Configure(
