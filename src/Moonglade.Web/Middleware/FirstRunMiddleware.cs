@@ -36,12 +36,12 @@ namespace Moonglade.Web.Middleware
 
             if (!setupHelper.TestDatabaseConnection(exception =>
             {
-                logger.LogCritical(exception, $"Error {nameof(SetupRunner.TestDatabaseConnection)}, connection string: {dbConnection}");
+                logger?.LogCritical(exception, $"Error {nameof(SetupRunner.TestDatabaseConnection)}, connection string: {dbConnection}");
             }))
             {
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await httpContext.Response.WriteAsync("Database connection failed. Please see error log, fix it and RESTART this application.");
-                appLifetime.StopApplication();
+                appLifetime?.StopApplication();
             }
             else
             {
