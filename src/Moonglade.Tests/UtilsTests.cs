@@ -132,5 +132,16 @@ namespace Moonglade.Tests
             Assert.IsTrue(envTags.Count() == 2);
             Assert.IsTrue(!envTags.Contains(invalidTag));
         }
+
+        [Test]
+        public void GetEnvironmentTags_Empty()
+        {
+            Environment.SetEnvironmentVariable("MOONGLADE_TAGS", string.Empty, EnvironmentVariableTarget.Process);
+            var envTags = Utils.GetEnvironmentTags();
+            Assert.IsNotNull(envTags);
+
+            Assert.IsTrue(envTags.Count() == 1);
+            Assert.AreEqual(envTags.First(), string.Empty);
+        }
     }
 }
