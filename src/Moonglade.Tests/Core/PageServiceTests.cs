@@ -9,7 +9,7 @@ namespace Moonglade.Tests.Core
     public class PageServiceTests
     {
         [Test]
-        public void TestRemoveScriptTagFromHtml()
+        public void RemoveScriptTagFromHtml()
         {
             var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><script>console.info('hey');</script><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
             var output = PageService.RemoveScriptTagFromHtml(html);

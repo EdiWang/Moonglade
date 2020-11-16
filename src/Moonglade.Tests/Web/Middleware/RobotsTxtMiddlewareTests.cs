@@ -18,7 +18,7 @@ namespace Moonglade.Tests.Web.Middleware
     public class RobotsTxtMiddlewareTests
     {
         [Test]
-        public async Task TestNonRobotsTxtRequestPath()
+        public async Task NonRobotsTxtRequestPath()
         {
             var reqMock = new Mock<HttpRequest>();
             reqMock.SetupGet(r => r.Path).Returns("/996");
@@ -35,7 +35,7 @@ namespace Moonglade.Tests.Web.Middleware
         }
 
         [Test]
-        public async Task TestRobotsTxtRequestPathWithContent()
+        public async Task RobotsTxtRequestPath_HasContent()
         {
             var blogConfigMock = new Mock<IBlogConfig>();
             blogConfigMock.Setup(c => c.AdvancedSettings).Returns(new AdvancedSettings
@@ -58,7 +58,7 @@ namespace Moonglade.Tests.Web.Middleware
         }
 
         [Test]
-        public async Task TestRobotsTxtRequestPathNoContent()
+        public async Task RobotsTxtRequestPath_NoContent()
         {
             var blogConfigMock = new Mock<IBlogConfig>();
             blogConfigMock.Setup(c => c.AdvancedSettings).Returns(new AdvancedSettings
@@ -81,7 +81,7 @@ namespace Moonglade.Tests.Web.Middleware
         }
 
         [Test]
-        public void TestRobotsTxtMiddlewareExtensions()
+        public void RobotsTxtMiddlewareExtensions()
         {
             var serviceCollection = new ServiceCollection();
             var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());

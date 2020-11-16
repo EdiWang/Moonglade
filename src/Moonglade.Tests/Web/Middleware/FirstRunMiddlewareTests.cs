@@ -27,7 +27,7 @@ namespace Moonglade.Tests.Web.Middleware
         }
 
         [Test]
-        public async Task TestFirstRunWithToken()
+        public async Task FirstRun_HasToken()
         {
             var ctx = new DefaultHttpContext();
             AppDomain.CurrentDomain.SetData("FIRSTRUN_INIT_SUCCESS", "TRUE");

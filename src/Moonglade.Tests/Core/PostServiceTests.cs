@@ -9,7 +9,7 @@ namespace Moonglade.Tests.Core
     public class PostServiceTests
     {
         [Test]
-        public void TestLazyLoadToImgTagExistLoading()
+        public void LazyLoadToImgTag_ExistLoading()
         {
             const string html = @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>";
             var result = ContentProcessor.AddLazyLoadToImgTag(html);
@@ -17,7 +17,7 @@ namespace Moonglade.Tests.Core
         }
 
         [Test]
-        public void TestLazyLoadToImgTagEmpty()
+        public void LazyLoadToImgTag_Empty()
         {
             var result = ContentProcessor.AddLazyLoadToImgTag(string.Empty);
             Assert.IsTrue(result == string.Empty);

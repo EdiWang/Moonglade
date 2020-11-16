@@ -14,7 +14,7 @@ namespace Moonglade.Tests.Web.Middleware
     public class DNTMiddlewareTests
     {
         [Test]
-        public async Task TestDNTHeader()
+        public async Task DNTHeader()
         {
             var headersArray = new Dictionary<string, StringValues> { { "DNT", "1" } };
 

@@ -12,7 +12,7 @@ namespace Moonglade.Tests.Core
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
         [TestCase("C#", ExpectedResult = "csharp")]
         [TestCase("955", ExpectedResult = "955")]
-        public string TestNormalizeTagName(string str)
+        public string NormalizeTagName(string str)
         {
             var dic = new TagNormalization[]
             {
@@ -35,7 +35,7 @@ namespace Moonglade.Tests.Core
         [TestCase("(1)", ExpectedResult = false)]
         [TestCase("usr/bin", ExpectedResult = false)]
         [TestCase("", ExpectedResult = false)]
-        public bool TestValidateTagName(string tagDisplayName)
+        public bool ValidateTagName(string tagDisplayName)
         {
             return TagService.ValidateTagName(tagDisplayName);
         }

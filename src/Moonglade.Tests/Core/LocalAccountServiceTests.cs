@@ -12,7 +12,7 @@ namespace Moonglade.Tests.Core
         [TestCase(null, ExpectedResult = "")]
         [TestCase(" ", ExpectedResult = "")]
         [TestCase("admin123", ExpectedResult = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=")]
-        public string TestHashPassword(string plainMessage)
+        public string HashPassword(string plainMessage)
         {
             return LocalAccountService.HashPassword(plainMessage);
         }

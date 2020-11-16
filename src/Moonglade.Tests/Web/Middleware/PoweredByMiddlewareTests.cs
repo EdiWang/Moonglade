@@ -14,7 +14,7 @@ namespace Moonglade.Tests.Web.Middleware
     public class PoweredByMiddlewareTests
     {
         [Test]
-        public async Task TestPoweredByHeader()
+        public async Task PoweredByHeader()
         {
             const string key = "X-Powered-By";
             const string value = "Moonglade";
