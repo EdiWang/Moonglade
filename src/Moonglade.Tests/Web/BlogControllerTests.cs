@@ -20,7 +20,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public void TestServerError()
+        public void ServerError()
         {
             var ctl = new BlogController(_loggerMock.Object);
             var result = ctl.ServerError();

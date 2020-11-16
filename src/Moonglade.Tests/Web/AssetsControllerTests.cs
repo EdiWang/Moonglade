@@ -50,7 +50,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestGetImageAsyncCDN()
+        public async Task GetImage_CDN()
         {
             const string filename = "test.png";
             var ctl = new AssetsController(
@@ -76,7 +76,7 @@ namespace Moonglade.Tests.Web
         [TestCase(":icu.gif")]
         [TestCase("|.jpg")]
         //[Platform(Include = "Win")]
-        public async Task TestGetImageAsyncInvalidFileNames(string filename)
+        public async Task GetImage_InvalidFileNames(string filename)
         {
             var ctl = new AssetsController(
                 _loggerMock.Object,
@@ -93,7 +93,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestManifest()
+        public async Task Manifest()
         {
             _blogConfigMock.Setup(bc => bc.GeneralSettings).Returns(new Configuration.GeneralSettings
             {

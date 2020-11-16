@@ -25,7 +25,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestGetEmptyGuid()
+        public async Task Get_EmptyGuid()
         {
             var ctl = new StatisticsController(_statisticsMock.Object);
             var result = await ctl.Get(Guid.Empty);
@@ -33,7 +33,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestHitEmptyGuid()
+        public async Task Hit_EmptyGuid()
         {
             var ctl = new StatisticsController(_statisticsMock.Object);
             var result = await ctl.Post(new StatisticsRequest { PostId = Guid.Empty, IsLike = false });
@@ -41,7 +41,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestLikeEmptyGuid()
+        public async Task Like_EmptyGuid()
         {
             var ctl = new StatisticsController(_statisticsMock.Object);
             var result = await ctl.Post(new StatisticsRequest { PostId = Guid.Empty, IsLike = true });
@@ -49,7 +49,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestHitDNTEnabled()
+        public async Task Hit_DNTEnabled()
         {
             var ctx = new DefaultHttpContext { Items = { ["DNT"] = true } };
             var ctl = new StatisticsController(_statisticsMock.Object)
@@ -62,7 +62,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestLikeDNTEnabled()
+        public async Task Like_DNTEnabled()
         {
             var ctx = new DefaultHttpContext { Items = { ["DNT"] = true } };
             var ctl = new StatisticsController(_statisticsMock.Object)
@@ -75,7 +75,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestHitSameCookie()
+        public async Task Hit_SameCookie()
         {
             var uid = Guid.NewGuid();
 
@@ -97,7 +97,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestHitNewCookie()
+        public async Task Hit_NewCookie()
         {
             var uid = Guid.NewGuid();
 
@@ -112,7 +112,7 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
-        public async Task TestLikeSameCookie()
+        public async Task Like_SameCookie()
         {
             var uid = Guid.NewGuid();
 
