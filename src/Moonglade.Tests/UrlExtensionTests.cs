@@ -44,6 +44,13 @@ namespace Moonglade.Tests
             return str.IsValidUrl(UrlExtension.UrlScheme.Http);
         }
 
+        [TestCase("https://996.icu", ExpectedResult = true)]
+        [TestCase("http://996.rip", ExpectedResult = true)]
+        public bool IsValidUrl_All(string str)
+        {
+            return str.IsValidUrl(Utils.UrlScheme.All);
+        }
+
         [TestCase("http://usejava.com/996/", "icu.png", ExpectedResult = "http://usejava.com/996/icu.png")]
         [TestCase("https://dot.net/", "955.png", ExpectedResult = "https://dot.net/955.png")]
         [TestCase("https://mayun.lie", "fubao.png", ExpectedResult = "https://mayun.lie/fubao.png")]
