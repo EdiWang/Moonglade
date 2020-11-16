@@ -16,13 +16,13 @@ namespace Moonglade.Tests
         [TestCase("http://996.icu", UrlExtension.UrlScheme.Https, ExpectedResult = false)]
         [TestCase("a quick brown fox jumped over the lazy dog.", ExpectedResult = false)]
         [TestCase("http://a\\b", ExpectedResult = false)]
-        public bool TestIsValidUrl(string str, UrlExtension.UrlScheme urlScheme = UrlExtension.UrlScheme.All)
+        public bool IsValidUrl(string str, UrlExtension.UrlScheme urlScheme = UrlExtension.UrlScheme.All)
         {
             return str.IsValidUrl(urlScheme);
         }
 
         [Test]
-        public void TestIsValidUrlUnknownSchema()
+        public void IsValidUrl_UnknownSchema()
         {
             Assert.Throws(typeof(ArgumentOutOfRangeException), () =>
             {
@@ -32,14 +32,14 @@ namespace Moonglade.Tests
 
         [TestCase("https://996.icu", ExpectedResult = true)]
         [TestCase("http://996.rip", ExpectedResult = false)]
-        public bool TestIsValidUrlHttps(string str)
+        public bool IsValidUrl_Https(string str)
         {
             return str.IsValidUrl(UrlExtension.UrlScheme.Https);
         }
 
         [TestCase("https://996.icu", ExpectedResult = false)]
         [TestCase("http://996.rip", ExpectedResult = true)]
-        public bool TestIsValidUrlHttp(string str)
+        public bool IsValidUrl_Http(string str)
         {
             return str.IsValidUrl(UrlExtension.UrlScheme.Http);
         }
@@ -56,7 +56,7 @@ namespace Moonglade.Tests
         [TestCase("https://mayun.lie", "fubao.png", ExpectedResult = "https://mayun.lie/fubao.png")]
         [TestCase("http://996.icu/", "/reject/fubao", ExpectedResult = "http://996.icu/reject/fubao")]
         [TestCase("http://996.rip", "/dont-use-java", ExpectedResult = "http://996.rip/dont-use-java")]
-        public string TestCombineUrl(string url, string path)
+        public string CombineUrl(string url, string path)
         {
             var result = url.CombineUrl(path);
             return result;
@@ -66,7 +66,7 @@ namespace Moonglade.Tests
         [TestCase("", " ")]
         [TestCase(" ", "")]
         [TestCase(" ", " ")]
-        public void TestCombineUrlEmptyOrWhitespace(string url, string path)
+        public void CombineUrl_EmptyOrWhitespace(string url, string path)
         {
             Assert.Throws(typeof(ArgumentNullException), () =>
             {

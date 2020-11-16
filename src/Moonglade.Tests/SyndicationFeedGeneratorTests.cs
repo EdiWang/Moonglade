@@ -13,7 +13,7 @@ namespace Moonglade.Tests
     public class SyndicationFeedGeneratorTests
     {
         [Test]
-        public async Task TestRss20EmptyCollection()
+        public async Task Rss20_EmptyCollection()
         {
             var itemCollection = new List<FeedEntry>();
 
@@ -37,7 +37,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestRss20WithCollection()
+        public async Task Rss20_HasCollection()
         {
             var rw = new FeedGenerator
             {
@@ -59,7 +59,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestAtom10EmptyCollection()
+        public async Task Atom10_EmptyCollection()
         {
             var itemCollection = new List<FeedEntry>();
 
@@ -83,10 +83,8 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task TestAtom10WithCollection()
+        public async Task Atom10_HasCollection()
         {
-            var itemCollection = new List<FeedEntry>();
-
             var rw = new FeedGenerator
             {
                 HostUrl = "https://996.icu",

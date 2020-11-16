@@ -13,7 +13,7 @@ namespace Moonglade.Tests
     public class FileSystemOpmlWriterTests
     {
         [Test]
-        public async Task TestWriteOpmlFileAsync()
+        public async Task WriteOpmlFile()
         {
             var catInfos = new List<KeyValuePair<string, string>>
             {

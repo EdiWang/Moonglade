@@ -11,7 +11,7 @@ namespace Moonglade.Tests
     public class ImageStorageTests
     {
         [Test]
-        public void TestResolveImageStoragePathValidAbsolute()
+        public void ResolveImageStoragePath_Valid_Absolute()
         {
             var contentRootPath = @"C:\Moonglade";
             var path = @"C:\MoongladeData\Uploads";
@@ -21,7 +21,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestResolveImageStoragePathValidRelative()
+        public void ResolveImageStoragePath_Valid_Relative()
         {
             var contentRootPath = @"C:\Moonglade";
             var path = @"${basedir}\Uploads";
@@ -31,7 +31,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestResolveImageStoragePathInvalidRelative()
+        public void TestResolveImageStoragePath_Invalid_Relative()
         {
             var contentRootPath = @"C:\Moonglade";
             var path = @"..\${basedir}\Uploads";
@@ -40,7 +40,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestResolveImageStoragePathInvalidChar()
+        public void TestResolveImageStoragePath_Invalid_Char()
         {
             var contentRootPath = @"C:\Moonglade";
             var path = @"${basedir}\Uploads<>|foo";
@@ -51,7 +51,7 @@ namespace Moonglade.Tests
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
-        public void TestResolveImageStoragePathEmptyParameter(string path)
+        public void TestResolveImageStoragePath_EmptyParameter(string path)
         {
             var contentRootPath = @"C:\Moonglade";
             Assert.Catch<ArgumentNullException>(() => { FileSystemImageStorage.ResolveImageStoragePath(contentRootPath, path); });

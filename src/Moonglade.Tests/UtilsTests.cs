@@ -11,7 +11,7 @@ namespace Moonglade.Tests
     public class UtilsTests
     {
         [Test]
-        public void TestAppVersion()
+        public void AppVersion()
         {
             var ver = Utils.AppVersion;
             Assert.IsNotNull(ver);

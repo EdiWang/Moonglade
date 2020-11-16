@@ -10,7 +10,7 @@ namespace Moonglade.Tests
     public class GuidFileNameGeneratorTests
     {
         [Test]
-        public void TestNonAppendix()
+        public void NonAppendix()
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
@@ -19,7 +19,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestAppendix()
+        public void Appendix()
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
@@ -28,7 +28,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestLetterCase()
+        public void LetterCase()
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
@@ -38,7 +38,7 @@ namespace Moonglade.Tests
 
         [TestCase("007 Stupid")]
         [TestCase(".icu")]
-        public void TestInvalidFileName(string name)
+        public void InvalidFileName(string name)
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
@@ -49,7 +49,7 @@ namespace Moonglade.Tests
         }
 
         [TestCase(" ")]
-        public void TestEmptyFileName(string name)
+        public void EmptyFileName(string name)
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
@@ -60,7 +60,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestGeneratorName()
+        public void GeneratorName()
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);
@@ -70,7 +70,7 @@ namespace Moonglade.Tests
         [TestCase("Choose .NET 5.png", "")]
         [TestCase("And Microsoft Azure.png", null)]
         [TestCase("Stay away from 996.png", " ")]
-        public void TestNullEmptyWhiteSpaceAppendix(string name, string appendix)
+        public void NullEmptyWhiteSpaceAppendix(string name, string appendix)
         {
             var uid = Guid.NewGuid();
             var gen = new GuidFileNameGenerator(uid);

@@ -12,7 +12,7 @@ namespace Moonglade.Tests
         [TestCase('0', ExpectedResult = false)]
         [TestCase('`', ExpectedResult = false)]
         [TestCase('#', ExpectedResult = false)]
-        public bool TestIsLetter(char c)
+        public bool IsLetter(char c)
         {
             return c.IsLetter();
         }
@@ -21,7 +21,7 @@ namespace Moonglade.Tests
         [TestCase('0', ExpectedResult = false)]
         [TestCase('a', ExpectedResult = false)]
         [TestCase('A', ExpectedResult = false)]
-        public bool TestIsSpace(char c)
+        public bool IsSpace(char c)
         {
             return c.IsSpace();
         }
@@ -29,13 +29,13 @@ namespace Moonglade.Tests
         [TestCase("A 996 programmer went to heaven.", ExpectedResult = "A 996" + "\u00A0\u2026")]
         [TestCase("Fu bao", ExpectedResult = "Fu bao")]
         [TestCase("", ExpectedResult = "")]
-        public string TestEllipsize(string str)
+        public string Ellipsize(string str)
         {
             return str.Ellipsize(10);
         }
 
         [Test]
-        public void TestRemoveTags()
+        public void RemoveTags()
         {
             var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure&nbsp;<br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
             var output = ContentProcessor.RemoveTags(html);
@@ -44,14 +44,14 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestRemoveTagsEmpty()
+        public void RemoveTags_Empty()
         {
             var output = ContentProcessor.RemoveTags(string.Empty);
             Assert.AreEqual(string.Empty, output);
         }
 
         [Test]
-        public void TestGetPostAbstract()
+        public void GetPostAbstract()
         {
             var html = @"<p>Microsoft</p> <p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
             var result = ContentProcessor.GetPostAbstract(html, 16);
@@ -60,7 +60,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestLazyLoadToImgTag()
+        public void LazyLoadToImgTag()
         {
             const string html = @"<p>Work 996 and have some fu bao!</p><img src=""icu.jpg"" /><video src=""java996.mp4""></video>";
             var result = ContentProcessor.AddLazyLoadToImgTag(html);
@@ -68,7 +68,7 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public void TestMdContentToHtml()
+        public void MdContentToHtml()
         {
             var md = "A quick brown **fox** jumped over the lazy dog.";
             var result = ContentProcessor.MarkdownToContent(md, ContentProcessor.MarkdownConvertType.Html);
