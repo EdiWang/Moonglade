@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Middleware
@@ -15,10 +15,10 @@ namespace Moonglade.Web.Middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, IOptions<AppSettings> appsettingsOptions)
+        public async Task Invoke(HttpContext context, IFeatureManager featureManager)
         {
-            if (context.Request.Path.StartsWithSegments("/api/graph")
-                && !appsettingsOptions.Value.EnableWebApi)
+            var flag = await featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableWebApi));
+            if (context.Request.Path.StartsWithSegments("/api/graph") && !flag)
             {
                 context.Response.StatusCode = StatusCodes.Status501NotImplemented;
                 await context.Response.WriteAsync("API is disabled", Encoding.UTF8);

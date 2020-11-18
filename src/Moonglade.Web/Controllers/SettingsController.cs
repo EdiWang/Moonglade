@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
@@ -629,9 +630,10 @@ namespace Moonglade.Web.Controllers
         #region Audit Logs
 
         [HttpGet("auditlogs")]
-        public async Task<IActionResult> AuditLogs(int page = 1)
+        public async Task<IActionResult> AuditLogs([FromServices] IFeatureManager featureManager, int page = 1)
         {
-            if (!_settings.EnableAudit)
+            var flag = await featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableAudit));
+            if (!flag)
             {
                 ViewBag.AuditLogDisabled = true;
                 return View();
@@ -648,11 +650,12 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("clear-auditlogs")]
-        public async Task<IActionResult> ClearAuditLogs()
+        public async Task<IActionResult> ClearAuditLogs([FromServices] IFeatureManager featureManager)
         {
             try
             {
-                if (!_settings.EnableAudit) return Conflict("Audit is disabled");
+                var flag = await featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableAudit));
+                if (!flag) return Conflict("Audit is disabled");
 
                 await _blogAudit.ClearAuditLog();
                 return RedirectToAction("AuditLogs");
