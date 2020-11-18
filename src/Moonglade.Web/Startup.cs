@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Model;
@@ -137,7 +138,6 @@ namespace Moonglade.Web
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();
-            app.UseMiddleware<GraphAPIGuardMiddleware>();
 
             if (_environment.IsDevelopment())
             {

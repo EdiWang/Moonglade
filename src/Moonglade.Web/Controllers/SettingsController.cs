@@ -9,10 +9,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
@@ -629,13 +630,10 @@ namespace Moonglade.Web.Controllers
         #region Audit Logs
 
         [HttpGet("auditlogs")]
-        public async Task<IActionResult> AuditLogs(int page = 1)
+        public async Task<IActionResult> AuditLogs([FromServices] IFeatureManager featureManager, int page = 1)
         {
-            if (!_settings.EnableAudit)
-            {
-                ViewBag.AuditLogDisabled = true;
-                return View();
-            }
+            var flag = await featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableAudit));
+            if (!flag) return View();
 
             if (page < 0) return BadRequest(ModelState);
 
@@ -648,12 +646,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("clear-auditlogs")]
+        [FeatureGate(FeatureFlags.EnableAudit)]
         public async Task<IActionResult> ClearAuditLogs()
         {
             try
             {
-                if (!_settings.EnableAudit) return Conflict("Audit is disabled");
-
                 await _blogAudit.ClearAuditLog();
                 return RedirectToAction("AuditLogs");
             }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Configuration;
@@ -30,6 +31,7 @@ namespace Moonglade.Web.Configuration
     {
         public static void AddBlogConfiguration(this IServiceCollection services, IConfigurationSection appSettings)
         {
+            services.AddFeatureManagement();
             services.AddOptions();
             services.Configure<AppSettings>(appSettings);
             services.AddSingleton<IBlogConfig, BlogConfig>();

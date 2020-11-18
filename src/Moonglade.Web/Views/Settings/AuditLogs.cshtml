@@ -7,13 +7,13 @@
 
 <partial name="_SettingsHeader" />
 
-@if (null != ViewBag.AuditLogDisabled && ViewBag.AuditLogDisabled)
-{
+<feature name="EnableAudit" negate="true">
     <div class="alert alert-warning">
         @Localizer["Audit Log is disabled."]
     </div>
-}
-else if (Model.Any())
+</feature>
+
+@if (Model is not null && Model.Any())
 {
     <a href="javascript:;" class="btn btn-outline-danger" data-toggle="modal" data-target="#clearauditModal">@Localizer["Clear Audit Logs"]</a>
 

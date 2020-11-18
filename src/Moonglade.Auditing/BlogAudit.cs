@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 
@@ -17,22 +18,25 @@ namespace Moonglade.Auditing
         private readonly ILogger<BlogAudit> _logger;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IFeatureManager _featureManager;
 
         public BlogAudit(
             ILogger<BlogAudit> logger,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IFeatureManager featureManager)
         {
             _logger = logger;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _featureManager = featureManager;
         }
 
         public async Task AddAuditEntry(EventType eventType, AuditEventId auditEventId, string message)
         {
             try
             {
-                if (!IsAuditLogEnabled()) { return; }
+                if (!await IsAuditLogEnabled()) return;
 
                 (string username, string ipv4) = GetUsernameAndIp();
 
@@ -109,7 +113,7 @@ namespace Moonglade.Auditing
 
         public async Task ClearAuditLog()
         {
-            if (!IsAuditLogEnabled()) { return; }
+            if (!await IsAuditLogEnabled()) return;
 
             var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
             await using var conn = new SqlConnection(connStr);
@@ -136,10 +140,10 @@ namespace Moonglade.Auditing
             return (uname, ip);
         }
 
-        private bool IsAuditLogEnabled()
+        private async Task<bool> IsAuditLogEnabled()
         {
-            string enableAuditLogSettings = _configuration[$"{nameof(AppSettings)}:{nameof(AppSettings.EnableAudit)}"];
-            return !string.IsNullOrWhiteSpace(enableAuditLogSettings) && bool.Parse(enableAuditLogSettings);
+            var flag = await _featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableAudit));
+            return flag;
         }
     }
 }
