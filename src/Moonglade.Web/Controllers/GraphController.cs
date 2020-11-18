@@ -6,14 +6,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
+using Moonglade.Model.Settings;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers
 {
+    [FeatureGate(FeatureFlags.EnableWebApi)]
     [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
     [Route("api/graph")]
     [ApiController]
