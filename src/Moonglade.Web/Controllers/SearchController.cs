@@ -22,6 +22,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("opensearch")]
+        [ResponseCache(Duration = 3600)]
         public async Task<IActionResult> OpenSearch([FromServices] IBlogConfig blogConfig)
         {
             var bytes = await _searchService.GetOpenSearchStreamArray(ResolveRootUrl(blogConfig, true));
