@@ -27,17 +27,17 @@ namespace Moonglade.Web.Controllers
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly LocalAccountService _localAccountService;
         private readonly IBlogAudit _blogAudit;
+        private readonly ILogger<AdminController> _logger;
 
-        public AdminController(
-            ILogger<AdminController> logger,
+        public AdminController(ILogger<AdminController> logger,
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
             LocalAccountService localAccountService)
-            : base(logger)
         {
             _blogAudit = blogAudit;
             _localAccountService = localAccountService;
             _authenticationSettings = authSettings.Value;
+            _logger = logger;
         }
 
         [Route("")]
@@ -104,7 +104,7 @@ namespace Moonglade.Web.Controllers
 
                         var successMessage = $@"Authentication success for local account ""{model.Username}""";
 
-                        Logger.LogInformation(successMessage);
+                        _logger.LogInformation(successMessage);
                         await _blogAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginSuccessLocal, successMessage);
 
                         return RedirectToAction("Index");
@@ -115,7 +115,7 @@ namespace Moonglade.Web.Controllers
 
                 var failMessage = $@"Authentication failed for local account ""{model.Username}""";
 
-                Logger.LogWarning(failMessage);
+                _logger.LogWarning(failMessage);
                 await _blogAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginFailedLocal, failMessage);
 
                 Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -124,7 +124,7 @@ namespace Moonglade.Web.Controllers
             }
             catch (Exception e)
             {
-                Logger.LogWarning($@"Authentication failed for local account ""{model.Username}""");
+                _logger.LogWarning($@"Authentication failed for local account ""{model.Username}""");
 
                 ModelState.AddModelError(string.Empty, e.Message);
                 return View(model);
@@ -134,7 +134,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("signout")]
         public async Task<IActionResult> SignOut(int nounce = 1055)
         {
-            Logger.LogInformation($"User '{User.Identity?.Name}' signing out.'");
+            _logger.LogInformation($"User '{User.Identity?.Name}' signing out.'");
 
             switch (_authenticationSettings.Provider)
             {

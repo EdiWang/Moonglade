@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
@@ -21,7 +20,6 @@ using Moonglade.Core;
 using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Setup;
 using Moonglade.Web.Filters;
@@ -39,25 +37,23 @@ namespace Moonglade.Web.Controllers
         #region Private Fields
 
         private readonly FriendLinkService _friendLinkService;
-        private readonly AppSettings _settings;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
+        private readonly ILogger<SettingsController> _logger;
 
         #endregion
 
         public SettingsController(
-            ILogger<SettingsController> logger,
-            IOptionsSnapshot<AppSettings> settings,
             FriendLinkService friendLinkService,
             IBlogConfig blogConfig,
-            IBlogAudit blogAudit)
-            : base(logger)
+            IBlogAudit blogAudit,
+            ILogger<SettingsController> logger)
         {
-            _settings = settings.Value;
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
 
             _friendLinkService = friendLinkService;
+            _logger = logger;
         }
 
         [HttpGet("general")]
@@ -110,7 +106,7 @@ namespace Moonglade.Web.Controllers
 
             AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
-            Logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
+            _logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
 
             return Ok();
@@ -160,7 +156,7 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
             _blogConfig.RequireRefresh();
 
-            Logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
+            _logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
 
             return Ok();
@@ -198,7 +194,7 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
-            Logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
+            _logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
 
             return Ok();
@@ -249,7 +245,7 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
-            Logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
+            _logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
             return Ok();
@@ -288,7 +284,7 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
-            Logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
+            _logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
             return Ok();
@@ -395,7 +391,7 @@ namespace Moonglade.Web.Controllers
                 base64Img = base64Img.Trim();
                 if (!Utils.TryParseBase64(base64Img, out var base64Chars))
                 {
-                    Logger.LogWarning("Bad base64 is used when setting avatar.");
+                    _logger.LogWarning("Bad base64 is used when setting avatar.");
                     return Conflict("Bad base64 data");
                 }
 
@@ -409,7 +405,7 @@ namespace Moonglade.Web.Controllers
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError("Invalid base64img Image", e);
+                    _logger.LogError("Invalid base64img Image", e);
                     return ServerError(e.Message);
                 }
 
@@ -417,14 +413,14 @@ namespace Moonglade.Web.Controllers
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
                 _blogConfig.RequireRefresh();
 
-                Logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");
+                _logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
 
                 return Json(true);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error uploading avatar image.");
+                _logger.LogError(e, "Error uploading avatar image.");
                 return ServerError();
             }
         }
@@ -441,7 +437,7 @@ namespace Moonglade.Web.Controllers
                 base64Img = base64Img.Trim();
                 if (!Utils.TryParseBase64(base64Img, out var base64Chars))
                 {
-                    Logger.LogWarning("Bad base64 is used when setting site icon.");
+                    _logger.LogWarning("Bad base64 is used when setting site icon.");
                     return Conflict("Bad base64 data");
                 }
 
@@ -452,7 +448,7 @@ namespace Moonglade.Web.Controllers
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e.Message, e);
+                    _logger.LogError(e.Message, e);
                     return ServerError(e.Message);
                 }
 
@@ -465,14 +461,14 @@ namespace Moonglade.Web.Controllers
                     Directory.Delete(SiteIconDirectory, true);
                 }
 
-                Logger.LogInformation($"User '{User.Identity.Name}' updated site icon.");
+                _logger.LogInformation($"User '{User.Identity.Name}' updated site icon.");
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
 
                 return Json(true);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error uploading avatar image.");
+                _logger.LogError(e, "Error uploading avatar image.");
                 return ServerError();
             }
         }
@@ -519,7 +515,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("shutdown")]
         public IActionResult Shutdown([FromServices] IHostApplicationLifetime applicationLifetime)
         {
-            Logger.LogWarning($"Shutdown is requested by '{User.Identity.Name}'.");
+            _logger.LogWarning($"Shutdown is requested by '{User.Identity.Name}'.");
             applicationLifetime.StopApplication();
             return Accepted();
         }
@@ -527,7 +523,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("reset")]
         public async Task<IActionResult> Reset([FromServices] IDbConnection dbConnection, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
-            Logger.LogWarning($"System reset is requested by '{User.Identity.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
+            _logger.LogWarning($"System reset is requested by '{User.Identity.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
 
             var setupHelper = new SetupRunner(dbConnection);
             setupHelper.ClearData();
@@ -639,8 +635,8 @@ namespace Moonglade.Web.Controllers
 
             var skip = (page - 1) * 20;
 
-            var entries = await _blogAudit.GetAuditEntries(skip, 20);
-            var list = new StaticPagedList<AuditEntry>(entries.Entries, page, 20, entries.Count);
+            var (Entries, Count) = await _blogAudit.GetAuditEntries(skip, 20);
+            var list = new StaticPagedList<AuditEntry>(Entries, page, 20, Count);
 
             return View(list);
         }

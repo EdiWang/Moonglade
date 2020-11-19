@@ -17,19 +17,20 @@ namespace Moonglade.Web.Controllers
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
         private readonly IMemoryStreamOpmlWriter _fileSystemOpmlWriter;
+        private readonly ILogger<SubscriptionController> _logger;
 
         public SubscriptionController(
-            ILogger<SubscriptionController> logger,
             SyndicationService syndicationService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
-            IMemoryStreamOpmlWriter fileSystemOpmlWriter)
-            : base(logger)
+            IMemoryStreamOpmlWriter fileSystemOpmlWriter,
+            ILogger<SubscriptionController> logger)
         {
             _syndicationService = syndicationService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
             _fileSystemOpmlWriter = fileSystemOpmlWriter;
+            _logger = logger;
         }
 
         [Route("/opml")]
@@ -62,7 +63,7 @@ namespace Moonglade.Web.Controllers
 
             if (!System.IO.File.Exists(rssDataFile))
             {
-                Logger.LogInformation($"RSS file not found, writing new file on {rssDataFile}");
+                _logger.LogInformation($"RSS file not found, writing new file on {rssDataFile}");
 
                 if (string.IsNullOrWhiteSpace(routeName))
                 {
@@ -93,7 +94,7 @@ namespace Moonglade.Web.Controllers
             var atomDataFile = Path.Join(DataDirectory, "feed", "posts-atom.xml");
             if (!System.IO.File.Exists(atomDataFile))
             {
-                Logger.LogInformation($"Atom file not found, writing new file on {atomDataFile}");
+                _logger.LogInformation($"Atom file not found, writing new file on {atomDataFile}");
 
                 await _syndicationService.RefreshFeedFileAsync(true);
 

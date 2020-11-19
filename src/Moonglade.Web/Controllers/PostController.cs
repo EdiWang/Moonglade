@@ -26,6 +26,7 @@ namespace Moonglade.Web.Controllers
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
+        private readonly ILogger<PostController> _logger;
 
         public PostController(
             ILogger<PostController> logger,
@@ -33,8 +34,8 @@ namespace Moonglade.Web.Controllers
             CategoryService categoryService,
             IBlogConfig blogConfig,
             IDateTimeResolver dateTimeResolver)
-            : base(logger)
         {
+            _logger = logger;
             _postService = postService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
@@ -49,7 +50,7 @@ namespace Moonglade.Web.Controllers
 
             if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug))
             {
-                Logger.LogWarning($"Invalid parameter year: {year}, slug: {slug}");
+                _logger.LogWarning($"Invalid parameter year: {year}, slug: {slug}");
                 return NotFound();
             }
 
@@ -58,7 +59,7 @@ namespace Moonglade.Web.Controllers
 
             if (post is null)
             {
-                Logger.LogWarning($"Post not found, parameter '{year}/{month}/{day}/{slug}'.");
+                _logger.LogWarning($"Post not found, parameter '{year}/{month}/{day}/{slug}'.");
                 return NotFound();
             }
 
@@ -75,7 +76,7 @@ namespace Moonglade.Web.Controllers
 
             if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug))
             {
-                Logger.LogWarning($"Invalid parameter year: {year}, slug: {slug}");
+                _logger.LogWarning($"Invalid parameter year: {year}, slug: {slug}");
                 return NotFound();
             }
 
@@ -100,7 +101,7 @@ namespace Moonglade.Web.Controllers
             var post = await _postService.GetDraftPreviewAsync(postId);
             if (post is null)
             {
-                Logger.LogWarning($"Post not found, parameter '{postId}'.");
+                _logger.LogWarning($"Post not found, parameter '{postId}'.");
                 return NotFound();
             }
 
@@ -252,7 +253,7 @@ namespace Moonglade.Web.Controllers
 
                 if (model.IsPublished)
                 {
-                    Logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
+                    _logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 
                     var pubDate = postEntity.PubDateUtc.GetValueOrDefault();
                     var link = GetPostUrl(linkGenerator, pubDate, postEntity.Slug);
@@ -267,7 +268,7 @@ namespace Moonglade.Web.Controllers
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error Creating New Post.");
+                _logger.LogError(ex, "Error Creating New Post.");
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(ex.Message);
             }

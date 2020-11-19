@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Dapper;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Web.Middleware;
-using NUnit.Framework;
 using Moq;
 using Moq.Dapper;
-using Dapper;
-using System.Data;
+using NUnit.Framework;
 
 namespace Moonglade.Tests.Web.Middleware
 {

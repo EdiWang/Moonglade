@@ -24,6 +24,7 @@ namespace Moonglade.Web.Controllers
         private readonly IBlogCache _cache;
         private readonly PageService _pageService;
         private readonly AppSettings _settings;
+        private readonly ILogger<PageController> _logger;
 
         private static IEnumerable<string> ReservedRouteNames =>
             typeof(PageController)
@@ -31,14 +32,15 @@ namespace Moonglade.Web.Controllers
                 .Select(p => p.Name.ToLower());
 
         public PageController(
-            ILogger<PageController> logger,
             IOptions<AppSettings> settings,
             IBlogCache cache,
-            PageService pageService) : base(logger)
+            PageService pageService,
+            ILogger<PageController> logger)
         {
             _settings = settings.Value;
             _cache = cache;
             _pageService = pageService;
+            _logger = logger;
         }
 
         [HttpGet("{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
@@ -54,13 +56,7 @@ namespace Moonglade.Web.Controllers
                 return p;
             });
 
-            if (page is null)
-            {
-                Logger.LogWarning($"Page not found. {nameof(slug)}: '{slug}'");
-                return NotFound();
-            }
-
-            if (!page.IsPublished) return NotFound();
+            if (page is null || !page.IsPublished) return NotFound();
 
             var vm = ToPageViewModel(page);
             return View(vm);
@@ -71,11 +67,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Preview(Guid pageId)
         {
             var page = await _pageService.GetAsync(pageId);
-            if (page is null)
-            {
-                Logger.LogWarning($"Page not found, parameter '{pageId}'.");
-                return NotFound();
-            }
+            if (page is null) return NotFound();
 
             ViewBag.IsDraftPreview = true;
 
@@ -156,14 +148,13 @@ namespace Moonglade.Web.Controllers
                     await _pageService.CreateAsync(req) :
                     await _pageService.UpdateAsync(req);
 
-                Logger.LogInformation($"User '{User?.Identity?.Name}' updated custom page id '{uid}'");
                 _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
 
                 return Json(new { PageId = uid });
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error Create or Edit CustomPage.");
+                _logger.LogError(e, "Error Create or Edit CustomPage.");
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(e.Message);
             }

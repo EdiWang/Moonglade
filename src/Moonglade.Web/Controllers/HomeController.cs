@@ -17,13 +17,18 @@ namespace Moonglade.Web.Controllers
         private readonly PostService _postService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
+        private readonly ILogger<HomeController> _logger;
 
         public HomeController(
-            ILogger<ControllerBase> logger, PostService postService, IBlogCache cache, IBlogConfig blogConfig) : base(logger)
+            PostService postService,
+            IBlogCache cache,
+            IBlogConfig blogConfig,
+            ILogger<HomeController> logger)
         {
             _postService = postService;
             _cache = cache;
             _blogConfig = blogConfig;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -65,7 +70,7 @@ namespace Moonglade.Web.Controllers
 
             if (cat is null)
             {
-                Logger.LogWarning($"Category '{routeName}' not found.");
+                _logger.LogWarning($"Category '{routeName}' not found.");
                 return NotFound();
             }
 

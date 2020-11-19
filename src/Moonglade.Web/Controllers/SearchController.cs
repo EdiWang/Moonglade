@@ -12,13 +12,13 @@ namespace Moonglade.Web.Controllers
     public class SearchController : BlogController
     {
         private readonly SearchService _searchService;
+        private readonly ILogger<SearchController> _logger;
 
         public SearchController(
-            ILogger<SearchController> logger,
-            SearchService searchService)
-            : base(logger)
+            SearchService searchService, ILogger<SearchController> logger)
         {
             _searchService = searchService;
+            _logger = logger;
         }
 
         [Route("opensearch")]
@@ -36,7 +36,7 @@ namespace Moonglade.Web.Controllers
             var siteMapFile = Path.Join(DataDirectory, Constants.SiteMapFileName);
             if (!System.IO.File.Exists(siteMapFile))
             {
-                Logger.LogInformation($"SiteMap file not found, writing new file on {siteMapFile}");
+                _logger.LogInformation($"SiteMap file not found, writing new file on {siteMapFile}");
 
                 var url = ResolveRootUrl(blogConfig);
                 var canonicalUrl = blogConfig.GeneralSettings.CanonicalPrefix;
@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
 
                 if (!System.IO.File.Exists(siteMapFile))
                 {
-                    Logger.LogError("SiteMap file still not found, what the heck?!");
+                    _logger.LogError("SiteMap file still not found, what the heck?!");
                     return NotFound();
                 }
             }
@@ -78,7 +78,7 @@ namespace Moonglade.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            Logger.LogInformation("Searching post for keyword: " + term);
+            _logger.LogInformation("Searching post for keyword: " + term);
 
             ViewBag.TitlePrefix = term;
 

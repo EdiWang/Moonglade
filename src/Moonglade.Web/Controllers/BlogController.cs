@@ -3,7 +3,6 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Model;
@@ -12,27 +11,23 @@ namespace Moonglade.Web.Controllers
 {
     public class BlogController : Controller
     {
-        protected ILogger<ControllerBase> Logger { get; }
-
         protected string DataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
 
         protected string SiteIconDirectory => Path.Join(DataDirectory, "siteicons");
 
         protected bool DNT => (bool)HttpContext.Items["DNT"];
 
-        public BlogController(ILogger<ControllerBase> logger)
-        {
-            if (logger is not null) Logger = logger;
-        }
-
         [Route("server-error")]
-        public IActionResult ServerError(string errMessage = "")
+        public IActionResult ServerError(string errMessage = null)
         {
-            if (!string.IsNullOrWhiteSpace(errMessage))
+            if (string.IsNullOrWhiteSpace(errMessage))
             {
-                Logger.LogError($"Server Error: {errMessage}");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, errMessage);
+            }
         }
 
         [NonAction]
