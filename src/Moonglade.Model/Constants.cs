@@ -5,6 +5,5 @@
         public static string DbConnectionName = "MoongladeDatabase";
         public static string DataDirectory = "DataDirectory";
         public static int SmallImagePixelsThreshold = 200 * 200;
-        public static string SiteMapFileName = "sitemap.xml";
     }
 }

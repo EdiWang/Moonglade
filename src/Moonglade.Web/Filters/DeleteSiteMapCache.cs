@@ -1,18 +1,19 @@
 ﻿using System;
-using System.IO;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Moonglade.Model;
+using Moonglade.Caching;
 
 namespace Moonglade.Web.Filters
 {
     public class DeleteSiteMapCache : ActionFilterAttribute
     {
-        protected readonly ILogger<DeleteSiteMapCache> Logger;
+        private readonly ILogger<DeleteSiteMapCache> Logger;
+        private readonly IBlogCache _cache;
 
-        public DeleteSiteMapCache(ILogger<DeleteSiteMapCache> logger)
+        public DeleteSiteMapCache(ILogger<DeleteSiteMapCache> logger, IBlogCache cache)
         {
             Logger = logger;
+            _cache = cache;
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
@@ -21,15 +22,11 @@ namespace Moonglade.Web.Filters
 
             try
             {
-                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", Constants.SiteMapFileName);
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
+                _cache.Remove(CacheDivision.General, "sitemap");
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error Delete sitemap.xml");
+                Logger.LogError(e, "Error Delete sitemap cache");
             }
         }
     }

@@ -93,13 +93,11 @@ namespace Moonglade.Core
             return ms.ToArray();
         }
 
-        public async Task WriteSiteMapFileAsync(string siteRootUrl, string siteDataDirectory)
+        public async Task<byte[]> GetSiteMapStreamArrayAsync(string siteRootUrl)
         {
-            var siteMapFile = Path.Join(siteDataDirectory, Constants.SiteMapFileName);
-            await using var fs = new FileStream(siteMapFile, FileMode.Create,
-               FileAccess.Write, FileShare.None, 4096, true);
-            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
-            await using (var writer = XmlWriter.Create(fs, writerSettings))
+            await using var ms = new MemoryStream();
+            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
+            await using (var writer = XmlWriter.Create(ms, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
                 writer.WriteStartElement("urlset", AppSettings.SiteMap.UrlSetNamespace);
@@ -156,7 +154,8 @@ namespace Moonglade.Core
 
                 await writer.WriteEndElementAsync();
             }
-            await fs.FlushAsync();
+            await ms.FlushAsync();
+            return ms.ToArray();
         }
 
         private IQueryable<PostEntity> SearchByKeyword(string keyword)

@@ -1,11 +1,10 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Model;
 
 namespace Moonglade.Web.Controllers
 {
@@ -31,35 +30,15 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("sitemap.xml")]
-        public async Task<IActionResult> SiteMap([FromServices] IBlogConfig blogConfig)
+        public async Task<IActionResult> SiteMap([FromServices] IBlogConfig blogConfig, [FromServices] IBlogCache cache)
         {
-            var siteMapFile = Path.Join(DataDirectory, Constants.SiteMapFileName);
-            if (!System.IO.File.Exists(siteMapFile))
+            return await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async entry =>
             {
-                _logger.LogInformation($"SiteMap file not found, writing new file on {siteMapFile}");
-
                 var url = ResolveRootUrl(blogConfig);
-                var canonicalUrl = blogConfig.GeneralSettings.CanonicalPrefix;
-                if (!string.IsNullOrWhiteSpace(canonicalUrl))
-                {
-                    url = canonicalUrl;
-                }
-
-                await _searchService.WriteSiteMapFileAsync(url, DataDirectory);
-
-                if (!System.IO.File.Exists(siteMapFile))
-                {
-                    _logger.LogError("SiteMap file still not found, what the heck?!");
-                    return NotFound();
-                }
-            }
-
-            if (System.IO.File.Exists(siteMapFile))
-            {
-                return PhysicalFile(siteMapFile, "text/xml");
-            }
-
-            return NotFound();
+                var bytes = await _searchService.GetSiteMapStreamArrayAsync(url);
+                var xmlContent = Encoding.UTF8.GetString(bytes);
+                return Content(xmlContent, "text/xml");
+            });
         }
 
         [HttpPost("search")]
