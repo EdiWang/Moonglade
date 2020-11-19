@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Moonglade.Configuration.Abstraction;
+using Moonglade.Core;
 using Moonglade.Model;
 
 namespace Moonglade.Web.Controllers
@@ -11,8 +13,6 @@ namespace Moonglade.Web.Controllers
     public class BlogController : Controller
     {
         protected ILogger<ControllerBase> Logger { get; }
-
-        protected string RootUrl => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
         protected string DataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
 
@@ -35,6 +35,7 @@ namespace Moonglade.Web.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        [NonAction]
         protected string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)
         {
             var link = linkGenerator.GetUriByAction(HttpContext, "Slug", "Post",
@@ -46,6 +47,17 @@ namespace Moonglade.Web.Controllers
                     slug
                 });
             return link;
+        }
+
+        [NonAction]
+        protected string ResolveRootUrl(IBlogConfig blogConfig, bool preferCanonical = false)
+        {
+            var requestedRoot = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            if (!preferCanonical) return requestedRoot;
+
+            var url = Utils.ResolveCanonicalUrl(blogConfig.GeneralSettings.CanonicalPrefix, string.Empty);
+            if (string.IsNullOrWhiteSpace(url)) return requestedRoot;
+            return url;
         }
     }
 }

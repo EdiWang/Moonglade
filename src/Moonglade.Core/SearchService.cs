@@ -79,12 +79,12 @@ namespace Moonglade.Core
                 writer.WriteAttributeString("height", "16");
                 writer.WriteAttributeString("width", "16");
                 writer.WriteAttributeString("type", "image/vnd.microsoft.icon");
-                writer.WriteValue($"{siteRootUrl}/favicon.ico");
+                writer.WriteValue($"{siteRootUrl.TrimEnd('/')}/favicon.ico");
                 await writer.WriteEndElementAsync();
 
                 writer.WriteStartElement("Url");
                 writer.WriteAttributeString("type", "text/html");
-                writer.WriteAttributeString("template", $"{siteRootUrl}/search/{{searchTerms}}");
+                writer.WriteAttributeString("template", $"{siteRootUrl.TrimEnd('/')}/search/{{searchTerms}}");
                 await writer.WriteEndElementAsync();
 
                 await writer.WriteEndElementAsync();

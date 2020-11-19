@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("/opml")]
-        public async Task<IActionResult> Opml()
+        public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig)
         {
             var feedPath = Path.Join(DataDirectory, "feed");
             if (!Directory.Exists(feedPath))
@@ -54,10 +54,10 @@ namespace Moonglade.Web.Controllers
                 {
                     SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
                     CategoryInfo = catInfos,
-                    HtmlUrl = $"{RootUrl}/post",
-                    XmlUrl = $"{RootUrl}/rss",
-                    CategoryXmlUrlTemplate = $"{RootUrl}/rss/category/[catTitle]",
-                    CategoryHtmlUrlTemplate = $"{RootUrl}/category/list/[catTitle]"
+                    HtmlUrl = $"{ResolveRootUrl(blogConfig)}/post",
+                    XmlUrl = $"{ResolveRootUrl(blogConfig)}/rss",
+                    CategoryXmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/rss/category/[catTitle]",
+                    CategoryHtmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/category/list/[catTitle]"
                 };
 
                 var path = Path.Join(DataDirectory, Constants.OpmlFileName);

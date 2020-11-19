@@ -22,9 +22,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("opensearch")]
-        public async Task<IActionResult> OpenSearch()
+        public async Task<IActionResult> OpenSearch([FromServices] IBlogConfig blogConfig)
         {
-            var bytes = await _searchService.GetOpenSearchStreamArray(RootUrl);
+            var bytes = await _searchService.GetOpenSearchStreamArray(ResolveRootUrl(blogConfig, true));
             var xmlContent = Encoding.UTF8.GetString(bytes);
             return Content(xmlContent, "text/xml");
         }
@@ -37,7 +37,7 @@ namespace Moonglade.Web.Controllers
             {
                 Logger.LogInformation($"SiteMap file not found, writing new file on {siteMapFile}");
 
-                var url = RootUrl;
+                var url = ResolveRootUrl(blogConfig);
                 var canonicalUrl = blogConfig.GeneralSettings.CanonicalPrefix;
                 if (!string.IsNullOrWhiteSpace(canonicalUrl))
                 {
