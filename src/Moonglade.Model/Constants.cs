@@ -6,6 +6,5 @@
         public static string DataDirectory = "DataDirectory";
         public static int SmallImagePixelsThreshold = 200 * 200;
         public static string SiteMapFileName = "sitemap.xml";
-        public static string OpmlFileName = "opml.xml";
     }
 }

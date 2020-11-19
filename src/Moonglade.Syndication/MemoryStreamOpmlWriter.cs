@@ -5,12 +5,12 @@ using System.Xml;
 
 namespace Moonglade.Syndication
 {
-    public class FileSystemOpmlWriter : IFileSystemOpmlWriter
+    public class MemoryStreamOpmlWriter : IMemoryStreamOpmlWriter
     {
-        public async Task WriteOpmlFileAsync(string opmlFilePath, OpmlDoc opmlDoc)
+        public async Task<byte[]> WriteOpmlStreamAsync(OpmlDoc opmlDoc)
         {
-            await using var fs = new FileStream(opmlFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
-            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
+            await using var fs = new MemoryStream();
+            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
             using (var writer = XmlWriter.Create(fs, writerSettings))
             {
                 // open OPML
@@ -62,6 +62,7 @@ namespace Moonglade.Syndication
                 await writer.WriteEndElementAsync();
             }
             await fs.FlushAsync();
+            return fs.ToArray();
         }
     }
 }

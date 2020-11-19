@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -41,7 +40,6 @@ namespace Moonglade.Web.Controllers
             };
 
             await _categoryService.CreateAsync(request);
-            DeleteOpmlFile();
 
             return Ok(model);
         }
@@ -81,7 +79,6 @@ namespace Moonglade.Web.Controllers
 
             await _categoryService.UpdateAsync(request);
 
-            DeleteOpmlFile();
             return Ok(model);
         }
 
@@ -97,24 +94,8 @@ namespace Moonglade.Web.Controllers
             }
 
             await _categoryService.DeleteAsync(id);
-            DeleteOpmlFile();
 
             return Ok();
-        }
-
-        private void DeleteOpmlFile()
-        {
-            try
-            {
-                var path = Path.Join($"{DataDirectory}", $"{Constants.OpmlFileName}");
-                System.IO.File.Delete(path);
-                _logger.LogInformation("OPML file is deleted.");
-            }
-            catch (Exception e)
-            {
-                // Log the error and do not block the application
-                _logger.LogError(e, "Error Delete OPML File.");
-            }
         }
     }
 }

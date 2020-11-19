@@ -92,7 +92,7 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<ISiteIconGenerator, FileSystemSiteIconGenerator>();
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IBlogStatistics, BlogStatistics>();
-            services.AddScoped<IFileSystemOpmlWriter, FileSystemOpmlWriter>();
+            services.AddScoped<IMemoryStreamOpmlWriter, MemoryStreamOpmlWriter>();
         }
     }
 }

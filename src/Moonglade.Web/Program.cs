@@ -60,23 +60,6 @@ namespace Moonglade.Web
 
         private static string CreateDataDirectories()
         {
-            static void DeleteDataFile(string path)
-            {
-                try
-                {
-                    if (File.Exists(path)) File.Delete(path);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            void CleanDataCache(string dataDir)
-            {
-                DeleteDataFile(Path.Join(dataDir, Constants.OpmlFileName));
-            }
-
             // Use Temp folder as best practice
             // Do NOT create or modify anything under application directory
             // e.g. Azure Deployment using WEBSITE_RUN_FROM_PACKAGE will make website root directory read only.
@@ -94,7 +77,6 @@ namespace Moonglade.Web
                 Directory.CreateDirectory(feedDirectoryPath);
             }
 
-            CleanDataCache(appDataPath);
             return appDataPath;
         }
     }

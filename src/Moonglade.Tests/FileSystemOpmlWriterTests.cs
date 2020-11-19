@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Threading.Tasks;
 using Moonglade.Syndication;
 using NUnit.Framework;
@@ -31,12 +29,10 @@ namespace Moonglade.Tests
                 CategoryHtmlUrlTemplate = $"{siteRootUrl}/category/list/[catTitle]"
             };
 
-            var path = Path.Join(Path.GetTempPath(), $"Moonglade-UT-OPML-{Guid.NewGuid()}.xml");
+            var writer = new MemoryStreamOpmlWriter();
+            var bytes = await writer.WriteOpmlStreamAsync(info);
 
-            var writer = new FileSystemOpmlWriter();
-            await writer.WriteOpmlFileAsync(path, info);
-
-            Assert.IsTrue(File.Exists(path));
+            Assert.IsNotNull(bytes);
         }
     }
 }

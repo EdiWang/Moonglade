@@ -144,9 +144,6 @@
   <data name="Memory Caches" xml:space="preserve">
     <value>内存缓存</value>
   </data>
-  <data name="OPML File" xml:space="preserve">
-    <value>OPML文件</value>
-  </data>
   <data name="Options" xml:space="preserve">
     <value>选项</value>
   </data>

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Model;
 using Moonglade.Syndication;
 
 namespace Moonglade.Web.Controllers
@@ -16,14 +16,14 @@ namespace Moonglade.Web.Controllers
         private readonly SyndicationService _syndicationService;
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
-        private readonly IFileSystemOpmlWriter _fileSystemOpmlWriter;
+        private readonly IMemoryStreamOpmlWriter _fileSystemOpmlWriter;
 
         public SubscriptionController(
             ILogger<SubscriptionController> logger,
             SyndicationService syndicationService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
-            IFileSystemOpmlWriter fileSystemOpmlWriter)
+            IMemoryStreamOpmlWriter fileSystemOpmlWriter)
             : base(logger)
         {
             _syndicationService = syndicationService;
@@ -35,48 +35,22 @@ namespace Moonglade.Web.Controllers
         [Route("/opml")]
         public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig)
         {
-            var feedPath = Path.Join(DataDirectory, "feed");
-            if (!Directory.Exists(feedPath))
+            var cats = await _categoryService.GetAllAsync();
+            var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
+
+            var oi = new OpmlDoc
             {
-                Directory.CreateDirectory(feedPath);
-                Logger.LogInformation($"Created directory '{feedPath}'");
-            }
+                SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
+                CategoryInfo = catInfos,
+                HtmlUrl = $"{ResolveRootUrl(blogConfig)}/post",
+                XmlUrl = $"{ResolveRootUrl(blogConfig)}/rss",
+                CategoryXmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/rss/category/[catTitle]",
+                CategoryHtmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/category/list/[catTitle]"
+            };
 
-            var opmlFile = Path.Join(DataDirectory, Constants.OpmlFileName);
-            if (!System.IO.File.Exists(opmlFile))
-            {
-                Logger.LogInformation($"OPML file not found, writing new file on {opmlFile}");
-
-                var cats = await _categoryService.GetAllAsync();
-                var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
-
-                var oi = new OpmlDoc
-                {
-                    SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
-                    CategoryInfo = catInfos,
-                    HtmlUrl = $"{ResolveRootUrl(blogConfig)}/post",
-                    XmlUrl = $"{ResolveRootUrl(blogConfig)}/rss",
-                    CategoryXmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/rss/category/[catTitle]",
-                    CategoryHtmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/category/list/[catTitle]"
-                };
-
-                var path = Path.Join(DataDirectory, Constants.OpmlFileName);
-                await _fileSystemOpmlWriter.WriteOpmlFileAsync(path, oi);
-                Logger.LogInformation("OPML file write completed.");
-
-                if (!System.IO.File.Exists(opmlFile))
-                {
-                    Logger.LogInformation("OPML file still not found, something just went very very wrong...");
-                    return NotFound();
-                }
-            }
-
-            if (System.IO.File.Exists(opmlFile))
-            {
-                return PhysicalFile(opmlFile, "text/xml");
-            }
-
-            return NotFound();
+            var bytes = await _fileSystemOpmlWriter.WriteOpmlStreamAsync(oi);
+            var xmlContent = Encoding.UTF8.GetString(bytes);
+            return Content(xmlContent, "text/xml");
         }
 
         [Route("rss/{routeName?}")]
