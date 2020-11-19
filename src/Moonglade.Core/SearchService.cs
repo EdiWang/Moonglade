@@ -62,14 +62,11 @@ namespace Moonglade.Core
             return resultList;
         }
 
-        public async Task WriteOpenSearchFileAsync(string siteRootUrl, string siteDataDirectory)
+        public async Task<byte[]> GetOpenSearchStreamArray(string siteRootUrl)
         {
-            var openSearchDataFile = Path.Join(siteDataDirectory, Constants.OpenSearchFileName);
-
-            await using var fs = new FileStream(openSearchDataFile, FileMode.Create,
-                FileAccess.Write, FileShare.None, 4096, true);
-            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true, Async = true };
-            await using (var writer = XmlWriter.Create(fs, writerSettings))
+            await using var ms = new MemoryStream();
+            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
+            await using (var writer = XmlWriter.Create(ms, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
                 writer.WriteStartElement("OpenSearchDescription", "http://a9.com/-/spec/opensearch/1.1/");
@@ -92,7 +89,8 @@ namespace Moonglade.Core
 
                 await writer.WriteEndElementAsync();
             }
-            await fs.FlushAsync();
+            await ms.FlushAsync();
+            return ms.ToArray();
         }
 
         public async Task WriteSiteMapFileAsync(string siteRootUrl, string siteDataDirectory)

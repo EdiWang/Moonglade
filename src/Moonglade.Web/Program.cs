@@ -74,7 +74,6 @@ namespace Moonglade.Web
 
             void CleanDataCache(string dataDir)
             {
-                DeleteDataFile(Path.Join(dataDir, Constants.OpenSearchFileName));
                 DeleteDataFile(Path.Join(dataDir, Constants.OpmlFileName));
             }
 

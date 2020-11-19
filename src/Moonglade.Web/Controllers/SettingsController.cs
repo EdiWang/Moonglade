@@ -721,12 +721,6 @@ namespace Moonglade.Web.Controllers
                     DeleteIfExists(feedDir);
                 }
 
-                if (cachedObjectValues.Contains("MCO_OPSH"))
-                {
-                    var openSearchDataFile = Path.Join($"{DataDirectory}", $"{Constants.OpenSearchFileName}");
-                    DeleteIfExists(openSearchDataFile);
-                }
-
                 if (cachedObjectValues.Contains("MCO_SICO"))
                 {
                     DeleteIfExists(SiteIconDirectory);

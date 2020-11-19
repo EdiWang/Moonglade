@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,25 +24,9 @@ namespace Moonglade.Web.Controllers
         [Route("opensearch")]
         public async Task<IActionResult> OpenSearch()
         {
-            var openSearchDataFile = Path.Join(DataDirectory, Constants.OpenSearchFileName);
-            if (!System.IO.File.Exists(openSearchDataFile))
-            {
-                Logger.LogInformation($"OpenSearch file not found, writing new file on {openSearchDataFile}");
-
-                await _searchService.WriteOpenSearchFileAsync(RootUrl, DataDirectory);
-                if (!System.IO.File.Exists(openSearchDataFile))
-                {
-                    Logger.LogError("OpenSearch file still not found, what the heck?!");
-                    return NotFound();
-                }
-            }
-
-            if (System.IO.File.Exists(openSearchDataFile))
-            {
-                return PhysicalFile(openSearchDataFile, "text/xml");
-            }
-
-            return NotFound();
+            var bytes = await _searchService.GetOpenSearchStreamArray(RootUrl);
+            var xmlContent = Encoding.UTF8.GetString(bytes);
+            return Content(xmlContent, "text/xml");
         }
 
         [Route("sitemap.xml")]
