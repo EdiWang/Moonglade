@@ -63,7 +63,7 @@ namespace Moonglade.Core
 
                 var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", $"posts-category-{categoryName}.xml");
 
-                await rw.WriteRss20FileAsync(path);
+                await rw.WriteRssFileAsync(path);
                 Logger.LogInformation($"Finished refreshing RSS feed for category {categoryName}.");
             }
         }
@@ -90,7 +90,7 @@ namespace Moonglade.Core
                 Logger.LogInformation("Writing ATOM file.");
 
                 var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", "posts-atom.xml");
-                await rw.WriteAtom10FileAsync(path);
+                await rw.WriteAtomFileAsync(path);
             }
             else
             {
@@ -98,7 +98,7 @@ namespace Moonglade.Core
 
                 var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed",
                     "posts.xml");
-                await rw.WriteRss20FileAsync(path);
+                await rw.WriteRssFileAsync(path);
             }
 
             Logger.LogInformation("Finished writing feed for posts.");

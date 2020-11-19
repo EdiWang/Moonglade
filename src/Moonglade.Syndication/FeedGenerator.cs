@@ -38,7 +38,7 @@ namespace Moonglade.Syndication
 
         #endregion
 
-        private static IEnumerable<SyndicationItem> GetSyndicationItemCollection(IEnumerable<FeedEntry> itemCollection)
+        private static IEnumerable<SyndicationItem> GetItemCollection(IEnumerable<FeedEntry> itemCollection)
         {
             var synItemCollection = new List<SyndicationItem>();
             foreach (var item in itemCollection)
@@ -74,9 +74,9 @@ namespace Moonglade.Syndication
             return synItemCollection;
         }
 
-        public async Task WriteRss20FileAsync(string absolutePath)
+        public async Task WriteRssFileAsync(string absolutePath)
         {
-            var feed = GetSyndicationItemCollection(FeedItemCollection);
+            var feed = GetItemCollection(FeedItemCollection);
             var settings = new XmlWriterSettings
             {
                 Async = true,
@@ -103,9 +103,9 @@ namespace Moonglade.Syndication
             xmlWriter.Close();
         }
 
-        public async Task WriteAtom10FileAsync(string absolutePath)
+        public async Task WriteAtomFileAsync(string absolutePath)
         {
-            var feed = GetSyndicationItemCollection(FeedItemCollection);
+            var feed = GetItemCollection(FeedItemCollection);
             var settings = new XmlWriterSettings
             {
                 Async = true,

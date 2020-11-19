@@ -31,7 +31,7 @@ namespace Moonglade.Tests
             };
 
             var path = Path.Join(Path.GetTempPath(), $"Moonglade-UT-RSS-{Guid.NewGuid()}.xml");
-            await rw.WriteRss20FileAsync(path);
+            await rw.WriteRssFileAsync(path);
 
             Assert.IsTrue(File.Exists(path));
         }
@@ -53,7 +53,7 @@ namespace Moonglade.Tests
             };
 
             var path = Path.Join(Path.GetTempPath(), $"Moonglade-UT-RSS-{Guid.NewGuid()}.xml");
-            await rw.WriteRss20FileAsync(path);
+            await rw.WriteRssFileAsync(path);
 
             Assert.IsTrue(File.Exists(path));
         }
@@ -77,7 +77,7 @@ namespace Moonglade.Tests
             };
 
             var path = Path.Join(Path.GetTempPath(), $"Moonglade-UT-ATOM-{Guid.NewGuid()}.xml");
-            await rw.WriteAtom10FileAsync(path);
+            await rw.WriteAtomFileAsync(path);
 
             Assert.IsTrue(File.Exists(path));
         }
@@ -99,7 +99,7 @@ namespace Moonglade.Tests
             };
 
             var path = Path.Join(Path.GetTempPath(), $"Moonglade-UT-ATOM-{Guid.NewGuid()}.xml");
-            await rw.WriteAtom10FileAsync(path);
+            await rw.WriteAtomFileAsync(path);
 
             Assert.IsTrue(File.Exists(path));
         }
