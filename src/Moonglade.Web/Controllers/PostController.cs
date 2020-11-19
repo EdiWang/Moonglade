@@ -46,41 +46,27 @@ namespace Moonglade.Web.Controllers
         [AddPingbackHeader("pingback")]
         public async Task<IActionResult> Slug(int year, int month, int day, string slug)
         {
-            ViewBag.ErrorMessage = string.Empty;
-
-            if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug))
-            {
-                _logger.LogWarning($"Invalid parameter year: {year}, slug: {slug}");
-                return NotFound();
-            }
+            if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
             var slugInfo = new PostSlugInfo(year, month, day, slug);
             var post = await _postService.GetAsync(slugInfo);
 
-            if (post is null)
-            {
-                _logger.LogWarning($"Post not found, parameter '{year}/{month}/{day}/{slug}'.");
-                return NotFound();
-            }
+            if (post is null) return NotFound();
 
             ViewBag.TitlePrefix = $"{post.Title}";
             return View(post);
         }
 
-        [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}/{raw:regex(^(meta|content)$)}")]
-        public async Task<IActionResult> Raw(int year, int month, int day, string slug, string raw)
+        [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}/{type:regex(^(meta|content)$)}")]
+        public async Task<IActionResult> Raw(int year, int month, int day, string slug, string type)
         {
             var slugInfo = new PostSlugInfo(year, month, day, slug);
 
-            if (!_blogConfig.SecuritySettings.EnablePostRawEndpoint) return NotFound();
+            if (!_blogConfig.SecuritySettings.EnablePostRawEndpoint
+                || year > DateTime.UtcNow.Year
+                || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
-            if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug))
-            {
-                _logger.LogWarning($"Invalid parameter year: {year}, slug: {slug}");
-                return NotFound();
-            }
-
-            switch (raw.ToLower())
+            switch (type.ToLower())
             {
                 case "meta":
                     var meta = await _postService.GetSegmentAsync(slugInfo);
@@ -99,11 +85,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Preview(Guid postId)
         {
             var post = await _postService.GetDraftPreviewAsync(postId);
-            if (post is null)
-            {
-                _logger.LogWarning($"Post not found, parameter '{postId}'.");
-                return NotFound();
-            }
+            if (post is null) return NotFound();
 
             ViewBag.TitlePrefix = $"{post.Title}";
             ViewBag.IsDraftPreview = true;
