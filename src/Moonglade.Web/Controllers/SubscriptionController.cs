@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Syndication;
@@ -67,7 +69,7 @@ namespace Moonglade.Web.Controllers
 
                 if (string.IsNullOrWhiteSpace(routeName))
                 {
-                    await _syndicationService.RefreshFeedFileAsync(false);
+                    await _syndicationService.RefreshFeedFileAsync();
                 }
                 else
                 {
@@ -89,24 +91,16 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("atom")]
-        public async Task<IActionResult> Atom()
+        public async Task<IActionResult> Atom([FromServices] IBlogCache cache)
         {
-            var atomDataFile = Path.Join(DataDirectory, "feed", "posts-atom.xml");
-            if (!System.IO.File.Exists(atomDataFile))
+            return await cache.GetOrCreateAsync(CacheDivision.General, "atom", async entry =>
             {
-                _logger.LogInformation($"Atom file not found, writing new file on {atomDataFile}");
+                entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                await _syndicationService.RefreshFeedFileAsync(true);
-
-                if (!System.IO.File.Exists(atomDataFile)) return NotFound();
-            }
-
-            if (System.IO.File.Exists(atomDataFile))
-            {
-                return PhysicalFile(atomDataFile, "text/xml");
-            }
-
-            return NotFound();
+                var bytes = await _syndicationService.GetAtomStreamData();
+                var xmlContent = Encoding.UTF8.GetString(bytes);
+                return Content(xmlContent, "text/xml");
+            });
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -103,17 +104,16 @@ namespace Moonglade.Syndication
             xmlWriter.Close();
         }
 
-        public async Task WriteAtomFileAsync(string absolutePath)
+        public async Task WriteAtomStreamAsync(Stream stream)
         {
             var feed = GetItemCollection(FeedItemCollection);
             var settings = new XmlWriterSettings
             {
                 Async = true,
-                Encoding = Encoding.UTF8,
-                Indent = true
+                Encoding = Encoding.UTF8
             };
 
-            using var xmlWriter = XmlWriter.Create(absolutePath, settings);
+            using var xmlWriter = XmlWriter.Create(stream, settings);
             var writer = new AtomFeedWriter(xmlWriter);
 
             await writer.WriteTitle(HeadTitle);

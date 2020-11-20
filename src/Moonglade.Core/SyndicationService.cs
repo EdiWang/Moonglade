@@ -68,7 +68,7 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task RefreshFeedFileAsync(bool isAtom)
+        public async Task RefreshFeedFileAsync()
         {
             Logger.LogInformation("Start refreshing feed for posts.");
             var itemCollection = await GetFeedEntriesAsync();
@@ -85,23 +85,36 @@ namespace Moonglade.Core
                 MaxContentLength = 0
             };
 
-            if (isAtom)
-            {
-                Logger.LogInformation("Writing ATOM file.");
+            Logger.LogInformation("Writing RSS file.");
 
-                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", "posts-atom.xml");
-                await rw.WriteAtomFileAsync(path);
-            }
-            else
-            {
-                Logger.LogInformation("Writing RSS file.");
-
-                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed",
-                    "posts.xml");
-                await rw.WriteRssFileAsync(path);
-            }
+            var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed",
+                "posts.xml");
+            await rw.WriteRssFileAsync(path);
 
             Logger.LogInformation("Finished writing feed for posts.");
+        }
+
+        public async Task<byte[]> GetAtomStreamData()
+        {
+            var itemCollection = await GetFeedEntriesAsync();
+
+            var rw = new FeedGenerator
+            {
+                HostUrl = _baseUrl,
+                HeadTitle = _blogConfig.FeedSettings.RssTitle,
+                HeadDescription = _blogConfig.FeedSettings.RssDescription,
+                Copyright = _blogConfig.FeedSettings.RssCopyright,
+                Generator = $"Moonglade v{Utils.AppVersion}",
+                FeedItemCollection = itemCollection,
+                TrackBackUrl = _baseUrl,
+                MaxContentLength = 0
+            };
+
+            using var ms = new MemoryStream();
+            await rw.WriteAtomStreamAsync(ms);
+            await ms.FlushAsync();
+
+            return ms.ToArray();
         }
 
         private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? categoryId = null)
