@@ -75,11 +75,6 @@ namespace Moonglade.Web.Controllers
             if (!System.IO.File.Exists(rssDataFile))
             {
                 await _syndicationService.RefreshRssFilesAsync(routeName.ToLower());
-
-                if (!System.IO.File.Exists(rssDataFile))
-                {
-                    return NotFound();
-                }
             }
 
             if (System.IO.File.Exists(rssDataFile))
