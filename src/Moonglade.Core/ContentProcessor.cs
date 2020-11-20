@@ -14,12 +14,10 @@ namespace Moonglade.Core
 
             if (string.IsNullOrWhiteSpace(rawHtmlContent)) return rawHtmlContent;
             var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
-            var newStr = imgSrcRegex.Replace(rawHtmlContent, match =>
-            {
-                return !match.Value.Contains("loading")
+            var newStr = imgSrcRegex.Replace(rawHtmlContent, 
+                match => !match.Value.Contains("loading")
                 ? match.Value.Replace("src", @"loading=""lazy"" src")
-                : match.Value;
-            });
+                : match.Value);
             return newStr;
         }
 
