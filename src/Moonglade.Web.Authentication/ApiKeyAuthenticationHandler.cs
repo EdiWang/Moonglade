@@ -53,7 +53,7 @@ namespace Moonglade.Web.Authentication
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, apiKey.Owner)
+                    new (ClaimTypes.Name, apiKey.Owner)
                 };
                 claims.AddRange(apiKey.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
 

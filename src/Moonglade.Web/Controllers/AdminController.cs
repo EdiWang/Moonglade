@@ -91,9 +91,9 @@ namespace Moonglade.Web.Controllers
                     {
                         var claims = new List<Claim>
                         {
-                            new Claim(ClaimTypes.Name, model.Username),
-                            new Claim(ClaimTypes.Role, "Administrator"),
-                            new Claim("uid", uid.ToString())
+                            new (ClaimTypes.Name, model.Username),
+                            new (ClaimTypes.Role, "Administrator"),
+                            new ("uid", uid.ToString())
                         };
                         var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var p = new ClaimsPrincipal(ci);
