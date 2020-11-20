@@ -34,6 +34,7 @@ namespace Moonglade.Core
         {
             return _cache.GetOrCreateAsync(CacheDivision.General, "allcats", async entry =>
             {
+                entry.SlidingExpiration = TimeSpan.FromHours(1);
                 var list = await _catRepo.SelectAsync(c => new Category
                 {
                     Id = c.Id,
