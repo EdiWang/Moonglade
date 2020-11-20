@@ -68,9 +68,8 @@ namespace Moonglade.Core
             }
         }
 
-        public async Task RefreshFeedFileAsync()
+        public async Task<byte[]> GetRssStreamDataAsync()
         {
-            Logger.LogInformation("Start refreshing feed for posts.");
             var itemCollection = await GetFeedEntriesAsync();
 
             var rw = new FeedGenerator
@@ -85,13 +84,11 @@ namespace Moonglade.Core
                 MaxContentLength = 0
             };
 
-            Logger.LogInformation("Writing RSS file.");
-
-            var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed",
-                "posts.xml");
-            await rw.WriteRssFileAsync(path);
-
-            Logger.LogInformation("Finished writing feed for posts.");
+            using var ms = new MemoryStream();
+            await rw.WriteRssStreamAsync(ms);
+            await ms.FlushAsync();
+            
+            return ms.ToArray();
         }
 
         public async Task<byte[]> GetAtomStreamData()

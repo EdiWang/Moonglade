@@ -12,7 +12,8 @@ namespace Moonglade.Caching
         General,
         Post,
         Page,
-        PostCountCategory
+        PostCountCategory,
+        RssCategory
     }
 
     public class BlogCache : IBlogCache

@@ -28,6 +28,7 @@ namespace Moonglade.Web.Filters
         {
             try
             {
+                _cache.Remove(CacheDivision.General, "rss");
                 _cache.Remove(CacheDivision.General, "atom");
 
                 var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed");
