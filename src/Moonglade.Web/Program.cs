@@ -71,12 +71,6 @@ namespace Moonglade.Web
             }
             Directory.CreateDirectory(appDataPath);
 
-            var feedDirectoryPath = Path.Join(appDataPath, "feed");
-            if (!Directory.Exists(feedDirectoryPath))
-            {
-                Directory.CreateDirectory(feedDirectoryPath);
-            }
-
             return appDataPath;
         }
     }

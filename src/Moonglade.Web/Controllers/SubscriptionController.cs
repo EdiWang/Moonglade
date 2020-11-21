@@ -59,30 +59,18 @@ namespace Moonglade.Web.Controllers
         [Route("rss/{routeName?}")]
         public async Task<IActionResult> Rss([FromServices] IBlogCache cache, string routeName = null)
         {
-            if (string.IsNullOrWhiteSpace(routeName))
+            bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
+            var route = hasRoute ? routeName.ToLower().Trim() : null;
+
+            return await cache.GetOrCreateAsync(
+                hasRoute ? CacheDivision.PostCountCategory : CacheDivision.General, route ?? "rss", async entry =>
             {
-                return await cache.GetOrCreateAsync(CacheDivision.General, "rss", async entry =>
-                {
-                    entry.SlidingExpiration = TimeSpan.FromHours(1);
+                entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                    var bytes = await _syndicationService.GetRssStreamDataAsync();
-                    var xmlContent = Encoding.UTF8.GetString(bytes);
-                    return Content(xmlContent, "text/xml");
-                });
-            }
-
-            var rssDataFile = Path.Join(DataDirectory, "feed", $"posts-category-{routeName}.xml");
-            if (!System.IO.File.Exists(rssDataFile))
-            {
-                await _syndicationService.RefreshRssFilesAsync(routeName.ToLower());
-            }
-
-            if (System.IO.File.Exists(rssDataFile))
-            {
-                return PhysicalFile(rssDataFile, "text/xml");
-            }
-
-            return NotFound();
+                var bytes = await _syndicationService.GetRssStreamDataAsync(routeName);
+                var xmlContent = Encoding.UTF8.GetString(bytes);
+                return Content(xmlContent, "text/xml");
+            });
         }
 
         [Route("atom")]

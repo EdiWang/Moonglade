@@ -75,35 +75,6 @@ namespace Moonglade.Syndication
             return synItemCollection;
         }
 
-        public async Task WriteRssFileAsync(string absolutePath)
-        {
-            var feed = GetItemCollection(FeedItemCollection);
-            var settings = new XmlWriterSettings
-            {
-                Async = true,
-                Encoding = Encoding.UTF8,
-                Indent = true
-            };
-
-            using var xmlWriter = XmlWriter.Create(absolutePath, settings);
-            var writer = new RssFeedWriter(xmlWriter);
-
-            await writer.WriteTitle(HeadTitle);
-            await writer.WriteDescription(HeadDescription);
-            await writer.Write(new SyndicationLink(new Uri(TrackBackUrl)));
-            await writer.WritePubDate(DateTimeOffset.UtcNow);
-            await writer.WriteCopyright(Copyright);
-            await writer.WriteGenerator(Generator);
-
-            foreach (var item in feed)
-            {
-                await writer.Write(item);
-            }
-
-            await xmlWriter.FlushAsync();
-            xmlWriter.Close();
-        }
-
         public async Task WriteRssStreamAsync(Stream stream)
         {
             var feed = GetItemCollection(FeedItemCollection);

@@ -10,7 +10,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 
@@ -40,37 +39,23 @@ namespace Moonglade.Core
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
         }
 
-        public async Task RefreshRssFilesAsync(string categoryName)
+        public async Task<byte[]> GetRssStreamDataAsync(string categoryName = null)
         {
-            var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
-            if (cat is not null)
+            IReadOnlyList<FeedEntry> itemCollection = null;
+            if (!string.IsNullOrWhiteSpace(categoryName))
             {
-                Logger.LogInformation($"Start refreshing RSS feed for category {categoryName}.");
-
-                var itemCollection = await GetFeedEntriesAsync(cat.Id);
-
-                var rw = new FeedGenerator
+                var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
+                if (cat is null)
                 {
-                    HostUrl = _baseUrl,
-                    HeadTitle = _blogConfig.FeedSettings.RssTitle,
-                    HeadDescription = _blogConfig.FeedSettings.RssDescription,
-                    Copyright = _blogConfig.FeedSettings.RssCopyright,
-                    Generator = $"Moonglade v{Utils.AppVersion}",
-                    FeedItemCollection = itemCollection,
-                    TrackBackUrl = _baseUrl,
-                    MaxContentLength = 0
-                };
+                    throw new InvalidDataException($"'{categoryName}' is not found.");
+                }
 
-                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed", $"posts-category-{categoryName}.xml");
-
-                await rw.WriteRssFileAsync(path);
-                Logger.LogInformation($"Finished refreshing RSS feed for category {categoryName}.");
+                itemCollection = await GetFeedEntriesAsync(cat.Id);
             }
-        }
-
-        public async Task<byte[]> GetRssStreamDataAsync()
-        {
-            var itemCollection = await GetFeedEntriesAsync();
+            else
+            {
+                itemCollection = await GetFeedEntriesAsync();
+            }
 
             var rw = new FeedGenerator
             {
@@ -87,7 +72,7 @@ namespace Moonglade.Core
             using var ms = new MemoryStream();
             await rw.WriteRssStreamAsync(ms);
             await ms.FlushAsync();
-            
+
             return ms.ToArray();
         }
 

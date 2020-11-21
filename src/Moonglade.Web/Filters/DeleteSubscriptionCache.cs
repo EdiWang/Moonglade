@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
-using Moonglade.Model;
 
 namespace Moonglade.Web.Filters
 {
@@ -21,26 +19,15 @@ namespace Moonglade.Web.Filters
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
-            DeleteSubscriptionFiles();
-        }
-
-        private void DeleteSubscriptionFiles()
-        {
             try
             {
                 _cache.Remove(CacheDivision.General, "rss");
                 _cache.Remove(CacheDivision.General, "atom");
-
-                var path = Path.Join($"{AppDomain.CurrentDomain.GetData(Constants.DataDirectory)}", "feed");
-                var files = Directory.GetFiles(path);
-                foreach (var file in files)
-                {
-                    File.Delete(file);
-                }
+                _cache.Remove(CacheDivision.RssCategory);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error Delete Subscription Files");
+                Logger.LogError(e, "Error delete subscription cache");
             }
         }
     }

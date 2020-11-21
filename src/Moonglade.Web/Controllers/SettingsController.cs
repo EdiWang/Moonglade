@@ -705,12 +705,6 @@ namespace Moonglade.Web.Controllers
                     cache.RemoveAllCache();
                 }
 
-                if (cachedObjectValues.Contains("MCO_FEED"))
-                {
-                    var feedDir = Path.Join($"{DataDirectory}", "feed");
-                    DeleteIfExists(feedDir);
-                }
-
                 if (cachedObjectValues.Contains("MCO_SICO"))
                 {
                     DeleteIfExists(SiteIconDirectory);

@@ -162,9 +162,6 @@
   <data name="Site Icon Files" xml:space="preserve">
     <value>网站图标文件</value>
   </data>
-  <data name="Subscription Feed Files" xml:space="preserve">
-    <value>订阅文件</value>
-  </data>
   <data name="System Reset" xml:space="preserve">
     <value>系统重置</value>
   </data>

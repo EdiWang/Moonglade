@@ -31,10 +31,14 @@ namespace Moonglade.Tests
                 GeneratorVersion = "9.9.6"
             };
 
-            var path = Path.Join(Path.GetTempPath(), $"Moonglade-UT-RSS-{Guid.NewGuid()}.xml");
-            await rw.WriteRssFileAsync(path);
+            using var ms = new MemoryStream();
+            await rw.WriteRssStreamAsync(ms);
+            await ms.FlushAsync();
+            var bytes = ms.ToArray();
+            var xmlContent = Encoding.UTF8.GetString(bytes);
 
-            Assert.IsTrue(File.Exists(path));
+            Assert.IsNotNull(xmlContent);
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿<?xml version=""1.0"" encoding=""utf-8""?><feed xmlns=""http://www.w3.org/2005/Atom""><title>996 ICU</title><subtitle>Work 996 and get into ICU</subtitle><rights>(c) 2020 996.icu</rights>"));
         }
 
         [Test]
@@ -53,10 +57,14 @@ namespace Moonglade.Tests
                 GeneratorVersion = "9.9.6"
             };
 
-            var path = Path.Join(Path.GetTempPath(), $"Moonglade-UT-RSS-{Guid.NewGuid()}.xml");
-            await rw.WriteRssFileAsync(path);
+            using var ms = new MemoryStream();
+            await rw.WriteRssStreamAsync(ms);
+            await ms.FlushAsync();
+            var bytes = ms.ToArray();
+            var xmlContent = Encoding.UTF8.GetString(bytes);
 
-            Assert.IsTrue(File.Exists(path));
+            Assert.IsNotNull(xmlContent);
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿<?xml version=""1.0"" encoding=""utf-8""?><feed xmlns=""http://www.w3.org/2005/Atom""><title>996 ICU</title><subtitle>Work 996 and get into ICU</subtitle><rights>(c) 2020 996.icu</rights>"));
         }
 
         [Test]
