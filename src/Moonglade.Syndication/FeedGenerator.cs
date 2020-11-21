@@ -81,8 +81,7 @@ namespace Moonglade.Syndication
             var settings = new XmlWriterSettings
             {
                 Async = true,
-                Encoding = Encoding.UTF8,
-                Indent = true
+                Encoding = Encoding.UTF8
             };
 
             using var xmlWriter = XmlWriter.Create(stream, settings);
