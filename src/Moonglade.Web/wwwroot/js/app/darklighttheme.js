@@ -1,7 +1,7 @@
 ﻿var themeModeSwitcher = {
     useDarkMode: function () {
-        $('#moonglade-nav').removeClass('bg-accent1');
-        $('#moonglade-nav, #moonglade-footer').addClass('bg-dark');
+        $('#blog-nav').removeClass('bg-accent1');
+        $('#blog-nav, #moonglade-footer').addClass('bg-dark');
         $('.post-publish-info-mobile').removeClass('bg-light');
         $('.post-publish-info-mobile').addClass('bg-dark');
 
@@ -28,8 +28,8 @@
         $('#lighticon').addClass('icon-moon-o');
     },
     useLightMode: function () {
-        $('#moonglade-nav').addClass('bg-accent1');
-        $('#moonglade-nav, #moonglade-footer').removeClass('bg-dark');
+        $('#blog-nav').addClass('bg-accent1');
+        $('#blog-nav, #moonglade-footer').removeClass('bg-dark');
         $('.post-publish-info-mobile').removeClass('bg-dark');
         $('.post-publish-info-mobile').addClass('bg-light');
 

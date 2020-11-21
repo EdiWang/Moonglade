@@ -83,18 +83,18 @@
     }
 </head>
 <body class="@ViewBag.BodyClass">
-    <header class="ediblog-header">
-        <nav id="moonglade-nav" class="navbar fixed-top navbar-expand-lg navbar-dark bg-accent1">
+    <header>
+        <nav id="blog-nav" class="navbar fixed-top navbar-expand-lg navbar-dark bg-accent1">
             <div class="container">
                 <div class="animbrand">
                     <a class="moonglade-logo font-sairas navbar-brand animate" href="/">
                         @BlogConfig.GeneralSettings.LogoText
                     </a>
                 </div>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#moonglade-navbar-content" aria-controls="moonglade-navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#blog-navbar-content" aria-controls="blog-navbar-content" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="moonglade-navbar-content">
+                <div class="collapse navbar-collapse" id="blog-navbar-content">
                     <ul class="navbar-nav mr-auto">
                         <!-- System Nav Menu -->
                         @if (Settings.Value.SystemNavMenus["Categories"])
