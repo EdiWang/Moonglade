@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Web.Models;
@@ -15,13 +14,10 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly ILogger<CategoryController> _logger;
         private readonly CategoryService _categoryService;
-        private static string DataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
 
-        public CategoryController(ILogger<CategoryController> logger, CategoryService categoryService)
+        public CategoryController(CategoryService categoryService)
         {
-            _logger = logger;
             _categoryService = categoryService;
         }
 

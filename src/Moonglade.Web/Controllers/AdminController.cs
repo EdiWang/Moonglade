@@ -134,8 +134,6 @@ namespace Moonglade.Web.Controllers
         [HttpGet("signout")]
         public async Task<IActionResult> SignOut(int nounce = 1055)
         {
-            _logger.LogInformation($"User '{User.Identity?.Name}' signing out.'");
-
             switch (_authenticationSettings.Provider)
             {
                 case AuthenticationProvider.AzureAD:

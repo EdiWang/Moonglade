@@ -61,7 +61,6 @@ namespace Moonglade.Web.Controllers
                 var invalidChars = Path.GetInvalidFileNameChars();
                 if (filename.IndexOfAny(invalidChars) >= 0)
                 {
-                    _logger.LogWarning($"Invalid filename attempt '{filename}'.");
                     return BadRequest("invalid filename");
                 }
 
@@ -84,8 +83,6 @@ namespace Moonglade.Web.Controllers
 
                 if (null == imageEntry)
                 {
-                    _logger.LogError($"Error getting image, filename: {filename}");
-
                     return _blogConfig.ContentSettings.UseFriendlyNotFoundImage
                         ? (IActionResult)File("~/images/image-not-found.png", "image/png")
                         : NotFound();
