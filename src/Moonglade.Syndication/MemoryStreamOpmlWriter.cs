@@ -7,7 +7,7 @@ namespace Moonglade.Syndication
 {
     public class MemoryStreamOpmlWriter : IMemoryStreamOpmlWriter
     {
-        public async Task<byte[]> WriteOpmlStreamAsync(OpmlDoc opmlDoc)
+        public async Task<byte[]> GetOpmlStreamDataAsync(OpmlDoc opmlDoc)
         {
             await using var fs = new MemoryStream();
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };

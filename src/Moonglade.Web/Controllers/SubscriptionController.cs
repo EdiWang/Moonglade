@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -18,25 +16,19 @@ namespace Moonglade.Web.Controllers
         private readonly SyndicationService _syndicationService;
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
-        private readonly IMemoryStreamOpmlWriter _fileSystemOpmlWriter;
-        private readonly ILogger<SubscriptionController> _logger;
 
         public SubscriptionController(
             SyndicationService syndicationService,
             CategoryService categoryService,
-            IBlogConfig blogConfig,
-            IMemoryStreamOpmlWriter fileSystemOpmlWriter,
-            ILogger<SubscriptionController> logger)
+            IBlogConfig blogConfig)
         {
             _syndicationService = syndicationService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
-            _fileSystemOpmlWriter = fileSystemOpmlWriter;
-            _logger = logger;
         }
 
-        [Route("/opml")]
-        public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig)
+        [Route("opml")]
+        public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig, [FromServices] IMemoryStreamOpmlWriter opmlWriter)
         {
             var cats = await _categoryService.GetAllAsync();
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
@@ -51,7 +43,7 @@ namespace Moonglade.Web.Controllers
                 CategoryHtmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/category/list/[catTitle]"
             };
 
-            var bytes = await _fileSystemOpmlWriter.WriteOpmlStreamAsync(oi);
+            var bytes = await opmlWriter.GetOpmlStreamDataAsync(oi);
             var xmlContent = Encoding.UTF8.GetString(bytes);
             return Content(xmlContent, "text/xml");
         }

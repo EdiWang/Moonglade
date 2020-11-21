@@ -30,7 +30,7 @@ namespace Moonglade.Tests
             };
 
             var writer = new MemoryStreamOpmlWriter();
-            var bytes = await writer.WriteOpmlStreamAsync(info);
+            var bytes = await writer.GetOpmlStreamDataAsync(info);
 
             Assert.IsNotNull(bytes);
         }
