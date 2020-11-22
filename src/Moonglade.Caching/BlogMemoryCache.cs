@@ -16,7 +16,7 @@ namespace Moonglade.Caching
         RssCategory
     }
 
-    public class BlogCache : IBlogCache
+    public class BlogMemoryCache : IBlogCache
     {
         /* Create Key-Value mapping for cache divisions to workaround
          * https://github.com/aspnet/Caching/issues/422
@@ -31,7 +31,7 @@ namespace Moonglade.Caching
 
         private readonly IMemoryCache _memoryCache;
 
-        public BlogCache(IMemoryCache memoryCache)
+        public BlogMemoryCache(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
             CacheDivision = new();

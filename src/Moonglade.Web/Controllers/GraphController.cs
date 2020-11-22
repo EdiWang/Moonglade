@@ -44,12 +44,6 @@ namespace Moonglade.Web.Controllers
             _pageService = pageService;
         }
 
-        [HttpGet("version")]
-        public ActionResult<string> Version()
-        {
-            return Utils.AppVersion;
-        }
-
         [HttpGet("tags")]
         [ProducesResponseType(typeof(IEnumerable<Tag>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

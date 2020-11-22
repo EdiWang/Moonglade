@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -11,13 +10,10 @@ namespace Moonglade.Web.Controllers
     public class SearchController : BlogController
     {
         private readonly SearchService _searchService;
-        private readonly ILogger<SearchController> _logger;
 
-        public SearchController(
-            SearchService searchService, ILogger<SearchController> logger)
+        public SearchController(SearchService searchService)
         {
             _searchService = searchService;
-            _logger = logger;
         }
 
         [Route("opensearch")]
@@ -56,8 +52,6 @@ namespace Moonglade.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            _logger.LogInformation("Searching post for keyword: " + term);
 
             ViewBag.TitlePrefix = term;
 

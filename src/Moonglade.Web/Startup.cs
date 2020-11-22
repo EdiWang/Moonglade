@@ -118,17 +118,9 @@ namespace Moonglade.Web
                 TelemetryDebugWriter.IsTracingDisabled = true;
             }
 
-            appLifetime.ApplicationStarted.Register(() =>
-            {
-                _logger.LogInformation("Moonglade started.");
-            });
             appLifetime.ApplicationStopping.Register(() =>
             {
                 _logger.LogInformation("Moonglade is stopping...");
-            });
-            appLifetime.ApplicationStopped.Register(() =>
-            {
-                _logger.LogInformation("Moonglade stopped.");
             });
 
             app.UseRobotsTxt();
@@ -140,7 +132,6 @@ namespace Moonglade.Web
             if (_environment.IsDevelopment())
             {
                 app.UseRouteDebugger();
-                _logger.LogWarning($"Running in environment: {_environment.EnvironmentName}. Detailed error page enabled.");
                 app.UseDeveloperExceptionPage();
             }
             else

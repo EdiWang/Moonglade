@@ -645,15 +645,8 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.EnableAudit)]
         public async Task<IActionResult> ClearAuditLogs()
         {
-            try
-            {
-                await _blogAudit.ClearAuditLog();
-                return RedirectToAction("AuditLogs");
-            }
-            catch (Exception e)
-            {
-                return ServerError(e.Message);
-            }
+            await _blogAudit.ClearAuditLog();
+            return RedirectToAction("AuditLogs");
         }
 
         #endregion

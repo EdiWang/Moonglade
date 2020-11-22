@@ -6,11 +6,11 @@ namespace Moonglade.Core
 {
     public class BlogService
     {
-        protected readonly ILogger<BlogService> Logger;
+        protected readonly ILogger Logger;
 
         protected readonly AppSettings AppSettings;
 
-        public BlogService(ILogger<BlogService> logger = null,
+        public BlogService(ILogger logger = null,
             IOptions<AppSettings> settings = null)
         {
             if (settings is not null) AppSettings = settings.Value;

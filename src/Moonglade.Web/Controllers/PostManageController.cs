@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
             PostService postService,
             CategoryService categoryService,
             IBlogConfig blogConfig,
-            IDateTimeResolver dateTimeResolver, 
+            IDateTimeResolver dateTimeResolver,
             ILogger<PostManageController> logger)
         {
             _postService = postService;
@@ -182,7 +182,15 @@ namespace Moonglade.Web.Controllers
                     _logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 
                     var pubDate = postEntity.PubDateUtc.GetValueOrDefault();
-                    var link = GetPostUrl(linkGenerator, pubDate, postEntity.Slug);
+
+                    var link = linkGenerator.GetUriByAction(HttpContext, "Slug", "Post",
+                               new
+                               {
+                                   year = pubDate.Year,
+                                   month = pubDate.Month,
+                                   day = pubDate.Day,
+                                   postEntity.Slug
+                               });
 
                     if (_blogConfig.AdvancedSettings.EnablePingBackSend)
                     {

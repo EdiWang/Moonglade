@@ -59,7 +59,7 @@ namespace Moonglade.Web.Configuration
         public static void AddBlogCache(this IServiceCollection services)
         {
             services.AddMemoryCache();
-            services.AddSingleton<IBlogCache, BlogCache>();
+            services.AddSingleton<IBlogCache, BlogMemoryCache>();
             services.AddScoped<DeleteSubscriptionCache>();
             services.AddScoped<DeleteSiteMapCache>();
         }

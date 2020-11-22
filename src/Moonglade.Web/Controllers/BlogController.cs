@@ -31,20 +31,6 @@ namespace Moonglade.Web.Controllers
         }
 
         [NonAction]
-        protected string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)
-        {
-            var link = linkGenerator.GetUriByAction(HttpContext, "Slug", "Post",
-                new
-                {
-                    year = pubDate.Year,
-                    month = pubDate.Month,
-                    day = pubDate.Day,
-                    slug
-                });
-            return link;
-        }
-
-        [NonAction]
         protected string ResolveRootUrl(IBlogConfig blogConfig, bool preferCanonical = false)
         {
             var requestedRoot = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
