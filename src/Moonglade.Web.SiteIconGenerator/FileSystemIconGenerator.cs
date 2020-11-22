@@ -8,7 +8,7 @@ using Moonglade.Web.SiteIconGenerator.IconEncoder;
 
 namespace Moonglade.Web.SiteIconGenerator
 {
-    public class FileSystemSiteIconGenerator : ISiteIconGenerator
+    public class FileSystemIconGenerator : ISiteIconGenerator
     {
         public void GenerateIcons(string sourceImagePath, string directory)
         {
