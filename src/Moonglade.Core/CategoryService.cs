@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Data.Entities;
@@ -18,11 +17,11 @@ namespace Moonglade.Core
         private readonly IBlogAudit _audit;
         private readonly IBlogCache _cache;
 
-        public CategoryService(ILogger<CategoryService> logger,
+        public CategoryService(
             IRepository<CategoryEntity> catRepo,
             IRepository<PostCategoryEntity> postCatRepo,
             IBlogAudit audit,
-            IBlogCache cache) : base(logger)
+            IBlogCache cache)
         {
             _catRepo = catRepo;
             _postCatRepo = postCatRepo;

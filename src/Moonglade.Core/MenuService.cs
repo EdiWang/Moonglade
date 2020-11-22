@@ -2,26 +2,25 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
     public class MenuService : BlogService
     {
+        private readonly ILogger<MenuService> _logger;
         private readonly IRepository<MenuEntity> _menuRepo;
         private readonly IBlogAudit _audit;
 
         public MenuService(
             ILogger<MenuService> logger,
-            IOptions<AppSettings> settings,
             IRepository<MenuEntity> menuRepo,
-            IBlogAudit audit) : base(logger, settings)
+            IBlogAudit audit)
         {
+            _logger = logger;
             _menuRepo = menuRepo;
             _audit = audit;
         }
@@ -76,7 +75,7 @@ namespace Moonglade.Core
             }
 
             var sUrl = SterilizeMenuLink(request.Url.Trim());
-            Logger.LogInformation($"Sterilized URL from '{request.Url}' to '{sUrl}'");
+            _logger.LogInformation($"Sterilized URL from '{request.Url}' to '{sUrl}'");
 
             menu.Title = request.Title.Trim();
             menu.Url = sUrl;

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
@@ -18,19 +17,19 @@ namespace Moonglade.Core
     public class SyndicationService : BlogService
     {
         private readonly string _baseUrl;
-
+        private readonly AppSettings _settings;
         private readonly IBlogConfig _blogConfig;
         private readonly IRepository<CategoryEntity> _catRepo;
         private readonly IRepository<PostEntity> _postRepo;
 
         public SyndicationService(
-            ILogger<SyndicationService> logger,
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IHttpContextAccessor httpContextAccessor,
             IRepository<CategoryEntity> catRepo,
-            IRepository<PostEntity> postRepo) : base(logger, settings)
+            IRepository<PostEntity> postRepo)
         {
+            _settings = settings.Value;
             _blogConfig = blogConfig;
             _catRepo = catRepo;
             _postRepo = postRepo;
@@ -135,7 +134,7 @@ namespace Moonglade.Core
 
         private string FormatPostContent(string rawContent)
         {
-            return AppSettings.Editor == EditorChoice.Markdown ?
+            return _settings.Editor == EditorChoice.Markdown ?
                 ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
                 rawContent;
         }

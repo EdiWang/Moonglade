@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -17,9 +16,8 @@ namespace Moonglade.Core
         private readonly IBlogAudit _audit;
 
         public LocalAccountService(
-            ILogger<LocalAccountService> logger,
             IRepository<LocalAccountEntity> accountRepo,
-            IBlogAudit audit) : base(logger)
+            IBlogAudit audit)
         {
             _accountRepo = accountRepo;
             _audit = audit;

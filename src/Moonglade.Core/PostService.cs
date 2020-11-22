@@ -20,6 +20,8 @@ namespace Moonglade.Core
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IBlogAudit _audit;
         private readonly IBlogCache _cache;
+        private readonly ILogger<PostService> _logger;
+        private readonly AppSettings _settings;
 
         #region Repository Objects
 
@@ -31,7 +33,8 @@ namespace Moonglade.Core
 
         #endregion
 
-        public PostService(ILogger<PostService> logger,
+        public PostService(
+            ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepo,
             IRepository<TagEntity> tagRepo,
@@ -40,8 +43,10 @@ namespace Moonglade.Core
             IRepository<PostCategoryEntity> postCatRepo,
             IDateTimeResolver dateTimeResolver,
             IBlogAudit audit,
-            IBlogCache cache) : base(logger, settings)
+            IBlogCache cache)
         {
+            _logger = logger;
+            _settings = settings.Value;
             _postRepo = postRepo;
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
@@ -172,7 +177,7 @@ namespace Moonglade.Core
 
             var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
             {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(AppSettings.CacheSlidingExpirationMinutes["Post"]);
+                entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
 
                 var postSlugModel = await _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostSlug
                 {
@@ -297,8 +302,8 @@ namespace Moonglade.Core
         public async Task<PostEntity> CreateAsync(CreatePostRequest request)
         {
             var abs = ContentProcessor.GetPostAbstract(
-                request.EditorContent, AppSettings.PostAbstractWords,
-                AppSettings.Editor == EditorChoice.Markdown);
+                request.EditorContent, _settings.PostAbstractWords,
+                _settings.Editor == EditorChoice.Markdown);
 
             var post = new PostEntity
             {
@@ -337,7 +342,7 @@ namespace Moonglade.Core
             {
                 var uid = Guid.NewGuid();
                 post.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
-                Logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
+                _logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
             }
 
             // add categories
@@ -372,7 +377,7 @@ namespace Moonglade.Core
                         var newTag = new TagEntity
                         {
                             DisplayName = item,
-                            NormalizedName = TagService.NormalizeTagName(item, AppSettings.TagNormalization)
+                            NormalizedName = TagService.NormalizeTagName(item, _settings.TagNormalization)
                         };
 
                         tag = await _tagRepo.AddAsync(newTag);
@@ -406,8 +411,8 @@ namespace Moonglade.Core
             post.PostContent = request.EditorContent;
             post.ContentAbstract = ContentProcessor.GetPostAbstract(
                                         request.EditorContent,
-                                        AppSettings.PostAbstractWords,
-                                        AppSettings.Editor == EditorChoice.Markdown);
+                                        _settings.PostAbstractWords,
+                                        _settings.Editor == EditorChoice.Markdown);
 
             // Address #221: Do not allow published posts back to draft status
             // postModel.IsPublished = request.IsPublished;
@@ -442,7 +447,7 @@ namespace Moonglade.Core
                 await _tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
-                    NormalizedName = TagService.NormalizeTagName(item, AppSettings.TagNormalization)
+                    NormalizedName = TagService.NormalizeTagName(item, _settings.TagNormalization)
                 });
 
                 await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,

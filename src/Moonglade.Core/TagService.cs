@@ -2,7 +2,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
@@ -15,17 +14,18 @@ namespace Moonglade.Core
 {
     public class TagService : BlogService
     {
+        private readonly AppSettings _settings;
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IBlogAudit _audit;
 
         public TagService(
             IOptions<AppSettings> settings,
-            ILogger<TagService> logger,
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
-            IBlogAudit audit) : base(logger, settings)
+            IBlogAudit audit)
         {
+            _settings = settings.Value;
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
             _audit = audit;
@@ -48,12 +48,11 @@ namespace Moonglade.Core
 
         public async Task UpdateAsync(int tagId, string newName)
         {
-            Logger.LogInformation($"Updating tag {tagId} with new name {newName}");
             var tag = await _tagRepo.GetAsync(tagId);
             if (null == tag) return;
 
             tag.DisplayName = newName;
-            tag.NormalizedName = NormalizeTagName(newName, AppSettings.TagNormalization);
+            tag.NormalizedName = NormalizeTagName(newName, _settings.TagNormalization);
             await _tagRepo.UpdateAsync(tag);
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
         }

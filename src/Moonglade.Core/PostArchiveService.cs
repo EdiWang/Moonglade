@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
     public class PostArchiveService : BlogService
     {
+        private readonly ILogger<PostArchiveService> _logger;
         private readonly IRepository<PostEntity> _postRepo;
 
         public PostArchiveService(
             ILogger<PostArchiveService> logger,
-            IOptions<AppSettings> settings,
-            IRepository<PostEntity> postRepo) : base(logger, settings)
+            IRepository<PostEntity> postRepo)
         {
+            _logger = logger;
             _postRepo = postRepo;
         }
 
@@ -48,13 +47,13 @@ namespace Moonglade.Core
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
-                Logger.LogError($"parameter '{nameof(year)}:{year}' is out of range");
+                _logger.LogError($"parameter '{nameof(year)}:{year}' is out of range");
                 throw new ArgumentOutOfRangeException(nameof(year));
             }
 
             if (month is > 12 or < 0)
             {
-                Logger.LogError($"parameter '{nameof(month)}:{month}' is out of range");
+                _logger.LogError($"parameter '{nameof(month)}:{month}' is out of range");
                 throw new ArgumentOutOfRangeException(nameof(month));
             }
 

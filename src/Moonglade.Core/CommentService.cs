@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Edi.WordFilter;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
@@ -25,13 +22,11 @@ namespace Moonglade.Core
         private readonly IRepository<CommentReplyEntity> _commentReplyRepo;
 
         public CommentService(
-            ILogger<CommentService> logger,
-            IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IBlogAudit audit,
             IRepository<CommentEntity> commentRepo,
             IRepository<CommentReplyEntity> commentReplyRepo,
-            IRepository<PostEntity> postRepo) : base(logger, settings)
+            IRepository<PostEntity> postRepo)
         {
             _blogConfig = blogConfig;
             _audit = audit;
@@ -105,7 +100,6 @@ namespace Moonglade.Core
                 await _commentRepo.UpdateAsync(cmt);
 
                 string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
-                Logger.LogInformation(logMessage);
                 await _audit.AddAuditEntry(
                     EventType.Content, cmt.IsApproved ? AuditEventId.CommentApproval : AuditEventId.CommentDisapproval, logMessage);
             }

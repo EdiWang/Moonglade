@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
@@ -18,10 +15,8 @@ namespace Moonglade.Core
         private readonly IBlogAudit _audit;
 
         public PageService(
-            ILogger<PageService> logger,
-            IOptions<AppSettings> settings,
             IRepository<PageEntity> pageRepo,
-            IBlogAudit audit) : base(logger, settings)
+            IBlogAudit audit)
         {
             _pageRepo = pageRepo;
             _audit = audit;

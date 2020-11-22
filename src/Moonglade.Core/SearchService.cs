@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
@@ -21,17 +20,18 @@ namespace Moonglade.Core
 {
     public class SearchService : BlogService
     {
+        private readonly AppSettings _settings;
         private readonly IRepository<PostEntity> _postRepo;
         private readonly IRepository<PageEntity> _pageRepo;
         private readonly IBlogConfig _blogConfig;
 
         public SearchService(
-            ILogger<PostService> logger,
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepo,
             IBlogConfig blogConfig,
-            IRepository<PageEntity> pageRepo) : base(logger, settings)
+            IRepository<PageEntity> pageRepo)
         {
+            _settings = settings.Value;
             _postRepo = postRepo;
             _blogConfig = blogConfig;
             _pageRepo = pageRepo;
@@ -100,7 +100,7 @@ namespace Moonglade.Core
             await using (var writer = XmlWriter.Create(ms, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
-                writer.WriteStartElement("urlset", AppSettings.SiteMap.UrlSetNamespace);
+                writer.WriteStartElement("urlset", _settings.SiteMap.UrlSetNamespace);
 
                 // Posts
                 var spec = new PostSitePageSpec();
@@ -117,7 +117,7 @@ namespace Moonglade.Core
                     writer.WriteStartElement("url");
                     writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{item.Slug.ToLower()}");
                     writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                    writer.WriteElementString("changefreq", AppSettings.SiteMap.ChangeFreq["Posts"]);
+                    writer.WriteElementString("changefreq", _settings.SiteMap.ChangeFreq["Posts"]);
                     await writer.WriteEndElementAsync();
                 }
 
@@ -134,7 +134,7 @@ namespace Moonglade.Core
                     writer.WriteStartElement("url");
                     writer.WriteElementString("loc", $"{siteRootUrl}/page/{item.Slug.ToLower()}");
                     writer.WriteElementString("lastmod", item.CreateOnUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                    writer.WriteElementString("changefreq", AppSettings.SiteMap.ChangeFreq["Pages"]);
+                    writer.WriteElementString("changefreq", _settings.SiteMap.ChangeFreq["Pages"]);
                     await writer.WriteEndElementAsync();
                 }
 
@@ -142,14 +142,14 @@ namespace Moonglade.Core
                 writer.WriteStartElement("url");
                 writer.WriteElementString("loc", $"{siteRootUrl}/tags");
                 writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                writer.WriteElementString("changefreq", AppSettings.SiteMap.ChangeFreq["Default"]);
+                writer.WriteElementString("changefreq", _settings.SiteMap.ChangeFreq["Default"]);
                 await writer.WriteEndElementAsync();
 
                 // Archive
                 writer.WriteStartElement("url");
                 writer.WriteElementString("loc", $"{siteRootUrl}/archive");
                 writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                writer.WriteElementString("changefreq", AppSettings.SiteMap.ChangeFreq["Default"]);
+                writer.WriteElementString("changefreq", _settings.SiteMap.ChangeFreq["Default"]);
                 await writer.WriteEndElementAsync();
 
                 await writer.WriteEndElementAsync();
