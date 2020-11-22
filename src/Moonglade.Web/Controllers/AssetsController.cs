@@ -145,7 +145,7 @@ namespace Moonglade.Web.Controllers
                             p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
                     {
                         using var watermarker = new ImageWatermarker(stream, ext);
-                        watermarker.SkipImageSize(Constants.SmallImagePixelsThreshold);
+                        watermarker.SkipImageSize(_settings.WatermarkSkipPixel);
 
                         // Get ARGB values
                         var colorArray = _settings.WatermarkARGB;

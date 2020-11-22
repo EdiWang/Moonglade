@@ -7,6 +7,7 @@ namespace Moonglade.Model.Settings
     {
         public EditorChoice Editor { get; set; }
         public int[] WatermarkARGB { get; set; }
+        public int WatermarkSkipPixel { get; set; }
         public CaptchaSettings CaptchaSettings { get; set; }
         public int PostAbstractWords { get; set; }
         public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
