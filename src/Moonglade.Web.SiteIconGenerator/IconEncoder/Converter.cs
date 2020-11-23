@@ -13,7 +13,7 @@ using System.Collections;
 using System.Drawing;
 using System.IO;
 
-namespace Moonglade.Web.SiteIconGenerator.IconEncoder
+namespace SiteIconGenerator.IconEncoder
 {
     /// <summary>
     /// Provides methods for converting between the bitmap and icon formats
@@ -135,7 +135,7 @@ namespace Moonglade.Web.SiteIconGenerator.IconEncoder
             ico.IconDirectory.Entries[0].Width = (byte)bmp.Info.InfoHeader.BiWidth;
             ico.IconDirectory.Entries[0].Height = (byte)bmp.Info.InfoHeader.BiHeight;
             ico.IconDirectory.Entries[0].BitCount = bitCount; // maybe 0?
-            ico.IconDirectory.Entries[0].ColorCount = uniqueColors.Count > byte.MaxValue ? (byte)0 : (byte)uniqueColors.Count;
+            ico.IconDirectory.Entries[0].ColorCount = uniqueColors.Count > byte.MaxValue ? 0 : (byte)uniqueColors.Count;
             //HACK: safe to assume that the first imageoffset is always 22
             ico.IconDirectory.Entries[0].ImageOffset = 22;
             ico.IconDirectory.Entries[0].Planes = 0;
@@ -210,7 +210,7 @@ namespace Moonglade.Web.SiteIconGenerator.IconEncoder
             for (var i = 0; i < indexedImage.Length; i++)
             {
                 var index = indexedImage[i];
-                var bitPosAnd = 128 >> (i % 8);
+                var bitPosAnd = 128 >> i % 8;
                 if (index != transparentIndex)
                     ico.IconImages[0].And[bytePosAnd] ^= (byte)bitPosAnd;
                 if (bitPosAnd != 1) continue;
@@ -241,7 +241,7 @@ namespace Moonglade.Web.SiteIconGenerator.IconEncoder
             {
                 return 4;
             }
-            return uniqueColorCount <= 256 ? (ushort)8 : (ushort)24;
+            return uniqueColorCount <= 256 ? 8 : 24;
         }
 
         private static Rgbquad[] BuildColorTable(Hashtable colors, ushort bpp)

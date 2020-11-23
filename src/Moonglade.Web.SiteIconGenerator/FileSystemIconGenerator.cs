@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using Moonglade.Web.SiteIconGenerator.IconEncoder;
+using SiteIconGenerator.IconEncoder;
 
-namespace Moonglade.Web.SiteIconGenerator
+namespace SiteIconGenerator
 {
     public class FileSystemIconGenerator : ISiteIconGenerator
     {

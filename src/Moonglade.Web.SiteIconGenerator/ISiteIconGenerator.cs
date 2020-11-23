@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Web.SiteIconGenerator
+﻿namespace SiteIconGenerator
 {
     public interface ISiteIconGenerator
     {

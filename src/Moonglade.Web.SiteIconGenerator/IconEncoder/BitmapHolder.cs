@@ -6,7 +6,7 @@
 
 using System.IO;
 
-namespace Moonglade.Web.SiteIconGenerator.IconEncoder
+namespace SiteIconGenerator.IconEncoder
 {
     /// <summary>
     /// Provides an in-memory representation of the device independent bitmap format

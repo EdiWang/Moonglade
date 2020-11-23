@@ -18,8 +18,8 @@ using Moonglade.Core;
 using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
-using Moonglade.Web.SiteIconGenerator;
 using NUglify;
+using SiteIconGenerator;
 
 namespace Moonglade.Web.Controllers
 {

@@ -22,8 +22,8 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
-using Moonglade.Web.SiteIconGenerator;
 using Polly;
+using SiteIconGenerator;
 
 namespace Moonglade.Web.Configuration
 {

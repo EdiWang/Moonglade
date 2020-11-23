@@ -11,7 +11,7 @@
 using System;
 using System.IO;
 
-namespace Moonglade.Web.SiteIconGenerator.IconEncoder
+namespace SiteIconGenerator.IconEncoder
 {
     public struct Iconimage
     {
