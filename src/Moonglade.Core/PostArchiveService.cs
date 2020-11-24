@@ -64,7 +64,12 @@ namespace Moonglade.Core
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-                LangCode = p.ContentLanguageCode
+                LangCode = p.ContentLanguageCode,
+                Tags = p.PostTag.Select(pt => new Tag
+                {
+                    NormalizedName = pt.Tag.NormalizedName,
+                    DisplayName = pt.Tag.DisplayName
+                })
             });
             return list;
         }
