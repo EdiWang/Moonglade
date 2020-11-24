@@ -24,7 +24,7 @@
         <tbody>
             <tr>
                 <td>@Localizer["System"]</td>
-                <td>@Environment.OSVersion.VersionString</td>
+                <td>@Utils.TryGetFullOSVersion()</td>
             </tr>
             <tr>
                 <td>@Localizer["Directory"]</td>

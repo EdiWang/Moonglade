@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Win32;
 
 namespace Moonglade.Core
 {
@@ -13,6 +15,31 @@ namespace Moonglade.Core
     {
         public static string AppVersion =>
             Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+        public static string TryGetFullOSVersion()
+        {
+            var osVer = Environment.OSVersion;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                try
+                {
+                    var currentVersion = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                    var name = currentVersion.GetValue("ProductName", "Microsoft Windows NT");
+                    var ubr = currentVersion.GetValue("UBR", string.Empty).ToString();
+                    if (!string.IsNullOrWhiteSpace(ubr))
+                    {
+                        return $"{name} {osVer.Version.Major}.{osVer.Version.Minor}.{osVer.Version.Build}.{ubr}";
+                    }
+                }
+                catch
+                {
+                    return osVer.VersionString;
+                }
+            }
+
+            return osVer.VersionString;
+        }
 
         public static async Task<string> GetThemeColorAsync(string webRootPath, string currentTheme)
         {

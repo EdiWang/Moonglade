@@ -16,7 +16,7 @@ namespace Moonglade.Web
         {
             var info = $"Moonglade Version {Utils.AppVersion}\n" +
                        $"Directory: {Environment.CurrentDirectory} \n" +
-                       $"OS: {Environment.OSVersion.VersionString} \n" +
+                       $"OS: {Utils.TryGetFullOSVersion()} \n" +
                        $"Machine Name: {Environment.MachineName} \n" +
                        $"User Name: {Environment.UserName}";
             Trace.WriteLine(info);
