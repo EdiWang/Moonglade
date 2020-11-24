@@ -55,10 +55,10 @@ namespace Moonglade.Web.Controllers
             if (tagResponse is null) return NotFound();
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
+            var posts = await _postService.GetByTagAsync(tagResponse.Id, pagesize, page);
+            var count = _cache.GetOrCreate(CacheDivision.General, "taglistcount", _ => _postService.CountByTag(tagResponse.Id));
 
             ViewBag.TitlePrefix = tagResponse.DisplayName;
-            var posts = await _postService.GetByTagAsync(tagResponse.Id, pagesize, page);
-
             return View(posts);
         }
 

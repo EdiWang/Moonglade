@@ -63,6 +63,7 @@ namespace Moonglade.Core
             _postCatRepo.Count(c => c.CategoryId == catId
                                           && c.Post.IsPublished
                                           && !c.Post.IsDeleted);
+        public int CountByTag(int tagId) => _postTagRepo.Count(p => p.TagId == tagId && p.Post.IsPublished && !p.Post.IsDeleted);
 
         public Task<Post> GetAsync(Guid id)
         {
