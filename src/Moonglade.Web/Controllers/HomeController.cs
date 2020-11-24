@@ -49,13 +49,15 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("tags/list/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> TagList(string normalizedName, [FromServices] TagService tagService)
+        public async Task<IActionResult> TagList([FromServices] TagService tagService, string normalizedName, int page = 1)
         {
             var tagResponse = tagService.Get(normalizedName);
             if (tagResponse is null) return NotFound();
 
+            var pagesize = _blogConfig.ContentSettings.PostListPageSize;
+
             ViewBag.TitlePrefix = tagResponse.DisplayName;
-            var posts = await _postService.GetByTagAsync(tagResponse.Id);
+            var posts = await _postService.GetByTagAsync(tagResponse.Id, pagesize, page);
 
             return View(posts);
         }
