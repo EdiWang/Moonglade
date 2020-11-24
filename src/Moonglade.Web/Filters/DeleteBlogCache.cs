@@ -3,22 +3,21 @@ using Moonglade.Caching;
 
 namespace Moonglade.Web.Filters
 {
-    public class DeleteBlogCacheDivision : ActionFilterAttribute
+    public class DeletePagingCountCache : ActionFilterAttribute
     {
         private readonly IBlogCache _cache;
 
-        private readonly CacheDivision _division;
-
-        public DeleteBlogCacheDivision(CacheDivision division, IBlogCache cache)
+        public DeletePagingCountCache(IBlogCache cache)
         {
-            _division = division;
             _cache = cache;
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
-            _cache.Remove(_division);
+            _cache.Remove(CacheDivision.General, "postcount");
+            _cache.Remove(CacheDivision.PostCountCategory);
+            _cache.Remove(CacheDivision.PostCountTag);
         }
     }
 

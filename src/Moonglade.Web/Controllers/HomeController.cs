@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
             var posts = await _postService.GetByTagAsync(tagResponse.Id, pagesize, page);
-            var count = _cache.GetOrCreate(CacheDivision.General, "taglistcount", _ => _postService.CountByTag(tagResponse.Id));
+            var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postService.CountByTag(tagResponse.Id));
 
             ViewBag.TitlePrefix = tagResponse.DisplayName;
 

@@ -136,8 +136,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("createoredit")]
         [ServiceFilter(typeof(DeleteSiteMapCache))]
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
-        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
+        [TypeFilter(typeof(DeletePagingCountCache))]
         public async Task<IActionResult> CreateOrEdit(PostEditViewModel model,
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
@@ -210,8 +209,7 @@ namespace Moonglade.Web.Controllers
 
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [ServiceFilter(typeof(DeleteSiteMapCache))]
-        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
-        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
+        [TypeFilter(typeof(DeletePagingCountCache))]
         [HttpPost("{postId:guid}/restore")]
         public async Task<IActionResult> Restore(Guid postId)
         {
@@ -227,8 +225,7 @@ namespace Moonglade.Web.Controllers
 
         [ServiceFilter(typeof(DeleteSubscriptionCache))]
         [ServiceFilter(typeof(DeleteSiteMapCache))]
-        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "postcount" })]
-        [TypeFilter(typeof(DeleteBlogCacheDivision), Arguments = new object[] { CacheDivision.PostCountCategory })]
+        [TypeFilter(typeof(DeletePagingCountCache))]
         [HttpDelete("{postId:guid}/recycle")]
         public async Task<IActionResult> Delete(Guid postId)
         {
