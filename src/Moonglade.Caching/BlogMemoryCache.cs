@@ -13,6 +13,7 @@ namespace Moonglade.Caching
         Post,
         Page,
         PostCountCategory,
+        PostCountTag,
         RssCategory
     }
 

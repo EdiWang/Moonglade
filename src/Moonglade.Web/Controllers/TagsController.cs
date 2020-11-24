@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
+using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers
 {
@@ -29,6 +30,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("update")]
+        [TypeFilter(typeof(DeletePagingCountCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(EditTagRequest request)
@@ -40,6 +42,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("{tagId}")]
+        [TypeFilter(typeof(DeletePagingCountCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int tagId)

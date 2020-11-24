@@ -63,6 +63,7 @@ namespace Moonglade.Core
             _postCatRepo.Count(c => c.CategoryId == catId
                                           && c.Post.IsPublished
                                           && !c.Post.IsDeleted);
+        public int CountByTag(int tagId) => _postTagRepo.Count(p => p.TagId == tagId && p.Post.IsPublished && !p.Post.IsDeleted);
 
         public Task<Post> GetAsync(Guid id)
         {
@@ -279,21 +280,37 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostListEntry>> GetByTagAsync(int tagId)
+        public Task<IReadOnlyList<PostListEntry>> GetByTagAsync(int tagId, int pageSize, int pageIndex)
         {
             if (tagId <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(tagId));
             }
 
-            var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId),
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize),
+                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
+            }
+            if (pageIndex < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageIndex),
+                    $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
+            }
+
+            var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex),
                 p => new PostListEntry
                 {
                     Title = p.Post.Title,
                     Slug = p.Post.Slug,
                     ContentAbstract = p.Post.ContentAbstract,
                     PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
-                    LangCode = p.Post.ContentLanguageCode
+                    LangCode = p.Post.ContentLanguageCode,
+                    Tags = p.Post.PostTag.Select(pt => new Tag
+                    {
+                        NormalizedName = pt.Tag.NormalizedName,
+                        DisplayName = pt.Tag.DisplayName
+                    })
                 });
 
             return posts;
