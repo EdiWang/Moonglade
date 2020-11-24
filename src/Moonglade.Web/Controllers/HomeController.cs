@@ -59,7 +59,9 @@ namespace Moonglade.Web.Controllers
             var count = _cache.GetOrCreate(CacheDivision.General, "taglistcount", _ => _postService.CountByTag(tagResponse.Id));
 
             ViewBag.TitlePrefix = tagResponse.DisplayName;
-            return View(posts);
+
+            var list = new StaticPagedList<PostListEntry>(posts, page, pagesize, count);
+            return View(list);
         }
 
         [Route("category/list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]

@@ -1,23 +1,19 @@
-﻿@model IReadOnlyList<Moonglade.Model.PostListEntry>
+﻿@model X.PagedList.StaticPagedList<Moonglade.Model.PostListEntry>
 
 <h3>
     @ViewBag.TitlePrefix
 </h3>
 <hr />
-@if (!Model.Any())
+
+@if (Model.Any())
 {
-    <div class="alert alert-warning">
-        @Localizer["No Posts"]
-    </div>
+    <partial name="_PostList" />
 }
 else
 {
-    foreach (var item in Model.OrderByDescending(s => s.PubDateUtc))
-    {
-        <partial name="_PostListEntry" model="item" />
-        <div class="mb-4 d-none d-md-block"></div>
-        <hr class="d-none d-md-block" />
-    }
+    <div class="alert alert-info">
+        @Localizer["No Posts."]
+    </div>
 }
 
 <partial name="_LightSwitch" />

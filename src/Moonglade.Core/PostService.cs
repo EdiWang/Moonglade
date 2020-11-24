@@ -305,7 +305,12 @@ namespace Moonglade.Core
                     Slug = p.Post.Slug,
                     ContentAbstract = p.Post.ContentAbstract,
                     PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
-                    LangCode = p.Post.ContentLanguageCode
+                    LangCode = p.Post.ContentLanguageCode,
+                    Tags = p.Post.PostTag.Select(pt => new Tag
+                    {
+                        NormalizedName = pt.Tag.NormalizedName,
+                        DisplayName = pt.Tag.DisplayName
+                    })
                 });
 
             return posts;
