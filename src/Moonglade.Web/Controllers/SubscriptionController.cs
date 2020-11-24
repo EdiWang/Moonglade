@@ -39,8 +39,8 @@ namespace Moonglade.Web.Controllers
                 CategoryInfo = catInfos,
                 HtmlUrl = $"{ResolveRootUrl(blogConfig)}/post",
                 XmlUrl = $"{ResolveRootUrl(blogConfig)}/rss",
-                CategoryXmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/rss/category/[catTitle]",
-                CategoryHtmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/category/list/[catTitle]"
+                CategoryXmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/rss/[catTitle]",
+                CategoryHtmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/category/[catTitle]"
             };
 
             var bytes = await opmlWriter.GetOpmlStreamDataAsync(oi);

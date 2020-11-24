@@ -64,7 +64,7 @@ namespace Moonglade.Web.Controllers
             return View(list);
         }
 
-        [Route("category/list/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [Route("category/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> CategoryList([FromServices] CategoryService categoryService, string routeName, int page = 1)
         {
             if (string.IsNullOrWhiteSpace(routeName)) return NotFound();

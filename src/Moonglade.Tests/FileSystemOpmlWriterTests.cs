@@ -25,8 +25,8 @@ namespace Moonglade.Tests
                 CategoryInfo = catInfos,
                 HtmlUrl = $"{siteRootUrl}/post",
                 XmlUrl = $"{siteRootUrl}/rss",
-                CategoryXmlUrlTemplate = $"{siteRootUrl}/rss/category/[catTitle]",
-                CategoryHtmlUrlTemplate = $"{siteRootUrl}/category/list/[catTitle]"
+                CategoryXmlUrlTemplate = $"{siteRootUrl}/rss/[catTitle]",
+                CategoryHtmlUrlTemplate = $"{siteRootUrl}/category/[catTitle]"
             };
 
             var writer = new MemoryStreamOpmlWriter();
