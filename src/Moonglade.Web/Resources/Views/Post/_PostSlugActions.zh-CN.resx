@@ -120,12 +120,6 @@
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
   </data>
-  <data name="Like" xml:space="preserve">
-    <value>点赞</value>
-  </data>
-  <data name="QR Code" xml:space="preserve">
-    <value>二维码</value>
-  </data>
   <data name="Scan QR Code on your phone" xml:space="preserve">
     <value>在手机上扫描二维码</value>
   </data>

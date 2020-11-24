@@ -5,20 +5,17 @@
 
 <hr />
 <div class="post-slug-actions clearfix mb-4">
-    <div class="float-right">
-        @if (!isDNT)
-        {
-            <button class="btn btn-round btn-outline-success btn-ratings">
-                <span class="icon-heart"></span>
-                @Localizer["Like"] (<span class="likehits-num"></span>)
-            </button>
-        }
+    @if (!isDNT)
+    {
+        <a href="javascript:;" class="btn-ratings text-muted d-inline-block mr-3">
+            <span class="icon-heart"></span>
+            <span class="likehits-num"></span>
+        </a>
+    }
 
-        <button class="btn btn-round btn-outline-secondary" data-toggle="modal" data-target="#qrcode-window">
-            <span class="icon-qrcode"></span>
-            @Localizer["QR Code"]
-        </button>
-    </div>
+    <a href="javascript:;" class="text-muted d-inline-block" data-toggle="modal" data-target="#qrcode-window">
+        <span class="icon-qrcode"></span>
+    </a>
 </div>
 
 <div class="modal fade" id="qrcode-window" tabindex="-1" role="dialog" aria-labelledby="qrcodewindowLabel" aria-hidden="true">

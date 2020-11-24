@@ -67,6 +67,10 @@ h1.post-title, .post-content h1 {
     font-size: 0.75rem;
 }
 
+.post-slug-actions {
+    font-size: 1rem;
+}
+
 .post-content a {
     border-bottom: 1px dashed var(--accent-color1);
 }
