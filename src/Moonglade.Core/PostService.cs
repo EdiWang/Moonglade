@@ -128,11 +128,6 @@ namespace Moonglade.Core
                 ContentLanguageCode = post.ContentLanguageCode
             });
 
-            if (postSlugModel is not null)
-            {
-                postSlugModel.RawPostContent = ContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
-            }
-
             return postSlugModel;
         }
 
@@ -207,11 +202,6 @@ namespace Moonglade.Core
                     ContentLanguageCode = post.ContentLanguageCode,
                     CommentCount = post.Comment.Count(c => c.IsApproved)
                 });
-
-                if (postSlugModel is not null)
-                {
-                    postSlugModel.RawPostContent = ContentProcessor.AddLazyLoadToImgTag(postSlugModel.RawPostContent);
-                }
 
                 return postSlugModel;
             });

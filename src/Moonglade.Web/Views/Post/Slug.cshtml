@@ -8,6 +8,7 @@
     ViewBag.ShowBloggerIntroInXS = true;
     ViewBag.BodyClass = "body-post-slug";
     var ec = Settings.Value.Editor;
+    var content = ContentProcessor.AddLazyLoadToImgTag(Model.RawPostContent);
 }
 
 @section keywords {
@@ -175,11 +176,11 @@
     <section class="post-content clearfix">
         @if (ec == EditorChoice.Markdown)
         {
-            @Html.Raw(ContentProcessor.MarkdownToContent(Model.RawPostContent, ContentProcessor.MarkdownConvertType.Html, false))
+            @Html.Raw(ContentProcessor.MarkdownToContent(content, ContentProcessor.MarkdownConvertType.Html, false))
         }
         else
         {
-            @Html.Raw(Model.RawPostContent)
+            @Html.Raw(content)
         }
     </section>
     @if (BlogConfig.ContentSettings.ShowPostFooter)
