@@ -28,7 +28,6 @@ namespace Moonglade.Core
         private readonly IRepository<PostEntity> _postRepo;
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
-        private readonly IRepository<CategoryEntity> _catRepo;
         private readonly IRepository<PostCategoryEntity> _postCatRepo;
 
         #endregion
@@ -39,7 +38,6 @@ namespace Moonglade.Core
             IRepository<PostEntity> postRepo,
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
-            IRepository<CategoryEntity> catRepo,
             IRepository<PostCategoryEntity> postCatRepo,
             IDateTimeResolver dateTimeResolver,
             IBlogAudit audit,
@@ -50,7 +48,6 @@ namespace Moonglade.Core
             _postRepo = postRepo;
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
-            _catRepo = catRepo;
             _postCatRepo = postCatRepo;
             _dateTimeResolver = dateTimeResolver;
             _audit = audit;
@@ -357,14 +354,11 @@ namespace Moonglade.Core
             {
                 foreach (var cid in request.CategoryIds)
                 {
-                    if (_catRepo.Any(c => c.Id == cid))
+                    post.PostCategory.Add(new()
                     {
-                        post.PostCategory.Add(new()
-                        {
-                            CategoryId = cid,
-                            PostId = post.Id
-                        });
-                    }
+                        CategoryId = cid,
+                        PostId = post.Id
+                    });
                 }
             }
 
@@ -487,14 +481,11 @@ namespace Moonglade.Core
             {
                 foreach (var cid in request.CategoryIds)
                 {
-                    if (_catRepo.Any(c => c.Id == cid))
+                    post.PostCategory.Add(new()
                     {
-                        post.PostCategory.Add(new()
-                        {
-                            PostId = post.Id,
-                            CategoryId = cid
-                        });
-                    }
+                        PostId = post.Id,
+                        CategoryId = cid
+                    });
                 }
             }
 
