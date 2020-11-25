@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("preview/{pageId}")]
+        [Route("preview/{pageId:guid}")]
         public async Task<IActionResult> Preview(Guid pageId)
         {
             var page = await _pageService.GetAsync(pageId);

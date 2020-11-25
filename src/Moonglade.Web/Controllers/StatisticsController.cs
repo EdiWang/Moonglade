@@ -20,7 +20,7 @@ namespace Moonglade.Web.Controllers
             _statistics = statistics;
         }
 
-        [HttpGet("{postId}")]
+        [HttpGet("{postId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get(Guid postId)
