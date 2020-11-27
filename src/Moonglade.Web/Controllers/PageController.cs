@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +22,6 @@ namespace Moonglade.Web.Controllers
         private readonly PageService _pageService;
         private readonly AppSettings _settings;
         private readonly ILogger<PageController> _logger;
-
-        private static IEnumerable<string> ReservedRouteNames =>
-            typeof(PageController)
-                .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
-                .Select(p => p.Name.ToLower());
 
         public PageController(
             IOptions<AppSettings> settings,
@@ -113,12 +105,6 @@ namespace Moonglade.Web.Controllers
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
-
-                if (ReservedRouteNames.Contains(model.Slug.ToLower()))
-                {
-                    ModelState.AddModelError(nameof(model.Slug), "Reserved Slug.");
-                    return Conflict(ModelState);
-                }
 
                 if (!string.IsNullOrWhiteSpace(model.CssContent))
                 {
