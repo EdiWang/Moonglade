@@ -20,34 +20,6 @@ namespace Moonglade.Tests.Web
             _loggerMock = new Mock<ILogger<ErrorController>>();
         }
 
-        [TestCase(404, ExpectedResult = 404)]
-        [TestCase(500, ExpectedResult = 500)]
-        public int KnownStatusCodes(int statusCode)
-        {
-            var ctl = new ErrorController(_loggerMock.Object)
-            {
-                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
-            };
-
-            var result = ctl.Error(statusCode);
-            Assert.IsInstanceOf(typeof(VirtualFileResult), result);
-            return ctl.ControllerContext.HttpContext.Response.StatusCode;
-        }
-
-        [TestCase(405, ExpectedResult = 405)]
-        [TestCase(429, ExpectedResult = 429)]
-        public int UnknownStatusCodes(int statusCode)
-        {
-            var ctl = new ErrorController(_loggerMock.Object)
-            {
-                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
-            };
-
-            var result = ctl.Error(statusCode);
-            Assert.IsInstanceOf(typeof(StatusCodeResult), result);
-            return ctl.ControllerContext.HttpContext.Response.StatusCode;
-        }
-
         [Test]
         public void ExceptionHandler()
         {
