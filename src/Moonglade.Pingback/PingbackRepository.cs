@@ -20,7 +20,7 @@ namespace Moonglade.Pingback
     {
         public async Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn)
         {
-            var slugInfo = GetSlugInfoFromPostUrl(url);
+            var (Slug, PubDate) = GetSlugInfoFromPostUrl(url);
             var sql = "SELECT p.Id, p.Title FROM Post p " +
                       "WHERE p.IsPublished = '1' " +
                       "AND p.IsDeleted = '0'" +
@@ -30,10 +30,10 @@ namespace Moonglade.Pingback
                       "AND DAY(p.PubDateUtc) = @day";
             var p = await conn.QueryFirstOrDefaultAsync<(Guid Id, string Title)>(sql, new
             {
-                slug = slugInfo.Slug,
-                year = slugInfo.PubDate.Year,
-                month = slugInfo.PubDate.Month,
-                day = slugInfo.PubDate.Day
+                slug = Slug,
+                year = PubDate.Year,
+                month = PubDate.Month,
+                day = PubDate.Day
             });
             return p;
         }

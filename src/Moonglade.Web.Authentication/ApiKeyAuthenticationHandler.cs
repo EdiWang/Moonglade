@@ -60,7 +60,7 @@ namespace Moonglade.Web.Authentication
                 var identity = new ClaimsIdentity(claims, Options.AuthenticationType);
                 var identities = new List<ClaimsIdentity> { identity };
                 var principal = new ClaimsPrincipal(identities);
-                var ticket = new AuthenticationTicket(principal, Options.Scheme);
+                var ticket = new AuthenticationTicket(principal, ApiKeyAuthenticationOptions.Scheme);
 
                 return await Task.FromResult(AuthenticateResult.Success(ticket));
             }

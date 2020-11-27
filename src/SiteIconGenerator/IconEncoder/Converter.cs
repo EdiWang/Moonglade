@@ -158,8 +158,7 @@ namespace SiteIconGenerator.IconEncoder
             // copy image data
             var bytePosXor = 0;
             var bytePosAnd = 0;
-            byte transparentIndex = 0;
-            transparentIndex = indexedImage[0];
+            byte transparentIndex = indexedImage[0];
             //initialize AND
             ico.IconImages[0].And[0] = byte.MaxValue;
 

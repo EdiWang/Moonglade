@@ -76,7 +76,7 @@ namespace Moonglade.ImageStorage.Providers
         {
             await using var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
             var buff = new byte[file.Length];
-            await file.ReadAsync(buff, 0, (int)file.Length);
+            await file.ReadAsync(buff.AsMemory(0, (int)file.Length));
             return buff;
         }
 
@@ -88,7 +88,7 @@ namespace Moonglade.ImageStorage.Providers
 
                 await using var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
                     4096, true);
-                await sourceStream.WriteAsync(imageBytes, 0, imageBytes.Length);
+                await sourceStream.WriteAsync(imageBytes.AsMemory(0, imageBytes.Length));
 
                 return fileName;
             }

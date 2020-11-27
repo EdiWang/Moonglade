@@ -13,7 +13,7 @@ namespace Moonglade.Pingback
         private readonly IPingSourceInspector _pingSourceInspector;
         private readonly IPingbackRepository _pingbackRepository;
 
-        private IDbConnection _dbConnection;
+        private readonly IDbConnection _dbConnection;
         private string _sourceUrl;
         private string _targetUrl;
 
@@ -57,15 +57,15 @@ namespace Moonglade.Pingback
                     return PingbackResponse.SpamDetectedFakeNotFound;
                 }
 
-                var postIdTitle = await _pingbackRepository.GetPostIdTitle(pingRequest.TargetUrl, _dbConnection);
-                if (postIdTitle.Id == Guid.Empty)
+                var (Id, Title) = await _pingbackRepository.GetPostIdTitle(pingRequest.TargetUrl, _dbConnection);
+                if (Id == Guid.Empty)
                 {
                     _logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
                     return PingbackResponse.Error32TargetUriNotExist;
                 }
-                _logger.LogInformation($"Post '{postIdTitle.Id}:{postIdTitle.Title}' is found for ping.");
+                _logger.LogInformation($"Post '{Id}:{Title}' is found for ping.");
 
-                var pinged = await _pingbackRepository.HasAlreadyBeenPinged(postIdTitle.Id, pingRequest.SourceUrl, ip, _dbConnection);
+                var pinged = await _pingbackRepository.HasAlreadyBeenPinged(Id, pingRequest.SourceUrl, ip, _dbConnection);
                 if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
                 _logger.LogInformation("Adding received pingback...");
@@ -78,8 +78,8 @@ namespace Moonglade.Pingback
                     Domain = uri.Host,
                     SourceUrl = _sourceUrl,
                     SourceTitle = pingRequest.Title,
-                    TargetPostId = postIdTitle.Id,
-                    TargetPostTitle = postIdTitle.Title,
+                    TargetPostId = Id,
+                    TargetPostTitle = Title,
                     SourceIp = ip
                 };
 

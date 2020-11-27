@@ -45,69 +45,9 @@ namespace Moonglade.Core
                 : RemoveTagsBackup(html);
         }
 
-        public static string RemoveTagsBackup(string html)
-        {
-            var result = new char[html.Length];
-
-            var cursor = 0;
-            var inside = false;
-            foreach (var current in html)
-            {
-                switch (current)
-                {
-                    case '<':
-                        inside = true;
-                        continue;
-                    case '>':
-                        inside = false;
-                        continue;
-                }
-
-                if (!inside)
-                {
-                    result[cursor++] = current;
-                }
-            }
-
-            var stringResult = new string(result, 0, cursor);
-
-            return stringResult.Replace("&nbsp;", " ");
-        }
-
         public static string Ellipsize(this string text, int characterCount)
         {
             return text.Ellipsize(characterCount, "\u00A0\u2026");
-        }
-
-        public static string Ellipsize(this string text, int characterCount, string ellipsis, bool wordBoundary = false)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                return "";
-
-            if (characterCount < 0 || text.Length <= characterCount)
-                return text;
-
-            // search beginning of word
-            var backup = characterCount;
-            while (characterCount > 0 && text[characterCount - 1].IsLetter())
-            {
-                characterCount--;
-            }
-
-            // search previous word
-            while (characterCount > 0 && text[characterCount - 1].IsSpace())
-            {
-                characterCount--;
-            }
-
-            // if it was the last word, recover it, unless boundary is requested
-            if (characterCount == 0 && !wordBoundary)
-            {
-                characterCount = backup;
-            }
-
-            var trimmed = text.Substring(0, characterCount);
-            return trimmed + ellipsis;
         }
 
         public static bool IsLetter(this char c) => c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
@@ -142,5 +82,69 @@ namespace Moonglade.Core
             Html = 1,
             Text = 2
         }
+
+        #region Private Methods
+
+        private static string RemoveTagsBackup(string html)
+        {
+            var result = new char[html.Length];
+
+            var cursor = 0;
+            var inside = false;
+            foreach (var current in html)
+            {
+                switch (current)
+                {
+                    case '<':
+                        inside = true;
+                        continue;
+                    case '>':
+                        inside = false;
+                        continue;
+                }
+
+                if (!inside)
+                {
+                    result[cursor++] = current;
+                }
+            }
+
+            var stringResult = new string(result, 0, cursor);
+
+            return stringResult.Replace("&nbsp;", " ");
+        }
+
+        private static string Ellipsize(this string text, int characterCount, string ellipsis, bool wordBoundary = false)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return "";
+
+            if (characterCount < 0 || text.Length <= characterCount)
+                return text;
+
+            // search beginning of word
+            var backup = characterCount;
+            while (characterCount > 0 && text[characterCount - 1].IsLetter())
+            {
+                characterCount--;
+            }
+
+            // search previous word
+            while (characterCount > 0 && text[characterCount - 1].IsSpace())
+            {
+                characterCount--;
+            }
+
+            // if it was the last word, recover it, unless boundary is requested
+            if (characterCount == 0 && !wordBoundary)
+            {
+                characterCount = backup;
+            }
+
+            var trimmed = text.Substring(0, characterCount);
+            return trimmed + ellipsis;
+        }
+
+        #endregion
     }
 }
