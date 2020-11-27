@@ -50,12 +50,6 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/errorpages-bundle.css",
-    "inputFiles": [
-      "wwwroot/css/src/errorpages.css"
-    ]
-  },
-  {
     "outputFileName": "wwwroot/css/mooglade-admin-bundle.css",
     "inputFiles": [
       "wwwroot/css/3rd/bootstrap-tagsinput.css",
