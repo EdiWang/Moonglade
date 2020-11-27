@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +11,6 @@ namespace Moonglade.Web.Controllers
     {
         protected readonly ILogger<ErrorController> Logger;
 
-        private static readonly int[] HandledHttpResponseCodes = { 404, 500 };
-
         public ErrorController(ILogger<ErrorController> logger)
         {
             if (logger is not null) Logger = logger;
@@ -22,22 +19,9 @@ namespace Moonglade.Web.Controllers
         [Route("/error")]
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error(int? statusCode = null)
+        public IActionResult Error()
         {
             var requestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-
-            if (statusCode.HasValue)
-            {
-                HttpContext.Response.StatusCode = statusCode.Value;
-
-                if (HandledHttpResponseCodes.Contains(statusCode.Value))
-                {
-                    return File($"~/errorpages/{statusCode}.html", "text/html");
-                }
-
-                return StatusCode(statusCode.Value);
-            }
-
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             if (exceptionFeature is not null)
             {

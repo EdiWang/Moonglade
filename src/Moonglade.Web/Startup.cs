@@ -139,7 +139,7 @@ namespace Moonglade.Web
                 app.UseHttpsRedirection();
                 app.UseHsts();
                 app.UseExceptionHandler("/error");
-                app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
+                app.UseStatusCodePages();
             }
 
             app.UseRequestLocalization(new RequestLocalizationOptions
