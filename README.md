@@ -20,7 +20,7 @@ This diagram shows a recommended full feature Azure deployment for Moonglade. It
 
 ### 🐋 Quick Deploy on Azure with/out Docker 
 
-Follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure-with-out-Docker)
+Follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
 
 ### 🐧 Quick Deploy on Linux
 
