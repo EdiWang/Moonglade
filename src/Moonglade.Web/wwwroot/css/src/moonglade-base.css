@@ -108,8 +108,9 @@ label {
 .box {
     background-color: var(--white);
     border: 1px solid var(--gray-2);
-    padding: 1.65rem;
+    padding: 1.8rem;
     box-shadow: 0 1.6px 3.6px 0 var(--transparent-dark-3),0 .3px .9px 0 var(--transparent-dark-1);
+    border-radius: 3px;
 }
 
 .font-sairas {
