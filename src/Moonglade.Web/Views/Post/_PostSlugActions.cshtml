@@ -5,19 +5,22 @@
 
 <hr />
 <div class="post-slug-actions clearfix mb-4">
-    <div class="float-right">
-        @if (!isDNT)
-        {
-            <a href="javascript:;" class="btn-ratings text-muted d-inline-block mr-3">
-                <span class="icon-heart"></span>
-                <span class="likehits-num"></span>
-            </a>
-        }
+    @if (null == ViewBag.IsDraftPreview)
+    {
+        <div class="float-right">
+            @if (!isDNT)
+            {
+                <a href="javascript:;" class="btn-ratings text-muted d-inline-block mr-3">
+                    <span class="icon-heart"></span>
+                    <span class="likehits-num"></span>
+                </a>
+            }
 
-        <a href="javascript:;" class="text-muted d-inline-block" data-toggle="modal" data-target="#qrcode-window">
-            <span class="icon-qrcode"></span>
-        </a>
-    </div>
+            <a href="javascript:;" class="text-muted d-inline-block" data-toggle="modal" data-target="#qrcode-window">
+                <span class="icon-qrcode"></span>
+            </a>
+        </div>
+    }
     <div class="hidden-print">
         <section class="post-cat-tag-info">
             <ul class="d-flex flex-row list-unstyled ul-cat-list-desktop mb-0">

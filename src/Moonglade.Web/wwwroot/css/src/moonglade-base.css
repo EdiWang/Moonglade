@@ -368,3 +368,7 @@ label {
     display: block;
     transform: translate(0, 50%);
 }
+
+.font-125rem {
+    font-size: 1.25rem;
+}

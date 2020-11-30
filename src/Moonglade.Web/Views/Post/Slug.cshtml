@@ -151,25 +151,8 @@
             @Html.Raw(BlogConfig.ContentSettings.PostFooterHtmlPitch)
         </section>
     }
-    @if (null == ViewBag.IsDraftPreview)
-    {
-        <partial name="_PostSlugActions" />
-    }
 
-    <div class="tag-mobile d-block d-sm-none">
-        <hr />
-        @if (Model.Tags.Length > 0)
-        {
-            <span class="toptags-list toptags-list-sm">
-                @foreach (var item in Model.Tags)
-                {
-                    <a asp-controller="Home"
-                       asp-action="TagList"
-                       asp-route-normalizedName="@item.NormalizedName">@item.DisplayName</a>
-                }
-            </span>
-        }
-    </div>
+    <partial name="_PostSlugActions" />
 </article>
 
 @if (null == ViewBag.IsDraftPreview)
