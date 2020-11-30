@@ -15,7 +15,7 @@ param(
 )
 
 # Start script
-$rndNumber = Get-Random -Minimum -1000 -Maximum 1000
+$rndNumber = Get-Random -Minimum 100 -Maximum 999
 $rsgName = "moongladersg$rndNumber"
 $webAppName = "moongladeweb$rndNumber"
 $aspName = "moongladeplan$rndNumber"
