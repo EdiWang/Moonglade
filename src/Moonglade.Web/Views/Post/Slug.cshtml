@@ -111,7 +111,6 @@
         <h1 class="post-title">
             @Model.Title
         </h1>
-        <hr class="d-none d-md-block post-header-hr" />
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info post-publish-info-mobile bg-light">
@@ -119,59 +118,22 @@
                     @DateTimeResolver.ToTimeZone(Model.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")
                 </time>
                 <span>
-                    | @BlogConfig.GeneralSettings.TimeZoneId
+                    @BlogConfig.GeneralSettings.TimeZoneId
                 </span>
             </div>
         </div>
 
-        <div class="d-none d-md-block post-publish-info mb-2">
-            <strong class="text-muted">
-                <time datetime="@Model.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PubDateUtc">@DateTimeResolver.ToTimeZone(Model.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")</time>
-                @if (Model.LastModifyOnUtc.HasValue)
-                {
-                    <span>(@Localizer["Edit on"] @DateTimeResolver.ToTimeZone(Model.LastModifyOnUtc.Value).ToString("MM/dd/yyyy HH:mm"))</span>
-                }
-                | @BlogConfig.GeneralSettings.TimeZoneId
-            </strong>
-            <span class="text-muted float-right post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
+        <div class="d-none d-md-block post-publish-info text-muted mb-2">
+            📅
+            <time datetime="@Model.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PubDateUtc">
+                @DateTimeResolver.ToTimeZone(Model.PubDateUtc.GetValueOrDefault()).ToLongDateString()
+            </time>
+            @BlogConfig.GeneralSettings.TimeZoneId
+            -
+            <span class="post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
         </div>
 
-        <div class="hidden-print">
-            <section class="post-cat-tag-info">
-                <div class="float-right d-none d-md-block">
-                    @if (Model.Tags.Length > 0)
-                    {
-                        <span class="toptags-list">
-                            @foreach (var item in Model.Tags)
-                            {
-                                <a asp-controller="Home"
-                                   asp-action="TagList"
-                                   asp-route-normalizedName="@item.NormalizedName" class="text-white">@item.DisplayName</a>
-                            }
-                        </span>
-                    }
-                </div>
-                @if (Model.Categories.Length > 0)
-                {
-                    <ul class="d-flex flex-row list-unstyled ul-cat-list-desktop mb-0">
-                        @foreach (var item in Model.Categories)
-                        {
-                            <li>
-                                <a class="btn btn-sm btn-outline-success"
-                                   asp-controller="Home"
-                                   asp-action="CategoryList"
-                                   asp-route-routeName="@item.RouteName.ToLower()">
-                                    <span class="icon-folder" aria-hidden="true"></span>
-                                    @item.DisplayName
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                }
-            </section>
-        </div>
-
-        <hr class="post-header-hr" />
+        <hr class="d-none d-md-block" />
     </header>
     <section class="post-content clearfix">
         @if (ec == EditorChoice.Markdown)
