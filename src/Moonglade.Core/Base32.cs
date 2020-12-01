@@ -90,6 +90,16 @@ namespace Moonglade.Core
             return result;
         }
 
+        public static string ToBase32String(this string data)
+        {
+            return ToBase32String(Encoding.UTF8.GetBytes(data), 0, data.Length);
+        }
+
+        public static string ToBase32String(this byte[] data)
+        {
+            return ToBase32String(data, 0, data.Length);
+        }
+
         public static string ToBase32String(byte[] data, bool padOutput = false)
         {
             return ToBase32String(data, 0, data.Length, padOutput);
