@@ -46,8 +46,7 @@ $password += Get-RandomCharacters -length 1 -characters '1234567890'
 $password += Get-RandomCharacters -length 1 -characters '!$%&@#'
 $password = Scramble-String $password
 
-$sqlServerPassword = $password
-Write-Host "SQL Server Password: $sqlServerPassword" -ForegroundColor Yellow
+$sqlServerPassword = "m$password"
 
 function Check-Command($cmdname) {
     return [bool](Get-Command -Name $cmdname -ErrorAction SilentlyContinue)
@@ -178,6 +177,7 @@ $sqlDbExists = $sqlDbCheck.Length -gt 0
 if (!$sqlDbExists) {
     Write-Host "Creating SQL Database"
     az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0 --backup-storage-redundancy Local
+    Write-Host "SQL Server Password: $sqlServerPassword" -ForegroundColor Yellow
 }
 
 # Configuration Update
