@@ -1,7 +1,6 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
-@using Microsoft.AspNetCore.Http
 @model AccountManageViewModel
 @{
     var currentUidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
