@@ -56,7 +56,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.DataPorting", "Mo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{F2B7F09C-55B8-4A24-9CCB-9883C0B72DF1}"
 	ProjectSection(SolutionItems) = preProject
-		..\Deployment\AzureAppServiceDeploy.ps1 = ..\Deployment\AzureAppServiceDeploy.ps1
+		..\Deployment\AzureQuickDeploy.ps1 = ..\Deployment\AzureQuickDeploy.ps1
 		..\Deployment\install.sh = ..\Deployment\install.sh
 		..\Deployment\uninstall.sh = ..\Deployment\uninstall.sh
 	EndProjectSection

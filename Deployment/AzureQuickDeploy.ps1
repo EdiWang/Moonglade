@@ -25,6 +25,7 @@ $sqlServerUsername = "moonglade"
 $sqlServerName = "moongladesql$rndNumber"
 $sqlDatabaseName = "moongladedb$rndNumber"
 $cdnProfileName = "moongladecdn$rndNumber"
+$cdnEndpointName = "moongladecep$rndNumber"
 
 function Get-RandomCharacters($length, $characters) {
     $random = 1..$length | ForEach-Object { Get-Random -Maximum $characters.length }
@@ -52,8 +53,7 @@ function Check-Command($cmdname) {
 }
 
 if (Check-Command -cmdname 'az') {
-    Write-Host "Azure CLI is found on your machine. If something blow up, please check update for Azure CLI." -ForegroundColor Yellow
-    az --version
+    Write-Host "Azure CLI is found..."
 }
 else {
     Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'
@@ -62,15 +62,16 @@ else {
 }
 
 # Confirmation
-Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continue."
+Write-Host ""
+Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continue." -ForegroundColor Green
 if ($useLinuxPlanWithDocker) {
-    Write-Host "+ Linux App Service Plan with Docker"
+    Write-Host "+ Linux App Service Plan with Docker" -ForegroundColor Cyan
 }
 if ($createCDN) {
-    Write-Host "+ CDN (Require manual configuration)"
+    Write-Host "+ CDN (10 minutes to propagate)" -ForegroundColor Cyan
 }
 
-Read-Host -Prompt "Press [ENTER] to continue"
+Read-Host -Prompt "Press [ENTER] to continue, [CTRL + C] to cancel"
 
 # Select Subscription
 az account set --subscription $subscriptionName
@@ -159,7 +160,7 @@ $sqlDbCheck = az sql db list --resource-group $rsgName --server $sqlServerName -
 $sqlDbExists = $sqlDbCheck.Length -gt 0
 if (!$sqlDbExists) {
     Write-Host "Creating SQL Database"
-    az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0
+    az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0 -z
 }
 
 if ($createCDN) {
@@ -172,10 +173,9 @@ if ($createCDN) {
         Write-Host "Creating CDN Profile"
         az cdn profile create --name $cdnProfileName --resource-group $rsgName --location $regionName --sku Standard_Microsoft
 
-        # Write-Host "Creating CDN Endpoint"
-        # $storageUrl = az storage blob url --connection-string $storageConn --container-name $storageContainerName --name "dummy"
-        # $storageOrigion = $storageUrl.Replace("https://", "").Replace("/$storageContainerName/dummy", "");
-        # az cdn endpoint create -g $rsgName -n endpoint --profile-name $cdnProfileName --origin-host-header $storageOrigion --enable-compression
+        Write-Host "Creating CDN Endpoint"
+        $storageOrigion = "$storageAccountName.blob.core.windows.net"
+        az cdn endpoint create -g $rsgName -n $cdnEndpointName --profile-name $cdnProfileName --origin $storageOrigion --origin-host-header $storageOrigion --enable-compression
     }
 }
 
@@ -189,17 +189,29 @@ $sqlConnStr = $sqlConnStrTemplate.Replace("<username>", $sqlServerUsername).Repl
 az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --settings MoongladeDatabase=$sqlConnStr
 
 Write-Host "Adding Blob Storage Connection String"
+$scon = $storageConn.connectionString
 if ($useLinuxPlanWithDocker) {
-    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$storageConn
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName
 }
 else {
-    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ConnectionString=$storageConn
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:Provider=azurestorage
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ConnectionString=$scon
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ContainerName=$storageContainerName
 }
 
 if ($createCDN) {
-    Write-Host "Due to Edi doen't know how to associate CDN Endpoint to Blob Storage in Azure CLI, pleae go to Azure Portal and create a CDN Endpoint yourself..." -ForegroundColor Green
+    if ($useLinuxPlanWithDocker){
+        az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__CDNSettings__EnableCDNRedirect=true
+        az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__CDNSettings__CDNEndpoint="https://$cdnEndpointName.azureedge.net/$storageContainerName"
+    }
+    else{
+        az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:CDNSettings:EnableCDNRedirect=true
+        az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:CDNSettings:CDNEndpoint="https://$cdnEndpointName.azureedge.net/$storageContainerName"
+    }
+    
+    Write-Host "It can take up to 10 minutes for endpoint '$cdnEndpointName.azureedge.net' settings to propagate." -ForegroundColor Yellow
 }
 
 if ($useLinuxPlanWithDocker) {
