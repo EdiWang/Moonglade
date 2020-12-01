@@ -142,6 +142,22 @@ if (!$storageContainerExists.exists) {
     az storage container create --name $storageContainerName --connection-string $storageConn.connectionString --public-access container
 }
 
+if ($createCDN) {
+    # CDN
+    Write-Host ""
+    Write-Host "Preparing CDN" -ForegroundColor Green
+    $cdnProfileCheck = az cdn profile list -g $rsgName --query "[?name=='$cdnProfileName']" | ConvertFrom-Json
+    $cdnProfileExists = $cdnProfileCheck.Length -gt 0
+    if (!$cdnProfileExists) {
+        Write-Host "Creating CDN Profile"
+        az cdn profile create --name $cdnProfileName --resource-group $rsgName --location $regionName --sku Standard_Microsoft
+
+        Write-Host "Creating CDN Endpoint"
+        $storageOrigion = "$storageAccountName.blob.core.windows.net"
+        az cdn endpoint create -g $rsgName -n $cdnEndpointName --profile-name $cdnProfileName --origin $storageOrigion --origin-host-header $storageOrigion --enable-compression
+    }
+}
+
 # Azure SQL
 Write-Host ""
 Write-Host "Preparing Azure SQL" -ForegroundColor Green
@@ -161,22 +177,6 @@ $sqlDbExists = $sqlDbCheck.Length -gt 0
 if (!$sqlDbExists) {
     Write-Host "Creating SQL Database"
     az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0 -z
-}
-
-if ($createCDN) {
-    # CDN
-    Write-Host ""
-    Write-Host "Preparing CDN" -ForegroundColor Green
-    $cdnProfileCheck = az cdn profile list -g $rsgName --query "[?name=='$cdnProfileName']" | ConvertFrom-Json
-    $cdnProfileExists = $cdnProfileCheck.Length -gt 0
-    if (!$cdnProfileExists) {
-        Write-Host "Creating CDN Profile"
-        az cdn profile create --name $cdnProfileName --resource-group $rsgName --location $regionName --sku Standard_Microsoft
-
-        Write-Host "Creating CDN Endpoint"
-        $storageOrigion = "$storageAccountName.blob.core.windows.net"
-        az cdn endpoint create -g $rsgName -n $cdnEndpointName --profile-name $cdnProfileName --origin $storageOrigion --origin-host-header $storageOrigion --enable-compression
-    }
 }
 
 # Configuration Update
