@@ -133,7 +133,14 @@ namespace Moonglade.Core
             // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
 
             const string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
-            return Regex.IsMatch(tagDisplayName, pattern);
+            var isEng = Regex.IsMatch(tagDisplayName, pattern);
+            if (isEng) return true;
+
+            // https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions#supported-named-blocks
+            const string chsPattern = @"\p{IsCJKUnifiedIdeographs}";
+            var isChs = Regex.IsMatch(tagDisplayName, chsPattern);
+
+            return isChs;
         }
     }
 }
