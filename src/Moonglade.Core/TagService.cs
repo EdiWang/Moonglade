@@ -107,7 +107,7 @@ namespace Moonglade.Core
 
         public static string NormalizeTagName(string orgTagName, TagNormalization[] normalizations)
         {
-            var isEnglishName = Regex.IsMatch(orgTagName, "^(?!-)([a-zA-Z0-9]+)$");
+            var isEnglishName = Regex.IsMatch(orgTagName, @"^[a-zA-Z 0-9\.\-\+\#\s]*$");
             if (isEnglishName)
             {
                 var result = new StringBuilder(orgTagName);
