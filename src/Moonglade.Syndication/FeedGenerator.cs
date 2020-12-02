@@ -20,60 +20,16 @@ namespace Moonglade.Syndication
         #region Properties
 
         public IEnumerable<FeedEntry> FeedItemCollection { get; set; }
-
         public int MaxContentLength { get; set; }
-
         public string HostUrl { get; set; }
-
         public string HeadTitle { get; set; }
-
         public string HeadDescription { get; set; }
-
         public string Copyright { get; set; }
-
         public string Generator { get; set; }
-
         public string TrackBackUrl { get; set; }
-
         public string GeneratorVersion { get; set; }
 
         #endregion
-
-        private static IEnumerable<SyndicationItem> GetItemCollection(IEnumerable<FeedEntry> itemCollection)
-        {
-            var synItemCollection = new List<SyndicationItem>();
-            foreach (var item in itemCollection)
-            {
-                // create rss item
-                var sItem = new SyndicationItem
-                {
-                    Id = item.Id,
-                    Title = item.Title,
-                    Description = item.Description,
-                    LastUpdated = item.PubDateUtc.ToUniversalTime(),
-                    Published = item.PubDateUtc.ToUniversalTime()
-                };
-
-                sItem.AddLink(new SyndicationLink(new Uri(item.Link)));
-
-                // add author
-                if (!string.IsNullOrWhiteSpace(item.Author) && !string.IsNullOrWhiteSpace(item.AuthorEmail))
-                {
-                    sItem.AddContributor(new SyndicationPerson(item.Author, item.AuthorEmail));
-                }
-
-                // add categories
-                if (item.Categories is not null and { Length: > 0 })
-                {
-                    foreach (var itemCategory in item.Categories)
-                    {
-                        sItem.AddCategory(new SyndicationCategory(itemCategory));
-                    }
-                }
-                synItemCollection.Add(sItem);
-            }
-            return synItemCollection;
-        }
 
         public async Task WriteRssStreamAsync(Stream stream)
         {
@@ -128,6 +84,42 @@ namespace Moonglade.Syndication
 
             await xmlWriter.FlushAsync();
             xmlWriter.Close();
+        }
+
+        private static IEnumerable<SyndicationItem> GetItemCollection(IEnumerable<FeedEntry> itemCollection)
+        {
+            var synItemCollection = new List<SyndicationItem>();
+            foreach (var item in itemCollection)
+            {
+                // create rss item
+                var sItem = new SyndicationItem
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    LastUpdated = item.PubDateUtc.ToUniversalTime(),
+                    Published = item.PubDateUtc.ToUniversalTime()
+                };
+
+                sItem.AddLink(new SyndicationLink(new Uri(item.Link)));
+
+                // add author
+                if (!string.IsNullOrWhiteSpace(item.Author) && !string.IsNullOrWhiteSpace(item.AuthorEmail))
+                {
+                    sItem.AddContributor(new SyndicationPerson(item.Author, item.AuthorEmail));
+                }
+
+                // add categories
+                if (item.Categories is not null and { Length: > 0 })
+                {
+                    foreach (var itemCategory in item.Categories)
+                    {
+                        sItem.AddCategory(new SyndicationCategory(itemCategory));
+                    }
+                }
+                synItemCollection.Add(sItem);
+            }
+            return synItemCollection;
         }
     }
 }
