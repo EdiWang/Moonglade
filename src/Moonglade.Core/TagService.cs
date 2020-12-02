@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -106,12 +107,22 @@ namespace Moonglade.Core
 
         public static string NormalizeTagName(string orgTagName, TagNormalization[] normalizations)
         {
-            var result = new StringBuilder(orgTagName);
-            foreach (var item in normalizations)
+            var isEnglishName = Regex.IsMatch(orgTagName, @"^[a-zA-Z 0-9\.\-\+\#\s]*$");
+            if (isEnglishName)
             {
-                result.Replace(item.Source, item.Target);
+                var result = new StringBuilder(orgTagName);
+                foreach (var item in normalizations)
+                {
+                    result.Replace(item.Source, item.Target);
+                }
+                return result.ToString().ToLower();
             }
-            return result.ToString().ToLower();
+
+            byte[] bytes = Encoding.Unicode.GetBytes(orgTagName);
+            var hexArray = bytes.Select(b => string.Format("{0:x2}", b));
+            var hexName = string.Join('-', hexArray);
+
+            return hexName;
         }
 
         public static bool ValidateTagName(string tagDisplayName)
@@ -122,7 +133,14 @@ namespace Moonglade.Core
             // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
 
             const string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
-            return Regex.IsMatch(tagDisplayName, pattern);
+            var isEng = Regex.IsMatch(tagDisplayName, pattern);
+            if (isEng) return true;
+
+            // https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions#supported-named-blocks
+            const string chsPattern = @"\p{IsCJKUnifiedIdeographs}";
+            var isChs = Regex.IsMatch(tagDisplayName, chsPattern);
+
+            return isChs;
         }
     }
 }

@@ -249,14 +249,6 @@ var postEditor = {
             trimValue: true
         });
 
-        $('#Tags').on('beforeItemAdd', function (event) {
-            if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
-                console.warn(`Invalid tag name: ${event.item}`);
-                toastr.warning(`Invalid tag name: ${event.item}`);
-                event.cancel = true;
-            }
-        });
-
         $('#btn-preview').click(function (e) {
             if ($('form').valid()) {
                 submitForm(e);

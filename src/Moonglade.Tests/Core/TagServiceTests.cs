@@ -12,7 +12,7 @@ namespace Moonglade.Tests.Core
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
         [TestCase("C#", ExpectedResult = "csharp")]
         [TestCase("955", ExpectedResult = "955")]
-        public string NormalizeTagName(string str)
+        public string NormalizeTagNameEnglish(string str)
         {
             var dic = new TagNormalization[]
             {
@@ -21,6 +21,13 @@ namespace Moonglade.Tests.Core
                 new TagNormalization { Source = ".", Target = "dot" }
             };
 
+            return TagService.NormalizeTagName(str, dic);
+        }
+
+        [TestCase("福报", ExpectedResult = "8f-79-a5-62")]
+        public string NormalizeTagNameNonEnglish(string str)
+        {
+            var dic = System.Array.Empty<TagNormalization>();
             return TagService.NormalizeTagName(str, dic);
         }
 
