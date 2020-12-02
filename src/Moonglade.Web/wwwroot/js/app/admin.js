@@ -249,19 +249,6 @@ var postEditor = {
             trimValue: true
         });
 
-        $('#Tags').on('beforeItemAdd', function (event) {
-
-            // Test English with allowed characters
-            if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
-
-                // Test for Chinese
-                if (!/(\p{Script=Hani})+/gu.test(event.item)) {
-                    toastr.warning(`Invalid tag name: ${event.item}`);
-                    event.cancel = true;
-                }
-            }
-        });
-
         $('#btn-preview').click(function (e) {
             if ($('form').valid()) {
                 submitForm(e);
