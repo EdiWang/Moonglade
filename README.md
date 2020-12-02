@@ -1,26 +1,26 @@
 # 🌕 Moonglade
 
-[![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master) ![Docker Build and Push](https://github.com/EdiWang/Moonglade/workflows/Docker%20Build%20and%20Push/badge.svg)
+[![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master) ![Docker Build and Push](https://github.com/EdiWang/Moonglade/workflows/Docker%20Build%20and%20Push/badge.svg) ![.NET Build Linux](https://github.com/EdiWang/Moonglade/workflows/.NET%20Build%20Linux/badge.svg)
 
-The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enabling most common blogging features including Posts, Comments, Categories, Archive, Tags, Pages and Friendlink.
+The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enabling most common blogging features including posts, comments, categories, archive, tags and pages.
 
 ## 📦 Deployment
+
+> It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
 
 ### ☁ Full Deploy on Azure (Recommend)
 
 This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure with only ~$300 USD/month.
 
-It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
-
-This diagram shows a recommended full feature Azure deployment for Moonglade. It doesn't come out of the box. Although the `./Deployment/AzureAppServiceDeploy.ps1` can cover a part of it, you have to manually setup every other piece of it. 
+This diagram shows a full Azure deployment for Moonglade for reference.
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-visio.png)
 
-### 🐋 Quick Deploy on Azure with/out Docker 
+### 🐋 Quick Deploy on Azure with Docker 
 
-Follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
+Use automated deployment script to get your Moonglade up and running in 10 minutes, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
 
-### 🐧 Quick Deploy on Linux
+### 🐧 Quick Deploy on Linux without Docker
 
 To quickly get it running on a new Linux machine without Docker, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Install-on-Linux-Machine).
 
@@ -28,23 +28,18 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 
 Tools | Alternative
 --- | ---
-[.NET 5.0 SDK](http://dot.net) | N/A
-[Visual Studio 2019](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/)
-[SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) / LocalDB | N/A
+[Visual Studio 2019 v16.8+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 5.0 SDK](http://dot.net)
+[SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) | [SQL Server LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809)
 
 ### 💾 Setup Database
 
-Create an [SQL Server 2019 LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809) database. e.g. ```moonglade```
+Create a SQL Server 2019 or LocalDB database. e.g. ```moonglade```
 
-Update the `MoongladeDatabase` with your database connection string in `appsettings.Development.json` or set environment variable: `ConnectionStrings__MoongladeDatabase` to your connection string. 
-
-Example
+Update the `MoongladeDatabase` with your database connection string in `appsettings.Development.json`
 
 ```json
 "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
 ```
-
-*For Azure App Service, you can set the connection string in the Configuration blade.*
 
 ### 🔨 Build Source
 
