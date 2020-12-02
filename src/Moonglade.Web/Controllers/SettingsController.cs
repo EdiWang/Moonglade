@@ -311,12 +311,12 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("friendlink")]
-        public async Task<IActionResult> FriendLink(FriendLinkSettingsViewModel model)
+        public async Task<IActionResult> FriendLink(FriendLinkSettingsViewModelWrap model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            //if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var fs = _blogConfig.FriendLinksSettings;
-            fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
+            fs.ShowFriendLinksSection = model.FriendLinkSettingsViewModel.ShowFriendLinksSection;
 
             await _blogConfig.SaveConfigurationAsync(fs);
             _blogConfig.RequireRefresh();
