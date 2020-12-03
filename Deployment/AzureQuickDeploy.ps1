@@ -63,7 +63,6 @@ else {
 
 # Confirmation
 Clear-Host
-Write-Host ""
 Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continue." -ForegroundColor Green
 if ($useLinuxPlanWithDocker) {
     Write-Host "+ Linux App Service Plan with Docker" -ForegroundColor Cyan
@@ -79,16 +78,14 @@ $echo = az account set --subscription $subscriptionName
 Write-Host "Selected Azure Subscription: " $subscriptionName -ForegroundColor Cyan
 
 # Resource Group
-Write-Host "Preparing Resource Group" -ForegroundColor Green
 $rsgExists = az group exists -n $rsgName
 if ($rsgExists -eq 'false') {
     Write-Host "Creating Resource Group"
     $echo = az group create -l $regionName -n $rsgName
 }
 
+Write-Host "Deploying App Service..." -ForegroundColor Green
 # App Service Plan
-Write-Host ""
-Write-Host "Preparing App Service Plan" -ForegroundColor Green
 $planCheck = az appservice plan list --query "[?name=='$aspName']" | ConvertFrom-Json
 $planExists = $planCheck.Length -gt 0
 if (!$planExists) {
@@ -102,8 +99,6 @@ if (!$planExists) {
 }
 
 # Web App
-Write-Host ""
-Write-Host "Preparing Web App" -ForegroundColor Green
 $appCheck = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
 $appExists = $appCheck.Length -gt 0
 if (!$appExists) {
@@ -113,7 +108,7 @@ if (!$appExists) {
         $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --deployment-container-image-name ediwang/moonglade
     }
     else {
-        Write-Host "Using Windows Plan with deployment method as not set, you need to build and deploy the code yourself."
+        Write-Host "Using Windows Plan with deployment from GitHub"
         $echo = az webapp create -g $rsgName -p $aspName -n $webAppName
         $echo = az webapp config set -g $rsgName -n $webAppName --net-framework-version v5.0
     }
@@ -128,8 +123,7 @@ if ($createdExists) {
 }
 
 # Storage Account
-Write-Host ""
-Write-Host "Preparing Storage Account" -ForegroundColor Green
+Write-Host "Deploying Storage..." -ForegroundColor Green
 $storageAccountCheck = az storage account list --query "[?name=='$storageAccountName']" | ConvertFrom-Json
 $storageAccountExists = $storageAccountCheck.Length -gt 0
 if (!$storageAccountExists) {
@@ -146,8 +140,7 @@ if (!$storageContainerExists.exists) {
 
 if ($createCDN) {
     # CDN
-    Write-Host ""
-    Write-Host "Preparing CDN" -ForegroundColor Green
+    Write-Host "Deploying CDN..." -ForegroundColor Green
     $cdnProfileCheck = az cdn profile list -g $rsgName --query "[?name=='$cdnProfileName']" | ConvertFrom-Json
     $cdnProfileExists = $cdnProfileCheck.Length -gt 0
     if (!$cdnProfileExists) {
@@ -161,8 +154,7 @@ if ($createCDN) {
 }
 
 # Azure SQL
-Write-Host ""
-Write-Host "Preparing Azure SQL" -ForegroundColor Green
+Write-Host "Deploying Azure SQL..." -ForegroundColor Green
 $sqlServerCheck = az sql server list --query "[?name=='$sqlServerName']" | ConvertFrom-Json
 $sqlServerExists = $sqlServerCheck.Length -gt 0
 if (!$sqlServerExists) {
@@ -183,7 +175,6 @@ if (!$sqlDbExists) {
 }
 
 # Configuration Update
-Write-Host ""
 Write-Host "Updating Configuration" -ForegroundColor Green
 
 Write-Host "Setting SQL Database Connection String"
@@ -215,12 +206,12 @@ if ($createCDN) {
         $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:CDNSettings:CDNEndpoint="https://$cdnEndpointName.azureedge.net/$storageContainerName"
     }
     
-    Write-Host "It can take up to 10 minutes for endpoint '$cdnEndpointName.azureedge.net' settings to propagate." -ForegroundColor Yellow
+    Write-Host "It can take up to 10 minutes for endpoint '$cdnEndpointName.azureedge.net' to propagate." -ForegroundColor Yellow
 }
 
-if ($useLinuxPlanWithDocker) {
-    Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
+if (!$useLinuxPlanWithDocker){
+    Write-Host "Pulling source code and run build on Azure (this takes time, please wait)..."
+    $echo = az webapp deployment source config --branch master --manual-integration --name $webAppName --repo-url https://github.com/EdiWang/Moonglade --resource-group $rsgName
 }
-else {
-    Read-Host -Prompt "Setup is done, you can now deploy the code to '$webAppUrl', press [ENTER] to exit."
-}
+
+Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
