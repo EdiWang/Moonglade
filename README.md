@@ -16,7 +16,7 @@ This diagram shows a full Azure deployment for Moonglade for reference.
 
 ![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-visio.png)
 
-### 🐋 Quick Deploy on Azure with Docker 
+### 🐋 Quick Deploy on Azure
 
 Use automated deployment script to get your Moonglade up and running in 10 minutes, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
 
