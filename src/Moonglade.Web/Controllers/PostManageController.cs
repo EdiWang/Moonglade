@@ -215,7 +215,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _postService.RestoreDeletedAsync(postId);
+            await _postService.RestoreAsync(postId);
             return Ok();
         }
 
@@ -255,7 +255,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("empty-recycle-bin")]
         public async Task<IActionResult> EmptyRecycleBin()
         {
-            await _postService.DeleteRecycledAsync();
+            await _postService.PurgeRecycledAsync();
             return RedirectToAction("RecycleBin");
         }
 

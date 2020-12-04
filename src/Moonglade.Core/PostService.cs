@@ -500,7 +500,7 @@ namespace Moonglade.Core
             return post;
         }
 
-        public async Task RestoreDeletedAsync(Guid postId)
+        public async Task RestoreAsync(Guid postId)
         {
             var pp = await _postRepo.GetAsync(postId);
             if (null == pp) return;
@@ -512,12 +512,12 @@ namespace Moonglade.Core
             _cache.Remove(CacheDivision.Post, postId.ToString());
         }
 
-        public async Task DeleteAsync(Guid postId, bool isRecycle = false)
+        public async Task DeleteAsync(Guid postId, bool softDelete = false)
         {
             var post = await _postRepo.GetAsync(postId);
             if (null == post) return;
 
-            if (isRecycle)
+            if (softDelete)
             {
                 post.IsDeleted = true;
                 await _postRepo.UpdateAsync(post);
@@ -532,7 +532,7 @@ namespace Moonglade.Core
             _cache.Remove(CacheDivision.Post, postId.ToString());
         }
 
-        public async Task DeleteRecycledAsync()
+        public async Task PurgeRecycledAsync()
         {
             var spec = new PostSpec(true);
             var posts = await _postRepo.GetAsync(spec);
