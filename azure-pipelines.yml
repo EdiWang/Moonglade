@@ -23,7 +23,7 @@ jobs:
     inputs:
       command: test
       projects: '**/*Tests/*.csproj'
-      arguments: '--configuration Release'
+      arguments: '--configuration Release --collect "Code coverage"'
 
   - task: DotNetCoreCLI@2
     inputs:
