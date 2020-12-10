@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
                     $"Authentication success for Azure account '{User.Identity.Name}'");
             }
 
-            return RedirectToAction("Manage", "Post");
+            return RedirectToAction("Index", "PostManage");
         }
 
         #region Authentication
