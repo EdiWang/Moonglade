@@ -24,9 +24,9 @@ namespace Moonglade.Tests.Web
         [SetUp]
         public void Setup()
         {
-            _authenticationSettingsMock = new Mock<IOptions<AuthenticationSettings>>();
-            _loggerMock = new Mock<ILogger<AdminController>>();
-            _auditMock = new Mock<IBlogAudit>();
+            _authenticationSettingsMock = new();
+            _loggerMock = new();
+            _auditMock = new();
         }
 
         [Test]
@@ -43,8 +43,8 @@ namespace Moonglade.Tests.Web
             Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
             if (result is RedirectToActionResult rdResult)
             {
-                Assert.That(rdResult.ActionName, Is.EqualTo("Manage"));
-                Assert.That(rdResult.ControllerName, Is.EqualTo("Post"));
+                Assert.That(rdResult.ActionName, Is.EqualTo("Index"));
+                Assert.That(rdResult.ControllerName, Is.EqualTo("PostManage"));
             }
         }
 
@@ -64,7 +64,7 @@ namespace Moonglade.Tests.Web
             var ctx = new DefaultHttpContext();
             var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null)
             {
-                ControllerContext = new ControllerContext { HttpContext = ctx },
+                ControllerContext = new() { HttpContext = ctx },
                 Url = mockUrlHelper.Object
             };
 
@@ -98,7 +98,7 @@ namespace Moonglade.Tests.Web
         {
             var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null)
             {
-                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+                ControllerContext = new() { HttpContext = new DefaultHttpContext() }
             };
 
             ctl.ControllerContext.HttpContext.Response.StatusCode = 200;
