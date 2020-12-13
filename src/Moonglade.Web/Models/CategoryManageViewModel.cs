@@ -11,7 +11,7 @@ namespace Moonglade.Web.Models
 
         public CategoryManageViewModel()
         {
-            CategoryEditViewModel = new CategoryEditViewModel();
+            CategoryEditViewModel = new();
             Categories = new List<Category>();
         }
     }

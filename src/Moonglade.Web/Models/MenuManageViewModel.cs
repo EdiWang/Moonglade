@@ -14,7 +14,7 @@ namespace Moonglade.Web.Models
 
         public MenuManageViewModel()
         {
-            MenuEditViewModel = new MenuEditViewModel();
+            MenuEditViewModel = new();
             MenuItems = new List<Menu>();
         }
     }

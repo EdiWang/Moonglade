@@ -42,7 +42,7 @@ namespace Moonglade.DataPorting
             var distPath = Path.Join(exportDirectory, $"{_fileNamePrefix}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.zip");
             ZipFile.CreateFromDirectory(Path.Join(exportDirectory, tempId), distPath);
 
-            return new ExportResult
+            return new()
             {
                 ExportFormat = ExportFormat.ZippedJsonFiles,
                 ZipFilePath = distPath

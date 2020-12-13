@@ -20,7 +20,7 @@ namespace Moonglade.DataPorting
             var data = await _repository.SelectAsync(selector);
             var json = JsonConvert.SerializeObject(data, Formatting.Indented); //JsonSerializer.Serialize(data);
 
-            return new ExportResult
+            return new()
             {
                 ExportFormat = ExportFormat.SingleJsonFile,
                 JsonContent = json

@@ -13,7 +13,7 @@ namespace Moonglade.Web.Models.Settings
 
         public FriendLinkSettingsViewModelWrap()
         {
-            FriendLinkEditViewModel = new FriendLinkEditViewModel();
+            FriendLinkEditViewModel = new();
         }
     }
 
