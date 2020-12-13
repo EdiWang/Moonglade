@@ -7,12 +7,12 @@ namespace Moonglade.Web.Filters
 {
     public class DeleteSiteMapCache : ActionFilterAttribute
     {
-        private readonly ILogger<DeleteSiteMapCache> Logger;
+        private readonly ILogger<DeleteSiteMapCache> _logger;
         private readonly IBlogCache _cache;
 
         public DeleteSiteMapCache(ILogger<DeleteSiteMapCache> logger, IBlogCache cache)
         {
-            Logger = logger;
+            _logger = logger;
             _cache = cache;
         }
 
@@ -26,7 +26,7 @@ namespace Moonglade.Web.Filters
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Error Delete sitemap cache");
+                _logger.LogError(e, "Error Delete sitemap cache");
             }
         }
     }

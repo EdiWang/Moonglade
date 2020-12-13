@@ -31,8 +31,8 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var (Hits, Likes) = await _statistics.GetStatisticAsync(postId);
-            return Ok(new { Hits, Likes });
+            var (hits, likes) = await _statistics.GetStatisticAsync(postId);
+            return Ok(new { Hits = hits, Likes = likes });
         }
 
         [HttpPost]
