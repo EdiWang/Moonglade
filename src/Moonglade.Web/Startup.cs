@@ -12,7 +12,6 @@ using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -77,7 +76,7 @@ namespace Moonglade.Web
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.DefaultRequestCulture = new("en-US");
                 options.SupportedCultures = _supportedCultures;
                 options.SupportedUICultures = _supportedCultures;
             });
@@ -144,7 +143,7 @@ namespace Moonglade.Web
 
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new RequestCulture("en-US"),
+                DefaultRequestCulture = new("en-US"),
                 SupportedCultures = _supportedCultures,
                 SupportedUICultures = _supportedCultures
             });

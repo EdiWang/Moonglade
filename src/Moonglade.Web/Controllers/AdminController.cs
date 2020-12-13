@@ -46,7 +46,7 @@ namespace Moonglade.Web.Controllers
             if (_authenticationSettings.Provider == AuthenticationProvider.AzureAD)
             {
                 await _blogAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginSuccessAAD,
-                    $"Authentication success for Azure account '{User.Identity.Name}'");
+                    $"Authentication success for Azure account '{User.Identity?.Name}'");
             }
 
             return RedirectToAction("Index", "PostManage");

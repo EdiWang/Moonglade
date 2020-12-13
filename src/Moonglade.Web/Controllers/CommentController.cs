@@ -57,12 +57,12 @@ namespace Moonglade.Web.Controllers
                 return Conflict(ModelState);
             }
 
-            var response = await _commentService.CreateAsync(new CommentRequest(postId)
+            var response = await _commentService.CreateAsync(new(postId)
             {
                 Username = model.Username,
                 Content = model.Content,
                 Email = model.Email,
-                IpAddress = DNT ? "N/A" : HttpContext.Connection.RemoteIpAddress.ToString()
+                IpAddress = DNT ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
             });
 
             if (_blogConfig.NotificationSettings.SendEmailOnNewComment && _notificationClient is not null)

@@ -92,23 +92,21 @@ namespace Moonglade.ImageStorage.Providers
         private async Task<bool> BlobExistsAsync(string fileName)
         {
             // Make sure Blob Container exists.
-            if (await _client.BucketExistsAsync(_bucketName))
+            if (!await _client.BucketExistsAsync(_bucketName)) return false;
+            
+            try
             {
-                try
-                {
-                    await _client.StatObjectAsync(_bucketName, fileName);
-                }
-                catch (Exception e)
-                {
-                    if (e is ObjectNotFoundException)
-                    {
-                        return false;
-                    }
-                    throw;
-                }
-                return true;
+                await _client.StatObjectAsync(_bucketName, fileName);
             }
-            return false;
+            catch (Exception e)
+            {
+                if (e is ObjectNotFoundException)
+                {
+                    return false;
+                }
+                throw;
+            }
+            return true;
         }
 
         public async Task<ImageInfo> GetAsync(string fileName)
@@ -129,9 +127,9 @@ namespace Moonglade.ImageStorage.Providers
                     return null;
                 }
 
-                await _client.GetObjectAsync(_bucketName, fileName, (stream) =>
+                await _client.GetObjectAsync(_bucketName, fileName, stream =>
                 {
-                    if (stream is not null) stream.CopyTo(memoryStream);
+                    stream?.CopyTo(memoryStream);
                 });
                 var arr = memoryStream.ToArray();
 

@@ -36,14 +36,14 @@ namespace Moonglade.Web.Configuration
             services.Configure<AppSettings>(appSettings);
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<IDateTimeResolver>(c =>
-                new DateTimeResolver(c.GetService<IBlogConfig>().GeneralSettings.TimeZoneUtcOffset));
+                new DateTimeResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
         }
 
         public static void AddDataStorage(this IServiceCollection services, IConfiguration configuration)
         {
             var connStr = configuration.GetConnectionString(Constants.DbConnectionName);
 
-            services.AddTransient<IDbConnection>(c => new SqlConnection(connStr));
+            services.AddTransient<IDbConnection>(_ => new SqlConnection(connStr));
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.AddDbContext<BlogDbContext>(options =>
                 options.UseLazyLoadingProxies()
@@ -70,7 +70,7 @@ namespace Moonglade.Web.Configuration
                 .AddTransientHttpErrorPolicy(builder =>
                     builder.WaitAndRetryAsync(3, retryCount =>
                             TimeSpan.FromSeconds(Math.Pow(2, retryCount)),
-                        (result, span, retryCount, context) =>
+                        (result, span, retryCount, _) =>
                         {
                             logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
                         }));

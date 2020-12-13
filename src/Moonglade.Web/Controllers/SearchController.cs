@@ -28,7 +28,7 @@ namespace Moonglade.Web.Controllers
         [Route("sitemap.xml")]
         public async Task<IActionResult> SiteMap([FromServices] IBlogConfig blogConfig, [FromServices] IBlogCache cache)
         {
-            return await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async entry =>
+            return await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
             {
                 var url = ResolveRootUrl(blogConfig);
                 var bytes = await _searchService.GetSiteMapStreamArrayAsync(url);

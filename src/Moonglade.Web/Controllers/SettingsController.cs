@@ -106,7 +106,6 @@ namespace Moonglade.Web.Controllers
 
             AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
-            _logger.LogInformation($"User '{User.Identity.Name}' updated GeneralSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "General Settings updated.");
 
             return Ok();
@@ -156,7 +155,6 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
             _blogConfig.RequireRefresh();
 
-            _logger.LogInformation($"User '{User.Identity.Name}' updated ContentSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
 
             return Ok();
@@ -194,7 +192,6 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
-            _logger.LogInformation($"User '{User.Identity.Name}' updated EmailSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
 
             return Ok();
@@ -245,7 +242,6 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
-            _logger.LogInformation($"User '{User.Identity.Name}' updated FeedSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
             return Ok();
@@ -284,7 +280,6 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveConfigurationAsync(settings);
             _blogConfig.RequireRefresh();
 
-            _logger.LogInformation($"User '{User.Identity.Name}' updated WatermarkSettings");
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
             return Ok();
@@ -300,7 +295,7 @@ namespace Moonglade.Web.Controllers
             var links = await _friendLinkService.GetAllAsync();
             var vm = new FriendLinkSettingsViewModelWrap
             {
-                FriendLinkSettingsViewModel = new FriendLinkSettingsViewModel
+                FriendLinkSettingsViewModel = new()
                 {
                     ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
                 },
@@ -413,7 +408,6 @@ namespace Moonglade.Web.Controllers
                 await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
                 _blogConfig.RequireRefresh();
 
-                _logger.LogInformation($"User '{User.Identity.Name}' updated avatar.");
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
 
                 return Json(true);
@@ -461,7 +455,6 @@ namespace Moonglade.Web.Controllers
                     Directory.Delete(SiteIconDirectory, true);
                 }
 
-                _logger.LogInformation($"User '{User.Identity.Name}' updated site icon.");
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
 
                 return Json(true);
@@ -515,7 +508,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("shutdown")]
         public IActionResult Shutdown([FromServices] IHostApplicationLifetime applicationLifetime)
         {
-            _logger.LogWarning($"Shutdown is requested by '{User.Identity.Name}'.");
+            _logger.LogWarning($"Shutdown is requested by '{User.Identity?.Name}'.");
             applicationLifetime.StopApplication();
             return Accepted();
         }
@@ -523,7 +516,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("reset")]
         public async Task<IActionResult> Reset([FromServices] IDbConnection dbConnection, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
-            _logger.LogWarning($"System reset is requested by '{User.Identity.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
+            _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
 
             var setupHelper = new SetupRunner(dbConnection);
             setupHelper.ClearData();
@@ -635,8 +628,8 @@ namespace Moonglade.Web.Controllers
 
             var skip = (page - 1) * 20;
 
-            var (Entries, Count) = await _blogAudit.GetAuditEntries(skip, 20);
-            var list = new StaticPagedList<AuditEntry>(Entries, page, 20, Count);
+            var (entries, count) = await _blogAudit.GetAuditEntries(skip, 20);
+            var list = new StaticPagedList<AuditEntry>(entries, page, 20, count);
 
             return View(list);
         }

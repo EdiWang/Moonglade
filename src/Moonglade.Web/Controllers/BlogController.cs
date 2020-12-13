@@ -14,8 +14,6 @@ namespace Moonglade.Web.Controllers
 
         protected string SiteIconDirectory => Path.Join(DataDirectory, "siteicons");
 
-        protected bool DNT => (bool)HttpContext.Items["DNT"];
-
         [Route("server-error")]
         public IActionResult ServerError(string errMessage = null)
         {

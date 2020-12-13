@@ -31,7 +31,7 @@ namespace Moonglade.Web.Authentication
                     {
                         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                         options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                    }).AddOpenIdConnect().AddCookie().AddApiKeySupport(options => { });
+                    }).AddOpenIdConnect().AddCookie().AddApiKeySupport(_ => { });
 
                     break;
                 case AuthenticationProvider.Local:
@@ -41,7 +41,7 @@ namespace Moonglade.Web.Authentication
                                 options.AccessDeniedPath = "/admin/accessdenied";
                                 options.LoginPath = "/admin/signin";
                                 options.LogoutPath = "/admin/signout";
-                            }).AddApiKeySupport(options => { }); ;
+                            }).AddApiKeySupport(_ => { });
                     break;
                 case AuthenticationProvider.None:
                     break;

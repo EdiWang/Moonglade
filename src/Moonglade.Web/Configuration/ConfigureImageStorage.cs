@@ -17,7 +17,7 @@ namespace Moonglade.Web.Configuration
             configuration.Bind(nameof(ImageStorage), imageStorage);
             services.Configure<ImageStorageSettings>(configuration.GetSection(nameof(ImageStorage)));
 
-            services.AddScoped<IFileNameGenerator>(gen => new GuidFileNameGenerator(Guid.NewGuid()));
+            services.AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
 
             if (imageStorage.CDNSettings.EnableCDNRedirect)
             {
@@ -57,13 +57,13 @@ namespace Moonglade.Web.Configuration
                 case "azurestorage":
                     var conn = imageStorage.AzureStorageSettings.ConnectionString;
                     var container = imageStorage.AzureStorageSettings.ContainerName;
-                    services.AddSingleton(s => new AzureBlobConfiguration(conn, container));
+                    services.AddSingleton(_ => new AzureBlobConfiguration(conn, container));
                     services.AddSingleton<IBlogImageStorage, AzureBlobImageStorage>();
                     break;
                 case "filesystem":
                     var path = imageStorage.FileSystemSettings.Path;
                     var fullPath = FileSystemImageStorage.ResolveImageStoragePath(environment.ContentRootPath, path);
-                    services.AddSingleton(s => new FileSystemImageConfiguration(fullPath));
+                    services.AddSingleton(_ => new FileSystemImageConfiguration(fullPath));
                     services.AddSingleton<IBlogImageStorage, FileSystemImageStorage>();
                     break;
                 case "miniostorage":
