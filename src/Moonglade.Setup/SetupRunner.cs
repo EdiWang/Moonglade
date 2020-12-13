@@ -8,11 +8,11 @@ namespace Moonglade.Setup
 {
     public class SetupRunner
     {
-        private readonly IDbConnection conn;
+        private readonly IDbConnection _conn;
 
         public SetupRunner(IDbConnection dbConnection)
         {
-            conn = dbConnection;
+            _conn = dbConnection;
         }
 
         public void InitFirstRun()
@@ -28,12 +28,12 @@ namespace Moonglade.Setup
         /// </summary>
         public bool IsFirstRun()
         {
-            var tableExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
+            var tableExists = _conn.ExecuteScalar<int>("SELECT TOP 1 1 " +
                                                       "FROM INFORMATION_SCHEMA.TABLES " +
                                                       "WHERE TABLE_NAME = N'BlogConfiguration'") == 1;
             if (tableExists)
             {
-                var dataExists = conn.ExecuteScalar<int>("SELECT TOP 1 1 FROM BlogConfiguration") == 1;
+                var dataExists = _conn.ExecuteScalar<int>("SELECT TOP 1 1 FROM BlogConfiguration") == 1;
                 return !dataExists;
             }
 
@@ -48,7 +48,7 @@ namespace Moonglade.Setup
             var sql = GetEmbeddedSqlScript("schema-mssql-140");
             if (!string.IsNullOrWhiteSpace(sql))
             {
-                conn.Execute(sql);
+                _conn.Execute(sql);
             }
             else
             {
@@ -62,28 +62,28 @@ namespace Moonglade.Setup
         public void ClearData()
         {
             // Clear Relation Tables
-            conn.Execute("DELETE FROM PostTag");
-            conn.Execute("DELETE FROM PostCategory");
-            conn.Execute("DELETE FROM CommentReply");
+            _conn.Execute("DELETE FROM PostTag");
+            _conn.Execute("DELETE FROM PostCategory");
+            _conn.Execute("DELETE FROM CommentReply");
 
             // Clear Individual Tables
-            conn.Execute("DELETE FROM Category");
-            conn.Execute("DELETE FROM Tag");
-            conn.Execute("DELETE FROM Comment");
-            conn.Execute("DELETE FROM FriendLink");
-            conn.Execute("DELETE FROM PingbackHistory");
-            conn.Execute("DELETE FROM PostExtension");
-            conn.Execute("DELETE FROM Post");
-            conn.Execute("DELETE FROM Menu");
+            _conn.Execute("DELETE FROM Category");
+            _conn.Execute("DELETE FROM Tag");
+            _conn.Execute("DELETE FROM Comment");
+            _conn.Execute("DELETE FROM FriendLink");
+            _conn.Execute("DELETE FROM PingbackHistory");
+            _conn.Execute("DELETE FROM PostExtension");
+            _conn.Execute("DELETE FROM Post");
+            _conn.Execute("DELETE FROM Menu");
 
             // Clear Configuration Table
-            conn.Execute("DELETE FROM BlogConfiguration");
+            _conn.Execute("DELETE FROM BlogConfiguration");
 
             // Clear AuditLog Table
-            conn.Execute("DELETE FROM AuditLog");
+            _conn.Execute("DELETE FROM AuditLog");
 
             // Clear LocalAccount Table
-            conn.Execute("DELETE FROM LocalAccount");
+            _conn.Execute("DELETE FROM LocalAccount");
         }
 
         public void ResetDefaultConfiguration()
@@ -91,7 +91,7 @@ namespace Moonglade.Setup
             var sql = GetEmbeddedSqlScript("init-blogconfiguration");
             if (!string.IsNullOrWhiteSpace(sql))
             {
-                conn.Execute(sql);
+                _conn.Execute(sql);
             }
             else
             {
@@ -104,7 +104,7 @@ namespace Moonglade.Setup
             var sql = GetEmbeddedSqlScript("init-sampledata");
             if (!string.IsNullOrWhiteSpace(sql))
             {
-                conn.Execute(sql);
+                _conn.Execute(sql);
             }
             else
             {
@@ -116,7 +116,7 @@ namespace Moonglade.Setup
         {
             try
             {
-                var result = conn.ExecuteScalar<int>("SELECT 1");
+                var result = _conn.ExecuteScalar<int>("SELECT 1");
                 return result == 1;
             }
             catch (Exception e)
