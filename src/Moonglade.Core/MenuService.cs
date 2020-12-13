@@ -105,7 +105,7 @@ namespace Moonglade.Core
         {
             if (entity is null) return null;
 
-            return new Menu
+            return new()
             {
                 Id = entity.Id,
                 Title = entity.Title.Trim(),

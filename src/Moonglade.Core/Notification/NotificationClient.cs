@@ -65,7 +65,7 @@ namespace Moonglade.Core.Notification
                 }
                 else
                 {
-                    throw new Exception($"Test email sending failed, response code: '{response.StatusCode}'");
+                    throw new($"Test email sending failed, response code: '{response.StatusCode}'");
                 }
             }
             catch (Exception e)

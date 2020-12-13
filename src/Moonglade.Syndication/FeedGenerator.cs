@@ -45,7 +45,7 @@ namespace Moonglade.Syndication
 
             await writer.WriteTitle(HeadTitle);
             await writer.WriteDescription(HeadDescription);
-            await writer.Write(new SyndicationLink(new Uri(TrackBackUrl)));
+            await writer.Write(new SyndicationLink(new(TrackBackUrl)));
             await writer.WritePubDate(DateTimeOffset.UtcNow);
             await writer.WriteCopyright(Copyright);
             await writer.WriteGenerator(Generator);
@@ -101,7 +101,7 @@ namespace Moonglade.Syndication
                     Published = item.PubDateUtc.ToUniversalTime()
                 };
 
-                sItem.AddLink(new SyndicationLink(new Uri(item.Link)));
+                sItem.AddLink(new SyndicationLink(new(item.Link)));
 
                 // add author
                 if (!string.IsNullOrWhiteSpace(item.Author) && !string.IsNullOrWhiteSpace(item.AuthorEmail))

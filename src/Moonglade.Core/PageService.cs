@@ -119,7 +119,7 @@ namespace Moonglade.Core
         {
             if (entity is null) return null;
 
-            return new Page
+            return new()
             {
                 Id = entity.Id,
                 Title = entity.Title.Trim(),

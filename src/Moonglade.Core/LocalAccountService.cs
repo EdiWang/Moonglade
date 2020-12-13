@@ -156,7 +156,7 @@ namespace Moonglade.Core
         {
             if (entity is null) return null;
 
-            return new Account
+            return new()
             {
                 Id = entity.Id,
                 CreateOnUtc = entity.CreateOnUtc,
