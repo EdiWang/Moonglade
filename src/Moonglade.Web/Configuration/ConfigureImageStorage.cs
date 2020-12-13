@@ -72,7 +72,7 @@ namespace Moonglade.Web.Configuration
                     var secretKey = imageStorage.MinioStorageSettings.SecretKey;
                     var bucketName = imageStorage.MinioStorageSettings.BucketName;
                     var withSSL = imageStorage.MinioStorageSettings.WithSSL;
-                    services.AddSingleton(s => new MinioBlobConfiguration(endPoint, accessKey, secretKey, bucketName, withSSL));
+                    services.AddSingleton(_ => new MinioBlobConfiguration(endPoint, accessKey, secretKey, bucketName, withSSL));
                     services.AddSingleton<IBlogImageStorage, MinioBlobImageStorage>();
                     break;
                 default:
