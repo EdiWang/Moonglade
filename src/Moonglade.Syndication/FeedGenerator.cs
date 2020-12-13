@@ -40,7 +40,7 @@ namespace Moonglade.Syndication
                 Encoding = Encoding.UTF8
             };
 
-            using var xmlWriter = XmlWriter.Create(stream, settings);
+            await using var xmlWriter = XmlWriter.Create(stream, settings);
             var writer = new RssFeedWriter(xmlWriter);
 
             await writer.WriteTitle(HeadTitle);
@@ -68,7 +68,7 @@ namespace Moonglade.Syndication
                 Encoding = Encoding.UTF8
             };
 
-            using var xmlWriter = XmlWriter.Create(stream, settings);
+            await using var xmlWriter = XmlWriter.Create(stream, settings);
             var writer = new AtomFeedWriter(xmlWriter);
 
             await writer.WriteTitle(HeadTitle);

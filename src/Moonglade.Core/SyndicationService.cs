@@ -68,7 +68,7 @@ namespace Moonglade.Core
                 MaxContentLength = 0
             };
 
-            using var ms = new MemoryStream();
+            await using var ms = new MemoryStream();
             await rw.WriteRssStreamAsync(ms);
             await ms.FlushAsync();
 
@@ -91,7 +91,7 @@ namespace Moonglade.Core
                 MaxContentLength = 0
             };
 
-            using var ms = new MemoryStream();
+            await using var ms = new MemoryStream();
             await rw.WriteAtomStreamAsync(ms);
             await ms.FlushAsync();
 

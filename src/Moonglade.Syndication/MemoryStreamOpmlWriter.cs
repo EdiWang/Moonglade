@@ -11,7 +11,7 @@ namespace Moonglade.Syndication
         {
             await using var fs = new MemoryStream();
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
-            using (var writer = XmlWriter.Create(fs, writerSettings))
+            await using (var writer = XmlWriter.Create(fs, writerSettings))
             {
                 // open OPML
                 writer.WriteStartElement("opml");

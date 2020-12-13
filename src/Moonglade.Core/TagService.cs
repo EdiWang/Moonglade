@@ -118,8 +118,8 @@ namespace Moonglade.Core
                 return result.ToString().ToLower();
             }
 
-            byte[] bytes = Encoding.Unicode.GetBytes(orgTagName);
-            var hexArray = bytes.Select(b => string.Format("{0:x2}", b));
+            var bytes = Encoding.Unicode.GetBytes(orgTagName);
+            var hexArray = bytes.Select(b => $"{b:x2}");
             var hexName = string.Join('-', hexArray);
 
             return hexName;
