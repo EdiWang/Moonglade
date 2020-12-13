@@ -35,12 +35,12 @@ namespace Moonglade.Core
             _postRepo = postRepo;
 
             var acc = httpContextAccessor;
-            _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
+            _baseUrl = $"{acc.HttpContext?.Request.Scheme}://{acc.HttpContext.Request.Host}";
         }
 
         public async Task<byte[]> GetRssStreamDataAsync(string categoryName = null)
         {
-            IReadOnlyList<FeedEntry> itemCollection = null;
+            IReadOnlyList<FeedEntry> itemCollection;
             if (!string.IsNullOrWhiteSpace(categoryName))
             {
                 var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
