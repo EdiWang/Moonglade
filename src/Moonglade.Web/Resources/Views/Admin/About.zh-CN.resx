@@ -165,4 +165,7 @@
   <data name="Worker Process" xml:space="preserve">
     <value>工作进程</value>
   </data>
+  <data name="Version" xml:space="preserve">
+    <value>版本</value>
+  </data>
 </root>
