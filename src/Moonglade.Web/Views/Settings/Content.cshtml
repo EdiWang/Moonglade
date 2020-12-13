@@ -47,7 +47,7 @@
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="DisharmonyWords" class="control-label"></label>
+                        <label asp-for="DisharmonyWords"></label>
                         <textarea asp-for="DisharmonyWords" class="form-control h-300px"></textarea>
                         <span asp-validation-for="DisharmonyWords" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
@@ -68,17 +68,17 @@
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="PostListPageSize" class="control-label"></label>
+                        <label asp-for="PostListPageSize"></label>
                         <input asp-for="PostListPageSize" class="form-control" />
                         <span asp-validation-for="PostListPageSize" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="HotTagAmount" class="control-label"></label>
+                        <label asp-for="HotTagAmount"></label>
                         <input asp-for="HotTagAmount" class="form-control" />
                         <span asp-validation-for="HotTagAmount" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="DefaultLangCode" class="control-label"></label>
+                        <label asp-for="DefaultLangCode"></label>
                         <input asp-for="DefaultLangCode" class="form-control" />
                         <span asp-validation-for="DefaultLangCode" class="text-danger"></span>
                     </div>
@@ -93,7 +93,7 @@
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="PostFooterHtmlPitch" class="control-label"></label>
+                        <label asp-for="PostFooterHtmlPitch"></label>
                         <textarea asp-for="PostFooterHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
                         <span asp-validation-for="PostFooterHtmlPitch" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["e.g. Your blog post license information."]</small>
@@ -112,7 +112,7 @@
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="CalloutSectionHtmlPitch" class="control-label"></label>
+                        <label asp-for="CalloutSectionHtmlPitch"></label>
                         <textarea asp-for="CalloutSectionHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
                         <span asp-validation-for="CalloutSectionHtmlPitch" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["The call-out section will display on top of every page in the website."]</small>
