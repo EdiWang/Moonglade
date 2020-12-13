@@ -57,15 +57,15 @@ namespace Moonglade.Pingback
                     return PingbackResponse.SpamDetectedFakeNotFound;
                 }
 
-                var (Id, Title) = await _pingbackRepository.GetPostIdTitle(pingRequest.TargetUrl, _dbConnection);
-                if (Id == Guid.Empty)
+                var (id, title) = await _pingbackRepository.GetPostIdTitle(pingRequest.TargetUrl, _dbConnection);
+                if (id == Guid.Empty)
                 {
                     _logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
                     return PingbackResponse.Error32TargetUriNotExist;
                 }
-                _logger.LogInformation($"Post '{Id}:{Title}' is found for ping.");
+                _logger.LogInformation($"Post '{id}:{title}' is found for ping.");
 
-                var pinged = await _pingbackRepository.HasAlreadyBeenPinged(Id, pingRequest.SourceUrl, ip, _dbConnection);
+                var pinged = await _pingbackRepository.HasAlreadyBeenPinged(id, pingRequest.SourceUrl, ip, _dbConnection);
                 if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
                 _logger.LogInformation("Adding received pingback...");
@@ -78,8 +78,8 @@ namespace Moonglade.Pingback
                     Domain = uri.Host,
                     SourceUrl = _sourceUrl,
                     SourceTitle = pingRequest.Title,
-                    TargetPostId = Id,
-                    TargetPostTitle = Title,
+                    TargetPostId = id,
+                    TargetPostTitle = title,
                     SourceIp = ip
                 };
 

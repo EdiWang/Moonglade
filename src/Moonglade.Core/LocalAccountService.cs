@@ -149,7 +149,7 @@ namespace Moonglade.Core
             var data = Encoding.UTF8.GetBytes(plainMessage);
             using HashAlgorithm sha = new SHA256Managed();
             sha.TransformFinalBlock(data, 0, data.Length);
-            return Convert.ToBase64String(sha.Hash);
+            return Convert.ToBase64String(sha.Hash ?? throw new InvalidOperationException());
         }
 
         private static Account EntityToAccountModel(LocalAccountEntity entity)

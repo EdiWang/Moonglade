@@ -19,23 +19,24 @@ namespace Moonglade.Core
         public static string TryGetFullOSVersion()
         {
             var osVer = Environment.OSVersion;
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return osVer.VersionString;
+            
+            try
             {
-                try
+                var currentVersion = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                if (currentVersion != null)
                 {
-                    var currentVersion = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                     var name = currentVersion.GetValue("ProductName", "Microsoft Windows NT");
-                    var ubr = currentVersion.GetValue("UBR", string.Empty).ToString();
+                    var ubr = currentVersion.GetValue("UBR", string.Empty)?.ToString();
                     if (!string.IsNullOrWhiteSpace(ubr))
                     {
                         return $"{name} {osVer.Version.Major}.{osVer.Version.Minor}.{osVer.Version.Build}.{ubr}";
                     }
                 }
-                catch
-                {
-                    return osVer.VersionString;
-                }
+            }
+            catch
+            {
+                return osVer.VersionString;
             }
 
             return osVer.VersionString;
