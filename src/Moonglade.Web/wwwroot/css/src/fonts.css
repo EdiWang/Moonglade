@@ -27,6 +27,22 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-copy:before {
+    content: "\e92c";
+}
+
+.icon-calendar:before {
+    content: "\e953";
+}
+
+.icon-magic-wand:before {
+    content: "\e997";
+}
+
+.icon-info:before {
+    content: "\ea0c";
+}
+
 .icon-book:before {
     content: "\e91f";
 }
