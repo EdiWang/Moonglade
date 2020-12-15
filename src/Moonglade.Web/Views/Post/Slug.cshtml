@@ -114,9 +114,7 @@
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info post-publish-info-mobile bg-light">
-                <time datetime="@Model.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PubDateUtc">
-                    @DateTimeResolver.ToTimeZone(Model.PubDateUtc.GetValueOrDefault()).ToString("MM/dd/yyyy")
-                </time>
+                <pubdate date-time-resolver="@DateTimeResolver" pub-date-utc="@Model.PubDateUtc"></pubdate>
                 <span>
                     @BlogConfig.GeneralSettings.TimeZoneId
                 </span>
@@ -125,9 +123,7 @@
 
         <div class="d-none d-md-block post-publish-info text-muted mb-2">
             📅
-            <time datetime="@Model.PubDateUtc.GetValueOrDefault().ToString("u")" title="GMT @Model.PubDateUtc">
-                @DateTimeResolver.ToTimeZone(Model.PubDateUtc.GetValueOrDefault()).ToLongDateString()
-            </time>
+            <pubdate date-time-resolver="@DateTimeResolver" pub-date-utc="@Model.PubDateUtc"></pubdate>
             @BlogConfig.GeneralSettings.TimeZoneId
             -
             <span class="post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
