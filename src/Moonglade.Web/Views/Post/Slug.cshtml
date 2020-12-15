@@ -114,15 +114,14 @@
 
         <div class="d-block d-sm-none">
             <div class="post-publish-info post-publish-info-mobile bg-light">
+                <span class="icon-calendar"></span>
                 <pubdate date-time-resolver="@DateTimeResolver" pub-date-utc="@Model.PubDateUtc"></pubdate>
-                <span>
-                    @BlogConfig.GeneralSettings.TimeZoneId
-                </span>
+                @BlogConfig.GeneralSettings.TimeZoneId
             </div>
         </div>
 
         <div class="d-none d-md-block post-publish-info text-muted mb-2">
-            📅
+            <span class="icon-calendar"></span>
             <pubdate date-time-resolver="@DateTimeResolver" pub-date-utc="@Model.PubDateUtc"></pubdate>
             @BlogConfig.GeneralSettings.TimeZoneId
             -
