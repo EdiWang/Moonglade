@@ -24,23 +24,19 @@
         <tbody>
             <tr>
                 <td>@Localizer["System"]</td>
-                <td>@Utils.TryGetFullOSVersion()</td>
+                <td>@Utils.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)": "(32-bit)")</td>
             </tr>
             <tr>
                 <td>@Localizer["Directory"]</td>
                 <td>@Environment.CurrentDirectory</td>
             </tr>
-            <tr>
-                <td>@Localizer["64 Bit Process"]</td>
-                <td>@Environment.Is64BitProcess</td>
-            </tr>
-            <tr>
+        <tr>
                 <td>@Localizer["Machine Name"]</td>
                 <td>@Environment.MachineName</td>
             </tr>
             <tr>
                 <td>@Localizer["User Name"]</td>
-                <td>@Environment.UserName</td>
+                <td>@Environment.UserDomainName\@Environment.UserName</td>
             </tr>
             <tr>
                 <td>@Localizer[".NET Version"]</td>
@@ -48,7 +44,7 @@
             </tr>
             <tr>
                 <td>@Localizer["Worker Process"]</td>
-                <td>@Process.GetCurrentProcess().ProcessName</td>
+                <td>@Process.GetCurrentProcess().ProcessName @(Environment.Is64BitProcess ? "(64-bit)" : "(32-bit)")</td>
             </tr>
             <tr>
                 <td>@Localizer["Running Docker Container"]</td>
@@ -79,8 +75,8 @@
                 <td>@AppDomain.CurrentDomain.GetData(Constants.DataDirectory)</td>
             </tr>
             <tr>
-                <td>@Localizer["App Base Directory"]</td>
-                <td>@WebHostEnvironment.ContentRootPath</td>
+                <td>@Localizer["Environment"]</td>
+                <td>@WebHostEnvironment.EnvironmentName</td>
             </tr>
             <tr>
                 <td>@Localizer["Editor"]</td>
