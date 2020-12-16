@@ -199,7 +199,7 @@ var postEditor = {
 
             inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, {
                 uploadUrl: '/image',
-                urlText: '![file](/uploads/{filename})',
+                urlText: '![file](/image/{filename})',
                 onFileUploadResponse: function (xhr) {
                     var result = JSON.parse(xhr.responseText),
                         filename = result[this.settings.jsonFieldName];

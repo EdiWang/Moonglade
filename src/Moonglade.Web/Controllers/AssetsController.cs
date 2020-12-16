@@ -53,6 +53,7 @@ namespace Moonglade.Web.Controllers
 
         #region Blog Post Images
 
+        [Route(@"image/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
         [Route(@"uploads/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
         public async Task<IActionResult> Image(string filename, [FromServices] IMemoryCache cache)
         {
@@ -187,7 +188,7 @@ namespace Moonglade.Web.Controllers
 
                 return Json(new
                 {
-                    location = $"/uploads/{finalFileName}",
+                    location = $"/image/{finalFileName}",
                     filename = finalFileName
                 });
             }
