@@ -11,7 +11,6 @@ namespace Moonglade.Model.Settings
         public CaptchaSettings CaptchaSettings { get; set; }
         public int PostAbstractWords { get; set; }
         public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
-        public Dictionary<string, bool> SystemNavMenus { get; set; }
         public NotificationSettings Notification { get; set; }
         public SiteMapSettings SiteMap { get; set; }
         public BlogTheme[] Themes { get; set; }

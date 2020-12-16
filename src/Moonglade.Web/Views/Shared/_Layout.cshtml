@@ -97,8 +97,7 @@
                 <div class="collapse navbar-collapse" id="blog-navbar-content">
                     <ul class="navbar-nav mr-auto">
                         <!-- System Nav Menu -->
-                        @if (Settings.Value.SystemNavMenus["Categories"])
-                        {
+                        <feature name="Menu_Categories">
                             <li id="navbar-dropdown-post" class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
                                     <span class="icon-book"></span>
@@ -106,27 +105,25 @@
                                 </a>
                                 @await Component.InvokeAsync("CategoryList", new { isMenu = true })
                             </li>
-                        }
+                        </feature>
 
-                        @if (Settings.Value.SystemNavMenus["Tags"])
-                        {
+                        <feature name="Menu_Tags">
                             <li class="nav-item">
                                 <a asp-controller="Home" asp-action="Tags" class="nav-link">
                                     <span class="icon-price-tag"></span>
                                     <strong>@Localizer["Tags"]</strong>
                                 </a>
                             </li>
-                        }
+                        </feature>
 
-                        @if (Settings.Value.SystemNavMenus["Archive"])
-                        {
+                        <feature name="Menu_Archive">
                             <li class="nav-item">
                                 <a asp-controller="Home" asp-action="Archive" class="nav-link">
                                     <span class="icon-folder"></span>
                                     <strong>@Localizer["Archive"]</strong>
                                 </a>
                             </li>
-                        }
+                        </feature>
 
                         @await Component.InvokeAsync("Menu")
                     </ul>
