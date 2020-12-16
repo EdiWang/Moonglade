@@ -36,7 +36,7 @@
     },
     resetCaptchaImage: function () {
         d = new Date();
-        $('#img-captcha').attr('src', `/get-captcha-image?${d.getTime()}`);
+        $('#img-captcha').attr('src', `/captcha-image?${d.getTime()}`);
     },
     resizeImages: function () {
         $('.post-content img').removeAttr('height');

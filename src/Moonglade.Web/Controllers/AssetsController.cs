@@ -200,8 +200,8 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        [Route("get-captcha-image")]
-        public IActionResult GetCaptchaImage([FromServices] ISessionBasedCaptcha captcha)
+        [Route("captcha-image")]
+        public IActionResult CaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
             var w = _settings.CaptchaSettings.ImageWidth;
             var h = _settings.CaptchaSettings.ImageHeight;
