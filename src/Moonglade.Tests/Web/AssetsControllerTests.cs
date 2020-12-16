@@ -32,16 +32,16 @@ namespace Moonglade.Tests.Web
         [SetUp]
         public void Setup()
         {
-            _loggerMock = new Mock<ILogger<AssetsController>>();
-            _appSettingsMock = new Mock<IOptions<AppSettings>>();
-            _blogConfigMock = new Mock<IBlogConfig>();
-            _webHostEnvMock = new Mock<IWebHostEnvironment>();
-            _asyncImageStorageProviderMock = new Mock<IBlogImageStorage>();
-            _siteIconGeneratorMock = new Mock<ISiteIconGenerator>();
-            _imageStorageSettingsMock = new Mock<IOptions<ImageStorageSettings>>();
+            _loggerMock = new();
+            _appSettingsMock = new();
+            _blogConfigMock = new();
+            _webHostEnvMock = new();
+            _asyncImageStorageProviderMock = new();
+            _siteIconGeneratorMock = new();
+            _imageStorageSettingsMock = new();
             _imageStorageSettingsMock.Setup(p => p.Value).Returns(new ImageStorageSettings
             {
-                CDNSettings = new CDNSettings
+                CDNSettings = new()
                 {
                     CDNEndpoint = "https://fake-cdn.edi.wang/images",
                     EnableCDNRedirect = true
@@ -63,7 +63,7 @@ namespace Moonglade.Tests.Web
                 _webHostEnvMock.Object);
 
             var memCacheMock = new Mock<IMemoryCache>();
-            var result = await ctl.GetImageAsync(filename, memCacheMock.Object);
+            var result = await ctl.Image(filename, memCacheMock.Object);
             Assert.IsInstanceOf(typeof(RedirectResult), result);
             if (result is RedirectResult rdResult)
             {
@@ -88,7 +88,7 @@ namespace Moonglade.Tests.Web
                 _webHostEnvMock.Object);
 
             var memCacheMock = new Mock<IMemoryCache>();
-            var result = await ctl.GetImageAsync(filename, memCacheMock.Object);
+            var result = await ctl.Image(filename, memCacheMock.Object);
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
 

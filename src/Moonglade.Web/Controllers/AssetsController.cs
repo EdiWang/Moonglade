@@ -54,7 +54,7 @@ namespace Moonglade.Web.Controllers
         #region Blog Post Images
 
         [Route(@"uploads/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
-        public async Task<IActionResult> GetImageAsync(string filename, [FromServices] IMemoryCache cache)
+        public async Task<IActionResult> Image(string filename, [FromServices] IMemoryCache cache)
         {
             try
             {
@@ -98,8 +98,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("upload-image"), IgnoreAntiforgeryToken]
-        public async Task<IActionResult> UploadImageAsync(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
+        [HttpPost("image"), IgnoreAntiforgeryToken]
+        public async Task<IActionResult> Image(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
         {
             static bool IsValidColorValue(int colorValue)
             {
@@ -315,7 +315,7 @@ namespace Moonglade.Web.Controllers
 
                         using (var ms = new MemoryStream(siteIconBytes))
                         {
-                            var image = Image.FromStream(ms);
+                            var image = System.Drawing.Image.FromStream(ms);
                             if (image.Height != image.Width)
                             {
                                 throw new InvalidOperationException("Invalid Site Icon Data");
