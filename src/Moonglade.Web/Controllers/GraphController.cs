@@ -70,7 +70,7 @@ namespace Moonglade.Web.Controllers
             try
             {
                 // for security, only allow published posts to be listed to third party API calls
-                var list = await _postService.ListSegmentAsync(PostPublishStatus.Published);
+                var list = await _postService.ListSegmentAsync(PostStatus.Published);
                 return Ok(list);
             }
             catch (Exception e)

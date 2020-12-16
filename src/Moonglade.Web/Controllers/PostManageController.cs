@@ -43,21 +43,21 @@ namespace Moonglade.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var list = await _postService.ListSegmentAsync(PostPublishStatus.Published);
+            var list = await _postService.ListSegmentAsync(PostStatus.Published);
             return View(list);
         }
 
         [Route("draft")]
         public async Task<IActionResult> Draft()
         {
-            var list = await _postService.ListSegmentAsync(PostPublishStatus.Draft);
+            var list = await _postService.ListSegmentAsync(PostStatus.Draft);
             return View(list);
         }
 
         [Route("recycle-bin")]
         public async Task<IActionResult> RecycleBin()
         {
-            var list = await _postService.ListSegmentAsync(PostPublishStatus.Deleted);
+            var list = await _postService.ListSegmentAsync(PostStatus.Deleted);
             return View(list);
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Data.Spec
 {
-    public enum PostPublishStatus
+    public enum PostStatus
     {
         NotSet = 0,
         Draft = 1,

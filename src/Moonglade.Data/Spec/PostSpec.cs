@@ -57,20 +57,20 @@ namespace Moonglade.Data.Spec
             }
         }
 
-        public PostSpec(PostPublishStatus status)
+        public PostSpec(PostStatus status)
         {
             switch (status)
             {
-                case PostPublishStatus.Draft:
+                case PostStatus.Draft:
                     AddCriteria(p => !p.IsPublished && !p.IsDeleted);
                     break;
-                case PostPublishStatus.Published:
+                case PostStatus.Published:
                     AddCriteria(p => p.IsPublished && !p.IsDeleted);
                     break;
-                case PostPublishStatus.Deleted:
+                case PostStatus.Deleted:
                     AddCriteria(p => p.IsDeleted);
                     break;
-                case PostPublishStatus.NotSet:
+                case PostStatus.NotSet:
                     AddCriteria(p => true);
                     break;
                 default:

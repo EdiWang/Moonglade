@@ -206,9 +206,9 @@ namespace Moonglade.Core
             return psm;
         }
 
-        public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostPublishStatus postPublishStatus)
+        public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus postStatus)
         {
-            var spec = new PostSpec(postPublishStatus);
+            var spec = new PostSpec(postStatus);
             return _postRepo.SelectAsync(spec, p => new PostSegment
             {
                 Id = p.Id,

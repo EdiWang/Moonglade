@@ -30,7 +30,7 @@ namespace Moonglade.Core
                 return new List<Archive>();
             }
 
-            var spec = new PostSpec(PostPublishStatus.Published);
+            var spec = new PostSpec(PostStatus.Published);
             var list = await _postRepo.SelectAsync(spec, post => new
             {
                 post.PubDateUtc.Value.Year,
