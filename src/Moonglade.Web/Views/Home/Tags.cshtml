@@ -6,33 +6,16 @@
 @model IReadOnlyList<Moonglade.Model.DegreeTag>
 
 @functions {
-    private static int Weight(double weightPercent)
+    private static string Weight(double weightPercent)
     {
-        int weight;
-        if (weightPercent >= 99)
+        var weight = weightPercent switch
         {
-            weight = 1;
-        }
-        else if (weightPercent >= 70)
-        {
-            weight = 2;
-        }
-        else if (weightPercent >= 40)
-        {
-            weight = 3;
-        }
-        else if (weightPercent >= 20)
-        {
-            weight = 4;
-        }
-        else if (weightPercent >= 3)
-        {
-            weight = 5;
-        }
-        else
-        {
-            weight = 0;
-        }
+            >= 99 => "danger",
+            >= 70 => "success",
+            >= 40 => "primary",
+            >= 20 => "secondary",
+            _ => "outline-secondary"
+        };
         return weight;
     }
 }
@@ -46,23 +29,20 @@
 {
     var tagMax = Model.Select(p => p.Degree).Max();
 
-    <ul class="list-unstyled tagCloud">
+    <ul class="list-unstyled text-justify">
         @foreach (var tag in Model.OrderBy(t => t.DisplayName))
         {
             var weightPercent = Convert.ToInt32(tag.Degree) * 1.0 / Convert.ToInt32(tagMax) * 100;
             var weight = Weight(weightPercent);
 
-            if (weight >= 0)
-            {
-                <li class="d-inline-block">
-                    <a asp-controller="Home"
-                       asp-action="TagList"
-                       asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedName.ToLower())"
-                       class="weight@(weight) d-block mr-2" title="@(tag.Degree)">
-                        @tag.DisplayName.Replace("-", " ")
-                    </a>
-                </li>
-            }
+            <li class="d-inline-block mb-2 mr-2">
+                <a asp-controller="Home"
+                   asp-action="TagList"
+                   asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedName.ToLower())"
+                   class="btn btn-sm btn-@weight" title="@(tag.Degree)">
+                    @tag.DisplayName.Replace("-", " ")
+                </a>
+            </li>
         }
     </ul>
 }
