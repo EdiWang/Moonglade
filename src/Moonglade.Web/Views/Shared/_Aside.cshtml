@@ -23,8 +23,7 @@
         @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
     }
 
-    @if (Settings.Value.AsideWidgets["TopTags"])
-    {
+    <feature name="Widgets_TopTags">
         <section class="top-tags mb-4">
             <div class="card">
                 <div class="card-header">@Localizer["Top Tags"]</div>
@@ -37,20 +36,18 @@
                 </div>
             </div>
         </section>
-    }
+    </feature>
 
-    @if (Settings.Value.AsideWidgets["CategoryList"])
-    {
+    <feature name="Widgets_CategoryList">
         <section class="cat-list mb-4">
             <div class="card">
                 <div class="card-header">@Localizer["Categories"]</div>
                 @await Component.InvokeAsync("CategoryList", new { isMenu = false })
             </div>
         </section>
-    }
+    </feature>
 
-    @if (Settings.Value.AsideWidgets["SubscriptionButtons"])
-    {
+    <feature name="Widgets_SubscriptionButtons">
         <section class="aside-subscription text-center mb-4">
             <a class="btn btn-sm btn-round btn-outline-secondary mr-2" href="#" data-toggle="modal" data-target="#subscriptionmodal">
                 <span class="icon-rss"></span>
@@ -62,7 +59,7 @@
                 OPML
             </a>
         </section>
-    }
+    </feature>
 
     @if (BlogConfig.SecuritySettings.ShowAdminLoginButton)
     {
@@ -72,8 +69,7 @@
     }
 </aside>
 
-@if (Settings.Value.AsideWidgets["SubscriptionButtons"])
-{
+<feature name="Widgets_SubscriptionButtons">
     <div class="modal fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -106,4 +102,4 @@
             </div>
         </div>
     </div>
-}
+</feature>
