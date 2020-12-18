@@ -15,6 +15,7 @@ using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Caching;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Core.Notification;
@@ -120,6 +121,7 @@ namespace Moonglade.Web.Controllers
                 EnableComments = _blogConfig.ContentSettings.EnableComments,
                 RequireCommentReview = _blogConfig.ContentSettings.RequireCommentReview,
                 EnableWordFilter = _blogConfig.ContentSettings.EnableWordFilter,
+                WordFilterMode = _blogConfig.ContentSettings.WordFilterMode.ToString(),
                 UseFriendlyNotFoundImage = _blogConfig.ContentSettings.UseFriendlyNotFoundImage,
                 PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
                 HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
@@ -142,6 +144,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.ContentSettings.EnableComments = model.EnableComments;
             _blogConfig.ContentSettings.RequireCommentReview = model.RequireCommentReview;
             _blogConfig.ContentSettings.EnableWordFilter = model.EnableWordFilter;
+            _blogConfig.ContentSettings.WordFilterMode = Enum.Parse<WordFilterMode>(model.WordFilterMode);
             _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
             _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
             _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;

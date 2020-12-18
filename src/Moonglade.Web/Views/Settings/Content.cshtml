@@ -52,6 +52,19 @@
                         <span asp-validation-for="DisharmonyWords" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                     </div>
+                    <hr />
+                    <div>
+                        <label asp-for="WordFilterMode" class="mr-4"></label>
+
+                        <div class="custom-control custom-radio custom-control-inline">
+                            @Html.RadioButtonFor(model => model.WordFilterMode, "Mask", new { id = "Mask", @class = "custom-control-input" })
+                            <label class="custom-control-label" for="Mask">Mask Word</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            @Html.RadioButtonFor(model => model.WordFilterMode, "Block", new { id = "Block", @class = "custom-control-input" })
+                            <label class="custom-control-label" for="Block">Block Comment</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
