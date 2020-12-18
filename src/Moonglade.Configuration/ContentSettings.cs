@@ -12,6 +12,8 @@ namespace Moonglade.Configuration
 
         public bool EnableWordFilter { get; set; }
 
+        public WordFilterMode WordFilterMode { get; set; }
+
         public bool UseFriendlyNotFoundImage { get; set; }
 
         public int PostListPageSize { get; set; }
@@ -39,5 +41,11 @@ namespace Moonglade.Configuration
             HotTagAmount = 10;
             DefaultLangCode = "en-us";
         }
+    }
+
+    public enum WordFilterMode
+    {
+        Mask = 0,
+        Block = 1
     }
 }
