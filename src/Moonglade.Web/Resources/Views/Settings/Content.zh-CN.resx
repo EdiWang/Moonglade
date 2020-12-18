@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Block Comment" xml:space="preserve">
+    <value>阻止评论</value>
+  </data>
   <data name="Blocked words will be masked as *** in comment content." xml:space="preserve">
     <value>评论内容中的违禁词将被替换为***</value>
   </data>
@@ -131,6 +134,9 @@
   </data>
   <data name="e.g. Your blog post license information." xml:space="preserve">
     <value>例如：博客文章的许可协议</value>
+  </data>
+  <data name="Mask Word" xml:space="preserve">
+    <value>打码违禁词</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>保存</value>
