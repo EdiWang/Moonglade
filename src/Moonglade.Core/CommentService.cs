@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Edi.WordFilter;
 using Moonglade.Auditing;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -135,8 +136,21 @@ namespace Moonglade.Core
             {
                 var dw = _blogConfig.ContentSettings.DisharmonyWords;
                 var maskWordFilter = new MaskWordFilter(new StringWordSource(dw));
-                request.Username = maskWordFilter.FilterContent(request.Username);
-                request.Content = maskWordFilter.FilterContent(request.Content);
+
+                switch (_blogConfig.ContentSettings.WordFilterMode)
+                {
+                    case WordFilterMode.Mask:
+                        request.Username = maskWordFilter.FilterContent(request.Username);
+                        request.Content = maskWordFilter.FilterContent(request.Content);
+                        break;
+                    case WordFilterMode.Block:
+                        if (maskWordFilter.ContainsAnyWord(request.Username) || maskWordFilter.ContainsAnyWord(request.Content))
+                        {
+                            await Task.CompletedTask;
+                            return null;
+                        }
+                        break;
+                }
             }
 
             var model = new CommentEntity

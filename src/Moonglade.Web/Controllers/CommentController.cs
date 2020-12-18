@@ -64,6 +64,12 @@ namespace Moonglade.Web.Controllers
                 IpAddress = DNT ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
             });
 
+            if (response is null)
+            {
+                ModelState.AddModelError(nameof(model.Content), "Your comment contains bad bad word.");
+                return Conflict(ModelState);
+            }
+            
             if (_blogConfig.NotificationSettings.SendEmailOnNewComment && _notificationClient is not null)
             {
                 _ = Task.Run(async () =>
