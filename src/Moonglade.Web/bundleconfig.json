@@ -39,7 +39,7 @@
       "wwwroot/css/3rd/bootstrap.min.css",
       "wwwroot/css/3rd/toastr.min.css",
       "wwwroot/css/src/fonts.css",
-      "wwwroot/css/src/moonglade-base.css",
+      "wwwroot/css/src/base.css",
       "wwwroot/css/src/rwd.css",
       "wwwroot/css/src/navigation.css",
       "wwwroot/css/src/timeline.css",
