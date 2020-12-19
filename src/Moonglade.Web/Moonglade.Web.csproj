@@ -32,7 +32,7 @@
     <ProjectReference Include="..\Moonglade.DataPorting\Moonglade.DataPorting.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
     <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
-    <ProjectReference Include="..\Moonglade.Web.Authentication\Moonglade.Web.Authentication.csproj" />
+    <ProjectReference Include="..\Moonglade.Web.Authentication\Moonglade.Authentication.csproj" />
     <ProjectReference Include="..\SiteIconGenerator\SiteIconGenerator.csproj" />
   </ItemGroup>
 </Project>
