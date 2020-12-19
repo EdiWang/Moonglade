@@ -14,11 +14,11 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly CategoryService _categoryService;
+        private readonly CategoryService _catService;
 
-        public CategoryController(CategoryService categoryService)
+        public CategoryController(CategoryService catService)
         {
-            _categoryService = categoryService;
+            _catService = catService;
         }
 
         [HttpPost("create")]
@@ -35,8 +35,7 @@ namespace Moonglade.Web.Controllers
                 DisplayName = model.DisplayName
             };
 
-            await _categoryService.CreateAsync(request);
-
+            await _catService.CreateAsync(request);
             return Ok(model);
         }
 
@@ -45,7 +44,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var cat = await _categoryService.GetAsync(id);
+            var cat = await _catService.GetAsync(id);
             if (null == cat) return NotFound();
 
             var model = new CategoryEditViewModel
@@ -73,8 +72,7 @@ namespace Moonglade.Web.Controllers
                 DisplayName = model.DisplayName
             };
 
-            await _categoryService.UpdateAsync(request);
-
+            await _catService.UpdateAsync(request);
             return Ok(model);
         }
 
@@ -89,8 +87,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _categoryService.DeleteAsync(id);
-
+            await _catService.DeleteAsync(id);
             return Ok();
         }
     }
