@@ -42,7 +42,7 @@ namespace Moonglade.Tests.Core
         [TestCase("blob:https://996.icu/fubao", ExpectedResult = "#")]
         public string SterilizeMenuLink(string rawUrl)
         {
-            return MenuService.SterilizeMenuLink(rawUrl);
+            return MenuService.SterilizeLink(rawUrl);
         }
     }
 }

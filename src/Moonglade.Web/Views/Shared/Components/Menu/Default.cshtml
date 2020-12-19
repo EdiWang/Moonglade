@@ -7,7 +7,7 @@
     {
         <li id="menu-li-@menuModel.Id" class="nav-item">
             <a id="menu-a-@menuModel.Id"
-               href="@MenuService.SterilizeMenuLink(menuModel.Url)"
+               href="@MenuService.SterilizeLink(menuModel.Url)"
                class="nav-link"
                target="@(menuModel.IsOpenInNewTab ? "_blank" : null)">
                 <span class="@menuModel.Icon"></span>

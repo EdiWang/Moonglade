@@ -22,21 +22,21 @@ namespace Moonglade.Web.Controllers
     public class PostManageController : BlogController
     {
         private readonly PostService _postService;
-        private readonly CategoryService _categoryService;
+        private readonly CategoryService _catService;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly ILogger<PostManageController> _logger;
 
         public PostManageController(
             PostService postService,
-            CategoryService categoryService,
+            CategoryService catService,
             IBlogConfig blogConfig,
             IDateTimeResolver dateTimeResolver,
             ILogger<PostManageController> logger)
         {
             _postService = postService;
             _blogConfig = blogConfig;
-            _categoryService = categoryService;
+            _catService = catService;
             _dateTimeResolver = dateTimeResolver;
             _logger = logger;
         }
@@ -70,10 +70,10 @@ namespace Moonglade.Web.Controllers
                 EnableComment = true,
                 ExposedToSiteMap = true,
                 FeedIncluded = true,
-                ContentLanguageCode = _blogConfig.ContentSettings.DefaultLangCode
+                LanguageCode = _blogConfig.ContentSettings.DefaultLangCode
             };
 
-            var cats = await _categoryService.GetAllAsync();
+            var cats = await _catService.GetAllAsync();
             if (cats.Count > 0)
             {
                 var cbCatList = cats.Select(p =>
@@ -100,7 +100,7 @@ namespace Moonglade.Web.Controllers
                 EnableComment = post.CommentEnabled,
                 ExposedToSiteMap = post.ExposedToSiteMap,
                 FeedIncluded = post.IsFeedIncluded,
-                ContentLanguageCode = post.ContentLanguageCode
+                LanguageCode = post.ContentLanguageCode
             };
 
             if (post.PubDateUtc is not null)
@@ -115,7 +115,7 @@ namespace Moonglade.Web.Controllers
             tagStr = tagStr.TrimEnd(',');
             viewModel.Tags = tagStr;
 
-            var cats = await _categoryService.GetAllAsync();
+            var cats = await _catService.GetAllAsync();
             if (cats.Count > 0)
             {
                 var cbCatList = cats.Select(p =>
@@ -153,7 +153,7 @@ namespace Moonglade.Web.Controllers
                     EnableComment = model.EnableComment,
                     ExposedToSiteMap = model.ExposedToSiteMap,
                     IsFeedIncluded = model.FeedIncluded,
-                    ContentLanguageCode = model.ContentLanguageCode,
+                    ContentLanguageCode = model.LanguageCode,
                     IsPublished = model.IsPublished,
                     Tags = tags,
                     CategoryIds = model.SelectedCategoryIds

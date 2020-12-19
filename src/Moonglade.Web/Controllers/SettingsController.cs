@@ -102,8 +102,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
             _blogConfig.GeneralSettings.AutoDarkLightTheme = model.AutoDarkLightTheme;
 
-            await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
-            _blogConfig.RequireRefresh();
+            await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
 
             AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
@@ -155,9 +154,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
             _blogConfig.ContentSettings.DefaultLangCode = model.DefaultLangCode;
 
-            await _blogConfig.SaveConfigurationAsync(_blogConfig.ContentSettings);
-            _blogConfig.RequireRefresh();
-
+            await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, "Content Settings updated.");
 
             return Ok();
@@ -192,9 +189,7 @@ namespace Moonglade.Web.Controllers
             settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
             settings.SendEmailOnNewComment = model.SendEmailOnNewComment;
 
-            await _blogConfig.SaveConfigurationAsync(settings);
-            _blogConfig.RequireRefresh();
-
+            await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");
 
             return Ok();
@@ -242,9 +237,7 @@ namespace Moonglade.Web.Controllers
             settings.RssTitle = model.RssTitle;
             settings.UseFullContent = model.UseFullContent;
 
-            await _blogConfig.SaveConfigurationAsync(settings);
-            _blogConfig.RequireRefresh();
-
+            await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
             return Ok();
@@ -280,9 +273,7 @@ namespace Moonglade.Web.Controllers
             settings.FontSize = model.FontSize;
             settings.WatermarkText = model.WatermarkText;
 
-            await _blogConfig.SaveConfigurationAsync(settings);
-            _blogConfig.RequireRefresh();
-
+            await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
             return Ok();
@@ -316,8 +307,7 @@ namespace Moonglade.Web.Controllers
             var fs = _blogConfig.FriendLinksSettings;
             fs.ShowFriendLinksSection = model.FriendLinkSettingsViewModel.ShowFriendLinksSection;
 
-            await _blogConfig.SaveConfigurationAsync(fs);
-            _blogConfig.RequireRefresh();
+            await _blogConfig.SaveAsync(fs);
             return Ok();
         }
 
@@ -408,9 +398,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 _blogConfig.GeneralSettings.AvatarBase64 = base64Img;
-                await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
-                _blogConfig.RequireRefresh();
-
+                await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
 
                 return Json(true);
@@ -450,8 +438,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 _blogConfig.GeneralSettings.SiteIconBase64 = base64Img;
-                await _blogConfig.SaveConfigurationAsync(_blogConfig.GeneralSettings);
-                _blogConfig.RequireRefresh();
+                await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
 
                 if (Directory.Exists(SiteIconDirectory))
                 {
@@ -501,9 +488,7 @@ namespace Moonglade.Web.Controllers
             settings.EnablePingBackReceive = model.EnablePingbackReceive;
             settings.EnableOpenGraph = model.EnableOpenGraph;
 
-            await _blogConfig.SaveConfigurationAsync(settings);
-            _blogConfig.RequireRefresh();
-
+            await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
             return Ok();
         }
@@ -560,9 +545,7 @@ namespace Moonglade.Web.Controllers
             settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
             settings.EnablePostRawEndpoint = model.EnablePostRawEndpoint;
 
-            await _blogConfig.SaveConfigurationAsync(settings);
-            _blogConfig.RequireRefresh();
-
+            await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
             return Ok();
         }
@@ -610,9 +593,7 @@ namespace Moonglade.Web.Controllers
             settings.EnableCustomCss = model.EnableCustomCss;
             settings.CssCode = model.CssCode;
 
-            await _blogConfig.SaveConfigurationAsync(settings);
-            _blogConfig.RequireRefresh();
-
+            await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
             return Ok();
         }

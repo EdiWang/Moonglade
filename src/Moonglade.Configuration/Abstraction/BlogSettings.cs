@@ -2,6 +2,6 @@
 {
     public class BlogSettings
     {
-        // Empty base class to restrain SaveConfigurationAsync type
+        // Empty base class to restrain SaveAsync type
     }
 }

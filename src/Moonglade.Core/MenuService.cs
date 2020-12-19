@@ -74,11 +74,11 @@ namespace Moonglade.Core
                 throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
             }
 
-            var sUrl = SterilizeMenuLink(request.Url.Trim());
-            _logger.LogInformation($"Sterilized URL from '{request.Url}' to '{sUrl}'");
+            var url = SterilizeLink(request.Url.Trim());
+            _logger.LogInformation($"Sterilized URL from '{request.Url}' to '{url}'");
 
             menu.Title = request.Title.Trim();
-            menu.Url = sUrl;
+            menu.Url = url;
             menu.DisplayOrder = request.DisplayOrder;
             menu.Icon = request.Icon;
             menu.IsOpenInNewTab = request.IsOpenInNewTab;
@@ -101,22 +101,7 @@ namespace Moonglade.Core
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Menu '{id}' deleted.");
         }
 
-        private static Menu EntityToMenuModel(MenuEntity entity)
-        {
-            if (entity is null) return null;
-
-            return new()
-            {
-                Id = entity.Id,
-                Title = entity.Title.Trim(),
-                DisplayOrder = entity.DisplayOrder,
-                Icon = entity.Icon.Trim(),
-                Url = entity.Url.Trim(),
-                IsOpenInNewTab = entity.IsOpenInNewTab
-            };
-        }
-
-        public static string SterilizeMenuLink(string rawUrl)
+        public static string SterilizeLink(string rawUrl)
         {
             bool IsUnderLocalSlash()
             {
@@ -164,6 +149,21 @@ namespace Moonglade.Core
             }
 
             return rawUrl;
+        }
+
+        private static Menu EntityToMenuModel(MenuEntity entity)
+        {
+            if (entity is null) return null;
+
+            return new()
+            {
+                Id = entity.Id,
+                Title = entity.Title.Trim(),
+                DisplayOrder = entity.DisplayOrder,
+                Icon = entity.Icon.Trim(),
+                Url = entity.Url.Trim(),
+                IsOpenInNewTab = entity.IsOpenInNewTab
+            };
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Moonglade.Configuration
             _hasInitialized = true;
         }
 
-        public async Task SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings
+        public async Task SaveAsync<T>(T blogSettings) where T : BlogSettings
         {
             async Task SetConfiguration(string key, string value)
             {
@@ -92,6 +92,7 @@ namespace Moonglade.Configuration
             try
             {
                 await task;
+                Dirty();
             }
             catch (Exception e)
             {
@@ -100,7 +101,7 @@ namespace Moonglade.Configuration
             }
         }
 
-        public void RequireRefresh()
+        protected void Dirty()
         {
             _hasInitialized = false;
         }

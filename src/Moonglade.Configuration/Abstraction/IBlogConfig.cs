@@ -14,8 +14,6 @@ namespace Moonglade.Configuration.Abstraction
         SecuritySettings SecuritySettings { get; set; }
         CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
-        Task SaveConfigurationAsync<T>(T blogSettings) where T : BlogSettings;
-
-        void RequireRefresh();
+        Task SaveAsync<T>(T blogSettings) where T : BlogSettings;
     }
 }
