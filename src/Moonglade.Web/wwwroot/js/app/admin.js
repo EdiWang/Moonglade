@@ -161,7 +161,7 @@ var postEditor = {
                 images_upload_url: '/image',
                 images_upload_credentials: true,
                 body_class: 'post-content',
-                content_css: '/css/tinymce-editor-bs-bundle.min.css',
+                content_css: '/css/tinymce-bs-bundle.min.css',
                 codesample_languages: [
                     { text: 'Bash', value: 'bash' },
                     { text: 'C#', value: 'csharp' },

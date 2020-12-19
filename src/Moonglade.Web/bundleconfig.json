@@ -1,9 +1,9 @@
 [
   {
-    "outputFileName": "wwwroot/css/tinymce-editor-bs-bundle.css",
+    "outputFileName": "wwwroot/css/tinymce-bs-bundle.css",
     "inputFiles": [
       "wwwroot/css/3rd/bootstrap.min.css",
-      "wwwroot/css/src/tinymce-editor-content.css",
+      "wwwroot/css/src/tinymce-content.css",
       "wwwroot/css/src/post-slug.css"
     ]
   },
@@ -34,7 +34,7 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/mooglade-css-bundle.css",
+    "outputFileName": "wwwroot/css/bundle.css",
     "inputFiles": [
       "wwwroot/css/3rd/bootstrap.min.css",
       "wwwroot/css/3rd/toastr.min.css",
@@ -49,7 +49,7 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/mooglade-admin-bundle.css",
+    "outputFileName": "wwwroot/css/admin-bundle.css",
     "inputFiles": [
       "wwwroot/css/3rd/bootstrap-tagsinput.css",
       "wwwroot/css/3rd/bootstrap-tagsinput-typeahead.css",
