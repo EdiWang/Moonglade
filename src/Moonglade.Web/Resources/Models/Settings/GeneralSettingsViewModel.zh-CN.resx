@@ -180,4 +180,7 @@
   <data name="Please enter your name" xml:space="preserve">
     <value>请输入您的名字</value>
   </data>
+  <data name="Side Bar Display" xml:space="preserve">
+    <value>侧边栏位置</value>
+  </data>
 </root>

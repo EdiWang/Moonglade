@@ -57,6 +57,9 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(2048)]
         public string SideBarCustomizedHtmlPitch { get; set; }
 
+        [Display(Name = "Side Bar Display")]
+        public string SideBarOption { get; set; }
+
         [Display(Name = "Footer Pitch (HTML)")]
         [DataType(DataType.MultilineText)]
         [MaxLength(4096)]

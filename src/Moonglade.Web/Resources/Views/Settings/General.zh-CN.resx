@@ -144,17 +144,26 @@
   <data name="Change Site Icon" xml:space="preserve">
     <value>更换网站图标</value>
   </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>不显示</value>
+  </data>
   <data name="Drag and drop image file here" xml:space="preserve">
     <value>拖拽图片文件到此处</value>
   </data>
   <data name="HTML Pitch" xml:space="preserve">
     <value>HTML区域</value>
   </data>
+  <data name="Left" xml:space="preserve">
+    <value>左侧</value>
+  </data>
   <data name="New Avatar" xml:space="preserve">
     <value>新头像</value>
   </data>
   <data name="New Icon" xml:space="preserve">
     <value>新图标</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>右侧</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>保存</value>
