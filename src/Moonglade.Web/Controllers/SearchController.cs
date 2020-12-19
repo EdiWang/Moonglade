@@ -38,15 +38,15 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("search")]
-        public IActionResult Index(string term)
+        public IActionResult Post(string term)
         {
             return !string.IsNullOrWhiteSpace(term) ?
-                RedirectToAction(nameof(SearchGet), new { term }) :
+                RedirectToAction(nameof(Search), new { term }) :
                 RedirectToAction("Index", "Home");
         }
 
         [HttpGet("search/{term}")]
-        public async Task<IActionResult> SearchGet(string term)
+        public async Task<IActionResult> Search(string term)
         {
             if (string.IsNullOrWhiteSpace(term))
             {
