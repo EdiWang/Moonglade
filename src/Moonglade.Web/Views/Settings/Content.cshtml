@@ -2,6 +2,7 @@
     Layout = "_LayoutAdmin";
 }
 
+@using Moonglade.Configuration
 @model ContentSettingsViewModel
 
 <partial name="_SettingsHeader" />
@@ -57,12 +58,12 @@
                         <label asp-for="WordFilterMode" class="mr-4"></label>
 
                         <div class="custom-control custom-radio custom-control-inline">
-                            @Html.RadioButtonFor(model => model.WordFilterMode, "Mask", new { id = "Mask", @class = "custom-control-input" })
-                            <label class="custom-control-label" for="Mask">@Localizer["Mask Word"]</label>
+                            @Html.RadioButtonFor(model => model.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "custom-control-input" })
+                            <label class="custom-control-label" for="@WordFilterMode.Mask.ToString()">@Localizer["Mask Word"]</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            @Html.RadioButtonFor(model => model.WordFilterMode, "Block", new { id = "Block", @class = "custom-control-input" })
-                            <label class="custom-control-label" for="Block">@Localizer["Block Comment"]</label>
+                            @Html.RadioButtonFor(model => model.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "custom-control-input" })
+                            <label class="custom-control-label" for="@WordFilterMode.Block.ToString()">@Localizer["Block Comment"]</label>
                         </div>
                     </div>
                 </div>
