@@ -93,7 +93,7 @@ namespace Moonglade.ImageStorage.Providers
         {
             // Make sure Blob Container exists.
             if (!await _client.BucketExistsAsync(_bucketName)) return false;
-            
+
             try
             {
                 await _client.StatObjectAsync(_bucketName, fileName);

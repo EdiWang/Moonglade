@@ -69,7 +69,7 @@ namespace Moonglade.Web.Controllers
                 ModelState.AddModelError(nameof(model.Content), "Your comment contains bad bad word.");
                 return Conflict(ModelState);
             }
-            
+
             if (_blogConfig.NotificationSettings.SendEmailOnNewComment && _notificationClient is not null)
             {
                 _ = Task.Run(async () =>

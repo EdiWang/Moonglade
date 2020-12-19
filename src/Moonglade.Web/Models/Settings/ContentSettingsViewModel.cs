@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Moonglade.Configuration;
 
 namespace Moonglade.Web.Models.Settings
 {

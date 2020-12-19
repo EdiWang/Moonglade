@@ -20,7 +20,7 @@ namespace Moonglade.Core
         {
             var osVer = Environment.OSVersion;
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return osVer.VersionString;
-            
+
             try
             {
                 var currentVersion = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
