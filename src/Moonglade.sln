@@ -63,6 +63,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Caching", "Moongl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{F9400B71-ADCD-4FBE-A88F-F85873FDC60B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Foaf", "Moonglade.Foaf\Moonglade.Foaf.csproj", "{E2921551-4799-44F1-95A8-E7932D19202F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{BBC1C4FB-52C8-4E89-BED5-B461298A652B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBC1C4FB-52C8-4E89-BED5-B461298A652B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBC1C4FB-52C8-4E89-BED5-B461298A652B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2921551-4799-44F1-95A8-E7932D19202F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2921551-4799-44F1-95A8-E7932D19202F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2921551-4799-44F1-95A8-E7932D19202F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2921551-4799-44F1-95A8-E7932D19202F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +156,7 @@ Global
 		{B6B1EDB2-8DAC-4D46-AF84-7673408F5F53} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
 		{F2B7F09C-55B8-4A24-9CCB-9883C0B72DF1} = {BE685106-CE96-4A43-A161-3425565C6A9D}
 		{BBC1C4FB-52C8-4E89-BED5-B461298A652B} = {F9400B71-ADCD-4FBE-A88F-F85873FDC60B}
+		{E2921551-4799-44F1-95A8-E7932D19202F} = {97439361-03B4-46C9-BC06-49F76BA57879}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}

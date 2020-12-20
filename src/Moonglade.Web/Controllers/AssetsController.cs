@@ -2,19 +2,23 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Edi.ImageWatermark;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Foaf;
 using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
@@ -376,6 +380,25 @@ namespace Moonglade.Web.Controllers
                 Orientation = "portrait"
             };
             return Json(model);
+        }
+
+        [ResponseCache(Duration = 3600)]
+        [Route("foaf.xml")]
+        public async Task<IActionResult> Foaf([FromServices] FriendLinkService friendLinkService, [FromServices] LinkGenerator linkGenerator)
+        {
+            var friends = await friendLinkService.GetAllAsync();
+            var foafDoc = new FoafDoc
+            {
+                Name = _blogConfig.GeneralSettings.OwnerName,
+                BlogUrl = ResolveRootUrl(_blogConfig, true),
+                Email = _blogConfig.NotificationSettings.AdminEmail,
+                PhotoUrl = linkGenerator.GetUriByAction(HttpContext, "Avatar", "Assets")
+            };
+            var requestUrl = Request.GetUri().ToString();
+            var bytes = await FoafWriter.GetFoafData(foafDoc, requestUrl, friends);
+
+            var xmlContent = Encoding.UTF8.GetString(bytes);
+            return Content(xmlContent, FoafWriter.ContentType);
         }
 
         [HttpGet("custom.css")]

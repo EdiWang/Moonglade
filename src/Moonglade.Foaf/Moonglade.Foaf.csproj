@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+  </ItemGroup>
+
+</Project>

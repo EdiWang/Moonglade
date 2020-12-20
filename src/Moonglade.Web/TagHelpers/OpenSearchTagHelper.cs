@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Moonglade.Web.TagHelpers
 {
@@ -11,7 +12,7 @@ namespace Moonglade.Web.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "link";
-            output.Attributes.SetAttribute("type", "application/opensearchdescription+xml");
+            output.Attributes.SetAttribute("type", new HtmlString("application/opensearchdescription+xml"));
             output.Attributes.SetAttribute("rel", "search");
             output.Attributes.SetAttribute("title", Title.Trim());
             output.Attributes.SetAttribute("href", Href.Trim());
