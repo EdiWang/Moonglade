@@ -139,7 +139,7 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [X] Pingback
 - [X] Reader View
 - [ ] APML - Not planned
-- [ ] FOAF - Under triage
+- [X] FOAF
 - [ ] BlogML - Under triage
 - [ ] Trackback - Not planned
 - [ ] RSD - Not planned
