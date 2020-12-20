@@ -8,6 +8,9 @@ using Moonglade.Model;
 
 namespace Moonglade.Foaf
 {
+    /// <summary>
+    /// http://xmlns.com/foaf/spec/20140114.html
+    /// </summary>
     public class FoafWriter
     {
         private static Dictionary<string, string> _xmlNamespaces;
@@ -15,13 +18,12 @@ namespace Moonglade.Foaf
             _xmlNamespaces ??= new()
             {
                 { "foaf", "http://xmlns.com/foaf/0.1/" },
-                // { "admin", "http://webns.net/mvcb/" },
                 { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" }
             };
 
         public static string ContentType => "application/rdf+xml";
 
-        public void WriteFoaf(Stream ms, string name, string currentRequestUrl, List<FriendLink> friends)
+        public void WriteFoaf(Stream ms, string name, string blogUrl, string email, string photoUrl, string currentRequestUrl, List<FriendLink> friends)
         {
             // begin FOAF
             var writer = GetWriter(ms);
@@ -39,9 +41,12 @@ namespace Moonglade.Foaf
 
             var me = new FoafPerson("#me")
             {
+                Blog = blogUrl,
+                Email = email,
+                PhotoUrl = photoUrl,
                 Friends = new()
             };
-            
+
             foreach (var friend in friends)
             {
                 me.Friends.Add(new("#" + friend.Title) { Homepage = friend.LinkUrl });
