@@ -23,7 +23,7 @@ namespace Moonglade.Foaf
 
         public static string ContentType => "application/rdf+xml";
 
-        public void WriteFoaf(Stream ms, string name, string blogUrl, string email, string photoUrl, string currentRequestUrl, List<FriendLink> friends)
+        public static void WriteFoaf(Stream ms, string name, string blogUrl, string email, string photoUrl, string currentRequestUrl, IReadOnlyList<FriendLink> friends)
         {
             // begin FOAF
             var writer = GetWriter(ms);

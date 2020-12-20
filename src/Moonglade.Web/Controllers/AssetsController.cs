@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Edi.ImageWatermark;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +18,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Foaf;
 using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
@@ -376,6 +380,22 @@ namespace Moonglade.Web.Controllers
                 Orientation = "portrait"
             };
             return Json(model);
+        }
+
+        [ResponseCache(Duration = 3600)]
+        [Route("foaf.xml")]
+        public async Task<IActionResult> Foaf([FromServices] FriendLinkService friendLinkService)
+        {
+            await using var ms = new MemoryStream();
+
+            var friends = await friendLinkService.GetAllAsync();
+            FoafWriter.WriteFoaf(ms, 
+                _blogConfig.GeneralSettings.OwnerName, _blogConfig.GeneralSettings.CanonicalPrefix, _blogConfig.NotificationSettings.AdminEmail, Url.Action("Avatar"), Request.GetUri().ToString(), friends);
+            
+            await ms.FlushAsync();
+            var bytes = ms.ToArray();
+            var xmlContent = Encoding.UTF8.GetString(bytes);
+            return Content(xmlContent, FoafWriter.ContentType);
         }
 
         [HttpGet("custom.css")]
