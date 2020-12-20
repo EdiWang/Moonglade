@@ -389,7 +389,7 @@ namespace Moonglade.Web.Controllers
             await using var ms = new MemoryStream();
 
             var friends = await friendLinkService.GetAllAsync();
-            FoafWriter.WriteFoaf(ms, 
+            await FoafWriter.WriteFoaf(ms, 
                 _blogConfig.GeneralSettings.OwnerName, _blogConfig.GeneralSettings.CanonicalPrefix, _blogConfig.NotificationSettings.AdminEmail, Url.Action("Avatar"), Request.GetUri().ToString(), friends);
             
             await ms.FlushAsync();

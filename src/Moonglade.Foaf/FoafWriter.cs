@@ -42,6 +42,7 @@ namespace Moonglade.Foaf
 
             var me = new FoafPerson("#me")
             {
+                Name = name,
                 Blog = blogUrl,
                 Email = email,
                 PhotoUrl = photoUrl,
@@ -50,7 +51,11 @@ namespace Moonglade.Foaf
 
             foreach (var friend in friends)
             {
-                me.Friends.Add(new("#" + friend.Title) { Homepage = friend.LinkUrl });
+                me.Friends.Add(new("#" + friend.Id)
+                {
+                    Name = friend.Title,
+                    Homepage = friend.LinkUrl
+                });
             }
 
             await WriteFoafPerson(writer, me, currentRequestUrl);
@@ -137,7 +142,7 @@ namespace Moonglade.Foaf
 
         private static async Task<XmlWriter> GetWriter(Stream stream)
         {
-            var settings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true };
+            var settings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true, Indent = true };
             var xmlWriter = XmlWriter.Create(stream, settings);
 
             await xmlWriter.WriteStartDocumentAsync();
