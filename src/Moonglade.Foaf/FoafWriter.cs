@@ -24,12 +24,11 @@ namespace Moonglade.Foaf
 
         public static string ContentType => "application/rdf+xml";
 
-        public static async Task WriteFoaf(Stream ms, string name, string blogUrl, string email, string photoUrl, string currentRequestUrl, IReadOnlyList<FriendLink> friends)
+        public static async Task<byte[]> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink> friends)
         {
-            // begin FOAF
+            await using var ms = new MemoryStream();
             var writer = await GetWriter(ms);
 
-            // write DOCUMENT
             await writer.WriteStartElementAsync("foaf", "PersonalProfileDocument", null);
             await writer.WriteAttributeStringAsync("rdf", "about", null, string.Empty);
             await writer.WriteStartElementAsync("foaf", "maker", null);
@@ -42,10 +41,10 @@ namespace Moonglade.Foaf
 
             var me = new FoafPerson("#me")
             {
-                Name = name,
-                Blog = blogUrl,
-                Email = email,
-                PhotoUrl = photoUrl,
+                Name = doc.Name,
+                Blog = doc.BlogUrl,
+                Email = doc.Email,
+                PhotoUrl = doc.PhotoUrl,
                 Friends = new()
             };
 
@@ -63,6 +62,10 @@ namespace Moonglade.Foaf
             await writer.WriteEndElementAsync();
             await writer.WriteEndDocumentAsync();
             writer.Close();
+
+            await ms.FlushAsync();
+            var bytes = ms.ToArray();
+            return bytes;
         }
 
         private static async Task WriteFoafPerson(XmlWriter writer, FoafPerson person, string currentRequestUrl)

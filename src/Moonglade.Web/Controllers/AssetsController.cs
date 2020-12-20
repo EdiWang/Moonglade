@@ -386,14 +386,17 @@ namespace Moonglade.Web.Controllers
         [Route("foaf.xml")]
         public async Task<IActionResult> Foaf([FromServices] FriendLinkService friendLinkService)
         {
-            await using var ms = new MemoryStream();
-
             var friends = await friendLinkService.GetAllAsync();
-            await FoafWriter.WriteFoaf(ms, 
-                _blogConfig.GeneralSettings.OwnerName, _blogConfig.GeneralSettings.CanonicalPrefix, _blogConfig.NotificationSettings.AdminEmail, Url.Action("Avatar"), Request.GetUri().ToString(), friends);
-            
-            await ms.FlushAsync();
-            var bytes = ms.ToArray();
+            var foafDoc = new FoafDoc
+            {
+                Name = _blogConfig.GeneralSettings.OwnerName,
+                BlogUrl = _blogConfig.GeneralSettings.CanonicalPrefix,
+                Email = _blogConfig.NotificationSettings.AdminEmail,
+                PhotoUrl = Url.Action("Avatar")
+            };
+            var requestUrl = Request.GetUri().ToString();
+            var bytes = await FoafWriter.GetFoafData(foafDoc, requestUrl, friends);
+
             var xmlContent = Encoding.UTF8.GetString(bytes);
             return Content(xmlContent, FoafWriter.ContentType);
         }
