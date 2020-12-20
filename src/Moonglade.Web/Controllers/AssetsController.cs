@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -12,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -384,15 +385,15 @@ namespace Moonglade.Web.Controllers
 
         [ResponseCache(Duration = 3600)]
         [Route("foaf.xml")]
-        public async Task<IActionResult> Foaf([FromServices] FriendLinkService friendLinkService)
+        public async Task<IActionResult> Foaf([FromServices] FriendLinkService friendLinkService, [FromServices] LinkGenerator linkGenerator)
         {
             var friends = await friendLinkService.GetAllAsync();
             var foafDoc = new FoafDoc
             {
                 Name = _blogConfig.GeneralSettings.OwnerName,
-                BlogUrl = _blogConfig.GeneralSettings.CanonicalPrefix,
+                BlogUrl = ResolveRootUrl(_blogConfig, true),
                 Email = _blogConfig.NotificationSettings.AdminEmail,
-                PhotoUrl = Url.Action("Avatar")
+                PhotoUrl = linkGenerator.GetUriByAction(HttpContext, "Avatar", "Assets")
             };
             var requestUrl = Request.GetUri().ToString();
             var bytes = await FoafWriter.GetFoafData(foafDoc, requestUrl, friends);
