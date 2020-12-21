@@ -9,14 +9,12 @@ app-bundle.js
 app-bundle.min.js
 admin-bundle.js
 admin-bundle.min.js
-errorpages-bundle.css
-errorpages-bundle.min.css
-mooglade-css-bundle.css
-mooglade-css-bundle.min.css
-mooglade-admin-bundle.css
-mooglade-admin-bundle.min.css
-tinymce-editor-bs-bundle.css
-tinymce-editor-bs-bundle.min.css
+bundle.css
+bundle.min.css
+admin-bundle.css
+admin-bundle.min.css
+tinymce-bs-bundle.css
+tinymce-bs-bundle.min.css
 
 ## Libman Restore on dotnet build
 lib/
