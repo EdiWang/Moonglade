@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -382,6 +383,7 @@ namespace Moonglade.Web.Controllers
             return Json(model);
         }
 
+        [FeatureGate(FeatureFlags.Foaf)]
         [ResponseCache(Duration = 3600)]
         [Route("foaf.xml")]
         public async Task<IActionResult> Foaf([FromServices] FriendLinkService friendLinkService, [FromServices] LinkGenerator linkGenerator)

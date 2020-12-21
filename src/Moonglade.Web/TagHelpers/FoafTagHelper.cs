@@ -8,7 +8,7 @@ namespace Moonglade.Web.TagHelpers
     public class FoafTagHelper : TagHelper
     {
         public string Href { get; set; }
-        
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "link";

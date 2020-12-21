@@ -41,6 +41,7 @@ namespace Moonglade.Model.Settings
     public enum FeatureFlags
     {
         EnableWebApi,
-        EnableAudit
+        EnableAudit,
+        Foaf
     }
 }
