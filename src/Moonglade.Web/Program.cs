@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -55,6 +56,18 @@ namespace Moonglade.Web
                               .ConfigureLogging(logging =>
                               {
                                   logging.AddAzureWebAppDiagnostics();
+                              })
+                              .ConfigureAppConfiguration((hostingContext, config) =>
+                              {
+                                  var settings = config.Build();
+                                  if (bool.Parse(settings["AppSettings:PreferAzureAppConfiguration"]))
+                                  {
+                                      config.AddAzureAppConfiguration(options =>
+                                      {
+                                          options.Connect(settings["ConnectionStrings:AzureAppConfig"])
+                                              .UseFeatureFlags();
+                                      });
+                                  }
                               });
                 });
 
