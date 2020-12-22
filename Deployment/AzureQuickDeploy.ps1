@@ -109,8 +109,7 @@ if (!$appExists) {
     }
     else {
         Write-Host "Using Windows Plan with deployment from GitHub"
-        $echo = az webapp create -g $rsgName -p $aspName -n $webAppName
-        $echo = az webapp config set -g $rsgName -n $webAppName --net-framework-version v5.0
+        $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --runtime "DOTNET |5.0"
     }
     $echo = az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false --http20-enabled true
 }
