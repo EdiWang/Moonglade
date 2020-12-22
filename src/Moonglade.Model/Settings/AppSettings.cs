@@ -42,6 +42,7 @@ namespace Moonglade.Model.Settings
     {
         EnableWebApi,
         EnableAudit,
-        Foaf
+        Foaf,
+        OPML
     }
 }
