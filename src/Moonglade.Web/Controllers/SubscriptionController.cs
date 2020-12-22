@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 
 namespace Moonglade.Web.Controllers
@@ -26,7 +28,8 @@ namespace Moonglade.Web.Controllers
             _categoryService = categoryService;
             _blogConfig = blogConfig;
         }
-
+        
+        [FeatureGate(FeatureFlags.OPML)]
         [Route("opml")]
         public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig, [FromServices] IMemoryStreamOpmlWriter opmlWriter)
         {

@@ -54,10 +54,12 @@
                 RSS / Atom
             </a>
 
-            <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm btn-round btn-outline-secondary" target="_blank">
-                <span class="icon-embed2"></span>
-                OPML
-            </a>
+            <feature name="OPML">
+                <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm btn-round btn-outline-secondary" target="_blank">
+                    <span class="icon-embed2"></span>
+                    OPML
+                </a>
+            </feature>
         </section>
     </feature>
 
