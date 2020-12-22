@@ -43,6 +43,7 @@ namespace Moonglade.Model.Settings
         EnableWebApi,
         EnableAudit,
         Foaf,
-        OPML
+        OPML,
+        OpenSearch
     }
 }

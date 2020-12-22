@@ -1,9 +1,11 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Controllers
 {
@@ -16,6 +18,7 @@ namespace Moonglade.Web.Controllers
             _searchService = searchService;
         }
 
+        [FeatureGate(FeatureFlags.OpenSearch)]
         [Route("opensearch")]
         [ResponseCache(Duration = 3600)]
         public async Task<IActionResult> OpenSearch([FromServices] IBlogConfig blogConfig)

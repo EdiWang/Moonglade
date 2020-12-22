@@ -61,7 +61,9 @@
 
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
     <link rel="alternate" type="application/rss+xml" title="@BlogConfig.FeedSettings.RssTitle" href="~/rss" />
-    <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" />
+    <feature name="OpenSearch">
+        <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" />
+    </feature>
     <feature name="Foaf">
         <foaf href="/foaf.xml" />
     </feature>
