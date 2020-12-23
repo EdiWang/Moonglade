@@ -9,9 +9,6 @@
 <head>
     <title>
         @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
-        <environment exclude="Production">
-            (@WebHostEnvironment.EnvironmentName)
-        </environment>
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
