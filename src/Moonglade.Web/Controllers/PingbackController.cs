@@ -37,7 +37,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Process()
         {
             if (!_blogConfig.AdvancedSettings.EnablePingBackReceive)
             {

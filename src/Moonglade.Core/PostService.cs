@@ -128,7 +128,7 @@ namespace Moonglade.Core
             return postSlugModel;
         }
 
-        public Task<string> GetRawContentAsync(PostSlugInfo slugInfo)
+        public Task<string> GetContentAsync(PostSlugInfo slugInfo)
         {
             var date = new DateTime(slugInfo.Year, slugInfo.Month, slugInfo.Day);
             var spec = new PostSpec(date, slugInfo.Slug);

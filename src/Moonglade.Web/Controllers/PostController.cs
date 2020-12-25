@@ -54,7 +54,7 @@ namespace Moonglade.Web.Controllers
                     return Json(meta);
 
                 case "content":
-                    var content = await _postService.GetRawContentAsync(slugInfo);
+                    var content = await _postService.GetContentAsync(slugInfo);
                     return Content(content, "text/plain");
             }
 
