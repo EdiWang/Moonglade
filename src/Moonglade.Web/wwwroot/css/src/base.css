@@ -242,18 +242,6 @@ label {
     word-wrap: break-word;
 }
 
-.post-summary-tags a {
-    background-color: var(--accent-color1);
-    font-size: 0.75rem;
-    padding: 5px 10px;
-    border-radius: 3px;
-}
-
-    .post-summary-tags a:hover {
-        background-color: var(--accent-color3);
-        color: var(--white);
-    }
-
 .blog-info-desktop-lg {
     border-radius: 3px;
     overflow: hidden;
