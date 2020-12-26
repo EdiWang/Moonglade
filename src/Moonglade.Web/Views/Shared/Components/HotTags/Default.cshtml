@@ -1,8 +1,6 @@
-﻿@model IReadOnlyList<Moonglade.Model.DegreeTag>
+﻿@model IEnumerable<Moonglade.Model.DegreeTag>
 
-<div class="toptags-list">
-    @foreach (var item in Model)
-    {
-        <a asp-controller="Home" asp-action="TagList" asp-route-normalizedName="@item.NormalizedName" rel="@item.Degree" class="d-inline-block text-white">@item.DisplayName</a>
-    }
-</div>
+@foreach (var item in Model)
+{
+    <a asp-controller="Home" asp-action="TagList" asp-route-normalizedName="@item.NormalizedName" rel="@item.Degree" class="d-inline-block btn btn-sm btn-accent mb-2">@item.DisplayName</a>
+}

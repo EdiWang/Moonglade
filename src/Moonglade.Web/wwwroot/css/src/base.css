@@ -338,19 +338,43 @@ label {
     max-width: 160px;
 }
 
-.toptags-list a {
+
+.btn-accent {
+    color: #fff;
     background-color: var(--accent-color1);
-    margin-bottom: 10px;
-    margin-right: 1px;
-    padding: 5px 10px;
-    border-radius: 3px;
-    color: var(--white);
+    border-color: var(--accent-color1);
 }
 
-    .toptags-list a:hover {
+    .btn-accent:hover {
+        color: #fff;
         background-color: var(--accent-color3);
-        color: var(--white);
+        border-color: var(--accent-color3);
     }
+
+    .btn-accent:focus, .btn-accent.focus {
+        color: #fff;
+        background-color: var(--accent-color3);
+        border-color: var(--accent-color3);
+        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    }
+
+    .btn-accent.disabled, .btn-accent:disabled {
+        color: #fff;
+        background-color: var(--accent-color1);
+        border-color: var(--accent-color1);
+    }
+
+    .btn-accent:not(:disabled):not(.disabled):active, .btn-accent:not(:disabled):not(.disabled).active,
+    .show > .btn-accent.dropdown-toggle {
+        color: #fff;
+        background-color: var(--accent-color3);
+        border-color: var(--accent-color3);
+    }
+
+        .btn-accent:not(:disabled):not(.disabled):active:focus, .btn-accent:not(:disabled):not(.disabled).active:focus,
+        .show > .btn-accent.dropdown-toggle:focus {
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+        }
 
 .lightswitch {
     background: var(--white);
