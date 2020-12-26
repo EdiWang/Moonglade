@@ -7,7 +7,7 @@ namespace Moonglade.DateTimeOps
 {
     public class DateTimeResolver : IDateTimeResolver
     {
-        public string TimeZoneUtcOffset { get; set; }
+        public string TimeZoneUtcOffset { get; }
 
         public DateTimeResolver(string timeZoneUtcOffset)
         {
