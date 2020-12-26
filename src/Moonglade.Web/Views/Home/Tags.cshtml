@@ -12,7 +12,7 @@
         {
             >= 99 => "danger",
             >= 70 => "success",
-            >= 40 => "primary",
+            >= 40 => "accent",
             >= 20 => "secondary",
             _ => "outline-secondary"
         };
@@ -32,7 +32,7 @@
     <ul class="list-unstyled text-justify">
         @foreach (var tag in Model.OrderBy(t => t.DisplayName))
         {
-            var weightPercent = Convert.ToInt32(tag.Degree) * 1.0 / Convert.ToInt32(tagMax) * 100;
+            var weightPercent = tag.Degree * 1.0 / tagMax * 100;
             var weight = Weight(weightPercent);
 
             <li class="d-inline-block mb-2 mr-2">
