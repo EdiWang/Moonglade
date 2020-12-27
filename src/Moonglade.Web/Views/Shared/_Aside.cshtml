@@ -23,7 +23,7 @@
         @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
     }
 
-    <feature name="Widgets_TopTags">
+    <feature name="Widgets_HotTags">
         <section id="aside-tags" class="mb-4">
             <div class="card">
                 <div class="card-header">@Localizer["Top Tags"]</div>
@@ -39,7 +39,7 @@
     </feature>
 
     <feature name="Widgets_CategoryList">
-        <section class="cat-list mb-4">
+        <section id="aside-cats" class="mb-4">
             <div class="card">
                 <div class="card-header">@Localizer["Categories"]</div>
                 @await Component.InvokeAsync("CategoryList", new { isMenu = false })
@@ -48,7 +48,7 @@
     </feature>
 
     <feature name="Widgets_SubscriptionButtons">
-        <section class="aside-subscription text-center mb-4">
+        <section id="aside-subscription" class="text-center mb-4">
             <a class="btn btn-sm btn-round btn-outline-secondary mr-2" href="#" data-toggle="modal" data-target="#subscriptionmodal">
                 <span class="icon-rss"></span>
                 RSS / Atom

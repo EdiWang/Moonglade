@@ -57,7 +57,7 @@
     }
 
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
-    <link rel="alternate" type="application/rss+xml" title="@BlogConfig.FeedSettings.RssTitle" href="~/rss" />
+    <rss title="@BlogConfig.FeedSettings.RssTitle" href="@Url.Action("Rss", "Subscription")" />
     <feature name="OpenSearch">
         <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" />
     </feature>
@@ -87,7 +87,7 @@
     <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
     {
-        <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
+        <link href="@Url.Action("CustomCss", "Assets")" rel="stylesheet" asp-append-version="true" />
     }
 </head>
 <body class="@ViewBag.BodyClass">
