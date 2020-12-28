@@ -114,6 +114,33 @@ You need to hava an [**Minio Server**](https://docs.min.io/).
   "WithSSL": false
 }
 ```
+### 🤬 Comment Moderator
+
+You can control how comment content are moderated in `CommentModerator` section.
+
+#### Local (Default)
+
+Offline content moderator that look for bad words and apply policy to comments. You can set bad words and policy in admin portal.
+
+```json
+"CommentModerator": {
+  "Provider": "Local"
+}
+```
+
+#### Azure Content Moderator
+
+Powered by AI, use Azure Cognitive Services to filter bad words in comments.
+
+```json
+"CommentModerator": {
+  "Provider": "Azure",
+  "AzureContentModeratorSettings": {
+    "Endpoint": "<Your Azure Content Moderator endpoint>",
+    "OcpApimSubscriptionKey": "<Your Azure Content Moderator key>"
+  }
+}
+```
 
 ### 📧 Email Notification
 
