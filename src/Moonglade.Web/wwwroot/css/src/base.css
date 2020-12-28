@@ -343,7 +343,7 @@ label {
         color: #fff;
         background-color: var(--accent-color3);
         border-color: var(--accent-color3);
-        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
     }
 
     .btn-accent.disabled, .btn-accent:disabled {
@@ -361,7 +361,39 @@ label {
 
         .btn-accent:not(:disabled):not(.disabled):active:focus, .btn-accent:not(:disabled):not(.disabled).active:focus,
         .show > .btn-accent.dropdown-toggle:focus {
-            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+        }
+
+.btn-outline-accent {
+    color: var(--accent-color1);
+    border-color: var(--accent-color1);
+}
+
+    .btn-outline-accent:hover {
+        color: #fff;
+        background-color: var(--accent-color1);
+        border-color: var(--accent-color1);
+    }
+
+    .btn-outline-accent:focus, .btn-outline-accent.focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-outline-accent.disabled, .btn-outline-accent:disabled {
+        color: var(--accent-color1);
+        background-color: transparent;
+    }
+
+    .btn-outline-accent:not(:disabled):not(.disabled):active, .btn-outline-accent:not(:disabled):not(.disabled).active,
+    .show > .btn-outline-accent.dropdown-toggle {
+        color: #fff;
+        background-color: var(--accent-color1);
+        border-color: var(--accent-color1);
+    }
+
+        .btn-outline-accent:not(:disabled):not(.disabled):active:focus, .btn-outline-accent:not(:disabled):not(.disabled).active:focus,
+        .show > .btn-outline-accent.dropdown-toggle:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
         }
 
 .lightswitch {
