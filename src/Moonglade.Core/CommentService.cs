@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Edi.WordFilter;
 using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
