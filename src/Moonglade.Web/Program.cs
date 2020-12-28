@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -66,12 +65,12 @@ namespace Moonglade.Web
                                       config.AddAzureAppConfiguration(options =>
                                       {
                                           options.Connect(settings["ConnectionStrings:AzureAppConfig"])
-                                              .ConfigureRefresh(refresh =>
-                                              {
-                                                  refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
-                                                      .SetCacheExpiration(TimeSpan.FromSeconds(10));
-                                              })
-                                              .UseFeatureFlags();
+                                                 .ConfigureRefresh(refresh =>
+                                                 {
+                                                     refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
+                                                         .SetCacheExpiration(TimeSpan.FromSeconds(10));
+                                                 })
+                                                 .UseFeatureFlags(o => o.Label = "Moonglade");
                                       });
                                   }
                               })
