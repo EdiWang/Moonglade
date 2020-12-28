@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -48,27 +49,32 @@ namespace Moonglade.Web
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.AddJsonFile("themes.json", false, true)
-                          .AddJsonFile("manifesticons.json", false, true)
-                          .AddJsonFile("tagnormalization.json", false, true);
-
-                    var settings = config.Build();
-                    if (bool.Parse(settings["AppSettings:PreferAzureAppConfiguration"]))
-                    {
-                        config.AddAzureAppConfiguration(options =>
-                        {
-                            options.Connect(settings["ConnectionStrings:AzureAppConfig"])
-                                .UseFeatureFlags();
-                        });
-                    }
-                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.CaptureStartupErrors(true)
                               .ConfigureKestrel(c => c.AddServerHeader = false)
                               .UseStartup<Startup>()
+                              .ConfigureAppConfiguration((hostingContext, config) =>
+                              {
+                                  config.AddJsonFile("themes.json", false, true)
+                                        .AddJsonFile("manifesticons.json", false, true)
+                                        .AddJsonFile("tagnormalization.json", false, true);
+
+                                  var settings = config.Build();
+                                  if (bool.Parse(settings["AppSettings:PreferAzureAppConfiguration"]))
+                                  {
+                                      config.AddAzureAppConfiguration(options =>
+                                      {
+                                          options.Connect(settings["ConnectionStrings:AzureAppConfig"])
+                                              .ConfigureRefresh(refresh =>
+                                              {
+                                                  refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
+                                                      .SetCacheExpiration(TimeSpan.FromSeconds(10));
+                                              })
+                                              .UseFeatureFlags();
+                                      });
+                                  }
+                              })
                               .ConfigureLogging(logging =>
                               {
                                   logging.AddAzureWebAppDiagnostics();

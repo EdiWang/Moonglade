@@ -97,6 +97,8 @@ namespace Moonglade.Web
             services.AddBlogServices();
             services.AddBlogNotification(_logger);
             services.AddDataStorage(_configuration);
+
+            services.AddAzureAppConfiguration();
         }
 
         public void Configure(
@@ -129,6 +131,11 @@ namespace Moonglade.Web
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();
 
+            if (bool.Parse(_configuration["AppSettings:PreferAzureAppConfiguration"]))
+            {
+                app.UseAzureAppConfiguration();
+            }
+            
             if (_environment.IsDevelopment())
             {
                 app.UseRouteDebugger();
