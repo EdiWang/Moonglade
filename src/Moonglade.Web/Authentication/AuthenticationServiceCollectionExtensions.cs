@@ -14,6 +14,7 @@ namespace Moonglade.Web.Authentication
             var authentication = new AuthenticationSettings();
             configuration.Bind(nameof(Authentication), authentication);
             services.Configure<AuthenticationSettings>(configuration.GetSection(nameof(Authentication)));
+            services.AddScoped<IGetApiKeyQuery, AppSettingsGetApiKeyQuery>();
 
             switch (authentication.Provider)
             {

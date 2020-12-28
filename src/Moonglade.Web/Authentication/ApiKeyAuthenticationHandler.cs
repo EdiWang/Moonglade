@@ -14,58 +14,50 @@ namespace Moonglade.Web.Authentication
     public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
     {
         private const string ApiKeyHeaderName = "X-Api-Key";
-
-        public AuthenticationSettings AuthenticationSettings { get; set; }
+        private readonly IGetApiKeyQuery _getApiKeyQuery;
 
         public ApiKeyAuthenticationHandler(
             IOptionsMonitor<ApiKeyAuthenticationOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            IOptions<AuthenticationSettings> authenticationSettings) : base(options, logger, encoder, clock)
+            IGetApiKeyQuery getApiKeyQuery) : base(options, logger, encoder, clock)
         {
-            AuthenticationSettings = authenticationSettings.Value;
+            _getApiKeyQuery = getApiKeyQuery ?? throw new ArgumentNullException(nameof(getApiKeyQuery));
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             if (!Request.Headers.TryGetValue(ApiKeyHeaderName, out var apiKeyHeaderValues))
             {
-                return await Task.FromResult(AuthenticateResult.NoResult());
+                return AuthenticateResult.NoResult();
             }
 
             var providedApiKey = apiKeyHeaderValues.FirstOrDefault();
             if (apiKeyHeaderValues.Count == 0 || string.IsNullOrWhiteSpace(providedApiKey))
             {
-                return await Task.FromResult(AuthenticateResult.NoResult());
+                return AuthenticateResult.NoResult();
             }
 
-            if (AuthenticationSettings.ApiKeys is null || !AuthenticationSettings.ApiKeys.Any())
+            var existingApiKey = await _getApiKeyQuery.Execute(providedApiKey);
+            if (null == existingApiKey)
             {
-                throw new ArgumentNullException(nameof(AuthenticationSettings.ApiKeys), "No API Keys configured.");
+                return await Task.FromResult(AuthenticateResult.Fail("Invalid API Key provided."));
             }
 
-            IReadOnlyDictionary<string, ApiKey> apiKeysDic = AuthenticationSettings.ApiKeys.ToDictionary(x => x.Key, x => x);
+            var claims = new List<Claim>
+                         {
+                             new (ClaimTypes.Name, existingApiKey.Owner)
+                         };
 
-            if (apiKeysDic.ContainsKey(providedApiKey))
-            {
-                var apiKey = apiKeysDic[providedApiKey];
+            claims.AddRange(existingApiKey.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-                var claims = new List<Claim>
-                {
-                    new (ClaimTypes.Name, apiKey.Owner)
-                };
-                claims.AddRange(apiKey.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            var identity = new ClaimsIdentity(claims, Options.AuthenticationType);
+            var identities = new List<ClaimsIdentity> { identity };
+            var principal = new ClaimsPrincipal(identities);
+            var ticket = new AuthenticationTicket(principal, ApiKeyAuthenticationOptions.Scheme);
 
-                var identity = new ClaimsIdentity(claims, Options.AuthenticationType);
-                var identities = new List<ClaimsIdentity> { identity };
-                var principal = new ClaimsPrincipal(identities);
-                var ticket = new AuthenticationTicket(principal, ApiKeyAuthenticationOptions.Scheme);
-
-                return await Task.FromResult(AuthenticateResult.Success(ticket));
-            }
-
-            return await Task.FromResult(AuthenticateResult.Fail("Invalid API Key provided."));
+            return await Task.FromResult(AuthenticateResult.Success(ticket));
         }
     }
 }

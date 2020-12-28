@@ -28,7 +28,7 @@ namespace Moonglade.Web.Controllers
             _categoryService = categoryService;
             _blogConfig = blogConfig;
         }
-        
+
         [FeatureGate(FeatureFlags.OPML)]
         [Route("opml")]
         public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig, [FromServices] IMemoryStreamOpmlWriter opmlWriter)
