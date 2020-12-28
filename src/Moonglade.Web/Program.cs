@@ -48,6 +48,22 @@ namespace Moonglade.Web
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddJsonFile("themes.json", false, true)
+                          .AddJsonFile("manifesticons.json", false, true)
+                          .AddJsonFile("tagnormalization.json", false, true);
+
+                    var settings = config.Build();
+                    if (bool.Parse(settings["AppSettings:PreferAzureAppConfiguration"]))
+                    {
+                        config.AddAzureAppConfiguration(options =>
+                        {
+                            options.Connect(settings["ConnectionStrings:AzureAppConfig"])
+                                .UseFeatureFlags();
+                        });
+                    }
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.CaptureStartupErrors(true)
@@ -56,18 +72,6 @@ namespace Moonglade.Web
                               .ConfigureLogging(logging =>
                               {
                                   logging.AddAzureWebAppDiagnostics();
-                              })
-                              .ConfigureAppConfiguration((hostingContext, config) =>
-                              {
-                                  var settings = config.Build();
-                                  if (bool.Parse(settings["AppSettings:PreferAzureAppConfiguration"]))
-                                  {
-                                      config.AddAzureAppConfiguration(options =>
-                                      {
-                                          options.Connect(settings["ConnectionStrings:AzureAppConfig"])
-                                              .UseFeatureFlags();
-                                      });
-                                  }
                               });
                 });
 
