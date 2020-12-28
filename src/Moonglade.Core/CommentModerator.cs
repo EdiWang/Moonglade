@@ -46,5 +46,6 @@ namespace Moonglade.Core
     public class AzureContentModerator
     {
         public string OcpApimSubscriptionKey { get; set; }
+        public string Endpoint { get; set; }
     }
 }
