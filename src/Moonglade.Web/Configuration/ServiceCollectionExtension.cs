@@ -88,7 +88,6 @@ namespace Moonglade.Web.Configuration
                 }
             }
 
-            services.AddScoped<ICommentModerator, LocalWordFilterModerator>();
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<ISiteIconGenerator, FileSystemIconGenerator>();
             services.AddScoped<IExportManager, ExportManager>();

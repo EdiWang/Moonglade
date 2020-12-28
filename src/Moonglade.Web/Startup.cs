@@ -91,6 +91,7 @@ namespace Moonglade.Web
 
             services.AddPingback();
             services.AddImageStorage(_configuration, _environment);
+            services.AddCommentModerator(_configuration, _environment);
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSessionBasedCaptcha();
             services.AddBlogServices();
