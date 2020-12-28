@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Edi.WordFilter;
+using Moonglade.Configuration.Abstraction;
 
 namespace Moonglade.Core
 {
@@ -18,9 +19,10 @@ namespace Moonglade.Core
     {
         private readonly IMaskWordFilter _filter;
 
-        public LocalWordFilterModerator(string badWords)
+        public LocalWordFilterModerator(IBlogConfig blogConfig)
         {
-            _filter = new MaskWordFilter(new StringWordSource(badWords));
+            var sw = new StringWordSource(blogConfig.ContentSettings.DisharmonyWords);
+            _filter = new MaskWordFilter(sw);
         }
 
         public string ModerateContent(string input)

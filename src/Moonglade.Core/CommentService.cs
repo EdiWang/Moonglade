@@ -21,13 +21,15 @@ namespace Moonglade.Core
         private readonly IRepository<PostEntity> _postRepo;
         private readonly IRepository<CommentEntity> _commentRepo;
         private readonly IRepository<CommentReplyEntity> _commentReplyRepo;
+        private readonly ICommentModerator _commentModerator;
 
         public CommentService(
             IBlogConfig blogConfig,
             IBlogAudit audit,
             IRepository<CommentEntity> commentRepo,
             IRepository<CommentReplyEntity> commentReplyRepo,
-            IRepository<PostEntity> postRepo)
+            IRepository<PostEntity> postRepo,
+            ICommentModerator commentModerator)
         {
             _blogConfig = blogConfig;
             _audit = audit;
@@ -35,6 +37,7 @@ namespace Moonglade.Core
             _commentRepo = commentRepo;
             _commentReplyRepo = commentReplyRepo;
             _postRepo = postRepo;
+            _commentModerator = commentModerator;
         }
 
         public int Count()
@@ -134,17 +137,14 @@ namespace Moonglade.Core
         {
             if (_blogConfig.ContentSettings.EnableWordFilter)
             {
-                var dw = _blogConfig.ContentSettings.DisharmonyWords;
-                var maskWordFilter = new MaskWordFilter(new StringWordSource(dw));
-
                 switch (_blogConfig.ContentSettings.WordFilterMode)
                 {
                     case WordFilterMode.Mask:
-                        request.Username = maskWordFilter.FilterContent(request.Username);
-                        request.Content = maskWordFilter.FilterContent(request.Content);
+                        request.Username = _commentModerator.ModerateContent(request.Username);
+                        request.Content = _commentModerator.ModerateContent(request.Content);
                         break;
                     case WordFilterMode.Block:
-                        if (maskWordFilter.ContainsAnyWord(request.Username) || maskWordFilter.ContainsAnyWord(request.Content))
+                        if (_commentModerator.HasBadWord(request.Username, request.Content))
                         {
                             await Task.CompletedTask;
                             return null;
