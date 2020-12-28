@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -13,6 +15,7 @@ namespace Moonglade.Web.Authentication
     // Credits: https://josefottosson.se/asp-net-core-protect-your-api-with-api-keys/
     public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
     {
+        private const string ProblemDetailsContentType = "application/problem+json";
         private const string ApiKeyHeaderName = "X-Api-Key";
         private readonly IGetApiKeyQuery _getApiKeyQuery;
 
@@ -59,5 +62,33 @@ namespace Moonglade.Web.Authentication
 
             return await Task.FromResult(AuthenticateResult.Success(ticket));
         }
+
+        protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
+        {
+            Response.StatusCode = 401;
+            Response.ContentType = ProblemDetailsContentType;
+            var problemDetails = new UnauthorizedProblemDetails();
+
+            await Response.WriteAsync(JsonSerializer.Serialize(problemDetails));
+        }
+
+        protected override async Task HandleForbiddenAsync(AuthenticationProperties properties)
+        {
+            Response.StatusCode = 403;
+            Response.ContentType = ProblemDetailsContentType;
+            var problemDetails = new ForbiddenProblemDetails();
+
+            await Response.WriteAsync(JsonSerializer.Serialize(problemDetails));
+        }
+    }
+
+    internal class UnauthorizedProblemDetails
+    {
+        public string Error => "Invalid API Key";
+    }
+
+    internal class ForbiddenProblemDetails
+    {
+        public string Error => "Invalid API Key Permission";
     }
 }
