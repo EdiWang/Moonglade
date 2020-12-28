@@ -140,11 +140,11 @@ namespace Moonglade.Core
                 switch (_blogConfig.ContentSettings.WordFilterMode)
                 {
                     case WordFilterMode.Mask:
-                        request.Username = _commentModerator.ModerateContent(request.Username);
-                        request.Content = _commentModerator.ModerateContent(request.Content);
+                        request.Username = await _commentModerator.ModerateContent(request.Username);
+                        request.Content = await _commentModerator.ModerateContent(request.Content);
                         break;
                     case WordFilterMode.Block:
-                        if (_commentModerator.HasBadWord(request.Username, request.Content))
+                        if (await _commentModerator.HasBadWord(request.Username, request.Content))
                         {
                             await Task.CompletedTask;
                             return null;

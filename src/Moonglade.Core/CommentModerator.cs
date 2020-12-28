@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Edi.WordFilter;
+using Microsoft.Azure.CognitiveServices.ContentModerator;
 using Moonglade.Configuration.Abstraction;
 
 namespace Moonglade.Core
 {
     public interface ICommentModerator
     {
-        public string ModerateContent(string input);
+        public Task<string> ModerateContent(string input);
 
-        public bool HasBadWord(params string[] input);
+        public Task<bool> HasBadWord(params string[] input);
     }
 
     public class LocalWordFilterModerator : ICommentModerator
@@ -25,34 +27,72 @@ namespace Moonglade.Core
             _filter = new MaskWordFilter(sw);
         }
 
-        public string ModerateContent(string input)
+        public Task<string> ModerateContent(string input)
         {
-            return _filter.FilterContent(input);
+            return Task.FromResult(_filter.FilterContent(input));
         }
 
-        public bool HasBadWord(params string[] input)
+        public Task<bool> HasBadWord(params string[] input)
         {
-            return input.Any(s => _filter.ContainsAnyWord(s));
+            return Task.FromResult(input.Any(s => _filter.ContainsAnyWord(s)));
         }
     }
 
-    public class AzureContentModerator : ICommentModerator
+    public class AzureContentModerator : ICommentModerator, IDisposable
     {
-        private readonly AzureContentModeratorSettings _settings;
+        private readonly ContentModeratorClient _client;
 
         public AzureContentModerator(AzureContentModeratorSettings settings)
         {
-            _settings = settings;
+            _client = Authenticate(settings.OcpApimSubscriptionKey, settings.Endpoint);
         }
 
-        public string ModerateContent(string input)
+        private static ContentModeratorClient Authenticate(string key, string endpoint)
         {
-            throw new NotImplementedException();
+            var client = new ContentModeratorClient(new ApiKeyServiceClientCredentials(key))
+            {
+                Endpoint = endpoint
+            };
+            return client;
         }
 
-        public bool HasBadWord(params string[] input)
+        public async Task<string> ModerateContent(string input)
         {
-            throw new NotImplementedException();
+            byte[] textBytes = Encoding.UTF8.GetBytes(input);
+            var stream = new MemoryStream(textBytes);
+            var screenResult = await _client.TextModeration.ScreenTextAsync("text/plain", stream);
+
+            if (screenResult.Terms is not null)
+            {
+                foreach (var item in screenResult.Terms)
+                {
+                    // TODO: Find a more efficient way
+                    input = input.Replace(item.Term, "*");
+                }
+            }
+
+            return input;
+        }
+
+        public async Task<bool> HasBadWord(params string[] input)
+        {
+            foreach (var s in input)
+            {
+                byte[] textBytes = Encoding.UTF8.GetBytes(s);
+                var stream = new MemoryStream(textBytes);
+                var screenResult = await _client.TextModeration.ScreenTextAsync("text/plain", stream);
+                if (screenResult.Terms is not null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void Dispose()
+        {
+            _client?.Dispose();
         }
     }
 
