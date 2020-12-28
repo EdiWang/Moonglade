@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +32,8 @@ namespace Moonglade.Web.Configuration
                     services.AddScoped<ICommentModerator, LocalWordFilterModerator>();
                     break;
                 case "azure":
-                    throw new NotImplementedException();
+                    services.AddScoped<ICommentModerator>(_ => new AzureContentModerator(settings.AzureContentModeratorSettings));
+                    break;
                 default:
                     var msg = $"Provider {provider} is not supported.";
                     throw new NotSupportedException(msg);

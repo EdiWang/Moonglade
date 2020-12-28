@@ -36,14 +36,34 @@ namespace Moonglade.Core
         }
     }
 
+    public class AzureContentModerator : ICommentModerator
+    {
+        private readonly AzureContentModeratorSettings _settings;
+
+        public AzureContentModerator(AzureContentModeratorSettings settings)
+        {
+            _settings = settings;
+        }
+
+        public string ModerateContent(string input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasBadWord(params string[] input)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class CommentModeratorSettings
     {
         public string Provider { get; set; }
 
-        public AzureContentModerator AzureContentModeratorSettings { get; set; }
+        public AzureContentModeratorSettings AzureContentModeratorSettings { get; set; }
     }
 
-    public class AzureContentModerator
+    public class AzureContentModeratorSettings
     {
         public string OcpApimSubscriptionKey { get; set; }
         public string Endpoint { get; set; }
