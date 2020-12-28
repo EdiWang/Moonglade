@@ -35,4 +35,16 @@ namespace Moonglade.Core
             return input.Any(s => _filter.ContainsAnyWord(s));
         }
     }
+
+    public class CommentModeratorSettings
+    {
+        public string Provider { get; set; }
+
+        public AzureContentModerator AzureContentModeratorSettings { get; set; }
+    }
+
+    public class AzureContentModerator
+    {
+        public string OcpApimSubscriptionKey { get; set; }
+    }
 }
