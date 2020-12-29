@@ -19,17 +19,20 @@ namespace Moonglade.Core
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IBlogAudit _audit;
+        private readonly IOptions<List<TagNormalization>> _tagNormalization;
 
         public TagService(
             IOptions<AppSettings> settings,
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
-            IBlogAudit audit)
+            IBlogAudit audit, 
+            IOptions<List<TagNormalization>> tagNormalization)
         {
             _settings = settings.Value;
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
             _audit = audit;
+            _tagNormalization = tagNormalization;
         }
 
         public Task<IReadOnlyList<Tag>> GetAllAsync()
@@ -53,7 +56,7 @@ namespace Moonglade.Core
             if (null == tag) return;
 
             tag.DisplayName = newName;
-            tag.NormalizedName = NormalizeTagName(newName, _settings.TagNormalization);
+            tag.NormalizedName = NormalizeTagName(newName, _tagNormalization.Value);
             await _tagRepo.UpdateAsync(tag);
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
         }
@@ -105,7 +108,7 @@ namespace Moonglade.Core
             });
         }
 
-        public static string NormalizeTagName(string orgTagName, TagNormalization[] normalizations)
+        public static string NormalizeTagName(string orgTagName, IList<TagNormalization> normalizations)
         {
             var isEnglishName = Regex.IsMatch(orgTagName, @"^[a-zA-Z 0-9\.\-\+\#\s]*$");
             if (isEnglishName)

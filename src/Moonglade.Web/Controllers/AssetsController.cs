@@ -377,7 +377,7 @@ namespace Moonglade.Web.Controllers
                 Name = _blogConfig.GeneralSettings.SiteTitle,
                 Description = _blogConfig.GeneralSettings.SiteTitle,
                 StartUrl = "/",
-                Icons = manifestIcons.Value,
+                Icons = manifestIcons?.Value,
                 BackgroundColor = themeColor,
                 ThemeColor = themeColor,
                 Display = "standalone",

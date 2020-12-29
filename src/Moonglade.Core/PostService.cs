@@ -22,6 +22,7 @@ namespace Moonglade.Core
         private readonly IBlogCache _cache;
         private readonly ILogger<PostService> _logger;
         private readonly AppSettings _settings;
+        private readonly IOptions<List<TagNormalization>> _tagNormalization;
 
         #region Repository Objects
 
@@ -41,7 +42,8 @@ namespace Moonglade.Core
             IRepository<PostCategoryEntity> postCatRepo,
             IDateTimeResolver dateTimeResolver,
             IBlogAudit audit,
-            IBlogCache cache)
+            IBlogCache cache, 
+            IOptions<List<TagNormalization>> tagNormalization)
         {
             _logger = logger;
             _settings = settings.Value;
@@ -52,6 +54,7 @@ namespace Moonglade.Core
             _dateTimeResolver = dateTimeResolver;
             _audit = audit;
             _cache = cache;
+            _tagNormalization = tagNormalization;
         }
 
         public int CountVisiblePosts() => _postRepo.Count(p => p.IsPublished && !p.IsDeleted);
@@ -378,7 +381,7 @@ namespace Moonglade.Core
                         var newTag = new TagEntity
                         {
                             DisplayName = item,
-                            NormalizedName = TagService.NormalizeTagName(item, _settings.TagNormalization)
+                            NormalizedName = TagService.NormalizeTagName(item, _tagNormalization.Value)
                         };
 
                         tag = await _tagRepo.AddAsync(newTag);
@@ -448,7 +451,7 @@ namespace Moonglade.Core
                 await _tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
-                    NormalizedName = TagService.NormalizeTagName(item, _settings.TagNormalization)
+                    NormalizedName = TagService.NormalizeTagName(item, _tagNormalization.Value)
                 });
 
                 await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,

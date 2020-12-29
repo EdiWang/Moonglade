@@ -112,7 +112,7 @@ namespace Moonglade.Tests.Web
                 _siteIconGeneratorMock.Object,
                 _webHostEnvMock.Object);
 
-            var result = await ctl.Manifest(_webHostEnvMock.Object);
+            var result = await ctl.Manifest(_webHostEnvMock.Object, null);
             Assert.IsInstanceOf(typeof(JsonResult), result);
             if (result is JsonResult jsonResult)
             {
