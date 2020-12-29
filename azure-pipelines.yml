@@ -6,10 +6,10 @@ jobs:
   pool:
     vmImage: 'windows-latest'
   steps:
-  - task: UseDotNet@2
-    inputs:
-      packageType: 'sdk'
-      version: '5.0.x'
+  # - task: UseDotNet@2
+  #   inputs:
+  #     packageType: 'sdk'
+  #     version: '5.0.x'
 
   - task: DotNetCoreCLI@2
     displayName: Build
