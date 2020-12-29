@@ -56,6 +56,7 @@ namespace Moonglade.Web
         {
             services.AddBlogConfiguration(_appSettings);
             services.Configure<List<BlogTheme>>(_configuration.GetSection("Themes"));
+            services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
 
             services.AddBlogCache();
 

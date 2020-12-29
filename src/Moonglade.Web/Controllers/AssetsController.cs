@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -364,7 +365,9 @@ namespace Moonglade.Web.Controllers
         // Credits: https://github.com/Anduin2017/Blog
         [ResponseCache(Duration = 3600)]
         [Route("/manifest.json")]
-        public async Task<IActionResult> Manifest([FromServices] IWebHostEnvironment hostEnvironment)
+        public async Task<IActionResult> Manifest(
+            [FromServices] IWebHostEnvironment hostEnvironment, 
+            [FromServices] IOptions<List<ManifestIcon>> manifestIcons)
         {
             var themeColor = await Utils.GetThemeColorAsync(hostEnvironment.WebRootPath, _blogConfig.GeneralSettings.ThemeFileName);
 
@@ -374,7 +377,7 @@ namespace Moonglade.Web.Controllers
                 Name = _blogConfig.GeneralSettings.SiteTitle,
                 Description = _blogConfig.GeneralSettings.SiteTitle,
                 StartUrl = "/",
-                Icons = _settings.ManifestIcons,
+                Icons = manifestIcons.Value,
                 BackgroundColor = themeColor,
                 ThemeColor = themeColor,
                 Display = "standalone",

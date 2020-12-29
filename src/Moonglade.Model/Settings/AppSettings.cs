@@ -13,7 +13,6 @@ namespace Moonglade.Model.Settings
         public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
         public NotificationSettings Notification { get; set; }
         public SiteMapSettings SiteMap { get; set; }
-        public ManifestIcon[] ManifestIcons { get; set; }
         public TagNormalization[] TagNormalization { get; set; }
 
         public AppSettings()
@@ -26,7 +25,6 @@ namespace Moonglade.Model.Settings
             };
             Notification = new();
             SiteMap = new();
-            ManifestIcons = Array.Empty<ManifestIcon>();
         }
     }
 
