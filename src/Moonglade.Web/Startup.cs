@@ -55,6 +55,8 @@ namespace Moonglade.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBlogConfiguration(_appSettings);
+            services.Configure<BlogTheme[]>(_configuration.GetSection("Themes"));
+
             services.AddBlogCache();
 
             services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
@@ -135,7 +137,7 @@ namespace Moonglade.Web
             {
                 app.UseAzureAppConfiguration();
             }
-            
+
             if (_environment.IsDevelopment())
             {
                 app.UseRouteDebugger();

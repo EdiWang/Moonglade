@@ -4,6 +4,8 @@
 @using Moonglade.DateTimeOps
 @using Moonglade.Configuration
 @inject IDateTimeResolver DateTimeResolver
+@inject IOptions<BlogTheme[]> Themes
+
 @model GeneralSettingsViewModel
 @{
     var tzList = DateTimeResolver.ListTimeZones().Select(t => new SelectListItem
@@ -12,7 +14,7 @@
         Value = t.Id
     });
 
-    var tmList = Settings.Value.Themes.Select(t => new SelectListItem
+    var tmList = Themes.Value.Select(t => new SelectListItem
     {
         Text = t.Name,
         Value = t.CssFile
