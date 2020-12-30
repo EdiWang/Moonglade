@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.1" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
-    <PackageReference Include="NUglify" Version="1.11.5" />
+    <PackageReference Include="NUglify" Version="1.12.1" />
     <PackageReference Include="UAParser" Version="3.1.44" />
     <PackageReference Include="X.PagedList" Version="8.0.7" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.0.7" />

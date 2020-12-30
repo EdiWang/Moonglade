@@ -11,7 +11,7 @@
     <PackageReference Include="Edi.WordFilter" Version="1.4.0" />
     <PackageReference Include="Markdig" Version="0.22.1" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.ContentModerator" Version="2.0.0" />
-    <PackageReference Include="NUglify" Version="1.11.5" />
+    <PackageReference Include="NUglify" Version="1.12.1" />
   </ItemGroup>
 
   <ItemGroup>
