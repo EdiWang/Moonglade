@@ -366,7 +366,7 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 3600)]
         [Route("/manifest.json")]
         public async Task<IActionResult> Manifest(
-            [FromServices] IWebHostEnvironment hostEnvironment, 
+            [FromServices] IWebHostEnvironment hostEnvironment,
             [FromServices] IOptions<List<ManifestIcon>> manifestIcons)
         {
             var themeColor = await Utils.GetThemeColorAsync(hostEnvironment.WebRootPath, _blogConfig.GeneralSettings.ThemeFileName);

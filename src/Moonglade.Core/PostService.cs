@@ -42,7 +42,7 @@ namespace Moonglade.Core
             IRepository<PostCategoryEntity> postCatRepo,
             IDateTimeResolver dateTimeResolver,
             IBlogAudit audit,
-            IBlogCache cache, 
+            IBlogCache cache,
             IOptions<List<TagNormalization>> tagNormalization)
         {
             _logger = logger;

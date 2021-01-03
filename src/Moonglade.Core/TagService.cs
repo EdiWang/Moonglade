@@ -25,7 +25,7 @@ namespace Moonglade.Core
             IOptions<AppSettings> settings,
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
-            IBlogAudit audit, 
+            IBlogAudit audit,
             IOptions<List<TagNormalization>> tagNormalization)
         {
             _settings = settings.Value;
