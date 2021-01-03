@@ -4,8 +4,7 @@
 @inject IOptions<RequestLocalizationOptions> LocOptions
 @{
     var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => new { Value = c.Name, c.NativeName })
-        .ToList();
+        .Select(c => new { Value = c.Name, c.NativeName });
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
 }
 
