@@ -135,16 +135,13 @@
   <data name="Editor" xml:space="preserve">
     <value>编辑器</value>
   </data>
-  <data name="Item" xml:space="preserve">
-    <value>项</value>
-  </data>
   <data name="Machine Name" xml:space="preserve">
     <value>主机名</value>
   </data>
   <data name="Moonglade Configuration" xml:space="preserve">
     <value>Moonglade 配置</value>
   </data>
-  <data name="Running Docker Container" xml:space="preserve">
+  <data name="Docker Container" xml:space="preserve">
     <value>运行在 Docker 容器中</value>
   </data>
   <data name="Server Information" xml:space="preserve">
@@ -156,13 +153,16 @@
   <data name="User Name" xml:space="preserve">
     <value>用户名</value>
   </data>
-  <data name="Value" xml:space="preserve">
-    <value>值</value>
-  </data>
   <data name="Worker Process" xml:space="preserve">
     <value>工作进程</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>版本</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>内存</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>启动时间</value>
   </data>
 </root>
