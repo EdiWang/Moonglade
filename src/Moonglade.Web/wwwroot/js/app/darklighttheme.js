@@ -20,6 +20,8 @@
 
         $('.comment-form-containter .form-control, aside .form-control').addClass('bg-transparent');
         $('aside .btn-light').removeClass('btn-light').addClass('btn-dark');
+        $('#aside-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
+        $('.post-summary-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
 
         isDarkMode = true;
         $('.lightswitch').addClass('bg-dark text-light border-secondary');
@@ -46,6 +48,8 @@
 
         $('.comment-form-containter .form-control, aside .form-control').removeClass('bg-transparent');
         $('aside .btn-light').removeClass('btn-dark').addClass('btn-light');
+        $('#aside-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
+        $('.post-summary-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
 
         isDarkMode = false;
         $('.lightswitch').removeClass('bg-dark text-light border-secondary');

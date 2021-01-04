@@ -38,8 +38,23 @@
         <script src="~/js/dist/admin-bundle.min.js" asp-append-version="true"></script>
     </environment>
     <environment include="Development">
-        <script src="~/js/dist/app-bundle.js" asp-append-version="true"></script>
-        <script src="~/js/dist/admin-bundle.js" asp-append-version="true"></script>
+        <script src="~/js/3rd/jquery.min.js"></script>
+        <script src="~/js/3rd/bootstrap.bundle.min.js"></script>
+        <script src="~/js/3rd/jquery.qrcode.min.js"></script>
+        <script src="~/js/3rd/toastr.min.js"></script>
+        <script src="~/js/app/base.js"></script>
+        <script src="~/js/app/postslug.js"></script>
+        <script src="~/js/app/httpService.js"></script>
+        <script src="~/js/app/comments.js"></script>
+        <script src="~/js/app/darklighttheme.js"></script>
+
+        <script src="~/js/3rd/jquery.validate.min.js"></script>
+        <script src="~/js/3rd/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/js/3rd/jquery.unobtrusive-ajax.min.js"></script>
+        <script src="~/js/3rd/bootstrap-tagsinput.min.js"></script>
+        <script src="~/js/3rd/jquery.are-you-sure.min.js"></script>
+        <script src="~/js/app/admin.js"></script>
+        <script src="~/js/app/settings.js"></script>
     </environment>
     @await RenderSectionAsync("head", false)
 </head>

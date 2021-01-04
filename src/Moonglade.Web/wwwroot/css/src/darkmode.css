@@ -57,11 +57,8 @@
     color: var(--gray-3);
 }
 
-.darkmode .post-date-box {
-    border: 1px solid var(--gray-5);
-}
-
 .darkmode .post-date-day {
+    border: 1px solid var(--gray-5);
     color: var(--gray-5);
 }
 
@@ -75,10 +72,6 @@
 
 .darkmode .post-summary-title a {
     color: var(--white);
-}
-
-.darkmode .post-summary-tags a {
-    background-color: var(--gray-7);
 }
 
 .darkmode .page-link {
