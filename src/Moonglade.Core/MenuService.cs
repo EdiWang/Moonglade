@@ -6,6 +6,7 @@ using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Model;
+using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
@@ -142,7 +143,7 @@ namespace Moonglade.Core
             if (uri.HostNameType == UriHostNameType.IPv4)
             {
                 // Disallow LAN IP (e.g. 192.168.0.1, 10.0.0.1)
-                if (Utils.IsPrivateIP(uri.Host))
+                if (Helper.IsPrivateIP(uri.Host))
                 {
                     return invalidReturn;
                 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Moonglade.Core;
+using Moonglade.Utils;
 
 namespace Moonglade.Web.Filters
 {
@@ -7,7 +7,7 @@ namespace Moonglade.Web.Filters
     {
         public override void OnResultExecuting(ResultExecutingContext context)
         {
-            context.HttpContext.Response.Headers.Add("X-Moonglade-Version", Utils.AppVersion);
+            context.HttpContext.Response.Headers.Add("X-Moonglade-Version", Helper.AppVersion);
             base.OnResultExecuting(context);
         }
     }

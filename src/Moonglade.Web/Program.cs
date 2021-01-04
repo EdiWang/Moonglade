@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Moonglade.Core;
 using Moonglade.Model;
+using Moonglade.Utils;
 
 namespace Moonglade.Web
 {
@@ -15,9 +15,9 @@ namespace Moonglade.Web
     {
         public static void Main(string[] args)
         {
-            var info = $"Moonglade Version {Utils.AppVersion}\n" +
+            var info = $"Moonglade Version {Helper.AppVersion}\n" +
                        $"Directory: {Environment.CurrentDirectory} \n" +
-                       $"OS: {Utils.TryGetFullOSVersion()} \n" +
+                       $"OS: {Helper.TryGetFullOSVersion()} \n" +
                        $"Machine Name: {Environment.MachineName} \n" +
                        $"User Name: {Environment.UserName}";
             Trace.WriteLine(info);

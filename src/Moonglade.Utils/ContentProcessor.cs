@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Markdig;
 using NUglify;
 
-namespace Moonglade.Core
+namespace Moonglade.Utils
 {
     public static class ContentProcessor
     {

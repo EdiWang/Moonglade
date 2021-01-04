@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Moonglade.Core;
+using Moonglade.Utils;
 using NUnit.Framework;
 
 namespace Moonglade.Tests
@@ -13,7 +13,7 @@ namespace Moonglade.Tests
         [Test]
         public void AppVersion()
         {
-            var ver = Utils.AppVersion;
+            var ver = Helper.AppVersion;
             Assert.IsNotNull(ver);
         }
 
@@ -24,7 +24,7 @@ namespace Moonglade.Tests
         [TestCase("[c] 2020 edi.wang", ExpectedResult = "&copy; 2020 edi.wang")]
         public string FormatCopyright2Html(string copyrightCode)
         {
-            return Utils.FormatCopyright2Html(copyrightCode);
+            return Helper.FormatCopyright2Html(copyrightCode);
         }
 
         [TestCase("127.0.0.1", ExpectedResult = true)]
@@ -37,7 +37,7 @@ namespace Moonglade.Tests
         [TestCase("4.2.2.1", ExpectedResult = false)]
         public bool IsPrivateIP(string ip)
         {
-            return Utils.IsPrivateIP(ip);
+            return Helper.IsPrivateIP(ip);
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace Moonglade.Tests
         {
             string org = "[c] 2009 - [year] edi.wang";
             string exp = $"&copy; 2009 - {DateTime.UtcNow.Year} edi.wang";
-            var result = Utils.FormatCopyright2Html(org);
+            var result = Helper.FormatCopyright2Html(org);
 
             Assert.AreEqual(result, exp);
         }
@@ -53,7 +53,7 @@ namespace Moonglade.Tests
         [Test]
         public void ParseBase64_Success()
         {
-            var ok = Utils.TryParseBase64("xDgItVa0ujLKxGsoMV1+MmxBrpo997mXbeXngqIx13o=", out var base64);
+            var ok = Helper.TryParseBase64("xDgItVa0ujLKxGsoMV1+MmxBrpo997mXbeXngqIx13o=", out var base64);
             Assert.IsTrue(ok);
             Assert.IsNotNull(base64);
         }
@@ -61,7 +61,7 @@ namespace Moonglade.Tests
         [Test]
         public void ParseBase64_Fail()
         {
-            var ok = Utils.TryParseBase64("Learn Java and work 996!", out var base64);
+            var ok = Helper.TryParseBase64("Learn Java and work 996!", out var base64);
             Assert.IsFalse(ok);
             Assert.IsNull(base64);
         }
@@ -78,7 +78,7 @@ namespace Moonglade.Tests
         [TestCase("", "", ExpectedResult = "")]
         public string ResolveCanonicalUrl(string prefix, string path)
         {
-            var result = Utils.ResolveCanonicalUrl(prefix, path);
+            var result = Helper.ResolveCanonicalUrl(prefix, path);
             return result;
         }
 
@@ -87,7 +87,7 @@ namespace Moonglade.Tests
         {
             Assert.Throws<UriFormatException>(() =>
             {
-                Utils.ResolveCanonicalUrl("996ICU", "251");
+                Helper.ResolveCanonicalUrl("996ICU", "251");
             });
         }
 
@@ -100,7 +100,7 @@ namespace Moonglade.Tests
         public void GetEnvironmentTags_Valid(string tags)
         {
             Environment.SetEnvironmentVariable("MOONGLADE_TAGS", tags, EnvironmentVariableTarget.Process);
-            var envTags = Utils.GetEnvironmentTags();
+            var envTags = Helper.GetEnvironmentTags();
             Assert.IsNotNull(envTags);
 
             var list = tags.Split(',').Select(p => p.Trim());
@@ -126,7 +126,7 @@ namespace Moonglade.Tests
         public void GetEnvironmentTags_Invalid(string invalidTag)
         {
             Environment.SetEnvironmentVariable("MOONGLADE_TAGS", $"DC1, DC2, {invalidTag}", EnvironmentVariableTarget.Process);
-            var envTags = Utils.GetEnvironmentTags();
+            var envTags = Helper.GetEnvironmentTags();
             Assert.IsNotNull(envTags);
 
             Assert.IsTrue(envTags.Count() == 2);
@@ -137,7 +137,7 @@ namespace Moonglade.Tests
         public void GetEnvironmentTags_Empty()
         {
             Environment.SetEnvironmentVariable("MOONGLADE_TAGS", string.Empty, EnvironmentVariableTarget.Process);
-            var envTags = Utils.GetEnvironmentTags();
+            var envTags = Helper.GetEnvironmentTags();
             Assert.IsNotNull(envTags);
 
             Assert.IsTrue(envTags.Count() == 1);

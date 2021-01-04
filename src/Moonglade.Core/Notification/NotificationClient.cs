@@ -9,6 +9,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback;
+using Moonglade.Utils;
 
 namespace Moonglade.Core.Notification
 {
@@ -34,7 +35,7 @@ namespace Moonglade.Core.Notification
                     httpClient.BaseAddress = new(settings.Value.Notification.AzureFunctionEndpoint);
                 }
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-                httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Utils.AppVersion}");
+                httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Helper.AppVersion}");
                 _httpClient = httpClient;
 
                 if (_blogConfig.NotificationSettings.EnableEmailSending)

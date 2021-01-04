@@ -1,6 +1,6 @@
 ﻿@using System.Diagnostics
-@using Moonglade.Core
 @using Moonglade.Model
+@using Moonglade.Utils
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
 @{
@@ -22,7 +22,7 @@
     <tbody>
         <tr>
             <td class="w-25">@Localizer["System"]</td>
-            <td>@Utils.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)": "(32-bit)")</td>
+            <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)": "(32-bit)")</td>
         </tr>
         <tr>
             <td>@Localizer["Directory"]</td>
@@ -68,7 +68,7 @@
     <tbody>
         <tr>
             <td class="w-25">@Localizer["Version"]</td>
-            <td>@Utils.AppVersion</td>
+            <td>@Helper.AppVersion</td>
         </tr>
         <tr>
             <td>@Localizer["Data Directory"]</td>

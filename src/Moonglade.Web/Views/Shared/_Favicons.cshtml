@@ -1,7 +1,7 @@
-﻿@using Moonglade.Core
+﻿@using Moonglade.Utils
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 @{
-    var themeColor = await Utils.GetThemeColorAsync(WebHostEnvironment.WebRootPath, BlogConfig.GeneralSettings.ThemeFileName);
+    var themeColor = await Helper.GetThemeColorAsync(WebHostEnvironment.WebRootPath, BlogConfig.GeneralSettings.ThemeFileName);
 }
 <link rel="apple-touch-icon" sizes="57x57" href="~/apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="~/apple-icon-60x60.png">

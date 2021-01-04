@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Moonglade.Core
+namespace Moonglade.Utils
 {
     public static class UrlExtension
     {

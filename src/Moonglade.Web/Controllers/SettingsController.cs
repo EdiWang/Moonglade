@@ -23,6 +23,7 @@ using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
 using Moonglade.Model.Settings;
 using Moonglade.Setup;
+using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
@@ -379,7 +380,7 @@ namespace Moonglade.Web.Controllers
             try
             {
                 base64Img = base64Img.Trim();
-                if (!Utils.TryParseBase64(base64Img, out var base64Chars))
+                if (!Helper.TryParseBase64(base64Img, out var base64Chars))
                 {
                     _logger.LogWarning("Bad base64 is used when setting avatar.");
                     return Conflict("Bad base64 data");
@@ -422,7 +423,7 @@ namespace Moonglade.Web.Controllers
             try
             {
                 base64Img = base64Img.Trim();
-                if (!Utils.TryParseBase64(base64Img, out var base64Chars))
+                if (!Helper.TryParseBase64(base64Img, out var base64Chars))
                 {
                     _logger.LogWarning("Bad base64 is used when setting site icon.");
                     return Conflict("Bad base64 data");

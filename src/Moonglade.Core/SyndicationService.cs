@@ -11,6 +11,7 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
+using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
@@ -62,7 +63,7 @@ namespace Moonglade.Core
                 HeadTitle = _blogConfig.FeedSettings.RssTitle,
                 HeadDescription = _blogConfig.FeedSettings.RssDescription,
                 Copyright = _blogConfig.FeedSettings.RssCopyright,
-                Generator = $"Moonglade v{Utils.AppVersion}",
+                Generator = $"Moonglade v{Helper.AppVersion}",
                 FeedItemCollection = itemCollection,
                 TrackBackUrl = _baseUrl,
                 MaxContentLength = 0
@@ -85,7 +86,7 @@ namespace Moonglade.Core
                 HeadTitle = _blogConfig.FeedSettings.RssTitle,
                 HeadDescription = _blogConfig.FeedSettings.RssDescription,
                 Copyright = _blogConfig.FeedSettings.RssCopyright,
-                Generator = $"Moonglade v{Utils.AppVersion}",
+                Generator = $"Moonglade v{Helper.AppVersion}",
                 FeedItemCollection = itemCollection,
                 TrackBackUrl = _baseUrl,
                 MaxContentLength = 0

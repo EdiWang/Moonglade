@@ -9,9 +9,7 @@
     <PackageReference Include="Edi.Captcha" Version="3.0.1" />
     <PackageReference Include="Edi.ImageWatermark" Version="2.1.1" />
     <PackageReference Include="Edi.WordFilter" Version="1.4.0" />
-    <PackageReference Include="Markdig" Version="0.22.1" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.ContentModerator" Version="2.0.0" />
-    <PackageReference Include="NUglify" Version="1.13.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +21,7 @@
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
     <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
     <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
+    <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
   </ItemGroup>
 
 </Project>

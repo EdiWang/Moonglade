@@ -24,6 +24,7 @@ using Moonglade.Foaf;
 using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
+using Moonglade.Utils;
 using NUglify;
 using SiteIconGenerator;
 
@@ -369,7 +370,7 @@ namespace Moonglade.Web.Controllers
             [FromServices] IWebHostEnvironment hostEnvironment,
             [FromServices] IOptions<List<ManifestIcon>> manifestIcons)
         {
-            var themeColor = await Utils.GetThemeColorAsync(hostEnvironment.WebRootPath, _blogConfig.GeneralSettings.ThemeFileName);
+            var themeColor = await Helper.GetThemeColorAsync(hostEnvironment.WebRootPath, _blogConfig.GeneralSettings.ThemeFileName);
 
             var model = new ManifestModel
             {

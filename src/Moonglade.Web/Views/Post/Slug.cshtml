@@ -1,5 +1,5 @@
-﻿@using Moonglade.Core
-@using Moonglade.DateTimeOps
+﻿@using Moonglade.DateTimeOps
+@using Moonglade.Utils
 
 @model Moonglade.Model.PostSlug
 @inject IDateTimeResolver DateTimeResolver
@@ -39,7 +39,7 @@
         <meta property="og:description" content="@Model.ContentAbstract" />
         @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
         {
-            <meta property="og:url" content="@(Utils.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
+            <meta property="og:url" content="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
         }
     }
 }

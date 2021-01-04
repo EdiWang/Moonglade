@@ -3,8 +3,8 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Core;
 using Moonglade.Model;
+using Moonglade.Utils;
 
 namespace Moonglade.Web.Controllers
 {
@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
             var requestedRoot = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
             if (!preferCanonical) return requestedRoot;
 
-            var url = Utils.ResolveCanonicalUrl(blogConfig.GeneralSettings.CanonicalPrefix, string.Empty);
+            var url = Helper.ResolveCanonicalUrl(blogConfig.GeneralSettings.CanonicalPrefix, string.Empty);
             if (string.IsNullOrWhiteSpace(url)) return requestedRoot;
             return url;
         }

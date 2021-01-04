@@ -20,8 +20,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Core;
 using Moonglade.Model.Settings;
+using Moonglade.Utils;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
@@ -172,12 +172,12 @@ namespace Moonglade.Web
             {
                 endpoints.MapGet("/ping", async context =>
                 {
-                    context.Response.Headers.Add("X-Moonglade-Version", Utils.AppVersion);
+                    context.Response.Headers.Add("X-Moonglade-Version", Helper.AppVersion);
                     var obj = new
                     {
-                        MoongladeVersion = Utils.AppVersion,
+                        MoongladeVersion = Helper.AppVersion,
                         DotNetVersion = Environment.Version.ToString(),
-                        EnvironmentTags = Utils.GetEnvironmentTags()
+                        EnvironmentTags = Helper.GetEnvironmentTags()
                     };
 
                     await context.Response.WriteAsync(obj.ToJson(), Encoding.UTF8);

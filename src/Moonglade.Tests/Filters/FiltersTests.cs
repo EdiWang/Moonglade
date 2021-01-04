@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using Moonglade.Core;
+using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using NUnit.Framework;
 
@@ -25,7 +25,7 @@ namespace Moonglade.Tests.Filters
 
             var header = ctx.HttpContext.Response.Headers["X-Moonglade-Version"];
             Assert.IsNotNull(header);
-            Assert.AreEqual(header, Utils.AppVersion);
+            Assert.AreEqual(header, Helper.AppVersion);
         }
 
         #region Helper Methods

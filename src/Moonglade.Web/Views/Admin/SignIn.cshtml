@@ -1,5 +1,5 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-@using Moonglade.Core
+@using Moonglade.Utils
 @model SignInViewModel
 @{
     Layout = null;
@@ -52,8 +52,8 @@
                     </div>
                 </div>
                 <p class="text-muted mt-4 small text-center">
-                    @Html.Raw(Utils.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright)) <br />
-                    Moonglade @Utils.AppVersion
+                    @Html.Raw(Helper.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright)) <br />
+                    Moonglade @Helper.AppVersion
                 </p>
             </div>
         </div>
