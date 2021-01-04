@@ -10,12 +10,17 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Model.Settings;
-using Moonglade.Syndication;
 using Moonglade.Utils;
 
-namespace Moonglade.Core
+namespace Moonglade.Syndication
 {
-    public class SyndicationService : BlogService
+    public interface ISyndicationService
+    {
+        Task<byte[]> GetRssStreamDataAsync(string categoryName = null);
+        Task<byte[]> GetAtomStreamData();
+    }
+
+    public class SyndicationService : ISyndicationService
     {
         private readonly string _baseUrl;
         private readonly AppSettings _settings;

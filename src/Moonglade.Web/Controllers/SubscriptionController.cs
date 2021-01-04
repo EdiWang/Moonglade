@@ -15,12 +15,12 @@ namespace Moonglade.Web.Controllers
 {
     public class SubscriptionController : BlogController
     {
-        private readonly SyndicationService _syndicationService;
+        private readonly ISyndicationService _syndicationService;
         private readonly CategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
 
         public SubscriptionController(
-            SyndicationService syndicationService,
+            ISyndicationService syndicationService,
             CategoryService categoryService,
             IBlogConfig blogConfig)
         {
