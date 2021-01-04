@@ -5,12 +5,12 @@ using Moonglade.Caching;
 
 namespace Moonglade.Web.Filters
 {
-    public class DeleteSiteMapCache : ActionFilterAttribute
+    public class ClearSiteMapCache : ActionFilterAttribute
     {
-        private readonly ILogger<DeleteSiteMapCache> _logger;
+        private readonly ILogger<ClearSiteMapCache> _logger;
         private readonly IBlogCache _cache;
 
-        public DeleteSiteMapCache(ILogger<DeleteSiteMapCache> logger, IBlogCache cache)
+        public ClearSiteMapCache(ILogger<ClearSiteMapCache> logger, IBlogCache cache)
         {
             _logger = logger;
             _cache = cache;

@@ -99,7 +99,7 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost("manage/createoredit")]
-        [ServiceFilter(typeof(DeleteSiteMapCache))]
+        [ServiceFilter(typeof(ClearSiteMapCache))]
         public async Task<IActionResult> CreateOrEdit(PageEditViewModel model)
         {
             try

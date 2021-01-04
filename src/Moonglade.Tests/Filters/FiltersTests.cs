@@ -20,7 +20,7 @@ namespace Moonglade.Tests.Filters
         {
             var ctx = CreateResultExecutingContext(null);
 
-            var att = new AppendMoongladeVersion();
+            var att = new AppendAppVersion();
             att.OnResultExecuting(ctx);
 
             var header = ctx.HttpContext.Response.Headers["X-Moonglade-Version"];

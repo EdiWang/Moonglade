@@ -373,7 +373,7 @@ namespace Moonglade.Web.Controllers
         #region User Avatar
 
         [HttpPost("set-blogger-avatar")]
-        [TypeFilter(typeof(DeleteBlogCache), Arguments = new object[] { CacheDivision.General, "avatar" })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "avatar" })]
         public async Task<IActionResult> SetBloggerAvatar(string base64Img)
         {
             try

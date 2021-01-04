@@ -65,7 +65,7 @@ namespace Moonglade.Web.Controllers
         [Route("preview/{postId:guid}")]
         public async Task<IActionResult> Preview(Guid postId)
         {
-            var post = await _postService.GetDraftPreviewAsync(postId);
+            var post = await _postService.GetDraftAsync(postId);
             if (post is null) return NotFound();
 
             ViewBag.TitlePrefix = $"{post.Title}";

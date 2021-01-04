@@ -5,12 +5,12 @@ using Moonglade.Caching;
 
 namespace Moonglade.Web.Filters
 {
-    public class DeleteSubscriptionCache : ActionFilterAttribute
+    public class ClearSubscriptionCache : ActionFilterAttribute
     {
-        protected readonly ILogger<DeleteSubscriptionCache> Logger;
+        protected readonly ILogger<ClearSubscriptionCache> Logger;
         private readonly IBlogCache _cache;
 
-        public DeleteSubscriptionCache(ILogger<DeleteSubscriptionCache> logger, IBlogCache cache)
+        public ClearSubscriptionCache(ILogger<ClearSubscriptionCache> logger, IBlogCache cache)
         {
             Logger = logger;
             _cache = cache;

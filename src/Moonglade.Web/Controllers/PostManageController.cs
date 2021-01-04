@@ -130,9 +130,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("createoredit")]
-        [ServiceFilter(typeof(DeleteSiteMapCache))]
-        [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [TypeFilter(typeof(DeletePagingCountCache))]
+        [ServiceFilter(typeof(ClearSiteMapCache))]
+        [ServiceFilter(typeof(ClearSubscriptionCache))]
+        [TypeFilter(typeof(ClearPagingCountCache))]
         public async Task<IActionResult> CreateOrEdit(PostEditViewModel model,
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
@@ -203,9 +203,9 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [ServiceFilter(typeof(DeleteSiteMapCache))]
-        [TypeFilter(typeof(DeletePagingCountCache))]
+        [ServiceFilter(typeof(ClearSubscriptionCache))]
+        [ServiceFilter(typeof(ClearSiteMapCache))]
+        [TypeFilter(typeof(ClearPagingCountCache))]
         [HttpPost("{postId:guid}/restore")]
         public async Task<IActionResult> Restore(Guid postId)
         {
@@ -219,9 +219,9 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [ServiceFilter(typeof(DeleteSiteMapCache))]
-        [TypeFilter(typeof(DeletePagingCountCache))]
+        [ServiceFilter(typeof(ClearSubscriptionCache))]
+        [ServiceFilter(typeof(ClearSiteMapCache))]
+        [TypeFilter(typeof(ClearPagingCountCache))]
         [HttpDelete("{postId:guid}/recycle")]
         public async Task<IActionResult> Delete(Guid postId)
         {
@@ -235,8 +235,8 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [ServiceFilter(typeof(DeleteSiteMapCache))]
+        [ServiceFilter(typeof(ClearSubscriptionCache))]
+        [ServiceFilter(typeof(ClearSiteMapCache))]
         [HttpDelete("{postId:guid}/destroy")]
         public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
         {
@@ -250,8 +250,8 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [ServiceFilter(typeof(DeleteSubscriptionCache))]
-        [ServiceFilter(typeof(DeleteSiteMapCache))]
+        [ServiceFilter(typeof(ClearSubscriptionCache))]
+        [ServiceFilter(typeof(ClearSiteMapCache))]
         [HttpGet("empty-recycle-bin")]
         public async Task<IActionResult> EmptyRecycleBin()
         {

@@ -60,8 +60,8 @@ namespace Moonglade.Web.Configuration
         {
             services.AddMemoryCache();
             services.AddSingleton<IBlogCache, BlogMemoryCache>();
-            services.AddScoped<DeleteSubscriptionCache>();
-            services.AddScoped<DeleteSiteMapCache>();
+            services.AddScoped<ClearSubscriptionCache>();
+            services.AddScoped<ClearSiteMapCache>();
         }
 
         public static void AddBlogNotification(this IServiceCollection services, ILogger logger)

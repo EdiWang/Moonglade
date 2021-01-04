@@ -3,7 +3,7 @@ using Moonglade.Core;
 
 namespace Moonglade.Web.Filters
 {
-    public class AppendMoongladeVersion : ResultFilterAttribute
+    public class AppendAppVersion : ResultFilterAttribute
     {
         public override void OnResultExecuting(ResultExecutingContext context)
         {

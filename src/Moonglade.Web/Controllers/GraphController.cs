@@ -20,7 +20,7 @@ namespace Moonglade.Web.Controllers
     [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
     [Route("api/graph")]
     [ApiController]
-    [AppendMoongladeVersion]
+    [AppendAppVersion]
     public class GraphController : ControllerBase
     {
         private readonly ILogger<GraphController> _logger;

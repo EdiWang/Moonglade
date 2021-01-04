@@ -3,11 +3,11 @@ using Moonglade.Caching;
 
 namespace Moonglade.Web.Filters
 {
-    public class DeletePagingCountCache : ActionFilterAttribute
+    public class ClearPagingCountCache : ActionFilterAttribute
     {
         private readonly IBlogCache _cache;
 
-        public DeletePagingCountCache(IBlogCache cache)
+        public ClearPagingCountCache(IBlogCache cache)
         {
             _cache = cache;
         }
@@ -21,14 +21,14 @@ namespace Moonglade.Web.Filters
         }
     }
 
-    public class DeleteBlogCache : ActionFilterAttribute
+    public class ClearBlogCache : ActionFilterAttribute
     {
         private readonly IBlogCache _cache;
 
         private readonly string _cacheKey;
         private readonly CacheDivision _division;
 
-        public DeleteBlogCache(CacheDivision division, string cacheKey, IBlogCache cache)
+        public ClearBlogCache(CacheDivision division, string cacheKey, IBlogCache cache)
         {
             _division = division;
             _cacheKey = cacheKey;

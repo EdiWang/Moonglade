@@ -99,7 +99,7 @@ namespace Moonglade.Core
             return post;
         }
 
-        public async Task<PostSlug> GetDraftPreviewAsync(Guid postId)
+        public async Task<PostSlug> GetDraftAsync(Guid postId)
         {
             var spec = new PostSpec(postId);
             var postSlugModel = await _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostSlug
