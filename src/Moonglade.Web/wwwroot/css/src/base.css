@@ -413,6 +413,7 @@ label {
     text-align: center;
     width: 32px;
     z-index: 996;
+    opacity: 0.8;
 }
 
 #lighticon {
