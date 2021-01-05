@@ -15,20 +15,17 @@ namespace Moonglade.Core
 {
     public class TagService : BlogService
     {
-        private readonly AppSettings _settings;
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IBlogAudit _audit;
         private readonly IOptions<List<TagNormalization>> _tagNormalization;
 
         public TagService(
-            IOptions<AppSettings> settings,
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
             IBlogAudit audit,
             IOptions<List<TagNormalization>> tagNormalization)
         {
-            _settings = settings.Value;
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
             _audit = audit;
