@@ -2,14 +2,16 @@
 
 @if (Model.Any())
 {
-    <ul class="list-unstyled">
-        @foreach (var item in Model)
-        {
-            <li>
-                <a href="@item.LinkUrl" target="_blank">
+    <div class="card">
+        <div class="card-header">@Localizer["Links"]</div>
+        
+        <div class="list-group list-group-flush">
+            @foreach (var item in Model.OrderBy(c => c.Title))
+            {
+                <a href="@item.LinkUrl" target="_blank" class="list-group-item list-group-item-action">
                     @item.Title
                 </a>
-            </li>
-        }
-    </ul>
+            }
+        </div>
+    </div>
 }

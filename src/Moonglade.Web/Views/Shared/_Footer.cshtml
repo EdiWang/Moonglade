@@ -11,31 +11,18 @@
 <footer id="blog-footer" class="bg-accent2 pt-4 pb-4">
     <div class="container">
         <div class="row">
-            <section id="footer-copyright" class="col-md-3 col-sm-3">
-                <div class="mb-3">
+            <section id="footer-copyright" class="col">
+                <div>
                     @Html.Raw(Helper.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright))
                 </div>
                 <small>
-                    <a href="https://moonglade.blog" target="_blank">Moonglade</a> @Helper.AppVersion
-                    <br />
-                    <span class="d-none d-sm-block">Developed by <a href="https://edi.wang" target="_blank">Edi Wang</a></span>
+                    Powered by <a href="https://moonglade.blog" target="_blank">Moonglade</a> @Helper.AppVersion
                 </small>
             </section>
 
-            <section id="footer-customize" class="col-md-3 col-sm-3 d-none d-sm-block">
-                @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
-            </section>
+            @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
 
-            @if (BlogConfig.FriendLinksSettings.ShowFriendLinksSection)
-            {
-                <section id="footer-friendlink" class="col-md-3 col-sm-3 d-none d-sm-block">
-                    <cache expires-after="@TimeSpan.FromMinutes(60)">
-                        @await Component.InvokeAsync("FriendLink")
-                    </cache>
-                </section>
-            }
-
-            <section id="footer-language" class="col-md-3 col-sm-3 d-none d-sm-block">
+            <section id="footer-language" class="col d-none d-sm-block text-right">
                 <ul class="list-unstyled">
                     @foreach (var item in cultureItems)
                     {
