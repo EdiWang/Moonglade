@@ -53,7 +53,7 @@ namespace Moonglade.Core
                 CreateOnUtc = c.CreateOnUtc,
                 Username = c.Username,
                 Email = c.Email,
-                CommentReplies = c.CommentReply.Select(cr => new CommentReplyDigest
+                CommentReplies = c.Replies.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
                     ReplyTimeUtc = cr.ReplyTimeUtc
@@ -79,7 +79,7 @@ namespace Moonglade.Core
                 Username = p.Username,
                 IsApproved = p.IsApproved,
                 PostTitle = p.Post.Title,
-                CommentReplies = p.CommentReply.Select(cr => new CommentReplyDigest
+                CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
                     ReplyTimeUtc = cr.ReplyTimeUtc

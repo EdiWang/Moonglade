@@ -7,7 +7,7 @@ namespace Moonglade.Data.Entities
     {
         public CommentEntity()
         {
-            CommentReply = new HashSet<CommentReplyEntity>();
+            Replies = new HashSet<CommentReplyEntity>();
         }
 
         public Guid Id { get; set; }
@@ -20,6 +20,6 @@ namespace Moonglade.Data.Entities
         public bool IsApproved { get; set; }
 
         public virtual PostEntity Post { get; set; }
-        public virtual ICollection<CommentReplyEntity> CommentReply { get; set; }
+        public virtual ICollection<CommentReplyEntity> Replies { get; set; }
     }
 }
