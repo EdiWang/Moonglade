@@ -7,7 +7,7 @@ namespace Moonglade.Data.Entities
     {
         public PostEntity()
         {
-            Comment = new HashSet<CommentEntity>();
+            Comments = new HashSet<CommentEntity>();
             PostCategory = new HashSet<PostCategoryEntity>();
             Tags = new HashSet<TagEntity>();
         }
@@ -28,7 +28,7 @@ namespace Moonglade.Data.Entities
         public bool IsDeleted { get; set; }
 
         public virtual PostExtensionEntity PostExtension { get; set; }
-        public virtual ICollection<CommentEntity> Comment { get; set; }
+        public virtual ICollection<CommentEntity> Comments { get; set; }
         public virtual ICollection<PostCategoryEntity> PostCategory { get; set; }
         public virtual ICollection<TagEntity> Tags { get; set; }
     }

@@ -17,7 +17,7 @@ namespace Moonglade.Data.Spec
                     ApplyOrderByDescending(p => p.PostExtension.Hits);
                     break;
                 case PostInsightsType.TopCommented:
-                    ApplyOrderByDescending(p => p.Comment.Count);
+                    ApplyOrderByDescending(p => p.Comments.Count);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(insightsType), insightsType, null);

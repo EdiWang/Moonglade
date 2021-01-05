@@ -40,7 +40,7 @@ namespace Moonglade.Data.Spec
         {
             AddInclude(post => post
                 .Include(p => p.PostExtension)
-                .Include(p => p.Comment)
+                .Include(p => p.Comments)
                 .Include(pt => pt.Tags)
                 .Include(p => p.PostCategory).ThenInclude(pc => pc.Category));
         }

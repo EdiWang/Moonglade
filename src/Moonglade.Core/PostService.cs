@@ -201,7 +201,7 @@ namespace Moonglade.Core
                     ExposedToSiteMap = post.ExposedToSiteMap,
                     LastModifyOnUtc = post.LastModifiedUtc,
                     ContentLanguageCode = post.ContentLanguageCode,
-                    CommentCount = post.Comment.Count(c => c.IsApproved)
+                    CommentCount = post.Comments.Count(c => c.IsApproved)
                 });
 
                 return postSlugModel;
