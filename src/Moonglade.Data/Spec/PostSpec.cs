@@ -41,7 +41,7 @@ namespace Moonglade.Data.Spec
             AddInclude(post => post
                 .Include(p => p.PostExtension)
                 .Include(p => p.Comment)
-                .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
+                .Include(pt => pt.Tags)
                 .Include(p => p.PostCategory).ThenInclude(pc => pc.Category));
         }
 
@@ -50,8 +50,7 @@ namespace Moonglade.Data.Spec
             if (includeRelatedData)
             {
                 AddInclude(post => post
-                    .Include(p => p.PostTag)
-                    .ThenInclude(pt => pt.Tag)
+                    .Include(p => p.Tags)
                     .Include(p => p.PostCategory)
                     .ThenInclude(pc => pc.Category));
             }

@@ -6,13 +6,13 @@ namespace Moonglade.Data.Entities
     {
         public TagEntity()
         {
-            PostTag = new HashSet<PostTagEntity>();
+            Posts = new HashSet<PostEntity>();
         }
 
         public int Id { get; set; }
         public string DisplayName { get; set; }
         public string NormalizedName { get; set; }
 
-        public virtual ICollection<PostTagEntity> PostTag { get; set; }
+        public virtual ICollection<PostEntity> Posts { get; set; }
     }
 }

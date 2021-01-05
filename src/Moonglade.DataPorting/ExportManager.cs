@@ -113,7 +113,7 @@ namespace Moonglade.DataPorting
                         p.IsFeedIncluded,
                         p.IsPublished,
                         Categories = p.PostCategory.Select(pc => pc.Category.DisplayName),
-                        Tags = p.PostTag.Select(pt => pt.Tag.DisplayName)
+                        Tags = p.Tags.Select(pt => pt.DisplayName)
                     });
 
                     return poExportData;
