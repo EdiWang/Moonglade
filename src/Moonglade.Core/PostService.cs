@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -336,17 +337,12 @@ namespace Moonglade.Core
             };
 
             // check if exist same slug under the same day
-            // linq to sql fix:
-            // cannot write "p.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date"
-            // it will not blow up, but can result in select ENTIRE posts and evaluated in memory!!!
-            // - The LINQ expression 'where (Convert([p]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
-            // Why EF Core this diao yang?
-            if (_postRepo.Any(p =>
+            var todayUtc = DateTime.UtcNow.Date;
+            if (_postRepo.Any(
+                p =>
                 p.Slug == post.Slug &&
                 p.PubDateUtc != null &&
-                p.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
-                p.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
-                p.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
+                p.PubDateUtc.Value.Date == EF.Functions.DateFromParts(todayUtc.Year, todayUtc.Month, todayUtc.Day)))
             {
                 var uid = Guid.NewGuid();
                 post.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
