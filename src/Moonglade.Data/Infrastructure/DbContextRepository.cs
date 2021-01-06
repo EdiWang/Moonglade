@@ -127,6 +127,11 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.Set<T>().Count(condition);
         }
 
+        public bool Any(ISpecification<T> spec)
+        {
+            return ApplySpecification(spec).Any();
+        }
+
         public bool Any(Expression<Func<T, bool>> condition = null)
         {
             return null != condition ? DbContext.Set<T>().Any(condition) : DbContext.Set<T>().Any();

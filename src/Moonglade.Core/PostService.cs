@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -338,11 +337,7 @@ namespace Moonglade.Core
 
             // check if exist same slug under the same day
             var todayUtc = DateTime.UtcNow.Date;
-            if (_postRepo.Any(
-                p =>
-                p.Slug == post.Slug &&
-                p.PubDateUtc != null &&
-                p.PubDateUtc.Value.Date == EF.Functions.DateFromParts(todayUtc.Year, todayUtc.Month, todayUtc.Day)))
+            if (_postRepo.Any(new PostSpec(post.Slug, todayUtc)))
             {
                 var uid = Guid.NewGuid();
                 post.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
