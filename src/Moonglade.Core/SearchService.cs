@@ -52,10 +52,10 @@ namespace Moonglade.Core
                 Slug = p.Slug,
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-                Tags = p.PostTag.Select(pt => new Tag
+                Tags = p.Tags.Select(pt => new Tag
                 {
-                    NormalizedName = pt.Tag.NormalizedName,
-                    DisplayName = pt.Tag.DisplayName
+                    NormalizedName = pt.NormalizedName,
+                    DisplayName = pt.DisplayName
                 })
             }).ToListAsync();
 
@@ -177,7 +177,7 @@ namespace Moonglade.Core
                 // keyword: "dotnetrocks"
                 var k = rst.First();
                 var result = query.Where(p => p.Title.Contains(k) ||
-                                              p.PostTag.Select(pt => pt.Tag).Select(t => t.DisplayName).Contains(k));
+                                              p.Tags.Select(t => t.DisplayName).Contains(k));
                 return result;
             }
         }

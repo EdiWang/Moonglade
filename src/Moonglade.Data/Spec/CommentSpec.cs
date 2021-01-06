@@ -14,7 +14,7 @@ namespace Moonglade.Data.Spec
 
             AddInclude(comment => comment
                 .Include(c => c.Post)
-                .Include(c => c.CommentReply));
+                .Include(c => c.Replies));
             ApplyOrderByDescending(p => p.CreateOnUtc);
             ApplyPaging(startRow, pageSize);
         }
@@ -27,7 +27,7 @@ namespace Moonglade.Data.Spec
         public CommentSpec(Guid postId) : base(c => c.PostId == postId &&
                                                           c.IsApproved)
         {
-            AddInclude(comments => comments.Include(c => c.CommentReply));
+            AddInclude(comments => comments.Include(c => c.Replies));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Moonglade.Data.Configurations
             builder.Property(e => e.Id).ValueGeneratedNever();
             builder.Property(e => e.ReplyTimeUtc).HasColumnType("datetime");
             builder.HasOne(d => d.Comment)
-                   .WithMany(p => p.CommentReply)
+                   .WithMany(p => p.Replies)
                    .HasForeignKey(d => d.CommentId);
         }
     }

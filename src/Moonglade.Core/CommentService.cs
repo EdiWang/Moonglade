@@ -53,7 +53,7 @@ namespace Moonglade.Core
                 CreateOnUtc = c.CreateOnUtc,
                 Username = c.Username,
                 Email = c.Email,
-                CommentReplies = c.CommentReply.Select(cr => new CommentReplyDigest
+                CommentReplies = c.Replies.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
                     ReplyTimeUtc = cr.ReplyTimeUtc
@@ -75,11 +75,11 @@ namespace Moonglade.Core
                 CommentContent = p.CommentContent,
                 CreateOnUtc = p.CreateOnUtc,
                 Email = p.Email,
-                IpAddress = p.IPAddress,
+                IpAddress = p.IPAddress.ToString(),
                 Username = p.Username,
                 IsApproved = p.IsApproved,
                 PostTitle = p.Post.Title,
-                CommentReplies = p.CommentReply.Select(cr => new CommentReplyDigest
+                CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
                     ReplyTimeUtc = cr.ReplyTimeUtc
@@ -176,7 +176,7 @@ namespace Moonglade.Core
                 CommentContent = model.CommentContent,
                 CreateOnUtc = model.CreateOnUtc,
                 Email = model.Email,
-                IpAddress = model.IPAddress,
+                IpAddress = model.IPAddress.ToString(),
                 IsApproved = model.IsApproved,
                 PostTitle = postTitle,
                 Username = model.Username

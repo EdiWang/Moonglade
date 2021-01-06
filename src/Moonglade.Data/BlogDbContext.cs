@@ -38,12 +38,25 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new PostConfiguration());
             modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new PostExtensionConfiguration());
-            modelBuilder.ApplyConfiguration(new PostTagConfiguration());
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
             modelBuilder.ApplyConfiguration(new PageConfiguration());
             modelBuilder.ApplyConfiguration(new MenuConfiguration());
             modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
+
+            modelBuilder
+                .Entity<PostEntity>()
+                .HasMany(p => p.Tags)
+                .WithMany(p => p.Posts)
+                .UsingEntity<PostTagEntity>(
+                    j => j
+                        .HasOne(pt => pt.Tag)
+                        .WithMany()
+                        .HasForeignKey(pt => pt.TagId),
+                    j => j
+                        .HasOne(pt => pt.Post)
+                        .WithMany()
+                        .HasForeignKey(pt => pt.PostId));
         }
     }
 }

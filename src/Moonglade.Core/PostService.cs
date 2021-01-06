@@ -83,11 +83,11 @@ namespace Moonglade.Core
                 ExposedToSiteMap = p.ExposedToSiteMap,
                 IsFeedIncluded = p.IsFeedIncluded,
                 ContentLanguageCode = p.ContentLanguageCode,
-                Tags = p.PostTag.Select(pt => new Tag
+                Tags = p.Tags.Select(pt => new Tag
                 {
-                    Id = pt.TagId,
-                    NormalizedName = pt.Tag.NormalizedName,
-                    DisplayName = pt.Tag.DisplayName
+                    Id = pt.Id,
+                    NormalizedName = pt.NormalizedName,
+                    DisplayName = pt.DisplayName
                 }).ToArray(),
                 Categories = p.PostCategory.Select(pc => new Category
                 {
@@ -117,7 +117,7 @@ namespace Moonglade.Core
 
                 RawPostContent = post.PostContent,
 
-                Tags = post.PostTag.Select(pt => pt.Tag)
+                Tags = post.Tags
                     .Select(p => new Tag
                     {
                         NormalizedName = p.NormalizedName,
@@ -156,8 +156,8 @@ namespace Moonglade.Core
                                  .Select(pc => pc.Category.DisplayName)
                                  .ToArray(),
 
-                Tags = post.PostTag
-                           .Select(pt => pt.Tag.DisplayName)
+                Tags = post.Tags
+                           .Select(pt => pt.DisplayName)
                            .ToArray()
             });
 
@@ -190,7 +190,7 @@ namespace Moonglade.Core
 
                     RawPostContent = post.PostContent,
 
-                    Tags = post.PostTag.Select(pt => pt.Tag)
+                    Tags = post.Tags
                         .Select(p => new Tag
                         {
                             NormalizedName = p.NormalizedName,
@@ -201,7 +201,7 @@ namespace Moonglade.Core
                     ExposedToSiteMap = post.ExposedToSiteMap,
                     LastModifyOnUtc = post.LastModifiedUtc,
                     ContentLanguageCode = post.ContentLanguageCode,
-                    CommentCount = post.Comment.Count(c => c.IsApproved)
+                    CommentCount = post.Comments.Count(c => c.IsApproved)
                 });
 
                 return postSlugModel;
@@ -263,10 +263,10 @@ namespace Moonglade.Core
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
                 LangCode = p.ContentLanguageCode,
-                Tags = p.PostTag.Select(pt => new Tag
+                Tags = p.Tags.Select(pt => new Tag
                 {
-                    NormalizedName = pt.Tag.NormalizedName,
-                    DisplayName = pt.Tag.DisplayName
+                    NormalizedName = pt.NormalizedName,
+                    DisplayName = pt.DisplayName
                 })
             });
         }
@@ -297,10 +297,10 @@ namespace Moonglade.Core
                     ContentAbstract = p.Post.ContentAbstract,
                     PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
                     LangCode = p.Post.ContentLanguageCode,
-                    Tags = p.Post.PostTag.Select(pt => new Tag
+                    Tags = p.Post.Tags.Select(pt => new Tag
                     {
-                        NormalizedName = pt.Tag.NormalizedName,
-                        DisplayName = pt.Tag.DisplayName
+                        NormalizedName = pt.NormalizedName,
+                        DisplayName = pt.DisplayName
                     })
                 });
 
@@ -336,17 +336,8 @@ namespace Moonglade.Core
             };
 
             // check if exist same slug under the same day
-            // linq to sql fix:
-            // cannot write "p.PubDateUtc.GetValueOrDefault().Date == DateTime.UtcNow.Date"
-            // it will not blow up, but can result in select ENTIRE posts and evaluated in memory!!!
-            // - The LINQ expression 'where (Convert([p]?.PubDateUtc?.GetValueOrDefault(), DateTime).Date == DateTime.UtcNow.Date)' could not be translated and will be evaluated locally
-            // Why EF Core this diao yang?
-            if (_postRepo.Any(p =>
-                p.Slug == post.Slug &&
-                p.PubDateUtc != null &&
-                p.PubDateUtc.Value.Year == DateTime.UtcNow.Date.Year &&
-                p.PubDateUtc.Value.Month == DateTime.UtcNow.Date.Month &&
-                p.PubDateUtc.Value.Day == DateTime.UtcNow.Date.Day))
+            var todayUtc = DateTime.UtcNow.Date;
+            if (_postRepo.Any(new PostSpec(post.Slug, todayUtc)))
             {
                 var uid = Guid.NewGuid();
                 post.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
@@ -390,11 +381,7 @@ namespace Moonglade.Core
                             $"Tag '{tag.NormalizedName}' created.");
                     }
 
-                    post.PostTag.Add(new()
-                    {
-                        TagId = tag.Id,
-                        PostId = post.Id
-                    });
+                    post.Tags.Add(tag);
                 }
             }
 
@@ -460,7 +447,7 @@ namespace Moonglade.Core
             }
 
             // 2. update tags
-            post.PostTag.Clear();
+            post.Tags.Clear();
             if (request.Tags.Any())
             {
                 foreach (var tagName in request.Tags)
@@ -471,11 +458,7 @@ namespace Moonglade.Core
                     }
 
                     var tag = await _tagRepo.GetAsync(t => t.DisplayName == tagName);
-                    if (tag is not null) post.PostTag.Add(new()
-                    {
-                        PostId = post.Id,
-                        TagId = tag.Id
-                    });
+                    if (tag is not null) post.Tags.Add(tag);
                 }
             }
 

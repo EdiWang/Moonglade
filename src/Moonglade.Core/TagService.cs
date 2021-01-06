@@ -76,7 +76,7 @@ namespace Moonglade.Core
             var spec = new TagSpec(top);
             var tags = await _tagRepo.SelectAsync(spec, t => new DegreeTag
             {
-                Degree = t.PostTag.Count,
+                Degree = t.Posts.Count,
                 DisplayName = t.DisplayName,
                 NormalizedName = t.NormalizedName
             });
@@ -101,7 +101,7 @@ namespace Moonglade.Core
             {
                 DisplayName = t.DisplayName,
                 NormalizedName = t.NormalizedName,
-                Degree = t.PostTag.Count
+                Degree = t.Posts.Count
             });
         }
 
