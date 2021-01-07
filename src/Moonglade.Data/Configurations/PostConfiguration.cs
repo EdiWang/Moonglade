@@ -13,7 +13,7 @@ namespace Moonglade.Data.Configurations
             builder.Property(e => e.ContentAbstract).HasMaxLength(1024);
             builder.Property(e => e.ContentLanguageCode).HasMaxLength(8);
 
-            builder.Property(e => e.CreateOnUtc).HasColumnType("datetime");
+            builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
             builder.Property(e => e.PubDateUtc).HasColumnType("datetime");
             builder.Property(e => e.LastModifiedUtc).HasColumnType("datetime");
             builder.Property(e => e.PostContent);

@@ -9,6 +9,6 @@ namespace Moonglade.Data.Entities
         public string PasswordHash { get; set; }
         public DateTime? LastLoginTimeUtc { get; set; }
         public string LastLoginIp { get; set; }
-        public DateTime CreateOnUtc { get; set; }
+        public DateTime CreateTimeUtc { get; set; }
     }
 }

@@ -53,7 +53,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var post in Model.OrderByDescending(p => p.CreateOnUtc))
+            @foreach (var post in Model.OrderByDescending(p => p.CreateTimeUtc))
             {
                 <tr id="tr-@post.Id">
                     <td>

@@ -12,6 +12,6 @@ namespace Moonglade.Model
 
         public bool IsPublished { get; set; }
 
-        public DateTime CreateOnUtc { get; set; }
+        public DateTime CreateTimeUtc { get; set; }
     }
 }

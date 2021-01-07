@@ -92,7 +92,7 @@ namespace Moonglade.Core.Notification
                     model.IpAddress,
                     model.PostTitle,
                     contentFormat(model.CommentContent),
-                    model.CreateOnUtc
+                    model.CreateTimeUtc
                 );
 
                 await SendAsync(

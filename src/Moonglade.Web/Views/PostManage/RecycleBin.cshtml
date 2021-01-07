@@ -38,11 +38,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var post in Model.OrderByDescending(p => p.CreateOnUtc))
+            @foreach (var post in Model.OrderByDescending(p => p.CreateTimeUtc))
             {
                 <tr id="tr-@post.Id">
                     <td>@post.Title</td>
-                    <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy HH:mm")</td>
+                    <td class="text-muted">@post.CreateTimeUtc.ToString("MM/dd/yyyy HH:mm")</td>
                     <td class="p-2">
                         <a class="btn btn-sm btn-outline-accent btn-restore" data-postid="@post.Id" href="javascript:;">
                             <span class="icon-undo2"></span> @Localizer["Restore"]

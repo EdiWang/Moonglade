@@ -9,7 +9,7 @@ namespace Moonglade.Model
 
         public string Email { get; set; }
 
-        public DateTime CreateOnUtc { get; set; }
+        public DateTime CreateTimeUtc { get; set; }
 
         public string CommentContent { get; set; }
 

@@ -30,7 +30,7 @@
     @Html.AntiForgeryToken()
 
     <div class="card-columns card-columns-pages">
-        @foreach (var customPage in Model.OrderByDescending(p => p.CreateOnUtc))
+        @foreach (var customPage in Model.OrderByDescending(p => p.CreateTimeUtc))
         {
             <div class="card mb-4" id="card-@customPage.Id">
                 <div class="card-body">
@@ -39,7 +39,7 @@
                     </h6>
                     <p class="mt-2 h-30px">@customPage.RouteName</p>
                     <small class="text-muted">
-                        @customPage.CreateOnUtc
+                        @customPage.CreateTimeUtc
                     </small>
                 </div>
                 <div class="card-footer">

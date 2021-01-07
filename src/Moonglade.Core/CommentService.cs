@@ -50,13 +50,13 @@ namespace Moonglade.Core
             return _commentRepo.SelectAsync(new CommentSpec(postId), c => new Comment
             {
                 CommentContent = c.CommentContent,
-                CreateOnUtc = c.CreateOnUtc,
+                CreateTimeUtc = c.CreateTimeUtc,
                 Username = c.Username,
                 Email = c.Email,
                 CommentReplies = c.Replies.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
-                    ReplyTimeUtc = cr.ReplyTimeUtc
+                    ReplyTimeUtc = cr.CreateTimeUtc
                 }).ToList()
             });
         }
@@ -73,7 +73,7 @@ namespace Moonglade.Core
             {
                 Id = p.Id,
                 CommentContent = p.CommentContent,
-                CreateOnUtc = p.CreateOnUtc,
+                CreateTimeUtc = p.CreateTimeUtc,
                 Email = p.Email,
                 IpAddress = p.IPAddress.ToString(),
                 Username = p.Username,
@@ -82,7 +82,7 @@ namespace Moonglade.Core
                 CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
                 {
                     ReplyContent = cr.ReplyContent,
-                    ReplyTimeUtc = cr.ReplyTimeUtc
+                    ReplyTimeUtc = cr.CreateTimeUtc
                 }).ToList()
             });
 
@@ -159,7 +159,7 @@ namespace Moonglade.Core
                 Username = request.Username,
                 CommentContent = request.Content,
                 PostId = request.PostId,
-                CreateOnUtc = DateTime.UtcNow,
+                CreateTimeUtc = DateTime.UtcNow,
                 Email = request.Email,
                 IPAddress = request.IpAddress,
                 IsApproved = !_blogConfig.ContentSettings.RequireCommentReview
@@ -174,7 +174,7 @@ namespace Moonglade.Core
             {
                 Id = model.Id,
                 CommentContent = model.CommentContent,
-                CreateOnUtc = model.CreateOnUtc,
+                CreateTimeUtc = model.CreateTimeUtc,
                 Email = model.Email,
                 IpAddress = model.IPAddress.ToString(),
                 IsApproved = model.IsApproved,
@@ -195,7 +195,7 @@ namespace Moonglade.Core
             {
                 Id = id,
                 ReplyContent = replyContent,
-                ReplyTimeUtc = DateTime.UtcNow,
+                CreateTimeUtc = DateTime.UtcNow,
                 CommentId = commentId
             };
 
@@ -211,7 +211,7 @@ namespace Moonglade.Core
                 PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
                 ReplyContent = model.ReplyContent,
                 ReplyContentHtml = ContentProcessor.MarkdownToContent(model.ReplyContent, ContentProcessor.MarkdownConvertType.Html),
-                ReplyTimeUtc = model.ReplyTimeUtc,
+                ReplyTimeUtc = model.CreateTimeUtc,
                 Slug = cmt.Post.Slug,
                 Title = cmt.Post.Title
             };

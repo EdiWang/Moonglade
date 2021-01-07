@@ -77,7 +77,7 @@ namespace Moonglade.Core
                 RawPostContent = p.PostContent,
                 ContentAbstract = p.ContentAbstract,
                 CommentEnabled = p.CommentEnabled,
-                CreateOnUtc = p.CreateOnUtc,
+                CreateTimeUtc = p.CreateTimeUtc,
                 PubDateUtc = p.PubDateUtc,
                 IsPublished = p.IsPublished,
                 ExposedToSiteMap = p.ExposedToSiteMap,
@@ -221,7 +221,7 @@ namespace Moonglade.Core
                 PubDateUtc = p.PubDateUtc,
                 IsPublished = p.IsPublished,
                 IsDeleted = p.IsDeleted,
-                CreateOnUtc = p.CreateOnUtc,
+                CreateTimeUtc = p.CreateTimeUtc,
                 Hits = p.PostExtension.Hits
             });
         }
@@ -237,7 +237,7 @@ namespace Moonglade.Core
                 PubDateUtc = p.PubDateUtc,
                 IsPublished = p.IsPublished,
                 IsDeleted = p.IsDeleted,
-                CreateOnUtc = p.CreateOnUtc,
+                CreateTimeUtc = p.CreateTimeUtc,
                 Hits = p.PostExtension.Hits
             });
         }
@@ -319,7 +319,7 @@ namespace Moonglade.Core
                 Id = Guid.NewGuid(),
                 PostContent = request.EditorContent,
                 ContentAbstract = abs,
-                CreateOnUtc = DateTime.UtcNow,
+                CreateTimeUtc = DateTime.UtcNow,
                 Slug = request.Slug.ToLower().Trim(),
                 Title = request.Title.Trim(),
                 ContentLanguageCode = request.ContentLanguageCode,

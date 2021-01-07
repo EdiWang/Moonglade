@@ -15,7 +15,7 @@ namespace Moonglade.Data.Spec
             AddInclude(comment => comment
                 .Include(c => c.Post)
                 .Include(c => c.Replies));
-            ApplyOrderByDescending(p => p.CreateOnUtc);
+            ApplyOrderByDescending(p => p.CreateTimeUtc);
             ApplyPaging(startRow, pageSize);
         }
 

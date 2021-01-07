@@ -9,7 +9,7 @@ namespace Moonglade.Model
         public string Slug { get; set; }
         public string RawPostContent { get; set; }
         public bool CommentEnabled { get; set; }
-        public DateTime CreateOnUtc { get; set; }
+        public DateTime CreateTimeUtc { get; set; }
         public string ContentAbstract { get; set; }
         public bool IsPublished { get; set; }
         public bool ExposedToSiteMap { get; set; }
