@@ -63,6 +63,11 @@ namespace Moonglade.Web.Controllers
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
                 var bytes = await _syndicationService.GetRssStreamDataAsync(routeName);
+                if (bytes is null)
+                {
+                    return (IActionResult)NotFound();
+                }
+
                 var xmlContent = Encoding.UTF8.GetString(bytes);
                 return Content(xmlContent, "text/xml");
             });

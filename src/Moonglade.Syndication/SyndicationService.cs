@@ -50,10 +50,7 @@ namespace Moonglade.Syndication
             if (!string.IsNullOrWhiteSpace(categoryName))
             {
                 var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
-                if (cat is null)
-                {
-                    throw new InvalidDataException($"'{categoryName}' is not found.");
-                }
+                if (cat is null) return null;
 
                 itemCollection = await GetFeedEntriesAsync(cat.Id);
             }
