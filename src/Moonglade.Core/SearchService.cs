@@ -124,7 +124,7 @@ namespace Moonglade.Core
                 // Pages
                 var pages = await _pageRepo.SelectAsync(page => new
                 {
-                    page.CreateOnUtc,
+                    page.CreateTimeUtc,
                     page.Slug,
                     page.IsPublished
                 });
@@ -133,7 +133,7 @@ namespace Moonglade.Core
                 {
                     writer.WriteStartElement("url");
                     writer.WriteElementString("loc", $"{siteRootUrl}/page/{item.Slug.ToLower()}");
-                    writer.WriteElementString("lastmod", item.CreateOnUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                    writer.WriteElementString("lastmod", item.CreateTimeUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
                     writer.WriteElementString("changefreq", _settings.SiteMap.ChangeFreq["Pages"]);
                     await writer.WriteEndElementAsync();
                 }

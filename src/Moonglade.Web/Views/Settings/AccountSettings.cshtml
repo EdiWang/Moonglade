@@ -95,7 +95,7 @@
                     <td>@item.Username</td>
                     <td>@(item.LastLoginIp ?? "N/A")</td>
                     <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td>
-                    <td>@item.CreateOnUtc</td>
+                    <td>@item.CreateTimeUtc</td>
                     <td>
                         <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-accent btn-updatepwd">
                             <span class="icon-key"></span>

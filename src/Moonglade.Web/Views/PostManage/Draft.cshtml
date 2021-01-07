@@ -39,11 +39,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var post in Model.OrderByDescending(p => p.CreateOnUtc))
+            @foreach (var post in Model.OrderByDescending(p => p.CreateTimeUtc))
             {
                 <tr id="tr-@post.Id">
                     <td>@post.Title</td>
-                    <td class="text-muted">@post.CreateOnUtc.ToString("MM/dd/yyyy HH:mm")</td>
+                    <td class="text-muted">@post.CreateTimeUtc.ToString("MM/dd/yyyy HH:mm")</td>
                     <td>
                         <a class="btn btn-outline-accent btn-sm btn-edit" asp-controller="PostManage" asp-action="Edit" asp-route-id="@post.Id">
                             <span class="icon-pencil"></span>

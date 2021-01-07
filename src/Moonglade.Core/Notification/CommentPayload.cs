@@ -5,14 +5,14 @@ namespace Moonglade.Core.Notification
     internal class CommentPayload
     {
         public CommentPayload(
-            string username, string email, string ipAddress, string postTitle, string commentContent, DateTime createOnUtc)
+            string username, string email, string ipAddress, string postTitle, string commentContent, DateTime createTimeUtc)
         {
             Username = username;
             Email = email;
             IpAddress = ipAddress;
             PostTitle = postTitle;
             CommentContent = commentContent;
-            CreateOnUtc = createOnUtc;
+            CreateTimeUtc = createTimeUtc;
         }
 
         public string Username { get; set; }
@@ -25,6 +25,6 @@ namespace Moonglade.Core.Notification
 
         public string CommentContent { get; set; }
 
-        public DateTime CreateOnUtc { get; set; }
+        public DateTime CreateTimeUtc { get; set; }
     }
 }

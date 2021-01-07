@@ -12,7 +12,7 @@ namespace Moonglade.Data.Entities
         public string CssContent { get; set; }
         public bool HideSidebar { get; set; }
         public bool IsPublished { get; set; }
-        public DateTime CreateOnUtc { get; set; }
-        public DateTime? UpdatedOnUtc { get; set; }
+        public DateTime CreateTimeUtc { get; set; }
+        public DateTime? UpdateTimeUtc { get; set; }
     }
 }

@@ -11,4 +11,4 @@ INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (8, 
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (9, 'CustomStyleSheetSettings', '{"EnableCustomCss":false,"CssCode":""}', GETDATE())
 
 DELETE FROM LocalAccount
-INSERT LocalAccount(Id, Username, PasswordHash, CreateOnUtc) VALUES (NEWID(), 'admin', 'JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=', GETDATE())
+INSERT LocalAccount(Id, Username, PasswordHash, CreateTimeUtc) VALUES (NEWID(), 'admin', 'JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=', GETDATE())

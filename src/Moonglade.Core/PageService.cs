@@ -42,7 +42,7 @@ namespace Moonglade.Core
             return _pageRepo.SelectAsync(page => new PageSegment
             {
                 Id = page.Id,
-                CreateOnUtc = page.CreateOnUtc,
+                CreateTimeUtc = page.CreateTimeUtc,
                 RouteName = page.Slug,
                 Title = page.Title,
                 IsPublished = page.IsPublished
@@ -58,7 +58,7 @@ namespace Moonglade.Core
                 Title = request.Title.Trim(),
                 Slug = request.Slug.ToLower().Trim(),
                 MetaDescription = request.MetaDescription,
-                CreateOnUtc = DateTime.UtcNow,
+                CreateTimeUtc = DateTime.UtcNow,
                 HtmlContent = request.HtmlContent,
                 CssContent = request.CssContent,
                 HideSidebar = request.HideSidebar,
@@ -85,7 +85,7 @@ namespace Moonglade.Core
             page.HtmlContent = request.HtmlContent;
             page.CssContent = request.CssContent;
             page.HideSidebar = request.HideSidebar;
-            page.UpdatedOnUtc = DateTime.UtcNow;
+            page.UpdateTimeUtc = DateTime.UtcNow;
             page.IsPublished = request.IsPublished;
 
             await _pageRepo.UpdateAsync(page);
@@ -123,13 +123,13 @@ namespace Moonglade.Core
             {
                 Id = entity.Id,
                 Title = entity.Title.Trim(),
-                CreateOnUtc = entity.CreateOnUtc,
+                CreateTimeUtc = entity.CreateTimeUtc,
                 CssContent = entity.CssContent,
                 RawHtmlContent = entity.HtmlContent,
                 HideSidebar = entity.HideSidebar,
                 Slug = entity.Slug.Trim().ToLower(),
                 MetaDescription = entity.MetaDescription?.Trim(),
-                UpdatedOnUtc = entity.UpdatedOnUtc,
+                UpdateTimeUtc = entity.UpdateTimeUtc,
                 IsPublished = entity.IsPublished
             };
         }

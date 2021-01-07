@@ -40,7 +40,7 @@ namespace Moonglade.Core
             var list = _accountRepo.SelectAsync(p => new Account
             {
                 Id = p.Id,
-                CreateOnUtc = p.CreateOnUtc,
+                CreateTimeUtc = p.CreateTimeUtc,
                 LastLoginIp = p.LastLoginIp,
                 LastLoginTimeUtc = p.LastLoginTimeUtc,
                 Username = p.Username
@@ -100,7 +100,7 @@ namespace Moonglade.Core
             var account = new LocalAccountEntity
             {
                 Id = uid,
-                CreateOnUtc = DateTime.UtcNow,
+                CreateTimeUtc = DateTime.UtcNow,
                 Username = username.ToLower().Trim(),
                 PasswordHash = HashPassword(clearPassword.Trim())
             };
@@ -159,7 +159,7 @@ namespace Moonglade.Core
             return new()
             {
                 Id = entity.Id,
-                CreateOnUtc = entity.CreateOnUtc,
+                CreateTimeUtc = entity.CreateTimeUtc,
                 LastLoginIp = entity.LastLoginIp.Trim(),
                 LastLoginTimeUtc = entity.LastLoginTimeUtc.GetValueOrDefault(),
                 Username = entity.Username.Trim()

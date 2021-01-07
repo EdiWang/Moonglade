@@ -84,13 +84,13 @@ namespace Moonglade.DataPorting
                     var pgExportData = await pgExp.ExportData(p => new
                     {
                         p.Title,
-                        p.CreateOnUtc,
+                        p.CreateTimeUtc,
                         p.CssContent,
                         p.HideSidebar,
                         p.HtmlContent,
                         RouteName = p.Slug,
                         p.MetaDescription,
-                        p.UpdatedOnUtc
+                        UpdatedOnUtc = p.UpdateTimeUtc
                     });
 
                     return pgExportData;
@@ -102,7 +102,7 @@ namespace Moonglade.DataPorting
                         p.Slug,
                         p.ContentAbstract,
                         p.PostContent,
-                        p.CreateOnUtc,
+                        p.CreateTimeUtc,
                         p.CommentEnabled,
                         p.PostExtension.Hits,
                         p.PostExtension.Likes,

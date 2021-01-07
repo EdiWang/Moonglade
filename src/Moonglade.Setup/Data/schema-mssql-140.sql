@@ -5,7 +5,7 @@ CREATE TABLE [LocalAccount](
 [PasswordHash] [nvarchar](64) NOT NULL,
 [LastLoginTimeUtc] [datetime] NULL,
 [LastLoginIp] [nvarchar](64) NULL,
-[CreateOnUtc] [datetime] NOT NULL)
+[CreateTimeUtc] [datetime] NOT NULL)
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'BlogConfiguration')
 CREATE TABLE [BlogConfiguration](
@@ -27,7 +27,7 @@ CREATE TABLE [Comment](
 [Username] [nvarchar](64) NULL,
 [Email] [nvarchar](128) NULL,
 [IPAddress] [nvarchar](64) NULL,
-[CreateOnUtc] [datetime] NOT NULL,
+[CreateTimeUtc] [datetime] NOT NULL,
 [CommentContent] [nvarchar](max) NOT NULL,
 [PostId] [uniqueidentifier] NOT NULL,
 [IsApproved] [bit] NOT NULL) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
@@ -36,7 +36,7 @@ IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N
 CREATE TABLE [CommentReply](
 [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
 [ReplyContent] [nvarchar](max) NULL,
-[ReplyTimeUtc] [datetime] NOT NULL,
+[CreateTimeUtc] [datetime] NOT NULL,
 [CommentId] [uniqueidentifier] NULL) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'FriendLink')
@@ -63,7 +63,7 @@ CREATE TABLE [Post](
 [Slug] [nvarchar](128) NULL,
 [PostContent] [nvarchar](max) NULL,
 [CommentEnabled] [bit] NOT NULL,
-[CreateOnUtc] [datetime] NOT NULL,
+[CreateTimeUtc] [datetime] NOT NULL,
 [ContentAbstract] [nvarchar](1024) NULL,
 [ContentLanguageCode] [nvarchar](8) NULL,
 [ExposedToSiteMap] [bit] NOT NULL,
@@ -118,8 +118,8 @@ CREATE TABLE [CustomPage](
 	[CssContent] NVARCHAR(MAX) NULL,
 	[HideSidebar] BIT NOT NULL,
 	[IsPublished] BIT NOT NULL,
-	[CreateOnUtc] DATETIME NOT NULL,
-	[UpdatedOnUtc] DATETIME NULL
+	[CreateTimeUtc] DATETIME NOT NULL,
+	[UpdateTimeUtc] DATETIME NULL
 )
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'AuditLog')

@@ -24,7 +24,7 @@
 @if (null != Model && Model.Any())
 {
     <div class="comment-list row">
-        @foreach (var item in Model.OrderBy(m => m.CreateOnUtc))
+        @foreach (var item in Model.OrderBy(m => m.CreateTimeUtc))
         {
             <div class="col-md-1 mb-3 d-none d-sm-block">
                 @if (BlogConfig.ContentSettings.EnableGravatar && !string.IsNullOrWhiteSpace(item.Email))
@@ -44,7 +44,7 @@
                 <div class="card comment-item">
                     <div class="card-header">
                         <strong>@item.Username</strong>
-                        <span class="text-muted float-right"> @DateTimeResolver.ToTimeZone(item.CreateOnUtc).ToString("yyyy-M-d HH:mm")</span>
+                        <span class="text-muted float-right"> @DateTimeResolver.ToTimeZone(item.CreateTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                     </div>
                     <div class="card-body">
                         @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
