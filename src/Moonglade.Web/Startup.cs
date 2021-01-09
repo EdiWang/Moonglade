@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
+using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Utils;
 using Moonglade.Web.Authentication;
@@ -103,7 +104,7 @@ namespace Moonglade.Web
             services.AddSessionBasedCaptcha();
             services.AddBlogServices();
             services.AddBlogNotification(_logger);
-            services.AddDataStorage(_configuration);
+            services.AddDataStorage(_configuration.GetConnectionString(Constants.DbConnectionName));
 
             services.AddAzureAppConfiguration();
         }

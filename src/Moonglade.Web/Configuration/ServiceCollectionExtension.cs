@@ -18,7 +18,6 @@ using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
@@ -39,15 +38,13 @@ namespace Moonglade.Web.Configuration
                 new DateTimeResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
         }
 
-        public static void AddDataStorage(this IServiceCollection services, IConfiguration configuration)
+        public static void AddDataStorage(this IServiceCollection services, string connectionString)
         {
-            var connStr = configuration.GetConnectionString(Constants.DbConnectionName);
-
-            services.AddTransient<IDbConnection>(_ => new SqlConnection(connStr));
+            services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
             services.AddDbContext<BlogDbContext>(options =>
                 options.UseLazyLoadingProxies()
-                    .UseSqlServer(connStr, sqlOptions =>
+                    .UseSqlServer(connectionString, sqlOptions =>
                     {
                         sqlOptions.EnableRetryOnFailure(
                             3,
