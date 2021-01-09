@@ -139,7 +139,7 @@ namespace Moonglade.Web
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();
 
-            if (bool.Parse(_configuration["AppSettings:PreferAzureAppConfiguration"]))
+            if (_configuration.GetValue<bool>("AppSettings:PreferAzureAppConfiguration"))
             {
                 app.UseAzureAppConfiguration();
             }
