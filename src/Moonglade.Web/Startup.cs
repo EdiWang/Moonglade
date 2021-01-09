@@ -163,6 +163,14 @@ namespace Moonglade.Web
                 SupportedUICultures = _supportedCultures
             });
 
+            app.UseDefaultImage(options =>
+            {
+                options.AllowedExtensions = _configuration.GetSection("ImageStorage:AllowedExtensions")
+                    .GetChildren()
+                    .Select(x => x.Value);
+                options.DefaultImagePath = _configuration["ImageStorage:DefaultImagePath"];
+            });
+
             app.UseStaticFiles();
             app.UseSession();
 

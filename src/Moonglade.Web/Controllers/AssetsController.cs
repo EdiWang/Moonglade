@@ -88,12 +88,7 @@ namespace Moonglade.Web.Controllers
                     return imgBytesResponse;
                 });
 
-                if (null == imageEntry)
-                {
-                    return _blogConfig.ContentSettings.UseFriendlyNotFoundImage
-                        ? (IActionResult)File("~/images/image-not-found.png", "image/png")
-                        : NotFound();
-                }
+                if (null == imageEntry) return NotFound();
 
                 return File(imageEntry.ImageBytes, imageEntry.ImageContentType);
             }
