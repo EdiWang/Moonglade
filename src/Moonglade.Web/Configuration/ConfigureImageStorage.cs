@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.AspNetCore.Hosting;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.ImageStorage;
@@ -8,11 +8,20 @@ using Moonglade.Utils;
 
 namespace Moonglade.Web.Configuration
 {
+    public class ImageStorageOptions
+    {
+        public string ContentRootPath { get; set; } = Directory.GetCurrentDirectory();
+    }
+
     public static class ConfigureImageStorage
     {
+        private static readonly ImageStorageOptions Options = new();
+
         public static void AddImageStorage(
-           this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+           this IServiceCollection services, IConfiguration configuration, Action<ImageStorageOptions> options)
         {
+            options(Options);
+
             var imageStorage = new ImageStorageSettings();
             configuration.Bind(nameof(ImageStorage), imageStorage);
             services.Configure<ImageStorageSettings>(configuration.GetSection(nameof(ImageStorage)));
@@ -62,7 +71,7 @@ namespace Moonglade.Web.Configuration
                     break;
                 case "filesystem":
                     var path = imageStorage.FileSystemSettings.Path;
-                    var fullPath = FileSystemImageStorage.ResolveImageStoragePath(environment.ContentRootPath, path);
+                    var fullPath = FileSystemImageStorage.ResolveImageStoragePath(Options.ContentRootPath, path);
                     services.AddSingleton(_ => new FileSystemImageConfiguration(fullPath));
                     services.AddSingleton<IBlogImageStorage, FileSystemImageStorage>();
                     break;

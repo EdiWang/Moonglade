@@ -94,7 +94,10 @@ namespace Moonglade.Web
             });
 
             services.AddPingback();
-            services.AddImageStorage(_configuration, _environment);
+            services.AddImageStorage(_configuration, options =>
+            {
+                options.ContentRootPath = _environment.ContentRootPath;
+            });
             services.AddCommentModerator(_configuration, _environment);
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSessionBasedCaptcha();
