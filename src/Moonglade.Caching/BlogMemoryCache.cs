@@ -73,7 +73,7 @@ namespace Moonglade.Caching
 
             foreach (string key in cacheKeys)
             {
-                _memoryCache.Remove(key);
+                _memoryCache.Remove($"{division}-{key}");
             }
         }
 
