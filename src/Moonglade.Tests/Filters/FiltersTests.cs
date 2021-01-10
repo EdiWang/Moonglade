@@ -35,8 +35,7 @@ namespace Moonglade.Tests.Filters
         [Test]
         public void ClearPagingCountCache_Success()
         {
-            var ctx = CreateActionExecutingContext(null);
-            var ctx2 = CreateActionExecutedContext(ctx);
+            var ctx = MakeActionExecutedContext();
 
             var mockedCache = Create.MockedMemoryCache();
             var blogCache = new BlogMemoryCache(mockedCache);
@@ -46,7 +45,7 @@ namespace Moonglade.Tests.Filters
             blogCache.GetOrCreate(CacheDivision.PostCountTag, "hw", _ => 251);
 
             var att = new ClearPagingCountCache(blogCache);
-            att.OnActionExecuted(ctx2);
+            att.OnActionExecuted(ctx);
 
             var postcount = mockedCache.Get<int>("General-postcount");
             var ali = mockedCache.Get<string>("General-ali");
@@ -57,6 +56,33 @@ namespace Moonglade.Tests.Filters
             Assert.AreEqual("fubao", ali);
             Assert.AreEqual(0, pdd);
             Assert.AreEqual(0, hw);
+        }
+
+        [Test]
+        public void ClearBlogCache_Success()
+        {
+            var ctx = MakeActionExecutedContext();
+
+            var mockedCache = Create.MockedMemoryCache();
+            var blogCache = new BlogMemoryCache(mockedCache);
+            blogCache.GetOrCreate(CacheDivision.General, "pdd-overwork-death", 
+                _ => "你们看看底层的人民，哪一个不是用命换钱，" +
+                     "我一直不以为是资本的问题，而是这个社会的问题，" +
+                     "这是一个用命拼的时代，你可以选择安逸的日子，" +
+                     "但你就要选择安逸带来的后果，" +
+                     "人是可以控制自己的努力的，我们都可以");
+
+            var att = new ClearBlogCache(CacheDivision.General, "pdd-overwork-death", blogCache);
+            att.OnActionExecuted(ctx);
+
+            var pddReply = mockedCache.Get<string>("General-pdd-overwork-death");
+            Assert.AreEqual(null, pddReply);
+        }
+
+        private ActionExecutedContext MakeActionExecutedContext()
+        {
+            var ctx = CreateActionExecutingContext(null);
+            return CreateActionExecutedContext(ctx);
         }
 
         #region Helper Methods
