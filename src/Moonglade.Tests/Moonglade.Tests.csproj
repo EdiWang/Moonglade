@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MemoryCache.Testing.Moq" Version="1.2.2" />
     <PackageReference Include="Moq" Version="4.15.2" />
     <PackageReference Include="Moq.Dapper" Version="1.0.3" />
     <PackageReference Include="nunit" Version="3.13.0" />
