@@ -112,6 +112,27 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        public void RemoveAllCache_Success()
+        {
+            _blogCache.GetOrCreate(CacheDivision.General, "postcount", _ => 996);
+            _blogCache.GetOrCreate(CacheDivision.General, "ali", _ => "fubao");
+            _blogCache.GetOrCreate(CacheDivision.PostCountCategory, "pdd", _ => 007);
+            _blogCache.GetOrCreate(CacheDivision.PostCountTag, "hw", _ => 251);
+
+            _blogCache.RemoveAllCache();
+
+            var postcount = _memoryCache.Get<int>("General-postcount");
+            var ali = _memoryCache.Get<string>("General-ali");
+            var pdd = _memoryCache.Get<int>("PostCountCategory-pdd");
+            var hw = _memoryCache.Get<int>("PostCountTag-hw");
+
+            Assert.AreEqual(0, postcount);
+            Assert.AreEqual(null, ali);
+            Assert.AreEqual(0, pdd);
+            Assert.AreEqual(0, hw);
+        }
+
+        [Test]
         public void Remove_Success()
         {
             _blogCache.GetOrCreate(CacheDivision.General, "postcount", _ => 996);

@@ -73,7 +73,7 @@ namespace Moonglade.Caching
             if (!CacheDivision.ContainsKey(division.ToString())) return;
 
             var cacheKeys = CacheDivision[division.ToString()];
-            if (cacheKeys is null or { Count: <= 0 }) return;
+            if (cacheKeys is null or { Count: 0 }) return;
 
             foreach (string key in cacheKeys)
             {
