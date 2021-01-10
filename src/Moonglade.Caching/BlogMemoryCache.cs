@@ -62,7 +62,7 @@ namespace Moonglade.Caching
                 from val in kvp.Value
                 select $"{prefix}-{val}";
 
-            foreach (string key in keys)
+            foreach (var key in keys)
             {
                 _memoryCache.Remove(key);
             }
@@ -73,11 +73,12 @@ namespace Moonglade.Caching
             if (!CacheDivision.ContainsKey(division.ToString())) return;
 
             var cacheKeys = CacheDivision[division.ToString()];
-            if (cacheKeys is null or { Count: 0 }) return;
-
-            foreach (string key in cacheKeys)
+            if (cacheKeys.Any())
             {
-                _memoryCache.Remove($"{division}-{key}");
+                foreach (var key in cacheKeys)
+                {
+                    _memoryCache.Remove($"{division}-{key}");
+                }
             }
         }
 
