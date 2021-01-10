@@ -79,7 +79,7 @@ namespace Moonglade.Tests.Filters
             Assert.AreEqual(null, pddReply);
         }
 
-        private ActionExecutedContext MakeActionExecutedContext()
+        private static ActionExecutedContext MakeActionExecutedContext()
         {
             var ctx = CreateActionExecutingContext(null);
             return CreateActionExecutedContext(ctx);
