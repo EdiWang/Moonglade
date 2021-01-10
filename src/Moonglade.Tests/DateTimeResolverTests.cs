@@ -57,6 +57,18 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        public void GetUtcTimeFromUserTZoneStd()
+        {
+            var tSpan = "8:00:00";
+            var resolver = new DateTimeResolver(tSpan);
+
+            var dt = resolver.ToUtc(DateTime.Parse("2000/1/1 8:00:00"));
+            var utc = new DateTime(2000, 1, 1, 0, 0, 0);
+
+            Assert.IsTrue(dt == utc);
+        }
+
+        [Test]
         // [Platform(Include = "Win")]
         public void GetTimeSpanByZoneId()
         {
