@@ -62,14 +62,13 @@ namespace Moonglade.Web.Controllers
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var bytes = await _syndicationService.GetRssStreamDataAsync(routeName);
-                if (bytes is null)
+                var xml = await _syndicationService.GetRssDataAsync(routeName);
+                if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();
                 }
 
-                var xmlContent = Encoding.UTF8.GetString(bytes);
-                return Content(xmlContent, "text/xml");
+                return Content(xml, "text/xml");
             });
         }
 
@@ -80,9 +79,8 @@ namespace Moonglade.Web.Controllers
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var bytes = await _syndicationService.GetAtomStreamData();
-                var xmlContent = Encoding.UTF8.GetString(bytes);
-                return Content(xmlContent, "text/xml");
+                var xml = await _syndicationService.GetAtomData();
+                return Content(xml, "text/xml");
             });
         }
     }

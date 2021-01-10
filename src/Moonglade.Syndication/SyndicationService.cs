@@ -16,8 +16,8 @@ namespace Moonglade.Syndication
 {
     public interface ISyndicationService
     {
-        Task<byte[]> GetRssStreamDataAsync(string categoryName = null);
-        Task<byte[]> GetAtomStreamData();
+        Task<string> GetRssDataAsync(string categoryName = null);
+        Task<string> GetAtomData();
     }
 
     public class SyndicationService : ISyndicationService
@@ -44,7 +44,7 @@ namespace Moonglade.Syndication
             _baseUrl = $"{acc.HttpContext?.Request.Scheme}://{acc.HttpContext.Request.Host}";
         }
 
-        public async Task<byte[]> GetRssStreamDataAsync(string categoryName = null)
+        public async Task<string> GetRssDataAsync(string categoryName = null)
         {
             IReadOnlyList<FeedEntry> itemCollection;
             if (!string.IsNullOrWhiteSpace(categoryName))
@@ -71,14 +71,11 @@ namespace Moonglade.Syndication
                 MaxContentLength = 0
             };
 
-            await using var ms = new MemoryStream();
-            await rw.WriteRssStreamAsync(ms);
-            await ms.FlushAsync();
-
-            return ms.ToArray();
+            var xml = await rw.WriteRssAsync();
+            return xml;
         }
 
-        public async Task<byte[]> GetAtomStreamData()
+        public async Task<string> GetAtomData()
         {
             var itemCollection = await GetFeedEntriesAsync();
 
@@ -94,11 +91,8 @@ namespace Moonglade.Syndication
                 MaxContentLength = 0
             };
 
-            await using var ms = new MemoryStream();
-            await rw.WriteAtomStreamAsync(ms);
-            await ms.FlushAsync();
-
-            return ms.ToArray();
+            var xml = await rw.WriteAtomAsync();
+            return xml;
         }
 
         private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? categoryId = null)

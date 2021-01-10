@@ -5,6 +5,6 @@ namespace Moonglade.Syndication
 {
     public interface IAtomGenerator
     {
-        Task WriteAtomStreamAsync(Stream stream);
+        Task<string> WriteAtomAsync();
     }
 }

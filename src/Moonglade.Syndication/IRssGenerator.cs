@@ -5,6 +5,6 @@ namespace Moonglade.Syndication
 {
     public interface IRssGenerator
     {
-        Task WriteRssStreamAsync(Stream stream);
+        Task<string> WriteRssAsync();
     }
 }

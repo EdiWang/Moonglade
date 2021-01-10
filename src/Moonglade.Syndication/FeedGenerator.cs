@@ -31,16 +31,17 @@ namespace Moonglade.Syndication
 
         #endregion
 
-        public async Task WriteRssStreamAsync(Stream stream)
+        public async Task<string> WriteRssAsync()
         {
             var feed = GetItemCollection(FeedItemCollection);
             var settings = new XmlWriterSettings
             {
-                Async = true,
-                Encoding = Encoding.UTF8
+                Async = true
             };
 
-            await using var xmlWriter = XmlWriter.Create(stream, settings);
+            var sw = new StringWriterWithEncoding(Encoding.UTF8);
+
+            await using var xmlWriter = XmlWriter.Create(sw, settings);
             var writer = new RssFeedWriter(xmlWriter);
 
             await writer.WriteTitle(HeadTitle);
@@ -57,18 +58,24 @@ namespace Moonglade.Syndication
 
             await xmlWriter.FlushAsync();
             xmlWriter.Close();
+
+            await sw.FlushAsync();
+            sw.GetStringBuilder();
+            var xml = sw.ToString();
+            return xml;
         }
 
-        public async Task WriteAtomStreamAsync(Stream stream)
+        public async Task<string> WriteAtomAsync()
         {
             var feed = GetItemCollection(FeedItemCollection);
             var settings = new XmlWriterSettings
             {
-                Async = true,
-                Encoding = Encoding.UTF8
+                Async = true
             };
 
-            await using var xmlWriter = XmlWriter.Create(stream, settings);
+            var sw = new StringWriterWithEncoding(Encoding.UTF8);
+
+            await using var xmlWriter = XmlWriter.Create(sw, settings);
             var writer = new AtomFeedWriter(xmlWriter);
 
             await writer.WriteTitle(HeadTitle);
@@ -84,6 +91,11 @@ namespace Moonglade.Syndication
 
             await xmlWriter.FlushAsync();
             xmlWriter.Close();
+
+            await sw.FlushAsync();
+            sw.GetStringBuilder();
+            var xml = sw.ToString();
+            return xml;
         }
 
         private static IEnumerable<SyndicationItem> GetItemCollection(IEnumerable<FeedEntry> itemCollection)
@@ -121,5 +133,15 @@ namespace Moonglade.Syndication
             }
             return synItemCollection;
         }
+    }
+
+    internal class StringWriterWithEncoding : StringWriter
+    {
+        public StringWriterWithEncoding(Encoding encoding)
+        {
+            Encoding = encoding;
+        }
+
+        public override Encoding Encoding { get; }
     }
 }
