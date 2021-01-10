@@ -48,7 +48,7 @@ namespace Moonglade.Caching
 
         public Task<TItem> GetOrCreateAsync<TItem>(CacheDivision division, string key, Func<ICacheEntry, Task<TItem>> factory)
         {
-            if (string.IsNullOrWhiteSpace(key)) return default;
+            if (string.IsNullOrWhiteSpace(key)) return Task.FromResult(default(TItem));
 
             AddToDivision(division.ToString(), key);
             return _memoryCache.GetOrCreateAsync($"{division}-{key}", factory);
