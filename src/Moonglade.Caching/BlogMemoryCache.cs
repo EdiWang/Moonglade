@@ -41,7 +41,7 @@ namespace Moonglade.Caching
         public TItem GetOrCreate<TItem>(CacheDivision division, string key, Func<ICacheEntry, TItem> factory)
         {
             AddToDivision(division.ToString(), key);
-            return _memoryCache.GetOrCreate(key, factory);
+            return _memoryCache.GetOrCreate($"{division}-{key}", factory);
         }
 
         public Task<TItem> GetOrCreateAsync<TItem>(CacheDivision division, string key, Func<ICacheEntry, Task<TItem>> factory)
