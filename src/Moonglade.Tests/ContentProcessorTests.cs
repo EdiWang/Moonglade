@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Moonglade.Utils;
 using NUnit.Framework;
 
@@ -8,16 +9,27 @@ namespace Moonglade.Tests
     [ExcludeFromCodeCoverage]
     public class ContentProcessorTests
     {
+        [TestCase('A', ExpectedResult = true)]
+        [TestCase('a', ExpectedResult = true)]
+        [TestCase('Z', ExpectedResult = true)]
+        [TestCase('z', ExpectedResult = true)]
         [TestCase('f', ExpectedResult = true)]
+        [TestCase('F', ExpectedResult = true)]
         [TestCase('0', ExpectedResult = false)]
         [TestCase('`', ExpectedResult = false)]
         [TestCase('#', ExpectedResult = false)]
+        [TestCase(' ', ExpectedResult = false)]
+        [TestCase('\r', ExpectedResult = false)]
         public bool IsLetter(char c)
         {
             return c.IsLetter();
         }
 
         [TestCase(' ', ExpectedResult = true)]
+        [TestCase('\r', ExpectedResult = true)]
+        [TestCase('\n', ExpectedResult = true)]
+        [TestCase('\t', ExpectedResult = true)]
+        [TestCase('\f', ExpectedResult = true)]
         [TestCase('0', ExpectedResult = false)]
         [TestCase('a', ExpectedResult = false)]
         [TestCase('A', ExpectedResult = false)]
@@ -68,12 +80,41 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        public void MdContentToNone()
+        {
+            var md = "A quick brown **fox** jumped over the lazy dog.";
+            var result = ContentProcessor.MarkdownToContent(md, ContentProcessor.MarkdownConvertType.None);
+
+            Assert.IsTrue(result == "A quick brown **fox** jumped over the lazy dog.");
+        }
+
+        [Test]
         public void MdContentToHtml()
         {
             var md = "A quick brown **fox** jumped over the lazy dog.";
             var result = ContentProcessor.MarkdownToContent(md, ContentProcessor.MarkdownConvertType.Html);
 
             Assert.IsTrue(result == "<p>A quick brown <strong>fox</strong> jumped over the lazy dog.</p>\n");
+        }
+
+        [Test]
+        public void MdContentToText()
+        {
+            var md = "A quick brown **fox** jumped over the lazy dog.";
+            var result = ContentProcessor.MarkdownToContent(md, ContentProcessor.MarkdownConvertType.Text);
+
+            Assert.IsTrue(result == "A quick brown fox jumped over the lazy dog.\n");
+        }
+
+        [Test]
+        public void MdContentToException()
+        {
+            var md = "A quick brown **fox** jumped over the lazy dog.";
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                var result = ContentProcessor.MarkdownToContent(md, (ContentProcessor.MarkdownConvertType)4);
+            });
         }
     }
 }
