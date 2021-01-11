@@ -40,7 +40,7 @@ namespace Moonglade.Syndication
             _postRepo = postRepo;
 
             var acc = httpContextAccessor;
-            _baseUrl = $"{acc.HttpContext?.Request.Scheme}://{acc.HttpContext.Request.Host}";
+            _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
         }
 
         public async Task<string> GetRssDataAsync(string categoryName = null)
