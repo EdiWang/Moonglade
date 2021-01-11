@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
+using Moonglade.Pingback.Mvc;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using NUnit.Framework;
@@ -65,7 +66,7 @@ namespace Moonglade.Tests.Filters
 
             var mockedCache = Create.MockedMemoryCache();
             var blogCache = new BlogMemoryCache(mockedCache);
-            blogCache.GetOrCreate(CacheDivision.General, "pdd-overwork-death", 
+            blogCache.GetOrCreate(CacheDivision.General, "pdd-overwork-death",
                 _ => "你们看看底层的人民，哪一个不是用命换钱，" +
                      "我一直不以为是资本的问题，而是这个社会的问题，" +
                      "这是一个用命拼的时代，你可以选择安逸的日子，" +
@@ -77,6 +78,19 @@ namespace Moonglade.Tests.Filters
 
             var pddReply = mockedCache.Get<string>("General-pdd-overwork-death");
             Assert.AreEqual(null, pddReply);
+        }
+
+        [Test]
+        public void AddPingbackHeaderAttribute_Success()
+        {
+            var ctx = CreateResultExecutingContext(null);
+
+            var att = new AddPingbackHeaderAttribute("fubao");
+            att.OnResultExecuting(ctx);
+
+            var header = ctx.HttpContext.Response.Headers["x-pingback"];
+            Assert.IsNotNull(header);
+            Assert.AreEqual("https://996.icu/fubao", header);
         }
 
         private static ActionExecutedContext MakeActionExecutedContext()
@@ -93,7 +107,7 @@ namespace Moonglade.Tests.Filters
         {
             return new(
                 CreateActionContext(),
-                new IFilterMetadata[] { filter, },
+                new[] { filter },
                 new NoOpResult(),
                 controller: new());
         }
@@ -102,7 +116,7 @@ namespace Moonglade.Tests.Filters
         {
             return new(
                 CreateActionContext(),
-                new IFilterMetadata[] { filter, },
+                new[] { filter },
                 new Dictionary<string, object>(),
                 controller: new());
         }
@@ -111,13 +125,17 @@ namespace Moonglade.Tests.Filters
         {
             return new(context, context.Filters, context.Controller)
             {
-                Result = context.Result,
+                Result = context.Result
             };
         }
 
         private static ActionContext CreateActionContext()
         {
-            return new(new DefaultHttpContext(), new(), new());
+            var httpCtx = new DefaultHttpContext();
+            httpCtx.Request.Scheme = "https";
+            httpCtx.Request.Host = new("996.icu");
+
+            return new(httpCtx, new(), new());
         }
 
         private class NoOpResult : IActionResult
