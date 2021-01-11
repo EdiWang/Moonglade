@@ -396,10 +396,9 @@ namespace Moonglade.Web.Controllers
                 PhotoUrl = linkGenerator.GetUriByAction(HttpContext, "Avatar", "Assets")
             };
             var requestUrl = Request.GetUri().ToString();
-            var bytes = await FoafWriter.GetFoafData(foafDoc, requestUrl, friends);
+            var xml = await FoafWriter.GetFoafData(foafDoc, requestUrl, friends);
 
-            var xmlContent = Encoding.UTF8.GetString(bytes);
-            return Content(xmlContent, FoafWriter.ContentType);
+            return Content(xml, FoafWriter.ContentType);
         }
 
         [HttpGet("custom.css")]

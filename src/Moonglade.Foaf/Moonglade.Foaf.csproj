@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+    <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Moonglade.Model;
+using Moonglade.Utils;
 
 namespace Moonglade.Foaf
 {
@@ -24,10 +25,10 @@ namespace Moonglade.Foaf
 
         public static string ContentType => "application/rdf+xml";
 
-        public static async Task<byte[]> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink> friends)
+        public static async Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink> friends)
         {
-            await using var ms = new MemoryStream();
-            var writer = await GetWriter(ms);
+            var sw = new StringWriterWithEncoding(Encoding.UTF8);
+            var writer = await GetWriter(sw);
 
             await writer.WriteStartElementAsync("foaf", "PersonalProfileDocument", null);
             await writer.WriteAttributeStringAsync("rdf", "about", null, string.Empty);
@@ -63,9 +64,10 @@ namespace Moonglade.Foaf
             await writer.WriteEndDocumentAsync();
             writer.Close();
 
-            await ms.FlushAsync();
-            var bytes = ms.ToArray();
-            return bytes;
+            await sw.FlushAsync();
+            sw.GetStringBuilder();
+            var xml = sw.ToString();
+            return xml;
         }
 
         private static async Task WriteFoafPerson(XmlWriter writer, FoafPerson person, string currentRequestUrl)
@@ -143,10 +145,10 @@ namespace Moonglade.Foaf
             await writer.WriteEndElementAsync(); // foaf:Person
         }
 
-        private static async Task<XmlWriter> GetWriter(Stream stream)
+        private static async Task<XmlWriter> GetWriter(TextWriter sw)
         {
             var settings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true, Indent = true };
-            var xmlWriter = XmlWriter.Create(stream, settings);
+            var xmlWriter = XmlWriter.Create(sw, settings);
 
             await xmlWriter.WriteStartDocumentAsync();
             await xmlWriter.WriteStartElementAsync("rdf", "RDF", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");

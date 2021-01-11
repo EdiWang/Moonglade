@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
+using Moonglade.Utils;
 
 namespace Moonglade.Syndication
 {
@@ -132,15 +132,5 @@ namespace Moonglade.Syndication
             }
             return synItemCollection;
         }
-    }
-
-    internal class StringWriterWithEncoding : StringWriter
-    {
-        public StringWriterWithEncoding(Encoding encoding)
-        {
-            Encoding = encoding;
-        }
-
-        public override Encoding Encoding { get; }
     }
 }
