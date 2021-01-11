@@ -9,7 +9,7 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class PageService : BlogService
+    public class PageService : IBlogService
     {
         private readonly IRepository<PageEntity> _pageRepo;
         private readonly IBlogAudit _audit;

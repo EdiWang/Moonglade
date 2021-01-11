@@ -10,7 +10,7 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class PostArchiveService : BlogService
+    public class PostArchiveService : IBlogService
     {
         private readonly ILogger<PostArchiveService> _logger;
         private readonly IRepository<PostEntity> _postRepo;

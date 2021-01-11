@@ -16,7 +16,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
-    public class PostService : BlogService
+    public class PostService : IBlogService
     {
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IBlogAudit _audit;

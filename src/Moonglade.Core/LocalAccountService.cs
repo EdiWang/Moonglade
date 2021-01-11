@@ -10,7 +10,7 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class LocalAccountService : BlogService
+    public class LocalAccountService : IBlogService
     {
         private readonly IRepository<LocalAccountEntity> _accountRepo;
         private readonly IBlogAudit _audit;

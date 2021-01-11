@@ -9,7 +9,7 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class FriendLinkService : BlogService
+    public class FriendLinkService : IBlogService
     {
         private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
         private readonly IBlogAudit _audit;

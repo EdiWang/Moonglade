@@ -10,7 +10,7 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class CategoryService : BlogService
+    public class CategoryService : IBlogService
     {
         private readonly IRepository<CategoryEntity> _catRepo;
         private readonly IRepository<PostCategoryEntity> _postCatRepo;

@@ -10,7 +10,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
-    public class MenuService : BlogService
+    public class MenuService : IBlogService
     {
         private readonly ILogger<MenuService> _logger;
         private readonly IRepository<MenuEntity> _menuRepo;

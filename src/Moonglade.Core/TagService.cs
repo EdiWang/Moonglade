@@ -13,7 +13,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class TagService : BlogService
+    public class TagService : IBlogService
     {
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;

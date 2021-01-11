@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Core
 {
-    public class BlogService
+    public interface IBlogService
     {
 
     }

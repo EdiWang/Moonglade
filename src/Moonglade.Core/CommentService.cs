@@ -13,7 +13,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
-    public class CommentService : BlogService
+    public class CommentService : IBlogService
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _audit;
