@@ -42,6 +42,25 @@ namespace Moonglade.Tests
             _mockHttpContextAccessor = _mockRepository.Create<IHttpContextAccessor>();
             _mockRepositoryCategoryEntity = _mockRepository.Create<IRepository<CategoryEntity>>();
             _mockRepositoryPostEntity = _mockRepository.Create<IRepository<PostEntity>>();
+
+            _mockHttpContextAccessor.Setup(p => p.HttpContext).Returns(new DefaultHttpContext
+            {
+                Request =
+                {
+                    Scheme = "https",
+                    Host = new("pdd.icu", 11116),
+                    Path = "/fuck-pdd"
+                }
+            });
+
+            _mockBlogConfig.Setup(bc => bc.FeedSettings).Returns(new FeedSettings
+            {
+                RssTitle = "Fuck 996",
+                AuthorName = "Dead Workers",
+                RssCopyright = "(C) 2021 Gank PDD",
+                RssDescription = "Die in pain",
+                RssItemCount = 20
+            });
         }
 
         private SyndicationService CreateService()
@@ -57,25 +76,6 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetRssStreamDataAsync_NullCategory()
         {
-            _mockHttpContextAccessor.Setup(p => p.HttpContext).Returns(new DefaultHttpContext
-            {
-                Request =
-                {
-                    Scheme = "https",
-                    Host = new("996.icu", 996),
-                    Path = "/fuck-jack-ma"
-                }
-            });
-
-            _mockBlogConfig.Setup(bc => bc.FeedSettings).Returns(new FeedSettings
-            {
-                RssTitle = "Fuck 996",
-                AuthorName = "996 Workers",
-                RssCopyright = "(C) 2021 Gank Alibaba",
-                RssDescription = "Reject all your fubao",
-                RssItemCount = 20
-            });
-
             var fakeFeeds = new List<FeedEntry>
             {
                 new()
@@ -112,25 +112,6 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetRssStreamDataAsync_NonExistingCategory()
         {
-            _mockHttpContextAccessor.Setup(p => p.HttpContext).Returns(new DefaultHttpContext
-            {
-                Request =
-                {
-                    Scheme = "https",
-                    Host = new("pdd.icu", 11116),
-                    Path = "/fuck-pdd"
-                }
-            });
-
-            _mockBlogConfig.Setup(bc => bc.FeedSettings).Returns(new FeedSettings
-            {
-                RssTitle = "Fuck PDD",
-                AuthorName = "Dead Workers",
-                RssCopyright = "(C) 2021 Gank PDD",
-                RssDescription = "Die in pain",
-                RssItemCount = 20
-            });
-
             _mockRepositoryCategoryEntity.Setup(p =>
                 p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(Task.FromResult((CategoryEntity) null));
 
@@ -143,25 +124,6 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetRssStreamDataAsync_ExistingCategory()
         {
-            _mockHttpContextAccessor.Setup(p => p.HttpContext).Returns(new DefaultHttpContext
-            {
-                Request =
-                {
-                    Scheme = "https",
-                    Host = new("pdd.icu", 11116),
-                    Path = "/fuck-pdd"
-                }
-            });
-
-            _mockBlogConfig.Setup(bc => bc.FeedSettings).Returns(new FeedSettings
-            {
-                RssTitle = "Fuck PDD",
-                AuthorName = "Dead Workers",
-                RssCopyright = "(C) 2021 Gank PDD",
-                RssDescription = "Die in pain",
-                RssItemCount = 20
-            });
-
             var fakeCat = new CategoryEntity
             {
                 DisplayName = "PDD is shit",
@@ -203,7 +165,44 @@ namespace Moonglade.Tests
 
             Assert.AreEqual(2, titles.Count);
             Assert.AreEqual("996 is fubao", titles[1]);
-            Assert.AreEqual("Fuck PDD", titles[0]);
+            Assert.AreEqual("Fuck 996", titles[0]);
+        }
+
+        [Test]
+        public async Task GetAtomData_Success()
+        {
+            var fakeFeeds = new List<FeedEntry>
+            {
+                new()
+                {
+                    Author = "Jack Ma",
+                    AuthorEmail = "996@ali.com",
+                    Categories = new[] {"fubao", "cusi"},
+                    Description = "Work 996 and get into ICU",
+                    Id = "FUBAO996",
+                    Link = "https://996.icu",
+                    PubDateUtc = new(996, 9, 9),
+                    Title = "996 is fubao"
+                }
+            };
+
+            _mockRepositoryPostEntity.Setup(p =>
+                    p.SelectAsync(It.IsAny<ISpecification<PostEntity>>(),
+                        It.IsAny<Expression<Func<PostEntity, FeedEntry>>>(), true))
+                .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)fakeFeeds));
+
+            var service = CreateService();
+
+            var result = await service.GetAtomData();
+            Assert.IsNotNull(result);
+
+            var xdoc = XDocument.Parse(result);
+
+            XNamespace ns = "http://www.w3.org/2005/Atom";
+            var titles = xdoc.Descendants(ns + "title").Select(x => x.Value).ToList();
+            Assert.AreEqual(2, titles.Count);
+            Assert.AreEqual("996 is fubao", titles[1]);
+            Assert.AreEqual("Fuck 996", titles[0]);
         }
     }
 }
