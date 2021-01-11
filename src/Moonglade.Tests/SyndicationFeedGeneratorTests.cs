@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Moonglade.Syndication;
 using NUnit.Framework;
@@ -27,7 +25,6 @@ namespace Moonglade.Tests
                 Generator = "Fubao Generator",
                 FeedItemCollection = itemCollection,
                 TrackBackUrl = "https://996.icu/trackback",
-                MaxContentLength = 996,
                 GeneratorVersion = "9.9.6"
             };
 
@@ -49,7 +46,6 @@ namespace Moonglade.Tests
                 Generator = "Fubao Generator",
                 FeedItemCollection = GetFeedItems(),
                 TrackBackUrl = "https://996.icu/trackback",
-                MaxContentLength = 996,
                 GeneratorVersion = "9.9.6"
             };
 
@@ -73,7 +69,6 @@ namespace Moonglade.Tests
                 Generator = "Fubao Generator",
                 FeedItemCollection = itemCollection,
                 TrackBackUrl = "https://996.icu/trackback",
-                MaxContentLength = 996,
                 GeneratorVersion = "9.9.6"
             };
 
@@ -95,7 +90,6 @@ namespace Moonglade.Tests
                 Generator = "Fubao Generator",
                 FeedItemCollection = GetFeedItems(),
                 TrackBackUrl = "https://996.icu/trackback",
-                MaxContentLength = 996,
                 GeneratorVersion = "9.9.6"
             };
 
@@ -109,7 +103,7 @@ namespace Moonglade.Tests
         {
             var itemCollection = new List<FeedEntry>
             {
-                new FeedEntry
+                new()
                 {
                     Author = "J Ma",
                     Title = "996 is Fubao",
@@ -120,7 +114,7 @@ namespace Moonglade.Tests
                     Link = "https://996.icu/fubao",
                     PubDateUtc = DateTime.Now
                 },
-                new FeedEntry
+                new()
                 {
                     Author = "G Ni",
                     Title = "Cheating funds from zero to hero",

@@ -20,7 +20,6 @@ namespace Moonglade.Syndication
         #region Properties
 
         public IEnumerable<FeedEntry> FeedItemCollection { get; set; }
-        public int MaxContentLength { get; set; }
         public string HostUrl { get; set; }
         public string HeadTitle { get; set; }
         public string HeadDescription { get; set; }

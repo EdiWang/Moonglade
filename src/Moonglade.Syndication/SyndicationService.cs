@@ -66,8 +66,7 @@ namespace Moonglade.Syndication
                 Copyright = _blogConfig.FeedSettings.RssCopyright,
                 Generator = $"Moonglade v{Helper.AppVersion}",
                 FeedItemCollection = itemCollection,
-                TrackBackUrl = _baseUrl,
-                MaxContentLength = 0
+                TrackBackUrl = _baseUrl
             };
 
             var xml = await rw.WriteRssAsync();
@@ -86,8 +85,7 @@ namespace Moonglade.Syndication
                 Copyright = _blogConfig.FeedSettings.RssCopyright,
                 Generator = $"Moonglade v{Helper.AppVersion}",
                 FeedItemCollection = itemCollection,
-                TrackBackUrl = _baseUrl,
-                MaxContentLength = 0
+                TrackBackUrl = _baseUrl
             };
 
             var xml = await rw.WriteAtomAsync();
