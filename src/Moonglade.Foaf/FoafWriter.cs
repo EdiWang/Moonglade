@@ -10,10 +10,15 @@ using Moonglade.Utils;
 
 namespace Moonglade.Foaf
 {
+    public interface IFoafWriter
+    {
+        Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink> friends);
+    }
+
     /// <summary>
     /// http://xmlns.com/foaf/spec/20140114.html
     /// </summary>
-    public class FoafWriter
+    public class FoafWriter : IFoafWriter
     {
         private static Dictionary<string, string> _xmlNamespaces;
         private static Dictionary<string, string> SupportedNamespaces =>
@@ -25,7 +30,7 @@ namespace Moonglade.Foaf
 
         public static string ContentType => "application/rdf+xml";
 
-        public static async Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink> friends)
+        public async Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink> friends)
         {
             var sw = new StringWriterWithEncoding(Encoding.UTF8);
             var writer = await GetWriter(sw);

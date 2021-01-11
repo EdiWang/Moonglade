@@ -18,6 +18,7 @@ using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.DateTimeOps;
+using Moonglade.Foaf;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
@@ -87,6 +88,7 @@ namespace Moonglade.Web.Configuration
 
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<ISiteIconGenerator, FileSystemIconGenerator>();
+            services.AddScoped<IFoafWriter, FoafWriter>();
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IBlogStatistics, BlogStatistics>();
             services.AddScoped<ISyndicationService, SyndicationService>();

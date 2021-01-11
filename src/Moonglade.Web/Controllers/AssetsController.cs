@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Edi.ImageWatermark;
@@ -385,7 +384,10 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.Foaf)]
         [ResponseCache(Duration = 3600)]
         [Route("foaf.xml")]
-        public async Task<IActionResult> Foaf([FromServices] FriendLinkService friendLinkService, [FromServices] LinkGenerator linkGenerator)
+        public async Task<IActionResult> Foaf(
+            [FromServices] IFoafWriter foafWriter,
+            [FromServices] FriendLinkService friendLinkService, 
+            [FromServices] LinkGenerator linkGenerator)
         {
             var friends = await friendLinkService.GetAllAsync();
             var foafDoc = new FoafDoc
@@ -396,7 +398,7 @@ namespace Moonglade.Web.Controllers
                 PhotoUrl = linkGenerator.GetUriByAction(HttpContext, "Avatar", "Assets")
             };
             var requestUrl = Request.GetUri().ToString();
-            var xml = await FoafWriter.GetFoafData(foafDoc, requestUrl, friends);
+            var xml = await foafWriter.GetFoafData(foafDoc, requestUrl, friends);
 
             return Content(xml, FoafWriter.ContentType);
         }
