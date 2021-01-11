@@ -30,6 +30,21 @@ namespace Moonglade.Tests
         private Mock<IRepository<CategoryEntity>> _mockRepositoryCategoryEntity;
         private Mock<IRepository<PostEntity>> _mockRepositoryPostEntity;
 
+        readonly List<FeedEntry> _fakeFeedsFullProperties = new()
+        {
+            new()
+            {
+                Author = "Jack Ma",
+                AuthorEmail = "996@ali.com",
+                Categories = new[] { "fubao", "cusi" },
+                Description = "Work **996** and get into ICU",
+                Id = "FUBAO996",
+                Link = "https://996.icu",
+                PubDateUtc = new(996, 9, 9),
+                Title = "996 is fubao"
+            }
+        };
+
         [SetUp]
         public void SetUp()
         {
@@ -59,26 +74,14 @@ namespace Moonglade.Tests
                 RssDescription = "Die in pain",
                 RssItemCount = 20
             });
+        }
 
-            var fakeFeeds = new List<FeedEntry>
-            {
-                new()
-                {
-                    Author = "Jack Ma",
-                    AuthorEmail = "996@ali.com",
-                    Categories = new[] {"fubao", "cusi"},
-                    Description = "Work **996** and get into ICU",
-                    Id = "FUBAO996",
-                    Link = "https://996.icu",
-                    PubDateUtc = new(996, 9, 9),
-                    Title = "996 is fubao"
-                }
-            };
-
+        private void SetupPostEntity(List<FeedEntry> entries)
+        {
             _mockRepositoryPostEntity.Setup(p =>
                     p.SelectAsync(It.IsAny<ISpecification<PostEntity>>(),
                         It.IsAny<Expression<Func<PostEntity, FeedEntry>>>(), true))
-                .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)fakeFeeds));
+                .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)entries));
         }
 
         private SyndicationService CreateService()
@@ -94,6 +97,8 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetRssStreamDataAsync_NullCategory()
         {
+            SetupPostEntity(_fakeFeedsFullProperties);
+
             var service = CreateService();
 
             var result = await service.GetRssDataAsync();
@@ -110,8 +115,10 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetRssStreamDataAsync_NonExistingCategory()
         {
+            SetupPostEntity(_fakeFeedsFullProperties);
+
             _mockRepositoryCategoryEntity.Setup(p =>
-                p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(Task.FromResult((CategoryEntity) null));
+                p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(Task.FromResult((CategoryEntity)null));
 
             var service = CreateService();
 
@@ -122,6 +129,8 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetRssStreamDataAsync_ExistingCategory()
         {
+            SetupPostEntity(_fakeFeedsFullProperties);
+
             var fakeCat = new CategoryEntity
             {
                 DisplayName = "PDD is shit",
@@ -132,7 +141,7 @@ namespace Moonglade.Tests
 
             _mockRepositoryCategoryEntity.Setup(p =>
                 p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(Task.FromResult(fakeCat));
-            
+
             var service = CreateService();
 
             var result = await service.GetRssDataAsync("fuckpdd");
@@ -149,6 +158,8 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetAtomData_Success()
         {
+            SetupPostEntity(_fakeFeedsFullProperties);
+
             var service = CreateService();
 
             var result = await service.GetAtomData();
@@ -166,6 +177,8 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetFeedEntriesAsync_UseFullContent_Markdown()
         {
+            SetupPostEntity(_fakeFeedsFullProperties);
+
             _mockBlogConfig.Object.FeedSettings.UseFullContent = true;
             _mockOptions.Setup(p => p.Value).Returns(new AppSettings
             {
@@ -185,6 +198,8 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetFeedEntriesAsync_UseFullContent_Html()
         {
+            SetupPostEntity(_fakeFeedsFullProperties);
+
             _mockBlogConfig.Object.FeedSettings.UseFullContent = true;
             _mockOptions.Setup(p => p.Value).Returns(new AppSettings
             {

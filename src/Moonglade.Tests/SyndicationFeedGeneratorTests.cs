@@ -11,6 +11,75 @@ namespace Moonglade.Tests
     [ExcludeFromCodeCoverage]
     public class SyndicationFeedGeneratorTests
     {
+        readonly List<FeedEntry> _fakeFeedsNoAuthor = new()
+        {
+            new()
+            {
+                Categories = new[] { "fubao", "cusi" },
+                Description = "Work **996** and get into ICU",
+                Id = "FUBAO996",
+                Link = "https://996.icu",
+                PubDateUtc = new(996, 9, 9),
+                Title = "996 is fubao"
+            }
+        };
+
+        readonly List<FeedEntry> _fakeFeedsNoCategory = new()
+        {
+            new()
+            {
+                Author = "Jack Ma",
+                AuthorEmail = "996@ali.com",
+                Description = "Work **996** and get into ICU",
+                Id = "FUBAO996",
+                Link = "https://996.icu",
+                PubDateUtc = new(996, 9, 9),
+                Title = "996 is fubao"
+            }
+        };
+
+        [Test]
+        public async Task GetItemCollection_NoCategory()
+        {
+            var rw = new FeedGenerator
+            {
+                HostUrl = "https://996.icu",
+                HeadTitle = "996 ICU",
+                HeadDescription = "Work 996 and get into ICU",
+                Copyright = "(c) 2020 996.icu",
+                Generator = "Fubao Generator",
+                FeedItemCollection = _fakeFeedsNoCategory,
+                TrackBackUrl = "https://996.icu/trackback",
+                GeneratorVersion = "9.9.6"
+            };
+
+            var xmlContent = await rw.WriteRssAsync();
+
+            Assert.IsNotNull(xmlContent);
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-8""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
+        }
+
+        [Test]
+        public async Task GetItemCollection_NoEmail()
+        {
+            var rw = new FeedGenerator
+            {
+                HostUrl = "https://996.icu",
+                HeadTitle = "996 ICU",
+                HeadDescription = "Work 996 and get into ICU",
+                Copyright = "(c) 2020 996.icu",
+                Generator = "Fubao Generator",
+                FeedItemCollection = _fakeFeedsNoAuthor,
+                TrackBackUrl = "https://996.icu/trackback",
+                GeneratorVersion = "9.9.6"
+            };
+
+            var xmlContent = await rw.WriteRssAsync();
+
+            Assert.IsNotNull(xmlContent);
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-8""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
+        }
+
         [Test]
         public async Task Rss20_EmptyCollection()
         {
