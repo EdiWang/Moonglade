@@ -58,36 +58,14 @@ namespace Moonglade.Tests.Controllers
             Assert.IsInstanceOf(typeof(ForbidResult), result);
         }
 
-        //[Test]
-        //public async Task Process_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var pingbackController = CreatePingbackController();
+        [Test]
+        public async Task Delete_Success()
+        {
+            var mockBlogAudit = new Mock<IBlogAudit>();
+            var pingbackController = CreatePingbackController();
 
-        //    // Act
-        //    var result = await pingbackController.Process();
-
-        //    // Assert
-        //    Assert.Fail();
-        //    mockRepository.VerifyAll();
-        //}
-
-        //[Test]
-        //public async Task Delete_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var pingbackController = CreatePingbackController();
-        //    Guid pingbackId = default(Guid);
-        //    IBlogAudit blogAudit = null;
-
-        //    // Act
-        //    var result = await pingbackController.Delete(
-        //        pingbackId,
-        //        blogAudit);
-
-        //    // Assert
-        //    Assert.Fail();
-        //    mockRepository.VerifyAll();
-        //}
+            var result = await pingbackController.Delete(Guid.Empty, mockBlogAudit.Object);
+            Assert.IsInstanceOf(typeof(OkResult), result);
+        }
     }
 }
