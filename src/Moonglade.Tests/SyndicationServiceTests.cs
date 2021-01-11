@@ -181,5 +181,24 @@ namespace Moonglade.Tests
 
             Assert.AreEqual("<p>Work <strong>996</strong> and get into ICU</p>\n", html);
         }
+
+        [Test]
+        public async Task GetFeedEntriesAsync_UseFullContent_Html()
+        {
+            _mockBlogConfig.Object.FeedSettings.UseFullContent = true;
+            _mockOptions.Setup(p => p.Value).Returns(new AppSettings
+            {
+                Editor = EditorChoice.Html
+            });
+
+            var service = CreateService();
+            var result = await service.GetRssDataAsync();
+            Assert.IsNotNull(result);
+
+            var xdoc = XDocument.Parse(result);
+            var html = xdoc.Root.Element("channel").Element("item").Element("description").Value;
+
+            Assert.AreEqual("Work **996** and get into ICU", html);
+        }
     }
 }
