@@ -8,6 +8,7 @@ using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Moonglade.Model.Settings;
 
 namespace Moonglade.Tests
 {
@@ -40,6 +41,21 @@ namespace Moonglade.Tests
                 _mockConfiguration.Object,
                 _mockHttpContextAccessor.Object,
                 _mockFeatureManager.Object);
+        }
+
+        [Test]
+        public async Task AddAuditEntry_AuditLogDisabled()
+        {
+            _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
+                .Returns(Task.FromResult(false));
+
+            var blogAudit = CreateBlogAudit();
+            await blogAudit.AddAuditEntry(
+                EventType.General,
+                AuditEventId.GeneralOperation,
+                "Work 996 and get into ICU");
+
+            Assert.Pass();
         }
 
         //[Test]
