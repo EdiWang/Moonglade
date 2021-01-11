@@ -19,7 +19,7 @@ namespace Moonglade.Tests
         [SetUp]
         public void SetUp()
         {
-            mockRepository = new MockRepository(MockBehavior.Default);
+            mockRepository = new(MockBehavior.Default);
             mockDbConnection = mockRepository.Create<IDbConnection>();
         }
 

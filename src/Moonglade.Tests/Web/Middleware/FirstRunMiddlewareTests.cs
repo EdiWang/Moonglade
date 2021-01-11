@@ -22,7 +22,7 @@ namespace Moonglade.Tests.Web.Middleware
         [SetUp]
         public void SetUp()
         {
-            mockRepository = new MockRepository(MockBehavior.Default);
+            mockRepository = new(MockBehavior.Default);
             mockDbConnection = mockRepository.Create<IDbConnection>();
         }
 
@@ -43,7 +43,7 @@ namespace Moonglade.Tests.Web.Middleware
         public async Task FirstRun_DbConnection_Fail_NullLogger()
         {
             var ctx = new DefaultHttpContext();
-            mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Throws(new Exception("996"));
+            mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Throws(new("996"));
 
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new FirstRunMiddleware(RequestDelegate);

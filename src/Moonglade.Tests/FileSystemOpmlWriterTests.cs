@@ -15,7 +15,7 @@ namespace Moonglade.Tests
         {
             var catInfos = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("Work 996", "work-996")
+                new("Work 996", "work-996")
             };
             var siteRootUrl = "https://996.icu";
 

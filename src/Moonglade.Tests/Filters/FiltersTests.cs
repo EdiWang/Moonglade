@@ -91,25 +91,25 @@ namespace Moonglade.Tests.Filters
 
         private static ResultExecutingContext CreateResultExecutingContext(IFilterMetadata filter)
         {
-            return new ResultExecutingContext(
+            return new(
                 CreateActionContext(),
                 new IFilterMetadata[] { filter, },
                 new NoOpResult(),
-                controller: new object());
+                controller: new());
         }
 
         private static ActionExecutingContext CreateActionExecutingContext(IFilterMetadata filter)
         {
-            return new ActionExecutingContext(
+            return new(
                 CreateActionContext(),
                 new IFilterMetadata[] { filter, },
                 new Dictionary<string, object>(),
-                controller: new object());
+                controller: new());
         }
 
         private static ActionExecutedContext CreateActionExecutedContext(ActionExecutingContext context)
         {
-            return new ActionExecutedContext(context, context.Filters, context.Controller)
+            return new(context, context.Filters, context.Controller)
             {
                 Result = context.Result,
             };
@@ -117,7 +117,7 @@ namespace Moonglade.Tests.Filters
 
         private static ActionContext CreateActionContext()
         {
-            return new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor());
+            return new(new DefaultHttpContext(), new(), new());
         }
 
         private class NoOpResult : IActionResult

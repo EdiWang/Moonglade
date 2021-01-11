@@ -17,7 +17,7 @@ namespace Moonglade.Tests.Web
         [SetUp]
         public void Setup()
         {
-            _loggerMock = new Mock<ILogger<ErrorController>>();
+            _loggerMock = new();
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace Moonglade.Tests.Web
         {
             var ctl = new ErrorController(_loggerMock.Object)
             {
-                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+                ControllerContext = new() { HttpContext = new DefaultHttpContext() }
             };
 
             var result = ctl.Error();

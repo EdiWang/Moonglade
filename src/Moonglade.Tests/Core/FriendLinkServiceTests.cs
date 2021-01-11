@@ -19,7 +19,7 @@ namespace Moonglade.Tests.Core
         [SetUp]
         public void Setup()
         {
-            _auditMock = new Mock<IBlogAudit>();
+            _auditMock = new();
         }
 
         [Test]

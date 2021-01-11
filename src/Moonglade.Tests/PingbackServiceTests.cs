@@ -23,10 +23,10 @@ namespace Moonglade.Tests
         [SetUp]
         public void Setup()
         {
-            _loggerMock = new Mock<ILogger<PingbackService>>();
-            _dbConnectionMock = new Mock<IDbConnection>();
-            _pingSourceInspectorMock = new Mock<IPingSourceInspector>();
-            _pingTargetFinderMock = new Mock<IPingbackRepository>();
+            _loggerMock = new();
+            _dbConnectionMock = new();
+            _pingSourceInspectorMock = new();
+            _pingTargetFinderMock = new();
             _fakePingRequest = @"<?xml version=""1.0"" encoding=""iso-8859-1""?>
                                 <methodCall>
                                   <methodName>pingback.ping</methodName>
@@ -88,7 +88,7 @@ namespace Moonglade.Tests
         public async Task ProcessReceivedPayload_Error17()
         {
             var tcs = new TaskCompletionSource<PingRequest>();
-            tcs.SetResult(new PingRequest
+            tcs.SetResult(new()
             {
                 SourceHasLink = false
             });
@@ -110,7 +110,7 @@ namespace Moonglade.Tests
         public async Task ProcessReceivedPayload_Spam()
         {
             var tcs = new TaskCompletionSource<PingRequest>();
-            tcs.SetResult(new PingRequest
+            tcs.SetResult(new()
             {
                 SourceHasLink = true,
                 ContainsHtml = true
@@ -133,7 +133,7 @@ namespace Moonglade.Tests
         public async Task ProcessReceivedPayload_TargetNotFound()
         {
             var tcsPr = new TaskCompletionSource<PingRequest>();
-            tcsPr.SetResult(new PingRequest
+            tcsPr.SetResult(new()
             {
                 SourceHasLink = true,
                 ContainsHtml = false
@@ -160,7 +160,7 @@ namespace Moonglade.Tests
         public async Task ProcessReceivedPayload_AlreadyPinged()
         {
             var tcsPr = new TaskCompletionSource<PingRequest>();
-            tcsPr.SetResult(new PingRequest
+            tcsPr.SetResult(new()
             {
                 SourceHasLink = true,
                 ContainsHtml = false

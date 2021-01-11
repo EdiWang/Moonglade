@@ -16,9 +16,9 @@ namespace Moonglade.Tests.Core
         {
             var dic = new TagNormalization[]
             {
-                new TagNormalization { Source = " ", Target = "-" },
-                new TagNormalization { Source = "#", Target = "sharp" },
-                new TagNormalization { Source = ".", Target = "dot" }
+                new() { Source = " ", Target = "-" },
+                new() { Source = "#", Target = "sharp" },
+                new() { Source = ".", Target = "dot" }
             };
 
             return TagService.NormalizeTagName(str, dic);
