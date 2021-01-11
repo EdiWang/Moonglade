@@ -103,10 +103,40 @@ namespace Moonglade.Tests
 
             var xdoc = XDocument.Parse(result);
             var titles = xdoc.Descendants("title").Select(x => x.Value).ToList();
-            
+
             Assert.AreEqual(2, titles.Count);
             Assert.AreEqual("996 is fubao", titles[1]);
             Assert.AreEqual("Fuck 996", titles[0]);
+        }
+        [Test]
+        public async Task GetRssStreamDataAsync_NonExistingCategory()
+        {
+            _mockHttpContextAccessor.Setup(p => p.HttpContext).Returns(new DefaultHttpContext
+            {
+                Request =
+                {
+                    Scheme = "https",
+                    Host = new("pdd.icu", 11116),
+                    Path = "/fuck-pdd"
+                }
+            });
+
+            _mockBlogConfig.Setup(bc => bc.FeedSettings).Returns(new FeedSettings
+            {
+                RssTitle = "Fuck PDD",
+                AuthorName = "Dead Workers",
+                RssCopyright = "(C) 2021 Gank PDD",
+                RssDescription = "Die in pain",
+                RssItemCount = 20
+            });
+
+            _mockRepositoryCategoryEntity.Setup(p =>
+                p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(Task.FromResult((CategoryEntity) null));
+
+            var service = CreateService();
+
+            var result = await service.GetRssDataAsync("fuckpdd");
+            Assert.IsNull(result);
         }
     }
 }
