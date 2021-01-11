@@ -12,9 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
 using Moonglade.Configuration;
 
@@ -61,6 +59,26 @@ namespace Moonglade.Tests
                 RssDescription = "Die in pain",
                 RssItemCount = 20
             });
+
+            var fakeFeeds = new List<FeedEntry>
+            {
+                new()
+                {
+                    Author = "Jack Ma",
+                    AuthorEmail = "996@ali.com",
+                    Categories = new[] {"fubao", "cusi"},
+                    Description = "Work **996** and get into ICU",
+                    Id = "FUBAO996",
+                    Link = "https://996.icu",
+                    PubDateUtc = new(996, 9, 9),
+                    Title = "996 is fubao"
+                }
+            };
+
+            _mockRepositoryPostEntity.Setup(p =>
+                    p.SelectAsync(It.IsAny<ISpecification<PostEntity>>(),
+                        It.IsAny<Expression<Func<PostEntity, FeedEntry>>>(), true))
+                .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)fakeFeeds));
         }
 
         private SyndicationService CreateService()
@@ -76,26 +94,6 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetRssStreamDataAsync_NullCategory()
         {
-            var fakeFeeds = new List<FeedEntry>
-            {
-                new()
-                {
-                    Author = "Jack Ma",
-                    AuthorEmail = "996@ali.com",
-                    Categories = new[] {"fubao", "cusi"},
-                    Description = "Work 996 and get into ICU",
-                    Id = "FUBAO996",
-                    Link = "https://996.icu",
-                    PubDateUtc = new(996, 9, 9),
-                    Title = "996 is fubao"
-                }
-            };
-
-            _mockRepositoryPostEntity.Setup(p =>
-                p.SelectAsync(It.IsAny<ISpecification<PostEntity>>(),
-                    It.IsAny<Expression<Func<PostEntity, FeedEntry>>>(), true))
-                .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)fakeFeeds));
-
             var service = CreateService();
 
             var result = await service.GetRssDataAsync();
@@ -135,26 +133,6 @@ namespace Moonglade.Tests
             _mockRepositoryCategoryEntity.Setup(p =>
                 p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(Task.FromResult(fakeCat));
             
-            var fakeFeeds = new List<FeedEntry>
-            {
-                new()
-                {
-                    Author = "Jack Ma",
-                    AuthorEmail = "996@ali.com",
-                    Categories = new[] {"fubao", "cusi"},
-                    Description = "Work 996 and get into ICU",
-                    Id = "FUBAO996",
-                    Link = "https://996.icu",
-                    PubDateUtc = new(996, 9, 9),
-                    Title = "996 is fubao"
-                }
-            };
-
-            _mockRepositoryPostEntity.Setup(p =>
-                    p.SelectAsync(It.IsAny<ISpecification<PostEntity>>(),
-                        It.IsAny<Expression<Func<PostEntity, FeedEntry>>>(), true))
-                .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)fakeFeeds));
-
             var service = CreateService();
 
             var result = await service.GetRssDataAsync("fuckpdd");
@@ -171,26 +149,6 @@ namespace Moonglade.Tests
         [Test]
         public async Task GetAtomData_Success()
         {
-            var fakeFeeds = new List<FeedEntry>
-            {
-                new()
-                {
-                    Author = "Jack Ma",
-                    AuthorEmail = "996@ali.com",
-                    Categories = new[] {"fubao", "cusi"},
-                    Description = "Work 996 and get into ICU",
-                    Id = "FUBAO996",
-                    Link = "https://996.icu",
-                    PubDateUtc = new(996, 9, 9),
-                    Title = "996 is fubao"
-                }
-            };
-
-            _mockRepositoryPostEntity.Setup(p =>
-                    p.SelectAsync(It.IsAny<ISpecification<PostEntity>>(),
-                        It.IsAny<Expression<Func<PostEntity, FeedEntry>>>(), true))
-                .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)fakeFeeds));
-
             var service = CreateService();
 
             var result = await service.GetAtomData();
@@ -203,6 +161,25 @@ namespace Moonglade.Tests
             Assert.AreEqual(2, titles.Count);
             Assert.AreEqual("996 is fubao", titles[1]);
             Assert.AreEqual("Fuck 996", titles[0]);
+        }
+
+        [Test]
+        public async Task GetFeedEntriesAsync_UseFullContent_Markdown()
+        {
+            _mockBlogConfig.Object.FeedSettings.UseFullContent = true;
+            _mockOptions.Setup(p => p.Value).Returns(new AppSettings
+            {
+                Editor = EditorChoice.Markdown
+            });
+
+            var service = CreateService();
+            var result = await service.GetRssDataAsync();
+            Assert.IsNotNull(result);
+
+            var xdoc = XDocument.Parse(result);
+            var html = xdoc.Root.Element("channel").Element("item").Element("description").Value;
+
+            Assert.AreEqual("<p>Work <strong>996</strong> and get into ICU</p>\n", html);
         }
     }
 }
