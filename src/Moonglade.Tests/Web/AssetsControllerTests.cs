@@ -75,7 +75,7 @@ namespace Moonglade.Tests.Web
         [TestCase("<996>.png")]
         [TestCase(":icu.gif")]
         [TestCase("|.jpg")]
-        //[Platform(Include = "Win")]
+        [Platform(Include = "Win")]
         public async Task GetImage_InvalidFileNames(string filename)
         {
             var ctl = new AssetsController(
