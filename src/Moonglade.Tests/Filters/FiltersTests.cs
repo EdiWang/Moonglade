@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Pingback.Mvc;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
+using Moq;
 using NUnit.Framework;
 
 namespace Moonglade.Tests.Filters
@@ -21,7 +23,7 @@ namespace Moonglade.Tests.Filters
     public class FiltersTests
     {
         [Test]
-        public void AppendMoongladeVersionAttribute_OK()
+        public void AppendMoongladeVersionAttribute_OnResultExecuting()
         {
             var ctx = CreateResultExecutingContext(null);
 
@@ -34,7 +36,7 @@ namespace Moonglade.Tests.Filters
         }
 
         [Test]
-        public void ClearPagingCountCache_Success()
+        public void ClearPagingCountCache_OnActionExecuted()
         {
             var ctx = MakeActionExecutedContext();
 
@@ -60,7 +62,7 @@ namespace Moonglade.Tests.Filters
         }
 
         [Test]
-        public void ClearBlogCache_Success()
+        public void ClearBlogCache_OnActionExecuted()
         {
             var ctx = MakeActionExecutedContext();
 
@@ -81,7 +83,7 @@ namespace Moonglade.Tests.Filters
         }
 
         [Test]
-        public void AddPingbackHeaderAttribute_Success()
+        public void AddPingbackHeaderAttribute_OnResultExecuting()
         {
             var ctx = CreateResultExecutingContext(null);
 
@@ -91,6 +93,26 @@ namespace Moonglade.Tests.Filters
             var header = ctx.HttpContext.Response.Headers["x-pingback"];
             Assert.IsNotNull(header);
             Assert.AreEqual("https://996.icu/fubao", header);
+        }
+
+        [Test]
+        public void ClearSiteMapCache_OnActionExecuted()
+        {
+            var ctx = MakeActionExecutedContext();
+
+            var loggerMock = new Mock<ILogger<ClearSiteMapCache>>();
+
+            var mockedCache = Create.MockedMemoryCache();
+            var blogCache = new BlogMemoryCache(mockedCache);
+
+            blogCache.GetOrCreate(CacheDivision.General, "sitemap",
+                _ => "The 996 working hour system (Chinese: 996工作制) is a work schedule commonly practiced by some companies in the People's Republic of China. It derives its name from its requirement that employees work from 9:00 am to 9:00 pm, 6 days per week; i.e. 72 hours per week. A number of Chinese internet companies have adopted this system as their official work schedule. Critics argue that the 996 working hour system is a flagrant violation of Chinese law.");
+
+            var att = new ClearSiteMapCache(loggerMock.Object, blogCache);
+            att.OnActionExecuted(ctx);
+
+            var work996 = mockedCache.Get<string>("General-sitemap");
+            Assert.AreEqual(null, work996);
         }
 
         private static ActionExecutedContext MakeActionExecutedContext()
