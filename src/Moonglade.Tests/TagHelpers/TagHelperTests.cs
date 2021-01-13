@@ -98,5 +98,59 @@ namespace Moonglade.Tests.TagHelpers
             Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
             Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
         }
+
+        [Test]
+        public void MetaDescriptionTagHelper_Process()
+        {
+            var outputAttributes = new TagHelperAttributeList();
+
+            var tagHelper = new MetaDescriptionTagHelper
+            {
+                Description = "Stay away from PDD"
+            };
+
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("meta");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("meta", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new("name", "description"),
+                new("content", tagHelper.Description.Trim())
+            };
+
+            Assert.AreEqual(expectedAttributeList, output.Attributes);
+        }
+
+        [Test]
+        public void OpenSearchTagHelper_Process()
+        {
+            var outputAttributes = new TagHelperAttributeList();
+
+            var tagHelper = new OpenSearchTagHelper
+            {
+                Href = "https://996.icu/opensearch",
+                Title = "Work 996 and get into ICU"
+            };
+
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new("type", new HtmlString("application/opensearchdescription+xml")),
+                new("rel", "search"),
+                new("title", tagHelper.Title.Trim()),
+                new("href", tagHelper.Href)
+            };
+
+            Assert.AreEqual("application/opensearchdescription+xml", ((HtmlString)output.Attributes["type"].Value).Value);
+            Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
+            Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
+            Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
+        }
     }
 }
