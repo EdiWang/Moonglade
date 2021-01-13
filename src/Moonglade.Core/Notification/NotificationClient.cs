@@ -89,7 +89,7 @@ namespace Moonglade.Core.Notification
                 var req = new CommentPayload(
                     model.Username,
                     model.Email,
-                    model.IpAddress,
+                    model.IpAddress?.ToString(),
                     model.PostTitle,
                     contentFormat(model.CommentContent),
                     model.CreateTimeUtc
