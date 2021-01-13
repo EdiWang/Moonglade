@@ -100,15 +100,13 @@ namespace Moonglade.Tests.Filters
         {
             var ctx = MakeActionExecutedContext();
 
-            var loggerMock = new Mock<ILogger<ClearSiteMapCache>>();
-
             var mockedCache = Create.MockedMemoryCache();
             var blogCache = new BlogMemoryCache(mockedCache);
 
             blogCache.GetOrCreate(CacheDivision.General, "sitemap",
                 _ => "The 996 working hour system (Chinese: 996工作制) is a work schedule commonly practiced by some companies in the People's Republic of China. It derives its name from its requirement that employees work from 9:00 am to 9:00 pm, 6 days per week; i.e. 72 hours per week. A number of Chinese internet companies have adopted this system as their official work schedule. Critics argue that the 996 working hour system is a flagrant violation of Chinese law.");
 
-            var att = new ClearSiteMapCache(loggerMock.Object, blogCache);
+            var att = new ClearSiteMapCache(blogCache);
             att.OnActionExecuted(ctx);
 
             var work996 = mockedCache.Get<string>("General-sitemap");
