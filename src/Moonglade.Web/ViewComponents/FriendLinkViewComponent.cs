@@ -11,10 +11,10 @@ namespace Moonglade.Web.ViewComponents
     public class FriendLinkViewComponent : ViewComponent
     {
         private readonly ILogger<FriendLinkViewComponent> _logger;
-        private readonly FriendLinkService _friendLinkService;
+        private readonly IFriendLinkService _friendLinkService;
 
         public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger,
-            FriendLinkService friendLinkService)
+            IFriendLinkService friendLinkService)
         {
             _logger = logger;
             _friendLinkService = friendLinkService;

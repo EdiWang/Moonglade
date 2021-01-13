@@ -386,7 +386,7 @@ namespace Moonglade.Web.Controllers
         [Route("foaf.xml")]
         public async Task<IActionResult> Foaf(
             [FromServices] IFoafWriter foafWriter,
-            [FromServices] FriendLinkService friendLinkService, 
+            [FromServices] IFriendLinkService friendLinkService, 
             [FromServices] LinkGenerator linkGenerator)
         {
             var friends = await friendLinkService.GetAllAsync();

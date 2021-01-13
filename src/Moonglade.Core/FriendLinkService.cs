@@ -9,7 +9,16 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class FriendLinkService : IBlogService
+    public interface IFriendLinkService
+    {
+        Task<FriendLink> GetAsync(Guid id);
+        Task<IReadOnlyList<FriendLink>> GetAllAsync();
+        Task AddAsync(string title, string linkUrl);
+        Task DeleteAsync(Guid id);
+        Task UpdateAsync(Guid id, string newTitle, string newLinkUrl);
+    }
+
+    public class FriendLinkService : IFriendLinkService
     {
         private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
         private readonly IBlogAudit _audit;

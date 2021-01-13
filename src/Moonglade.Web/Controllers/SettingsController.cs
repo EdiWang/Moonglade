@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
     {
         #region Private Fields
 
-        private readonly FriendLinkService _friendLinkService;
+        private readonly IFriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
         private readonly ILogger<SettingsController> _logger;
@@ -46,7 +46,7 @@ namespace Moonglade.Web.Controllers
         #endregion
 
         public SettingsController(
-            FriendLinkService friendLinkService,
+            IFriendLinkService friendLinkService,
             IBlogConfig blogConfig,
             IBlogAudit blogAudit,
             ILogger<SettingsController> logger)
