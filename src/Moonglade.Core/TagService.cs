@@ -13,7 +13,7 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public interface ITagService : IBlogService
+    public interface ITagService
     {
         Task<IReadOnlyList<Tag>> GetAllAsync();
         Task<IReadOnlyList<string>> GetAllNamesAsync();

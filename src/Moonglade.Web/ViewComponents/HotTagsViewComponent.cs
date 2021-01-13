@@ -8,11 +8,11 @@ namespace Moonglade.Web.ViewComponents
 {
     public class HotTagsViewComponent : ViewComponent
     {
-        private readonly TagService _tagService;
+        private readonly ITagService _tagService;
 
         private readonly IBlogConfig _blogConfig;
 
-        public HotTagsViewComponent(TagService tagService, IBlogConfig blogConfig)
+        public HotTagsViewComponent(ITagService tagService, IBlogConfig blogConfig)
         {
             _tagService = tagService;
             _blogConfig = blogConfig;
