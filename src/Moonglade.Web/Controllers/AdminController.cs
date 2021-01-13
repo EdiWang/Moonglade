@@ -25,14 +25,14 @@ namespace Moonglade.Web.Controllers
     public class AdminController : BlogController
     {
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly LocalAccountService _localAccountService;
+        private readonly ILocalAccountService _localAccountService;
         private readonly IBlogAudit _blogAudit;
         private readonly ILogger<AdminController> _logger;
 
         public AdminController(ILogger<AdminController> logger,
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
-            LocalAccountService localAccountService)
+            ILocalAccountService localAccountService)
         {
             _blogAudit = blogAudit;
             _localAccountService = localAccountService;

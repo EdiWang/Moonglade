@@ -10,7 +10,20 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class LocalAccountService : IBlogService
+    public interface ILocalAccountService
+    {
+        int Count();
+        Task<Account> GetAsync(Guid id);
+        Task<IReadOnlyList<Account>> GetAllAsync();
+        Task<Guid> ValidateAsync(string username, string inputPassword);
+        Task LogSuccessLoginAsync(Guid id, string ipAddress);
+        bool Exist(string username);
+        Task<Guid> CreateAsync(string username, string clearPassword);
+        Task UpdatePasswordAsync(Guid id, string clearPassword);
+        Task DeleteAsync(Guid id);
+    }
+
+    public class LocalAccountService : ILocalAccountService
     {
         private readonly IRepository<LocalAccountEntity> _accountRepo;
         private readonly IBlogAudit _audit;

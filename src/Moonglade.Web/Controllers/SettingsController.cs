@@ -695,7 +695,7 @@ namespace Moonglade.Web.Controllers
         #region Account
 
         [HttpGet("account")]
-        public async Task<IActionResult> AccountSettings([FromServices] LocalAccountService accountService)
+        public async Task<IActionResult> AccountSettings([FromServices] ILocalAccountService accountService)
         {
             var accounts = await accountService.GetAllAsync();
             var vm = new AccountManageViewModel { Accounts = accounts };
@@ -704,7 +704,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("account/create")]
-        public async Task<IActionResult> CreateAccount([FromBody] AccountEditViewModel model, [FromServices] LocalAccountService accountService)
+        public async Task<IActionResult> CreateAccount([FromBody] AccountEditViewModel model, [FromServices] ILocalAccountService accountService)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (accountService.Exist(model.Username))
@@ -718,7 +718,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("account/{id:guid}")]
-        public async Task<IActionResult> DeleteAccount(Guid id, [FromServices] LocalAccountService accountService)
+        public async Task<IActionResult> DeleteAccount(Guid id, [FromServices] ILocalAccountService accountService)
         {
             if (id == Guid.Empty)
             {
@@ -749,7 +749,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("account/{id:guid}/reset-password")]
         public async Task<IActionResult> ResetAccountPassword(
-            Guid id, [FromBody] ResetPasswordRequest request, [FromServices] LocalAccountService accountService)
+            Guid id, [FromBody] ResetPasswordRequest request, [FromServices] ILocalAccountService accountService)
         {
             if (id == Guid.Empty) ModelState.AddModelError(nameof(id), "value is empty");
             if (!ModelState.IsValid) return BadRequest(ModelState);
