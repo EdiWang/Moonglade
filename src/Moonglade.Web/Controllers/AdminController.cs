@@ -208,7 +208,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("menu")]
-        public async Task<IActionResult> Menu([FromServices] MenuService menuService)
+        public async Task<IActionResult> Menu([FromServices] IMenuService menuService)
         {
             var menus = await menuService.GetAllAsync();
             var model = new MenuManageViewModel

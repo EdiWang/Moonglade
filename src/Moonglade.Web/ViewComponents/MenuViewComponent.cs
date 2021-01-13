@@ -7,9 +7,9 @@ namespace Moonglade.Web.ViewComponents
 {
     public class MenuViewComponent : ViewComponent
     {
-        private readonly MenuService _menuService;
+        private readonly IMenuService _menuService;
 
-        public MenuViewComponent(MenuService menuService)
+        public MenuViewComponent(IMenuService menuService)
         {
             _menuService = menuService;
         }

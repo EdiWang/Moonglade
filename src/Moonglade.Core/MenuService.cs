@@ -10,7 +10,16 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
-    public class MenuService : IBlogService
+    public interface IMenuService
+    {
+        Task<Menu> GetAsync(Guid id);
+        Task<IReadOnlyList<Menu>> GetAllAsync();
+        Task<Guid> CreateAsync(CreateMenuRequest request);
+        Task<Guid> UpdateAsync(EditMenuRequest request);
+        Task DeleteAsync(Guid id);
+    }
+
+    public class MenuService : IMenuService
     {
         private readonly ILogger<MenuService> _logger;
         private readonly IRepository<MenuEntity> _menuRepo;
