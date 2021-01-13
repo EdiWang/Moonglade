@@ -14,9 +14,9 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly CategoryService _catService;
+        private readonly ICategoryService _catService;
 
-        public CategoryController(CategoryService catService)
+        public CategoryController(ICategoryService catService)
         {
             _catService = catService;
         }

@@ -10,7 +10,17 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class CategoryService : IBlogService
+    public interface ICategoryService
+    {
+        Task<IReadOnlyList<Category>> GetAllAsync();
+        Task<Category> GetAsync(string categoryName);
+        Task<Category> GetAsync(Guid id);
+        Task CreateAsync(CreateCategoryRequest request);
+        Task DeleteAsync(Guid id);
+        Task UpdateAsync(EditCategoryRequest request);
+    }
+
+    public class CategoryService : ICategoryService
     {
         private readonly IRepository<CategoryEntity> _catRepo;
         private readonly IRepository<PostCategoryEntity> _postCatRepo;

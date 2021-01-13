@@ -12,9 +12,9 @@ namespace Moonglade.Web.ViewComponents
     {
         private readonly ILogger<RssListViewComponent> _logger;
 
-        private readonly CategoryService _categoryService;
+        private readonly ICategoryService _categoryService;
 
-        public RssListViewComponent(ILogger<RssListViewComponent> logger, CategoryService categoryService)
+        public RssListViewComponent(ILogger<RssListViewComponent> logger, ICategoryService categoryService)
         {
             _logger = logger;
             _categoryService = categoryService;

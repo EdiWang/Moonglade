@@ -7,9 +7,9 @@ namespace Moonglade.Web.ViewComponents
 {
     public class CategoryListViewComponent : ViewComponent
     {
-        private readonly CategoryService _categoryService;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryListViewComponent(CategoryService categoryService)
+        public CategoryListViewComponent(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }
