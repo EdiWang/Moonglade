@@ -19,14 +19,14 @@ namespace Moonglade.Web.Controllers
     public class PageController : BlogController
     {
         private readonly IBlogCache _cache;
-        private readonly PageService _pageService;
+        private readonly IPageService _pageService;
         private readonly AppSettings _settings;
         private readonly ILogger<PageController> _logger;
 
         public PageController(
             IOptions<AppSettings> settings,
             IBlogCache cache,
-            PageService pageService,
+            IPageService pageService,
             ILogger<PageController> logger)
         {
             _settings = settings.Value;

@@ -9,7 +9,17 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class PageService : IBlogService
+    public interface IPageService
+    {
+        Task<Page> GetAsync(Guid pageId);
+        Task<Page> GetAsync(string slug);
+        Task<IReadOnlyList<PageSegment>> ListSegmentAsync();
+        Task<Guid> CreateAsync(CreatePageRequest request);
+        Task<Guid> UpdateAsync(EditPageRequest request);
+        Task DeleteAsync(Guid pageId);
+    }
+
+    public class PageService : IPageService
     {
         private readonly IRepository<PageEntity> _pageRepo;
         private readonly IBlogAudit _audit;

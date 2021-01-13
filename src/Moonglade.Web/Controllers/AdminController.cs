@@ -184,7 +184,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("page")]
-        public async Task<IActionResult> Page([FromServices] PageService pageService)
+        public async Task<IActionResult> Page([FromServices] IPageService pageService)
         {
             var pageSegments = await pageService.ListSegmentAsync();
             return View(pageSegments);
