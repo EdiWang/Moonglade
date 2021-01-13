@@ -14,13 +14,13 @@ namespace Moonglade.Web.Controllers
 {
     public class HomeController : BlogController
     {
-        private readonly PostService _postService;
+        private readonly IPostService _postService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(
-            PostService postService,
+            IPostService postService,
             IBlogCache cache,
             IBlogConfig blogConfig,
             ILogger<HomeController> logger)

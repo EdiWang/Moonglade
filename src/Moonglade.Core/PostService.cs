@@ -16,7 +16,28 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
-    public class PostService : IBlogService
+    public interface IPostService
+    {
+        int CountVisiblePosts();
+        int CountByCategoryId(Guid catId);
+        int CountByTag(int tagId);
+        Task<Post> GetAsync(Guid id);
+        Task<PostSlug> GetDraftAsync(Guid postId);
+        Task<string> GetContentAsync(PostSlugInfo slugInfo);
+        Task<PostSlugSegment> GetSegmentAsync(PostSlugInfo slugInfo);
+        Task<PostSlug> GetAsync(PostSlugInfo slugInfo);
+        Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus postStatus);
+        Task<IReadOnlyList<PostSegment>> GetInsightsAsync(PostInsightsType insightsType);
+        Task<IReadOnlyList<PostListEntry>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null);
+        Task<IReadOnlyList<PostListEntry>> GetByTagAsync(int tagId, int pageSize, int pageIndex);
+        Task<PostEntity> CreateAsync(CreatePostRequest request);
+        Task<PostEntity> UpdateAsync(EditPostRequest request);
+        Task RestoreAsync(Guid postId);
+        Task DeleteAsync(Guid postId, bool softDelete = false);
+        Task PurgeRecycledAsync();
+    }
+
+    public class PostService : IPostService
     {
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IBlogAudit _audit;

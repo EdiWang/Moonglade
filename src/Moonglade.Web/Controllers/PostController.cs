@@ -12,11 +12,11 @@ namespace Moonglade.Web.Controllers
     [Route("post")]
     public class PostController : BlogController
     {
-        private readonly PostService _postService;
+        private readonly IPostService _postService;
         private readonly IBlogConfig _blogConfig;
 
         public PostController(
-            PostService postService,
+            IPostService postService,
             IBlogConfig blogConfig)
         {
             _postService = postService;

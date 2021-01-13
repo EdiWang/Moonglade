@@ -26,14 +26,14 @@ namespace Moonglade.Web.Controllers
         private readonly ILogger<GraphController> _logger;
         private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
-        private readonly PostService _postService;
+        private readonly IPostService _postService;
         private readonly IPageService _pageService;
 
         public GraphController(
             ILogger<GraphController> logger,
             ITagService tagService,
             ICategoryService categoryService,
-            PostService postService,
+            IPostService postService,
             IPageService pageService)
         {
             _logger = logger;

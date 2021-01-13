@@ -21,14 +21,14 @@ namespace Moonglade.Web.Controllers
     [Route("post/manage")]
     public class PostManageController : BlogController
     {
-        private readonly PostService _postService;
+        private readonly IPostService _postService;
         private readonly ICategoryService _catService;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
         private readonly ILogger<PostManageController> _logger;
 
         public PostManageController(
-            PostService postService,
+            IPostService postService,
             ICategoryService catService,
             IBlogConfig blogConfig,
             IDateTimeResolver dateTimeResolver,
