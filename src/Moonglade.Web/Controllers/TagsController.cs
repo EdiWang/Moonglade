@@ -13,9 +13,9 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class TagsController : ControllerBase
     {
-        private readonly TagService _tagService;
+        private readonly ITagService _tagService;
 
-        public TagsController(TagService tagService)
+        public TagsController(ITagService tagService)
         {
             _tagService = tagService;
         }
