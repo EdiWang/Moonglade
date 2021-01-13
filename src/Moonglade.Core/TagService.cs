@@ -13,7 +13,18 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class TagService : IBlogService
+    public interface ITagService : IBlogService
+    {
+        Task<IReadOnlyList<Tag>> GetAllAsync();
+        Task<IReadOnlyList<string>> GetAllNamesAsync();
+        Task UpdateAsync(int tagId, string newName);
+        Task DeleteAsync(int tagId);
+        Task<IReadOnlyList<DegreeTag>> GetHotTagsAsync(int top);
+        Tag Get(string normalizedName);
+        Task<IReadOnlyList<DegreeTag>> GetTagCountListAsync();
+    }
+
+    public class TagService : ITagService
     {
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
