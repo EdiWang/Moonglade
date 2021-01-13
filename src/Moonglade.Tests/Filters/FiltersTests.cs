@@ -134,13 +134,54 @@ namespace Moonglade.Tests.Filters
             Assert.AreEqual(null, sickICU);
         }
 
+        [Test]
+        public void DisallowSpiderUA_OnActionExecuting_BrowserUA()
+        {
+            var ctx = CreateActionExecutingContext(null);
+            ctx.HttpContext.Request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 Edg/87.0.664.75");
+
+            var att = new DisallowSpiderUA();
+            att.OnActionExecuting(ctx);
+
+            Assert.IsNull(ctx.Result);
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void DisallowSpiderUA_OnActionExecuting_EmptyUA(string userAgent)
+        {
+            var ctx = CreateActionExecutingContext(null);
+            ctx.HttpContext.Request.Headers.Add("User-Agent", userAgent);
+
+            var att = new DisallowSpiderUA();
+            att.OnActionExecuting(ctx);
+
+            Assert.IsInstanceOf<BadRequestResult>(ctx.Result);
+        }
+
+        [TestCase("Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)")]
+        [TestCase("Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")]
+        [TestCase("facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)")]
+        [TestCase("Mozilla/5.0 (compatible; MegaIndex.ru/2.0; +http://megaindex.com/crawler)")]
+        public void DisallowSpiderUA_OnActionExecuting_MachineUA(string userAgent)
+        {
+            var ctx = CreateActionExecutingContext(null);
+            ctx.HttpContext.Request.Headers.Add("User-Agent", userAgent);
+
+            var att = new DisallowSpiderUA();
+            att.OnActionExecuting(ctx);
+
+            Assert.IsInstanceOf<ForbidResult>(ctx.Result);
+        }
+
+        #region Helper Methods
+
         private static ActionExecutedContext MakeActionExecutedContext()
         {
             var ctx = CreateActionExecutingContext(null);
             return CreateActionExecutedContext(ctx);
         }
-
-        #region Helper Methods
 
         // https://github.com/dotnet/aspnetcore/blob/master/src/Mvc/shared/Mvc.Core.TestCommon/CommonFilterTest.cs
 
