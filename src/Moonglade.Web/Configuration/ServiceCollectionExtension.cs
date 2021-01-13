@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
-using System.Reflection;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -76,14 +75,16 @@ namespace Moonglade.Web.Configuration
 
         public static void AddBlogServices(this IServiceCollection services)
         {
-            var asm = Assembly.GetAssembly(typeof(IBlogService));
-            if (asm is not null)
+            var asms = AppDomain.CurrentDomain.GetAssemblies();
+            var moongladeCore = asms.FirstOrDefault(p => p.FullName is not null && p.FullName.StartsWith("Moonglade.Core"));
+
+            if (moongladeCore is not null)
             {
-                var types = asm.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));
+                var types = moongladeCore.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));
                 foreach (var t in types)
                 {
                     // Find interface if there is one
-                    var i = asm.GetTypes().FirstOrDefault(x => x.IsInterface && x.IsPublic && x.Name == $"I{t.Name}");
+                    var i = moongladeCore.GetTypes().FirstOrDefault(x => x.IsInterface && x.IsPublic && x.Name == $"I{t.Name}");
                     services.AddScoped(i ?? t, t);
                 }
             }
