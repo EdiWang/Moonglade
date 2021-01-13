@@ -21,7 +21,7 @@ namespace Moonglade.Web.Controllers
     {
         #region Private Fields
 
-        private readonly CommentService _commentService;
+        private readonly ICommentService _commentService;
         private readonly IBlogNotificationClient _notificationClient;
         private readonly IBlogConfig _blogConfig;
         private bool DNT => (bool)HttpContext.Items["DNT"];
@@ -29,7 +29,7 @@ namespace Moonglade.Web.Controllers
         #endregion
 
         public CommentController(
-            CommentService commentService,
+            ICommentService commentService,
             IBlogConfig blogConfig,
             IBlogNotificationClient notificationClient = null)
         {

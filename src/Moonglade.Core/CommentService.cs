@@ -13,7 +13,18 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
-    public class CommentService : IBlogService
+    public interface ICommentService
+    {
+        int Count();
+        Task<IReadOnlyList<Comment>> GetApprovedCommentsAsync(Guid postId);
+        Task<IReadOnlyList<CommentDetailedItem>> GetCommentsAsync(int pageSize, int pageIndex);
+        Task ToggleApprovalAsync(Guid[] commentIds);
+        Task DeleteAsync(Guid[] commentIds);
+        Task<CommentDetailedItem> CreateAsync(CommentRequest request);
+        Task<CommentReply> AddReply(Guid commentId, string replyContent);
+    }
+
+    public class CommentService : ICommentService
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _audit;
