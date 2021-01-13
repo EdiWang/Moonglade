@@ -6,7 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Moonglade.DateTimeOps;
 using Moonglade.Foaf;
+using Moq;
 
 namespace Moonglade.Tests.TagHelpers
 {
@@ -151,6 +153,41 @@ namespace Moonglade.Tests.TagHelpers
             Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
             Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
             Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
+        }
+
+        [Test]
+        public void PubDateTagHelper_Process()
+        {
+            var pubDateUtc = new DateTime(996, 9, 6);
+
+            var dateTimeResolverMock = new Mock<IDateTimeResolver>();
+            dateTimeResolverMock.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(pubDateUtc);
+
+            var outputAttributes = new TagHelperAttributeList();
+
+            var tagHelper = new PubDateTagHelper
+            {
+                PubDateUtc = pubDateUtc,
+                DateTimeResolver = dateTimeResolverMock.Object
+            };
+
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("time");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("time", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new("title", $"GMT {pubDateUtc}"),
+                new("datetime", pubDateUtc.ToString("u"))
+            };
+
+            Assert.AreEqual(expectedAttributeList, output.Attributes);
+
+            var d = new DefaultTagHelperContent();
+            var expectedContent = d.SetContent(pubDateUtc.ToLongDateString());
+
+            Assert.AreEqual(expectedContent.GetContent(), output.Content.GetContent());
         }
     }
 }
