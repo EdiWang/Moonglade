@@ -92,7 +92,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("archive")]
-        public async Task<IActionResult> Archive([FromServices] PostArchiveService postArchiveService)
+        public async Task<IActionResult> Archive([FromServices] IPostArchiveService postArchiveService)
         {
             var archives = await postArchiveService.ListAsync();
             return View(archives);
@@ -100,7 +100,7 @@ namespace Moonglade.Web.Controllers
 
         [Route("archive/{year:int:length(4)}")]
         [Route("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
-        public async Task<IActionResult> ArchiveList([FromServices] PostArchiveService postArchiveService, int year, int? month)
+        public async Task<IActionResult> ArchiveList([FromServices] IPostArchiveService postArchiveService, int year, int? month)
         {
             if (year > DateTime.UtcNow.Year) return BadRequest();
 

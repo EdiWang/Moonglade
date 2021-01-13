@@ -10,7 +10,13 @@ using Moonglade.Model;
 
 namespace Moonglade.Core
 {
-    public class PostArchiveService : IBlogService
+    public interface IPostArchiveService
+    {
+        Task<IReadOnlyList<Archive>> ListAsync();
+        Task<IReadOnlyList<PostListEntry>> ListPostsAsync(int year, int month = 0);
+    }
+
+    public class PostArchiveService : IPostArchiveService
     {
         private readonly ILogger<PostArchiveService> _logger;
         private readonly IRepository<PostEntity> _postRepo;
