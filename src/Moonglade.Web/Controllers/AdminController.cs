@@ -191,7 +191,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("tags")]
-        public async Task<IActionResult> Tags([FromServices] TagService tagService)
+        public async Task<IActionResult> Tags([FromServices] ITagService tagService)
         {
             var tags = await tagService.GetAllAsync();
             return View(tags);

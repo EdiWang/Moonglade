@@ -11,9 +11,9 @@ namespace Moonglade.Web.Controllers
 {
     public class SearchController : BlogController
     {
-        private readonly SearchService _searchService;
+        private readonly ISearchService _searchService;
 
-        public SearchController(SearchService searchService)
+        public SearchController(ISearchService searchService)
         {
             _searchService = searchService;
         }

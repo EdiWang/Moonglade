@@ -18,7 +18,14 @@ using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {
-    public class SearchService : IBlogService
+    public interface ISearchService
+    {
+        Task<IReadOnlyList<PostListEntry>> SearchAsync(string keyword);
+        Task<byte[]> GetOpenSearchStreamArray(string siteRootUrl);
+        Task<byte[]> GetSiteMapStreamArrayAsync(string siteRootUrl);
+    }
+
+    public class SearchService : ISearchService
     {
         private readonly AppSettings _settings;
         private readonly IRepository<PostEntity> _postRepo;

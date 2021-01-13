@@ -82,11 +82,11 @@ namespace Moonglade.Web.Configuration
                 var types = asm.GetTypes().Where(t => t.IsClass && t.IsPublic && t.Name.EndsWith("Service"));
                 foreach (var t in types)
                 {
-                    services.AddScoped(t, t);
+                    // Find interface if there is one
+                    var i = asm.GetTypes().FirstOrDefault(x => x.IsInterface && x.IsPublic && x.Name == $"I{t.Name}");
+                    services.AddScoped(i ?? t, t);
                 }
             }
-
-            services.AddScoped<ITagService, TagService>();
 
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<ISiteIconGenerator, FileSystemIconGenerator>();
