@@ -113,6 +113,27 @@ namespace Moonglade.Tests.Filters
             Assert.AreEqual(null, work996);
         }
 
+        [Test]
+        public void ClearSubscriptionCache_OnActionExecuted()
+        {
+            var ctx = MakeActionExecutedContext();
+
+            var mockedCache = Create.MockedMemoryCache();
+            var blogCache = new BlogMemoryCache(mockedCache);
+
+            blogCache.GetOrCreate(CacheDivision.General, "rss", _ => "The culture of overtime work has a long history in Chinese IT companies, where the focus is typically on speed and cost reduction. Companies employ a range of measures, such as reimbursing taxi fares for employees who remain working at the office late into the night, to encourage overtime work.");
+            blogCache.GetOrCreate(CacheDivision.General, "atom", _ => "On 26 March 2019, the 996.ICU repository and website were created. The repository states that the name \"996.icu\" refers to how developers who work under the 996 system (9AM–9PM, 6 days per week) would risk poor health and a possible stay in an intensive care unit. The movement's slogan is \"developers' lives matter\".");
+
+            var att = new ClearSubscriptionCache(blogCache);
+            att.OnActionExecuted(ctx);
+
+            var work996 = mockedCache.Get<string>("General-rss");
+            var sickICU = mockedCache.Get<string>("General-atom");
+
+            Assert.AreEqual(null, work996);
+            Assert.AreEqual(null, sickICU);
+        }
+
         private static ActionExecutedContext MakeActionExecutedContext()
         {
             var ctx = CreateActionExecutingContext(null);
