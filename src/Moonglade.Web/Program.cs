@@ -15,11 +15,11 @@ namespace Moonglade.Web
     {
         public static void Main(string[] args)
         {
-            var info = $"Moonglade Version {Helper.AppVersion}\n" +
-                       $"Directory: {Environment.CurrentDirectory} \n" +
-                       $"OS: {Helper.TryGetFullOSVersion()} \n" +
-                       $"Machine Name: {Environment.MachineName} \n" +
-                       $"User Name: {Environment.UserName}";
+            var info = $"App:\tMoonglade {Helper.AppVersion}\n" +
+                       $"Path:\t{Environment.CurrentDirectory} \n" +
+                       $"System:\t{Helper.TryGetFullOSVersion()} \n" +
+                       $"Host:\t{Environment.MachineName} \n" +
+                       $"User:\t{Environment.UserName}";
             Trace.WriteLine(info);
             Console.WriteLine(info);
 
