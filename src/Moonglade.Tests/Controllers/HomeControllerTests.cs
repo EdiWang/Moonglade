@@ -62,8 +62,27 @@ namespace Moonglade.Tests.Controllers
             var result = await ctl.Tags(mockTagService.Object);
 
             Assert.IsInstanceOf<ViewResult>(result);
-
             Assert.AreEqual(fakeTags, ((ViewResult)result).Model);
+        }
+
+        [Test]
+        public async Task Archive_Index()
+        {
+            var fakeArchives = new List<Archive>
+            {
+                new (996,9,6),
+                new (251,3,5)
+            };
+
+            var mockArchiveService = new Mock<IPostArchiveService>();
+            mockArchiveService.Setup(p => p.ListAsync())
+                .Returns(Task.FromResult((IReadOnlyList<Archive>)fakeArchives));
+
+            var ctl = CreateHomeController();
+            var result = await ctl.Archive(mockArchiveService.Object);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.AreEqual(fakeArchives, ((ViewResult)result).Model);
         }
     }
 }
