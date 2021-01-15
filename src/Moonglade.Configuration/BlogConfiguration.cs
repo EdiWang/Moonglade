@@ -2,7 +2,7 @@
 
 namespace Moonglade.Configuration
 {
-    public class BlogConfiguration
+    internal class BlogConfiguration
     {
         public int Id { get; set; }
 
