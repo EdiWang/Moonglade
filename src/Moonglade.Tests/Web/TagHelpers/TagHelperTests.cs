@@ -1,5 +1,3 @@
-using Moonglade.Web.TagHelpers;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -8,9 +6,11 @@ using DateTimeOps;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Moonglade.Foaf;
+using Moonglade.Web.TagHelpers;
 using Moq;
+using NUnit.Framework;
 
-namespace Moonglade.Tests.TagHelpers
+namespace Moonglade.Tests.Web.TagHelpers
 {
     [ExcludeFromCodeCoverage]
     public class TagHelperTestsHelpers

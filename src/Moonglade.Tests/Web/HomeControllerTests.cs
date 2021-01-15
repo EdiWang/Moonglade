@@ -1,18 +1,17 @@
-using Microsoft.Extensions.Logging;
-using Moonglade.Caching;
-using Moonglade.Configuration.Abstraction;
-using Moonglade.Core;
-using Moonglade.Web.Controllers;
-using Moq;
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moonglade.Caching;
+using Moonglade.Configuration.Abstraction;
+using Moonglade.Core;
 using Moonglade.Model;
+using Moonglade.Web.Controllers;
+using Moq;
+using NUnit.Framework;
 
-namespace Moonglade.Tests.Controllers
+namespace Moonglade.Tests.Web
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

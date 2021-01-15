@@ -4,19 +4,15 @@ using System.Threading.Tasks;
 using MemoryCache.Testing.Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Pingback.Mvc;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
-using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Filters
+namespace Moonglade.Tests.Web.Filters
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
