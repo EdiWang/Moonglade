@@ -147,5 +147,43 @@ namespace Moonglade.Tests.Web
 
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
+
+        [Test]
+        public async Task ArchiveList_Year()
+        {
+            var fakePosts = new List<PostListEntry>
+            {
+                new()
+                {
+                    Title = "什么是 996.ICU？工作 996，生病 ICU。",
+                    ContentAbstract = "2016 年 9 月初起，陆续有网友爆料称，58同城实行全员 996 工作制，且周末加班没有工资。公司方面回应称，为应对业务量高峰期，公司每年 9、10 月份都会有动员，属常规性活动，而本次“996 动员”并非强制。（58同城实行全员996工作制 被指意图逼员工主动辞职. 央广网. 2016-09-01. ）",
+                    LangCode = "zh-CN",
+                    PubDateUtc = new (2021,9,6),
+                    Slug = "996-icu",
+                    Tags = new Tag[]{
+                        new ()
+                        {
+                            DisplayName = "996",
+                            Id = 996,
+                            NormalizedName = "icu"
+                        }
+                    }
+                }
+            };
+
+            var mockArchiveService = new Mock<IPostArchiveService>();
+            mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), 0))
+                .Returns(Task.FromResult((IReadOnlyList<PostListEntry>)fakePosts));
+
+            var ctl = CreateHomeController();
+            var result = await ctl.ArchiveList(mockArchiveService.Object, 2021, null);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult)result).Model;
+            Assert.AreEqual(fakePosts, (IReadOnlyList<PostListEntry>) model);
+
+            Assert.AreEqual("2021", ((ViewResult)result).ViewData["ArchiveInfo"]);
+        }
     }
 }
