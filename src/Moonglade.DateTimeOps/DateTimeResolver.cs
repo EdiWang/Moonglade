@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TimeZoneConverter;
 
-namespace Moonglade.DateTimeOps
+namespace DateTimeOps
 {
     public class DateTimeResolver : IDateTimeResolver
     {

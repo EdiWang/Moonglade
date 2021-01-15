@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Moonglade.DateTimeOps
+namespace DateTimeOps
 {
     public interface IDateTimeResolver
     {

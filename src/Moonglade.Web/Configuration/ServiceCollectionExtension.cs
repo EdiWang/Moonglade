@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using DateTimeOps;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,6 @@ using Moonglade.Core.Notification;
 using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
-using Moonglade.DateTimeOps;
 using Moonglade.Foaf;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;

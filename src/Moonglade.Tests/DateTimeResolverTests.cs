@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Moonglade.DateTimeOps;
+using DateTimeOps;
 using NUnit.Framework;
 
 namespace Moonglade.Tests

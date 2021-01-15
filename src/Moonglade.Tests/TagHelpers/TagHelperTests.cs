@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using DateTimeOps;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Moonglade.DateTimeOps;
 using Moonglade.Foaf;
 using Moq;
 

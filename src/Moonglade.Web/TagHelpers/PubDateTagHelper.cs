@@ -1,6 +1,6 @@
 ﻿using System;
+using DateTimeOps;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Moonglade.DateTimeOps;
 
 namespace Moonglade.Web.TagHelpers
 {
