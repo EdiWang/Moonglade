@@ -15,7 +15,7 @@
     <ProjectReference Include="..\Moonglade.Caching\Moonglade.Caching.csproj" />
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
-    <ProjectReference Include="..\Moonglade.DateTimeOps\DateTimeOps.csproj" />
+    <ProjectReference Include="..\DateTimeOps\DateTimeOps.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
     <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
     <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />

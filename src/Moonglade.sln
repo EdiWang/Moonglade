@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiteIconGenerator", "SiteIc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing", "Moonglade.Auditing\Moonglade.Auditing.csproj", "{87BA3928-FF17-4881-BFEF-63ED212BB8E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DateTimeOps", "Moonglade.DateTimeOps\DateTimeOps.csproj", "{0337757F-DAA0-4A63-83B7-EAC35FC33753}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DateTimeOps", "DateTimeOps\DateTimeOps.csproj", "{0337757F-DAA0-4A63-83B7-EAC35FC33753}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Syndication", "Moonglade.Syndication\Moonglade.Syndication.csproj", "{3675CD24-B29D-4F1E-AB8E-9B563B000338}"
 EndProject
