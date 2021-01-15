@@ -90,10 +90,10 @@ namespace Moonglade.Tests.Web
 
             Assert.IsInstanceOf<ViewResult>(result);
 
-            var model = ((ViewResult) result).Model;
+            var model = ((ViewResult)result).Model;
             Assert.IsInstanceOf<StaticPagedList<PostListEntry>>(model);
 
-            var pagedList = (StaticPagedList<PostListEntry>) model;
+            var pagedList = (StaticPagedList<PostListEntry>)model;
             Assert.AreEqual(996, pagedList.TotalItemCount);
         }
 
@@ -135,6 +135,17 @@ namespace Moonglade.Tests.Web
 
             Assert.IsInstanceOf<ViewResult>(result);
             Assert.AreEqual(fakeArchives, ((ViewResult)result).Model);
+        }
+
+        [Test]
+        public async Task ArchiveList_BadYear()
+        {
+            var mockArchiveService = new Mock<IPostArchiveService>();
+
+            var ctl = CreateHomeController();
+            var result = await ctl.ArchiveList(mockArchiveService.Object, 9999, 1);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
         }
     }
 }
