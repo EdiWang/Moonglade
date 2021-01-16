@@ -86,7 +86,7 @@ namespace Moonglade.Core
                 CommentContent = p.CommentContent,
                 CreateTimeUtc = p.CreateTimeUtc,
                 Email = p.Email,
-                IpAddress = p.IPAddress,
+                IpAddress = p.IPAddress.ToString(),
                 Username = p.Username,
                 IsApproved = p.IsApproved,
                 PostTitle = p.Post.Title,
@@ -187,7 +187,7 @@ namespace Moonglade.Core
                 CommentContent = model.CommentContent,
                 CreateTimeUtc = model.CreateTimeUtc,
                 Email = model.Email,
-                IpAddress = model.IPAddress,
+                IpAddress = model.IPAddress.ToString(),
                 IsApproved = model.IsApproved,
                 PostTitle = postTitle,
                 Username = model.Username
