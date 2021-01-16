@@ -181,7 +181,7 @@ namespace Moonglade.Tests.Web
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.AreEqual(fakePosts, (IReadOnlyList<PostListEntry>) model);
+            Assert.AreEqual(fakePosts, (IReadOnlyList<PostListEntry>)model);
 
             Assert.AreEqual("2021", ((ViewResult)result).ViewData["ArchiveInfo"]);
         }

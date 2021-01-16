@@ -11,9 +11,9 @@ using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Utils;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.SiteIconGenerator;
 using Moq;
 using NUnit.Framework;
-using SiteIconGenerator;
 
 namespace Moonglade.Tests.Web
 {

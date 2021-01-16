@@ -39,7 +39,7 @@ namespace Moonglade.Tests.Web
 
             Assert.IsInstanceOf<RedirectToActionResult>(result);
 
-            var redirectResult = (RedirectToActionResult) result;
+            var redirectResult = (RedirectToActionResult)result;
             Assert.AreEqual("Home", redirectResult.ControllerName);
             Assert.AreEqual("Index", redirectResult.ActionName);
         }

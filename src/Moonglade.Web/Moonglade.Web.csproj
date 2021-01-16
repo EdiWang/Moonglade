@@ -37,6 +37,5 @@
     <ProjectReference Include="..\Moonglade.Foaf\Moonglade.Foaf.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
     <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
-    <ProjectReference Include="..\SiteIconGenerator\SiteIconGenerator.csproj" />
   </ItemGroup>
 </Project>

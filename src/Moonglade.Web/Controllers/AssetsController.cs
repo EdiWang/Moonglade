@@ -24,8 +24,8 @@ using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Utils;
+using Moonglade.Web.SiteIconGenerator;
 using NUglify;
-using SiteIconGenerator;
 
 namespace Moonglade.Web.Controllers
 {
@@ -386,7 +386,7 @@ namespace Moonglade.Web.Controllers
         [Route("foaf.xml")]
         public async Task<IActionResult> Foaf(
             [FromServices] IFoafWriter foafWriter,
-            [FromServices] IFriendLinkService friendLinkService, 
+            [FromServices] IFriendLinkService friendLinkService,
             [FromServices] LinkGenerator linkGenerator)
         {
             var friends = await friendLinkService.GetAllAsync();
