@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using SiteIconGenerator.IconEncoder;
 
 namespace SiteIconGenerator
 {
@@ -73,11 +72,14 @@ namespace SiteIconGenerator
             using (fs)
             {
                 using var image = new Bitmap(fs);
-                var ico = Converter.BitmapToIcon(image);
+
+                // Wrong color and incorrect ico image, but since mordern browsers only use 'favicon-16x16.png', this .ico file is considerable fine.
+                var icon = Icon.FromHandle(image.GetHicon());
+
                 using var icoFs = new FileStream(icoFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 lock (FileLock)
                 {
-                    ico.Save(icoFs);
+                    icon.Save(icoFs);
                     icoFs.Flush();
                 }
             }
