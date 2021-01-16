@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 
 namespace Moonglade.Model
 {
@@ -13,7 +12,7 @@ namespace Moonglade.Model
 
         public string Email { get; set; }
 
-        public IPAddress IpAddress { get; set; }
+        public string IpAddress { get; set; }
 
         public CommentRequest(Guid postId)
         {

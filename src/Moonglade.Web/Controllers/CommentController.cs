@@ -62,7 +62,7 @@ namespace Moonglade.Web.Controllers
                 Username = model.Username,
                 Content = model.Content,
                 Email = model.Email,
-                IpAddress = DNT ? null : HttpContext.Connection.RemoteIpAddress
+                IpAddress = DNT ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
             });
 
             if (response is null)
