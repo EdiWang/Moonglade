@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.ImageStorage;
 using Moonglade.Model;
@@ -95,7 +96,7 @@ namespace Moonglade.Tests.Web
         [Test]
         public async Task Manifest()
         {
-            _blogConfigMock.Setup(bc => bc.GeneralSettings).Returns(new Configuration.GeneralSettings
+            _blogConfigMock.Setup(bc => bc.GeneralSettings).Returns(new GeneralSettings
             {
                 SiteTitle = "Fake Title"
             });
@@ -122,6 +123,29 @@ namespace Moonglade.Tests.Web
                     Assert.IsTrue(model.Name == _blogConfigMock.Object.GeneralSettings.SiteTitle);
                 }
             }
+        }
+
+        [Test]
+        public void CustomCss_Disabled()
+        {
+            _blogConfigMock.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+            {
+                EnableCustomCss = false
+            });
+
+            _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
+
+            var ctl = new AssetsController(
+                _loggerMock.Object,
+                _appSettingsMock.Object,
+                _imageStorageSettingsMock.Object,
+                _asyncImageStorageProviderMock.Object,
+                _blogConfigMock.Object,
+                _siteIconGeneratorMock.Object,
+                _webHostEnvMock.Object);
+
+            var result = ctl.CustomCss();
+            Assert.IsInstanceOf(typeof(NotFoundResult), result);
         }
     }
 }
