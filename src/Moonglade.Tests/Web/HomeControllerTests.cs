@@ -185,5 +185,16 @@ namespace Moonglade.Tests.Web
 
             Assert.AreEqual("2021", ((ViewResult)result).ViewData["ArchiveInfo"]);
         }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void SetLanguage_EmptyCulture(string culture)
+        {
+            var ctl = CreateHomeController();
+            var result = ctl.SetLanguage(culture, null);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
+        }
     }
 }

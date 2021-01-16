@@ -125,6 +125,8 @@ namespace Moonglade.Web.Controllers
         [HttpGet("set-lang")]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
+            if (string.IsNullOrWhiteSpace(culture)) return BadRequest();
+
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
                 CookieRequestCultureProvider.MakeCookieValue(new(culture)),
