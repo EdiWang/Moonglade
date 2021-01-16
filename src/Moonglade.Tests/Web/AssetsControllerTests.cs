@@ -158,6 +158,31 @@ namespace Moonglade.Tests.Web
             });
 
             _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
+
+            var ctl = new AssetsController(
+                _loggerMock.Object,
+                _appSettingsMock.Object,
+                _imageStorageSettingsMock.Object,
+                _asyncImageStorageProviderMock.Object,
+                _blogConfigMock.Object,
+                _siteIconGeneratorMock.Object,
+                _webHostEnvMock.Object);
+
+            var result = ctl.CustomCss();
+            Assert.IsInstanceOf(typeof(ConflictObjectResult), result);
+        }
+
+        [Test]
+        public void CustomCss_InvalidCss()
+        {
+            _blogConfigMock.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+            {
+                EnableCustomCss = true,
+                CssCode = "Work 996, Sick ICU!"
+            });
+
+            _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
+
             var ctl = new AssetsController(
                 _loggerMock.Object,
                 _appSettingsMock.Object,
