@@ -29,7 +29,7 @@ jobs:
     inputs:
       command: publish
       publishWebProjects: True
-      arguments: '--configuration Release -p:Version=10.10.1.$(Build.BuildId) --output $(Build.ArtifactStagingDirectory)'
+      arguments: '--configuration Release -p:Version=10.10.2.$(Build.BuildId) --output $(Build.ArtifactStagingDirectory)'
       zipAfterPublish: True
 
   - task: PublishBuildArtifacts@1
