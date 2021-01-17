@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
@@ -26,7 +25,6 @@ namespace Moonglade.Tests.Web
         private Mock<IPostService> _mockPostService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<ILogger<HomeController>> _mockLogger;
 
         [SetUp]
         public void SetUp()
@@ -36,7 +34,6 @@ namespace Moonglade.Tests.Web
             _mockPostService = _mockRepository.Create<IPostService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockLogger = _mockRepository.Create<ILogger<HomeController>>();
         }
 
         private HomeController CreateHomeController()
@@ -44,8 +41,7 @@ namespace Moonglade.Tests.Web
             return new(
                 _mockPostService.Object,
                 _mockBlogCache.Object,
-                _mockBlogConfig.Object,
-                _mockLogger.Object);
+                _mockBlogConfig.Object);
         }
 
         [Test]

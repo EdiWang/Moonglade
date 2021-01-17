@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -17,18 +16,15 @@ namespace Moonglade.Web.Controllers
         private readonly IPostService _postService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
-        private readonly ILogger<HomeController> _logger;
 
         public HomeController(
             IPostService postService,
             IBlogCache cache,
-            IBlogConfig blogConfig,
-            ILogger<HomeController> logger)
+            IBlogConfig blogConfig)
         {
             _postService = postService;
             _cache = cache;
             _blogConfig = blogConfig;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Index(int page = 1)
