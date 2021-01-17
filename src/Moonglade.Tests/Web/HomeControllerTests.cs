@@ -138,6 +138,50 @@ namespace Moonglade.Tests.Web
         }
 
         [Test]
+        public async Task TagList_NullTag()
+        {
+            var mockTagService = new Mock<ITagService>();
+            mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns((Tag)null);
+
+            var ctl = CreateHomeController();
+            var result = await ctl.TagList(mockTagService.Object, "996", 1);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public async Task CategoryList_EmptyRouteName(string routeName)
+        {
+            var mockCatService = new Mock<ICategoryService>();
+
+            var ctl = CreateHomeController();
+            var result = await ctl.CategoryList(mockCatService.Object, routeName);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task CategoryList_NullCat()
+        {
+            var mockCatService = new Mock<ICategoryService>();
+            mockCatService
+                .Setup(p => p.GetAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult((Category) null));
+
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
+            {
+                PostListPageSize = 10
+            });
+
+            var ctl = CreateHomeController();
+            var result = await ctl.CategoryList(mockCatService.Object, "996");
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
         public async Task ArchiveList_BadYear()
         {
             var mockArchiveService = new Mock<IPostArchiveService>();
