@@ -145,6 +145,61 @@ namespace Moonglade.Tests.Web
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
+        [Test]
+        public async Task TagList_ValidTag()
+        {
+            var mockTagService = new Mock<ITagService>();
+            mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns(new Tag
+            {
+                Id = 996,
+                DisplayName = "Fubao",
+                NormalizedName = "fu-bao"
+            });
+
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
+            {
+                PostListPageSize = 10
+            });
+
+            var fakePosts = new List<PostListEntry>
+            {
+                new()
+                {
+                    Title = "“996”工作制，即每天早 9 点到岗，一直工作到晚上 9 点，每周工作 6 天。",
+                    ContentAbstract = "中国大陆工时规管现况（标准工时）： 一天工作时间为 8 小时，平均每周工时不超过 40 小时；加班上限为一天 3 小时及一个月 36 小时，逾时工作薪金不低于平日工资的 150%。而一周最高工时则为 48 小时。平均每月计薪天数为 21.75 天。",
+                    LangCode = "zh-CN",
+                    PubDateUtc = new (996,9,6),
+                    Slug = "996-icu",
+                    Tags = new Tag[]{
+                        new ()
+                        {
+                            DisplayName = "996",
+                            Id = 996,
+                            NormalizedName = "icu"
+                        }
+                    }
+                }
+            };
+
+            _mockPostService.Setup(p => p.GetByTagAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(Task.FromResult((IReadOnlyList<PostListEntry>)fakePosts));
+
+            _mockBlogCache.Setup(p =>
+                    p.GetOrCreate(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
+                .Returns(251);
+
+            var ctl = CreateHomeController();
+            var result = await ctl.TagList(mockTagService.Object, "fu-bao");
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult)result).Model;
+            Assert.IsInstanceOf<StaticPagedList<PostListEntry>>(model);
+
+            var pagedList = (StaticPagedList<PostListEntry>)model;
+            Assert.AreEqual(251, pagedList.TotalItemCount);
+        }
+
         [TestCase(null)]
         [TestCase("")]
         [TestCase(" ")]
