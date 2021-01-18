@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,7 @@ using Moonglade.Caching;
 using Moonglade.Core;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -50,6 +52,25 @@ namespace Moonglade.Tests.Web.Controllers
             var result = await ctl.Index(slug);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
+        public void Create_Success()
+        {
+            var ctl = CreatePageController();
+            var result = ctl.Create();
+
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.IsInstanceOf<PageEditViewModel>(((ViewResult)result).Model);
+        }
+
+        [Test]
+        public async Task Delete_Success()
+        {
+            var ctl = CreatePageController();
+            var result = await ctl.Delete(Guid.Empty, "work-996");
+
+            Assert.IsInstanceOf<OkResult>(result);
         }
     }
 }
