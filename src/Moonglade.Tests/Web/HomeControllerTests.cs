@@ -26,6 +26,26 @@ namespace Moonglade.Tests.Web
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
 
+        private readonly IReadOnlyList<PostListEntry> _fakePosts = new List<PostListEntry>
+        {
+            new()
+            {
+                Title = "“996”工作制，即每天早 9 点到岗，一直工作到晚上 9 点，每周工作 6 天。",
+                ContentAbstract = "中国大陆工时规管现况（标准工时）： 一天工作时间为 8 小时，平均每周工时不超过 40 小时；加班上限为一天 3 小时及一个月 36 小时，逾时工作薪金不低于平日工资的 150%。而一周最高工时则为 48 小时。平均每月计薪天数为 21.75 天。",
+                LangCode = "zh-CN",
+                PubDateUtc = new(996, 9, 6),
+                Slug = "996-icu",
+                Tags = new Tag[]{
+                    new ()
+                    {
+                        DisplayName = "996",
+                        Id = 996,
+                        NormalizedName = "icu"
+                    }
+                }
+            }
+        };
+
         [SetUp]
         public void SetUp()
         {
@@ -34,6 +54,11 @@ namespace Moonglade.Tests.Web
             _mockPostService = _mockRepository.Create<IPostService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            {
+                PostListPageSize = 10
+            });
         }
 
         private HomeController CreateHomeController()
@@ -47,33 +72,8 @@ namespace Moonglade.Tests.Web
         [Test]
         public async Task Index_View()
         {
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
-            {
-                PostListPageSize = 10
-            });
-
-            var fakePosts = new List<PostListEntry>
-            {
-                new()
-                {
-                    Title = "“996”工作制，即每天早 9 点到岗，一直工作到晚上 9 点，每周工作 6 天。",
-                    ContentAbstract = "中国大陆工时规管现况（标准工时）： 一天工作时间为 8 小时，平均每周工时不超过 40 小时；加班上限为一天 3 小时及一个月 36 小时，逾时工作薪金不低于平日工资的 150%。而一周最高工时则为 48 小时。平均每月计薪天数为 21.75 天。",
-                    LangCode = "zh-CN",
-                    PubDateUtc = new (996,9,6),
-                    Slug = "996-icu",
-                    Tags = new Tag[]{
-                        new ()
-                        {
-                            DisplayName = "996",
-                            Id = 996,
-                            NormalizedName = "icu"
-                        }
-                    }
-                }
-            };
-
             _mockPostService.Setup(p => p.GetPagedPostsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
-                .Returns(Task.FromResult((IReadOnlyList<PostListEntry>)fakePosts));
+                .Returns(Task.FromResult(_fakePosts));
 
             _mockPostService.Setup(p => p.CountVisiblePosts()).Returns(996);
 
@@ -156,33 +156,8 @@ namespace Moonglade.Tests.Web
                 NormalizedName = "fu-bao"
             });
 
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
-            {
-                PostListPageSize = 10
-            });
-
-            var fakePosts = new List<PostListEntry>
-            {
-                new()
-                {
-                    Title = "“996”工作制，即每天早 9 点到岗，一直工作到晚上 9 点，每周工作 6 天。",
-                    ContentAbstract = "中国大陆工时规管现况（标准工时）： 一天工作时间为 8 小时，平均每周工时不超过 40 小时；加班上限为一天 3 小时及一个月 36 小时，逾时工作薪金不低于平日工资的 150%。而一周最高工时则为 48 小时。平均每月计薪天数为 21.75 天。",
-                    LangCode = "zh-CN",
-                    PubDateUtc = new (996,9,6),
-                    Slug = "996-icu",
-                    Tags = new Tag[]{
-                        new ()
-                        {
-                            DisplayName = "996",
-                            Id = 996,
-                            NormalizedName = "icu"
-                        }
-                    }
-                }
-            };
-
             _mockPostService.Setup(p => p.GetByTagAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult((IReadOnlyList<PostListEntry>)fakePosts));
+                .Returns(Task.FromResult(_fakePosts));
 
             _mockBlogCache.Setup(p =>
                     p.GetOrCreate(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
@@ -219,17 +194,51 @@ namespace Moonglade.Tests.Web
             var mockCatService = new Mock<ICategoryService>();
             mockCatService
                 .Setup(p => p.GetAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult((Category) null));
-
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
-            {
-                PostListPageSize = 10
-            });
+                .Returns(Task.FromResult((Category)null));
 
             var ctl = CreateHomeController();
             var result = await ctl.CategoryList(mockCatService.Object, "996");
 
             Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task CategoryList_ValidCat()
+        {
+            var cat = new Category
+            {
+                Id = Guid.Empty,
+                DisplayName = "Work 996",
+                Note = "Get into ICU",
+                RouteName = "work-996"
+            };
+
+            var mockCatService = new Mock<ICategoryService>();
+            mockCatService
+                .Setup(p => p.GetAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(cat));
+
+            _mockBlogCache.Setup(p =>
+                    p.GetOrCreate(CacheDivision.PostCountCategory, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
+                .Returns(35);
+
+            _mockPostService.Setup(p => p.GetPagedPostsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
+                .Returns(Task.FromResult(_fakePosts));
+
+            var ctl = CreateHomeController();
+            var result = await ctl.CategoryList(mockCatService.Object, "work-996");
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult)result).Model;
+            Assert.IsInstanceOf<StaticPagedList<PostListEntry>>(model);
+
+            var pagedList = (StaticPagedList<PostListEntry>)model;
+            Assert.AreEqual(35, pagedList.TotalItemCount);
+
+            Assert.AreEqual(cat.DisplayName, ((ViewResult)result).ViewData["CategoryDisplayName"]);
+            Assert.AreEqual(cat.RouteName, ((ViewResult)result).ViewData["CategoryRouteName"]);
+            Assert.AreEqual(cat.Note, ((ViewResult)result).ViewData["CategoryDescription"]);
         }
 
         [Test]
@@ -246,29 +255,9 @@ namespace Moonglade.Tests.Web
         [Test]
         public async Task ArchiveList_Year()
         {
-            var fakePosts = new List<PostListEntry>
-            {
-                new()
-                {
-                    Title = "什么是 996.ICU？工作 996，生病 ICU。",
-                    ContentAbstract = "2016 年 9 月初起，陆续有网友爆料称，58同城实行全员 996 工作制，且周末加班没有工资。公司方面回应称，为应对业务量高峰期，公司每年 9、10 月份都会有动员，属常规性活动，而本次“996 动员”并非强制。（58同城实行全员996工作制 被指意图逼员工主动辞职. 央广网. 2016-09-01. ）",
-                    LangCode = "zh-CN",
-                    PubDateUtc = new (2021,9,6),
-                    Slug = "996-icu",
-                    Tags = new Tag[]{
-                        new ()
-                        {
-                            DisplayName = "996",
-                            Id = 996,
-                            NormalizedName = "icu"
-                        }
-                    }
-                }
-            };
-
             var mockArchiveService = new Mock<IPostArchiveService>();
             mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), 0))
-                .Returns(Task.FromResult((IReadOnlyList<PostListEntry>)fakePosts));
+                .Returns(Task.FromResult(_fakePosts));
 
             var ctl = CreateHomeController();
             var result = await ctl.ArchiveList(mockArchiveService.Object, 2021, null);
@@ -276,7 +265,7 @@ namespace Moonglade.Tests.Web
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.AreEqual(fakePosts, (IReadOnlyList<PostListEntry>)model);
+            Assert.AreEqual(_fakePosts, (IReadOnlyList<PostListEntry>)model);
 
             Assert.AreEqual("2021", ((ViewResult)result).ViewData["ArchiveInfo"]);
         }
@@ -284,29 +273,9 @@ namespace Moonglade.Tests.Web
         [Test]
         public async Task ArchiveList_Year_Month()
         {
-            var fakePosts = new List<PostListEntry>
-            {
-                new()
-                {
-                    Title = "什么是 996.ICU？工作 996，生病 ICU。",
-                    ContentAbstract = "2016 年 9 月初起，陆续有网友爆料称，58同城实行全员 996 工作制，且周末加班没有工资。公司方面回应称，为应对业务量高峰期，公司每年 9、10 月份都会有动员，属常规性活动，而本次“996 动员”并非强制。（58同城实行全员996工作制 被指意图逼员工主动辞职. 央广网. 2016-09-01. ）",
-                    LangCode = "zh-CN",
-                    PubDateUtc = new (2021,9,6),
-                    Slug = "996-icu",
-                    Tags = new Tag[]{
-                        new ()
-                        {
-                            DisplayName = "996",
-                            Id = 996,
-                            NormalizedName = "icu"
-                        }
-                    }
-                }
-            };
-
             var mockArchiveService = new Mock<IPostArchiveService>();
             mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult((IReadOnlyList<PostListEntry>)fakePosts));
+                .Returns(Task.FromResult(_fakePosts));
 
             var ctl = CreateHomeController();
             var result = await ctl.ArchiveList(mockArchiveService.Object, 2021, 1);
@@ -314,7 +283,7 @@ namespace Moonglade.Tests.Web
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.AreEqual(fakePosts, (IReadOnlyList<PostListEntry>)model);
+            Assert.AreEqual(_fakePosts, (IReadOnlyList<PostListEntry>)model);
 
             Assert.AreEqual("2021.1", ((ViewResult)result).ViewData["ArchiveInfo"]);
         }
