@@ -89,6 +89,18 @@ namespace Moonglade.Tests.Web.Controllers
         }
 
         [Test]
+        public async Task Edit_NoPage()
+        {
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult((Page)null));
+
+            var ctl = CreatePageController();
+            var result = await ctl.Edit(Guid.Empty);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
         public async Task Preview_HasPage()
         {
             var fakePage = new Page
