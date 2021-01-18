@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Core;
+using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
@@ -14,6 +16,7 @@ using NUnit.Framework;
 namespace Moonglade.Tests.Web.Controllers
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class PageControllerTests
     {
         private MockRepository _mockRepository;
@@ -71,6 +74,18 @@ namespace Moonglade.Tests.Web.Controllers
             var result = await ctl.Delete(Guid.Empty, "work-996");
 
             Assert.IsInstanceOf<OkResult>(result);
+        }
+
+        [Test]
+        public async Task Preview_NoPage()
+        {
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult((Page) null));
+
+            var ctl = CreatePageController();
+            var result = await ctl.Preview(Guid.Empty);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
         }
     }
 }
