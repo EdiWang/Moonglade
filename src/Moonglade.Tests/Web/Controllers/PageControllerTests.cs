@@ -80,12 +80,42 @@ namespace Moonglade.Tests.Web.Controllers
         public async Task Preview_NoPage()
         {
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult((Page) null));
+                .Returns(Task.FromResult((Page)null));
 
             var ctl = CreatePageController();
             var result = await ctl.Preview(Guid.Empty);
 
             Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task Preview_HasPage()
+        {
+            var fakePage = new Page
+            {
+                Id = Guid.Empty,
+                CreateTimeUtc = new DateTime(996, 9, 6),
+                CssContent = ".jack-ma .heart {color: black !important;}",
+                HideSidebar = false,
+                IsPublished = false,
+                MetaDescription = "Fuck Jack Ma",
+                RawHtmlContent = "<p>Fuck 996</p>",
+                Slug = "fuck-jack-ma",
+                Title = "Fuck Jack Ma 1000 years!",
+                UpdateTimeUtc = new DateTime(1996, 9, 6)
+            };
+
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(fakePage));
+
+            var ctl = CreatePageController();
+            var result = await ctl.Preview(Guid.Empty);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult)result).Model;
+            Assert.IsInstanceOf<PageViewModel>(model);
+            Assert.AreEqual(fakePage.Title, ((PageViewModel)model).Title);
         }
     }
 }
