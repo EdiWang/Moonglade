@@ -61,7 +61,7 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<ClearSiteMapCache>();
         }
 
-        public static void AddBlogNotification(this IServiceCollection services, ILogger logger)
+        public static void AddNotification(this IServiceCollection services, ILogger logger)
         {
             services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
                 .AddTransientHttpErrorPolicy(builder =>

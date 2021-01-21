@@ -94,16 +94,16 @@ namespace Moonglade.Web
                 options.HeaderName = "XSRF-TOKEN";
             });
 
-            services.AddPingback();
             services.AddImageStorage(_configuration, options =>
             {
                 options.ContentRootPath = _environment.ContentRootPath;
             });
-            services.AddComments(_configuration, _environment);
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSessionBasedCaptcha();
             services.AddBlogServices();
-            services.AddBlogNotification(_logger);
+            services.AddComments(_configuration, _environment);
+            services.AddNotification(_logger);
+            services.AddPingback();
             services.AddDataStorage(_configuration.GetConnectionString(Constants.DbConnectionName));
 
             services.AddAzureAppConfiguration();
