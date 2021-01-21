@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
 using Newtonsoft.Json;
 
-namespace Moonglade.DataPorting
+namespace Moonglade.DataPorting.Exporters
 {
-    public class SingeJsonExporter<T> : IExporter<T>
+    public class JsonExporter<T> : IExporter<T>
     {
         private readonly IRepository<T> _repository;
 
-        public SingeJsonExporter(IRepository<T> repository)
+        public JsonExporter(IRepository<T> repository)
         {
             _repository = repository;
         }
@@ -23,7 +24,7 @@ namespace Moonglade.DataPorting
             return new()
             {
                 ExportFormat = ExportFormat.SingleJsonFile,
-                JsonContent = json
+                Content = Encoding.UTF8.GetBytes(json)
             };
         }
     }

@@ -5,7 +5,6 @@
         Tags,
         Categories,
         FriendLinks,
-        Pingbacks,
         Pages,
         Posts
     }

@@ -2,6 +2,7 @@
 {
     public enum ExportFormat
     {
+        SingleCSVFile,
         SingleJsonFile,
         ZippedJsonFiles
     }

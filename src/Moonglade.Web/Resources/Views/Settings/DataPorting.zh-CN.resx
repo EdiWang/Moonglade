@@ -141,9 +141,6 @@
   <data name="Pages" xml:space="preserve">
     <value>页面</value>
   </data>
-  <data name="Pingback" xml:space="preserve">
-    <value>引用</value>
-  </data>
   <data name="Posts" xml:space="preserve">
     <value>文章</value>
   </data>

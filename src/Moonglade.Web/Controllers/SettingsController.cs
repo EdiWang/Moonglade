@@ -640,20 +640,21 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("export/{type}")]
-        public async Task<IActionResult> Export4Download([FromServices] IExportManager expman, ExportDataType type)
+        public async Task<IActionResult> ExportDownload([FromServices] IExportManager expman, ExportDataType type)
         {
             var exportResult = await expman.ExportData(type);
             switch (exportResult.ExportFormat)
             {
                 case ExportFormat.SingleJsonFile:
-                    var bytes = Encoding.UTF8.GetBytes(exportResult.JsonContent);
-
-                    return new FileContentResult(bytes, "application/octet-stream")
+                    return new FileContentResult(exportResult.Content, exportResult.ContentType)
                     {
                         FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
                     };
+                case ExportFormat.SingleCSVFile:
+                    Response.Headers.Add("Content-Disposition", $"attachment;filename={Path.GetFileName(exportResult.FilePath)}");
+                    return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
                 case ExportFormat.ZippedJsonFiles:
-                    return PhysicalFile(exportResult.ZipFilePath, "application/zip", Path.GetFileName(exportResult.ZipFilePath));
+                    return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
                 default:
                     return BadRequest(ModelState);
             }
