@@ -14,7 +14,6 @@ namespace Moonglade.Web.Models
 
         [MaxLength(128)]
         [DataType(DataType.EmailAddress)]
-        [EmailAddress]
         public string Email { get; set; }
 
         [Required]

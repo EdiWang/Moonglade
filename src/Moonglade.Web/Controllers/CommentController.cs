@@ -49,6 +49,13 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> NewComment(Guid postId, NewCommentModel model, [FromServices] ISessionBasedCaptcha captcha)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            if (!string.IsNullOrWhiteSpace(model.Email) && !Helper.IsValidEmailAddress(model.Email))
+            {
+                ModelState.AddModelError(nameof(model.Email), "Invalid Email address.");
+                return BadRequest(ModelState);
+            }
+
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
             if (!captcha.ValidateCaptchaCode(model.CaptchaCode, HttpContext.Session))
