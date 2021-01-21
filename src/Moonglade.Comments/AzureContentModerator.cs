@@ -14,14 +14,14 @@ namespace Moonglade.Comments
 
     public class AzureContentModerator : ICommentModerator, IDisposable
     {
-        private readonly ContentModeratorClient _client;
+        private readonly IContentModeratorClient _client;
 
         public AzureContentModerator(AzureContentModeratorSettings settings)
         {
             _client = Authenticate(settings.OcpApimSubscriptionKey, settings.Endpoint);
         }
 
-        private static ContentModeratorClient Authenticate(string key, string endpoint)
+        private static IContentModeratorClient Authenticate(string key, string endpoint)
         {
             var client = new ContentModeratorClient(new ApiKeyServiceClientCredentials(key))
             {
