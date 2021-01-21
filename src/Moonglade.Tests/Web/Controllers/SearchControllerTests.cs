@@ -70,7 +70,7 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task Search_ValidTerm()
         {
-            var fakePosts = new List<PostListEntry>
+            var fakePosts = new List<PostDigest>
             {
                 new()
                 {
@@ -87,7 +87,7 @@ namespace Moonglade.Tests.Web.Controllers
             };
 
             _mockSearchService.Setup(p => p.SearchAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult((IReadOnlyList<PostListEntry>)fakePosts));
+                .Returns(Task.FromResult((IReadOnlyList<PostDigest>)fakePosts));
 
             var searchController = CreateSearchController();
             var result = await searchController.Search("996");

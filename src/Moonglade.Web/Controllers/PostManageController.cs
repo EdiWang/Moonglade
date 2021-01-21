@@ -145,7 +145,7 @@ namespace Moonglade.Web.Controllers
                     ? Array.Empty<string>()
                     : model.Tags.Split(',').ToArray();
 
-                var request = new EditPostRequest(model.PostId)
+                var request = new UpdatePostRequest
                 {
                     Title = model.Title.Trim(),
                     Slug = model.Slug.Trim(),
@@ -170,7 +170,7 @@ namespace Moonglade.Web.Controllers
 
                 var postEntity = model.PostId == Guid.Empty ?
                     await _postService.CreateAsync(request) :
-                    await _postService.UpdateAsync(request);
+                    await _postService.UpdateAsync(model.PostId, request);
 
                 if (model.IsPublished)
                 {

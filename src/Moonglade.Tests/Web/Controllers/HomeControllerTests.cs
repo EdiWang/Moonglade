@@ -26,7 +26,7 @@ namespace Moonglade.Tests.Web.Controllers
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
 
-        private readonly IReadOnlyList<PostListEntry> _fakePosts = new List<PostListEntry>
+        private readonly IReadOnlyList<PostDigest> _fakePosts = new List<PostDigest>
         {
             new()
             {
@@ -87,9 +87,9 @@ namespace Moonglade.Tests.Web.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<StaticPagedList<PostListEntry>>(model);
+            Assert.IsInstanceOf<StaticPagedList<PostDigest>>(model);
 
-            var pagedList = (StaticPagedList<PostListEntry>)model;
+            var pagedList = (StaticPagedList<PostDigest>)model;
             Assert.AreEqual(996, pagedList.TotalItemCount);
         }
 
@@ -169,9 +169,9 @@ namespace Moonglade.Tests.Web.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<StaticPagedList<PostListEntry>>(model);
+            Assert.IsInstanceOf<StaticPagedList<PostDigest>>(model);
 
-            var pagedList = (StaticPagedList<PostListEntry>)model;
+            var pagedList = (StaticPagedList<PostDigest>)model;
             Assert.AreEqual(251, pagedList.TotalItemCount);
         }
 
@@ -231,9 +231,9 @@ namespace Moonglade.Tests.Web.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<StaticPagedList<PostListEntry>>(model);
+            Assert.IsInstanceOf<StaticPagedList<PostDigest>>(model);
 
-            var pagedList = (StaticPagedList<PostListEntry>)model;
+            var pagedList = (StaticPagedList<PostDigest>)model;
             Assert.AreEqual(35, pagedList.TotalItemCount);
 
             Assert.AreEqual(cat.DisplayName, ((ViewResult)result).ViewData["CategoryDisplayName"]);
@@ -265,7 +265,7 @@ namespace Moonglade.Tests.Web.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.AreEqual(_fakePosts, (IReadOnlyList<PostListEntry>)model);
+            Assert.AreEqual(_fakePosts, (IReadOnlyList<PostDigest>)model);
 
             Assert.AreEqual("2021", ((ViewResult)result).ViewData["ArchiveInfo"]);
         }
@@ -283,7 +283,7 @@ namespace Moonglade.Tests.Web.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.AreEqual(_fakePosts, (IReadOnlyList<PostListEntry>)model);
+            Assert.AreEqual(_fakePosts, (IReadOnlyList<PostDigest>)model);
 
             Assert.AreEqual("2021.1", ((ViewResult)result).ViewData["ArchiveInfo"]);
         }

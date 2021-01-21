@@ -13,7 +13,7 @@ namespace Moonglade.Core
     public interface IPostArchiveService
     {
         Task<IReadOnlyList<Archive>> ListAsync();
-        Task<IReadOnlyList<PostListEntry>> ListPostsAsync(int year, int month = 0);
+        Task<IReadOnlyList<PostDigest>> ListPostsAsync(int year, int month = 0);
     }
 
     public class PostArchiveService : IPostArchiveService
@@ -49,7 +49,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public Task<IReadOnlyList<PostListEntry>> ListPostsAsync(int year, int month = 0)
+        public Task<IReadOnlyList<PostDigest>> ListPostsAsync(int year, int month = 0)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {
@@ -64,7 +64,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostSpec(year, month);
-            var list = _postRepo.SelectAsync(spec, p => new PostListEntry
+            var list = _postRepo.SelectAsync(spec, p => new PostDigest
             {
                 Title = p.Title,
                 Slug = p.Slug,

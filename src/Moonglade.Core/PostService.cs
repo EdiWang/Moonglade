@@ -23,17 +23,17 @@ namespace Moonglade.Core
         int CountByTag(int tagId);
         Task<Post> GetAsync(Guid id);
         Task<PostSlug> GetDraftAsync(Guid postId);
-        Task<string> GetContentAsync(PostSlugInfo slugInfo);
-        Task<PostSlugSegment> GetSegmentAsync(PostSlugInfo slugInfo);
-        Task<PostSlug> GetAsync(PostSlugInfo slugInfo);
+        Task<string> GetContentAsync(PostSlugInfo slug);
+        Task<PostSlugSegment> GetSegmentAsync(PostSlugInfo slug);
+        Task<PostSlug> GetAsync(PostSlugInfo slug);
         Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus postStatus);
         Task<IReadOnlyList<PostSegment>> GetInsightsAsync(PostInsightsType insightsType);
-        Task<IReadOnlyList<PostListEntry>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null);
-        Task<IReadOnlyList<PostListEntry>> GetByTagAsync(int tagId, int pageSize, int pageIndex);
-        Task<PostEntity> CreateAsync(CreatePostRequest request);
-        Task<PostEntity> UpdateAsync(EditPostRequest request);
-        Task RestoreAsync(Guid postId);
-        Task DeleteAsync(Guid postId, bool softDelete = false);
+        Task<IReadOnlyList<PostDigest>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null);
+        Task<IReadOnlyList<PostDigest>> GetByTagAsync(int tagId, int pageSize, int pageIndex);
+        Task<PostEntity> CreateAsync(UpdatePostRequest request);
+        Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request);
+        Task RestoreAsync(Guid id);
+        Task DeleteAsync(Guid id, bool softDelete = false);
         Task PurgeRecycledAsync();
     }
 
@@ -153,25 +153,25 @@ namespace Moonglade.Core
             return postSlugModel;
         }
 
-        public Task<string> GetContentAsync(PostSlugInfo slugInfo)
+        public Task<string> GetContentAsync(PostSlugInfo slug)
         {
-            var date = new DateTime(slugInfo.Year, slugInfo.Month, slugInfo.Day);
-            var spec = new PostSpec(date, slugInfo.Slug);
+            var date = new DateTime(slug.Year, slug.Month, slug.Day);
+            var spec = new PostSpec(date, slug.Slug);
 
             return _postRepo.SelectFirstOrDefaultAsync(spec,
                 post => post.PostContent);
         }
 
-        public Task<PostSlugSegment> GetSegmentAsync(PostSlugInfo slugInfo)
+        public Task<PostSlugSegment> GetSegmentAsync(PostSlugInfo slug)
         {
-            var date = new DateTime(slugInfo.Year, slugInfo.Month, slugInfo.Day);
-            var spec = new PostSpec(date, slugInfo.Slug);
+            var date = new DateTime(slug.Year, slug.Month, slug.Day);
+            var spec = new PostSpec(date, slug.Slug);
 
             var model = _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostSlugSegment
             {
                 Title = post.Title,
                 PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
-                LastModifyOnUtc = post.LastModifiedUtc,
+                UpdatedTimeUtc = post.LastModifiedUtc,
 
                 Categories = post.PostCategory
                                  .Select(pc => pc.Category.DisplayName)
@@ -185,10 +185,10 @@ namespace Moonglade.Core
             return model;
         }
 
-        public async Task<PostSlug> GetAsync(PostSlugInfo slugInfo)
+        public async Task<PostSlug> GetAsync(PostSlugInfo slug)
         {
-            var date = new DateTime(slugInfo.Year, slugInfo.Month, slugInfo.Day);
-            var spec = new PostSpec(date, slugInfo.Slug);
+            var date = new DateTime(slug.Year, slug.Month, slug.Day);
+            var spec = new PostSpec(date, slug.Slug);
 
             var pid = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Id);
             if (pid == Guid.Empty) return null;
@@ -263,7 +263,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostListEntry>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null)
+        public Task<IReadOnlyList<PostDigest>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -277,7 +277,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostPagingSpec(pageSize, pageIndex, categoryId);
-            return _postRepo.SelectAsync(spec, p => new PostListEntry
+            return _postRepo.SelectAsync(spec, p => new PostDigest
             {
                 Title = p.Title,
                 Slug = p.Slug,
@@ -292,7 +292,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostListEntry>> GetByTagAsync(int tagId, int pageSize, int pageIndex)
+        public Task<IReadOnlyList<PostDigest>> GetByTagAsync(int tagId, int pageSize, int pageIndex)
         {
             if (tagId <= 0)
             {
@@ -311,7 +311,7 @@ namespace Moonglade.Core
             }
 
             var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex),
-                p => new PostListEntry
+                p => new PostDigest
                 {
                     Title = p.Post.Title,
                     Slug = p.Post.Slug,
@@ -328,7 +328,7 @@ namespace Moonglade.Core
             return posts;
         }
 
-        public async Task<PostEntity> CreateAsync(CreatePostRequest request)
+        public async Task<PostEntity> CreateAsync(UpdatePostRequest request)
         {
             var abs = ContentProcessor.GetPostAbstract(
                 request.EditorContent, _settings.PostAbstractWords,
@@ -412,12 +412,12 @@ namespace Moonglade.Core
             return post;
         }
 
-        public async Task<PostEntity> UpdateAsync(EditPostRequest request)
+        public async Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request)
         {
-            var post = await _postRepo.GetAsync(request.Id);
+            var post = await _postRepo.GetAsync(id);
             if (null == post)
             {
-                throw new InvalidOperationException($"Post {request.Id} is not found.");
+                throw new InvalidOperationException($"Post {id} is not found.");
             }
 
             post.CommentEnabled = request.EnableComment;
@@ -504,40 +504,40 @@ namespace Moonglade.Core
                 isNewPublish ? AuditEventId.PostPublished : AuditEventId.PostUpdated,
                 $"Post updated, id: {post.Id}");
 
-            _cache.Remove(CacheDivision.Post, request.Id.ToString());
+            _cache.Remove(CacheDivision.Post, id.ToString());
             return post;
         }
 
-        public async Task RestoreAsync(Guid postId)
+        public async Task RestoreAsync(Guid id)
         {
-            var pp = await _postRepo.GetAsync(postId);
+            var pp = await _postRepo.GetAsync(id);
             if (null == pp) return;
 
             pp.IsDeleted = false;
             await _postRepo.UpdateAsync(pp);
-            await _audit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {postId}");
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.PostRestored, $"Post restored, id: {id}");
 
-            _cache.Remove(CacheDivision.Post, postId.ToString());
+            _cache.Remove(CacheDivision.Post, id.ToString());
         }
 
-        public async Task DeleteAsync(Guid postId, bool softDelete = false)
+        public async Task DeleteAsync(Guid id, bool softDelete = false)
         {
-            var post = await _postRepo.GetAsync(postId);
+            var post = await _postRepo.GetAsync(id);
             if (null == post) return;
 
             if (softDelete)
             {
                 post.IsDeleted = true;
                 await _postRepo.UpdateAsync(post);
-                await _audit.AddAuditEntry(EventType.Content, AuditEventId.PostRecycled, $"Post '{postId}' moved to Recycle Bin.");
+                await _audit.AddAuditEntry(EventType.Content, AuditEventId.PostRecycled, $"Post '{id}' moved to Recycle Bin.");
             }
             else
             {
                 await _postRepo.DeleteAsync(post);
-                await _audit.AddAuditEntry(EventType.Content, AuditEventId.PostDeleted, $"Post '{postId}' deleted from Recycle Bin.");
+                await _audit.AddAuditEntry(EventType.Content, AuditEventId.PostDeleted, $"Post '{id}' deleted from Recycle Bin.");
             }
 
-            _cache.Remove(CacheDivision.Post, postId.ToString());
+            _cache.Remove(CacheDivision.Post, id.ToString());
         }
 
         public async Task PurgeRecycledAsync()

@@ -7,6 +7,11 @@ using System.IO;
 
 namespace Moonglade.Web.SiteIconGenerator
 {
+    public interface ISiteIconGenerator
+    {
+        void GenerateIcons(string sourceImagePath, string directory);
+    }
+
     public class FileSystemIconGenerator : ISiteIconGenerator
     {
         public void GenerateIcons(string sourceImagePath, string directory)

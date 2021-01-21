@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class CreatePostRequest
+    public class UpdatePostRequest
     {
         public string Title { get; set; }
         public string Slug { get; set; }
@@ -18,20 +18,10 @@ namespace Moonglade.Model
 
         public DateTime? PublishDate { get; set; }
 
-        public CreatePostRequest()
+        public UpdatePostRequest()
         {
             Tags = Array.Empty<string>();
             CategoryIds = Array.Empty<Guid>();
-        }
-    }
-
-    public class EditPostRequest : CreatePostRequest
-    {
-        public Guid Id { get; }
-
-        public EditPostRequest(Guid id)
-        {
-            Id = id;
         }
     }
 }

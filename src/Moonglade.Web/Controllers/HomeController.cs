@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
             var posts = await _postService.GetPagedPostsAsync(pagesize, page);
             var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postService.CountVisiblePosts());
 
-            var list = new StaticPagedList<PostListEntry>(posts, page, pagesize, count);
+            var list = new StaticPagedList<PostDigest>(posts, page, pagesize, count);
             return View(list);
         }
 
@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
 
             ViewBag.TitlePrefix = tagResponse.DisplayName;
 
-            var list = new StaticPagedList<PostListEntry>(posts, page, pagesize, count);
+            var list = new StaticPagedList<PostDigest>(posts, page, pagesize, count);
             return View(list);
         }
 
@@ -79,7 +79,7 @@ namespace Moonglade.Web.Controllers
 
             var postList = await _postService.GetPagedPostsAsync(pageSize, page, cat.Id);
 
-            var postsAsIPagedList = new StaticPagedList<PostListEntry>(postList, page, pageSize, postCount);
+            var postsAsIPagedList = new StaticPagedList<PostDigest>(postList, page, pageSize, postCount);
             return View(postsAsIPagedList);
         }
 
@@ -96,7 +96,7 @@ namespace Moonglade.Web.Controllers
         {
             if (year > DateTime.UtcNow.Year) return BadRequest();
 
-            IReadOnlyList<PostListEntry> model;
+            IReadOnlyList<PostDigest> model;
 
             if (month is not null)
             {

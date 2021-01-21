@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Moonglade.Model
 {
-    public class PostListEntry
+    public class PostDigest
     {
         public DateTime PubDateUtc { get; set; }
 

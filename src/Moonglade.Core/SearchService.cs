@@ -20,7 +20,7 @@ namespace Moonglade.Core
 {
     public interface ISearchService
     {
-        Task<IReadOnlyList<PostListEntry>> SearchAsync(string keyword);
+        Task<IReadOnlyList<PostDigest>> SearchAsync(string keyword);
         Task<byte[]> GetOpenSearchStreamArray(string siteRootUrl);
         Task<byte[]> GetSiteMapStreamArrayAsync(string siteRootUrl);
     }
@@ -44,7 +44,7 @@ namespace Moonglade.Core
             _pageRepo = pageRepo;
         }
 
-        public async Task<IReadOnlyList<PostListEntry>> SearchAsync(string keyword)
+        public async Task<IReadOnlyList<PostDigest>> SearchAsync(string keyword)
         {
             if (string.IsNullOrWhiteSpace(keyword))
             {
@@ -53,7 +53,7 @@ namespace Moonglade.Core
 
             var postList = SearchByKeyword(keyword);
 
-            var resultList = await postList.Select(p => new PostListEntry
+            var resultList = await postList.Select(p => new PostDigest
             {
                 Title = p.Title,
                 Slug = p.Slug,

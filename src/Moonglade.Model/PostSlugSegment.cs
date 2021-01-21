@@ -6,7 +6,7 @@ namespace Moonglade.Model
     {
         public string Title { get; set; }
         public DateTime PubDateUtc { get; set; }
-        public DateTime? LastModifyOnUtc { get; set; }
+        public DateTime? UpdatedTimeUtc { get; set; }
         public string[] Categories { get; set; }
         public string[] Tags { get; set; }
     }
