@@ -1,15 +1,15 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Moonglade.Comments;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core.Notification;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Moonglade.Tests.Controllers
+namespace Moonglade.Tests.Web.Controllers
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
