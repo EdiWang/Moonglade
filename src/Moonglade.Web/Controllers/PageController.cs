@@ -119,7 +119,7 @@ namespace Moonglade.Web.Controllers
                     }
                 }
 
-                var req = new EditPageRequest(model.Id)
+                var req = new UpdatePageRequest()
                 {
                     HtmlContent = model.RawHtmlContent,
                     CssContent = model.CssContent,
@@ -132,7 +132,7 @@ namespace Moonglade.Web.Controllers
 
                 var uid = model.Id == Guid.Empty ?
                     await _pageService.CreateAsync(req) :
-                    await _pageService.UpdateAsync(req);
+                    await _pageService.UpdateAsync(model.Id, req);
 
                 _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
 

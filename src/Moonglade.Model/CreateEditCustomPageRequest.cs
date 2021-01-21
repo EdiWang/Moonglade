@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class CreatePageRequest
+    public class UpdatePageRequest
     {
         public string Title { get; set; }
         public string Slug { get; set; }
@@ -11,15 +11,5 @@ namespace Moonglade.Model
         public string CssContent { get; set; }
         public bool HideSidebar { get; set; }
         public bool IsPublished { get; set; }
-    }
-
-    public class EditPageRequest : CreatePageRequest
-    {
-        public Guid Id { get; }
-
-        public EditPageRequest(Guid id)
-        {
-            Id = id;
-        }
     }
 }

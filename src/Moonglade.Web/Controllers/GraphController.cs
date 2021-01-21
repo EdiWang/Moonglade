@@ -85,7 +85,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SegmentPages()
         {
-            var pageSegments = await _pageService.ListSegmentAsync();
+            var pageSegments = await _pageService.ListSegment();
             if (pageSegments is not null)
             {
                 // for security, only allow published pages to be listed to third party API calls

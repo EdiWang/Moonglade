@@ -13,9 +13,9 @@ namespace Moonglade.Core
     {
         Task<Page> GetAsync(Guid pageId);
         Task<Page> GetAsync(string slug);
-        Task<IReadOnlyList<PageSegment>> ListSegmentAsync();
-        Task<Guid> CreateAsync(CreatePageRequest request);
-        Task<Guid> UpdateAsync(EditPageRequest request);
+        Task<IReadOnlyList<PageSegment>> ListSegment();
+        Task<Guid> CreateAsync(UpdatePageRequest request);
+        Task<Guid> UpdateAsync(Guid id, UpdatePageRequest request);
         Task DeleteAsync(Guid pageId);
     }
 
@@ -47,7 +47,7 @@ namespace Moonglade.Core
             return item;
         }
 
-        public Task<IReadOnlyList<PageSegment>> ListSegmentAsync()
+        public Task<IReadOnlyList<PageSegment>> ListSegment()
         {
             return _pageRepo.SelectAsync(page => new PageSegment
             {
@@ -59,7 +59,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Guid> CreateAsync(CreatePageRequest request)
+        public async Task<Guid> CreateAsync(UpdatePageRequest request)
         {
             var uid = Guid.NewGuid();
             var page = new PageEntity
@@ -81,12 +81,12 @@ namespace Moonglade.Core
             return uid;
         }
 
-        public async Task<Guid> UpdateAsync(EditPageRequest request)
+        public async Task<Guid> UpdateAsync(Guid id, UpdatePageRequest request)
         {
-            var page = await _pageRepo.GetAsync(request.Id);
+            var page = await _pageRepo.GetAsync(id);
             if (page is null)
             {
-                throw new InvalidOperationException($"CustomPageEntity with Id '{request.Id}' not found.");
+                throw new InvalidOperationException($"CustomPageEntity with Id '{id}' not found.");
             }
 
             page.Title = request.Title.Trim();
@@ -99,7 +99,7 @@ namespace Moonglade.Core
             page.IsPublished = request.IsPublished;
 
             await _pageRepo.UpdateAsync(page);
-            await _audit.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, $"Page '{request.Id}' updated.");
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, $"Page '{id}' updated.");
 
             return page.Id;
         }
