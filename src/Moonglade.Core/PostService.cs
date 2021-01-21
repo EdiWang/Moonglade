@@ -18,18 +18,18 @@ namespace Moonglade.Core
 {
     public interface IPostService
     {
-        int CountVisiblePosts();
-        int CountByCategoryId(Guid catId);
+        int CountVisible();
+        int CountByCategory(Guid catId);
         int CountByTag(int tagId);
         Task<Post> GetAsync(Guid id);
-        Task<PostSlug> GetDraftAsync(Guid postId);
-        Task<string> GetContentAsync(PostSlugInfo slug);
-        Task<PostSlugSegment> GetSegmentAsync(PostSlugInfo slug);
         Task<PostSlug> GetAsync(PostSlugInfo slug);
-        Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus postStatus);
-        Task<IReadOnlyList<PostSegment>> GetInsightsAsync(PostInsightsType insightsType);
-        Task<IReadOnlyList<PostDigest>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null);
-        Task<IReadOnlyList<PostDigest>> GetByTagAsync(int tagId, int pageSize, int pageIndex);
+        Task<PostSlug> GetDraft(Guid postId);
+        Task<string> GetContent(PostSlugInfo slug);
+        Task<PostMeta> GetMeta(PostSlugInfo slug);
+        Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus);
+        Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
+        Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null);
+        Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
         Task<PostEntity> CreateAsync(UpdatePostRequest request);
         Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request);
         Task RestoreAsync(Guid id);
@@ -79,9 +79,9 @@ namespace Moonglade.Core
             _tagNormalization = tagNormalization;
         }
 
-        public int CountVisiblePosts() => _postRepo.Count(p => p.IsPublished && !p.IsDeleted);
+        public int CountVisible() => _postRepo.Count(p => p.IsPublished && !p.IsDeleted);
 
-        public int CountByCategoryId(Guid catId) =>
+        public int CountByCategory(Guid catId) =>
             _postCatRepo.Count(c => c.CategoryId == catId
                                           && c.Post.IsPublished
                                           && !c.Post.IsDeleted);
@@ -121,10 +121,10 @@ namespace Moonglade.Core
             return post;
         }
 
-        public async Task<PostSlug> GetDraftAsync(Guid postId)
+        public Task<PostSlug> GetDraft(Guid postId)
         {
             var spec = new PostSpec(postId);
-            var postSlugModel = await _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostSlug
+            var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostSlug
             {
                 Title = post.Title,
                 ContentAbstract = post.ContentAbstract,
@@ -153,7 +153,7 @@ namespace Moonglade.Core
             return postSlugModel;
         }
 
-        public Task<string> GetContentAsync(PostSlugInfo slug)
+        public Task<string> GetContent(PostSlugInfo slug)
         {
             var date = new DateTime(slug.Year, slug.Month, slug.Day);
             var spec = new PostSpec(date, slug.Slug);
@@ -162,12 +162,12 @@ namespace Moonglade.Core
                 post => post.PostContent);
         }
 
-        public Task<PostSlugSegment> GetSegmentAsync(PostSlugInfo slug)
+        public Task<PostMeta> GetMeta(PostSlugInfo slug)
         {
             var date = new DateTime(slug.Year, slug.Month, slug.Day);
             var spec = new PostSpec(date, slug.Slug);
 
-            var model = _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostSlugSegment
+            var model = _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostMeta
             {
                 Title = post.Title,
                 PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
@@ -231,7 +231,7 @@ namespace Moonglade.Core
             return psm;
         }
 
-        public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus postStatus)
+        public Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus)
         {
             var spec = new PostSpec(postStatus);
             return _postRepo.SelectAsync(spec, p => new PostSegment
@@ -247,7 +247,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostSegment>> GetInsightsAsync(PostInsightsType insightsType)
+        public Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType)
         {
             var spec = new PostInsightsSpec(insightsType, 10);
             return _postRepo.SelectAsync(spec, p => new PostSegment
@@ -263,7 +263,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostDigest>> GetPagedPostsAsync(int pageSize, int pageIndex, Guid? categoryId = null)
+        public Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null)
         {
             if (pageSize < 1)
             {
@@ -292,7 +292,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<PostDigest>> GetByTagAsync(int tagId, int pageSize, int pageIndex)
+        public Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex)
         {
             if (tagId <= 0)
             {

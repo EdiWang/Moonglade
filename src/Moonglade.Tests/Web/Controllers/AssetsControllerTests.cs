@@ -219,7 +219,7 @@ namespace Moonglade.Tests.Web.Controllers
             var result = ctl.CustomCss();
             Assert.IsInstanceOf(typeof(ContentResult), result);
 
-            var content = (ContentResult) result;
+            var content = (ContentResult)result;
             Assert.AreEqual("text/css", content.ContentType);
         }
     }

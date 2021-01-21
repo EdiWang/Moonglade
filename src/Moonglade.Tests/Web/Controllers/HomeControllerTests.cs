@@ -72,10 +72,10 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task Index_View()
         {
-            _mockPostService.Setup(p => p.GetPagedPostsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
+            _mockPostService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
                 .Returns(Task.FromResult(_fakePosts));
 
-            _mockPostService.Setup(p => p.CountVisiblePosts()).Returns(996);
+            _mockPostService.Setup(p => p.CountVisible()).Returns(996);
 
             _mockBlogCache.Setup(p =>
                     p.GetOrCreate(CacheDivision.General, "postcount", It.IsAny<Func<ICacheEntry, int>>()))
@@ -156,7 +156,7 @@ namespace Moonglade.Tests.Web.Controllers
                 NormalizedName = "fu-bao"
             });
 
-            _mockPostService.Setup(p => p.GetByTagAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+            _mockPostService.Setup(p => p.ListByTag(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(_fakePosts));
 
             _mockBlogCache.Setup(p =>
@@ -222,7 +222,7 @@ namespace Moonglade.Tests.Web.Controllers
                     p.GetOrCreate(CacheDivision.PostCountCategory, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
                 .Returns(35);
 
-            _mockPostService.Setup(p => p.GetPagedPostsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
+            _mockPostService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
                 .Returns(Task.FromResult(_fakePosts));
 
             var ctl = CreateHomeController();

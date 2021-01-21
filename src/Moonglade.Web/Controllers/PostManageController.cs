@@ -43,21 +43,21 @@ namespace Moonglade.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var list = await _postService.ListSegmentAsync(PostStatus.Published);
+            var list = await _postService.ListSegment(PostStatus.Published);
             return View(list);
         }
 
         [Route("draft")]
         public async Task<IActionResult> Draft()
         {
-            var list = await _postService.ListSegmentAsync(PostStatus.Draft);
+            var list = await _postService.ListSegment(PostStatus.Draft);
             return View(list);
         }
 
         [Route("recycle-bin")]
         public async Task<IActionResult> RecycleBin()
         {
-            var list = await _postService.ListSegmentAsync(PostStatus.Deleted);
+            var list = await _postService.ListSegment(PostStatus.Deleted);
             return View(list);
         }
 
@@ -262,8 +262,8 @@ namespace Moonglade.Web.Controllers
         [HttpGet("insights")]
         public async Task<IActionResult> Insights()
         {
-            var topReadList = await _postService.GetInsightsAsync(PostInsightsType.TopRead);
-            var topCommentedList = await _postService.GetInsightsAsync(PostInsightsType.TopCommented);
+            var topReadList = await _postService.ListInsights(PostInsightsType.TopRead);
+            var topCommentedList = await _postService.ListInsights(PostInsightsType.TopCommented);
 
             var vm = new PostInsightsViewModel
             {

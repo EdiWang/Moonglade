@@ -50,11 +50,11 @@ namespace Moonglade.Web.Controllers
             switch (type.ToLower())
             {
                 case "meta":
-                    var meta = await _postService.GetSegmentAsync(slugInfo);
+                    var meta = await _postService.GetMeta(slugInfo);
                     return Json(meta);
 
                 case "content":
-                    var content = await _postService.GetContentAsync(slugInfo);
+                    var content = await _postService.GetContent(slugInfo);
                     return Content(content, "text/plain");
             }
 
@@ -65,7 +65,7 @@ namespace Moonglade.Web.Controllers
         [Route("preview/{postId:guid}")]
         public async Task<IActionResult> Preview(Guid postId)
         {
-            var post = await _postService.GetDraftAsync(postId);
+            var post = await _postService.GetDraft(postId);
             if (post is null) return NotFound();
 
             ViewBag.TitlePrefix = $"{post.Title}";

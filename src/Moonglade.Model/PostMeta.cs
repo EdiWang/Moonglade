@@ -2,7 +2,7 @@
 
 namespace Moonglade.Model
 {
-    public class PostSlugSegment
+    public class PostMeta
     {
         public string Title { get; set; }
         public DateTime PubDateUtc { get; set; }
