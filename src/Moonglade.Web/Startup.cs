@@ -99,7 +99,7 @@ namespace Moonglade.Web
             {
                 options.ContentRootPath = _environment.ContentRootPath;
             });
-            services.AddCommentModerator(_configuration, _environment);
+            services.AddComments(_configuration, _environment);
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSessionBasedCaptcha();
             services.AddBlogServices();

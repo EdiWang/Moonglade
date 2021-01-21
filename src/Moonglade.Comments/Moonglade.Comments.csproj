@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Common.props" />
 
   <PropertyGroup>
@@ -6,14 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Edi.WordFilter" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.ContentModerator" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Moonglade.Auditing\Moonglade.Auditing.csproj" />
-    <ProjectReference Include="..\Moonglade.Caching\Moonglade.Caching.csproj" />
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
-    <ProjectReference Include="..\DateTimeOps\DateTimeOps.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
-    <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
-    <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
     <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
   </ItemGroup>
 

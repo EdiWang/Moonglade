@@ -1,40 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Edi.WordFilter;
 using Microsoft.Azure.CognitiveServices.ContentModerator;
-using Moonglade.Configuration.Abstraction;
 
-namespace Moonglade.Core
+namespace Moonglade.Comments
 {
-    public interface ICommentModerator
+    public class AzureContentModeratorSettings
     {
-        public Task<string> ModerateContent(string input);
-
-        public Task<bool> HasBadWord(params string[] input);
-    }
-
-    public class LocalWordFilterModerator : ICommentModerator
-    {
-        private readonly IMaskWordFilter _filter;
-
-        public LocalWordFilterModerator(IBlogConfig blogConfig)
-        {
-            var sw = new StringWordSource(blogConfig.ContentSettings.DisharmonyWords);
-            _filter = new MaskWordFilter(sw);
-        }
-
-        public Task<string> ModerateContent(string input)
-        {
-            return Task.FromResult(_filter.FilterContent(input));
-        }
-
-        public Task<bool> HasBadWord(params string[] input)
-        {
-            return Task.FromResult(input.Any(s => _filter.ContainsAnyWord(s)));
-        }
+        public string OcpApimSubscriptionKey { get; set; }
+        public string Endpoint { get; set; }
     }
 
     public class AzureContentModerator : ICommentModerator, IDisposable
@@ -93,18 +68,5 @@ namespace Moonglade.Core
         {
             _client?.Dispose();
         }
-    }
-
-    public class CommentModeratorSettings
-    {
-        public string Provider { get; set; }
-
-        public AzureContentModeratorSettings AzureContentModeratorSettings { get; set; }
-    }
-
-    public class AzureContentModeratorSettings
-    {
-        public string OcpApimSubscriptionKey { get; set; }
-        public string Endpoint { get; set; }
     }
 }

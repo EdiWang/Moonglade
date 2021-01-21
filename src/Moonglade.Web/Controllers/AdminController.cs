@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
+using Moonglade.Comments;
 using Moonglade.Core;
 using Moonglade.Model;
 using Moonglade.Pingback;

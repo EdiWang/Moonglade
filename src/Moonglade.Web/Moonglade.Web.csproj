@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Comments\Moonglade.Comments.csproj" />
     <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
     <ProjectReference Include="..\Moonglade.DataPorting\Moonglade.DataPorting.csproj" />
     <ProjectReference Include="..\Moonglade.Foaf\Moonglade.Foaf.csproj" />

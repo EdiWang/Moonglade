@@ -11,7 +11,7 @@ using Moonglade.Data.Spec;
 using Moonglade.Model;
 using Moonglade.Utils;
 
-namespace Moonglade.Core
+namespace Moonglade.Comments
 {
     public interface ICommentService
     {
