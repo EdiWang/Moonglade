@@ -49,6 +49,19 @@ namespace Moonglade.Tests.Web.Controllers
         }
 
         [Test]
+        public async Task SetApprovalStatus_ValidId()
+        {
+            _mockCommentService.Setup(p => p.ToggleApprovalAsync(It.IsAny<Guid[]>()));
+            var id = Guid.NewGuid();
+
+            var ctl = CreateCommentController();
+            var result = await ctl.SetApprovalStatus(id);
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.AreEqual(id, ((OkObjectResult)result).Value);
+        }
+
+        [Test]
         public async Task Delete_NoIds()
         {
             var ctl = CreateCommentController();
