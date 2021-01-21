@@ -646,14 +646,17 @@ namespace Moonglade.Web.Controllers
             switch (exportResult.ExportFormat)
             {
                 case ExportFormat.SingleJsonFile:
-                    var bytes = Encoding.UTF8.GetBytes(exportResult.JsonContent);
+                    var bytes = Encoding.UTF8.GetBytes(exportResult.Content);
 
                     return new FileContentResult(bytes, "application/octet-stream")
                     {
                         FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
                     };
+                case ExportFormat.SingleCSVFile:
+                    Response.Headers.Add("Content-Disposition", $"attachment;filename={Path.GetFileName(exportResult.FilePath)}");
+                    return PhysicalFile(exportResult.FilePath, "text/csv", Path.GetFileName(exportResult.FilePath));
                 case ExportFormat.ZippedJsonFiles:
-                    return PhysicalFile(exportResult.ZipFilePath, "application/zip", Path.GetFileName(exportResult.ZipFilePath));
+                    return PhysicalFile(exportResult.FilePath, "application/zip", Path.GetFileName(exportResult.FilePath));
                 default:
                     return BadRequest(ModelState);
             }
