@@ -24,7 +24,6 @@ namespace Moonglade.Web.Controllers
         private readonly ICommentService _commentService;
         private readonly IBlogNotificationClient _notificationClient;
         private readonly IBlogConfig _blogConfig;
-        private bool DNT => (bool)HttpContext.Items["DNT"];
 
         #endregion
 
@@ -69,7 +68,7 @@ namespace Moonglade.Web.Controllers
                 Username = model.Username,
                 Content = model.Content,
                 Email = model.Email,
-                IpAddress = DNT ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
+                IpAddress = (bool)HttpContext.Items["DNT"] ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
             });
 
             if (response is null)
