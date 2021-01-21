@@ -7,7 +7,7 @@
       "destination": "wwwroot/lib/tinymce"
     },
     {
-      "library": "monaco-editor@0.21.2",
+      "library": "monaco-editor@0.21.3",
       "destination": "wwwroot/lib/monaco-editor/",
       "files": [
         "min/vs/loader.js",
