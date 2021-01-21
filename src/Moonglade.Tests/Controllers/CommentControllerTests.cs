@@ -24,7 +24,7 @@ namespace Moonglade.Tests.Controllers
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockCommentService = _mockRepository.Create<ICommentService>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -46,6 +46,18 @@ namespace Moonglade.Tests.Controllers
             var result = await ctl.Delete(Array.Empty<Guid>());
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Delete_ValidIds()
+        {
+            var ids = new[] { Guid.NewGuid(), Guid.NewGuid() };
+
+            var ctl = CreateCommentController();
+            var result = await ctl.Delete(ids);
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.AreEqual(ids, ((OkObjectResult)result).Value);
         }
     }
 }
