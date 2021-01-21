@@ -4,8 +4,8 @@
     {
         public ExportFormat ExportFormat { get; set; }
 
-        public string ZipFilePath { get; set; }
+        public string FilePath { get; set; }
 
-        public string JsonContent { get; set; }
+        public string Content { get; set; }
     }
 }

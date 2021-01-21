@@ -23,7 +23,7 @@ namespace Moonglade.DataPorting
             return new()
             {
                 ExportFormat = ExportFormat.SingleJsonFile,
-                JsonContent = json
+                Content = json
             };
         }
     }

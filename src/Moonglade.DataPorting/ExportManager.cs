@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Model;
 
 namespace Moonglade.DataPorting
 {
@@ -33,12 +35,30 @@ namespace Moonglade.DataPorting
             _postRepository = postRepository;
         }
 
+        public static string CreateExportDirectory(string subDirName)
+        {
+            var dataDir = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
+            if (dataDir is not null)
+            {
+                var path = Path.Join(dataDir, "export", subDirName);
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path);
+                }
+
+                Directory.CreateDirectory(path);
+                return Path.Join(dataDir, "export");
+            }
+
+            return null;
+        }
+
         public async Task<ExportResult> ExportData(ExportDataType dataType)
         {
             switch (dataType)
             {
                 case ExportDataType.Tags:
-                    var tagExp = new SingeJsonExporter<TagEntity>(_tagRepository);
+                    var tagExp = new CSVExporter<TagEntity>(_tagRepository, "moonglade-tags");
                     var tagExportData = await tagExp.ExportData(p => new
                     {
                         NormalizedTagName = p.NormalizedName,

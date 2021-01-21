@@ -32,7 +32,7 @@ namespace Moonglade.DataPorting
         private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list)
         {
             var tempId = Guid.NewGuid().ToString();
-            string exportDirectory = CreateExportDirectory(tempId);
+            string exportDirectory = ExportManager.CreateExportDirectory(tempId);
             foreach (var item in list)
             {
                 var json = JsonConvert.SerializeObject(item, Formatting.Indented); // JsonSerializer.Serialize(item);
@@ -45,7 +45,7 @@ namespace Moonglade.DataPorting
             return new()
             {
                 ExportFormat = ExportFormat.ZippedJsonFiles,
-                ZipFilePath = distPath
+                FilePath = distPath
             };
         }
 
@@ -53,24 +53,6 @@ namespace Moonglade.DataPorting
         {
             var path = Path.Join(directory, filename);
             await File.WriteAllTextAsync(path, json, Encoding.UTF8);
-        }
-
-        private static string CreateExportDirectory(string subDirName)
-        {
-            var dataDir = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
-            if (dataDir is not null)
-            {
-                var path = Path.Join(dataDir, "export", subDirName);
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path);
-                }
-
-                Directory.CreateDirectory(path);
-                return Path.Join(dataDir, "export");
-            }
-
-            return null;
         }
     }
 }
