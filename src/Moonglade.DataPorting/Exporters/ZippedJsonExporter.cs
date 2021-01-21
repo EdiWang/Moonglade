@@ -6,10 +6,9 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Model;
 using Newtonsoft.Json;
 
-namespace Moonglade.DataPorting
+namespace Moonglade.DataPorting.Exporters
 {
     public class ZippedJsonExporter<T> : IExporter<T>
     {
