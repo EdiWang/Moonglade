@@ -7,10 +7,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Model.Settings;
-using Moonglade.Pingback;
 using Moonglade.Utils;
 
-namespace Moonglade.Core.Notification
+namespace Moonglade.Notification.Client
 {
     public class NotificationClient : IBlogNotificationClient
     {
@@ -93,19 +92,11 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task NotifyPingbackAsync(PingbackRecord model)
+        public async Task NotifyPingbackAsync(PingPayload payload)
         {
             try
             {
-                var req = new PingPayload(
-                    model.TargetPostTitle,
-                    model.PingTimeUtc,
-                    model.Domain,
-                    model.SourceIp,
-                    model.SourceUrl,
-                    model.SourceTitle);
-
-                await SendAsync(new NotificationRequest<PingPayload>(MailMesageTypes.BeingPinged, req));
+                await SendAsync(new NotificationRequest<PingPayload>(MailMesageTypes.BeingPinged, payload));
             }
             catch (Exception e)
             {

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moonglade.Comments;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Core.Notification;
+using Moonglade.Notification.Client;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
 

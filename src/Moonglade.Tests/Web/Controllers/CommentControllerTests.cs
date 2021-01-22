@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Core.Notification;
+using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;

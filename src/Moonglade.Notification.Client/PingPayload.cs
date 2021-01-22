@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Moonglade.Core.Notification
+namespace Moonglade.Notification.Client
 {
-    internal class PingPayload
+    public class PingPayload
     {
         public PingPayload(
             string targetPostTitle, DateTime pingTimeUtc, string domain, string sourceIp, string sourceUrl, string sourceTitle)

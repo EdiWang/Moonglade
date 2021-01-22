@@ -2,7 +2,7 @@
 using System.Text;
 using Moonglade.Configuration;
 
-namespace Moonglade.Core.Notification
+namespace Moonglade.Notification.Client
 {
     internal class NotificationContent<T> : StringContent where T : class
     {

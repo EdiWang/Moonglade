@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Core.Notification
+﻿namespace Moonglade.Notification.Client
 {
     public class CommentReplyPayload
     {

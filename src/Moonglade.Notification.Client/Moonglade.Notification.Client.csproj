@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+    <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
+    <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

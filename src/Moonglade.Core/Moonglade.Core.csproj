@@ -12,7 +12,6 @@
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
     <ProjectReference Include="..\DateTimeOps\DateTimeOps.csproj" />
     <ProjectReference Include="..\Moonglade.Model\Moonglade.Model.csproj" />
-    <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
     <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
     <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
   </ItemGroup>

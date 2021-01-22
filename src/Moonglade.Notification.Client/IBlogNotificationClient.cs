@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Moonglade.Pingback;
 
-namespace Moonglade.Core.Notification
+namespace Moonglade.Notification.Client
 {
     public interface IBlogNotificationClient
     {
@@ -11,6 +10,6 @@ namespace Moonglade.Core.Notification
 
         Task NotifyCommentReplyAsync(CommentReplyPayload payload);
 
-        Task NotifyPingbackAsync(PingbackRecord model);
+        Task NotifyPingbackAsync(PingPayload model);
     }
 }
