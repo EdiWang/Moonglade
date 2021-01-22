@@ -24,6 +24,7 @@ using Moonglade.ImageStorage;
 using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Utils;
+using Moonglade.Web.Models;
 using Moonglade.Web.SiteIconGenerator;
 using NUglify;
 

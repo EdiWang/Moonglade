@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Moonglade.Model.Settings;
 
-namespace Moonglade.Model
+namespace Moonglade.Web.Models
 {
     // Credits: https://github.com/Anduin2017/Blog
     public class ManifestModel
