@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Moonglade.Core;
+using Moonglade.Utils;
 using NUnit.Framework;
 
 namespace Moonglade.Tests.Core
@@ -42,7 +43,7 @@ namespace Moonglade.Tests.Core
         [TestCase("blob:https://996.icu/fubao", ExpectedResult = "#")]
         public string SterilizeMenuLink(string rawUrl)
         {
-            return MenuService.SterilizeLink(rawUrl);
+            return Helper.SterilizeLink(rawUrl);
         }
     }
 }

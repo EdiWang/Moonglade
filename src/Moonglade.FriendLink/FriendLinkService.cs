@@ -5,6 +5,7 @@ using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
+using Moonglade.Utils;
 
 namespace Moonglade.FriendLink
 {
@@ -60,14 +61,14 @@ namespace Moonglade.FriendLink
                 throw new InvalidOperationException($"{nameof(linkUrl)} is not a valid url.");
             }
 
-            var fdLink = new FriendLinkEntity
+            var link = new FriendLinkEntity
             {
                 Id = Guid.NewGuid(),
-                LinkUrl = linkUrl,
+                LinkUrl = Helper.SterilizeLink(linkUrl),
                 Title = title
             };
 
-            await _friendlinkRepo.AddAsync(fdLink);
+            await _friendlinkRepo.AddAsync(link);
             await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
         }
 
@@ -84,13 +85,13 @@ namespace Moonglade.FriendLink
                 throw new InvalidOperationException($"{nameof(newLinkUrl)} is not a valid url.");
             }
 
-            var fdlink = await _friendlinkRepo.GetAsync(id);
-            if (fdlink is not null)
+            var link = await _friendlinkRepo.GetAsync(id);
+            if (link is not null)
             {
-                fdlink.Title = newTitle;
-                fdlink.LinkUrl = newLinkUrl;
+                link.Title = newTitle;
+                link.LinkUrl = Helper.SterilizeLink(newLinkUrl);
 
-                await _friendlinkRepo.UpdateAsync(fdlink);
+                await _friendlinkRepo.UpdateAsync(link);
                 await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
             }
         }
