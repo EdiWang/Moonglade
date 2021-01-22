@@ -2,7 +2,9 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Moonglade.Comments;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core.Notification;
 using Moonglade.Web.Controllers;
@@ -80,6 +82,39 @@ namespace Moonglade.Tests.Web.Controllers
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.AreEqual(ids, ((OkObjectResult)result).Value);
+        }
+
+        [Test]
+        public async Task Reply_EmptyId()
+        {
+            var request = new ReplyRequest
+            {
+                CommentId = Guid.Empty
+            };
+
+            var ctl = CreateCommentController();
+            var result = await ctl.Reply(request, null);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Reply_CommentDisabled()
+        {
+            var request = new ReplyRequest
+            {
+                CommentId = Guid.NewGuid()
+            };
+
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
+            {
+                EnableComments = false
+            });
+
+            var ctl = CreateCommentController();
+            var result = await ctl.Reply(request, null);
+
+            Assert.IsInstanceOf<ForbidResult>(result);
         }
     }
 }
