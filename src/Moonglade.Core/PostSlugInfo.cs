@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Model
+﻿namespace Moonglade.Core
 {
     public struct PostSlugInfo
     {
