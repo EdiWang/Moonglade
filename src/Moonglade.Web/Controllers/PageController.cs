@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Core;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;

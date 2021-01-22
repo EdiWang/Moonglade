@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Moonglade.Model;
+using Moonglade.Core;
 
 namespace Moonglade.Web.Models
 {

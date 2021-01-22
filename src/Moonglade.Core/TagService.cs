@@ -8,7 +8,6 @@ using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 
 namespace Moonglade.Core

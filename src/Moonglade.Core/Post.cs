@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Moonglade.Model
+namespace Moonglade.Core
 {
     public class Post
     {

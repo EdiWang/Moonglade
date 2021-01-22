@@ -8,7 +8,6 @@ using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Model;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
