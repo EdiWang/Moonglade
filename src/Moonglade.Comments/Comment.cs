@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Moonglade.Model
+namespace Moonglade.Comments
 {
     public class Comment
     {
