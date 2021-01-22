@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Moonglade.Model
+namespace Moonglade.FriendLink
 {
-    public class FriendLink
+    public class Link
     {
         public Guid Id { get; set; }
 

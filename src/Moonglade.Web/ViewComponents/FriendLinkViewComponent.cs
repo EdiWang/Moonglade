@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moonglade.Core;
-using Moonglade.Model;
+using Moonglade.FriendLink;
 
 namespace Moonglade.Web.ViewComponents
 {
@@ -25,7 +24,7 @@ namespace Moonglade.Web.ViewComponents
             try
             {
                 var links = await _friendLinkService.GetAllAsync();
-                return View(links ?? new List<FriendLink>());
+                return View(links ?? new List<FriendLink.Link>());
             }
             catch (Exception e)
             {

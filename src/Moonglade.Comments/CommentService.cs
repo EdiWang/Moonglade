@@ -8,7 +8,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Model;
 using Moonglade.Utils;
 
 namespace Moonglade.Comments

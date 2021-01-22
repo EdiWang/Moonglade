@@ -20,6 +20,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Core.Notification;
 using Moonglade.DataPorting;
+using Moonglade.FriendLink;
 using Moonglade.Model.Settings;
 using Moonglade.Setup;
 using Moonglade.Utils;

@@ -1,11 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Moonglade.Comments;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Moonglade.Configuration;
 
 namespace Moonglade.Tests
 {

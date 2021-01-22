@@ -2,9 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.Auditing;
-using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.FriendLink;
 using Moq;
 using NUnit.Framework;
 

@@ -5,14 +5,13 @@ using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Model;
 
-namespace Moonglade.Core
+namespace Moonglade.FriendLink
 {
     public interface IFriendLinkService
     {
-        Task<FriendLink> GetAsync(Guid id);
-        Task<IReadOnlyList<FriendLink>> GetAllAsync();
+        Task<Link> GetAsync(Guid id);
+        Task<IReadOnlyList<Link>> GetAllAsync();
         Task AddAsync(string title, string linkUrl);
         Task DeleteAsync(Guid id);
         Task UpdateAsync(Guid id, string newTitle, string newLinkUrl);
@@ -31,10 +30,10 @@ namespace Moonglade.Core
             _audit = audit;
         }
 
-        public Task<FriendLink> GetAsync(Guid id)
+        public Task<Link> GetAsync(Guid id)
         {
             var item = _friendlinkRepo.SelectFirstOrDefaultAsync(
-                new FriendLinkSpec(id), f => new FriendLink
+                new FriendLinkSpec(id), f => new Link
                 {
                     Id = f.Id,
                     LinkUrl = f.LinkUrl,
@@ -43,9 +42,9 @@ namespace Moonglade.Core
             return item;
         }
 
-        public Task<IReadOnlyList<FriendLink>> GetAllAsync()
+        public Task<IReadOnlyList<Link>> GetAllAsync()
         {
-            var item = _friendlinkRepo.SelectAsync(f => new FriendLink
+            var item = _friendlinkRepo.SelectAsync(f => new Link
             {
                 Id = f.Id,
                 LinkUrl = f.LinkUrl,

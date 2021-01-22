@@ -18,6 +18,7 @@ using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.Foaf;
+using Moonglade.FriendLink;
 using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
@@ -89,6 +90,7 @@ namespace Moonglade.Web.Configuration
                 }
             }
 
+            services.AddScoped<IFriendLinkService, FriendLinkService>();
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<ISiteIconGenerator, FileSystemIconGenerator>();
             services.AddScoped<IFoafWriter, FoafWriter>();

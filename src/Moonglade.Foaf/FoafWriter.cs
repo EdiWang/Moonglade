@@ -5,14 +5,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Moonglade.Model;
 using Moonglade.Utils;
 
 namespace Moonglade.Foaf
 {
     public interface IFoafWriter
     {
-        Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink> friends);
+        Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink.Link> friends);
     }
 
     /// <summary>
@@ -30,7 +29,7 @@ namespace Moonglade.Foaf
 
         public static string ContentType => "application/rdf+xml";
 
-        public async Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink> friends)
+        public async Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink.Link> friends)
         {
             var sw = new StringWriterWithEncoding(Encoding.UTF8);
             var writer = await GetWriter(sw);
