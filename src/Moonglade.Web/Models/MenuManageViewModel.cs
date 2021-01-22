@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
-using Moonglade.Model;
 
 namespace Moonglade.Web.Models
 {

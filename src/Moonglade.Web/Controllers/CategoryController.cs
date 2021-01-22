@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
-using Moonglade.Model;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers

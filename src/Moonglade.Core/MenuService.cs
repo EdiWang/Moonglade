@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Model;
 using Moonglade.Utils;
 
 namespace Moonglade.Core

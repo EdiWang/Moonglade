@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Moonglade.Core;
 using Moonglade.Utils;
 using NUnit.Framework;
 

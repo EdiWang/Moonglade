@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Model;
 using X.PagedList;
 
 namespace Moonglade.Web.Controllers
