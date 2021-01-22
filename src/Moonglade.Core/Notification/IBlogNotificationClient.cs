@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Moonglade.Model;
+﻿using System.Threading.Tasks;
 using Moonglade.Pingback;
 
 namespace Moonglade.Core.Notification
@@ -9,9 +7,9 @@ namespace Moonglade.Core.Notification
     {
         Task TestNotificationAsync();
 
-        Task NotifyCommentAsync(CommentDetailedItem model, Func<string, string> contentFormat);
+        Task NotifyCommentAsync(CommentPayload payload);
 
-        Task NotifyCommentReplyAsync(CommentReply model, string postLink);
+        Task NotifyCommentReplyAsync(CommentReplyPayload payload);
 
         Task NotifyPingbackAsync(PingbackRecord model);
     }

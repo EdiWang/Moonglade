@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Pingback;
 using Moonglade.Utils;
@@ -47,12 +46,6 @@ namespace Moonglade.Core.Notification
 
         public async Task TestNotificationAsync()
         {
-            if (!_isEnabled)
-            {
-                _logger.LogWarning($"Skipped {nameof(TestNotificationAsync)} because Email sending is disabled.");
-                return;
-            }
-
             try
             {
                 var req = BuildRequest(() =>
@@ -76,27 +69,11 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task NotifyCommentAsync(CommentDetailedItem model, Func<string, string> contentFormat)
+        public async Task NotifyCommentAsync(CommentPayload payload)
         {
-            if (!_isEnabled)
-            {
-                _logger.LogWarning($"Skipped {nameof(NotifyCommentAsync)} because Email sending is disabled.");
-                return;
-            }
-
             try
             {
-                var req = new CommentPayload(
-                    model.Username,
-                    model.Email,
-                    model.IpAddress,
-                    model.PostTitle,
-                    contentFormat(model.CommentContent),
-                    model.CreateTimeUtc
-                );
-
-                await SendAsync(
-                    new NotificationRequest<CommentPayload>(MailMesageTypes.NewCommentNotification, req));
+                await SendAsync(new NotificationRequest<CommentPayload>(MailMesageTypes.NewCommentNotification, payload));
             }
             catch (Exception e)
             {
@@ -104,25 +81,11 @@ namespace Moonglade.Core.Notification
             }
         }
 
-        public async Task NotifyCommentReplyAsync(CommentReply model, string postLink)
+        public async Task NotifyCommentReplyAsync(CommentReplyPayload payload)
         {
-            if (!_isEnabled)
-            {
-                _logger.LogWarning($"Skipped {nameof(NotifyCommentReplyAsync)} because Email sending is disabled.");
-                return;
-            }
-
             try
             {
-                var req = new CommentReplyPayload(
-                    model.Email,
-                    model.CommentContent,
-                    model.Title,
-                    model.ReplyContentHtml,
-                    postLink);
-
-                await SendAsync(
-                    new NotificationRequest<CommentReplyPayload>(MailMesageTypes.AdminReplyNotification, req));
+                await SendAsync(new NotificationRequest<CommentReplyPayload>(MailMesageTypes.AdminReplyNotification, payload));
             }
             catch (Exception e)
             {
@@ -132,12 +95,6 @@ namespace Moonglade.Core.Notification
 
         public async Task NotifyPingbackAsync(PingbackRecord model)
         {
-            if (!_isEnabled)
-            {
-                _logger.LogWarning($"Skipped {nameof(NotifyPingbackAsync)} because Email sending is disabled.");
-                return;
-            }
-
             try
             {
                 var req = new PingPayload(
@@ -158,6 +115,12 @@ namespace Moonglade.Core.Notification
 
         private async Task SendAsync<T>(NotificationRequest<T> request, [CallerMemberName] string callerMemberName = "") where T : class
         {
+            if (!_isEnabled)
+            {
+                _logger.LogWarning($"Skipped '{callerMemberName}' because Email sending is disabled.");
+                return;
+            }
+
             var req = BuildRequest(() => request);
             var response = await _httpClient.SendAsync(req);
             if (!response.IsSuccessStatusCode)

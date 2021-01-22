@@ -81,8 +81,16 @@ namespace Moonglade.Web.Controllers
             {
                 _ = Task.Run(async () =>
                 {
-                    await _notificationClient.NotifyCommentAsync(response,
-                        s => ContentProcessor.MarkdownToContent(s, ContentProcessor.MarkdownConvertType.Html));
+                    var payload = new CommentPayload(
+                        response.Username,
+                        response.Email,
+                        response.IpAddress,
+                        response.PostTitle,
+                        ContentProcessor.MarkdownToContent(response.CommentContent, ContentProcessor.MarkdownConvertType.Html),
+                        response.CreateTimeUtc
+                    );
+
+                    await _notificationClient.NotifyCommentAsync(payload);
                 });
             }
 
@@ -141,7 +149,14 @@ namespace Moonglade.Web.Controllers
                 var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
                 _ = Task.Run(async () =>
                 {
-                    await _notificationClient.NotifyCommentReplyAsync(reply, postLink);
+                    var payload = new CommentReplyPayload(
+                        reply.Email,
+                        reply.CommentContent,
+                        reply.Title,
+                        reply.ReplyContentHtml,
+                        postLink);
+
+                    await _notificationClient.NotifyCommentReplyAsync(payload);
                 });
             }
 
