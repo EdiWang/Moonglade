@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Moonglade.Core;
+using Moonglade.Pages;
 using NUnit.Framework;
 
 namespace Moonglade.Tests.Core

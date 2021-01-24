@@ -10,6 +10,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
+using Moonglade.Pages;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
 

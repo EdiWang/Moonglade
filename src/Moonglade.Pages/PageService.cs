@@ -6,7 +6,7 @@ using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Core
+namespace Moonglade.Pages
 {
     public interface IPageService
     {

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Pages;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;
