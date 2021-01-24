@@ -79,7 +79,7 @@ namespace Moonglade.Tests.Web.Controllers
             var uid = Guid.NewGuid();
 
             var reqMock = new Mock<HttpRequest>();
-            reqMock.SetupGet(r => r.Cookies[CookieNames.Hit.ToString()]).Returns(uid.ToString());
+            reqMock.SetupGet(r => r.Cookies["Hit"]).Returns(uid.ToString());
 
             var httpContextMock = new Mock<HttpContext>();
             httpContextMock.Setup(c => c.Request).Returns(reqMock.Object);
@@ -116,7 +116,7 @@ namespace Moonglade.Tests.Web.Controllers
             var uid = Guid.NewGuid();
 
             var reqMock = new Mock<HttpRequest>();
-            reqMock.SetupGet(r => r.Cookies[CookieNames.Liked.ToString()]).Returns(uid.ToString());
+            reqMock.SetupGet(r => r.Cookies["Liked"]).Returns(uid.ToString());
 
             var httpContextMock = new Mock<HttpContext>();
             httpContextMock.Setup(c => c.Request).Returns(reqMock.Object);

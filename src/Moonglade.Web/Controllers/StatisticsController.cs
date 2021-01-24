@@ -11,6 +11,12 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class StatisticsController : ControllerBase
     {
+        private enum CookieNames
+        {
+            Hit,
+            Liked
+        }
+
         private readonly IBlogStatistics _statistics;
         private bool DNT => (bool)HttpContext.Items["DNT"];
 
