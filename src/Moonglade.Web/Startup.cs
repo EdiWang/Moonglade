@@ -104,7 +104,7 @@ namespace Moonglade.Web
             services.AddComments(_configuration, _environment);
             services.AddNotification(_logger);
             services.AddPingback();
-            services.AddDataStorage(_configuration.GetConnectionString(Constants.DbConnectionName));
+            services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));
 
             services.AddAzureAppConfiguration();
         }

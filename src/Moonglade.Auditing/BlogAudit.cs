@@ -20,6 +20,8 @@ namespace Moonglade.Auditing
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IFeatureManager _featureManager;
 
+        private string _dbName = "DbConnectionName";
+
         public BlogAudit(
             ILogger<BlogAudit> logger,
             IConfiguration configuration,
@@ -54,7 +56,7 @@ namespace Moonglade.Auditing
 
                 var auditEntry = new AuditEntry(eventType, auditEventId, username, ipv4, machineName, message);
 
-                var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+                var connStr = _configuration.GetConnectionString(_dbName);
                 await using var conn = new SqlConnection(connStr);
 
                 var sql = @"INSERT INTO AuditLog([EventId],[EventType],[EventTimeUtc],[WebUsername],[IpAddressV4],[MachineName],[Message])
@@ -71,7 +73,7 @@ namespace Moonglade.Auditing
         public async Task<(IReadOnlyList<AuditEntry> Entries, int Count)> GetAuditEntries(
             int skip, int take, EventType? eventType = null, AuditEventId? eventId = null)
         {
-            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+            var connStr = _configuration.GetConnectionString(_dbName);
             await using var conn = new SqlConnection(connStr);
 
             var sql = @"SELECT al.EventId, 
@@ -115,7 +117,7 @@ namespace Moonglade.Auditing
         {
             if (!await IsAuditLogEnabled()) return;
 
-            var connStr = _configuration.GetConnectionString(Constants.DbConnectionName);
+            var connStr = _configuration.GetConnectionString(_dbName);
             await using var conn = new SqlConnection(connStr);
 
             var sql = "DELETE FROM AuditLog";
