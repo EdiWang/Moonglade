@@ -55,27 +55,20 @@ namespace Moonglade.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBlogConfiguration(_appSettings);
-            services.Configure<List<BlogTheme>>(_configuration.GetSection("Themes"));
-            services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
-            services.Configure<List<TagNormalization>>(_configuration.GetSection("TagNormalization"));
-
-            services.AddBlogCache();
-
+            // ASP.NET Setup
             services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
+            services.AddApplicationInsightsTelemetry();
+            services.AddAzureAppConfiguration();
 
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.Cookie.HttpOnly = true;
             });
-
-            services.AddApplicationInsightsTelemetry();
-            services.AddBlogAuthenticaton(_configuration);
-
+            services.AddSessionBasedCaptcha();
+            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-            services.AddMvc(options =>
-                            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+            services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                     .AddViewLocalization()
                     .AddDataAnnotationsLocalization();
 
@@ -94,19 +87,20 @@ namespace Moonglade.Web
                 options.HeaderName = "XSRF-TOKEN";
             });
 
+            // Blog Services
+            services.AddBlogServices();
+            services.Configure<List<BlogTheme>>(_configuration.GetSection("Themes"));
+            services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
+            services.Configure<List<TagNormalization>>(_configuration.GetSection("TagNormalization"));
+            services.AddBlogConfiguration(_appSettings);
+            services.AddBlogAuthenticaton(_configuration);
+            services.AddComments(_configuration);
+            services.AddNotification(_logger);
+            services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));
             services.AddImageStorage(_configuration, options =>
             {
                 options.ContentRootPath = _environment.ContentRootPath;
             });
-            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSessionBasedCaptcha();
-            services.AddBlogServices();
-            services.AddComments(_configuration, _environment);
-            services.AddNotification(_logger);
-            services.AddPingback();
-            services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));
-
-            services.AddAzureAppConfiguration();
         }
 
         public void Configure(

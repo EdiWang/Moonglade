@@ -20,6 +20,7 @@ using Moonglade.DataPorting;
 using Moonglade.Foaf;
 using Moonglade.FriendLink;
 using Moonglade.Notification.Client;
+using Moonglade.Pages;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
 using Moonglade.Web.SiteIconGenerator;
@@ -54,21 +55,12 @@ namespace Moonglade.Web.Configuration
                     }));
         }
 
-        public static void AddBlogCache(this IServiceCollection services)
-        {
-            services.AddMemoryCache();
-            services.AddSingleton<IBlogCache, BlogMemoryCache>();
-            services.AddScoped<ClearSubscriptionCache>();
-            services.AddScoped<ClearSiteMapCache>();
-        }
-
         public static void AddNotification(this IServiceCollection services, ILogger logger)
         {
             services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
-                .AddTransientHttpErrorPolicy(builder =>
-                    builder.WaitAndRetryAsync(3, retryCount =>
-                            TimeSpan.FromSeconds(Math.Pow(2, retryCount)),
-                        (result, span, retryCount, _) =>
+                    .AddTransientHttpErrorPolicy(builder =>
+                        builder.WaitAndRetryAsync(3,
+                            retryCount => TimeSpan.FromSeconds(Math.Pow(2, retryCount)), (result, span, retryCount, _) =>
                         {
                             logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
                         }));
@@ -90,6 +82,7 @@ namespace Moonglade.Web.Configuration
                 }
             }
 
+            services.AddScoped<IPageService, PageService>();
             services.AddScoped<IFriendLinkService, FriendLinkService>();
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<ISiteIconGenerator, FileSystemIconGenerator>();
@@ -98,6 +91,17 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<IBlogStatistics, BlogStatistics>();
             services.AddScoped<ISyndicationService, SyndicationService>();
             services.AddScoped<IMemoryStreamOpmlWriter, MemoryStreamOpmlWriter>();
+
+            services.AddBlogCache();
+            services.AddPingback();
+        }
+
+        private static void AddBlogCache(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddSingleton<IBlogCache, BlogMemoryCache>();
+            services.AddScoped<ClearSubscriptionCache>();
+            services.AddScoped<ClearSiteMapCache>();
         }
     }
 }

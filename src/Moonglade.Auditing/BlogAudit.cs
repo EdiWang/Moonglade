@@ -18,7 +18,7 @@ namespace Moonglade.Auditing
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IFeatureManager _featureManager;
 
-        private readonly string _dbName = "DbConnectionName";
+        private readonly string _dbName = "MoongladeDatabase";
 
         public BlogAudit(
             ILogger<BlogAudit> logger,

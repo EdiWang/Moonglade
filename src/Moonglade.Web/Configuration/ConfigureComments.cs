@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Comments;
@@ -8,8 +7,7 @@ namespace Moonglade.Web.Configuration
 {
     public static class ConfigureComments
     {
-        public static void AddComments(
-            this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+        public static void AddComments(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ICommentService, CommentService>();
 
