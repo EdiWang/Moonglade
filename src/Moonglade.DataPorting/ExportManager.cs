@@ -17,6 +17,8 @@ namespace Moonglade.DataPorting
         private readonly IRepository<PageEntity> _pageRepository;
         private readonly IRepository<PostEntity> _postRepository;
 
+        private readonly string _dataDir = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
+
         public ExportManager(
             IRepository<TagEntity> tagRepository,
             IRepository<CategoryEntity> catRepository,
@@ -31,22 +33,18 @@ namespace Moonglade.DataPorting
             _postRepository = postRepository;
         }
 
-        public static string CreateExportDirectory(string subDirName)
+        public static string CreateExportDirectory(string directory, string subDirName)
         {
-            var dataDir = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
-            if (dataDir is not null)
-            {
-                var path = Path.Join(dataDir, "export", subDirName);
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path);
-                }
+            if (directory is null) return null;
 
-                Directory.CreateDirectory(path);
-                return Path.Join(dataDir, "export");
+            var path = Path.Join(directory, "export", subDirName);
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path);
             }
 
-            return null;
+            Directory.CreateDirectory(path);
+            return Path.Join(directory, "export");
         }
 
         public async Task<ExportResult> ExportData(ExportDataType dataType)
@@ -54,7 +52,7 @@ namespace Moonglade.DataPorting
             switch (dataType)
             {
                 case ExportDataType.Tags:
-                    var tagExp = new CSVExporter<TagEntity>(_tagRepository, "moonglade-tags");
+                    var tagExp = new CSVExporter<TagEntity>(_tagRepository, "moonglade-tags", _dataDir);
                     var tagExportData = await tagExp.ExportData(p => new
                     {
                         p.Id,
@@ -64,7 +62,7 @@ namespace Moonglade.DataPorting
                     return tagExportData;
 
                 case ExportDataType.Categories:
-                    var catExp = new CSVExporter<CategoryEntity>(_catRepository, "moonglade-categories");
+                    var catExp = new CSVExporter<CategoryEntity>(_catRepository, "moonglade-categories", _dataDir);
                     var catExportData = await catExp.ExportData(p => new
                     {
                         p.Id,
@@ -75,12 +73,12 @@ namespace Moonglade.DataPorting
                     return catExportData;
 
                 case ExportDataType.FriendLinks:
-                    var fdExp = new CSVExporter<FriendLinkEntity>(_friendlinkRepository, "moonglade-friendlinks");
+                    var fdExp = new CSVExporter<FriendLinkEntity>(_friendlinkRepository, "moonglade-friendlinks", _dataDir);
                     var fdExportData = await fdExp.ExportData(p => p);
                     return fdExportData;
 
                 case ExportDataType.Pages:
-                    var pgExp = new ZippedJsonExporter<PageEntity>(_pageRepository, "moonglade-pages");
+                    var pgExp = new ZippedJsonExporter<PageEntity>(_pageRepository, "moonglade-pages", _dataDir);
                     var pgExportData = await pgExp.ExportData(p => new
                     {
                         p.Id,
@@ -97,7 +95,7 @@ namespace Moonglade.DataPorting
 
                     return pgExportData;
                 case ExportDataType.Posts:
-                    var poExp = new ZippedJsonExporter<PostEntity>(_postRepository, "moonglade-posts");
+                    var poExp = new ZippedJsonExporter<PostEntity>(_postRepository, "moonglade-posts", _dataDir);
                     var poExportData = await poExp.ExportData(p => new
                     {
                         p.Title,

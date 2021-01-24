@@ -20,7 +20,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Model;
 using Moonglade.Model.Settings;
 using Moonglade.Utils;
 using Moonglade.Web.Authentication;

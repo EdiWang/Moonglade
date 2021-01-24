@@ -14,11 +14,13 @@ namespace Moonglade.DataPorting.Exporters
     {
         private readonly IRepository<T> _repository;
         private readonly string _fileNamePrefix;
+        private readonly string _directory;
 
-        public ZippedJsonExporter(IRepository<T> repository, string fileNamePrefix)
+        public ZippedJsonExporter(IRepository<T> repository, string fileNamePrefix, string directory)
         {
             _repository = repository;
             _fileNamePrefix = fileNamePrefix;
+            _directory = directory;
         }
 
         public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector)
@@ -31,7 +33,7 @@ namespace Moonglade.DataPorting.Exporters
         private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list)
         {
             var tempId = Guid.NewGuid().ToString();
-            string exportDirectory = ExportManager.CreateExportDirectory(tempId);
+            string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
             foreach (var item in list)
             {
                 var json = JsonConvert.SerializeObject(item, Formatting.Indented); // JsonSerializer.Serialize(item);
