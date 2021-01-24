@@ -34,7 +34,7 @@ namespace Moonglade.Web
                 try
                 {
                     var dataDir = CreateDataDirectories();
-                    AppDomain.CurrentDomain.SetData(Constants.DataDirectory, dataDir);
+                    AppDomain.CurrentDomain.SetData("DataDirectory", dataDir);
                     logger.LogInformation($"Using data directory '{dataDir}'");
                 }
                 catch (Exception ex)

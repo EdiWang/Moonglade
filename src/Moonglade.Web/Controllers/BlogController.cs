@@ -10,9 +10,7 @@ namespace Moonglade.Web.Controllers
 {
     public class BlogController : Controller
     {
-        protected string DataDirectory => AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
-
-        protected string SiteIconDirectory => Path.Join(DataDirectory, "siteicons");
+        protected string SiteIconDirectory => Path.Join(AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString(), "siteicons");
 
         [Route("server-error")]
         public IActionResult ServerError(string errMessage = null)

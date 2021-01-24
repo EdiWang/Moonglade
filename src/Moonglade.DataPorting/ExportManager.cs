@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting.Exporters;
-using Moonglade.Model;
 
 namespace Moonglade.DataPorting
 {
@@ -17,7 +16,7 @@ namespace Moonglade.DataPorting
         private readonly IRepository<PageEntity> _pageRepository;
         private readonly IRepository<PostEntity> _postRepository;
 
-        private readonly string _dataDir = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
+        private readonly string _dataDir = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString();
 
         public ExportManager(
             IRepository<TagEntity> tagRepository,
