@@ -25,6 +25,7 @@ using Moonglade.Utils;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
+using Moonglade.Web.Models;
 
 #endregion
 

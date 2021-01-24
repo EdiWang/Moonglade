@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Web.Models
 {

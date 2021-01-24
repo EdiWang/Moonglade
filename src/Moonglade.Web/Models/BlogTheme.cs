@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Model.Settings
+﻿namespace Moonglade.Web.Models
 {
     public class BlogTheme
     {

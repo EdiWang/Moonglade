@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Moonglade.Model.Settings
+namespace Moonglade.Web.Models
 {
     public class ManifestIcon
     {
