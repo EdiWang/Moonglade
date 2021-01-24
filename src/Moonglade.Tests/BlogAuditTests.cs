@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
-using Moonglade.Model.Settings;
+using Moonglade.Configuration.Settings;
 using Moq;
 using NUnit.Framework;
 

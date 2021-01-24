@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Model.Settings;
+using Moonglade.Configuration.Settings;
 using Moonglade.Utils;
 
 namespace Moonglade.Notification.Client

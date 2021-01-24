@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
-using Moonglade.Model.Settings;
 using Moonglade.Syndication;
 
 namespace Moonglade.Web.Controllers

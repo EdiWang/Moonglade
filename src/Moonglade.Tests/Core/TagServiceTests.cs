@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
-using Moonglade.Model.Settings;
 using NUnit.Framework;
 
 namespace Moonglade.Tests.Core

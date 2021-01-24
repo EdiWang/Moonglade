@@ -7,10 +7,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Caching;
+using Moonglade.Configuration.Settings;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Model.Settings;
 using Moonglade.Utils;
 
 namespace Moonglade.Core

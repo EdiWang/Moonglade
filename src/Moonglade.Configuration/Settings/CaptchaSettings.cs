@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Model.Settings
+﻿namespace Moonglade.Configuration.Settings
 {
     public class CaptchaSettings
     {

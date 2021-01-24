@@ -10,10 +10,10 @@ using System.Xml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration.Settings;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Model.Settings;
 
 namespace Moonglade.Core
 {

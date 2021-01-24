@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
-using Moonglade.Model.Settings;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
 
