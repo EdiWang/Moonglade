@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using Edi.ImageWatermark;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -389,6 +388,20 @@ namespace Moonglade.Web.Controllers
             [FromServices] IFriendLinkService friendLinkService,
             [FromServices] LinkGenerator linkGenerator)
         {
+            static Uri GetUri(HttpRequest request)
+            {
+                return new(string.Concat(
+                    request.Scheme,
+                    "://",
+                    request.Host.HasValue
+                        ? (request.Host.Value.IndexOf(",", StringComparison.Ordinal) > 0
+                            ? "MULTIPLE-HOST"
+                            : request.Host.Value)
+                        : "UNKNOWN-HOST",
+                    request.Path.HasValue ? request.Path.Value : string.Empty,
+                    request.QueryString.HasValue ? request.QueryString.Value : string.Empty));
+            }
+
             var friends = await friendLinkService.GetAllAsync();
             var foafDoc = new FoafDoc
             {
@@ -397,7 +410,7 @@ namespace Moonglade.Web.Controllers
                 Email = _blogConfig.NotificationSettings.AdminEmail,
                 PhotoUrl = linkGenerator.GetUriByAction(HttpContext, "Avatar", "Assets")
             };
-            var requestUrl = Request.GetUri().ToString();
+            var requestUrl = GetUri(Request).ToString();
             var xml = await foafWriter.GetFoafData(foafDoc, requestUrl, friends);
 
             return Content(xml, FoafWriter.ContentType);
