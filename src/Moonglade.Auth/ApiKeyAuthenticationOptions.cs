@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 
-namespace Moonglade.Web.Authentication
+namespace Moonglade.Auth
 {
     public class ApiKeyAuthenticationOptions : AuthenticationSchemeOptions
     {

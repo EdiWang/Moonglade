@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
+using Moonglade.Auth;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.Pages;
-using Moonglade.Web.Authentication;
 using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers

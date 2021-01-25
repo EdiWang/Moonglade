@@ -4,17 +4,16 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Moonglade.Auth;
 
-namespace Moonglade.Web.Authentication
+namespace Moonglade.Auth
 {
     public static class AuthenticationServiceCollectionExtensions
     {
         public static void AddBlogAuthenticaton(this IServiceCollection services, IConfiguration configuration)
         {
             var authentication = new AuthenticationSettings();
-            configuration.Bind(nameof(Authentication), authentication);
-            services.Configure<AuthenticationSettings>(configuration.GetSection(nameof(Authentication)));
+            configuration.Bind("Authentication", authentication);
+            services.Configure<AuthenticationSettings>(configuration.GetSection("Authentication"));
             services.AddScoped<IGetApiKeyQuery, AppSettingsGetApiKeyQuery>();
 
             switch (authentication.Provider)

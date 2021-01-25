@@ -9,9 +9,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Auth;
 
-namespace Moonglade.Web.Authentication
+namespace Moonglade.Auth
 {
     // Credits: https://josefottosson.se/asp-net-core-protect-your-api-with-api-keys/
     public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
