@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Moonglade.Web.Authentication
+namespace Moonglade.Auth
 {
     public class ApiKey
     {

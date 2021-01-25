@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Moonglade.Auth;
 
 namespace Moonglade.Web.Authentication
 {

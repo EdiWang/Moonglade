@@ -2,7 +2,7 @@
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 @inject IOptions<AuthenticationSettings> AuthOptions
 
-@using Moonglade.Web.Authentication
+@using Moonglade.Auth
 @{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();

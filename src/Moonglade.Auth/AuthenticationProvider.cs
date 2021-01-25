@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Web.Authentication
+﻿namespace Moonglade.Auth
 {
     public enum AuthenticationProvider
     {

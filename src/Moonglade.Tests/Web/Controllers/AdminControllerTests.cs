@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
+using Moonglade.Auth;
 using Moonglade.Web.Authentication;
 using Moonglade.Web.Controllers;
 using Moq;
