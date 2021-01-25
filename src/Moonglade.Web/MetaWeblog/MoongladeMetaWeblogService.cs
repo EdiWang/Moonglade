@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration.Abstraction;
@@ -10,12 +11,16 @@ namespace Moonglade.Web.MetaWeblog
     public class MoongladeMetaWeblogService : IMetaWeblogProvider
     {
         private readonly AuthenticationSettings _authenticationSettings;
-
         private readonly IBlogConfig _blogConfig;
+        private readonly ILogger<MoongladeMetaWeblogService> _logger;
 
-        public MoongladeMetaWeblogService(IOptions<AuthenticationSettings> authOptions, IBlogConfig blogConfig)
+        public MoongladeMetaWeblogService(
+            IOptions<AuthenticationSettings> authOptions,
+            IBlogConfig blogConfig,
+            ILogger<MoongladeMetaWeblogService> logger)
         {
             _blogConfig = blogConfig;
+            _logger = logger;
             _authenticationSettings = authOptions.Value;
         }
 
@@ -23,31 +28,47 @@ namespace Moonglade.Web.MetaWeblog
         {
             EnsureUser(username, password);
 
-            var user = new UserInfo
+            try
             {
-                email = _blogConfig.NotificationSettings.AdminEmail,
-                firstname = _blogConfig.GeneralSettings.OwnerName,
-                lastname = string.Empty,
-                nickname = string.Empty,
-                url = _blogConfig.GeneralSettings.CanonicalPrefix,
-                userid = key
-            };
+                var user = new UserInfo
+                {
+                    email = _blogConfig.NotificationSettings.AdminEmail,
+                    firstname = _blogConfig.GeneralSettings.OwnerName,
+                    lastname = string.Empty,
+                    nickname = string.Empty,
+                    url = _blogConfig.GeneralSettings.CanonicalPrefix,
+                    userid = key
+                };
 
-            return Task.FromResult(user);
+                return Task.FromResult(user);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
         {
             EnsureUser(username, password);
 
-            var blog = new BlogInfo
+            try
             {
-                blogid = _blogConfig.GeneralSettings.SiteTitle,
-                blogName = _blogConfig.GeneralSettings.Description,
-                url = "/"
-            };
+                var blog = new BlogInfo
+                {
+                    blogid = _blogConfig.GeneralSettings.SiteTitle,
+                    blogName = _blogConfig.GeneralSettings.Description,
+                    url = "/"
+                };
 
-            return Task.FromResult(new[] { blog });
+                return Task.FromResult(new[] { blog });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<Post> GetPostAsync(string postid, string username, string password)
