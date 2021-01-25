@@ -19,6 +19,7 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.Foaf;
 using Moonglade.FriendLink;
+using Moonglade.Menus;
 using Moonglade.Notification.Client;
 using Moonglade.Pages;
 using Moonglade.Syndication;
@@ -82,6 +83,7 @@ namespace Moonglade.Web.Configuration
                 }
             }
 
+            services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IPageService, PageService>();
             services.AddScoped<IFriendLinkService, FriendLinkService>();
             services.AddScoped<IBlogAudit, BlogAudit>();

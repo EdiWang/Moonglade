@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace Moonglade.Core
+﻿namespace Moonglade.Menus
 {
-    public class Menu
+    public class UpdateMenuRequest
     {
-        public Guid Id { get; set; }
-
         public string Title { get; set; }
 
         public string Url { get; set; }
@@ -15,10 +11,5 @@ namespace Moonglade.Core
         public int DisplayOrder { get; set; }
 
         public bool IsOpenInNewTab { get; set; }
-
-        public Menu()
-        {
-            Icon = "icon-file-text2";
-        }
     }
 }

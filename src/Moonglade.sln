@@ -75,6 +75,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Pages", "Moonglad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Auth", "Moonglade.Auth\Moonglade.Auth.csproj", "{5B888FFB-8BF0-4AED-9D1E-91396290BC05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Menus", "Moonglade.Menus\Moonglade.Menus.csproj", "{A5ED355A-D024-4176-B453-2F8F42E29414}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,10 @@ Global
 		{5B888FFB-8BF0-4AED-9D1E-91396290BC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B888FFB-8BF0-4AED-9D1E-91396290BC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B888FFB-8BF0-4AED-9D1E-91396290BC05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5ED355A-D024-4176-B453-2F8F42E29414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5ED355A-D024-4176-B453-2F8F42E29414}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5ED355A-D024-4176-B453-2F8F42E29414}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5ED355A-D024-4176-B453-2F8F42E29414}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -187,6 +193,7 @@ Global
 		{DF0D2D74-B9B7-4EB8-956D-E9CBDDF3390E} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{18EC351C-286B-4434-9107-06D761948DFA} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{5B888FFB-8BF0-4AED-9D1E-91396290BC05} = {97439361-03B4-46C9-BC06-49F76BA57879}
+		{A5ED355A-D024-4176-B453-2F8F42E29414} = {97439361-03B4-46C9-BC06-49F76BA57879}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}

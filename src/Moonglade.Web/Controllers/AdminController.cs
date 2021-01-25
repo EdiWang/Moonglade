@@ -14,6 +14,7 @@ using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Core;
+using Moonglade.Menus;
 using Moonglade.Pages;
 using Moonglade.Pingback;
 using Moonglade.Web.Models;

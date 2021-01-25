@@ -38,6 +38,7 @@
     <ProjectReference Include="..\Moonglade.Foaf\Moonglade.Foaf.csproj" />
     <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
+    <ProjectReference Include="..\Moonglade.Menus\Moonglade.Menus.csproj" />
     <ProjectReference Include="..\Moonglade.Notification.Client\Moonglade.Notification.Client.csproj" />
     <ProjectReference Include="..\Moonglade.Pages\Moonglade.Pages.csproj" />
     <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
