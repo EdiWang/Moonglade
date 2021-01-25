@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Core;
 using WilderMinds.MetaWeblog;
+using Post = WilderMinds.MetaWeblog.Post;
+using Tag = WilderMinds.MetaWeblog.Tag;
 
 namespace Moonglade.Web.MetaWeblog
 {
@@ -13,14 +17,17 @@ namespace Moonglade.Web.MetaWeblog
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IBlogConfig _blogConfig;
         private readonly ILogger<MoongladeMetaWeblogService> _logger;
+        private readonly ITagService _tagService;
 
         public MoongladeMetaWeblogService(
             IOptions<AuthenticationSettings> authOptions,
             IBlogConfig blogConfig,
-            ILogger<MoongladeMetaWeblogService> logger)
+            ILogger<MoongladeMetaWeblogService> logger,
+            ITagService tagService)
         {
             _blogConfig = blogConfig;
             _logger = logger;
+            _tagService = tagService;
             _authenticationSettings = authOptions.Value;
         }
 
@@ -124,7 +131,21 @@ namespace Moonglade.Web.MetaWeblog
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+                var names = await _tagService.GetAllNamesAsync();
+                var tags = names.Select(p => new Tag
+                {
+                    name = p
+                }).ToArray();
+
+                return tags;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<MediaObjectInfo> NewMediaObjectAsync(string blogid, string username, string password, MediaObject mediaObject)
