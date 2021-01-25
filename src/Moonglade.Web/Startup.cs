@@ -26,6 +26,7 @@ using Moonglade.Utils;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Models;
+using WilderMinds.MetaWeblog;
 
 #endregion
 
@@ -129,6 +130,8 @@ namespace Moonglade.Web
 
             app.UseRobotsTxt();
 
+            // Support MetaWeblog API
+            app.UseMetaWeblog("/metaweblog");
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();

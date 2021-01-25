@@ -24,8 +24,10 @@ using Moonglade.Notification.Client;
 using Moonglade.Pages;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
+using Moonglade.Web.MetaWeblog;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
+using WilderMinds.MetaWeblog;
 
 namespace Moonglade.Web.Configuration
 {
@@ -82,6 +84,9 @@ namespace Moonglade.Web.Configuration
                     services.AddScoped(i ?? t, t);
                 }
             }
+
+            // Supporting Live Writer (MetaWeblogAPI)
+            services.AddMetaWeblog<MoongladeMetaWeblogService>();
 
             services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IPageService, PageService>();
