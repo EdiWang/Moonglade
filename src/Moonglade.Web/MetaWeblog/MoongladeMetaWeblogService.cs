@@ -36,11 +36,18 @@ namespace Moonglade.Web.MetaWeblog
             return Task.FromResult(user);
         }
 
-        public async Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
+        public Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            var blog = new BlogInfo
+            {
+                blogid = _blogConfig.GeneralSettings.SiteTitle,
+                blogName = _blogConfig.GeneralSettings.Description,
+                url = "/"
+            };
+
+            return Task.FromResult(new[] { blog });
         }
 
         public async Task<Post> GetPostAsync(string postid, string username, string password)
