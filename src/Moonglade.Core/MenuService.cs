@@ -13,8 +13,8 @@ namespace Moonglade.Core
     {
         Task<Menu> GetAsync(Guid id);
         Task<IReadOnlyList<Menu>> GetAllAsync();
-        Task<Guid> CreateAsync(CreateMenuRequest request);
-        Task<Guid> UpdateAsync(EditMenuRequest request);
+        Task<Guid> CreateAsync(UpdateMenuRequest request);
+        Task<Guid> UpdateAsync(Guid id, UpdateMenuRequest request);
         Task DeleteAsync(Guid id);
     }
 
@@ -56,7 +56,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public async Task<Guid> CreateAsync(CreateMenuRequest request)
+        public async Task<Guid> CreateAsync(UpdateMenuRequest request)
         {
             var uid = Guid.NewGuid();
             var menu = new MenuEntity
@@ -75,12 +75,12 @@ namespace Moonglade.Core
             return uid;
         }
 
-        public async Task<Guid> UpdateAsync(EditMenuRequest request)
+        public async Task<Guid> UpdateAsync(Guid id, UpdateMenuRequest request)
         {
-            var menu = await _menuRepo.GetAsync(request.Id);
+            var menu = await _menuRepo.GetAsync(id);
             if (menu is null)
             {
-                throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
+                throw new InvalidOperationException($"MenuEntity with Id '{id}' not found.");
             }
 
             var url = Helper.SterilizeLink(request.Url.Trim());
@@ -93,7 +93,7 @@ namespace Moonglade.Core
             menu.IsOpenInNewTab = request.IsOpenInNewTab;
 
             await _menuRepo.UpdateAsync(menu);
-            await _audit.AddAuditEntry(EventType.Content, AuditEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.MenuUpdated, $"Menu '{id}' updated.");
 
             return menu.Id;
         }

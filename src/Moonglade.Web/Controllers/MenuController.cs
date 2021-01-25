@@ -26,7 +26,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var request = new CreateMenuRequest
+            var request = new UpdateMenuRequest
             {
                 DisplayOrder = model.DisplayOrder,
                 Icon = model.Icon,
@@ -75,7 +75,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var request = new EditMenuRequest(model.Id)
+            var request = new UpdateMenuRequest
             {
                 Title = model.Title,
                 DisplayOrder = model.DisplayOrder,
@@ -84,7 +84,7 @@ namespace Moonglade.Web.Controllers
                 IsOpenInNewTab = model.IsOpenInNewTab
             };
 
-            await _menuService.UpdateAsync(request);
+            await _menuService.UpdateAsync(model.Id, request);
             return Ok();
         }
     }
