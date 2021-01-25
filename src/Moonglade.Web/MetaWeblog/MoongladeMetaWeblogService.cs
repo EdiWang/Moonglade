@@ -18,16 +18,19 @@ namespace Moonglade.Web.MetaWeblog
         private readonly IBlogConfig _blogConfig;
         private readonly ILogger<MoongladeMetaWeblogService> _logger;
         private readonly ITagService _tagService;
+        private readonly ICategoryService _categoryService;
 
         public MoongladeMetaWeblogService(
             IOptions<AuthenticationSettings> authOptions,
             IBlogConfig blogConfig,
             ILogger<MoongladeMetaWeblogService> logger,
-            ITagService tagService)
+            ITagService tagService, 
+            ICategoryService categoryService)
         {
             _blogConfig = blogConfig;
             _logger = logger;
             _tagService = tagService;
+            _categoryService = categoryService;
             _authenticationSettings = authOptions.Value;
         }
 
@@ -117,7 +120,25 @@ namespace Moonglade.Web.MetaWeblog
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+                var cats = await _categoryService.GetAllAsync();
+                var catInfos = cats.Select(p => new CategoryInfo
+                {
+                    title = p.DisplayName,
+                    categoryid = p.Id.ToString(),
+                    description = p.Note,
+                    htmlUrl = $"/category/{p.RouteName}",
+                    rssUrl = $"/rss/{p.RouteName}"
+                }).ToArray();
+
+                return catInfos;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<int> AddCategoryAsync(string key, string username, string password, NewCategory category)
@@ -199,10 +220,17 @@ namespace Moonglade.Web.MetaWeblog
 
         private void EnsureUser(string username, string password)
         {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
+
             if (string.Compare(username.Trim(), _authenticationSettings.MetaWeblog.Username.Trim(),
-                    StringComparison.Ordinal) != 0 ||
-                string.Compare(password.Trim(), _authenticationSettings.MetaWeblog.Password.Trim(),
-                    StringComparison.Ordinal) != 0) throw new MetaWeblogException("Authentication failed.");
+                StringComparison.Ordinal) == 0 && string.Compare(password.Trim(),
+                _authenticationSettings.MetaWeblog.Password.Trim(),
+                StringComparison.Ordinal) == 0) return;
+
+            throw new MetaWeblogException("Authentication failed.");
         }
     }
 }
