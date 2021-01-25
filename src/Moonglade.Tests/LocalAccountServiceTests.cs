@@ -2,7 +2,7 @@
 using Moonglade.Auth;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Core
+namespace Moonglade.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

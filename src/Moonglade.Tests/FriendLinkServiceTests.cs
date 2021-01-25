@@ -8,7 +8,7 @@ using Moonglade.FriendLink;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Core
+namespace Moonglade.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

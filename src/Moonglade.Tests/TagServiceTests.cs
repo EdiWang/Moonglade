@@ -3,7 +3,7 @@ using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Core
+namespace Moonglade.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
