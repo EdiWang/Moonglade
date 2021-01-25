@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
@@ -130,8 +131,12 @@ namespace Moonglade.Web
 
             app.UseRobotsTxt();
 
-            // Support MetaWeblog API
-            app.UseMetaWeblog("/metaweblog");
+            app.UseForFeature(nameof(FeatureFlags.MetaWeblog), _ =>
+            {
+                // Support MetaWeblog API
+                app.UseMetaWeblog("/metaweblog");
+            });
+
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
             app.UseMiddleware<FirstRunMiddleware>();

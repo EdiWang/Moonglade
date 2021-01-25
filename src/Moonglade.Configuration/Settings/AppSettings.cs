@@ -34,6 +34,7 @@ namespace Moonglade.Configuration.Settings
 
     public enum FeatureFlags
     {
+        MetaWeblog,
         EnableWebApi,
         EnableAudit,
         Foaf,
