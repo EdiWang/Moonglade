@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Moonglade.Core;
+using Moonglade.Auth;
 
 namespace Moonglade.Web.Models.Settings
 {
