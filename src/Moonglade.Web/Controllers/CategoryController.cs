@@ -27,7 +27,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var request = new CreateCategoryRequest
+            var request = new UpdateCatRequest
             {
                 RouteName = model.RouteName,
                 Note = model.Note,
@@ -64,14 +64,14 @@ namespace Moonglade.Web.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var request = new EditCategoryRequest(model.Id)
+            var request = new UpdateCatRequest
             {
                 RouteName = model.RouteName,
                 Note = model.Note,
                 DisplayName = model.DisplayName
             };
 
-            await _catService.UpdateAsync(request);
+            await _catService.UpdateAsync(model.Id, request);
             return Ok(model);
         }
 

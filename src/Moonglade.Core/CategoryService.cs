@@ -14,9 +14,9 @@ namespace Moonglade.Core
         Task<IReadOnlyList<Category>> GetAllAsync();
         Task<Category> GetAsync(string categoryName);
         Task<Category> GetAsync(Guid id);
-        Task CreateAsync(CreateCategoryRequest request);
+        Task CreateAsync(UpdateCatRequest request);
         Task DeleteAsync(Guid id);
-        Task UpdateAsync(EditCategoryRequest request);
+        Task UpdateAsync(Guid id, UpdateCatRequest request);
     }
 
     public class CategoryService : ICategoryService
@@ -80,7 +80,7 @@ namespace Moonglade.Core
                     });
         }
 
-        public async Task CreateAsync(CreateCategoryRequest request)
+        public async Task CreateAsync(UpdateCatRequest request)
         {
             var exists = _catRepo.Any(c => c.RouteName == request.RouteName);
             if (exists) return;
@@ -113,9 +113,9 @@ namespace Moonglade.Core
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Category '{id}' deleted.");
         }
 
-        public async Task UpdateAsync(EditCategoryRequest request)
+        public async Task UpdateAsync(Guid id, UpdateCatRequest request)
         {
-            var cat = await _catRepo.GetAsync(request.Id);
+            var cat = await _catRepo.GetAsync(id);
             if (cat is null) return;
 
             cat.RouteName = request.RouteName.Trim();
@@ -125,7 +125,7 @@ namespace Moonglade.Core
             await _catRepo.UpdateAsync(cat);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryUpdated, $"Category '{request.Id}' updated.");
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryUpdated, $"Category '{id}' updated.");
         }
     }
 }
