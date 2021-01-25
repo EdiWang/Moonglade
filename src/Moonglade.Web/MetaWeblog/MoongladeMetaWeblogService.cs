@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
+using Moonglade.Configuration.Abstraction;
 using WilderMinds.MetaWeblog;
 
 namespace Moonglade.Web.MetaWeblog
@@ -10,16 +11,29 @@ namespace Moonglade.Web.MetaWeblog
     {
         private readonly AuthenticationSettings _authenticationSettings;
 
-        public MoongladeMetaWeblogService(IOptions<AuthenticationSettings> authOptions)
+        private readonly IBlogConfig _blogConfig;
+
+        public MoongladeMetaWeblogService(IOptions<AuthenticationSettings> authOptions, IBlogConfig blogConfig)
         {
+            _blogConfig = blogConfig;
             _authenticationSettings = authOptions.Value;
         }
 
-        public async Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
+        public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            var user = new UserInfo
+            {
+                email = _blogConfig.NotificationSettings.AdminEmail,
+                firstname = _blogConfig.GeneralSettings.OwnerName,
+                lastname = string.Empty,
+                nickname = string.Empty,
+                url = _blogConfig.GeneralSettings.CanonicalPrefix,
+                userid = key
+            };
+
+            return Task.FromResult(user);
         }
 
         public async Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
