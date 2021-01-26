@@ -406,7 +406,7 @@ namespace Moonglade.Web.Controllers
             var foafDoc = new FoafDoc
             {
                 Name = _blogConfig.GeneralSettings.OwnerName,
-                BlogUrl = ResolveRootUrl(_blogConfig, true),
+                BlogUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true),
                 Email = _blogConfig.NotificationSettings.AdminEmail,
                 PhotoUrl = linkGenerator.GetUriByAction(HttpContext, "Avatar", "Assets")
             };

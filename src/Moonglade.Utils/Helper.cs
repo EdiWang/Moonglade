@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Win32;
 
 namespace Moonglade.Utils
@@ -40,6 +41,23 @@ namespace Moonglade.Utils
             }
 
             return osVer.VersionString;
+        }
+
+        public static string ResolveRootUrl(HttpContext ctx, string canonicalPrefix, bool preferCanonical = false)
+        {
+            if (ctx is null && !preferCanonical)
+            {
+                throw new ArgumentNullException(nameof(ctx), "HttpContext must not be null when preferCanonical is 'false'");
+            }
+
+            if (preferCanonical)
+            {
+                var url = ResolveCanonicalUrl(canonicalPrefix, string.Empty);
+                return url;
+            }
+            
+            var requestedRoot = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
+            return requestedRoot;
         }
 
         public static async Task<string> GetThemeColorAsync(string webRootPath, string currentTheme)
