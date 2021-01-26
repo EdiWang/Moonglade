@@ -186,7 +186,22 @@ namespace Moonglade.Web.MetaWeblog
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+                await _categoryService.CreateAsync(new()
+                {
+                    DisplayName = category.name.Trim(),
+                    Note = category.description.Trim(),
+                    RouteName = category.slug.ToLower()
+                });
+
+                return 996;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<Tag[]> GetTagsAsync(string blogid, string username, string password)
