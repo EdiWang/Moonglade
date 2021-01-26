@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DateTimeOps;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Utils;
 using WilderMinds.MetaWeblog;
 using Post = WilderMinds.MetaWeblog.Post;
 using Tag = WilderMinds.MetaWeblog.Tag;
@@ -16,22 +18,28 @@ namespace Moonglade.Web.MetaWeblog
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IBlogConfig _blogConfig;
+        private readonly IDateTimeResolver _dateTimeResolver;
         private readonly ILogger<MoongladeMetaWeblogService> _logger;
         private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
+        private readonly IPostService _postService;
 
         public MoongladeMetaWeblogService(
             IOptions<AuthenticationSettings> authOptions,
             IBlogConfig blogConfig,
+            IDateTimeResolver dateTimeResolver,
             ILogger<MoongladeMetaWeblogService> logger,
-            ITagService tagService, 
-            ICategoryService categoryService)
+            ITagService tagService,
+            ICategoryService categoryService,
+            IPostService postService)
         {
+            _authenticationSettings = authOptions.Value;
             _blogConfig = blogConfig;
+            _dateTimeResolver = dateTimeResolver;
             _logger = logger;
             _tagService = tagService;
             _categoryService = categoryService;
-            _authenticationSettings = authOptions.Value;
+            _postService = postService;
         }
 
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
@@ -85,7 +93,40 @@ namespace Moonglade.Web.MetaWeblog
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+                if (!Guid.TryParse(postid.Trim(), out var id))
+                {
+                    throw new ArgumentException("Invalid ID", nameof(postid));
+                }
+
+                var post = await _postService.GetAsync(id);
+                if (!post.IsPublished) return null;
+                var pubDate = post.PubDateUtc.GetValueOrDefault();
+                var link = $"/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{post.Slug.Trim().ToLower()}";
+
+                var mPost = new Post
+                {
+                    postid = id,
+                    categories = post.Categories.Select(p => p.DisplayName).ToArray(),
+                    dateCreated = _dateTimeResolver.ToTimeZone(post.CreateTimeUtc),
+                    description = post.ContentAbstract,
+                    link = link,
+                    permalink = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}/{link}",
+                    title = post.Title,
+                    wp_slug = post.Slug,
+                    mt_keywords = string.Join(',', post.Tags.Select(p => p.DisplayName)),
+                    mt_excerpt = post.ContentAbstract,
+                    userid = _blogConfig.GeneralSettings.OwnerName
+                };
+
+                return mPost;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<Post[]> GetRecentPostsAsync(string blogid, string username, string password, int numberOfPosts)
