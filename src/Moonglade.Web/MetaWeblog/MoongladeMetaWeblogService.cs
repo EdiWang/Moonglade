@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DateTimeOps;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.ImageStorage;
 using Moonglade.Pages;
 using Moonglade.Utils;
 using WilderMinds.MetaWeblog;
@@ -28,6 +28,8 @@ namespace Moonglade.Web.MetaWeblog
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
         private readonly IPageService _pageService;
+        private readonly IBlogImageStorage _blogImageStorage;
+        private readonly IFileNameGenerator _fileNameGenerator;
 
         public MoongladeMetaWeblogService(
             IOptions<AuthenticationSettings> authOptions,
@@ -37,7 +39,9 @@ namespace Moonglade.Web.MetaWeblog
             ITagService tagService,
             ICategoryService categoryService,
             IPostService postService,
-            IPageService pageService)
+            IPageService pageService,
+            IBlogImageStorage blogImageStorage,
+            IFileNameGenerator fileNameGenerator)
         {
             _authenticationSettings = authOptions.Value;
             _blogConfig = blogConfig;
@@ -47,6 +51,8 @@ namespace Moonglade.Web.MetaWeblog
             _categoryService = categoryService;
             _postService = postService;
             _pageService = pageService;
+            _blogImageStorage = blogImageStorage;
+            _fileNameGenerator = fileNameGenerator;
         }
 
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
@@ -291,8 +297,17 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
+                // TODO: Check extension names
+                
+                var bits = Convert.FromBase64String(mediaObject.bits);
 
-                throw new NotImplementedException();
+                var pFilename = _fileNameGenerator.GetFileName(mediaObject.name);
+                var filename = await _blogImageStorage.InsertAsync(pFilename, bits);
+
+                var imageUrl = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}/image/{filename}";
+
+                MediaObjectInfo objectInfo = new MediaObjectInfo { url = imageUrl };
+                return objectInfo;
             }
             catch (Exception e)
             {
