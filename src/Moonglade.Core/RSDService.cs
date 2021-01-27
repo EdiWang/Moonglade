@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -41,7 +38,7 @@ namespace Moonglade.Core
                 writer.WriteStartElement("api");
                 writer.WriteAttributeString("name", "MetaWeblog");
                 writer.WriteAttributeString("preferred", "true");
-                writer.WriteAttributeString("apiLink", $"{siteRootUrl}/metaweblog");
+                writer.WriteAttributeString("apiLink", $"{siteRootUrl}metaweblog");
                 writer.WriteAttributeString("blogID", siteRootUrl);
                 await writer.WriteEndElementAsync();
 

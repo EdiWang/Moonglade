@@ -94,6 +94,7 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<ISiteIconGenerator, FileSystemIconGenerator>();
             services.AddScoped<IFoafWriter, FoafWriter>();
+            services.AddScoped<IRSDService, RSDService>();
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IBlogStatistics, BlogStatistics>();
             services.AddScoped<ISyndicationService, SyndicationService>();

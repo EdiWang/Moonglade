@@ -20,12 +20,24 @@ namespace Moonglade.Web.Controllers
         }
 
         [FeatureGate(FeatureFlags.OpenSearch)]
+        [Route("rsd")]
+        [ResponseCache(Duration = 7200)]
+        public async Task<IActionResult> RSD([FromServices] IRSDService rsdService, [FromServices] IBlogConfig blogConfig)
+        {
+            var bytes = await rsdService.GetRSDStreamArray(Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true));
+            var xmlContent = Encoding.UTF8.GetString(bytes);
+
+            return Content(xmlContent, "text/xml");
+        }
+
+        [FeatureGate(FeatureFlags.OpenSearch)]
         [Route("opensearch")]
         [ResponseCache(Duration = 3600)]
         public async Task<IActionResult> OpenSearch([FromServices] IBlogConfig blogConfig)
         {
             var bytes = await _searchService.GetOpenSearchStreamArray(Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true));
             var xmlContent = Encoding.UTF8.GetString(bytes);
+
             return Content(xmlContent, "text/xml");
         }
 
@@ -37,6 +49,7 @@ namespace Moonglade.Web.Controllers
                 var url = Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true);
                 var bytes = await _searchService.GetSiteMapStreamArrayAsync(url);
                 var xmlContent = Encoding.UTF8.GetString(bytes);
+
                 return Content(xmlContent, "text/xml");
             });
         }
