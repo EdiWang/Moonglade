@@ -328,7 +328,7 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
-
+                if (numPages < 0) throw new ArgumentOutOfRangeException(nameof(numPages));
                 throw new NotImplementedException();
             }
             catch (Exception e)
@@ -344,8 +344,15 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
+                await Task.CompletedTask;
 
-                throw new NotImplementedException();
+                return new[]
+                {
+                    new Author
+                    {
+                        display_name = _blogConfig.GeneralSettings.OwnerName
+                    }
+                };
             }
             catch (Exception e)
             {
