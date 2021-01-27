@@ -177,7 +177,8 @@ namespace Moonglade.Web.MetaWeblog
                     throw new ArgumentException("Invalid ID", nameof(postid));
                 }
 
-                throw new NotImplementedException();
+                await _postService.DeleteAsync(id, publish);
+                return true;
             }
             catch (Exception e)
             {
