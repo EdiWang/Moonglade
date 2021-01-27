@@ -132,7 +132,8 @@ namespace Moonglade.Web.MetaWeblog
                 await Task.CompletedTask;
                 if (numberOfPosts < 0) throw new ArgumentOutOfRangeException(nameof(numberOfPosts));
 
-                throw new NotImplementedException();
+                // TODO: Get recent posts
+                return Array.Empty<Post>();
             }
             catch (Exception e)
             {
