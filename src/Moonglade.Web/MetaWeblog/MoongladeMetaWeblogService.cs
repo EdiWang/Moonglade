@@ -106,26 +106,7 @@ namespace Moonglade.Web.MetaWeblog
                 }
 
                 var post = await _postService.GetAsync(id);
-                if (!post.IsPublished) return null;
-                var pubDate = post.PubDateUtc.GetValueOrDefault();
-                var link = $"/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{post.Slug.Trim().ToLower()}";
-
-                var mPost = new Post
-                {
-                    postid = id,
-                    categories = post.Categories.Select(p => p.DisplayName).ToArray(),
-                    dateCreated = _dateTimeResolver.ToTimeZone(post.CreateTimeUtc),
-                    description = post.ContentAbstract,
-                    link = link,
-                    permalink = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}/{link}",
-                    title = post.Title,
-                    wp_slug = post.Slug,
-                    mt_keywords = string.Join(',', post.Tags.Select(p => p.DisplayName)),
-                    mt_excerpt = post.ContentAbstract,
-                    userid = _blogConfig.GeneralSettings.OwnerName
-                };
-
-                return mPost;
+                return ToMetaWeblogPost(post);
             }
             catch (Exception e)
             {
@@ -140,6 +121,7 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
+                if (numberOfPosts < 0) throw new ArgumentOutOfRangeException(nameof(numberOfPosts));
 
                 throw new NotImplementedException();
             }
@@ -459,6 +441,30 @@ namespace Moonglade.Web.MetaWeblog
         private string ToSlug(string title)
         {
             throw new NotImplementedException();
+        }
+
+        private Post ToMetaWeblogPost(Core.Post post)
+        {
+            if (!post.IsPublished) return null;
+            var pubDate = post.PubDateUtc.GetValueOrDefault();
+            var link = $"/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{post.Slug.Trim().ToLower()}";
+
+            var mPost = new Post
+            {
+                postid = post.Id,
+                categories = post.Categories.Select(p => p.DisplayName).ToArray(),
+                dateCreated = _dateTimeResolver.ToTimeZone(post.CreateTimeUtc),
+                description = post.ContentAbstract,
+                link = link,
+                permalink = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}/{link}",
+                title = post.Title,
+                wp_slug = post.Slug,
+                mt_keywords = string.Join(',', post.Tags.Select(p => p.DisplayName)),
+                mt_excerpt = post.ContentAbstract,
+                userid = _blogConfig.GeneralSettings.OwnerName
+            };
+
+            return mPost;
         }
     }
 }
