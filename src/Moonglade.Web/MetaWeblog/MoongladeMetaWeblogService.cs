@@ -286,17 +286,7 @@ namespace Moonglade.Web.MetaWeblog
                 }
 
                 var page = await _pageService.GetAsync(id);
-                var mPage = new Page
-                {
-                    title = page.Title,
-                    description = page.RawHtmlContent,
-                    dateCreated = _dateTimeResolver.ToTimeZone(page.CreateTimeUtc),
-                    categories = Array.Empty<string>(),
-                    page_id = id.ToString(),
-                    wp_author_id = _blogConfig.GeneralSettings.OwnerName
-                };
-
-                return mPage;
+                return ToMetaWeblogPage(page);
             }
             catch (Exception e)
             {
@@ -312,7 +302,11 @@ namespace Moonglade.Web.MetaWeblog
             try
             {
                 if (numPages < 0) throw new ArgumentOutOfRangeException(nameof(numPages));
-                throw new NotImplementedException();
+
+                var pages = await _pageService.GetAsync(numPages);
+                var mPages = pages.Select(ToMetaWeblogPage);
+
+                return mPages.ToArray();
             }
             catch (Exception e)
             {
@@ -466,6 +460,21 @@ namespace Moonglade.Web.MetaWeblog
             };
 
             return mPost;
+        }
+
+        private Page ToMetaWeblogPage(Pages.Page page)
+        {
+            var mPage = new Page
+            {
+                title = page.Title,
+                description = page.RawHtmlContent,
+                dateCreated = _dateTimeResolver.ToTimeZone(page.CreateTimeUtc),
+                categories = Array.Empty<string>(),
+                page_id = page.Id.ToString(),
+                wp_author_id = _blogConfig.GeneralSettings.OwnerName
+            };
+
+            return mPage;
         }
     }
 }

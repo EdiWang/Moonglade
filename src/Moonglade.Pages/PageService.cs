@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 
 namespace Moonglade.Pages
 {
@@ -12,6 +14,7 @@ namespace Moonglade.Pages
     {
         Task<Page> GetAsync(Guid pageId);
         Task<Page> GetAsync(string slug);
+        Task<IReadOnlyList<Page>> GetAsync(int top);
         Task<IReadOnlyList<PageSegment>> ListSegment();
         Task<Guid> CreateAsync(UpdatePageRequest request);
         Task<Guid> UpdateAsync(Guid id, UpdatePageRequest request);
@@ -44,6 +47,15 @@ namespace Moonglade.Pages
             var entity = await _pageRepo.GetAsync(p => p.Slug == loweredRouteName);
             var item = EntityToPage(entity);
             return item;
+        }
+
+        public async Task<IReadOnlyList<Page>> GetAsync(int top)
+        {
+            if (top <= 0) throw new ArgumentOutOfRangeException(nameof(top));
+
+            var pages = await _pageRepo.GetAsync(new PageSpec(top));
+            var list = pages.Select(EntityToPage).ToList();
+            return list;
         }
 
         public Task<IReadOnlyList<PageSegment>> ListSegment()
