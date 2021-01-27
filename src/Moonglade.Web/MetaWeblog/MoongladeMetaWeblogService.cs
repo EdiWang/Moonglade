@@ -297,8 +297,23 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
+                if (!Guid.TryParse(pageid, out var id))
+                {
+                    throw new ArgumentException("Invalid ID", nameof(pageid));
+                }
 
-                throw new NotImplementedException();
+                var page = await _pageService.GetAsync(id);
+                var mPage = new Page
+                {
+                    title = page.Title,
+                    description = page.MetaDescription,
+                    dateCreated = _dateTimeResolver.ToTimeZone(page.CreateTimeUtc),
+                    categories = Array.Empty<string>(),
+                    page_id = id.ToString(),
+                    wp_author_id = _blogConfig.GeneralSettings.OwnerName
+                };
+
+                return mPage;
             }
             catch (Exception e)
             {
