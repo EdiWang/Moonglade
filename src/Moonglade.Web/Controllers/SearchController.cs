@@ -19,7 +19,7 @@ namespace Moonglade.Web.Controllers
             _searchService = searchService;
         }
 
-        [FeatureGate(FeatureFlags.OpenSearch)]
+        [FeatureGate(FeatureFlags.RSD)]
         [Route("rsd")]
         [ResponseCache(Duration = 7200)]
         public async Task<IActionResult> RSD([FromServices] IRSDService rsdService, [FromServices] IBlogConfig blogConfig)
