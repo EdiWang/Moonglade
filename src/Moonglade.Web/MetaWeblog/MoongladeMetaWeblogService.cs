@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DateTimeOps;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
@@ -139,8 +141,33 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
+                var catIds = new List<Guid>();
+                foreach (var postCategory in post.categories)
+                {
+                    var cat = await _categoryService.GetAsync(postCategory);
+                    if (null != cat)
+                    {
+                        catIds.Add(cat.Id);
+                    }
+                }
 
-                throw new NotImplementedException();
+                var req = new UpdatePostRequest
+                {
+                    Title = post.title,
+                    Slug = post.wp_slug.Trim().ToLower(),
+                    EditorContent = post.description,
+                    Tags = post.mt_keywords.Split(','),
+                    CategoryIds = catIds.ToArray(),
+                    ContentLanguageCode = "en-us",
+                    IsPublished = publish,
+                    EnableComment = true,
+                    IsFeedIncluded = true,
+                    ExposedToSiteMap = true,
+                    PublishDate = DateTime.UtcNow
+                };
+
+                var p = await _postService.CreateAsync(req);
+                return p.Id.ToString();
             }
             catch (Exception e)
             {
