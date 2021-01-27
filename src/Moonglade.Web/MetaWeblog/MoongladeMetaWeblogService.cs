@@ -7,8 +7,10 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.Pages;
 using Moonglade.Utils;
 using WilderMinds.MetaWeblog;
+using Page = WilderMinds.MetaWeblog.Page;
 using Post = WilderMinds.MetaWeblog.Post;
 using Tag = WilderMinds.MetaWeblog.Tag;
 
@@ -23,6 +25,7 @@ namespace Moonglade.Web.MetaWeblog
         private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
+        private readonly IPageService _pageService;
 
         public MoongladeMetaWeblogService(
             IOptions<AuthenticationSettings> authOptions,
@@ -31,7 +34,8 @@ namespace Moonglade.Web.MetaWeblog
             ILogger<MoongladeMetaWeblogService> logger,
             ITagService tagService,
             ICategoryService categoryService,
-            IPostService postService)
+            IPostService postService,
+            IPageService pageService)
         {
             _authenticationSettings = authOptions.Value;
             _blogConfig = blogConfig;
@@ -40,6 +44,7 @@ namespace Moonglade.Web.MetaWeblog
             _tagService = tagService;
             _categoryService = categoryService;
             _postService = postService;
+            _pageService = pageService;
         }
 
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
@@ -271,7 +276,21 @@ namespace Moonglade.Web.MetaWeblog
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            if (!Guid.TryParse(pageid, out var id))
+            {
+                throw new ArgumentException("Invalid ID", nameof(pageid));
+            }
+
+            try
+            {
+                await _pageService.DeleteAsync(id);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         private void EnsureUser(string username, string password)
