@@ -138,28 +138,72 @@ namespace Moonglade.Web.MetaWeblog
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<string> AddPostAsync(string blogid, string username, string password, Post post, bool publish)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<bool> DeletePostAsync(string key, string postid, string username, string password, bool publish)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+                if (!Guid.TryParse(postid.Trim(), out var id))
+                {
+                    throw new ArgumentException("Invalid ID", nameof(postid));
+                }
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<bool> EditPostAsync(string postid, string username, string password, Post post, bool publish)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+                if (!Guid.TryParse(postid.Trim(), out var id))
+                {
+                    throw new ArgumentException("Invalid ID", nameof(postid));
+                }
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<CategoryInfo[]> GetCategoriesAsync(string blogid, string username, string password)
@@ -234,55 +278,113 @@ namespace Moonglade.Web.MetaWeblog
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<Page> GetPageAsync(string blogid, string pageid, string username, string password)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<Page[]> GetPagesAsync(string blogid, string username, string password, int numPages)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<Author[]> GetAuthorsAsync(string blogid, string username, string password)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
         {
             EnsureUser(username, password);
 
-            throw new NotImplementedException();
+            try
+            {
+                if (!Guid.TryParse(pageid, out var id))
+                {
+                    throw new ArgumentException("Invalid ID", nameof(pageid));
+                }
+
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
 
         public async Task<bool> DeletePageAsync(string blogid, string username, string password, string pageid)
         {
             EnsureUser(username, password);
 
-            if (!Guid.TryParse(pageid, out var id))
-            {
-                throw new ArgumentException("Invalid ID", nameof(pageid));
-            }
-
             try
             {
+                if (!Guid.TryParse(pageid, out var id))
+                {
+                    throw new ArgumentException("Invalid ID", nameof(pageid));
+                }
+
                 await _pageService.DeleteAsync(id);
                 return true;
             }
