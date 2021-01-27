@@ -306,7 +306,7 @@ namespace Moonglade.Web.MetaWeblog
                 var mPage = new Page
                 {
                     title = page.Title,
-                    description = page.MetaDescription,
+                    description = page.RawHtmlContent,
                     dateCreated = _dateTimeResolver.ToTimeZone(page.CreateTimeUtc),
                     categories = Array.Empty<string>(),
                     page_id = id.ToString(),
@@ -367,8 +367,19 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
+                var pageRequest = new UpdatePageRequest
+                {
+                    Title = page.title,
+                    HideSidebar = true,
+                    MetaDescription = string.Empty,
+                    HtmlContent = page.description,
+                    CssContent = string.Empty,
+                    IsPublished = publish,
+                    Slug = ToSlug(page.title)
+                };
 
-                throw new NotImplementedException();
+                var uid = await _pageService.CreateAsync(pageRequest);
+                return uid.ToString();
             }
             catch (Exception e)
             {
@@ -431,6 +442,11 @@ namespace Moonglade.Web.MetaWeblog
                 StringComparison.Ordinal) == 0) return;
 
             throw new MetaWeblogException("Authentication failed.");
+        }
+
+        private string ToSlug(string title)
+        {
+            throw new NotImplementedException();
         }
     }
 }
