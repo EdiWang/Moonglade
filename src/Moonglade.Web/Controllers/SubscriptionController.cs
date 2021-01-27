@@ -10,6 +10,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Syndication;
+using Moonglade.Utils;
 
 namespace Moonglade.Web.Controllers
 {
@@ -35,15 +36,16 @@ namespace Moonglade.Web.Controllers
         {
             var cats = await _categoryService.GetAllAsync();
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
-
+            var rootUrl = Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix);
+            
             var oi = new OpmlDoc
             {
                 SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
                 CategoryInfo = catInfos,
-                HtmlUrl = $"{ResolveRootUrl(blogConfig)}/post",
-                XmlUrl = $"{ResolveRootUrl(blogConfig)}/rss",
-                CategoryXmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/rss/[catTitle]",
-                CategoryHtmlUrlTemplate = $"{ResolveRootUrl(blogConfig)}/category/[catTitle]"
+                HtmlUrl = $"{rootUrl}/post",
+                XmlUrl = $"{rootUrl}/rss",
+                CategoryXmlUrlTemplate = $"{rootUrl}/rss/[catTitle]",
+                CategoryHtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
             };
 
             var bytes = await opmlWriter.GetOpmlStreamDataAsync(oi);

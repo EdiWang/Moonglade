@@ -18,21 +18,8 @@ namespace Moonglade.Web.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            else
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, errMessage);
-            }
-        }
 
-        [NonAction]
-        protected string ResolveRootUrl(IBlogConfig blogConfig, bool preferCanonical = false)
-        {
-            var requestedRoot = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
-            if (!preferCanonical) return requestedRoot;
-
-            var url = Helper.ResolveCanonicalUrl(blogConfig.GeneralSettings.CanonicalPrefix, string.Empty);
-            if (string.IsNullOrWhiteSpace(url)) return requestedRoot;
-            return url;
+            return StatusCode(StatusCodes.Status500InternalServerError, errMessage);
         }
     }
 }

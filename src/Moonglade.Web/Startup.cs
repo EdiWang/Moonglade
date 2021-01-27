@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
@@ -26,6 +27,7 @@ using Moonglade.Utils;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Models;
+using WilderMinds.MetaWeblog;
 
 #endregion
 
@@ -128,6 +130,12 @@ namespace Moonglade.Web
             });
 
             app.UseRobotsTxt();
+
+            app.UseForFeature(nameof(FeatureFlags.MetaWeblog), _ =>
+            {
+                // Support MetaWeblog API
+                app.UseMetaWeblog("/metaweblog");
+            });
 
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();

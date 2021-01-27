@@ -169,8 +169,8 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [ ] BlogML - Under triage
 - [ ] APML - Not planned
 - [ ] Trackback - Not planned
-- [ ] RSD - Not planned
-- [ ] MetaWeblog - Not planned
+- [ ] RSD - Under triage
+- [ ] MetaWeblog - Work in progress
 
 ## 🐼 Customers
 

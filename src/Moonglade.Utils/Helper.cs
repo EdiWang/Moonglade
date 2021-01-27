@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Win32;
 
 namespace Moonglade.Utils
@@ -40,6 +41,23 @@ namespace Moonglade.Utils
             }
 
             return osVer.VersionString;
+        }
+
+        public static string ResolveRootUrl(HttpContext ctx, string canonicalPrefix, bool preferCanonical = false)
+        {
+            if (ctx is null && !preferCanonical)
+            {
+                throw new ArgumentNullException(nameof(ctx), "HttpContext must not be null when preferCanonical is 'false'");
+            }
+
+            if (preferCanonical)
+            {
+                var url = ResolveCanonicalUrl(canonicalPrefix, string.Empty);
+                return url;
+            }
+
+            var requestedRoot = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
+            return requestedRoot;
         }
 
         public static async Task<string> GetThemeColorAsync(string webRootPath, string currentTheme)
@@ -252,6 +270,25 @@ namespace Moonglade.Utils
 
             // Legacy fallback (without explicit match timeout)
             return new(pattern, options);
+        }
+
+        public static string GenerateSlug(this string phrase)
+        {
+            string str = phrase.RemoveAccent().ToLower();
+            // invalid chars           
+            str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
+            // convert multiple spaces into one space   
+            str = Regex.Replace(str, @"\s+", " ").Trim();
+            // cut and trim 
+            str = str.Substring(0, str.Length <= 45 ? str.Length : 45).Trim();
+            str = Regex.Replace(str, @"\s", "-"); // hyphens   
+            return str;
+        }
+
+        public static string RemoveAccent(this string txt)
+        {
+            byte[] bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(txt);
+            return System.Text.Encoding.ASCII.GetString(bytes);
         }
     }
 }
