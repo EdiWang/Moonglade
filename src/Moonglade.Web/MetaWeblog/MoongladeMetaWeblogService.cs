@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DateTimeOps;
 using Microsoft.Extensions.Logging;
@@ -149,10 +149,10 @@ namespace Moonglade.Web.MetaWeblog
             {
                 var allCats = await _categoryService.GetAllAsync();
                 var cids = (from postCategory in post.categories
-                    select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
+                            select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
                     into cat
-                    where null != cat
-                    select cat.Id).ToArray();
+                            where null != cat
+                            select cat.Id).ToArray();
 
                 var req = new UpdatePostRequest
                 {
@@ -474,7 +474,15 @@ namespace Moonglade.Web.MetaWeblog
 
         private string ToSlug(string title)
         {
-            throw new NotImplementedException();
+            var engSlug = title.GenerateSlug();
+            if (!string.IsNullOrWhiteSpace(engSlug)) return engSlug;
+
+            // Chinese and other language title
+            var bytes = Encoding.Unicode.GetBytes(title);
+            var hexArray = bytes.Select(b => $"{b:x2}");
+            var hexName = string.Join(string.Empty, hexArray);
+
+            return hexName;
         }
 
         private Post ToMetaWeblogPost(Core.Post post)
