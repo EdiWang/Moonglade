@@ -147,12 +147,11 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
-                var allCats = await _categoryService.GetAllAsync();
-                var cids = (from postCategory in post.categories
-                            select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
-                    into cat
-                            where null != cat
-                            select cat.Id).ToArray();
+                var cids = await GetCatIds(post.categories);
+                if (cids.Length == 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(post.categories));
+                }
 
                 var req = new UpdatePostRequest
                 {
@@ -211,7 +210,29 @@ namespace Moonglade.Web.MetaWeblog
                     throw new ArgumentException("Invalid ID", nameof(postid));
                 }
 
-                throw new NotImplementedException();
+                var cids = await GetCatIds(post.categories);
+                if (cids.Length == 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(post.categories));
+                }
+
+                var req = new UpdatePostRequest
+                {
+                    Title = post.title,
+                    Slug = post.wp_slug ?? ToSlug(post.title),
+                    EditorContent = post.description,
+                    Tags = post.mt_keywords?.Split(','),
+                    CategoryIds = cids,
+                    ContentLanguageCode = "en-us",
+                    IsPublished = publish,
+                    EnableComment = true,
+                    IsFeedIncluded = true,
+                    ExposedToSiteMap = true,
+                    PublishDate = DateTime.UtcNow
+                };
+
+                var p = await _postService.UpdateAsync(id, req);
+                return true;
             }
             catch (Exception e)
             {
@@ -522,6 +543,18 @@ namespace Moonglade.Web.MetaWeblog
             };
 
             return mPage;
+        }
+
+        private async Task<Guid[]> GetCatIds(string[] mPostCategories)
+        {
+            var allCats = await _categoryService.GetAllAsync();
+            var cids = (from postCategory in mPostCategories
+                        select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
+                        into cat
+                        where null != cat
+                        select cat.Id).ToArray();
+
+            return cids;
         }
     }
 }
