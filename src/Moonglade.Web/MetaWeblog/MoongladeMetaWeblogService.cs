@@ -399,7 +399,19 @@ namespace Moonglade.Web.MetaWeblog
                     throw new ArgumentException("Invalid ID", nameof(pageid));
                 }
 
-                throw new NotImplementedException();
+                var pageRequest = new UpdatePageRequest
+                {
+                    Title = page.title,
+                    HideSidebar = true,
+                    MetaDescription = string.Empty,
+                    HtmlContent = page.description,
+                    CssContent = string.Empty,
+                    IsPublished = publish,
+                    Slug = ToSlug(page.title)
+                };
+
+                await _pageService.UpdateAsync(id, pageRequest);
+                return true;
             }
             catch (Exception e)
             {
