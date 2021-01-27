@@ -121,6 +121,7 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
+                await Task.CompletedTask;
                 if (numberOfPosts < 0) throw new ArgumentOutOfRangeException(nameof(numberOfPosts));
 
                 throw new NotImplementedException();
