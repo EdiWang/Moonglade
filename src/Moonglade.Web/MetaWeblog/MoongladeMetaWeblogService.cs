@@ -147,23 +147,20 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
-                var catIds = new List<Guid>();
-                foreach (var postCategory in post.categories)
-                {
-                    var cat = await _categoryService.GetAsync(postCategory);
-                    if (null != cat)
-                    {
-                        catIds.Add(cat.Id);
-                    }
-                }
+                var allCats = await _categoryService.GetAllAsync();
+                var cids = (from postCategory in post.categories
+                    select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
+                    into cat
+                    where null != cat
+                    select cat.Id).ToArray();
 
                 var req = new UpdatePostRequest
                 {
                     Title = post.title,
-                    Slug = post.wp_slug.Trim().ToLower(),
+                    Slug = post.wp_slug ?? ToSlug(post.title),
                     EditorContent = post.description,
-                    Tags = post.mt_keywords.Split(','),
-                    CategoryIds = catIds.ToArray(),
+                    Tags = post.mt_keywords?.Split(','),
+                    CategoryIds = cids,
                     ContentLanguageCode = "en-us",
                     IsPublished = publish,
                     EnableComment = true,
@@ -298,7 +295,7 @@ namespace Moonglade.Web.MetaWeblog
             try
             {
                 // TODO: Check extension names
-                
+
                 var bits = Convert.FromBase64String(mediaObject.bits);
 
                 var pFilename = _fileNameGenerator.GetFileName(mediaObject.name);
