@@ -13,12 +13,32 @@ namespace Moonglade.Data.Spec
         {
             var startRow = (pageIndex - 1) * pageSize;
 
-            //AddInclude(post => post
-            //    .Include(p => p.PostPublish)
-            //    .Include(p => p.PostExtension)
-            //    .Include(p => p.PostTag)
-            //    .ThenInclude(pt => pt.Tag));
             ApplyPaging(startRow, pageSize);
+            ApplyOrderByDescending(p => p.PubDateUtc);
+        }
+
+        public PostPagingSpec(PostStatus postStatus, string keyword, int pageSize, int offset)
+            : base(p => null == keyword || p.Title.Contains(keyword))
+        {
+            switch (postStatus)
+            {
+                case PostStatus.Draft:
+                    AddCriteria(p => !p.IsPublished && !p.IsDeleted);
+                    break;
+                case PostStatus.Published:
+                    AddCriteria(p => p.IsPublished && !p.IsDeleted);
+                    break;
+                case PostStatus.Deleted:
+                    AddCriteria(p => p.IsDeleted);
+                    break;
+                case PostStatus.NotSet:
+                    AddCriteria(p => true);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(postStatus), postStatus, null);
+            }
+
+            ApplyPaging(offset, pageSize);
             ApplyOrderByDescending(p => p.PubDateUtc);
         }
     }

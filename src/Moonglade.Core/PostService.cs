@@ -26,7 +26,7 @@ namespace Moonglade.Core
         Task<string> GetContent(PostSlugInfo slug);
         Task<PostMeta> GetMeta(PostSlugInfo slug);
         Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus);
-        Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string noteKeyword = null);
+        Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
         Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null);
         Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
@@ -247,10 +247,36 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<(IReadOnlyList<PostSegment>, int TotalRows)> ListSegment(
-            PostStatus postStatus, int offset, int pageSize, string noteKeyword = null)
+        public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(
+            PostStatus postStatus, int offset, int pageSize, string keyword = null)
         {
-            throw new NotImplementedException();
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize),
+                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
+            }
+            if (offset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset),
+                    $"{nameof(offset)} can not be less than 0, current value: {offset}.");
+            }
+
+            var spec = new PostPagingSpec(postStatus, keyword, pageSize, offset);
+            var posts = await _postRepo.SelectAsync(spec, p => new PostSegment
+            {
+                Id = p.Id,
+                Title = p.Title,
+                Slug = p.Slug,
+                PubDateUtc = p.PubDateUtc,
+                IsPublished = p.IsPublished,
+                IsDeleted = p.IsDeleted,
+                CreateTimeUtc = p.CreateTimeUtc,
+                Hits = p.PostExtension.Hits
+            });
+
+            var totalRows = CountVisible();
+
+            return (posts, totalRows);
         }
 
         public Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType)
