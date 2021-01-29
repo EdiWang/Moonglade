@@ -4,7 +4,9 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+# Workaround https://github.com/NuGet/Home/issues/10491
+FROM mcr.microsoft.com/dotnet/sdk:5.0.102-ca-patch-buster-slim AS build
+#FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 
 # Auto copy to prevent 996
