@@ -20,6 +20,7 @@
 }
 
 .admin-body {
+    padding-top: 0 !important;
 }
 
 .admin-body-wrapper {
@@ -39,7 +40,7 @@
 .admin-nav {
     background-color: var(--gray-1);
     width: 190px;
-    min-height: 100vh;
+    min-height: calc(100vh - 54px);
     margin-left: -15rem;
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
@@ -58,7 +59,6 @@
     }
 
 .admin-main {
-    overflow-y: scroll;
     min-width: 100vw;
     box-shadow: 0 0 12px var(--gray-3);
 }
