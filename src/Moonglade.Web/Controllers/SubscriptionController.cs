@@ -37,7 +37,7 @@ namespace Moonglade.Web.Controllers
             var cats = await _categoryService.GetAllAsync();
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
             var rootUrl = Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix);
-            
+
             var oi = new OpmlDoc
             {
                 SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",

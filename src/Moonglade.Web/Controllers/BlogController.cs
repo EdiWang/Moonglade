@@ -2,8 +2,6 @@
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Configuration.Abstraction;
-using Moonglade.Utils;
 
 namespace Moonglade.Web.Controllers
 {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core;
 using Moonglade.Menus;
 
 namespace Moonglade.Web.Models

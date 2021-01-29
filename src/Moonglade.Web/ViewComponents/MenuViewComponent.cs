@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core;
 using Moonglade.Menus;
 
 namespace Moonglade.Web.ViewComponents
