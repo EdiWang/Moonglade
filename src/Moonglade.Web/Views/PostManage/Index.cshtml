@@ -2,8 +2,6 @@
     Layout = "_LayoutAdmin";
 }
 
-@model IReadOnlyList<Moonglade.Core.PostSegment>
-
 @section head{
     <link href="~/css/3rd/datatables.min.css" rel="stylesheet" />
     <script src="~/js/3rd/datatables.min.js"></script>
@@ -12,24 +10,86 @@
 @section scripts{
     <script>
         $(function () {
-            $(".btn-delete").click(function () {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deletePost($(this).data("postid"));
-                }
-            });
-
-            $("#posts-table").DataTable({
+            var table = $("#posts-table").DataTable({
                 "order": [[1, "desc"]],
                 "lengthMenu": [[10, 15, 20, 25, 50, -1], [10, 15, 20, 25, 50, "All"]],
-                "pageLength": 10
+                "pageLength": 10,
+                "processing": true,
+                "serverSide": true,
+                "ordering": false,
+                "ajax":
+                {
+                    url: "/post/manage/list-published",
+                    type: "POST"
+                },
+                "initComplete": function (settings, json) {
+                    $('.dataTables_filter input').unbind();
+                    $('.dataTables_filter input').bind('keyup blur',
+                        function (e) {
+                            console.info(e);
+                            if (e.keyCode == 13 || e.type == 'blur') {
+                                table.search(this.value).draw();
+                            }
+                        });
+                },
+                "columns": [
+                    { "data": null },
+                    { "data": "pubDateUtc" },
+                    { "data": "hits" },
+                    { "data": null }
+                ],
+                "columnDefs": [
+                    {
+                        "targets": -1,
+                        "render": function (data, type, row, meta) {
+                            return `<a class="btn btn-outline-accent btn-sm btn-edit" href="/post/manage/edit/${data.id}"><span class="icon-pencil"></span></a> <button class="btn btn-outline-danger btn-sm btn-delete"><span class="icon-bin"></span></button>`;
+                        }
+                    },
+                    {
+                        "targets": 0,
+                        "render": function (data, type, row, meta) {
+                            return `<a href="/post/${(new Date(data.pubDateUtc)).getFullYear()}/${(new Date(data.pubDateUtc)).getMonth() + 1}/${(new Date(data.pubDateUtc)).getDate()}/${data.slug}" target="_blank">${data.title}</a>`;
+                        }
+                    },
+                    {
+                        "targets": 1,
+                        "data": "pubDateUtc",
+                        "render": function (data, type, row, meta) {
+                            return `<span class="text-muted">${(new Date(data + 'Z')).toLocaleString()}</span>`;
+                        }
+                    },
+                    {
+                        "targets": 2,
+                        "data": "hits",
+                        "render": function (data, type, row, meta) {
+                            return `<span class="text-muted">${data}</span>`;
+                        }
+                    }
+                ]
+            });
+
+            $(".btn-refresh").click(function () {
+                table.ajax.reload();
+                toastr.success("Data Refreshed");
+            });
+
+            $('#posts-table tbody').on('click', 'button', function () {
+                var data = table.row($(this).parents('tr')).data();
+                console.info(data);
+                var cfm = confirm("Delete Confirmation?");
+                if (cfm) {
+                    deletePost(data.id);
+                    $(this).parents('tr').hide();
+                }
             });
         });
 
         function deletePost(postid) {
             $(`#span-processing-${postid}`).show();
 
-            callApi(`/post/manage/${postid}/recycle`, 'DELETE', {},
+            callApi(`/post/manage/${postid}/recycle`,
+                'DELETE',
+                {},
                 (resp) => {
                     $(`#tr-${postid}`).hide();
                 });
@@ -39,53 +99,21 @@
 
 <partial name="_PostManageHeader" />
 
-@if (Model.Any())
-{
-    @Html.AntiForgeryToken()
+@Html.AntiForgeryToken()
 
-    <table id="posts-table" class="table table-bordered">
-        <thead>
-            <tr>
-                <th>@Localizer["Title"]</th>
-                <th class="table-item-w20">@Localizer["Published"]</th>
-                <th class="table-item-w10">@Localizer["Hits"]</th>
-                <th class="table-item-w20">@Localizer["Options"]</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var post in Model.OrderByDescending(p => p.CreateTimeUtc))
-            {
-                <tr id="tr-@post.Id">
-                    <td>
-                        <a asp-controller="Post" asp-action="Slug"
-                           asp-route-year="@post.PubDateUtc.Value.Year"
-                           asp-route-month="@post.PubDateUtc.Value.Month"
-                           asp-route-day="@post.PubDateUtc.Value.Day"
-                           asp-route-slug="@post.Slug" target="_blank">
-                            @post.Title
-                        </a>
-                    </td>
-                    <td data-sort="@post.PubDateUtc.GetValueOrDefault().ToString("yyyyMMddHHmmss")" class="text-muted">
-                        @post.PubDateUtc.GetValueOrDefault().ToString("MM/dd/yyyy")
-                    </td>
-                    <td class="text-muted">
-                        @post.Hits
-                    </td>
-                    <td class="p-2">
-                        <a class="btn btn-outline-accent btn-sm btn-edit" asp-controller="PostManage" asp-action="Edit" asp-route-id="@post.Id">
-                            <span class="icon-pencil"></span>
-                        </a>
-                        <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                            <span class="icon-bin"></span>
-                        </a>
-                        <span id="span-processing-@post.Id" style="display: none">...</span>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <partial name="_NoPosts" />
-}
+<div class="float-right">
+    <button class="btn btn-sm btn-outline-success btn-refresh">
+        Refresh
+    </button>
+</div>
+
+<table id="posts-table" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>@Localizer["Title"]</th>
+            <th class="table-item-w20">@Localizer["Published"]</th>
+            <th class="table-item-w10">@Localizer["Hits"]</th>
+            <th class="table-item-w20">@Localizer["Options"]</th>
+        </tr>
+    </thead>
+</table>

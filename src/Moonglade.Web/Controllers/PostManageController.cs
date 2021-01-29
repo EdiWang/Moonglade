@@ -40,13 +40,13 @@ namespace Moonglade.Web.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var list = await _postService.ListSegment(PostStatus.Published);
-            return View(list);
+            return View();
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         [Route("list-published")]
         public async Task<IActionResult> ListPublished(DataTableRequest model)
         {
