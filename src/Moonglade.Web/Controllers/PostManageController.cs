@@ -46,6 +46,25 @@ namespace Moonglade.Web.Controllers
             return View(list);
         }
 
+        [HttpPost]
+        [Route("list-published")]
+        public async Task<IActionResult> ListPublished(DataTableRequest model)
+        {
+            var searchBy = model.Search?.Value;
+            var take = model.Length;
+            var offset = model.Start;
+
+            var posts = await _postService.ListSegment(PostStatus.Published, offset, take, searchBy);
+            var jqdtResponse = new JqDataTableResponse<PostSegment>
+            {
+                Draw = model.Draw,
+                RecordsFiltered = posts.TotalRows,
+                RecordsTotal = posts.TotalRows,
+                Data = posts.Posts
+            };
+            return Json(jqdtResponse);
+        }
+
         [Route("draft")]
         public async Task<IActionResult> Draft()
         {

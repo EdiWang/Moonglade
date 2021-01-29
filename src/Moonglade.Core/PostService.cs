@@ -26,6 +26,7 @@ namespace Moonglade.Core
         Task<string> GetContent(PostSlugInfo slug);
         Task<PostMeta> GetMeta(PostSlugInfo slug);
         Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus);
+        Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string noteKeyword = null);
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
         Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null);
         Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
@@ -244,6 +245,12 @@ namespace Moonglade.Core
                 CreateTimeUtc = p.CreateTimeUtc,
                 Hits = p.PostExtension.Hits
             });
+        }
+
+        public Task<(IReadOnlyList<PostSegment>, int TotalRows)> ListSegment(
+            PostStatus postStatus, int offset, int pageSize, string noteKeyword = null)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType)
