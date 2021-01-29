@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DateTimeOps;
 using Microsoft.Extensions.Logging;
@@ -274,8 +275,27 @@ namespace Moonglade.Core
                 Hits = p.PostExtension.Hits
             });
 
-            var totalRows = CountVisible();
+            Expression<Func<PostEntity, bool>> countExpression = p => null == keyword || p.Title.Contains(keyword);
+            
+            switch (postStatus)
+            {
+                case PostStatus.Draft:
+                    countExpression.AndAlso(p => !p.IsPublished && !p.IsDeleted);
+                    break;
+                case PostStatus.Published:
+                    countExpression.AndAlso(p => p.IsPublished && !p.IsDeleted);
+                    break;
+                case PostStatus.Deleted:
+                    countExpression.AndAlso(p => p.IsDeleted);
+                    break;
+                case PostStatus.NotSet:
+                    countExpression.AndAlso(p => true);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(postStatus), postStatus, null);
+            }
 
+            var totalRows = _postRepo.Count(countExpression);
             return (posts, totalRows);
         }
 
