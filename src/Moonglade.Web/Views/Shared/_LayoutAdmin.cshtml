@@ -27,11 +27,14 @@
     <partial name="_Favicons" />
     <environment exclude="Development">
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/admin-bundle.min.css" rel="stylesheet" asp-append-version="true" />
     </environment>
     <environment include="Development">
         <link href="~/css/bundle.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/3rd/bootstrap-tagsinput.css" rel="stylesheet" />
+        <link href="~/css/3rd/bootstrap-tagsinput-typeahead.css" rel="stylesheet" />
+        <link href="~/css/src/admin.css" rel="stylesheet" />
     </environment>
-    <link href="~/css/admin-bundle.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
     <environment exclude="Development">
         <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
