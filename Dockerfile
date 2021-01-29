@@ -1,6 +1,4 @@
-# Workaround 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.102-ca-patch AS base
-#FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 RUN apt-get update && apt-get install -y libgdiplus
 WORKDIR /app
 EXPOSE 80
