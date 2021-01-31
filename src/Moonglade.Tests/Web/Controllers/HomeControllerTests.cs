@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
@@ -24,6 +25,8 @@ namespace Moonglade.Tests.Web.Controllers
         private Mock<IPostService> _mockPostService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
+        private Mock<ILogger<HomeController>> _mockLogger;
+
 
         private readonly IReadOnlyList<PostDigest> _fakePosts = new List<PostDigest>
         {
@@ -48,11 +51,12 @@ namespace Moonglade.Tests.Web.Controllers
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockPostService = _mockRepository.Create<IPostService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+            _mockLogger = _mockRepository.Create<ILogger<HomeController>>();
 
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
             {
@@ -65,7 +69,8 @@ namespace Moonglade.Tests.Web.Controllers
             return new(
                 _mockPostService.Object,
                 _mockBlogCache.Object,
-                _mockBlogConfig.Object);
+                _mockBlogConfig.Object,
+                _mockLogger.Object);
         }
 
         [Test]
