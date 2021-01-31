@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -15,15 +16,18 @@ namespace Moonglade.Web.Controllers
         private readonly IPostService _postService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
+        private readonly ILogger<HomeController> _logger;
 
         public HomeController(
             IPostService postService,
             IBlogCache cache,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig,
+            ILogger<HomeController> logger)
         {
             _postService = postService;
             _cache = cache;
             _blogConfig = blogConfig;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -116,15 +120,23 @@ namespace Moonglade.Web.Controllers
         [HttpGet("set-lang")]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
-            if (string.IsNullOrWhiteSpace(culture)) return BadRequest();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(culture)) return BadRequest();
 
-            Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new(culture)),
-                new() { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-            );
+                Response.Cookies.Append(
+                    CookieRequestCultureProvider.DefaultCookieName,
+                    CookieRequestCultureProvider.MakeCookieValue(new(culture)),
+                    new() { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+                );
 
-            return LocalRedirect(returnUrl);
+                return LocalRedirect(returnUrl);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message, culture, returnUrl);
+                return LocalRedirect(returnUrl);
+            }
         }
     }
 }
