@@ -28,6 +28,7 @@ using Moonglade.Web.MetaWeblog;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
 using WilderMinds.MetaWeblog;
+using MetaWeblogService = Moonglade.Web.MetaWeblog.MetaWeblogService;
 
 namespace Moonglade.Web.Configuration
 {
@@ -86,7 +87,7 @@ namespace Moonglade.Web.Configuration
             }
 
             // Supporting Live Writer (MetaWeblogAPI)
-            services.AddMetaWeblog<MoongladeMetaWeblogService>();
+            services.AddMetaWeblog<MetaWeblogService>();
 
             services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IPageService, PageService>();

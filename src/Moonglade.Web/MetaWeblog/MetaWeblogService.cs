@@ -18,12 +18,12 @@ using Tag = WilderMinds.MetaWeblog.Tag;
 
 namespace Moonglade.Web.MetaWeblog
 {
-    public class MoongladeMetaWeblogService : IMetaWeblogProvider
+    public class MetaWeblogService : IMetaWeblogProvider
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IBlogConfig _blogConfig;
         private readonly IDateTimeResolver _dateTimeResolver;
-        private readonly ILogger<MoongladeMetaWeblogService> _logger;
+        private readonly ILogger<MetaWeblogService> _logger;
         private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
@@ -31,11 +31,11 @@ namespace Moonglade.Web.MetaWeblog
         private readonly IBlogImageStorage _blogImageStorage;
         private readonly IFileNameGenerator _fileNameGenerator;
 
-        public MoongladeMetaWeblogService(
+        public MetaWeblogService(
             IOptions<AuthenticationSettings> authOptions,
             IBlogConfig blogConfig,
             IDateTimeResolver dateTimeResolver,
-            ILogger<MoongladeMetaWeblogService> logger,
+            ILogger<MetaWeblogService> logger,
             ITagService tagService,
             ICategoryService categoryService,
             IPostService postService,
@@ -232,7 +232,7 @@ namespace Moonglade.Web.MetaWeblog
                     PublishDate = DateTime.UtcNow
                 };
 
-                var p = await _postService.UpdateAsync(id, req);
+                await _postService.UpdateAsync(id, req);
                 return true;
             }
             catch (Exception e)
