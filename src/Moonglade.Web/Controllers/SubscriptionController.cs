@@ -11,10 +11,13 @@ using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Syndication;
 using Moonglade.Utils;
+using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers
 {
-    public class SubscriptionController : BlogController
+    [ApiController]
+    [AppendAppVersion]
+    public class SubscriptionController : ControllerBase
     {
         private readonly ISyndicationService _syndicationService;
         private readonly ICategoryService _categoryService;
