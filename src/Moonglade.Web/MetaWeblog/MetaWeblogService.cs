@@ -89,7 +89,7 @@ namespace Moonglade.Web.MetaWeblog
                 var blog = new BlogInfo
                 {
                     blogid = _blogConfig.GeneralSettings.SiteTitle,
-                    blogName = _blogConfig.GeneralSettings.Description,
+                    blogName = _blogConfig.GeneralSettings.SiteTitle,
                     url = "/"
                 };
 
@@ -323,7 +323,7 @@ namespace Moonglade.Web.MetaWeblog
                 var pFilename = _fileNameGenerator.GetFileName(mediaObject.name);
                 var filename = await _blogImageStorage.InsertAsync(pFilename, bits);
 
-                var imageUrl = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}/image/{filename}";
+                var imageUrl = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}image/{filename}";
 
                 MediaObjectInfo objectInfo = new MediaObjectInfo { url = imageUrl };
                 return objectInfo;
