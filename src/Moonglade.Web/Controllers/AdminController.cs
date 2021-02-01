@@ -172,6 +172,8 @@ namespace Moonglade.Web.Controllers
             return Forbid();
         }
 
+        #endregion
+
         [HttpGet("about")]
         public IActionResult About()
         {
@@ -227,8 +229,6 @@ namespace Moonglade.Web.Controllers
             var list = await pingbackService.GetPingbackHistoryAsync();
             return View(list);
         }
-
-        #endregion
 
         // Keep session from expire when writing a very long post
         [IgnoreAntiforgeryToken]
