@@ -43,8 +43,7 @@ namespace Moonglade.Tests.Web.Controllers
             Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
             if (result is RedirectToActionResult rdResult)
             {
-                Assert.That(rdResult.ActionName, Is.EqualTo("Index"));
-                Assert.That(rdResult.ControllerName, Is.EqualTo("PostManage"));
+                Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
             }
         }
 
