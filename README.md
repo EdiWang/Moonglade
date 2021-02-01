@@ -170,7 +170,7 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [ ] APML - Not planned
 - [ ] Trackback - Not planned
 - [ ] RSD - Under triage
-- [ ] MetaWeblog - Work in progress
+- [X] MetaWeblog (Basic Support)
 
 ## 🐼 Customers
 
