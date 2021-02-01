@@ -50,11 +50,17 @@ namespace Moonglade.Web.Controllers
         [Route("list-published")]
         public async Task<IActionResult> ListPublished(DataTableRequest model)
         {
+            var jqdtResponse = await GetJqDataTableResponse(PostStatus.Published, model);
+            return Json(jqdtResponse);
+        }
+
+        private async Task<JqDataTableResponse<PostSegment>> GetJqDataTableResponse(PostStatus status, DataTableRequest model)
+        {
             var searchBy = model.Search?.Value;
             var take = model.Length;
             var offset = model.Start;
 
-            var posts = await _postService.ListSegment(PostStatus.Published, offset, take, searchBy);
+            var posts = await _postService.ListSegment(status, offset, take, searchBy);
             var jqdtResponse = new JqDataTableResponse<PostSegment>
             {
                 Draw = model.Draw,
@@ -62,7 +68,8 @@ namespace Moonglade.Web.Controllers
                 RecordsTotal = posts.TotalRows,
                 Data = posts.Posts
             };
-            return Json(jqdtResponse);
+
+            return jqdtResponse;
         }
 
         [Route("draft")]
