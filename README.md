@@ -166,11 +166,11 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [X] Pingback
 - [X] Reader View
 - [X] FOAF
+- [X] RSD
+- [X] MetaWeblog (Basic Support)
 - [ ] BlogML - Under triage
 - [ ] APML - Not planned
 - [ ] Trackback - Not planned
-- [ ] RSD - Under triage
-- [X] MetaWeblog (Basic Support)
 
 ## 🐼 Customers
 
