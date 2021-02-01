@@ -40,11 +40,6 @@ namespace Moonglade.Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpPost]
         [IgnoreAntiforgeryToken]
         [Route("list-published")]

@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
                     $"Authentication success for Azure account '{User.Identity?.Name}'");
             }
 
-            return RedirectToAction("Index", "PostManage");
+            return RedirectToAction("Post");
         }
 
         #region Authentication
@@ -185,6 +185,12 @@ namespace Moonglade.Web.Controllers
         {
             var cats = await categoryService.GetAllAsync();
             return View(new CategoryManageViewModel { Categories = cats });
+        }
+
+        [HttpGet("post")]
+        public IActionResult Post()
+        {
+            return View();
         }
 
         [HttpGet("page")]
