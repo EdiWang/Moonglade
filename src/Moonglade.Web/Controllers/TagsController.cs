@@ -10,6 +10,7 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [ApiController]
+    [AppendAppVersion]
     [Route("api/[controller]")]
     public class TagsController : ControllerBase
     {

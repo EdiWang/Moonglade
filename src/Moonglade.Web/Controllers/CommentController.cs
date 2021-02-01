@@ -10,12 +10,14 @@ using Moonglade.Comments;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Notification.Client;
 using Moonglade.Utils;
+using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [ApiController]
+    [AppendAppVersion]
     [Route("api/[controller]")]
     public class CommentController : ControllerBase
     {
