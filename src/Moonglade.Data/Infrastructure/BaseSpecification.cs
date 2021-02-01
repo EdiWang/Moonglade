@@ -29,15 +29,7 @@ namespace Moonglade.Data.Infrastructure
 
         public void AddCriteria(Expression<Func<T, bool>> criteria)
         {
-            if (Criteria is not null)
-            {
-                // TODO: Check if this never gets called because the child class constructor didn't finish executing while invoking AddCriteria()
-                Criteria.AndAlso(criteria);
-            }
-            else
-            {
-                Criteria = criteria;
-            }
+            Criteria = Criteria is not null ? Criteria.AndAlso(criteria) : criteria;
         }
 
         protected virtual void AddInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> includeExpression)
