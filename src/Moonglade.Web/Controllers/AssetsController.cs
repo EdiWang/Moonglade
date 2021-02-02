@@ -28,7 +28,7 @@ using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
-    public class AssetsController : BlogController
+    public class AssetsController : Controller
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogImageStorage _imageStorage;
@@ -37,6 +37,8 @@ namespace Moonglade.Web.Controllers
         private readonly ImageStorageSettings _imageStorageSettings;
         private readonly AppSettings _settings;
         private readonly ILogger<AssetsController> _logger;
+
+        private static string SiteIconDirectory => Path.Join(AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString(), "siteicons");
 
         public AssetsController(
             ILogger<AssetsController> logger,
@@ -93,7 +95,7 @@ namespace Moonglade.Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error requesting image {filename}");
-                return ServerError();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -194,7 +196,7 @@ namespace Moonglade.Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error uploading image.");
-                return ServerError();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 

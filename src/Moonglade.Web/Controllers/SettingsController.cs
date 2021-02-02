@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DateTimeOps;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,7 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [Route("admin/settings")]
-    public class SettingsController : BlogController
+    public class SettingsController : Controller
     {
         #region Private Fields
 
@@ -42,6 +43,8 @@ namespace Moonglade.Web.Controllers
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
         private readonly ILogger<SettingsController> _logger;
+
+        private static string SiteIconDirectory => Path.Join(AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString(), "siteicons");
 
         #endregion
 
@@ -343,7 +346,7 @@ namespace Moonglade.Web.Controllers
             catch (Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return ServerError();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -397,7 +400,7 @@ namespace Moonglade.Web.Controllers
                 catch (Exception e)
                 {
                     _logger.LogError("Invalid base64img Image", e);
-                    return ServerError(e.Message);
+                    return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
                 }
 
                 _blogConfig.GeneralSettings.AvatarBase64 = base64Img;
@@ -409,7 +412,7 @@ namespace Moonglade.Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error uploading avatar image.");
-                return ServerError();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -437,7 +440,7 @@ namespace Moonglade.Web.Controllers
                 catch (Exception e)
                 {
                     _logger.LogError(e.Message, e);
-                    return ServerError(e.Message);
+                    return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
                 }
 
                 _blogConfig.GeneralSettings.SiteIconBase64 = base64Img;
@@ -455,7 +458,7 @@ namespace Moonglade.Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error uploading avatar image.");
-                return ServerError();
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -689,7 +692,7 @@ namespace Moonglade.Web.Controllers
             }
             catch (Exception e)
             {
-                return ServerError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
 
@@ -730,7 +733,7 @@ namespace Moonglade.Web.Controllers
             var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
             if (null == uidClaim || string.IsNullOrWhiteSpace(uidClaim.Value))
             {
-                return ServerError("Can not get current uid.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Can not get current uid.");
             }
 
             if (id.ToString() == uidClaim.Value)
