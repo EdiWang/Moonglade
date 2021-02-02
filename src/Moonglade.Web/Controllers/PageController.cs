@@ -14,7 +14,7 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [Route("page")]
-    public class PageController : BlogController
+    public class PageController : Controller
     {
         private readonly IBlogCache _cache;
         private readonly IPageService _pageService;

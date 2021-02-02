@@ -9,7 +9,7 @@ using Moonglade.Pingback.Mvc;
 namespace Moonglade.Web.Controllers
 {
     [Route("post")]
-    public class PostController : BlogController
+    public class PostController : Controller
     {
         private readonly IPostService _postService;
         private readonly IBlogConfig _blogConfig;

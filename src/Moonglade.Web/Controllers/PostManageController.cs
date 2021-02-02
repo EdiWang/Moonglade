@@ -18,7 +18,7 @@ namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [Route("post/manage")]
-    public class PostManageController : BlogController
+    public class PostManageController : Controller
     {
         private readonly IPostService _postService;
         private readonly ICategoryService _catService;

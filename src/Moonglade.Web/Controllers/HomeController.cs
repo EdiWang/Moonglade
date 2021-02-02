@@ -14,7 +14,7 @@ using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
-    public class HomeController : BlogController
+    public class HomeController : Controller
     {
         private readonly IPostService _postService;
         private readonly IPageService _pageService;

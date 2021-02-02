@@ -10,7 +10,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Web.Controllers
 {
-    public class SearchController : BlogController
+    public class SearchController : Controller
     {
         private readonly ISearchService _searchService;
 
