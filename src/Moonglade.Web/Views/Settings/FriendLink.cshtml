@@ -48,16 +48,58 @@
 
 <partial name="_SettingsHeader" />
 
-<form id="form-settings" asp-controller="Settings" asp-action="FriendLink"
-      data-ajax-begin="onUpdateSettingsBegin"
-      data-ajax-complete="onUpdateSettingsComplete"
-      data-ajax-failure="onUpdateSettingsFailed"
-      data-ajax-success="onUpdateSettingsSuccess"
-      data-ajax="true"
-      data-ajax-method="POST">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="row">
-        <div class="col-md-6">
+<div class="mb-2">
+    <a class="btn btn-outline-success" href="javascript:initCreateFriendLink();">
+        <span class="icon-plus"></span>
+        @Localizer["New"]
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>
+                    @Localizer["Title"]
+                </th>
+                <th>
+                    @Localizer["Link"]
+                </th>
+                <th class="table-item-w20">
+                    @Localizer["Action"]
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
+            {
+                <tr id="tr-@item.Id">
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.LinkUrl
+                    </td>
+                    <td>
+                        <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-primary btn-edit"><span class="icon-pencil"></span></a>
+                        <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
+                        <span id="span-processing-@item.Id" style="display: none">...</span>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <form id="form-settings" asp-controller="Settings" asp-action="FriendLink"
+              data-ajax-begin="onUpdateSettingsBegin"
+              data-ajax-complete="onUpdateSettingsComplete"
+              data-ajax-failure="onUpdateSettingsFailed"
+              data-ajax-success="onUpdateSettingsSuccess"
+              data-ajax="true"
+              data-ajax-method="POST">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="card mb-4">
                 <div class="card-header">@Localizer["Friend Link Options"]</div>
                 <ul class="list-group list-group-flush">
@@ -72,52 +114,11 @@
                     <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-</form>
-
-<div class="mb-2">
-    <a class="btn btn-outline-success" href="javascript:initCreateFriendLink();">
-        <span class="icon-plus"></span>
-        @Localizer["New"]
-    </a>
 </div>
 
 @Html.AntiForgeryToken()
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>
-                @Localizer["Title"]
-            </th>
-            <th>
-                @Localizer["Link"]
-            </th>
-            <th class="table-item-w20">
-                @Localizer["Action"]
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
-        {
-            <tr id="tr-@item.Id">
-                <td>
-                    @item.Title
-                </td>
-                <td>
-                    @item.LinkUrl
-                </td>
-                <td>
-                    <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-primary btn-edit"><span class="icon-pencil"></span></a>
-                    <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
-                    <span id="span-processing-@item.Id" style="display: none">...</span>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
 <p class="text-muted mt-4">@Localizer["* Note: Friend link cache refreshes every 60 minutes, you may need to wait for some time to see the new data."]</p>
 
