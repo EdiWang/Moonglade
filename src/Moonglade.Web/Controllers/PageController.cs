@@ -90,7 +90,7 @@ namespace Moonglade.Web.Controllers
                     }
                 }
 
-                var req = new UpdatePageRequest()
+                var req = new UpdatePageRequest
                 {
                     HtmlContent = model.RawHtmlContent,
                     CssContent = model.CssContent,

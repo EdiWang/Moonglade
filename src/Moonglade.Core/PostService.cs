@@ -276,7 +276,7 @@ namespace Moonglade.Core
             });
 
             Expression<Func<PostEntity, bool>> countExpression = p => null == keyword || p.Title.Contains(keyword);
-            
+
             switch (postStatus)
             {
                 case PostStatus.Draft:

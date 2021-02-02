@@ -3,9 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Caching;
-using Moonglade.Configuration.Settings;
 using Moonglade.Pages;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
@@ -20,7 +18,6 @@ namespace Moonglade.Tests.Web.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<IOptions<AppSettings>> _mockOptions;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IPageService> _mockPageService;
         private Mock<ILogger<PageController>> _mockLogger;
@@ -30,7 +27,6 @@ namespace Moonglade.Tests.Web.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockOptions = _mockRepository.Create<IOptions<AppSettings>>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockLogger = _mockRepository.Create<ILogger<PageController>>();
@@ -39,21 +35,9 @@ namespace Moonglade.Tests.Web.Controllers
         private PageController CreatePageController()
         {
             return new(
-                _mockOptions.Object,
                 _mockBlogCache.Object,
                 _mockPageService.Object,
                 _mockLogger.Object);
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public async Task Index_EmptySlug(string slug)
-        {
-            var ctl = CreatePageController();
-            var result = await ctl.Index(slug);
-
-            Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
         [Test]
@@ -125,8 +109,8 @@ namespace Moonglade.Tests.Web.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<PageViewModel>(model);
-            Assert.AreEqual(fakePage.Title, ((PageViewModel)model).Title);
+            Assert.IsInstanceOf<Page>(model);
+            Assert.AreEqual(fakePage.Title, ((Page)model).Title);
         }
     }
 }

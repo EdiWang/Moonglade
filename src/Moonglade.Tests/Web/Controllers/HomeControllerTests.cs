@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Pages;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -23,9 +26,12 @@ namespace Moonglade.Tests.Web.Controllers
         private MockRepository _mockRepository;
 
         private Mock<IPostService> _mockPostService;
+        private Mock<IPageService> _mockPageService;
+        private Mock<ITagService> _mockTagService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ILogger<HomeController>> _mockLogger;
+        private Mock<IOptions<AppSettings>> _mockAppSettingsOptions;
 
 
         private readonly IReadOnlyList<PostDigest> _fakePosts = new List<PostDigest>
@@ -54,11 +60,14 @@ namespace Moonglade.Tests.Web.Controllers
             _mockRepository = new(MockBehavior.Default);
 
             _mockPostService = _mockRepository.Create<IPostService>();
+            _mockPageService = _mockRepository.Create<IPageService>();
+            _mockTagService = _mockRepository.Create<ITagService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockLogger = _mockRepository.Create<ILogger<HomeController>>();
+            _mockAppSettingsOptions = _mockRepository.Create<IOptions<AppSettings>>();
 
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
                 PostListPageSize = 10
             });
@@ -68,9 +77,23 @@ namespace Moonglade.Tests.Web.Controllers
         {
             return new(
                 _mockPostService.Object,
+                _mockPageService.Object,
+                _mockTagService.Object,
                 _mockBlogCache.Object,
                 _mockBlogConfig.Object,
-                _mockLogger.Object);
+                _mockLogger.Object,
+                _mockAppSettingsOptions.Object);
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public async Task Page_EmptySlug(string slug)
+        {
+            var ctl = CreateHomeController();
+            var result = await ctl.Page(slug);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
         [Test]
@@ -106,12 +129,11 @@ namespace Moonglade.Tests.Web.Controllers
                 new() { Degree = 996, DisplayName = "Ali", Id = 35, NormalizedName = "fubao" }
             };
 
-            var mockTagService = new Mock<ITagService>();
-            mockTagService.Setup(p => p.GetTagCountListAsync())
+            _mockTagService.Setup(p => p.GetTagCountListAsync())
                 .Returns(Task.FromResult((IReadOnlyList<DegreeTag>)fakeTags));
 
             var ctl = CreateHomeController();
-            var result = await ctl.Tags(mockTagService.Object);
+            var result = await ctl.Tags();
 
             Assert.IsInstanceOf<ViewResult>(result);
             Assert.AreEqual(fakeTags, ((ViewResult)result).Model);
@@ -140,11 +162,10 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task TagList_NullTag()
         {
-            var mockTagService = new Mock<ITagService>();
-            mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns((Tag)null);
+            _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns((Tag)null);
 
             var ctl = CreateHomeController();
-            var result = await ctl.TagList(mockTagService.Object, "996", 1);
+            var result = await ctl.TagList("996", 1);
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
@@ -152,8 +173,7 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task TagList_ValidTag()
         {
-            var mockTagService = new Mock<ITagService>();
-            mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns(new Tag
+            _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns(new Tag
             {
                 Id = 996,
                 DisplayName = "Fubao",
@@ -168,7 +188,7 @@ namespace Moonglade.Tests.Web.Controllers
                 .Returns(251);
 
             var ctl = CreateHomeController();
-            var result = await ctl.TagList(mockTagService.Object, "fu-bao");
+            var result = await ctl.TagList("fu-bao");
 
             Assert.IsInstanceOf<ViewResult>(result);
 

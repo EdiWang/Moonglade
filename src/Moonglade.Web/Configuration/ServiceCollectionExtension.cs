@@ -24,7 +24,6 @@ using Moonglade.Notification.Client;
 using Moonglade.Pages;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
-using Moonglade.Web.MetaWeblog;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
 using WilderMinds.MetaWeblog;
