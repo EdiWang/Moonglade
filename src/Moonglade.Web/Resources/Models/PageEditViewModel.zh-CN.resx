@@ -135,4 +135,7 @@
   <data name="Please enter the meta description." xml:space="preserve">
     <value>请输入简要描述</value>
   </data>
+  <data name="Publish" xml:space="preserve">
+    <value>发布</value>
+  </data>
 </root>
