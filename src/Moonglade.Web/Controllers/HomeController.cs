@@ -4,9 +4,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Pages;
 using X.PagedList;
 
 namespace Moonglade.Web.Controllers
@@ -14,20 +17,29 @@ namespace Moonglade.Web.Controllers
     public class HomeController : BlogController
     {
         private readonly IPostService _postService;
+        private readonly IPageService _pageService;
+        private readonly ITagService _tagService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
         private readonly ILogger<HomeController> _logger;
+        private readonly AppSettings _settings;
 
         public HomeController(
             IPostService postService,
+            IPageService pageService,
+            ITagService tagService,
             IBlogCache cache,
             IBlogConfig blogConfig,
-            ILogger<HomeController> logger)
+            ILogger<HomeController> logger,
+            IOptions<AppSettings> settingsOptions)
         {
             _postService = postService;
+            _pageService = pageService;
+            _tagService = tagService;
             _cache = cache;
             _blogConfig = blogConfig;
             _logger = logger;
+            _settings = settingsOptions.Value;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -40,17 +52,35 @@ namespace Moonglade.Web.Controllers
             return View(list);
         }
 
-        [Route("tags")]
-        public async Task<IActionResult> Tags([FromServices] ITagService tagService)
+        [HttpGet("page/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        public async Task<IActionResult> Page(string slug)
         {
-            var tags = await tagService.GetTagCountListAsync();
+            if (string.IsNullOrWhiteSpace(slug)) return BadRequest();
+
+            var page = await _cache.GetOrCreateAsync(CacheDivision.Page, slug.ToLower(), async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Page"]);
+
+                var p = await _pageService.GetAsync(slug);
+                return p;
+            });
+
+            if (page is null || !page.IsPublished) return NotFound();
+            return View(page);
+        }
+
+
+        [Route("tags")]
+        public async Task<IActionResult> Tags()
+        {
+            var tags = await _tagService.GetTagCountListAsync();
             return View(tags);
         }
 
         [Route("tags/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> TagList([FromServices] ITagService tagService, string normalizedName, int page = 1)
+        public async Task<IActionResult> TagList(string normalizedName, int page = 1)
         {
-            var tagResponse = tagService.Get(normalizedName);
+            var tagResponse = _tagService.Get(normalizedName);
             if (tagResponse is null) return NotFound();
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;

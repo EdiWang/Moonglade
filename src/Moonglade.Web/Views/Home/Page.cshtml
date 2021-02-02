@@ -1,17 +1,29 @@
 ﻿@using Moonglade.Core
 @using Moonglade.Pages
-@model PageViewModel
+@using NUglify
+@model Page
 
 @{
     ViewBag.TitlePrefix = Model.Title;
     ViewBag.HideSideBar = Model.HideSidebar;
+
+    string css = null;
+    if (!string.IsNullOrWhiteSpace(Model.CssContent))
+    {
+        var uglifyResult = Uglify.Css(Model.CssContent);
+        if (!uglifyResult.HasErrors)
+        {
+            css = uglifyResult.Code;
+        }
+    }
+
 }
 
 @section head{
-    @if (!string.IsNullOrWhiteSpace(Model.CSS))
+    @if (!string.IsNullOrWhiteSpace(css))
     {
         <style>
-            @Html.Raw(Model.CSS)
+            @Html.Raw(css)
         </style>
     }
 }
