@@ -21,7 +21,7 @@
         }
     }
 
-<script>
+    <script>
         $(function () {
             postEditor.initEvents();
             var editorMode = '@Settings.Value.Editor';
@@ -47,7 +47,18 @@
 
             postEditor.keepAlive();
         });
-</script>
+
+        $(window).bind('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                case 's':
+                    event.preventDefault();
+                    $("#btn-save").trigger('click');
+                    break;
+                }
+            }
+        });
+    </script>
 }
 
 <form class="post-edit-form" asp-action="CreateOrEdit"
@@ -167,7 +178,7 @@
             </button>
             <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">@Localizer["Preview"]</button>
         }
-        <a asp-controller="PostManage" asp-action="Index" class="btn btn-light">@Localizer["Cancel"]</a>
+        <a asp-controller="Admin" asp-action="Post" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>
 
     <div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">

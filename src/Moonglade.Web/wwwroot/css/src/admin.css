@@ -90,7 +90,7 @@ hr.admin-nav-divider {
 }
 
 .post-content-textarea {
-    min-height: 650px;
+    min-height: calc(100vh - 340px);
 }
 
 .post-edit-form .CodeMirror {
