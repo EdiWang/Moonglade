@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Moonglade.Setup;
 using Moonglade.Utils;
 
 namespace Moonglade.Web
@@ -35,6 +37,9 @@ namespace Moonglade.Web
                     var dataDir = CreateDataDirectories();
                     AppDomain.CurrentDomain.SetData("DataDirectory", dataDir);
                     logger.LogInformation($"Using data directory '{dataDir}'");
+
+                    var dbConnection = services.GetRequiredService<IDbConnection>();
+                    TryInitFirstRun(dbConnection, logger);
                 }
                 catch (Exception ex)
                 {
@@ -93,6 +98,31 @@ namespace Moonglade.Web
             Directory.CreateDirectory(appDataPath);
 
             return appDataPath;
+        }
+
+        private static void TryInitFirstRun(IDbConnection dbConnection, ILogger logger)
+        {
+            var setupHelper = new SetupRunner(dbConnection);
+            if (setupHelper.TestDatabaseConnection(ex =>
+            {
+                Trace.WriteLine(ex);
+                Console.WriteLine(ex);
+            }))
+            {
+                if (setupHelper.IsFirstRun())
+                {
+                    try
+                    {
+                        logger.LogInformation("Initializing first run configuration...");
+                        setupHelper.InitFirstRun();
+                        logger.LogInformation("Database setup successfully.");
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogCritical(e, e.Message);
+                    }
+                }
+            }
         }
     }
 }
