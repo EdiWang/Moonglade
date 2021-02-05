@@ -104,6 +104,7 @@ namespace Moonglade.Core
                 IsPublished = p.IsPublished,
                 ExposedToSiteMap = p.ExposedToSiteMap,
                 IsFeedIncluded = p.IsFeedIncluded,
+                Featured = p.IsSelected,
                 ContentLanguageCode = p.ContentLanguageCode,
                 Tags = p.Tags.Select(pt => new Tag
                 {
@@ -149,7 +150,7 @@ namespace Moonglade.Core
                 ExposedToSiteMap = post.ExposedToSiteMap,
                 LastModifyOnUtc = post.LastModifiedUtc,
                 ContentLanguageCode = post.ContentLanguageCode,
-                IsSelected = post.IsSelected
+                Featured = post.IsSelected
             });
 
             return postSlugModel;
@@ -224,7 +225,7 @@ namespace Moonglade.Core
                     ExposedToSiteMap = post.ExposedToSiteMap,
                     LastModifyOnUtc = post.LastModifiedUtc,
                     ContentLanguageCode = post.ContentLanguageCode,
-                    IsSelected = post.IsSelected,
+                    Featured = post.IsSelected,
                     CommentCount = post.Comments.Count(c => c.IsApproved)
                 });
 

@@ -41,7 +41,7 @@ namespace Moonglade.Web.Models
 
         [Required]
         [Display(Name = "Featured")]
-        public bool IsSelected { get; set; }
+        public bool Featured { get; set; }
 
         [Display(Name = "Site Map")]
         public bool ExposedToSiteMap { get; set; }
