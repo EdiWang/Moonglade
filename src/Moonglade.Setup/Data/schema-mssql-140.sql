@@ -71,7 +71,7 @@ CREATE TABLE [Post](
 [PubDateUtc] [datetime] NULL,
 [LastModifiedUtc] [datetime] NULL,
 [IsPublished] [bit] NOT NULL,
-[IsSelected] [bit] NOT NULL,
+[IsFeatured] [bit] NOT NULL,
 [IsDeleted] [bit] NOT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 

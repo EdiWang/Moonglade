@@ -104,7 +104,7 @@ namespace Moonglade.Core
                 IsPublished = p.IsPublished,
                 ExposedToSiteMap = p.ExposedToSiteMap,
                 IsFeedIncluded = p.IsFeedIncluded,
-                Featured = p.IsSelected,
+                Featured = p.IsFeatured,
                 ContentLanguageCode = p.ContentLanguageCode,
                 Tags = p.Tags.Select(pt => new Tag
                 {
@@ -150,7 +150,7 @@ namespace Moonglade.Core
                 ExposedToSiteMap = post.ExposedToSiteMap,
                 LastModifyOnUtc = post.LastModifiedUtc,
                 ContentLanguageCode = post.ContentLanguageCode,
-                Featured = post.IsSelected
+                Featured = post.IsFeatured
             });
 
             return postSlugModel;
@@ -225,7 +225,7 @@ namespace Moonglade.Core
                     ExposedToSiteMap = post.ExposedToSiteMap,
                     LastModifyOnUtc = post.LastModifiedUtc,
                     ContentLanguageCode = post.ContentLanguageCode,
-                    Featured = post.IsSelected,
+                    Featured = post.IsFeatured,
                     CommentCount = post.Comments.Count(c => c.IsApproved)
                 });
 
@@ -339,7 +339,7 @@ namespace Moonglade.Core
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
                 LangCode = p.ContentLanguageCode,
-                IsSelected = p.IsSelected,
+                IsSelected = p.IsFeatured,
                 Tags = p.Tags.Select(pt => new Tag
                 {
                     NormalizedName = pt.NormalizedName,
@@ -374,7 +374,7 @@ namespace Moonglade.Core
                     ContentAbstract = p.Post.ContentAbstract,
                     PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
                     LangCode = p.Post.ContentLanguageCode,
-                    IsSelected = p.Post.IsSelected,
+                    IsSelected = p.Post.IsFeatured,
                     Tags = p.Post.Tags.Select(pt => new Tag
                     {
                         NormalizedName = pt.NormalizedName,
@@ -406,7 +406,7 @@ namespace Moonglade.Core
                 PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
                 IsDeleted = false,
                 IsPublished = request.IsPublished,
-                IsSelected = request.IsSelected,
+                IsFeatured = request.IsSelected,
                 PostExtension = new()
                 {
                     Hits = 0,
@@ -511,7 +511,7 @@ namespace Moonglade.Core
             post.LastModifiedUtc = DateTime.UtcNow;
             post.IsFeedIncluded = request.IsFeedIncluded;
             post.ContentLanguageCode = request.ContentLanguageCode;
-            post.IsSelected = request.IsSelected;
+            post.IsFeatured = request.IsSelected;
 
             // 1. Add new tags to tag lib
             foreach (var item in request.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))

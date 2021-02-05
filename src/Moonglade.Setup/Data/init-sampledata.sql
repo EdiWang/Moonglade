@@ -13,7 +13,7 @@ SET @NewPostId = NEWID()
 DECLARE @PostCotent NVARCHAR(MAX)
 SET @PostCotent = N'Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using .NET 5 and runs on Microsoft Azure.'
 
-INSERT INTO Post(Id, Title, Slug, PostContent, CommentEnabled, CreateTimeUtc, ContentAbstract, IsPublished, IsSelected, ExposedToSiteMap, IsFeedIncluded, LastModifiedUtc, IsDeleted, PubDateUtc, ContentLanguageCode) 
+INSERT INTO Post(Id, Title, Slug, PostContent, CommentEnabled, CreateTimeUtc, ContentAbstract, IsPublished, IsFeatured, ExposedToSiteMap, IsFeedIncluded, LastModifiedUtc, IsDeleted, PubDateUtc, ContentLanguageCode) 
 VALUES (@NewPostId, 'Welcome to Moonglade', 'welcome-to-moonglade', @PostCotent, 1, GETDATE(), @PostCotent, 1, 0, 1, 1, NULL, 0, GETDATE(), 'en-us')
 
 INSERT INTO PostExtension(PostId,  Hits,  Likes) 

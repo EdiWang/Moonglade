@@ -26,7 +26,7 @@ namespace Moonglade.Data.Entities
         public DateTime? LastModifiedUtc { get; set; }
         public bool IsPublished { get; set; }
         public bool IsDeleted { get; set; }
-        public bool IsSelected { get; set; }
+        public bool IsFeatured { get; set; }
 
         public virtual PostExtensionEntity PostExtension { get; set; }
         public virtual ICollection<CommentEntity> Comments { get; set; }
