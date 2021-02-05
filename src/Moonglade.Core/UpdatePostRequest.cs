@@ -11,6 +11,7 @@ namespace Moonglade.Core
         public bool IsPublished { get; set; }
         public bool ExposedToSiteMap { get; set; }
         public bool IsFeedIncluded { get; set; }
+        public bool IsSelected { get; set; }
         public string ContentLanguageCode { get; set; }
 
         public string[] Tags { get; set; }

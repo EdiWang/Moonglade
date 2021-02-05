@@ -39,6 +39,10 @@ namespace Moonglade.Web.Models
         [Display(Name = "Publish Now")]
         public bool IsPublished { get; set; }
 
+        [Required]
+        [Display(Name = "Featured")]
+        public bool IsSelected { get; set; }
+
         [Display(Name = "Site Map")]
         public bool ExposedToSiteMap { get; set; }
 

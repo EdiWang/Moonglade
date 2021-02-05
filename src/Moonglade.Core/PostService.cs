@@ -148,7 +148,8 @@ namespace Moonglade.Core
                 Id = post.Id,
                 ExposedToSiteMap = post.ExposedToSiteMap,
                 LastModifyOnUtc = post.LastModifiedUtc,
-                ContentLanguageCode = post.ContentLanguageCode
+                ContentLanguageCode = post.ContentLanguageCode,
+                IsSelected = post.IsSelected
             });
 
             return postSlugModel;
@@ -223,6 +224,7 @@ namespace Moonglade.Core
                     ExposedToSiteMap = post.ExposedToSiteMap,
                     LastModifyOnUtc = post.LastModifiedUtc,
                     ContentLanguageCode = post.ContentLanguageCode,
+                    IsSelected = post.IsSelected,
                     CommentCount = post.Comments.Count(c => c.IsApproved)
                 });
 
@@ -336,6 +338,7 @@ namespace Moonglade.Core
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
                 LangCode = p.ContentLanguageCode,
+                IsSelected = p.IsSelected,
                 Tags = p.Tags.Select(pt => new Tag
                 {
                     NormalizedName = pt.NormalizedName,
@@ -370,6 +373,7 @@ namespace Moonglade.Core
                     ContentAbstract = p.Post.ContentAbstract,
                     PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
                     LangCode = p.Post.ContentLanguageCode,
+                    IsSelected = p.Post.IsSelected,
                     Tags = p.Post.Tags.Select(pt => new Tag
                     {
                         NormalizedName = pt.NormalizedName,
@@ -401,6 +405,7 @@ namespace Moonglade.Core
                 PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
                 IsDeleted = false,
                 IsPublished = request.IsPublished,
+                IsSelected = request.IsSelected,
                 PostExtension = new()
                 {
                     Hits = 0,
@@ -505,6 +510,7 @@ namespace Moonglade.Core
             post.LastModifiedUtc = DateTime.UtcNow;
             post.IsFeedIncluded = request.IsFeedIncluded;
             post.ContentLanguageCode = request.ContentLanguageCode;
+            post.IsSelected = request.IsSelected;
 
             // 1. Add new tags to tag lib
             foreach (var item in request.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))

@@ -123,6 +123,9 @@
   <data name="Enable Comment" xml:space="preserve">
     <value>允许评论</value>
   </data>
+  <data name="Featured" xml:space="preserve">
+    <value>精选</value>
+  </data>
   <data name="Feed Subscription" xml:space="preserve">
     <value>加入订阅</value>
   </data>

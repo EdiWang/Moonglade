@@ -87,6 +87,7 @@ namespace Moonglade.Web.Controllers
             var view = new PostEditViewModel
             {
                 IsPublished = false,
+                IsSelected = false,
                 EnableComment = true,
                 ExposedToSiteMap = true,
                 FeedIncluded = true,
@@ -120,7 +121,8 @@ namespace Moonglade.Web.Controllers
                 EnableComment = post.CommentEnabled,
                 ExposedToSiteMap = post.ExposedToSiteMap,
                 FeedIncluded = post.IsFeedIncluded,
-                LanguageCode = post.ContentLanguageCode
+                LanguageCode = post.ContentLanguageCode,
+                IsSelected = post.IsSelected
             };
 
             if (post.PubDateUtc is not null)
@@ -175,6 +177,7 @@ namespace Moonglade.Web.Controllers
                     IsFeedIncluded = model.FeedIncluded,
                     ContentLanguageCode = model.LanguageCode,
                     IsPublished = model.IsPublished,
+                    IsSelected = model.IsSelected,
                     Tags = tags,
                     CategoryIds = model.SelectedCategoryIds
                 };
