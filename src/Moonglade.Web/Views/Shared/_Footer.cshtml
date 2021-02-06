@@ -32,6 +32,33 @@
                     }
                 </ul>
             </section>
+
+            <section id="footer-language-mobile" class="col-3 d-block d-md-none text-right font-125rem">
+                <a href="#" data-toggle="modal" data-target="#langselectormodal"><span class="icon-earth"></span></a>
+            </section>
         </div>
     </div>
 </footer>
+
+<div class="modal fade" id="langselectormodal" tabindex="-1" role="dialog" aria-labelledby="langselectorLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="langselectorLabel">Languages</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-unstyled">
+                    @foreach (var item in cultureItems)
+                    {
+                        <li>
+                            <a asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" asp-route-culture="@item.Value">@item.NativeName</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

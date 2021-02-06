@@ -106,4 +106,9 @@
         margin-bottom: 15px;
         padding-bottom: 15px;
     }
+
+    .lightswitch {
+        bottom: 100px;
+        right: 10px;
+    }
 }
