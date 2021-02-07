@@ -14,6 +14,7 @@ namespace Moonglade.Caching
         Page,
         PostCountCategory,
         PostCountTag,
+        PostCountFeatured,
         RssCategory
     }
 
