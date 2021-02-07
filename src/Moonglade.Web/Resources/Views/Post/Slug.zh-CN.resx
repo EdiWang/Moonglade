@@ -132,6 +132,9 @@
   <data name="Edit on" xml:space="preserve">
     <value>编辑于</value>
   </data>
+  <data name="Featured" xml:space="preserve">
+    <value>精选</value>
+  </data>
   <data name="It will show up once blog administrator approved your comment." xml:space="preserve">
     <value>博主审核通过后，您的评论会在此显示</value>
   </data>
