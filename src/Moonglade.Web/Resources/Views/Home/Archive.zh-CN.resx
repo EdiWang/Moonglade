@@ -123,4 +123,7 @@
   <data name="No Archive" xml:space="preserve">
     <value>暂无归档</value>
   </data>
+  <data name="See Featured Posts" xml:space="preserve">
+    <value>查看精选文章</value>
+  </data>
 </root>
