@@ -21,6 +21,7 @@ namespace Moonglade.Core
         int CountVisible();
         int CountByCategory(Guid catId);
         int CountByTag(int tagId);
+        int CountByFeatured();
         Task<Post> GetAsync(Guid id);
         Task<PostSlug> GetAsync(PostSlugInfo slug);
         Task<PostSlug> GetDraft(Guid postId);
@@ -88,6 +89,7 @@ namespace Moonglade.Core
                                           && c.Post.IsPublished
                                           && !c.Post.IsDeleted);
         public int CountByTag(int tagId) => _postTagRepo.Count(p => p.TagId == tagId && p.Post.IsPublished && !p.Post.IsDeleted);
+        public int CountByFeatured() => _postRepo.Count(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
 
         public Task<Post> GetAsync(Guid id)
         {
