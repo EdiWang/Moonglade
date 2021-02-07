@@ -109,7 +109,7 @@
 <article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Id" lang="@Model.ContentLanguageCode">
     @if (Model.Featured)
     {
-        <img src="~/images/featured-post.svg" class="featured-post-banner position-absolute" title="@Localizer["Featured"]" alt="@Localizer["Featured"]"/>
+        <img src="~/images/featured-post.svg" class="featured-post-banner position-absolute d-none d-md-block" title="@Localizer["Featured"]" alt="@Localizer["Featured"]"/>
     }
 
     <header class="post-header">
