@@ -31,6 +31,7 @@ namespace Moonglade.Core
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
         Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null);
         Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
+        Task<IReadOnlyList<PostDigest>> ListFeatured(int pageSize, int pageIndex);
         Task<PostEntity> CreateAsync(UpdatePostRequest request);
         Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request);
         Task RestoreAsync(Guid id);
@@ -376,6 +377,38 @@ namespace Moonglade.Core
                     LangCode = p.Post.ContentLanguageCode,
                     IsSelected = p.Post.IsFeatured,
                     Tags = p.Post.Tags.Select(pt => new Tag
+                    {
+                        NormalizedName = pt.NormalizedName,
+                        DisplayName = pt.DisplayName
+                    })
+                });
+
+            return posts;
+        }
+
+        public Task<IReadOnlyList<PostDigest>> ListFeatured(int pageSize, int pageIndex)
+        {
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize),
+                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
+            }
+            if (pageIndex < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageIndex),
+                    $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
+            }
+
+            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex),
+                p => new PostDigest
+                {
+                    Title = p.Title,
+                    Slug = p.Slug,
+                    ContentAbstract = p.ContentAbstract,
+                    PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
+                    LangCode = p.ContentLanguageCode,
+                    IsSelected = p.IsFeatured,
+                    Tags = p.Tags.Select(pt => new Tag
                     {
                         NormalizedName = pt.NormalizedName,
                         DisplayName = pt.DisplayName
