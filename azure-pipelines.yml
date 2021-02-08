@@ -4,7 +4,7 @@ trigger:
 jobs:
 - job: ASPNETCore
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'azbuild01'
   steps:
   # - task: UseDotNet@2
   #   inputs:
