@@ -103,25 +103,24 @@ namespace Moonglade.Web
         private static void TryInitFirstRun(IDbConnection dbConnection, ILogger logger)
         {
             var setupHelper = new SetupRunner(dbConnection);
-            if (setupHelper.TestDatabaseConnection(ex =>
+
+            if (!setupHelper.TestDatabaseConnection(ex =>
             {
                 Trace.WriteLine(ex);
                 Console.WriteLine(ex);
-            }))
+            })) return;
+
+            if (!setupHelper.IsFirstRun()) return;
+
+            try
             {
-                if (setupHelper.IsFirstRun())
-                {
-                    try
-                    {
-                        logger.LogInformation("Initializing first run configuration...");
-                        setupHelper.InitFirstRun();
-                        logger.LogInformation("Database setup successfully.");
-                    }
-                    catch (Exception e)
-                    {
-                        logger.LogCritical(e, e.Message);
-                    }
-                }
+                logger.LogInformation("Initializing first run configuration...");
+                setupHelper.InitFirstRun();
+                logger.LogInformation("Database setup successfully.");
+            }
+            catch (Exception e)
+            {
+                logger.LogCritical(e, e.Message);
             }
         }
     }
