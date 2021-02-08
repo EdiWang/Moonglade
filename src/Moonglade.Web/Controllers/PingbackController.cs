@@ -10,7 +10,7 @@ using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
-using Moonglade.Pingback.Mvc;
+using Moonglade.Pingback.AspNetCore;
 using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
-using Moonglade.Pingback.Mvc;
+using Moonglade.Pingback.AspNetCore;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using NUnit.Framework;
