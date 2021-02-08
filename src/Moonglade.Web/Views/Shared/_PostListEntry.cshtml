@@ -25,6 +25,11 @@
                asp-route-slug="@Model.Slug">
                 @Model.Title
             </a>
+
+            @if (Model.IsSelected)
+            {
+                <i class="icon icon-star-full text-warning"></i>
+            }
         </h4>
 
         <p class="post-summary-text">@(Model.ContentAbstract)</p>
