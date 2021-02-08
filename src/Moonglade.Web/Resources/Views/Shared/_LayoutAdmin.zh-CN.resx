@@ -147,4 +147,7 @@
   <data name="Account" xml:space="preserve">
     <value>账户</value>
   </data>
+  <data name="Friend Links" xml:space="preserve">
+    <value>友情链接</value>
+  </data>
 </root>

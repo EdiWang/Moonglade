@@ -289,27 +289,9 @@ namespace Moonglade.Web.Controllers
 
         #region FriendLinks
 
-        [HttpGet("friendlink")]
-        public async Task<IActionResult> FriendLink()
-        {
-            var links = await _friendLinkService.GetAllAsync();
-            var vm = new FriendLinkSettingsViewModelWrap
-            {
-                FriendLinkSettingsViewModel = new()
-                {
-                    ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
-                },
-                FriendLinks = links
-            };
-
-            return View(vm);
-        }
-
         [HttpPost("friendlink")]
         public async Task<IActionResult> FriendLink(FriendLinkSettingsViewModelWrap model)
         {
-            //if (!ModelState.IsValid) return BadRequest(ModelState);
-
             var fs = _blogConfig.FriendLinksSettings;
             fs.ShowFriendLinksSection = model.FriendLinkSettingsViewModel.ShowFriendLinksSection;
 

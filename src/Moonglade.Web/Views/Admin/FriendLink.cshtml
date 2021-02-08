@@ -46,48 +46,49 @@
     </script>
 }
 
-<partial name="_SettingsHeader" />
 
-<div class="mb-2">
-    <a class="btn btn-outline-success" href="javascript:initCreateFriendLink();">
+<h3>
+    @Localizer["Friend Links"]
+    <a class="btn btn-outline-success float-right" href="javascript:initCreateFriendLink();">
         <span class="icon-plus"></span>
         @Localizer["New"]
     </a>
-</div>
+</h3>
+<hr />
 
 <div class="row">
     <div class="col-md-8">
         <table class="table table-bordered">
             <thead>
-            <tr>
-                <th>
-                    @Localizer["Title"]
-                </th>
-                <th>
-                    @Localizer["Link"]
-                </th>
-                <th class="table-item-w20">
-                    @Localizer["Action"]
-                </th>
-            </tr>
+                <tr>
+                    <th>
+                        @Localizer["Title"]
+                    </th>
+                    <th>
+                        @Localizer["Link"]
+                    </th>
+                    <th class="table-item-w20">
+                        @Localizer["Action"]
+                    </th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
-            {
-                <tr id="tr-@item.Id">
-                    <td>
-                        @item.Title
-                    </td>
-                    <td>
-                        @item.LinkUrl
-                    </td>
-                    <td>
-                        <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-primary btn-edit"><span class="icon-pencil"></span></a>
-                        <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
-                        <span id="span-processing-@item.Id" style="display: none">...</span>
-                    </td>
-                </tr>
-            }
+                @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
+                {
+                    <tr id="tr-@item.Id">
+                        <td>
+                            @item.Title
+                        </td>
+                        <td>
+                            @item.LinkUrl
+                        </td>
+                        <td>
+                            <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-primary btn-edit"><span class="icon-pencil"></span></a>
+                            <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
+                            <span id="span-processing-@item.Id" style="display: none">...</span>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

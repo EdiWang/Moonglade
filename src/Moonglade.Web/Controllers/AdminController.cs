@@ -13,11 +13,14 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Comments;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
+using Moonglade.FriendLink;
 using Moonglade.Menus;
 using Moonglade.Pages;
 using Moonglade.Pingback;
 using Moonglade.Web.Models;
+using Moonglade.Web.Models.Settings;
 using X.PagedList;
 
 namespace Moonglade.Web.Controllers
@@ -28,16 +31,22 @@ namespace Moonglade.Web.Controllers
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly ILocalAccountService _localAccountService;
+        private readonly IFriendLinkService _friendLinkService;
+        private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
         private readonly ILogger<AdminController> _logger;
 
         public AdminController(ILogger<AdminController> logger,
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
-            ILocalAccountService localAccountService)
+            ILocalAccountService localAccountService, 
+            IFriendLinkService friendLinkService,
+            IBlogConfig blogConfig)
         {
             _blogAudit = blogAudit;
             _localAccountService = localAccountService;
+            _friendLinkService = friendLinkService;
+            _blogConfig = blogConfig;
             _authenticationSettings = authSettings.Value;
             _logger = logger;
         }
@@ -227,6 +236,22 @@ namespace Moonglade.Web.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpGet("friendlink")]
+        public async Task<IActionResult> FriendLink()
+        {
+            var links = await _friendLinkService.GetAllAsync();
+            var vm = new FriendLinkSettingsViewModelWrap
+            {
+                FriendLinkSettingsViewModel = new()
+                {
+                    ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
+                },
+                FriendLinks = links
+            };
+
+            return View(vm);
         }
 
         [Route("pingback")]

@@ -132,6 +132,10 @@
                         <span class="icon-list"></span>
                         @Localizer["Menus"]
                     </a>
+                    <a asp-controller="Admin" asp-action="FriendLink" class="list-group-item list-group-item-action @(currentAction == "FriendLink" ? "active" : null)">
+                        <span class="icon-link"></span>
+                        @Localizer["Friend Links"]
+                    </a>
                     @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
                     {
                         <a asp-controller="Settings" asp-action="AccountSettings" class="list-group-item list-group-item-action @(currentController == "Settings" && currentAction == "AccountSettings" ? "active" : null)">
