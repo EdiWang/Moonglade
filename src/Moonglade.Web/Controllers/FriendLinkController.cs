@@ -23,6 +23,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(FriendLinkEditViewModel viewModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -32,6 +34,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(Guid id)
         {
             try
@@ -56,6 +60,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("edit")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(FriendLinkEditViewModel viewModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -65,6 +71,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (id == Guid.Empty)
