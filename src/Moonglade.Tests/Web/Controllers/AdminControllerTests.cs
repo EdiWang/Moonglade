@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Auth;
+using Moonglade.Configuration.Abstraction;
+using Moonglade.FriendLink;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -19,6 +21,8 @@ namespace Moonglade.Tests.Web.Controllers
     {
         private Mock<IOptions<AuthenticationSettings>> _authenticationSettingsMock;
         private Mock<IBlogAudit> _auditMock;
+        private Mock<IBlogConfig> _blogConfigMock;
+        private Mock<IFriendLinkService> _friendlinkServiceMock;
         private Mock<ILogger<AdminController>> _loggerMock;
 
         [SetUp]
@@ -27,6 +31,8 @@ namespace Moonglade.Tests.Web.Controllers
             _authenticationSettingsMock = new();
             _loggerMock = new();
             _auditMock = new();
+            _blogConfigMock = new();
+            _friendlinkServiceMock = new();
         }
 
         [Test]
@@ -38,7 +44,7 @@ namespace Moonglade.Tests.Web.Controllers
                     Provider = AuthenticationProvider.Local
                 });
 
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null);
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null, _friendlinkServiceMock.Object, _blogConfigMock.Object);
             var result = await ctl.Index();
             Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
             if (result is RedirectToActionResult rdResult)
@@ -61,7 +67,7 @@ namespace Moonglade.Tests.Web.Controllers
                 .Verifiable();
 
             var ctx = new DefaultHttpContext();
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null)
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null, _friendlinkServiceMock.Object, _blogConfigMock.Object)
             {
                 ControllerContext = new() { HttpContext = ctx },
                 Url = mockUrlHelper.Object
@@ -74,7 +80,7 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public void SignedOut()
         {
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null);
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null, _friendlinkServiceMock.Object, _blogConfigMock.Object);
             var result = ctl.SignedOut();
             Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
             if (result is RedirectToActionResult rdResult)
@@ -87,7 +93,7 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public void KeepAlive()
         {
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null);
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null, _friendlinkServiceMock.Object, _blogConfigMock.Object);
             var result = ctl.KeepAlive("996.ICU");
             Assert.IsInstanceOf(typeof(JsonResult), result);
         }
@@ -95,7 +101,7 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public void AccessDenied()
         {
-            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null)
+            var ctl = new AdminController(_loggerMock.Object, _authenticationSettingsMock.Object, _auditMock.Object, null, _friendlinkServiceMock.Object, _blogConfigMock.Object)
             {
                 ControllerContext = new() { HttpContext = new DefaultHttpContext() }
             };
