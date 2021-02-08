@@ -408,7 +408,7 @@ function restorePost(postid) {
 function deleteFriendLink(friendlinkid) {
     $(`#span-processing-${friendlinkid}`).show();
 
-    callApi(`/admin/settings/friendlink/${friendlinkid}`, 'DELETE', {},
+    callApi(`/api/friendlink/${friendlinkid}`, 'DELETE', {},
         (resp) => {
             $(`#tr-${friendlinkid}`).hide();
         });
@@ -430,7 +430,7 @@ function initCreateFriendLink() {
 }
 
 function editFriendLink(id) {
-    $.get(`/admin/settings/friendlink/edit/${id}`, function (data) {
+    $.get(`/api/friendlink/${id}`, function (data) {
         $('#FriendLinkEditViewModel_Id').val(data.id);
         $('#FriendLinkEditViewModel_Title').val(data.title);
         $('#FriendLinkEditViewModel_LinkUrl').val(data.linkUrl);

@@ -287,7 +287,6 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        #region FriendLinks
 
         [HttpPost("friendlink")]
         public async Task<IActionResult> FriendLink(FriendLinkSettingsViewModelWrap model)
@@ -299,62 +298,6 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("friendlink/create")]
-        public async Task<IActionResult> CreateFriendLink([FromBody] FriendLinkEditViewModel viewModel)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
-            return Ok(viewModel);
-        }
-
-        [HttpGet("friendlink/edit/{id:guid}")]
-        public async Task<IActionResult> EditFriendLink(Guid id)
-        {
-            try
-            {
-                var link = await _friendLinkService.GetAsync(id);
-                if (null == link) return NotFound();
-
-                var obj = new FriendLinkEditViewModel
-                {
-                    Id = link.Id,
-                    LinkUrl = link.LinkUrl,
-                    Title = link.Title
-                };
-
-                return Json(obj);
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError(string.Empty, e.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpPost("friendlink/edit")]
-        public async Task<IActionResult> EditFriendLink([FromBody] FriendLinkEditViewModel viewModel)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            await _friendLinkService.UpdateAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
-            return Ok(viewModel);
-        }
-
-        [HttpDelete("friendlink/{id:guid}")]
-        public async Task<IActionResult> DeleteFriendLink(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(id), "value is empty");
-                return BadRequest(ModelState);
-            }
-
-            await _friendLinkService.DeleteAsync(id);
-            return Ok();
-        }
-
-        #endregion
 
         #region User Avatar
 

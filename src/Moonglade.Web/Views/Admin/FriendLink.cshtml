@@ -30,7 +30,7 @@
                     action = "edit";
                 }
 
-                callApi(`/admin/settings/friendlink/${action}`, 'POST',
+                callApi(`/api/friendlink/${action}`, 'POST',
                     {
                         "Id": $("#FriendLinkEditViewModel_Id").val(),
                         "Title": $("#FriendLinkEditViewModel_Title").val(),
