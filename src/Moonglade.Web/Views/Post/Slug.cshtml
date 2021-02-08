@@ -216,6 +216,7 @@
                                 </div>
                                 <div class="col-3">
                                     <button id="btn-submit-comment" type="submit" class="btn btn-success float-right">
+                                        <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                                         @Localizer["Submit"]
                                     </button>
                                 </div>
@@ -233,14 +234,6 @@
         {
             <div class="alert alert-warning">@Localizer["Comment is disabled by blog administrator."]</div>
         }
-
-        <div id="loadingIndicator" style="display: none;" class="mb-4">
-            <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                    <span class="sr-only">@Localizer["Processing..."]</span>
-                </div>
-            </div>
-        </div>
 
         <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
             @Localizer["Thanks, your comment is pending approval now."] <br />
