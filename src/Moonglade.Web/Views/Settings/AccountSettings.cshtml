@@ -31,7 +31,7 @@
 
         $(".btn-submit").click(function() {
             if ($("#edit-form").valid()) {
-                callApi(`/admin/settings/account/create`,
+                callApi(`/api/localaccount/create`,
                     'POST',
                     {
                         "Username": $("#AccountEditViewModel_Username").val(),
@@ -47,7 +47,7 @@
 
         $(".btn-resetpwd").click(function() {
             if ($("#resetpassword-form").valid()) {
-                callApi(`/admin/settings/account/${cid}/reset-password`,
+                callApi(`/api/localaccount/${cid}/reset-password`,
                     'POST',
                     {
                         "newPassword": $("#NewPassword").val()

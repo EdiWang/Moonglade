@@ -441,7 +441,7 @@ function editFriendLink(id) {
 function deleteAccount(accountid) {
     $(`#span-processing-${accountid}`).show();
 
-    callApi(`/admin/settings/account/${accountid}`, 'DELETE', {},
+    callApi(`/api/localaccount/${accountid}`, 'DELETE', {},
         (resp) => {
             $(`#tr-${accountid}`).hide();
         });

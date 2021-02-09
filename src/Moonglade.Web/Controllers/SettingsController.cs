@@ -632,66 +632,6 @@ namespace Moonglade.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("account/create")]
-        public async Task<IActionResult> CreateAccount([FromBody] AccountEditViewModel model, [FromServices] ILocalAccountService accountService)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            if (accountService.Exist(model.Username))
-            {
-                ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
-                return Conflict(ModelState);
-            }
-
-            await accountService.CreateAsync(model.Username, model.Password);
-            return Ok();
-        }
-
-        [HttpDelete("account/{id:guid}")]
-        public async Task<IActionResult> DeleteAccount(Guid id, [FromServices] ILocalAccountService accountService)
-        {
-            if (id == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(id), "value is empty");
-                return BadRequest(ModelState);
-            }
-
-            var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
-            if (null == uidClaim || string.IsNullOrWhiteSpace(uidClaim.Value))
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Can not get current uid.");
-            }
-
-            if (id.ToString() == uidClaim.Value)
-            {
-                return Conflict("Can not delete current user.");
-            }
-
-            var count = accountService.Count();
-            if (count == 1)
-            {
-                return Conflict("Can not delete last account.");
-            }
-
-            await accountService.DeleteAsync(id);
-            return Ok();
-        }
-
-        [HttpPost("account/{id:guid}/reset-password")]
-        public async Task<IActionResult> ResetAccountPassword(
-            Guid id, [FromBody] ResetPasswordRequest request, [FromServices] ILocalAccountService accountService)
-        {
-            if (id == Guid.Empty) ModelState.AddModelError(nameof(id), "value is empty");
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            if (!Regex.IsMatch(request.NewPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"))
-            {
-                return Conflict("Password must be minimum eight characters, at least one letter and one number");
-            }
-
-            await accountService.UpdatePasswordAsync(id, request.NewPassword);
-            return Ok();
-        }
-
         #endregion
     }
 
