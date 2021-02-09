@@ -87,5 +87,11 @@
         $('#extlink-continue').click(function () {
             $('#externalLinkModal').modal('hide');
         });
+    },
+    getImageWidthInDevicePixelRatio(width) {
+        if (width <= 0) return 0;
+        var dpr = window.devicePixelRatio;
+        if (dpr === 1) return width;
+        return width / dpr;
     }
 };
