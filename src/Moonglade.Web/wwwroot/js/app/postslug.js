@@ -88,7 +88,7 @@
             $('#externalLinkModal').modal('hide');
         });
     },
-    getImageWidthInDevicePixelRatio(width) {
+    getImageWidthInDevicePixelRatio: function (width) {
         if (width <= 0) return 0;
         var dpr = window.devicePixelRatio;
         if (dpr === 1) return width;
