@@ -28,6 +28,7 @@ namespace Moonglade.Tests.Web.Controllers
         private Mock<IPostService> _mockPostService;
         private Mock<IPageService> _mockPageService;
         private Mock<ITagService> _mockTagService;
+        private Mock<IBlogArchiveService> _mockArchiveService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ILogger<HomeController>> _mockLogger;
@@ -62,6 +63,7 @@ namespace Moonglade.Tests.Web.Controllers
             _mockPostService = _mockRepository.Create<IPostService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockTagService = _mockRepository.Create<ITagService>();
+            _mockArchiveService = _mockRepository.Create<IBlogArchiveService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockLogger = _mockRepository.Create<ILogger<HomeController>>();
@@ -79,6 +81,7 @@ namespace Moonglade.Tests.Web.Controllers
                 _mockPostService.Object,
                 _mockPageService.Object,
                 _mockTagService.Object,
+                _mockArchiveService.Object,
                 _mockBlogCache.Object,
                 _mockBlogConfig.Object,
                 _mockLogger.Object,
@@ -148,12 +151,11 @@ namespace Moonglade.Tests.Web.Controllers
                 new (251,3,5)
             };
 
-            var mockArchiveService = new Mock<IBlogArchiveService>();
-            mockArchiveService.Setup(p => p.ListAsync())
+            _mockArchiveService.Setup(p => p.ListAsync())
                 .Returns(Task.FromResult((IReadOnlyList<Archive>)fakeArchives));
 
             var ctl = CreateHomeController();
-            var result = await ctl.Archive(mockArchiveService.Object);
+            var result = await ctl.Archive();
 
             Assert.IsInstanceOf<ViewResult>(result);
             Assert.AreEqual(fakeArchives, ((ViewResult)result).Model);
@@ -268,10 +270,8 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task ArchiveList_BadYear()
         {
-            var mockArchiveService = new Mock<IBlogArchiveService>();
-
             var ctl = CreateHomeController();
-            var result = await ctl.ArchiveList(mockArchiveService.Object, 9999, 1);
+            var result = await ctl.ArchiveList(9999, 1);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
@@ -279,12 +279,11 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task ArchiveList_Year()
         {
-            var mockArchiveService = new Mock<IBlogArchiveService>();
-            mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), 0))
+            _mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), 0))
                 .Returns(Task.FromResult(_fakePosts));
 
             var ctl = CreateHomeController();
-            var result = await ctl.ArchiveList(mockArchiveService.Object, 2021, null);
+            var result = await ctl.ArchiveList(2021, null);
 
             Assert.IsInstanceOf<ViewResult>(result);
 
@@ -297,12 +296,11 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task ArchiveList_Year_Month()
         {
-            var mockArchiveService = new Mock<IBlogArchiveService>();
-            mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), It.IsAny<int>()))
+            _mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(_fakePosts));
 
             var ctl = CreateHomeController();
-            var result = await ctl.ArchiveList(mockArchiveService.Object, 2021, 1);
+            var result = await ctl.ArchiveList(2021, 1);
 
             Assert.IsInstanceOf<ViewResult>(result);
 
