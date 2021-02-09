@@ -3,7 +3,7 @@ trigger:
 
 jobs:
 - job: ASPNETCore
-  pool: 'AzLinux'
+  pool: 'Default'
   steps:
   # - task: UseDotNet@2
   #   inputs:
