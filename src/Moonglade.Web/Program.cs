@@ -34,7 +34,7 @@ namespace Moonglade.Web
 
                 try
                 {
-                    var dataDir = CreateDataDirectories();
+                    var dataDir = CreateDataDirectory();
                     AppDomain.CurrentDomain.SetData("DataDirectory", dataDir);
                     logger.LogInformation($"Using data directory '{dataDir}'");
 
@@ -84,7 +84,7 @@ namespace Moonglade.Web
                               });
                 });
 
-        private static string CreateDataDirectories()
+        private static string CreateDataDirectory()
         {
             // Use Temp folder as best practice
             // Do NOT create or modify anything under application directory

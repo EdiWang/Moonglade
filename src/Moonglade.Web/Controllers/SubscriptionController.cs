@@ -35,7 +35,7 @@ namespace Moonglade.Web.Controllers
 
         [FeatureGate(FeatureFlags.OPML)]
         [Route("opml")]
-        public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig, [FromServices] IMemoryStreamOpmlWriter opmlWriter)
+        public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig, [FromServices] IOpmlWriter opmlWriter)
         {
             var cats = await _categoryService.GetAllAsync();
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));

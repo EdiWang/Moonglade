@@ -22,9 +22,9 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.RSD)]
         [Route("rsd")]
         [ResponseCache(Duration = 7200)]
-        public async Task<IActionResult> RSD([FromServices] IRSDService rsdService, [FromServices] IBlogConfig blogConfig)
+        public async Task<IActionResult> RSD([FromServices] IRSDWriter rsdWriter, [FromServices] IBlogConfig blogConfig)
         {
-            var bytes = await rsdService.GetRSDStreamArray(Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true));
+            var bytes = await rsdWriter.GetRSDStreamArray(Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true));
             var xmlContent = Encoding.UTF8.GetString(bytes);
 
             return Content(xmlContent, "text/xml");

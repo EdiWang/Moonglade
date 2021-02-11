@@ -58,7 +58,7 @@ namespace Moonglade.Web.Configuration
                     }));
         }
 
-        public static void AddNotification(this IServiceCollection services, ILogger logger)
+        public static void AddNotificationClient(this IServiceCollection services, ILogger logger)
         {
             services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
                     .AddTransientHttpErrorPolicy(builder =>
@@ -94,11 +94,11 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<ISiteIconGenerator, FileSystemIconGenerator>();
             services.AddScoped<IFoafWriter, FoafWriter>();
-            services.AddScoped<IRSDService, RSDService>();
+            services.AddScoped<IRSDWriter, BlogRSDWriter>();
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IBlogStatistics, BlogStatistics>();
             services.AddScoped<ISyndicationService, SyndicationService>();
-            services.AddScoped<IMemoryStreamOpmlWriter, MemoryStreamOpmlWriter>();
+            services.AddScoped<IOpmlWriter, MemoryStreamOpmlWriter>();
 
             services.AddBlogCache();
             services.AddPingback();

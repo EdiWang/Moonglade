@@ -2,7 +2,7 @@
 
 namespace Moonglade.Syndication
 {
-    public interface IMemoryStreamOpmlWriter
+    public interface IOpmlWriter
     {
         Task<byte[]> GetOpmlStreamDataAsync(OpmlDoc opmlDoc);
     }

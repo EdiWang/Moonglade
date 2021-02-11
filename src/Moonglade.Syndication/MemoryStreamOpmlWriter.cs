@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Moonglade.Syndication
 {
-    public class MemoryStreamOpmlWriter : IMemoryStreamOpmlWriter
+    public class MemoryStreamOpmlWriter : IOpmlWriter
     {
         public async Task<byte[]> GetOpmlStreamDataAsync(OpmlDoc opmlDoc)
         {

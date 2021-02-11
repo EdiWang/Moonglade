@@ -97,7 +97,7 @@ namespace Moonglade.Web
             services.AddBlogConfiguration(_appSettings);
             services.AddBlogAuthenticaton(_configuration);
             services.AddComments(_configuration);
-            services.AddNotification(_logger);
+            services.AddNotificationClient(_logger);
             services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));
             services.AddImageStorage(_configuration, options =>
             {

@@ -6,12 +6,12 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
-    public interface IRSDService
+    public interface IRSDWriter
     {
         Task<byte[]> GetRSDStreamArray(string siteRootUrl);
     }
 
-    public class RSDService : IRSDService
+    public class BlogRSDWriter : IRSDWriter
     {
         public async Task<byte[]> GetRSDStreamArray(string siteRootUrl)
         {
