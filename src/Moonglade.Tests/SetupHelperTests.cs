@@ -12,22 +12,22 @@ namespace Moonglade.Tests
     [ExcludeFromCodeCoverage]
     public class SetupHelperTests
     {
-        private MockRepository mockRepository;
+        private MockRepository _mockRepository;
 
-        private Mock<IDbConnection> mockDbConnection;
+        private Mock<IDbConnection> _mockDbConnection;
 
         [SetUp]
         public void SetUp()
         {
-            mockRepository = new(MockBehavior.Default);
-            mockDbConnection = mockRepository.Create<IDbConnection>();
+            _mockRepository = new(MockBehavior.Default);
+            _mockDbConnection = _mockRepository.Create<IDbConnection>();
         }
 
         [Test]
         public void IsFirstRun_Yes()
         {
-            mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Returns(0);
-            var setupHelper = new SetupRunner(mockDbConnection.Object);
+            _mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Returns(0);
+            var setupHelper = new SetupRunner(_mockDbConnection.Object);
 
             var result = setupHelper.IsFirstRun();
             Assert.IsTrue(result);
@@ -36,8 +36,8 @@ namespace Moonglade.Tests
         [Test]
         public void IsFirstRun_No()
         {
-            mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Returns(1);
-            var setupHelper = new SetupRunner(mockDbConnection.Object);
+            _mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Returns(1);
+            var setupHelper = new SetupRunner(_mockDbConnection.Object);
 
             var result = setupHelper.IsFirstRun();
             Assert.IsFalse(result);
@@ -46,8 +46,8 @@ namespace Moonglade.Tests
         [Test]
         public void SetupDatabase_OK()
         {
-            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(996);
-            var setupHelper = new SetupRunner(mockDbConnection.Object);
+            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(996);
+            var setupHelper = new SetupRunner(_mockDbConnection.Object);
 
             Assert.DoesNotThrow(() =>
             {
@@ -58,8 +58,8 @@ namespace Moonglade.Tests
         [Test]
         public void ClearData_OK()
         {
-            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunner(mockDbConnection.Object);
+            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
+            var setupHelper = new SetupRunner(_mockDbConnection.Object);
 
             Assert.DoesNotThrow(() =>
             {
@@ -70,8 +70,8 @@ namespace Moonglade.Tests
         [Test]
         public void ResetDefaultConfiguration_OK()
         {
-            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunner(mockDbConnection.Object);
+            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
+            var setupHelper = new SetupRunner(_mockDbConnection.Object);
 
             Assert.DoesNotThrow(() =>
             {
@@ -82,8 +82,8 @@ namespace Moonglade.Tests
         [Test]
         public void InitSampleData_OK()
         {
-            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunner(mockDbConnection.Object);
+            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
+            var setupHelper = new SetupRunner(_mockDbConnection.Object);
 
             Assert.DoesNotThrow(() =>
             {
@@ -94,8 +94,8 @@ namespace Moonglade.Tests
         [Test]
         public void InitFirstRun_OK()
         {
-            mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunner(mockDbConnection.Object);
+            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
+            var setupHelper = new SetupRunner(_mockDbConnection.Object);
 
             Assert.DoesNotThrow(() =>
             {

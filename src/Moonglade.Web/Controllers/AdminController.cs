@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
         public AdminController(ILogger<AdminController> logger,
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
-            ILocalAccountService localAccountService, 
+            ILocalAccountService localAccountService,
             IFriendLinkService friendLinkService,
             IBlogConfig blogConfig)
         {

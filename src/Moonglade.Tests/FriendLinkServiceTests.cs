@@ -14,12 +14,16 @@ namespace Moonglade.Tests
     [ExcludeFromCodeCoverage]
     public class FriendLinkServiceTests
     {
-        private Mock<IBlogAudit> _auditMock;
+        private MockRepository _mockRepository;
+
+        private Mock<IBlogAudit> _mockBlogAudit;
 
         [SetUp]
         public void Setup()
         {
-            _auditMock = new();
+            _mockRepository = new(MockBehavior.Default);
+
+            _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         }
 
         [Test]
@@ -38,7 +42,7 @@ namespace Moonglade.Tests
             var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
             friendlinkRepositoryMock.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
 
-            var svc = new FriendLinkService(friendlinkRepositoryMock.Object, _auditMock.Object);
+            var svc = new FriendLinkService(friendlinkRepositoryMock.Object, _mockBlogAudit.Object);
 
             await svc.AddAsync("Choice of 955", "https://dot.net");
             Assert.Pass();

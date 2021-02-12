@@ -29,7 +29,7 @@ namespace Moonglade.Tests.Web.Controllers
 
         private StatisticsController CreateStatisticsController()
         {
-            return new (_mockBlogStatistics.Object);
+            return new(_mockBlogStatistics.Object);
         }
 
         [Test]

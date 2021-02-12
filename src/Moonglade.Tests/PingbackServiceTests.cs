@@ -13,20 +13,24 @@ namespace Moonglade.Tests
     [ExcludeFromCodeCoverage]
     public class PingbackServiceTests
     {
-        private Mock<ILogger<PingbackService>> _loggerMock;
-        private Mock<IDbConnection> _dbConnectionMock;
-        private Mock<IPingSourceInspector> _pingSourceInspectorMock;
-        private Mock<IPingbackRepository> _pingTargetFinderMock;
+        private MockRepository _mockRepository;
+
+        private Mock<ILogger<PingbackService>> _mockLogger;
+        private Mock<IDbConnection> _mockDbConnection;
+        private Mock<IPingSourceInspector> _mockPingSourceInspector;
+        private Mock<IPingbackRepository> _mockPingTargetFinder;
 
         private string _fakePingRequest;
 
         [SetUp]
         public void Setup()
         {
-            _loggerMock = new();
-            _dbConnectionMock = new();
-            _pingSourceInspectorMock = new();
-            _pingTargetFinderMock = new();
+            _mockRepository = new(MockBehavior.Default);
+
+            _mockLogger = _mockRepository.Create<ILogger<PingbackService>>();
+            _mockDbConnection = _mockRepository.Create<IDbConnection>();
+            _mockPingSourceInspector = _mockRepository.Create<IPingSourceInspector>();
+            _mockPingTargetFinder = _mockRepository.Create<IPingbackRepository>();
             _fakePingRequest = @"<?xml version=""1.0"" encoding=""iso-8859-1""?>
                                 <methodCall>
                                   <methodName>pingback.ping</methodName>
@@ -43,10 +47,10 @@ namespace Moonglade.Tests
         public async Task<PingbackResponse> ProcessReceivedPayload_EmptyRequest(string requestBody)
         {
             var pingbackService = new PingbackService(
-                _loggerMock.Object,
-                _dbConnectionMock.Object,
-                _pingSourceInspectorMock.Object,
-                _pingTargetFinderMock.Object);
+                _mockLogger.Object,
+                _mockDbConnection.Object,
+                _mockPingSourceInspector.Object,
+                _mockPingTargetFinder.Object);
 
             var result = await pingbackService.ReceivePingAsync(requestBody, "10.0.0.1", null);
             return result;
@@ -56,10 +60,10 @@ namespace Moonglade.Tests
         public async Task ProcessReceivedPayload_NoMethod()
         {
             var pingbackService = new PingbackService(
-                _loggerMock.Object,
-                _dbConnectionMock.Object,
-                _pingSourceInspectorMock.Object,
-                _pingTargetFinderMock.Object);
+                _mockLogger.Object,
+                _mockDbConnection.Object,
+                _mockPingSourceInspector.Object,
+                _mockPingTargetFinder.Object);
 
             var result = await pingbackService.ReceivePingAsync("<hello></hello>", "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
@@ -71,14 +75,14 @@ namespace Moonglade.Tests
             var tcs = new TaskCompletionSource<PingRequest>();
             tcs.SetResult(null);
 
-            _pingSourceInspectorMock
+            _mockPingSourceInspector
                 .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
 
             var pingbackService = new PingbackService(
-                _loggerMock.Object,
-                _dbConnectionMock.Object,
-                _pingSourceInspectorMock.Object,
-                _pingTargetFinderMock.Object);
+                _mockLogger.Object,
+                _mockDbConnection.Object,
+                _mockPingSourceInspector.Object,
+                _mockPingTargetFinder.Object);
 
             var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
@@ -93,14 +97,14 @@ namespace Moonglade.Tests
                 SourceHasLink = false
             });
 
-            _pingSourceInspectorMock
+            _mockPingSourceInspector
                 .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
 
             var pingbackService = new PingbackService(
-                _loggerMock.Object,
-                _dbConnectionMock.Object,
-                _pingSourceInspectorMock.Object,
-                _pingTargetFinderMock.Object);
+                _mockLogger.Object,
+                _mockDbConnection.Object,
+                _mockPingSourceInspector.Object,
+                _mockPingTargetFinder.Object);
 
             var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.Error17SourceNotContainTargetUri);
@@ -116,14 +120,14 @@ namespace Moonglade.Tests
                 ContainsHtml = true
             });
 
-            _pingSourceInspectorMock
+            _mockPingSourceInspector
                 .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
 
             var pingbackService = new PingbackService(
-                _loggerMock.Object,
-                _dbConnectionMock.Object,
-                _pingSourceInspectorMock.Object,
-                _pingTargetFinderMock.Object);
+                _mockLogger.Object,
+                _mockDbConnection.Object,
+                _mockPingSourceInspector.Object,
+                _mockPingTargetFinder.Object);
 
             var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.SpamDetectedFakeNotFound);
@@ -142,15 +146,15 @@ namespace Moonglade.Tests
             var tcsPt = new TaskCompletionSource<(Guid Id, string Title)>();
             tcsPt.SetResult((Guid.Empty, string.Empty));
 
-            _pingSourceInspectorMock
+            _mockPingSourceInspector
                 .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcsPr.Task);
-            _pingTargetFinderMock.Setup(p => p.GetPostIdTitle(It.IsAny<string>(), It.IsAny<IDbConnection>())).Returns(tcsPt.Task);
+            _mockPingTargetFinder.Setup(p => p.GetPostIdTitle(It.IsAny<string>(), It.IsAny<IDbConnection>())).Returns(tcsPt.Task);
 
             var pingbackService = new PingbackService(
-                _loggerMock.Object,
-                _dbConnectionMock.Object,
-                _pingSourceInspectorMock.Object,
-                _pingTargetFinderMock.Object);
+                _mockLogger.Object,
+                _mockDbConnection.Object,
+                _mockPingSourceInspector.Object,
+                _mockPingTargetFinder.Object);
 
             var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.Error32TargetUriNotExist);
@@ -166,25 +170,25 @@ namespace Moonglade.Tests
                 ContainsHtml = false
             });
 
-            _pingSourceInspectorMock
+            _mockPingSourceInspector
                 .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(tcsPr.Task);
 
             var tcsPt = new TaskCompletionSource<(Guid Id, string Title)>();
             tcsPt.SetResult((Guid.NewGuid(), "Pingback Unit Test"));
-            _pingTargetFinderMock.Setup(p => p.GetPostIdTitle(It.IsAny<string>(), It.IsAny<IDbConnection>())).Returns(tcsPt.Task);
+            _mockPingTargetFinder.Setup(p => p.GetPostIdTitle(It.IsAny<string>(), It.IsAny<IDbConnection>())).Returns(tcsPt.Task);
 
             var tcsAp = new TaskCompletionSource<bool>();
             tcsAp.SetResult(true);
-            _pingTargetFinderMock.Setup(p => p.HasAlreadyBeenPinged(
+            _mockPingTargetFinder.Setup(p => p.HasAlreadyBeenPinged(
                 It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDbConnection>()))
                 .Returns(tcsAp.Task);
 
             var pingbackService = new PingbackService(
-                _loggerMock.Object,
-                _dbConnectionMock.Object,
-                _pingSourceInspectorMock.Object,
-                _pingTargetFinderMock.Object);
+                _mockLogger.Object,
+                _mockDbConnection.Object,
+                _mockPingSourceInspector.Object,
+                _mockPingTargetFinder.Object);
 
             var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(result, PingbackResponse.Error48PingbackAlreadyRegistered);
