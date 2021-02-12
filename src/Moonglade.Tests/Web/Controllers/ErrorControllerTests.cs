@@ -12,18 +12,22 @@ namespace Moonglade.Tests.Web.Controllers
     [ExcludeFromCodeCoverage]
     public class ErrorControllerTests
     {
-        private Mock<ILogger<ErrorController>> _loggerMock;
+        private MockRepository _mockRepository;
+
+        private Mock<ILogger<ErrorController>> _mockLogger;
 
         [SetUp]
         public void Setup()
         {
-            _loggerMock = new();
+            _mockRepository = new(MockBehavior.Default);
+
+            _mockLogger = _mockRepository.Create<ILogger<ErrorController>>();
         }
 
         [Test]
         public void ExceptionHandler()
         {
-            var ctl = new ErrorController(_loggerMock.Object)
+            var ctl = new ErrorController(_mockLogger.Object)
             {
                 ControllerContext = new() { HttpContext = new DefaultHttpContext() }
             };

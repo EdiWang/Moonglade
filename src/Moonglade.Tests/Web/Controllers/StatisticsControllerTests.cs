@@ -15,18 +15,27 @@ namespace Moonglade.Tests.Web.Controllers
     [ExcludeFromCodeCoverage]
     public class StatisticsControllerTests
     {
-        private Mock<IBlogStatistics> _statisticsMock;
+        private MockRepository _mockRepository;
+
+        private Mock<IBlogStatistics> _mockBlogStatistics;
 
         [SetUp]
         public void Setup()
         {
-            _statisticsMock = new();
+            _mockRepository = new(MockBehavior.Default);
+
+            _mockBlogStatistics = _mockRepository.Create<IBlogStatistics>();
+        }
+
+        private StatisticsController CreateStatisticsController()
+        {
+            return new (_mockBlogStatistics.Object);
         }
 
         [Test]
         public async Task Get_EmptyGuid()
         {
-            var ctl = new StatisticsController(_statisticsMock.Object);
+            var ctl = CreateStatisticsController();
             var result = await ctl.Get(Guid.Empty);
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
@@ -34,7 +43,7 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task Hit_EmptyGuid()
         {
-            var ctl = new StatisticsController(_statisticsMock.Object);
+            var ctl = CreateStatisticsController();
             var result = await ctl.Post(new() { PostId = Guid.Empty, IsLike = false });
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
@@ -42,7 +51,7 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task Like_EmptyGuid()
         {
-            var ctl = new StatisticsController(_statisticsMock.Object);
+            var ctl = CreateStatisticsController();
             var result = await ctl.Post(new() { PostId = Guid.Empty, IsLike = true });
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
@@ -51,7 +60,7 @@ namespace Moonglade.Tests.Web.Controllers
         public async Task Hit_DNTEnabled()
         {
             var ctx = new DefaultHttpContext { Items = { ["DNT"] = true } };
-            var ctl = new StatisticsController(_statisticsMock.Object)
+            var ctl = new StatisticsController(_mockBlogStatistics.Object)
             {
                 ControllerContext = { HttpContext = ctx }
             };
@@ -64,7 +73,7 @@ namespace Moonglade.Tests.Web.Controllers
         public async Task Like_DNTEnabled()
         {
             var ctx = new DefaultHttpContext { Items = { ["DNT"] = true } };
-            var ctl = new StatisticsController(_statisticsMock.Object)
+            var ctl = new StatisticsController(_mockBlogStatistics.Object)
             {
                 ControllerContext = { HttpContext = ctx }
             };
@@ -86,7 +95,7 @@ namespace Moonglade.Tests.Web.Controllers
             httpContextMock.Setup(c => c.Items).Returns(
                 new Dictionary<object, object> { { "DNT", false } });
 
-            var ctl = new StatisticsController(_statisticsMock.Object)
+            var ctl = new StatisticsController(_mockBlogStatistics.Object)
             {
                 ControllerContext = { HttpContext = httpContextMock.Object }
             };
@@ -101,7 +110,7 @@ namespace Moonglade.Tests.Web.Controllers
             var uid = Guid.NewGuid();
 
             var ctx = new DefaultHttpContext { Items = { ["DNT"] = false } };
-            var ctl = new StatisticsController(_statisticsMock.Object)
+            var ctl = new StatisticsController(_mockBlogStatistics.Object)
             {
                 ControllerContext = { HttpContext = ctx }
             };
@@ -123,7 +132,7 @@ namespace Moonglade.Tests.Web.Controllers
             httpContextMock.Setup(c => c.Items).Returns(
                 new Dictionary<object, object> { { "DNT", false } });
 
-            var ctl = new StatisticsController(_statisticsMock.Object)
+            var ctl = new StatisticsController(_mockBlogStatistics.Object)
             {
                 ControllerContext = { HttpContext = httpContextMock.Object }
             };
