@@ -3,7 +3,7 @@ using Moonglade.Core;
 
 namespace Moonglade.Web.Models
 {
-    public class PostInsightsViewModel
+    public class PostInsight
     {
         public IReadOnlyList<PostSegment> TopReadPosts { get; set; }
 

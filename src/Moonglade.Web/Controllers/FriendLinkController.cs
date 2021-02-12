@@ -25,7 +25,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(FriendLinkEditViewModel viewModel)
+        public async Task<IActionResult> Create(FriendLinkEditModel viewModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
                 var link = await _friendLinkService.GetAsync(id);
                 if (null == link) return NotFound();
 
-                var obj = new FriendLinkEditViewModel
+                var obj = new FriendLinkEditModel
                 {
                     Id = link.Id,
                     LinkUrl = link.LinkUrl,
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("edit")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Edit(FriendLinkEditViewModel viewModel)
+        public async Task<IActionResult> Edit(FriendLinkEditModel viewModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

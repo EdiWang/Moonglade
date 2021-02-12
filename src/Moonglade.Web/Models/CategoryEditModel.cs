@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Models
 {
-    public class CategoryEditViewModel
+    public class CategoryEditModel
     {
         [HiddenInput]
         public Guid Id { get; set; }
@@ -25,7 +25,7 @@ namespace Moonglade.Web.Models
         [MaxLength(128)]
         public string Note { get; set; }
 
-        public CategoryEditViewModel()
+        public CategoryEditModel()
         {
             Id = Guid.Empty;
         }

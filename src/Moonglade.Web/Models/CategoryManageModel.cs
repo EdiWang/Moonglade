@@ -3,13 +3,13 @@ using Moonglade.Core;
 
 namespace Moonglade.Web.Models
 {
-    public class CategoryManageViewModel
+    public class CategoryManageModel
     {
-        public CategoryEditViewModel CategoryEditViewModel { get; set; }
+        public CategoryEditModel CategoryEditViewModel { get; set; }
 
         public IReadOnlyList<Category> Categories { get; set; }
 
-        public CategoryManageViewModel()
+        public CategoryManageModel()
         {
             CategoryEditViewModel = new();
             Categories = new List<Category>();

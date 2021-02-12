@@ -47,7 +47,7 @@ namespace Moonglade.Tests.Web.Controllers
             var result = ctl.Create();
 
             Assert.IsInstanceOf<ViewResult>(result);
-            Assert.IsInstanceOf<PageEditViewModel>(((ViewResult)result).Model);
+            Assert.IsInstanceOf<PageEditModel>(((ViewResult)result).Model);
         }
 
         [Test]

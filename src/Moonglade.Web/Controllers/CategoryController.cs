@@ -25,7 +25,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(CategoryEditViewModel model)
+        public async Task<IActionResult> Create(CategoryEditModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -48,7 +48,7 @@ namespace Moonglade.Web.Controllers
             var cat = await _catService.GetAsync(id);
             if (null == cat) return NotFound();
 
-            var model = new CategoryEditViewModel
+            var model = new CategoryEditModel
             {
                 Id = cat.Id,
                 DisplayName = cat.DisplayName,
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("edit")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Edit(CategoryEditViewModel model)
+        public async Task<IActionResult> Edit(CategoryEditModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

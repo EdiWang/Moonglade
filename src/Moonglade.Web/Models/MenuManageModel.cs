@@ -6,13 +6,13 @@ using Moonglade.Menus;
 
 namespace Moonglade.Web.Models
 {
-    public class MenuManageViewModel
+    public class MenuManageModel
     {
         public MenuEditViewModel MenuEditViewModel { get; set; }
 
         public IReadOnlyList<Menu> MenuItems { get; set; }
 
-        public MenuManageViewModel()
+        public MenuManageModel()
         {
             MenuEditViewModel = new();
             MenuItems = new List<Menu>();

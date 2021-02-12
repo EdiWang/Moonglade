@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Models
 {
-    public class FriendLinkEditViewModel
+    public class FriendLinkEditModel
     {
         [HiddenInput]
         public Guid Id { get; set; }
@@ -20,7 +20,7 @@ namespace Moonglade.Web.Models
         [MaxLength(256)]
         public string LinkUrl { get; set; }
 
-        public FriendLinkEditViewModel()
+        public FriendLinkEditModel()
         {
             Id = Guid.Empty;
         }

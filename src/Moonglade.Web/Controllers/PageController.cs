@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("manage/create")]
         public IActionResult Create()
         {
-            var model = new PageEditViewModel();
+            var model = new PageEditModel();
             return View("CreateOrEdit", model);
         }
 
@@ -54,7 +54,7 @@ namespace Moonglade.Web.Controllers
             var page = await _pageService.GetAsync(id);
             if (page is null) return NotFound();
 
-            var model = new PageEditViewModel
+            var model = new PageEditModel
             {
                 Id = page.Id,
                 Title = page.Title,
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("manage/createoredit")]
         [ServiceFilter(typeof(ClearSiteMapCache))]
-        public async Task<IActionResult> CreateOrEdit(PageEditViewModel model)
+        public async Task<IActionResult> CreateOrEdit(PageEditModel model)
         {
             try
             {

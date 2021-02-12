@@ -193,7 +193,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Category([FromServices] ICategoryService categoryService)
         {
             var cats = await categoryService.GetAllAsync();
-            return View(new CategoryManageViewModel { Categories = cats });
+            return View(new CategoryManageModel { Categories = cats });
         }
 
         [HttpGet("post")]
@@ -230,7 +230,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Menu([FromServices] IMenuService menuService)
         {
             var menus = await menuService.GetAllAsync();
-            var model = new MenuManageViewModel
+            var model = new MenuManageModel
             {
                 MenuItems = menus
             };

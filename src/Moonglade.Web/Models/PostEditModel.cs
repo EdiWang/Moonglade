@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Models
 {
-    public class PostEditViewModel
+    public class PostEditModel
     {
         [HiddenInput]
         public Guid PostId { get; set; }
@@ -65,7 +65,7 @@ namespace Moonglade.Web.Models
         [Display(Name = "Change Publish Date")]
         public bool ChangePublishDate { get; set; }
 
-        public PostEditViewModel()
+        public PostEditModel()
         {
             PostId = Guid.Empty;
         }

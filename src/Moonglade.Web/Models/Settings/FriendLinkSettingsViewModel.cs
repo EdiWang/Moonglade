@@ -8,7 +8,7 @@ namespace Moonglade.Web.Models.Settings
     {
         public FriendLinkSettingsViewModel FriendLinkSettingsViewModel { get; set; }
 
-        public FriendLinkEditViewModel FriendLinkEditViewModel { get; set; }
+        public FriendLinkEditModel FriendLinkEditViewModel { get; set; }
 
         public IReadOnlyList<Link> FriendLinks { get; set; }
 

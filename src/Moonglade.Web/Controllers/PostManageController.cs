@@ -84,7 +84,7 @@ namespace Moonglade.Web.Controllers
         [Route("create")]
         public async Task<IActionResult> Create()
         {
-            var view = new PostEditViewModel
+            var view = new PostEditModel
             {
                 IsPublished = false,
                 Featured = false,
@@ -111,7 +111,7 @@ namespace Moonglade.Web.Controllers
             var post = await _postService.GetAsync(id);
             if (null == post) return NotFound();
 
-            var viewModel = new PostEditViewModel
+            var viewModel = new PostEditModel
             {
                 PostId = post.Id,
                 IsPublished = post.IsPublished,
@@ -155,7 +155,7 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [TypeFilter(typeof(ClearPagingCountCache))]
-        public async Task<IActionResult> CreateOrEdit(PostEditViewModel model,
+        public async Task<IActionResult> CreateOrEdit(PostEditModel model,
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
         {
@@ -288,7 +288,7 @@ namespace Moonglade.Web.Controllers
             var topReadList = await _postService.ListInsights(PostInsightsType.TopRead);
             var topCommentedList = await _postService.ListInsights(PostInsightsType.TopCommented);
 
-            var vm = new PostInsightsViewModel
+            var vm = new PostInsight
             {
                 TopReadPosts = topReadList,
                 TopCommentedPosts = topCommentedList
