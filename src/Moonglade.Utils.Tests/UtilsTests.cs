@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Moonglade.Utils;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Utils.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
