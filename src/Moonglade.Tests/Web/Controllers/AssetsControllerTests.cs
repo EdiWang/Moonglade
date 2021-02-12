@@ -22,25 +22,29 @@ namespace Moonglade.Tests.Web.Controllers
     [ExcludeFromCodeCoverage]
     public class AssetsControllerTests
     {
-        private Mock<ILogger<AssetsController>> _loggerMock;
-        private Mock<IOptions<AppSettings>> _appSettingsMock;
-        private Mock<IBlogConfig> _blogConfigMock;
-        private Mock<IWebHostEnvironment> _webHostEnvMock;
-        private Mock<IOptions<ImageStorageSettings>> _imageStorageSettingsMock;
-        private Mock<IBlogImageStorage> _asyncImageStorageProviderMock;
-        private Mock<ISiteIconGenerator> _siteIconGeneratorMock;
+        private MockRepository _mockRepository;
+
+        private Mock<ILogger<AssetsController>> _mockLogger;
+        private Mock<IOptions<AppSettings>> _mockAppSettings;
+        private Mock<IBlogConfig> _mockBlogConfig;
+        private Mock<IWebHostEnvironment> _mockWebHostEnv;
+        private Mock<IOptions<ImageStorageSettings>> _mockImageStorageSettings;
+        private Mock<IBlogImageStorage> _mockAsyncImageStorageProvider;
+        private Mock<ISiteIconGenerator> _mockSiteIconGenerator;
 
         [SetUp]
         public void Setup()
         {
-            _loggerMock = new();
-            _appSettingsMock = new();
-            _blogConfigMock = new();
-            _webHostEnvMock = new();
-            _asyncImageStorageProviderMock = new();
-            _siteIconGeneratorMock = new();
-            _imageStorageSettingsMock = new();
-            _imageStorageSettingsMock.Setup(p => p.Value).Returns(new ImageStorageSettings
+            _mockRepository = new(MockBehavior.Default);
+
+            _mockLogger = _mockRepository.Create<ILogger<AssetsController>>();
+            _mockAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
+            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+            _mockWebHostEnv = _mockRepository.Create<IWebHostEnvironment>();
+            _mockAsyncImageStorageProvider = _mockRepository.Create<IBlogImageStorage>();
+            _mockSiteIconGenerator = _mockRepository.Create<ISiteIconGenerator>();
+            _mockImageStorageSettings = _mockRepository.Create<IOptions<ImageStorageSettings>>();
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
             {
                 CDNSettings = new()
                 {
@@ -50,25 +54,30 @@ namespace Moonglade.Tests.Web.Controllers
             });
         }
 
+        private AssetsController CreateAssetsController()
+        {
+            return new(
+                _mockLogger.Object,
+                _mockAppSettings.Object,
+                _mockImageStorageSettings.Object,
+                _mockAsyncImageStorageProvider.Object,
+                _mockBlogConfig.Object,
+                _mockSiteIconGenerator.Object,
+                _mockWebHostEnv.Object);
+        }
+
         [Test]
         public async Task GetImage_CDN()
         {
             const string filename = "test.png";
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object,
-                _webHostEnvMock.Object);
+            var ctl = CreateAssetsController();
 
             var memCacheMock = new Mock<IMemoryCache>();
             var result = await ctl.Image(filename, memCacheMock.Object);
             Assert.IsInstanceOf(typeof(RedirectResult), result);
             if (result is RedirectResult rdResult)
             {
-                var resultUrl = _imageStorageSettingsMock.Object.Value.CDNSettings.CDNEndpoint.CombineUrl(filename);
+                var resultUrl = _mockImageStorageSettings.Object.Value.CDNSettings.CDNEndpoint.CombineUrl(filename);
                 Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
             }
         }
@@ -79,14 +88,7 @@ namespace Moonglade.Tests.Web.Controllers
         [Platform(Include = "Win")]
         public async Task GetImage_InvalidFileNames(string filename)
         {
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object,
-                _webHostEnvMock.Object);
+            var ctl = CreateAssetsController();
 
             var memCacheMock = new Mock<IMemoryCache>();
             var result = await ctl.Image(filename, memCacheMock.Object);
@@ -96,31 +98,24 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public async Task Manifest()
         {
-            _blogConfigMock.Setup(bc => bc.GeneralSettings).Returns(new GeneralSettings
+            _mockBlogConfig.Setup(bc => bc.GeneralSettings).Returns(new GeneralSettings
             {
                 SiteTitle = "Fake Title"
             });
 
-            _webHostEnvMock.Setup(p => p.WebRootPath).Returns(@"C:\35\404\996\251");
-            _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
+            _mockWebHostEnv.Setup(p => p.WebRootPath).Returns(@"C:\35\404\996\251");
+            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object,
-                _webHostEnvMock.Object);
+            var ctl = CreateAssetsController();
 
-            var result = await ctl.Manifest(_webHostEnvMock.Object, null);
+            var result = await ctl.Manifest(_mockWebHostEnv.Object, null);
             Assert.IsInstanceOf(typeof(JsonResult), result);
             if (result is JsonResult jsonResult)
             {
                 if (jsonResult.Value is ManifestModel model)
                 {
-                    Assert.IsTrue(model.ShortName == _blogConfigMock.Object.GeneralSettings.SiteTitle);
-                    Assert.IsTrue(model.Name == _blogConfigMock.Object.GeneralSettings.SiteTitle);
+                    Assert.IsTrue(model.ShortName == _mockBlogConfig.Object.GeneralSettings.SiteTitle);
+                    Assert.IsTrue(model.Name == _mockBlogConfig.Object.GeneralSettings.SiteTitle);
                 }
             }
         }
@@ -128,22 +123,14 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public void CustomCss_Disabled()
         {
-            _blogConfigMock.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
             {
                 EnableCustomCss = false
             });
 
-            _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
+            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object,
-                _webHostEnvMock.Object);
-
+            var ctl = CreateAssetsController();
             var result = ctl.CustomCss();
             Assert.IsInstanceOf(typeof(NotFoundResult), result);
         }
@@ -151,22 +138,15 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public void CustomCss_TooLargeCss()
         {
-            _blogConfigMock.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
             {
                 EnableCustomCss = true,
                 CssCode = new('a', 65536)
             });
 
-            _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
+            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object,
-                _webHostEnvMock.Object);
+            var ctl = CreateAssetsController();
 
             var result = ctl.CustomCss();
             Assert.IsInstanceOf(typeof(ConflictObjectResult), result);
@@ -175,22 +155,15 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public void CustomCss_InvalidCss()
         {
-            _blogConfigMock.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
             {
                 EnableCustomCss = true,
                 CssCode = "Work 996, Sick ICU!"
             });
 
-            _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
+            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object,
-                _webHostEnvMock.Object);
+            var ctl = CreateAssetsController();
 
             var result = ctl.CustomCss();
             Assert.IsInstanceOf(typeof(ConflictObjectResult), result);
@@ -199,22 +172,15 @@ namespace Moonglade.Tests.Web.Controllers
         [Test]
         public void CustomCss_ValidCss()
         {
-            _blogConfigMock.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
             {
                 EnableCustomCss = true,
                 CssCode = ".honest-man .hat { color: green !important;}"
             });
 
-            _appSettingsMock.Setup(p => p.Value).Returns(new AppSettings());
+            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = new AssetsController(
-                _loggerMock.Object,
-                _appSettingsMock.Object,
-                _imageStorageSettingsMock.Object,
-                _asyncImageStorageProviderMock.Object,
-                _blogConfigMock.Object,
-                _siteIconGeneratorMock.Object,
-                _webHostEnvMock.Object);
+            var ctl = CreateAssetsController();
 
             var result = ctl.CustomCss();
             Assert.IsInstanceOf(typeof(ContentResult), result);
