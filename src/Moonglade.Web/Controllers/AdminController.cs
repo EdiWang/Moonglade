@@ -26,6 +26,7 @@ namespace Moonglade.Web.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IFriendLinkService _friendLinkService;
         private readonly IPageService _pageService;
+        private readonly ITagService _tagService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
 
@@ -35,6 +36,7 @@ namespace Moonglade.Web.Controllers
             ICategoryService categoryService,
             IFriendLinkService friendLinkService,
             IPageService pageService,
+            ITagService tagService,
             IBlogConfig blogConfig)
         {
             _authenticationSettings = authSettings.Value;
@@ -42,6 +44,7 @@ namespace Moonglade.Web.Controllers
             _categoryService = categoryService;
             _friendLinkService = friendLinkService;
             _pageService = pageService;
+            _tagService = tagService;
             _blogConfig = blogConfig;
         }
 
@@ -83,10 +86,10 @@ namespace Moonglade.Web.Controllers
             return View(pageSegments);
         }
 
-        [Route("tags")]
-        public async Task<IActionResult> Tags([FromServices] ITagService tagService)
+        [HttpGet("tags")]
+        public async Task<IActionResult> Tags()
         {
-            var tags = await tagService.GetAllAsync();
+            var tags = await _tagService.GetAllAsync();
             return View(tags);
         }
 
