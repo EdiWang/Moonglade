@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Core;
 using Moonglade.FriendLink;
 using Moonglade.Web.Controllers;
 using Moq;
@@ -24,6 +25,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IOptions<AuthenticationSettings>> _mockAuthenticationSettings;
         private Mock<IBlogAudit> _mockAudit;
         private Mock<IBlogConfig> _mockBlogConfig;
+        private Mock<ICategoryService> _mockCat;
         private Mock<IFriendLinkService> _mockFriendlinkService;
         private Mock<ILogger<AdminController>> _mockLogger;
 
@@ -36,6 +38,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockLogger = _mockRepository.Create<ILogger<AdminController>>();
             _mockAudit = _mockRepository.Create<IBlogAudit>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+            _mockCat = _mockRepository.Create<ICategoryService>();
             _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
         }
 
@@ -46,6 +49,7 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockAuthenticationSettings.Object,
                 _mockAudit.Object,
                 null,
+                _mockCat.Object,
                 _mockFriendlinkService.Object,
                 _mockBlogConfig.Object);
         }
@@ -121,6 +125,15 @@ namespace Moonglade.Web.Tests.Controllers
             var result = ctl.AccessDenied();
 
             Assert.IsInstanceOf(typeof(ForbidResult), result);
+        }
+
+        [Test]
+        public void About_View()
+        {
+            var ctl = CreateAdminController();
+            var result = ctl.About();
+
+            Assert.IsInstanceOf(typeof(ViewResult), result);
         }
     }
 }
