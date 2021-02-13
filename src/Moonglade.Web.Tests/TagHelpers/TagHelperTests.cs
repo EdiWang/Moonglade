@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using DateTimeOps;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -12,39 +10,35 @@ using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.TagHelpers
 {
-    [ExcludeFromCodeCoverage]
-    public class TagHelperTestsHelpers
-    {
-        public static TagHelperContext MakeTagHelperContext(string tagName, TagHelperAttributeList attributes = null)
-        {
-            attributes ??= new();
-
-            return new(
-                tagName,
-                attributes,
-                new Dictionary<object, object>(),
-                Guid.NewGuid().ToString("N"));
-        }
-
-        public static TagHelperOutput MakeTagHelperOutput(string tagName, TagHelperAttributeList attributes = null)
-        {
-            attributes ??= new();
-
-            return new(
-                tagName,
-                attributes,
-                (_, _) => Task.FromResult<TagHelperContent>(
-                    new DefaultTagHelperContent()))
-            {
-                TagMode = TagMode.SelfClosing,
-            };
-        }
-    }
-
     [TestFixture]
     [ExcludeFromCodeCoverage]
     public class TagHelperTests
     {
+        [Test]
+        public void RSDTagHelper_Process()
+        {
+            var outputAttributes = new TagHelperAttributeList();
+            var tagHelper = new RSDTagHelper { Href = "https://996.icu/rsd" };
+
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new("type", new HtmlString("application/rsd+xml")),
+                new("rel", "edituri"),
+                new("title", "RSD"),
+                new("href", tagHelper.Href)
+            };
+
+            Assert.AreEqual("application/rsd+xml", ((HtmlString)output.Attributes["type"].Value).Value);
+            Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
+            Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
+            Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
+        }
+
         [Test]
         public void FoafTagHelper_Process()
         {
