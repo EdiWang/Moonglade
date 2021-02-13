@@ -10,6 +10,7 @@ using Moonglade.Auth;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.FriendLink;
+using Moonglade.Pages;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -27,6 +28,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ICategoryService> _mockCat;
         private Mock<IFriendLinkService> _mockFriendlinkService;
+        private Mock<IPageService> _mockPageService;
         private Mock<ILogger<AdminController>> _mockLogger;
 
         [SetUp]
@@ -40,6 +42,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockCat = _mockRepository.Create<ICategoryService>();
             _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
+            _mockPageService = _mockRepository.Create<IPageService>();
         }
 
         private AdminController CreateAdminController()
@@ -51,6 +54,7 @@ namespace Moonglade.Web.Tests.Controllers
                 null,
                 _mockCat.Object,
                 _mockFriendlinkService.Object,
+                _mockPageService.Object,
                 _mockBlogConfig.Object);
         }
 

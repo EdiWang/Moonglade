@@ -31,7 +31,9 @@ namespace Moonglade.Web.Controllers
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly ILocalAccountService _localAccountService;
+        private readonly ICategoryService _categoryService;
         private readonly IFriendLinkService _friendLinkService;
+        private readonly IPageService _pageService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
         private readonly ILogger<AdminController> _logger;
@@ -40,15 +42,19 @@ namespace Moonglade.Web.Controllers
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
             ILocalAccountService localAccountService,
+            ICategoryService categoryService,
             IFriendLinkService friendLinkService,
+            IPageService pageService,
             IBlogConfig blogConfig)
         {
+            _logger = logger;
+            _authenticationSettings = authSettings.Value;
             _blogAudit = blogAudit;
             _localAccountService = localAccountService;
+            _categoryService = categoryService;
             _friendLinkService = friendLinkService;
+            _pageService = pageService;
             _blogConfig = blogConfig;
-            _authenticationSettings = authSettings.Value;
-            _logger = logger;
         }
 
         [Route("")]
@@ -190,9 +196,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("category")]
-        public async Task<IActionResult> Category([FromServices] ICategoryService categoryService)
+        public async Task<IActionResult> Category()
         {
-            var cats = await categoryService.GetAllAsync();
+            var cats = await _categoryService.GetAllAsync();
             return View(new CategoryManageModel { Categories = cats });
         }
 
@@ -203,9 +209,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("page")]
-        public async Task<IActionResult> Page([FromServices] IPageService pageService)
+        public async Task<IActionResult> Page()
         {
-            var pageSegments = await pageService.ListSegment();
+            var pageSegments = await _pageService.ListSegment();
             return View(pageSegments);
         }
 
