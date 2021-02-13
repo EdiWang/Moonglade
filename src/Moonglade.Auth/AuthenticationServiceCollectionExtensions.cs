@@ -40,9 +40,9 @@ namespace Moonglade.Auth
                     services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                             {
-                                options.AccessDeniedPath = "/admin/accessdenied";
-                                options.LoginPath = "/admin/signin";
-                                options.LogoutPath = "/admin/signout";
+                                options.AccessDeniedPath = "/auth/accessdenied";
+                                options.LoginPath = "/auth/signin";
+                                options.LogoutPath = "/auth/signout";
                             }).AddApiKeySupport(_ => { });
                     break;
                 case AuthenticationProvider.None:
