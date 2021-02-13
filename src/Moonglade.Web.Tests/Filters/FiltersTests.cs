@@ -12,7 +12,7 @@ using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Web.Filters
+namespace Moonglade.Web.Tests.Filters
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

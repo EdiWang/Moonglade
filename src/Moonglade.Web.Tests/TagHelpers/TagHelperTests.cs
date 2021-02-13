@@ -10,7 +10,7 @@ using Moonglade.Web.TagHelpers;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Web.TagHelpers
+namespace Moonglade.Web.Tests.TagHelpers
 {
     [ExcludeFromCodeCoverage]
     public class TagHelperTestsHelpers

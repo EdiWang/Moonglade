@@ -17,7 +17,7 @@ using Moq;
 using NUnit.Framework;
 using X.PagedList;
 
-namespace Moonglade.Tests.Web.Controllers
+namespace Moonglade.Web.Tests.Controllers
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

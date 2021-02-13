@@ -7,7 +7,7 @@ using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests.Web.Middleware
+namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
