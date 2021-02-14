@@ -79,7 +79,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Menus", "Moonglad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Utils.Tests", "Moonglade.Utils.Tests\Moonglade.Utils.Tests.csproj", "{E0B8DD4E-5E73-4A3F-907B-C70F08F5D951}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Web.Tests", "Moonglade.Web.Tests\Moonglade.Web.Tests.csproj", "{CF4E0173-77A7-40B3-9F52-132956A805E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web.Tests", "Moonglade.Web.Tests\Moonglade.Web.Tests.csproj", "{CF4E0173-77A7-40B3-9F52-132956A805E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

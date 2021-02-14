@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TimeZoneConverter" Version="3.3.0" />
+    <PackageReference Include="TimeZoneConverter" Version="3.4.0" />
   </ItemGroup>
 </Project>
