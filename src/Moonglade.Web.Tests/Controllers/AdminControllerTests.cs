@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -124,6 +126,29 @@ namespace Moonglade.Web.Tests.Controllers
             var result = ctl.Post();
 
             Assert.IsInstanceOf(typeof(ViewResult), result);
+        }
+
+        [Test]
+        public async Task Page_View()
+        {
+            IReadOnlyList<PageSegment> fakePageSegments = new List<PageSegment>()
+            {
+                new ()
+                {
+                    IsPublished = true,
+                    CreateTimeUtc = DateTime.UtcNow,
+                    Id = Guid.Empty,
+                    RouteName = "fuck-996",
+                    Title = "Fuck Jack Ma's Fu Bao"
+                }
+            };
+            _mockPageService.Setup(p => p.ListSegment()).Returns(Task.FromResult(fakePageSegments));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.Page();
+
+            Assert.IsInstanceOf(typeof(ViewResult), result);
+            Assert.AreEqual(fakePageSegments, ((ViewResult) result).Model);
         }
     }
 }
