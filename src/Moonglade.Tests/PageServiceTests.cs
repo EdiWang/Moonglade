@@ -5,9 +5,11 @@ using Moonglade.Pages;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Moonglade.Data.Spec;
 
 namespace Moonglade.Tests
 {
@@ -86,6 +88,21 @@ namespace Moonglade.Tests
             {
                 await svc.GetAsync(top);
             });
+        }
+
+        [Test]
+        public async Task GetAsync_List()
+        {
+            IReadOnlyList<PageEntity> pageEntities = new List<PageEntity> { _fakePageEntity };
+
+            _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<PageSpec>(), true))
+                .Returns(Task.FromResult(pageEntities));
+
+            var svc = CreatePageService();
+            var pages = await svc.GetAsync(996);
+
+            Assert.IsNotNull(pages);
+            Assert.AreEqual(_fakePageEntity.Title.Trim(), pages[0].Title);
         }
 
         [Test]
