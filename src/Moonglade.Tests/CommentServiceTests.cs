@@ -1,4 +1,6 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Moonglade.Auditing;
 using Moonglade.Comments;
 using Moonglade.Configuration.Abstraction;
@@ -35,7 +37,7 @@ namespace Moonglade.Tests
             _mockCommentModerator = _mockRepository.Create<ICommentModerator>();
         }
 
-        private CommentService CreateService()
+        private CommentService CreateCommentService()
         {
             return new(
                 _mockBlogConfig.Object,
@@ -50,10 +52,44 @@ namespace Moonglade.Tests
         public void Count_ExpectedBehavior()
         {
             _mockRepositoryCommentEntity.Setup(p => p.Count(t => true)).Returns(996);
-            var service = CreateService();
+            var service = CreateCommentService();
 
             var result = service.Count();
             Assert.AreEqual(996, result);
+        }
+
+        [Test]
+        public void ToggleApprovalAsync_EmptyIds()
+        {
+            var service = CreateCommentService();
+
+            Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await service.ToggleApprovalAsync(Array.Empty<Guid>());
+            });
+        }
+
+        [Test]
+        public void DeleteAsync_EmptyIds()
+        {
+            var service = CreateCommentService();
+
+            Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await service.DeleteAsync(Array.Empty<Guid>());
+            });
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        public void GetCommentsAsync_InvalidPageSize(int pageSize)
+        {
+            var service = CreateCommentService();
+
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await service.GetCommentsAsync(pageSize, 1);
+            });
         }
     }
 }
