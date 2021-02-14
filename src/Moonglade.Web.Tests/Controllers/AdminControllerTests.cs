@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -82,6 +84,14 @@ namespace Moonglade.Web.Tests.Controllers
                 });
 
             var ctl = CreateAdminController();
+            ctl.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new(new ClaimsIdentity(new[] { new Claim("Name", "Edi") }))
+                }
+            };
+
             var result = await ctl.Index();
             Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
             if (result is RedirectToActionResult rdResult)
