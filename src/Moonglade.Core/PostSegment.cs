@@ -9,6 +9,7 @@ namespace Moonglade.Core
         public string Slug { get; set; }
         public DateTime? PubDateUtc { get; set; }
         public DateTime CreateTimeUtc { get; set; }
+        public DateTime? LastModifiedUtc { get; set; }
         public bool IsPublished { get; set; }
         public int Hits { get; set; }
         public bool IsDeleted { get; set; }
