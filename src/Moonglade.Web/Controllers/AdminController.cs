@@ -27,6 +27,8 @@ namespace Moonglade.Web.Controllers
         private readonly IFriendLinkService _friendLinkService;
         private readonly IPageService _pageService;
         private readonly ITagService _tagService;
+        private readonly ICommentService _commentService;
+        private readonly IPingbackService _pingbackService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
 
@@ -37,15 +39,20 @@ namespace Moonglade.Web.Controllers
             IFriendLinkService friendLinkService,
             IPageService pageService,
             ITagService tagService,
-            IBlogConfig blogConfig)
+            ICommentService commentService,
+            IPingbackService pingbackService,
+            IBlogConfig blogConfig )
         {
             _authenticationSettings = authSettings.Value;
-            _blogAudit = blogAudit;
             _categoryService = categoryService;
             _friendLinkService = friendLinkService;
             _pageService = pageService;
             _tagService = tagService;
+            _commentService = commentService;
+            _pingbackService = pingbackService;
+
             _blogConfig = blogConfig;
+            _blogAudit = blogAudit;
         }
 
         [Route("")]
@@ -94,12 +101,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("comments")]
-        public async Task<IActionResult> Comments([FromServices] ICommentService commentService, int page = 1)
+        public async Task<IActionResult> Comments(int page = 1)
         {
             const int pageSize = 10;
-            var comments = await commentService.GetCommentsAsync(pageSize, page);
-            var list =
-                new StaticPagedList<CommentDetailedItem>(comments, page, pageSize, commentService.Count());
+            var comments = await _commentService.GetCommentsAsync(pageSize, page);
+            var list = new StaticPagedList<CommentDetailedItem>(comments, page, pageSize, _commentService.Count());
             return View(list);
         }
 
@@ -132,9 +138,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("pingback")]
-        public async Task<IActionResult> Pingback([FromServices] IPingbackService pingbackService)
+        public async Task<IActionResult> Pingback()
         {
-            var list = await pingbackService.GetPingbackHistoryAsync();
+            var list = await _pingbackService.GetPingbackHistoryAsync();
             return View(list);
         }
 

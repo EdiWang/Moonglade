@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Auth;
+using Moonglade.Comments;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.FriendLink;
 using Moonglade.Pages;
+using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -31,6 +33,8 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IFriendLinkService> _mockFriendlinkService;
         private Mock<IPageService> _mockPageService;
         private Mock<ITagService> _mockTagService;
+        private Mock<ICommentService> _mockCommentService;
+        private Mock<IPingbackService> _mockPingbackService;
 
         [SetUp]
         public void Setup()
@@ -44,6 +48,8 @@ namespace Moonglade.Web.Tests.Controllers
             _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockTagService = _mockRepository.Create<ITagService>();
+            _mockCommentService = _mockRepository.Create<ICommentService>();
+            _mockPingbackService = _mockRepository.Create<IPingbackService>();
         }
 
         private AdminController CreateAdminController()
@@ -55,6 +61,8 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockFriendlinkService.Object,
                 _mockPageService.Object,
                 _mockTagService.Object,
+                _mockCommentService.Object,
+                _mockPingbackService.Object,
                 _mockBlogConfig.Object);
         }
 
