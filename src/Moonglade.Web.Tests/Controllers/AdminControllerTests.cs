@@ -146,7 +146,7 @@ namespace Moonglade.Web.Tests.Controllers
                     IsPublished = true,
                     CreateTimeUtc = DateTime.UtcNow,
                     Id = Guid.Empty,
-                    RouteName = "fuck-996",
+                    Slug = "fuck-996",
                     Title = "Fuck Jack Ma's Fu Bao"
                 }
             };

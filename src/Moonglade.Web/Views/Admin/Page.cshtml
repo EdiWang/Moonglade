@@ -37,7 +37,7 @@
                     <h6 class="card-title">
                         @customPage.Title
                     </h6>
-                    <p class="mt-2 h-30px">@customPage.RouteName</p>
+                    <p class="mt-2 h-30px">@customPage.Slug</p>
                     <small class="text-muted">
                         @customPage.CreateTimeUtc
                     </small>
@@ -46,7 +46,7 @@
                     <a class="btn btn-accent btn-sm btn-edit" asp-controller="Page" asp-action="Edit" asp-route-id="@customPage.Id">
                         <span class="icon-pencil"></span>
                     </a>
-                    <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" data-slug="@customPage.RouteName" href="javascript:;">
+                    <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" data-slug="@customPage.Slug" href="javascript:;">
                         <span class="icon-bin"></span>
                     </a>
                     <span id="span-processing-@customPage.Id" style="display: none">...</span>

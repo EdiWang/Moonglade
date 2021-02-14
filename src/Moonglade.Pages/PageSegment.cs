@@ -8,7 +8,7 @@ namespace Moonglade.Pages
 
         public string Title { get; set; }
 
-        public string RouteName { get; set; }
+        public string Slug { get; set; }
 
         public bool IsPublished { get; set; }
 

@@ -43,8 +43,8 @@ namespace Moonglade.Pages
 
         public async Task<Page> GetAsync(string slug)
         {
-            var loweredRouteName = slug.ToLower();
-            var entity = await _pageRepo.GetAsync(p => p.Slug == loweredRouteName);
+            var lower = slug.ToLower();
+            var entity = await _pageRepo.GetAsync(p => p.Slug == lower);
             var item = EntityToPage(entity);
             return item;
         }
@@ -64,7 +64,7 @@ namespace Moonglade.Pages
             {
                 Id = page.Id,
                 CreateTimeUtc = page.CreateTimeUtc,
-                RouteName = page.Slug,
+                Slug = page.Slug,
                 Title = page.Title,
                 IsPublished = page.IsPublished
             });
@@ -97,7 +97,7 @@ namespace Moonglade.Pages
             var page = await _pageRepo.GetAsync(id);
             if (page is null)
             {
-                throw new InvalidOperationException($"CustomPageEntity with Id '{id}' not found.");
+                throw new InvalidOperationException($"PageEntity with Id '{id}' not found.");
             }
 
             page.Title = request.Title.Trim();
