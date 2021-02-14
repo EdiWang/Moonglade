@@ -55,7 +55,7 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task DefaultAction()
+        public async Task Index_Local()
         {
             _mockAuthenticationSettings.Setup(c => c.Value)
                 .Returns(new AuthenticationSettings
@@ -71,7 +71,25 @@ namespace Moonglade.Web.Tests.Controllers
                 Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
             }
         }
-        
+
+        [Test]
+        public async Task Index_AAD()
+        {
+            _mockAuthenticationSettings.Setup(c => c.Value)
+                .Returns(new AuthenticationSettings
+                {
+                    Provider = AuthenticationProvider.AzureAD
+                });
+
+            var ctl = CreateAdminController();
+            var result = await ctl.Index();
+            Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
+            if (result is RedirectToActionResult rdResult)
+            {
+                Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
+            }
+        }
+
         [Test]
         public void KeepAlive()
         {
@@ -85,6 +103,15 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreateAdminController();
             var result = ctl.About();
+
+            Assert.IsInstanceOf(typeof(ViewResult), result);
+        }
+
+        [Test]
+        public void Post_View()
+        {
+            var ctl = CreateAdminController();
+            var result = ctl.Post();
 
             Assert.IsInstanceOf(typeof(ViewResult), result);
         }
