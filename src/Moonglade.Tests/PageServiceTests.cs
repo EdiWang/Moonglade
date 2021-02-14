@@ -77,6 +77,17 @@ namespace Moonglade.Tests
             Assert.AreEqual("pdd-is-evil", page.Slug);
         }
 
+        [TestCase(0)]
+        [TestCase(-1)]
+        public void GetAsync_InvalidTop(int top)
+        {
+            var svc = CreatePageService();
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await svc.GetAsync(top);
+            });
+        }
+
         [Test]
         public void RemoveScriptTagFromHtml()
         {
