@@ -10,10 +10,10 @@ namespace Moonglade.Syndication
 
         public string SiteTitle { get; set; }
 
-        public string CategoryXmlUrlTemplate { get; set; }
+        public string XmlUrlTemplate { get; set; }
 
-        public string CategoryHtmlUrlTemplate { get; set; }
+        public string HtmlUrlTemplate { get; set; }
 
-        public IEnumerable<KeyValuePair<string, string>> CategoryInfo { get; set; }
+        public IEnumerable<KeyValuePair<string, string>> ContentInfo { get; set; }
     }
 }

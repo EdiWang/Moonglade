@@ -22,11 +22,11 @@ namespace Moonglade.Tests
             var info = new OpmlDoc
             {
                 SiteTitle = $"Work 996 - OPML",
-                CategoryInfo = catInfos,
+                ContentInfo = catInfos,
                 HtmlUrl = $"{siteRootUrl}/post",
                 XmlUrl = $"{siteRootUrl}/rss",
-                CategoryXmlUrlTemplate = $"{siteRootUrl}/rss/[catTitle]",
-                CategoryHtmlUrlTemplate = $"{siteRootUrl}/category/[catTitle]"
+                XmlUrlTemplate = $"{siteRootUrl}/rss/[catTitle]",
+                HtmlUrlTemplate = $"{siteRootUrl}/category/[catTitle]"
             };
 
             var writer = new MemoryStreamOpmlWriter();

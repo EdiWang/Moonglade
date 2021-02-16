@@ -44,11 +44,11 @@ namespace Moonglade.Web.Controllers
             var oi = new OpmlDoc
             {
                 SiteTitle = $"{_blogConfig.GeneralSettings.SiteTitle} - OPML",
-                CategoryInfo = catInfos,
+                ContentInfo = catInfos,
                 HtmlUrl = $"{rootUrl}/post",
                 XmlUrl = $"{rootUrl}/rss",
-                CategoryXmlUrlTemplate = $"{rootUrl}/rss/[catTitle]",
-                CategoryHtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
+                XmlUrlTemplate = $"{rootUrl}/rss/[catTitle]",
+                HtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
             };
 
             var bytes = await opmlWriter.GetOpmlStreamDataAsync(oi);

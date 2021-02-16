@@ -40,7 +40,7 @@ namespace Moonglade.Syndication
                 await writer.WriteEndElementAsync();
 
                 // categories
-                foreach (var cat in opmlDoc.CategoryInfo)
+                foreach (var cat in opmlDoc.ContentInfo)
                 {
                     // open OUTLINE
                     writer.WriteStartElement("outline");
@@ -48,8 +48,8 @@ namespace Moonglade.Syndication
                     writer.WriteAttributeString("title", cat.Key);
                     writer.WriteAttributeString("text", cat.Value);
                     writer.WriteAttributeString("type", "rss");
-                    writer.WriteAttributeString("xmlUrl", opmlDoc.CategoryXmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
-                    writer.WriteAttributeString("htmlUrl", opmlDoc.CategoryHtmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
+                    writer.WriteAttributeString("xmlUrl", opmlDoc.XmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
+                    writer.WriteAttributeString("htmlUrl", opmlDoc.HtmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
 
                     // close OUTLINE
                     await writer.WriteEndElementAsync();
