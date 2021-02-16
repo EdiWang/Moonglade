@@ -63,7 +63,9 @@
                 </td>
                 <td class="p-2">
                     <a class="btn btn-sm btn-outline-danger btn-delete" href="#" data-pingbackid="@item.Id">
-                        <span class="icon-bin"></span> <span id="span-processing-@item.Id" style="display: none;">(@Localizer["Processing..."])</span>
+                        <span class="icon-bin"></span> 
+
+                        <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                     </a>
                 </td>
             </tr>
