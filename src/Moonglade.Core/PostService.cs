@@ -251,6 +251,7 @@ namespace Moonglade.Core
                 IsDeleted = p.IsDeleted,
                 CreateTimeUtc = p.CreateTimeUtc,
                 LastModifiedUtc = p.LastModifiedUtc,
+                ContentAbstract = p.ContentAbstract,
                 Hits = p.PostExtension.Hits
             });
         }
@@ -280,6 +281,7 @@ namespace Moonglade.Core
                 IsDeleted = p.IsDeleted,
                 CreateTimeUtc = p.CreateTimeUtc,
                 LastModifiedUtc = p.LastModifiedUtc,
+                ContentAbstract = p.ContentAbstract,
                 Hits = p.PostExtension.Hits
             });
 
@@ -319,6 +321,8 @@ namespace Moonglade.Core
                 IsPublished = p.IsPublished,
                 IsDeleted = p.IsDeleted,
                 CreateTimeUtc = p.CreateTimeUtc,
+                LastModifiedUtc = p.LastModifiedUtc,
+                ContentAbstract = p.ContentAbstract,
                 Hits = p.PostExtension.Hits
             });
         }
