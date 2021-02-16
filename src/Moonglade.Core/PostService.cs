@@ -151,7 +151,7 @@ namespace Moonglade.Core
                     }).ToArray(),
                 Id = post.Id,
                 ExposedToSiteMap = post.ExposedToSiteMap,
-                LastModifyOnUtc = post.LastModifiedUtc,
+                LastModifiedUtc = post.LastModifiedUtc,
                 ContentLanguageCode = post.ContentLanguageCode,
                 Featured = post.IsFeatured
             });
@@ -226,7 +226,7 @@ namespace Moonglade.Core
                     Id = post.Id,
                     CommentEnabled = post.CommentEnabled,
                     ExposedToSiteMap = post.ExposedToSiteMap,
-                    LastModifyOnUtc = post.LastModifiedUtc,
+                    LastModifiedUtc = post.LastModifiedUtc,
                     ContentLanguageCode = post.ContentLanguageCode,
                     Featured = post.IsFeatured,
                     CommentCount = post.Comments.Count(c => c.IsApproved)

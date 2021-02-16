@@ -19,6 +19,6 @@ namespace Moonglade.Core
         public Tag[] Tags { get; set; }
         public Category[] Categories { get; set; }
         public DateTime? PubDateUtc { get; set; }
-        public DateTime? LastModifyOnUtc { get; set; }
+        public DateTime? LastModifiedUtc { get; set; }
     }
 }
