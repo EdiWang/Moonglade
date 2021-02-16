@@ -132,9 +132,6 @@
   <data name="Pingbacks" xml:space="preserve">
     <value>引用</value>
   </data>
-  <data name="Processing..." xml:space="preserve">
-    <value>处理中……</value>
-  </data>
   <data name="Referenced Post" xml:space="preserve">
     <value>引用的文章</value>
   </data>

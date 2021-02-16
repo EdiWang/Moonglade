@@ -30,26 +30,27 @@
     @Html.AntiForgeryToken()
 
     <div class="card-columns card-columns-pages">
-        @foreach (var customPage in Model.OrderByDescending(p => p.CreateTimeUtc))
+        @foreach (var item in Model.OrderByDescending(p => p.CreateTimeUtc))
         {
-            <div class="card mb-4" id="card-@customPage.Id">
+            <div class="card mb-4" id="card-@item.Id">
                 <div class="card-body">
                     <h6 class="card-title">
-                        @customPage.Title
+                        @item.Title
                     </h6>
-                    <p class="mt-2 h-30px">@customPage.Slug</p>
+                    <p class="mt-2 h-30px">@item.Slug</p>
                     <small class="text-muted">
-                        @customPage.CreateTimeUtc
+                        @item.CreateTimeUtc
                     </small>
                 </div>
                 <div class="card-footer">
-                    <a class="btn btn-accent btn-sm btn-edit" asp-controller="Page" asp-action="Edit" asp-route-id="@customPage.Id">
+                    <a class="btn btn-accent btn-sm btn-edit" asp-controller="Page" asp-action="Edit" asp-route-id="@item.Id">
                         <span class="icon-pencil"></span>
                     </a>
-                    <a class="btn btn-danger btn-sm btn-delete" data-pageid="@customPage.Id" data-slug="@customPage.Slug" href="javascript:;">
+                    <a class="btn btn-danger btn-sm btn-delete" data-pageid="@item.Id" data-slug="@item.Slug" href="javascript:;">
                         <span class="icon-bin"></span>
                     </a>
-                    <span id="span-processing-@customPage.Id" style="display: none">...</span>
+                    
+                    <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                 </div>
             </div>
         }

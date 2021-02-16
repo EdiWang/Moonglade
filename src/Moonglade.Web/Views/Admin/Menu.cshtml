@@ -82,7 +82,8 @@
                     <td class="p-2">
                         <a href="javascript:;" data-menuid="@item.Id" class="btn btn-sm btn-outline-accent btn-edit"><span class="icon-pencil"></span></a>
                         <a href="javascript:;" data-menuid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
-                        <span id="span-processing-@item.Id" style="display: none">...</span>
+
+                        <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                     </td>
                 </tr>
             }
