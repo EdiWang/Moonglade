@@ -467,11 +467,11 @@ namespace Moonglade.Core
             // add categories
             if (request.CategoryIds is not null and { Length: > 0 })
             {
-                foreach (var cid in request.CategoryIds)
+                foreach (var id in request.CategoryIds)
                 {
                     post.PostCategory.Add(new()
                     {
-                        CategoryId = cid,
+                        CategoryId = id,
                         PostId = post.Id
                     });
                 }
