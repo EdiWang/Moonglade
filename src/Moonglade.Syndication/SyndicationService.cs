@@ -15,8 +15,8 @@ namespace Moonglade.Syndication
 {
     public interface ISyndicationService
     {
-        Task<string> GetRssDataAsync(string categoryName = null);
-        Task<string> GetAtomData();
+        Task<string> GetRssStringAsync(string categoryName = null);
+        Task<string> GetAtomStringAsync();
     }
 
     public class SyndicationService : ISyndicationService
@@ -26,6 +26,8 @@ namespace Moonglade.Syndication
         private readonly IBlogConfig _blogConfig;
         private readonly IRepository<CategoryEntity> _catRepo;
         private readonly IRepository<PostEntity> _postRepo;
+
+        private readonly FeedGenerator _feedGenerator;
 
         public SyndicationService(
             IOptions<AppSettings> settings,
@@ -41,9 +43,36 @@ namespace Moonglade.Syndication
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
+
+            _feedGenerator = new()
+            {
+                HostUrl = _baseUrl,
+                HeadTitle = _blogConfig.FeedSettings.RssTitle,
+                HeadDescription = _blogConfig.FeedSettings.RssDescription,
+                Copyright = _blogConfig.FeedSettings.RssCopyright,
+                Generator = $"Moonglade v{Helper.AppVersion}",
+                TrackBackUrl = _baseUrl
+            };
         }
 
-        public async Task<string> GetRssDataAsync(string categoryName = null)
+        public async Task<string> GetRssStringAsync(string categoryName = null)
+        {
+            var data = await GetDataAsync(categoryName);
+            if (data is null) return null;
+
+            _feedGenerator.FeedItemCollection = data;
+            var xml = await _feedGenerator.WriteRssAsync();
+            return xml;
+        }
+
+        public async Task<string> GetAtomStringAsync()
+        {
+            _feedGenerator.FeedItemCollection = await GetDataAsync();
+            var xml = await _feedGenerator.WriteAtomAsync();
+            return xml;
+        }
+
+        private async Task<IReadOnlyList<FeedEntry>> GetDataAsync(string categoryName = null)
         {
             IReadOnlyList<FeedEntry> itemCollection;
             if (!string.IsNullOrWhiteSpace(categoryName))
@@ -58,38 +87,7 @@ namespace Moonglade.Syndication
                 itemCollection = await GetFeedEntriesAsync();
             }
 
-            var rw = new FeedGenerator
-            {
-                HostUrl = _baseUrl,
-                HeadTitle = _blogConfig.FeedSettings.RssTitle,
-                HeadDescription = _blogConfig.FeedSettings.RssDescription,
-                Copyright = _blogConfig.FeedSettings.RssCopyright,
-                Generator = $"Moonglade v{Helper.AppVersion}",
-                FeedItemCollection = itemCollection,
-                TrackBackUrl = _baseUrl
-            };
-
-            var xml = await rw.WriteRssAsync();
-            return xml;
-        }
-
-        public async Task<string> GetAtomData()
-        {
-            var itemCollection = await GetFeedEntriesAsync();
-
-            var rw = new FeedGenerator
-            {
-                HostUrl = _baseUrl,
-                HeadTitle = _blogConfig.FeedSettings.RssTitle,
-                HeadDescription = _blogConfig.FeedSettings.RssDescription,
-                Copyright = _blogConfig.FeedSettings.RssCopyright,
-                Generator = $"Moonglade v{Helper.AppVersion}",
-                FeedItemCollection = itemCollection,
-                TrackBackUrl = _baseUrl
-            };
-
-            var xml = await rw.WriteAtomAsync();
-            return xml;
+            return itemCollection;
         }
 
         private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? categoryId = null)

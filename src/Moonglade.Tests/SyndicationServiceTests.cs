@@ -101,7 +101,7 @@ namespace Moonglade.Tests
 
             var service = CreateService();
 
-            var result = await service.GetRssDataAsync();
+            var result = await service.GetRssStringAsync();
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
@@ -122,7 +122,7 @@ namespace Moonglade.Tests
 
             var service = CreateService();
 
-            var result = await service.GetRssDataAsync("fuckpdd");
+            var result = await service.GetRssStringAsync("fuckpdd");
             Assert.IsNull(result);
         }
 
@@ -144,7 +144,7 @@ namespace Moonglade.Tests
 
             var service = CreateService();
 
-            var result = await service.GetRssDataAsync("fuckpdd");
+            var result = await service.GetRssStringAsync("fuckpdd");
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
@@ -162,7 +162,7 @@ namespace Moonglade.Tests
 
             var service = CreateService();
 
-            var result = await service.GetAtomData();
+            var result = await service.GetAtomStringAsync();
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
@@ -186,7 +186,7 @@ namespace Moonglade.Tests
             });
 
             var service = CreateService();
-            var result = await service.GetRssDataAsync();
+            var result = await service.GetRssStringAsync();
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
@@ -207,7 +207,7 @@ namespace Moonglade.Tests
             });
 
             var service = CreateService();
-            var result = await service.GetRssDataAsync();
+            var result = await service.GetRssStringAsync();
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
