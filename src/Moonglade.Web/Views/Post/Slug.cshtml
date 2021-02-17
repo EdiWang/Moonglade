@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Utils
 @using DateTimeOps
 
-@model Moonglade.Core.PostSlug
+@model Moonglade.Core.Post
 @inject IDateTimeResolver DateTimeResolver
 
 @{
@@ -174,7 +174,6 @@
                 <div class="card bg-light comment-form-containter mb-4">
                     <div class="card-header">
                         @Localizer["Comments"]
-                        <span class="badge badge-secondary float-right">@Model.CommentCount</span>
                     </div>
                     <form id="comment-form">
                         <div class="card-body">
@@ -252,12 +251,9 @@
             @Localizer["Refresh the page to see your comment."]
         </div>
 
-        @if (Model.CommentCount > 0)
-        {
-            <section id="comments-list">
-                @await Component.InvokeAsync("CommentList", new { postId = Model.Id })
-            </section>
-        }
+        <section id="comments-list">
+            @await Component.InvokeAsync("CommentList", new { postId = Model.Id })
+        </section>
     </div>
 }
 

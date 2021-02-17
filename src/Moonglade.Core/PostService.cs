@@ -23,8 +23,8 @@ namespace Moonglade.Core
         int CountByTag(int tagId);
         int CountByFeatured();
         Task<Post> GetAsync(Guid id);
-        Task<PostSlug> GetAsync(PostSlugInfo slug);
-        Task<PostSlug> GetDraft(Guid postId);
+        Task<Post> GetAsync(PostSlugInfo slug);
+        Task<Post> GetDraft(Guid postId);
         Task<string> GetContent(PostSlugInfo slug);
         Task<PostMeta> GetMeta(PostSlugInfo slug);
         Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus);
@@ -126,10 +126,10 @@ namespace Moonglade.Core
             return post;
         }
 
-        public Task<PostSlug> GetDraft(Guid postId)
+        public Task<Post> GetDraft(Guid postId)
         {
             var spec = new PostSpec(postId);
-            var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostSlug
+            var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, post => new Post
             {
                 Title = post.Title,
                 ContentAbstract = post.ContentAbstract,
@@ -191,7 +191,7 @@ namespace Moonglade.Core
             return model;
         }
 
-        public async Task<PostSlug> GetAsync(PostSlugInfo slug)
+        public async Task<Post> GetAsync(PostSlugInfo slug)
         {
             var date = new DateTime(slug.Year, slug.Month, slug.Day);
             var spec = new PostSpec(date, slug.Slug);
@@ -203,7 +203,7 @@ namespace Moonglade.Core
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
 
-                var postSlugModel = await _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostSlug
+                var postSlugModel = await _postRepo.SelectFirstOrDefaultAsync(spec, post => new Post
                 {
                     Title = post.Title,
                     ContentAbstract = post.ContentAbstract,
@@ -228,8 +228,7 @@ namespace Moonglade.Core
                     ExposedToSiteMap = post.ExposedToSiteMap,
                     LastModifiedUtc = post.LastModifiedUtc,
                     ContentLanguageCode = post.ContentLanguageCode,
-                    Featured = post.IsFeatured,
-                    CommentCount = post.Comments.Count(c => c.IsApproved)
+                    Featured = post.IsFeatured
                 });
 
                 return postSlugModel;
