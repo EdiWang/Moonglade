@@ -1,7 +1,8 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
-
+@using DateTimeOps
+@inject IDateTimeResolver DateTimeResolver
 @model IReadOnlyList<Moonglade.Core.PostSegment>
 @section scripts{
     <script>
@@ -35,13 +36,15 @@
     {
         <div class="card mb-3" id="tr-@post.Id">
             <div class="card-body">
-                <h6 class="card-title">@post.Title</h6>
+                <h6 class="card-title">
+                    <a asp-controller="PostManage" asp-action="Edit" asp-route-id="@post.Id">@post.Title</a>
+                </h6>
 
                 <p class="mt-2 text-muted">
                     @post.ContentAbstract
                 </p>
 
-                <small class="text-muted">@post.CreateTimeUtc.ToString("MM/dd/yyyy HH:mm")</small>
+                <small class="text-muted">@DateTimeResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @DateTimeResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
             </div>
             <div class="card-footer">
                 <a class="btn btn-outline-accent btn-sm btn-edit" asp-controller="PostManage" asp-action="Edit" asp-route-id="@post.Id">
