@@ -5,7 +5,7 @@
 <partial name="_SettingsHeader" />
 
 <div class="alert alert-info mb-3">
-    @Localizer["You can export data in this blog to Json or Zip archive from here. You may then use the data on another Moonglade blog or other systems."]
+    @Localizer["You can export data in this blog to CSV or Zip archive from here. You may then use the data on another Moonglade blog or other systems."]
 </div>
 
 <div class="row">
@@ -19,20 +19,20 @@
                 <hr />
 
                 <div class="mb-3">
-                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="Posts" class="btn btn-outline-success" target="_blank">@Localizer["Posts"]</a>
+                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="Posts" class="btn btn-outline-accent" target="_blank">@Localizer["Posts"]</a>
 
-                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="Pages" class="btn btn-outline-success" target="_blank">@Localizer["Pages"]</a>
+                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="Pages" class="btn btn-outline-accent" target="_blank">@Localizer["Pages"]</a>
 
-                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="Tags" class="btn btn-outline-success" target="_blank">@Localizer["Tags"]</a>
+                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="Tags" class="btn btn-outline-accent" target="_blank">@Localizer["Tags"]</a>
 
-                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="Categories" class="btn btn-outline-success" target="_blank">@Localizer["Categories"]</a>
+                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="Categories" class="btn btn-outline-accent" target="_blank">@Localizer["Categories"]</a>
                 </div>
 
                 <strong>@Localizer["Secondary Data"]</strong>
                 <hr />
 
                 <div>
-                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="FriendLinks" class="btn btn-outline-success" target="_blank">@Localizer["Friend Links"]</a>
+                    <a asp-action="ExportDownload" asp-controller="Settings" asp-route-type="FriendLinks" class="btn btn-outline-accent" target="_blank">@Localizer["Friend Links"]</a>
                 </div>
             </div>
         </div>

@@ -150,7 +150,7 @@
   <data name="Tags" xml:space="preserve">
     <value>标签</value>
   </data>
-  <data name="You can export data in this blog to Json or Zip archive from here. You may then use the data on another Moonglade blog or other systems." xml:space="preserve">
+  <data name="You can export data in this blog to CSV or Zip archive from here. You may then use the data on another Moonglade blog or other systems." xml:space="preserve">
     <value>您可以导出此博客的数据到Json或Zip压缩包文件。并能够导入另一个Moonglade博客或其他系统。</value>
   </data>
 </root>
