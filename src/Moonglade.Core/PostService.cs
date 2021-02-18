@@ -18,7 +18,7 @@ namespace Moonglade.Core
 {
     public interface IPostService
     {
-        int CountVisible();
+        int CountPublic();
         int CountByCategory(Guid catId);
         int CountByTag(int tagId);
         int CountByFeatured();
@@ -59,6 +59,37 @@ namespace Moonglade.Core
         #endregion
 
         #region Selectors
+
+        private readonly Expression<Func<PostEntity, Post>> _postSelector = p => new()
+        {
+            Id = p.Id,
+            Title = p.Title,
+            Slug = p.Slug,
+            RawPostContent = p.PostContent,
+            ContentAbstract = p.ContentAbstract,
+            CommentEnabled = p.CommentEnabled,
+            CreateTimeUtc = p.CreateTimeUtc,
+            PubDateUtc = p.PubDateUtc,
+            LastModifiedUtc = p.LastModifiedUtc,
+            IsPublished = p.IsPublished,
+            ExposedToSiteMap = p.ExposedToSiteMap,
+            IsFeedIncluded = p.IsFeedIncluded,
+            Featured = p.IsFeatured,
+            ContentLanguageCode = p.ContentLanguageCode,
+            Tags = p.Tags.Select(pt => new Tag
+            {
+                Id = pt.Id,
+                NormalizedName = pt.NormalizedName,
+                DisplayName = pt.DisplayName
+            }).ToArray(),
+            Categories = p.PostCategory.Select(pc => new Category
+            {
+                Id = pc.CategoryId,
+                DisplayName = pc.Category.DisplayName,
+                RouteName = pc.Category.RouteName,
+                Note = pc.Category.Note
+            }).ToArray()
+        };
 
         private readonly Expression<Func<PostEntity, PostSegment>> _postSegmentSelector = p => new()
         {
@@ -115,78 +146,49 @@ namespace Moonglade.Core
             _tagNormalization = tagNormalization;
         }
 
-        public int CountVisible() => _postRepo.Count(p => p.IsPublished && !p.IsDeleted);
+        #region Counts
 
-        public int CountByCategory(Guid catId) =>
-            _postCatRepo.Count(c => c.CategoryId == catId
-                                          && c.Post.IsPublished
-                                          && !c.Post.IsDeleted);
+        public int CountPublic() => _postRepo.Count(p => p.IsPublished && !p.IsDeleted);
+
+        public int CountByCategory(Guid catId) => _postCatRepo.Count(c => c.CategoryId == catId
+                                                                          && c.Post.IsPublished
+                                                                          && !c.Post.IsDeleted);
         public int CountByTag(int tagId) => _postTagRepo.Count(p => p.TagId == tagId && p.Post.IsPublished && !p.Post.IsDeleted);
+
         public int CountByFeatured() => _postRepo.Count(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
+
+        #endregion
 
         public Task<Post> GetAsync(Guid id)
         {
             var spec = new PostSpec(id);
-            var post = _postRepo.SelectFirstOrDefaultAsync(spec, p => new Post
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Slug = p.Slug,
-                RawPostContent = p.PostContent,
-                ContentAbstract = p.ContentAbstract,
-                CommentEnabled = p.CommentEnabled,
-                CreateTimeUtc = p.CreateTimeUtc,
-                PubDateUtc = p.PubDateUtc,
-                LastModifiedUtc = p.LastModifiedUtc,
-                IsPublished = p.IsPublished,
-                ExposedToSiteMap = p.ExposedToSiteMap,
-                IsFeedIncluded = p.IsFeedIncluded,
-                Featured = p.IsFeatured,
-                ContentLanguageCode = p.ContentLanguageCode,
-                Tags = p.Tags.Select(pt => new Tag
-                {
-                    Id = pt.Id,
-                    NormalizedName = pt.NormalizedName,
-                    DisplayName = pt.DisplayName
-                }).ToArray(),
-                Categories = p.PostCategory.Select(pc => new Category
-                {
-                    Id = pc.CategoryId,
-                    DisplayName = pc.Category.DisplayName,
-                    RouteName = pc.Category.RouteName,
-                    Note = pc.Category.Note
-                }).ToArray()
-            });
+            var post = _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
             return post;
+        }
+
+        public async Task<Post> GetAsync(PostSlug slug)
+        {
+            var date = new DateTime(slug.Year, slug.Month, slug.Day);
+            var spec = new PostSpec(date, slug.Slug);
+
+            var pid = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Id);
+            if (pid == Guid.Empty) return null;
+
+            var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
+
+                var postModel = await _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
+                return postModel;
+            });
+
+            return psm;
         }
 
         public Task<Post> GetDraft(Guid id)
         {
             var spec = new PostSpec(id);
-            var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, p => new Post
-            {
-                Id = p.Id,
-                Title = p.Title,
-                RawPostContent = p.PostContent,
-                ContentAbstract = p.ContentAbstract,
-                PubDateUtc = DateTime.UtcNow,
-                LastModifiedUtc = p.LastModifiedUtc,
-                ExposedToSiteMap = p.ExposedToSiteMap,
-                Featured = p.IsFeatured,
-                ContentLanguageCode = p.ContentLanguageCode,
-                Tags = p.Tags
-                    .Select(p => new Tag
-                    {
-                        NormalizedName = p.NormalizedName,
-                        DisplayName = p.DisplayName
-                    }).ToArray(),
-                Categories = p.PostCategory.Select(pc => pc.Category).Select(p => new Category
-                {
-                    DisplayName = p.DisplayName,
-                    RouteName = p.RouteName
-                }).ToArray()
-            });
-
+            var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
             return postSlugModel;
         }
 
@@ -219,52 +221,6 @@ namespace Moonglade.Core
             });
 
             return model;
-        }
-
-        public async Task<Post> GetAsync(PostSlug slug)
-        {
-            var date = new DateTime(slug.Year, slug.Month, slug.Day);
-            var spec = new PostSpec(date, slug.Slug);
-
-            var pid = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Id);
-            if (pid == Guid.Empty) return null;
-
-            var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
-
-                var postModel = await _postRepo.SelectFirstOrDefaultAsync(spec, post => new Post
-                {
-                    Title = post.Title,
-                    ContentAbstract = post.ContentAbstract,
-                    PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
-
-                    Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
-                    {
-                        DisplayName = p.DisplayName,
-                        RouteName = p.RouteName
-                    }).ToArray(),
-
-                    RawPostContent = post.PostContent,
-
-                    Tags = post.Tags
-                        .Select(p => new Tag
-                        {
-                            NormalizedName = p.NormalizedName,
-                            DisplayName = p.DisplayName
-                        }).ToArray(),
-                    Id = post.Id,
-                    CommentEnabled = post.CommentEnabled,
-                    ExposedToSiteMap = post.ExposedToSiteMap,
-                    LastModifiedUtc = post.LastModifiedUtc,
-                    ContentLanguageCode = post.ContentLanguageCode,
-                    Featured = post.IsFeatured
-                });
-
-                return postModel;
-            });
-
-            return psm;
         }
 
         public Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus)
@@ -322,16 +278,7 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null)
         {
-            if (pageSize < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize),
-                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
-            }
-            if (pageIndex < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageIndex),
-                    $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
-            }
+            ValidatePagingParameters(pageSize, pageIndex);
 
             var spec = new PostPagingSpec(pageSize, pageIndex, categoryId);
             return _postRepo.SelectAsync(spec, _postDigestSelector);
@@ -339,21 +286,8 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex)
         {
-            if (tagId <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(tagId));
-            }
-
-            if (pageSize < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize),
-                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
-            }
-            if (pageIndex < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageIndex),
-                    $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
-            }
+            if (tagId <= 0) throw new ArgumentOutOfRangeException(nameof(tagId));
+            ValidatePagingParameters(pageSize, pageIndex);
 
             var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex),
                 p => new PostDigest
@@ -615,6 +549,21 @@ namespace Moonglade.Core
             foreach (var guid in posts.Select(p => p.Id))
             {
                 _cache.Remove(CacheDivision.Post, guid.ToString());
+            }
+        }
+
+        private static void ValidatePagingParameters(int pageSize, int pageIndex)
+        {
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize),
+                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
+            }
+
+            if (pageIndex < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageIndex),
+                    $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
             }
         }
     }

@@ -105,7 +105,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockPostService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
                 .Returns(Task.FromResult(_fakePosts));
 
-            _mockPostService.Setup(p => p.CountVisible()).Returns(996);
+            _mockPostService.Setup(p => p.CountPublic()).Returns(996);
 
             _mockBlogCache.Setup(p =>
                     p.GetOrCreate(CacheDivision.General, "postcount", It.IsAny<Func<ICacheEntry, int>>()))

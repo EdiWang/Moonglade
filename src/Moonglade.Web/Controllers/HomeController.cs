@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
             var posts = await _postService.List(pagesize, page);
-            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postService.CountVisible());
+            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postService.CountPublic());
 
             var list = new StaticPagedList<PostDigest>(posts, page, pagesize, count);
             return View(list);
