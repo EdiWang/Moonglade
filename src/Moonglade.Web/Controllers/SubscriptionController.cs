@@ -22,24 +22,30 @@ namespace Moonglade.Web.Controllers
         private readonly ISyndicationService _syndicationService;
         private readonly ICategoryService _categoryService;
         private readonly IBlogConfig _blogConfig;
+        private readonly IBlogCache _cache;
+        private readonly IOpmlWriter _opmlWriter;
 
         public SubscriptionController(
             ISyndicationService syndicationService,
             ICategoryService categoryService,
-            IBlogConfig blogConfig)
+            IBlogConfig blogConfig,
+            IBlogCache cache,
+            IOpmlWriter opmlWriter)
         {
             _syndicationService = syndicationService;
             _categoryService = categoryService;
             _blogConfig = blogConfig;
+            _cache = cache;
+            _opmlWriter = opmlWriter;
         }
 
         [FeatureGate(FeatureFlags.OPML)]
         [Route("opml")]
-        public async Task<IActionResult> Opml([FromServices] IBlogConfig blogConfig, [FromServices] IOpmlWriter opmlWriter)
+        public async Task<IActionResult> Opml()
         {
             var cats = await _categoryService.GetAllAsync();
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
-            var rootUrl = Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix);
+            var rootUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix);
 
             var oi = new OpmlDoc
             {
@@ -51,18 +57,18 @@ namespace Moonglade.Web.Controllers
                 HtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
             };
 
-            var bytes = await opmlWriter.GetOpmlStreamDataAsync(oi);
+            var bytes = await _opmlWriter.GetOpmlStreamDataAsync(oi);
             var xmlContent = Encoding.UTF8.GetString(bytes);
             return Content(xmlContent, "text/xml");
         }
 
         [Route("rss/{routeName?}")]
-        public async Task<IActionResult> Rss([FromServices] IBlogCache cache, string routeName = null)
+        public async Task<IActionResult> Rss(string routeName = null)
         {
             bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
             var route = hasRoute ? routeName.ToLower().Trim() : null;
 
-            return await cache.GetOrCreateAsync(
+            return await _cache.GetOrCreateAsync(
                 hasRoute ? CacheDivision.PostCountCategory : CacheDivision.General, route ?? "rss", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
@@ -78,9 +84,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("atom")]
-        public async Task<IActionResult> Atom([FromServices] IBlogCache cache)
+        public async Task<IActionResult> Atom()
         {
-            return await cache.GetOrCreateAsync(CacheDivision.General, "atom", async entry =>
+            return await _cache.GetOrCreateAsync(CacheDivision.General, "atom", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
