@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Core
 {
-    public struct PostSlugInfo
+    public struct PostSlug
     {
         public int Year { get; set; }
         public int Month { get; set; }
@@ -9,7 +9,7 @@
 
         public override string ToString() => $"{Year}/{Month}/{Day}/{Slug}";
 
-        public PostSlugInfo(int year, int month, int day, string slug)
+        public PostSlug(int year, int month, int day, string slug)
         {
             Year = year;
             Month = month;

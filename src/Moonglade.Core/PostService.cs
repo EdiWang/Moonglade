@@ -23,10 +23,10 @@ namespace Moonglade.Core
         int CountByTag(int tagId);
         int CountByFeatured();
         Task<Post> GetAsync(Guid id);
-        Task<Post> GetAsync(PostSlugInfo slug);
+        Task<Post> GetAsync(PostSlug slug);
         Task<Post> GetDraft(Guid postId);
-        Task<string> GetContent(PostSlugInfo slug);
-        Task<PostMeta> GetMeta(PostSlugInfo slug);
+        Task<string> GetContent(PostSlug slug);
+        Task<PostMeta> GetMeta(PostSlug slug);
         Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus);
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
@@ -55,6 +55,39 @@ namespace Moonglade.Core
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IRepository<PostCategoryEntity> _postCatRepo;
+
+        #endregion
+
+        #region Selectors
+
+        private readonly Expression<Func<PostEntity, PostSegment>> _postSegmentSelector = p => new()
+        {
+            Id = p.Id,
+            Title = p.Title,
+            Slug = p.Slug,
+            PubDateUtc = p.PubDateUtc,
+            IsPublished = p.IsPublished,
+            IsDeleted = p.IsDeleted,
+            CreateTimeUtc = p.CreateTimeUtc,
+            LastModifiedUtc = p.LastModifiedUtc,
+            ContentAbstract = p.ContentAbstract,
+            Hits = p.PostExtension.Hits
+        };
+
+        private readonly Expression<Func<PostEntity, PostDigest>> _postDigestSelector = p => new()
+        {
+            Title = p.Title,
+            Slug = p.Slug,
+            ContentAbstract = p.ContentAbstract,
+            PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
+            LangCode = p.ContentLanguageCode,
+            IsSelected = p.IsFeatured,
+            Tags = p.Tags.Select(pt => new Tag
+            {
+                NormalizedName = pt.NormalizedName,
+                DisplayName = pt.DisplayName
+            })
+        };
 
         #endregion
 
@@ -159,16 +192,15 @@ namespace Moonglade.Core
             return postSlugModel;
         }
 
-        public Task<string> GetContent(PostSlugInfo slug)
+        public Task<string> GetContent(PostSlug slug)
         {
             var date = new DateTime(slug.Year, slug.Month, slug.Day);
             var spec = new PostSpec(date, slug.Slug);
 
-            return _postRepo.SelectFirstOrDefaultAsync(spec,
-                post => post.PostContent);
+            return _postRepo.SelectFirstOrDefaultAsync(spec, post => post.PostContent);
         }
 
-        public Task<PostMeta> GetMeta(PostSlugInfo slug)
+        public Task<PostMeta> GetMeta(PostSlug slug)
         {
             var date = new DateTime(slug.Year, slug.Month, slug.Day);
             var spec = new PostSpec(date, slug.Slug);
@@ -191,7 +223,7 @@ namespace Moonglade.Core
             return model;
         }
 
-        public async Task<Post> GetAsync(PostSlugInfo slug)
+        public async Task<Post> GetAsync(PostSlug slug)
         {
             var date = new DateTime(slug.Year, slug.Month, slug.Day);
             var spec = new PostSpec(date, slug.Slug);
@@ -203,7 +235,7 @@ namespace Moonglade.Core
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
 
-                var postSlugModel = await _postRepo.SelectFirstOrDefaultAsync(spec, post => new Post
+                var postModel = await _postRepo.SelectFirstOrDefaultAsync(spec, post => new Post
                 {
                     Title = post.Title,
                     ContentAbstract = post.ContentAbstract,
@@ -231,7 +263,7 @@ namespace Moonglade.Core
                     Featured = post.IsFeatured
                 });
 
-                return postSlugModel;
+                return postModel;
             });
 
             return psm;
@@ -240,19 +272,7 @@ namespace Moonglade.Core
         public Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus)
         {
             var spec = new PostSpec(postStatus);
-            return _postRepo.SelectAsync(spec, p => new PostSegment
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Slug = p.Slug,
-                PubDateUtc = p.PubDateUtc,
-                IsPublished = p.IsPublished,
-                IsDeleted = p.IsDeleted,
-                CreateTimeUtc = p.CreateTimeUtc,
-                LastModifiedUtc = p.LastModifiedUtc,
-                ContentAbstract = p.ContentAbstract,
-                Hits = p.PostExtension.Hits
-            });
+            return _postRepo.SelectAsync(spec, _postSegmentSelector);
         }
 
         public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(
@@ -270,19 +290,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostPagingSpec(postStatus, keyword, pageSize, offset);
-            var posts = await _postRepo.SelectAsync(spec, p => new PostSegment
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Slug = p.Slug,
-                PubDateUtc = p.PubDateUtc,
-                IsPublished = p.IsPublished,
-                IsDeleted = p.IsDeleted,
-                CreateTimeUtc = p.CreateTimeUtc,
-                LastModifiedUtc = p.LastModifiedUtc,
-                ContentAbstract = p.ContentAbstract,
-                Hits = p.PostExtension.Hits
-            });
+            var posts = await _postRepo.SelectAsync(spec, _postSegmentSelector);
 
             Expression<Func<PostEntity, bool>> countExpression = p => null == keyword || p.Title.Contains(keyword);
 
@@ -311,19 +319,7 @@ namespace Moonglade.Core
         public Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType)
         {
             var spec = new PostInsightsSpec(insightsType, 10);
-            return _postRepo.SelectAsync(spec, p => new PostSegment
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Slug = p.Slug,
-                PubDateUtc = p.PubDateUtc,
-                IsPublished = p.IsPublished,
-                IsDeleted = p.IsDeleted,
-                CreateTimeUtc = p.CreateTimeUtc,
-                LastModifiedUtc = p.LastModifiedUtc,
-                ContentAbstract = p.ContentAbstract,
-                Hits = p.PostExtension.Hits
-            });
+            return _postRepo.SelectAsync(spec, _postSegmentSelector);
         }
 
         public Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null)
@@ -340,20 +336,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostPagingSpec(pageSize, pageIndex, categoryId);
-            return _postRepo.SelectAsync(spec, p => new PostDigest
-            {
-                Title = p.Title,
-                Slug = p.Slug,
-                ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-                LangCode = p.ContentLanguageCode,
-                IsSelected = p.IsFeatured,
-                Tags = p.Tags.Select(pt => new Tag
-                {
-                    NormalizedName = pt.NormalizedName,
-                    DisplayName = pt.DisplayName
-                })
-            });
+            return _postRepo.SelectAsync(spec, _postDigestSelector);
         }
 
         public Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex)
@@ -406,22 +389,7 @@ namespace Moonglade.Core
                     $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
             }
 
-            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex),
-                p => new PostDigest
-                {
-                    Title = p.Title,
-                    Slug = p.Slug,
-                    ContentAbstract = p.ContentAbstract,
-                    PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-                    LangCode = p.ContentLanguageCode,
-                    IsSelected = p.IsFeatured,
-                    Tags = p.Tags.Select(pt => new Tag
-                    {
-                        NormalizedName = pt.NormalizedName,
-                        DisplayName = pt.DisplayName
-                    })
-                });
-
+            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), _postDigestSelector);
             return posts;
         }
 
