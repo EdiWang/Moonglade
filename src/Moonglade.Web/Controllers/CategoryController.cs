@@ -45,7 +45,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var cat = await _catService.GetAsync(id);
+            var cat = await _catService.Get(id);
             if (null == cat) return NotFound();
 
             var model = new CategoryEditModel

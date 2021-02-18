@@ -102,7 +102,7 @@ namespace Moonglade.Web.Controllers
             if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
 
             var pageSize = _blogConfig.ContentSettings.PostListPageSize;
-            var cat = await categoryService.GetAsync(routeName);
+            var cat = await categoryService.Get(routeName);
 
             if (cat is null) return NotFound();
 

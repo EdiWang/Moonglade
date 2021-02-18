@@ -58,7 +58,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Categories()
         {
-            var cats = await _categoryService.GetAllAsync();
+            var cats = await _categoryService.GetAll();
             return Ok(cats);
         }
 

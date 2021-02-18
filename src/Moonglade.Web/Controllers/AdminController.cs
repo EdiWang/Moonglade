@@ -76,7 +76,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("category")]
         public async Task<IActionResult> Category()
         {
-            var cats = await _categoryService.GetAllAsync();
+            var cats = await _categoryService.GetAll();
             return View(new CategoryManageModel { Categories = cats });
         }
 

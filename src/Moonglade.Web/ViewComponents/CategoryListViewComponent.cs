@@ -18,7 +18,7 @@ namespace Moonglade.Web.ViewComponents
         {
             try
             {
-                var cats = await _categoryService.GetAllAsync();
+                var cats = await _categoryService.GetAll();
                 return isMenu ? View("CatMenu", cats) : View(cats);
             }
             catch (Exception e)

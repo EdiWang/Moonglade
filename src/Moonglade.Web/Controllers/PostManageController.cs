@@ -94,7 +94,7 @@ namespace Moonglade.Web.Controllers
                 LanguageCode = _blogConfig.ContentSettings.DefaultLangCode
             };
 
-            var cats = await _catService.GetAllAsync();
+            var cats = await _catService.GetAll();
             if (cats.Count > 0)
             {
                 var cbCatList = cats.Select(p =>
@@ -137,7 +137,7 @@ namespace Moonglade.Web.Controllers
             tagStr = tagStr.TrimEnd(',');
             viewModel.Tags = tagStr;
 
-            var cats = await _catService.GetAllAsync();
+            var cats = await _catService.GetAll();
             if (cats.Count > 0)
             {
                 var cbCatList = cats.Select(p =>

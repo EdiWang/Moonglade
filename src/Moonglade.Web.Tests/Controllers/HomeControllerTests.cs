@@ -219,7 +219,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var mockCatService = new Mock<ICategoryService>();
             mockCatService
-                .Setup(p => p.GetAsync(It.IsAny<string>()))
+                .Setup(p => p.Get(It.IsAny<string>()))
                 .Returns(Task.FromResult((Category)null));
 
             var ctl = CreateHomeController();
@@ -241,7 +241,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var mockCatService = new Mock<ICategoryService>();
             mockCatService
-                .Setup(p => p.GetAsync(It.IsAny<string>()))
+                .Setup(p => p.Get(It.IsAny<string>()))
                 .Returns(Task.FromResult(cat));
 
             _mockBlogCache.Setup(p =>
