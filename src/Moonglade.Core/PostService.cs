@@ -137,6 +137,7 @@ namespace Moonglade.Core
                 CommentEnabled = p.CommentEnabled,
                 CreateTimeUtc = p.CreateTimeUtc,
                 PubDateUtc = p.PubDateUtc,
+                LastModifiedUtc = p.LastModifiedUtc,
                 IsPublished = p.IsPublished,
                 ExposedToSiteMap = p.ExposedToSiteMap,
                 IsFeedIncluded = p.IsFeedIncluded,
@@ -159,34 +160,31 @@ namespace Moonglade.Core
             return post;
         }
 
-        public Task<Post> GetDraft(Guid postId)
+        public Task<Post> GetDraft(Guid id)
         {
-            var spec = new PostSpec(postId);
-            var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, post => new Post
+            var spec = new PostSpec(id);
+            var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, p => new Post
             {
-                Title = post.Title,
-                ContentAbstract = post.ContentAbstract,
+                Id = p.Id,
+                Title = p.Title,
+                RawPostContent = p.PostContent,
+                ContentAbstract = p.ContentAbstract,
                 PubDateUtc = DateTime.UtcNow,
-
-                Categories = post.PostCategory.Select(pc => pc.Category).Select(p => new Category
-                {
-                    DisplayName = p.DisplayName,
-                    RouteName = p.RouteName
-                }).ToArray(),
-
-                RawPostContent = post.PostContent,
-
-                Tags = post.Tags
+                LastModifiedUtc = p.LastModifiedUtc,
+                ExposedToSiteMap = p.ExposedToSiteMap,
+                Featured = p.IsFeatured,
+                ContentLanguageCode = p.ContentLanguageCode,
+                Tags = p.Tags
                     .Select(p => new Tag
                     {
                         NormalizedName = p.NormalizedName,
                         DisplayName = p.DisplayName
                     }).ToArray(),
-                Id = post.Id,
-                ExposedToSiteMap = post.ExposedToSiteMap,
-                LastModifiedUtc = post.LastModifiedUtc,
-                ContentLanguageCode = post.ContentLanguageCode,
-                Featured = post.IsFeatured
+                Categories = p.PostCategory.Select(pc => pc.Category).Select(p => new Category
+                {
+                    DisplayName = p.DisplayName,
+                    RouteName = p.RouteName
+                }).ToArray()
             });
 
             return postSlugModel;
