@@ -76,7 +76,7 @@ namespace Moonglade.Web.Controllers
         [Route("tags")]
         public async Task<IActionResult> Tags()
         {
-            var tags = await _tagService.GetTagCountListAsync();
+            var tags = await _tagService.GetTagCountList();
             return View(tags);
         }
 

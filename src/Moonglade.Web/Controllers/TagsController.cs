@@ -25,7 +25,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Names()
         {
-            var tagNames = await _tagService.GetAllNamesAsync();
+            var tagNames = await _tagService.GetAllNames();
             return Ok(tagNames);
         }
 

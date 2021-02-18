@@ -96,7 +96,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("tags")]
         public async Task<IActionResult> Tags()
         {
-            var tags = await _tagService.GetAllAsync();
+            var tags = await _tagService.GetAll();
             return View(tags);
         }
 

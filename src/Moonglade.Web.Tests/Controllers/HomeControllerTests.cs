@@ -132,7 +132,7 @@ namespace Moonglade.Web.Tests.Controllers
                 new() { Degree = 996, DisplayName = "Ali", Id = 35, NormalizedName = "fubao" }
             };
 
-            _mockTagService.Setup(p => p.GetTagCountListAsync())
+            _mockTagService.Setup(p => p.GetTagCountList())
                 .Returns(Task.FromResult((IReadOnlyList<DegreeTag>)fakeTags));
 
             var ctl = CreateHomeController();

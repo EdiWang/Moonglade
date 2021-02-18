@@ -295,7 +295,7 @@ namespace Moonglade.Web.MetaWeblog
 
             try
             {
-                var names = await _tagService.GetAllNamesAsync();
+                var names = await _tagService.GetAllNames();
                 var tags = names.Select(p => new Tag
                 {
                     name = p

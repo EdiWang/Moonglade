@@ -14,13 +14,13 @@ namespace Moonglade.Core
 {
     public interface ITagService
     {
-        Task<IReadOnlyList<Tag>> GetAllAsync();
-        Task<IReadOnlyList<string>> GetAllNamesAsync();
+        Task<IReadOnlyList<Tag>> GetAll();
+        Task<IReadOnlyList<string>> GetAllNames();
         Task UpdateAsync(int tagId, string newName);
         Task DeleteAsync(int tagId);
         Task<IReadOnlyList<DegreeTag>> GetHotTagsAsync(int top);
         Tag Get(string normalizedName);
-        Task<IReadOnlyList<DegreeTag>> GetTagCountListAsync();
+        Task<IReadOnlyList<DegreeTag>> GetTagCountList();
     }
 
     public class TagService : ITagService
@@ -42,7 +42,7 @@ namespace Moonglade.Core
             _tagNormalization = tagNormalization;
         }
 
-        public Task<IReadOnlyList<Tag>> GetAllAsync()
+        public Task<IReadOnlyList<Tag>> GetAll()
         {
             return _tagRepo.SelectAsync(t => new Tag
             {
@@ -52,7 +52,7 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<IReadOnlyList<string>> GetAllNamesAsync()
+        public Task<IReadOnlyList<string>> GetAllNames()
         {
             return _tagRepo.SelectAsync(t => t.DisplayName);
         }
@@ -105,7 +105,7 @@ namespace Moonglade.Core
             return tag;
         }
 
-        public Task<IReadOnlyList<DegreeTag>> GetTagCountListAsync()
+        public Task<IReadOnlyList<DegreeTag>> GetTagCountList()
         {
             return _tagRepo.SelectAsync(t => new DegreeTag
             {
