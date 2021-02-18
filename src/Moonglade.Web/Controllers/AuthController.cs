@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -26,9 +25,9 @@ namespace Moonglade.Web.Controllers
         private readonly ILogger<AuthController> _logger;
 
         public AuthController(
-            IOptions<AuthenticationSettings> authSettings, 
-            ILocalAccountService localAccountService, 
-            IBlogAudit blogAudit, 
+            IOptions<AuthenticationSettings> authSettings,
+            ILocalAccountService localAccountService,
+            IBlogAudit blogAudit,
             ILogger<AuthController> logger)
         {
             _authenticationSettings = authSettings.Value;

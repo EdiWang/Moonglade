@@ -41,7 +41,7 @@ namespace Moonglade.Web.Controllers
             ITagService tagService,
             ICommentService commentService,
             IPingbackService pingbackService,
-            IBlogConfig blogConfig )
+            IBlogConfig blogConfig)
         {
             _authenticationSettings = authSettings.Value;
             _categoryService = categoryService;

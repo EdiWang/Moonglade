@@ -156,7 +156,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Page();
 
             Assert.IsInstanceOf(typeof(ViewResult), result);
-            Assert.AreEqual(fakePageSegments, ((ViewResult) result).Model);
+            Assert.AreEqual(fakePageSegments, ((ViewResult)result).Model);
         }
     }
 }

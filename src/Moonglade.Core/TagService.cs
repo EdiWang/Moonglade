@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,6 +32,13 @@ namespace Moonglade.Core
         private readonly IBlogAudit _audit;
         private readonly IOptions<List<TagNormalization>> _tagNormalization;
 
+        private readonly Expression<Func<TagEntity, Tag>> _tagSelector = t => new()
+        {
+            Id = t.Id,
+            NormalizedName = t.NormalizedName,
+            DisplayName = t.DisplayName
+        };
+
         public TagService(
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
@@ -44,12 +53,7 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<Tag>> GetAll()
         {
-            return _tagRepo.SelectAsync(t => new Tag
-            {
-                Id = t.Id,
-                NormalizedName = t.NormalizedName,
-                DisplayName = t.DisplayName
-            });
+            return _tagRepo.SelectAsync(_tagSelector);
         }
 
         public Task<IReadOnlyList<string>> GetAllNames()
@@ -96,12 +100,7 @@ namespace Moonglade.Core
 
         public Tag Get(string normalizedName)
         {
-            var tag = _tagRepo.SelectFirstOrDefault(new TagSpec(normalizedName), tg => new Tag
-            {
-                Id = tg.Id,
-                NormalizedName = tg.NormalizedName,
-                DisplayName = tg.DisplayName
-            });
+            var tag = _tagRepo.SelectFirstOrDefault(new TagSpec(normalizedName), _tagSelector);
             return tag;
         }
 
