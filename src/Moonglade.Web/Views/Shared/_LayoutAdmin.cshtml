@@ -70,11 +70,7 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index" target="_blank">
-                        <span class="icon-home"></span>
-                    </a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Settings" asp-action="General">
                         <span class="icon-cog"></span>
@@ -86,18 +82,22 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Auth" asp-action="SignOut" title="Sign Out">
-                        <span class="icon-enter"></span>
+                    <a class="nav-link" asp-controller="Home" asp-action="Index" target="_blank">
+                        <span class="icon-home"></span>
                     </a>
                 </li>
             </ul>
 
-            <span class="navbar-text">
+            <span class="navbar-text mr-2">
                 <img src="@Url.Action("Avatar", "Assets")"
                      alt="@BlogConfig.GeneralSettings.OwnerName"
                      class="rounded-circle admin-nav-head-pic mr-1" />
                 @User.Identity?.Name
             </span>
+            
+            <a class="navbar-text d-inline-block" asp-controller="Auth" asp-action="SignOut" title="Sign Out">
+                <span class="icon-enter"></span>
+            </a>
         </div>
     </nav>
     <div class="d-flex admin-body-wrapper">

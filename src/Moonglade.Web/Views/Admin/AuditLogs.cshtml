@@ -15,7 +15,10 @@
 
 @if (Model is not null && Model.Any())
 {
-    <a href="javascript:;" class="btn btn-outline-danger" data-toggle="modal" data-target="#clearauditModal">@Localizer["Clear Audit Logs"]</a>
+    <a href="javascript:;" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#clearauditModal">
+        <span class="icon-bin"></span>
+        @Localizer["Clear Audit Logs"]
+    </a>
 
     <table class="table table-bordered mt-3">
         <thead>
