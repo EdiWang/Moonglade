@@ -74,6 +74,7 @@ namespace Moonglade.Web.Controllers
                 SideBarOption = _blogConfig.GeneralSettings.SideBarOption.ToString(),
                 FooterCustomizedHtmlPitch = _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch,
                 OwnerName = _blogConfig.GeneralSettings.OwnerName,
+                OwnerEmail = _blogConfig.GeneralSettings.OwnerEmail,
                 OwnerDescription = _blogConfig.GeneralSettings.Description,
                 OwnerShortDescription = _blogConfig.GeneralSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
@@ -102,6 +103,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
             _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
             _blogConfig.GeneralSettings.OwnerName = model.OwnerName;
+            _blogConfig.GeneralSettings.OwnerEmail = model.OwnerEmail;
             _blogConfig.GeneralSettings.Description = model.OwnerDescription;
             _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
             _blogConfig.GeneralSettings.AutoDarkLightTheme = model.AutoDarkLightTheme;
@@ -172,7 +174,6 @@ namespace Moonglade.Web.Controllers
             var settings = _blogConfig.NotificationSettings;
             var vm = new NotificationSettingsViewModel
             {
-                AdminEmail = settings.AdminEmail,
                 EmailDisplayName = settings.EmailDisplayName,
                 EnableEmailSending = settings.EnableEmailSending,
                 SendEmailOnCommentReply = settings.SendEmailOnCommentReply,
@@ -187,7 +188,6 @@ namespace Moonglade.Web.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var settings = _blogConfig.NotificationSettings;
-            settings.AdminEmail = model.AdminEmail;
             settings.EmailDisplayName = model.EmailDisplayName;
             settings.EnableEmailSending = model.EnableEmailSending;
             settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;

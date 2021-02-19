@@ -409,7 +409,7 @@ namespace Moonglade.Web.Controllers
             {
                 Name = _blogConfig.GeneralSettings.OwnerName,
                 BlogUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true),
-                Email = _blogConfig.NotificationSettings.AdminEmail,
+                Email = _blogConfig.GeneralSettings.OwnerEmail,
                 PhotoUrl = linkGenerator.GetUriByAction(HttpContext, "Avatar", "Assets")
             };
             var requestUrl = GetUri(Request).ToString();

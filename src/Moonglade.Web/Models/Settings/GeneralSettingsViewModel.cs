@@ -41,6 +41,12 @@ namespace Moonglade.Web.Models.Settings
         [MaxLength(32)]
         public string OwnerName { get; set; }
 
+        [Required]
+        [Display(Name = "Owner Email")]
+        [DataType(DataType.EmailAddress)]
+        [MaxLength(64)]
+        public string OwnerEmail { get; set; }
+
         [Required(ErrorMessage = "Please enter your description")]
         [Display(Name = "Your Description")]
         [DataType(DataType.MultilineText)]

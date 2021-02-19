@@ -183,4 +183,7 @@
   <data name="Side Bar Display" xml:space="preserve">
     <value>侧边栏位置</value>
   </data>
+  <data name="Owner Email" xml:space="preserve">
+    <value>博主邮箱</value>
+  </data>
 </root>

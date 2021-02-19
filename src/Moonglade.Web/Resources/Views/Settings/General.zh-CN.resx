@@ -150,6 +150,9 @@
   <data name="Drag and drop image file here" xml:space="preserve">
     <value>拖拽图片文件到此处</value>
   </data>
+  <data name="Email address to receive notifications from this blog." xml:space="preserve">
+    <value>用于接收博客系统通知的邮箱</value>
+  </data>
   <data name="HTML Pitch" xml:space="preserve">
     <value>HTML区域</value>
   </data>

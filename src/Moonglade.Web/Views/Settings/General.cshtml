@@ -138,6 +138,12 @@
                                 <span asp-validation-for="OwnerName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
+                                <label asp-for="OwnerEmail" class="control-label"></label>
+                                <input asp-for="OwnerEmail" class="form-control" />
+                                <span asp-validation-for="OwnerEmail" class="text-danger"></span>
+                                <small class="form-text text-muted">@Localizer["Email address to receive notifications from this blog."]</small>
+                            </div>
+                            <div class="form-group">
                                 <label asp-for="OwnerDescription" class="control-label"></label>
                                 <textarea asp-for="OwnerDescription" class="form-control"></textarea>
                                 <span asp-validation-for="OwnerDescription" class="text-danger"></span>

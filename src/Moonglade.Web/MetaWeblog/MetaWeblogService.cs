@@ -63,7 +63,7 @@ namespace Moonglade.Web.MetaWeblog
             {
                 var user = new UserInfo
                 {
-                    email = _blogConfig.NotificationSettings.AdminEmail,
+                    email = _blogConfig.GeneralSettings.OwnerEmail,
                     firstname = _blogConfig.GeneralSettings.OwnerName,
                     lastname = string.Empty,
                     nickname = string.Empty,

@@ -124,7 +124,7 @@ namespace Moonglade.Notification.Client
         {
             var nf = request();
             nf.EmailDisplayName = _blogConfig.NotificationSettings.EmailDisplayName;
-            nf.AdminEmail = _blogConfig.NotificationSettings.AdminEmail;
+            nf.AdminEmail = _blogConfig.GeneralSettings.OwnerEmail;
 
             var req = new HttpRequestMessage(HttpMethod.Post, string.Empty)
             {

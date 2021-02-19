@@ -34,6 +34,8 @@ namespace Moonglade.Configuration
 
         public string OwnerName { get; set; }
 
+        public string OwnerEmail { get; set; }
+
         public string Description { get; set; }
 
         public string ShortDescription { get; set; }

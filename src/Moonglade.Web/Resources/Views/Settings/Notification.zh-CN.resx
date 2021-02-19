@@ -120,9 +120,6 @@
   <data name="Current Endpoint:" xml:space="preserve">
     <value>当前终端：</value>
   </data>
-  <data name="Email address to receive notifications from this blog." xml:space="preserve">
-    <value>用于接收博客系统通知的邮箱</value>
-  </data>
   <data name="Email Options" xml:space="preserve">
     <value>Email 选项</value>
   </data>
