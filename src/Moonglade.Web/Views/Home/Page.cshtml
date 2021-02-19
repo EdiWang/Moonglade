@@ -1,5 +1,4 @@
-﻿@using Moonglade.Core
-@using Moonglade.Pages
+﻿@using Moonglade.Pages
 @using NUglify
 @model Page
 
@@ -34,8 +33,10 @@
 
 @if (null != ViewBag.IsDraftPreview)
 {
-    <div class="alert alert-info">
-        @Localizer["This is a preview for draft content."]
+    <div class="container mt-3 mb-4">
+        <div class="alert alert-info">
+            @Localizer["This is a preview for draft content."]
+        </div>
     </div>
 }
 

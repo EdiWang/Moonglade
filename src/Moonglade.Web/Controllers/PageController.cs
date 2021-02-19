@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
@@ -13,7 +14,9 @@ using NUglify;
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
-    [Route("page")]
+    [ApiController]
+    [AppendAppVersion]
+    [Route("api/[controller]")]
     public class PageController : Controller
     {
         private readonly IBlogCache _cache;
@@ -30,48 +33,12 @@ namespace Moonglade.Web.Controllers
             _logger = logger;
         }
 
-        [Route("preview/{pageId:guid}")]
-        public async Task<IActionResult> Preview(Guid pageId)
-        {
-            var page = await _pageService.GetAsync(pageId);
-            if (page is null) return NotFound();
-
-            ViewBag.IsDraftPreview = true;
-
-            return View("~/Views/Home/Page.cshtml", page);
-        }
-
-        [HttpGet("manage/create")]
-        public IActionResult Create()
-        {
-            var model = new PageEditModel();
-            return View("CreateOrEdit", model);
-        }
-
-        [HttpGet("manage/edit/{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id)
-        {
-            var page = await _pageService.GetAsync(id);
-            if (page is null) return NotFound();
-
-            var model = new PageEditModel
-            {
-                Id = page.Id,
-                Title = page.Title,
-                Slug = page.Slug,
-                MetaDescription = page.MetaDescription,
-                CssContent = page.CssContent,
-                RawHtmlContent = page.RawHtmlContent,
-                HideSidebar = page.HideSidebar,
-                IsPublished = page.IsPublished
-            };
-
-            return View("CreateOrEdit", model);
-        }
-
-        [HttpPost("manage/createoredit")]
+        [HttpPost("createoredit")]
         [ServiceFilter(typeof(ClearSiteMapCache))]
-        public async Task<IActionResult> CreateOrEdit(PageEditModel model)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateOrEdit([FromForm] PageEditModel model)
         {
             try
             {
@@ -107,17 +74,18 @@ namespace Moonglade.Web.Controllers
 
                 _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
 
-                return Json(new { PageId = uid });
+                return Ok(new { PageId = uid });
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error Create or Edit CustomPage.");
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json(e.Message);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpDelete("{pageId:guid}/{slug}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(Guid pageId, string slug)
         {
             await _pageService.DeleteAsync(pageId);

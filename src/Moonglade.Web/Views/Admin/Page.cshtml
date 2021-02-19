@@ -17,7 +17,7 @@
 
 <h3>
     @Localizer["Pages"]
-    <a class="btn btn-outline-success float-right" asp-controller="Page" asp-action="Create">
+    <a class="btn btn-outline-success float-right" asp-controller="Admin" asp-action="CreatePage">
         <span class="icon-plus"></span>
         @Localizer["New"]
     </a>
@@ -43,7 +43,7 @@
                     </small>
                 </div>
                 <div class="card-footer">
-                    <a class="btn btn-outline-accent btn-sm btn-edit" asp-controller="Page" asp-action="Edit" asp-route-id="@item.Id">
+                    <a class="btn btn-outline-accent btn-sm btn-edit" asp-controller="Admin" asp-action="EditPage" asp-route-id="@item.Id">
                         <span class="icon-pencil"></span>
                     </a>
                     <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" data-slug="@item.Slug" href="javascript:;">

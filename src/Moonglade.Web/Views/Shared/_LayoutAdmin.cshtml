@@ -108,6 +108,10 @@
                         <span class="icon-file-text2"></span>
                         @Localizer["Posts"]
                     </a>
+                    <a asp-controller="Admin" asp-action="Page" class="list-group-item list-group-item-action @(currentAction != null && currentAction.EndsWith("Page") ? "active" : null)">
+                        <span class="icon-file-empty"></span>
+                        @Localizer["Pages"]
+                    </a>
                     <a asp-controller="Admin" asp-action="Category" class="list-group-item list-group-item-action @(currentAction == "Category" ? "active" : null)">
                         <span class="icon-folder"></span>
                         @Localizer["Categories"]
@@ -119,10 +123,6 @@
                     <a asp-controller="Admin" asp-action="Tags" class="list-group-item list-group-item-action @(currentAction == "Tags" ? "active" : null)">
                         <span class="icon-price-tag"></span>
                         @Localizer["Tags"]
-                    </a>
-                    <a asp-controller="Admin" asp-action="Page" class="list-group-item list-group-item-action @(currentController == "Page" || currentAction == "Page" ? "active" : null)">
-                        <span class="icon-file-empty"></span>
-                        @Localizer["Pages"]
                     </a>
                     <a asp-controller="Admin" asp-action="Pingback" class="list-group-item list-group-item-action @(currentAction == "Pingback" ? "active" : null)">
                         <span class="icon-earth"></span>

@@ -372,7 +372,7 @@ var onPageCreateEditSuccess = function (data) {
 
         if (isPreviewRequired) {
             isPreviewRequired = false;
-            window.open(`/page/preview/${data.pageId}`);
+            window.open(`/admin/page/preview/${data.pageId}`);
         }
     }
 };
@@ -514,7 +514,7 @@ function editMenu(id) {
 function deletePage(pageid, slug) {
     $(`#span-processing-${pageid}`).show();
 
-    callApi(`/page/${pageid}/${slug}`,
+    callApi(`/api/page/${pageid}/${slug}`,
         'DELETE',
         {},
         (resp) => {
