@@ -3,10 +3,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.FriendLink;
 using Moonglade.Menus;
@@ -71,6 +74,30 @@ namespace Moonglade.Web.Controllers
         public IActionResult About()
         {
             return View();
+        }
+
+        [HttpGet("auditlogs")]
+        public async Task<IActionResult> AuditLogs([FromServices] IFeatureManager featureManager, int page = 1)
+        {
+            var flag = await featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableAudit));
+            if (!flag) return View();
+
+            if (page < 0) return BadRequest(ModelState);
+
+            var skip = (page - 1) * 20;
+
+            var (entries, count) = await _blogAudit.GetAuditEntries(skip, 20);
+            var list = new StaticPagedList<AuditEntry>(entries, page, 20, count);
+
+            return View(list);
+        }
+
+        [HttpGet("clear-auditlogs")]
+        [FeatureGate(FeatureFlags.EnableAudit)]
+        public async Task<IActionResult> ClearAuditLogs()
+        {
+            await _blogAudit.ClearAuditLog();
+            return RedirectToAction("AuditLogs");
         }
 
         [HttpGet("category")]

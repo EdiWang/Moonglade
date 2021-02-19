@@ -120,9 +120,6 @@
   <data name=".NET Version" xml:space="preserve">
     <value>.NET 版本</value>
   </data>
-  <data name="About" xml:space="preserve">
-    <value>关于</value>
-  </data>
   <data name="Environment" xml:space="preserve">
     <value>环境</value>
   </data>
