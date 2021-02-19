@@ -6,10 +6,11 @@
     <div class="card">
         <div class="card-header">@Localizer["Links"]</div>
         
-        <div class="list-group list-group-flush">
+        <div class="card-body">
             @foreach (var item in Model.OrderBy(c => c.Title))
             {
-                <a href="@Helper.SterilizeLink(item.LinkUrl)" target="_blank" class="list-group-item list-group-item-action">
+                <a href="@Helper.SterilizeLink(item.LinkUrl)" target="_blank" class="d-block mb-3 mt-2">
+                    <i class="icon-link mr-1"></i>
                     @item.Title
                 </a>
             }
