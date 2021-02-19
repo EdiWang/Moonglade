@@ -15,6 +15,7 @@ using Moonglade.FriendLink;
 using Moonglade.Pages;
 using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -157,6 +158,70 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf(typeof(ViewResult), result);
             Assert.AreEqual(fakePageSegments, ((ViewResult)result).Model);
+        }
+
+        [Test]
+        public void CreatePage_Success()
+        {
+            var ctl = CreateAdminController();
+            var result = ctl.CreatePage();
+
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.IsInstanceOf<PageEditModel>(((ViewResult)result).Model);
+        }
+
+        [Test]
+        public async Task Preview_NoPage()
+        {
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult((Page)null));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.PreviewPage(Guid.Empty);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_NoPage()
+        {
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult((Page)null));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.EditPage(Guid.Empty);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task Preview_HasPage()
+        {
+            var fakePage = new Page
+            {
+                Id = Guid.Empty,
+                CreateTimeUtc = new DateTime(996, 9, 6),
+                CssContent = ".jack-ma .heart {color: black !important;}",
+                HideSidebar = false,
+                IsPublished = false,
+                MetaDescription = "Fuck Jack Ma",
+                RawHtmlContent = "<p>Fuck 996</p>",
+                Slug = "fuck-jack-ma",
+                Title = "Fuck Jack Ma 1000 years!",
+                UpdateTimeUtc = new DateTime(1996, 9, 6)
+            };
+
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(fakePage));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.PreviewPage(Guid.Empty);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult)result).Model;
+            Assert.IsInstanceOf<Page>(model);
+            Assert.AreEqual(fakePage.Title, ((Page)model).Title);
         }
     }
 }
