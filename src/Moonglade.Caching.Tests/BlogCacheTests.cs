@@ -3,10 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MemoryCache.Testing.Moq;
 using Microsoft.Extensions.Caching.Memory;
-using Moonglade.Caching;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Caching.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

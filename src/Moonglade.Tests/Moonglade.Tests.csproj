@@ -19,7 +19,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Web\Moonglade.Web.csproj" />
+    <ProjectReference Include="..\Moonglade.Auditing\Moonglade.Auditing.csproj" />
+    <ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
+    <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
+    <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
+    <ProjectReference Include="..\Moonglade.Menus\Moonglade.Menus.csproj" />
+    <ProjectReference Include="..\Moonglade.Pages\Moonglade.Pages.csproj" />
+    <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
+    <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
+    <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
   </ItemGroup>
 
 </Project>
