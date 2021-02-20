@@ -7,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Moonglade.Tests
@@ -42,6 +43,16 @@ namespace Moonglade.Tests
                 _mockBlogCache.Object);
         }
 
-        
+        [Test]
+        public async Task DeleteAsync_NotExists()
+        {
+            _mockRepositoryCategoryEntity.Setup(c => c.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>()))
+                .Returns(false);
+
+            var svc = CreateService();
+            await svc.DeleteAsync(Guid.Empty);
+
+            _mockRepositoryCategoryEntity.Verify();
+        }
     }
 }
