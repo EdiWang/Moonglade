@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Moonglade.ImageStorage.Providers;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.ImageStorage.Tests
 {
     [TestFixture]
     [Platform(Include = "Win")]
