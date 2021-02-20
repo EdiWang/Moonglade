@@ -1,12 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Comments.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
