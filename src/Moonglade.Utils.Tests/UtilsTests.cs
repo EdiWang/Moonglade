@@ -154,5 +154,34 @@ namespace Moonglade.Utils.Tests
 
             Assert.AreEqual("work-996-and-get-into-icu", result);
         }
+
+        [TestCase("someName@someDomain.com", ExpectedResult = true)] // Simple valid value
+        [TestCase("1234@someDomain.com", ExpectedResult = true)] // numbers are valid
+        [TestCase("firstName.lastName@someDomain.com", ExpectedResult = true)] // With dot in name
+        [TestCase("\u00A0@someDomain.com", ExpectedResult = true)] // With valid \u character
+        [TestCase("!#$%&'*+-/=?^_`|~@someDomain.com", ExpectedResult = true)] // With valid (but unusual) characters
+        [TestCase("\"firstName.lastName\"@someDomain.com", ExpectedResult = true)] // quotes around whole local part
+        [TestCase("someName@some~domain.com", ExpectedResult = true)] // With tilde
+        [TestCase("someName@some_domain.com", ExpectedResult = true)] // With underscore
+        [TestCase("someName@1234.com", ExpectedResult = true)] // numbers are valid
+        [TestCase("someName@someDomain\uFFEF.com", ExpectedResult = true)] // With valid \u character
+        [TestCase("@someDomain.com", ExpectedResult = false)] // no local part
+        [TestCase("\0@someDomain.com", ExpectedResult = false)] // illegal character
+        [TestCase(".someName@someDomain.com", ExpectedResult = false)] // initial dot not allowed
+        [TestCase("someName.@someDomain.com", ExpectedResult = false)] // final dot not allowed
+        [TestCase("firstName..lastName@someDomain.com", ExpectedResult = false)] // two adjacent dots not allowed
+        [TestCase("firstName(comment)lastName@someDomain.com", ExpectedResult = false)] // parens not allowed
+        [TestCase("firstName\"middleName\"lastName@someDomain.com", ExpectedResult = false)] // quotes in middle not allowed
+        [TestCase("@someDomain@abc.com", ExpectedResult = false)] // multiple @'s
+        [TestCase("someName", ExpectedResult = false)] // no domain
+        [TestCase("someName@", ExpectedResult = false)] // no domain
+        [TestCase("someName@someDomain", ExpectedResult = false)] // Domain must have at least 1 dot
+        [TestCase("someName@a@b.com", ExpectedResult = false)] // multiple @'s
+        [TestCase("someName@\0.com", ExpectedResult = false)] // illegal character
+        [TestCase("someName@someDomain..com", ExpectedResult = false)] // two adjacent dots not allowed
+        public bool IsValidEmailAddress_Full(string email)
+        {
+            return Helper.IsValidEmailAddress(email);
+        }
     }
 }
