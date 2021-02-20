@@ -25,7 +25,7 @@ namespace Moonglade.Tests
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockPageRepository = _mockRepository.Create<IRepository<PageEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
@@ -112,6 +112,42 @@ namespace Moonglade.Tests
             var output = PageService.RemoveScriptTagFromHtml(html);
 
             Assert.IsTrue(output == @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>");
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void RemoveScriptTagFromHtml_Empty(string html)
+        {
+            var output = PageService.RemoveScriptTagFromHtml(html);
+            Assert.AreEqual(string.Empty, output);
+        }
+
+        [Test]
+        public async Task DeleteAsync_PageExists()
+        {
+            _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult(_fakePageEntity));
+            _mockPageRepository.Setup(p => p.DeleteAsync(It.IsAny<Guid>()));
+
+            var svc = CreatePageService();
+            await svc.DeleteAsync(Guid.Empty);
+            
+            _mockBlogAudit.Verify();
+        }
+
+        [Test]
+        public void DeleteAsync_PageNotExists()
+        {
+            _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((PageEntity)null));
+
+            var svc = CreatePageService();
+
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await svc.DeleteAsync(Guid.Empty);
+            });
         }
     }
 }

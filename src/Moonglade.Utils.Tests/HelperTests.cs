@@ -8,7 +8,7 @@ namespace Moonglade.Utils.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
-    public class UtilsTests
+    public class HelperTests
     {
         [Test]
         public void AppVersion()
@@ -182,6 +182,14 @@ namespace Moonglade.Utils.Tests
         public bool IsValidEmailAddress_Full(string email)
         {
             return Helper.IsValidEmailAddress(email);
+        }
+
+        [Test]
+        [Platform(Include = "Win")]
+        public void TryGetFullOSVersion_Windows()
+        {
+            var osversion = Helper.TryGetFullOSVersion();
+            Assert.IsTrue(osversion.StartsWith("Windows"));
         }
     }
 }
