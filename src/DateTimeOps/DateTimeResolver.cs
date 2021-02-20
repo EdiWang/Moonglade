@@ -5,6 +5,16 @@ using TimeZoneConverter;
 
 namespace DateTimeOps
 {
+    public interface IDateTimeResolver
+    {
+        DateTime NowOfTimeZone { get; }
+
+        DateTime ToTimeZone(DateTime utcDateTime);
+        DateTime ToUtc(DateTime userDateTime);
+        IEnumerable<TimeZoneInfo> ListTimeZones();
+        TimeSpan GetTimeSpanByZoneId(string timeZoneId);
+    }
+
     public class DateTimeResolver : IDateTimeResolver
     {
         public string TimeZoneUtcOffset { get; }
