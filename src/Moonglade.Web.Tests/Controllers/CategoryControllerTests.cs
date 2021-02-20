@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Moonglade.Data.Entities;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Tests.Controllers
@@ -56,6 +57,30 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await categoryController.Create(model);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_Get_NonExists()
+        {
+            _mockCategoryService.Setup(c => c.Get(It.IsAny<Guid>()))
+                .Returns(Task.FromResult((Category)null));
+
+            var categoryController = CreateCategoryController();
+            var result = await categoryController.Edit(Guid.Empty);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_Get_Exists()
+        {
+            _mockCategoryService.Setup(c => c.Get(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(new Category()));
+
+            var categoryController = CreateCategoryController();
+            var result = await categoryController.Edit(Guid.Empty);
+
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
