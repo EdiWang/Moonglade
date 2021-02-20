@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using DateTimeOps;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -42,7 +41,6 @@ namespace Moonglade.Core
 
     public class PostService : IPostService
     {
-        private readonly IDateTimeResolver _dateTimeResolver;
         private readonly IBlogAudit _audit;
         private readonly IBlogCache _cache;
         private readonly ILogger<PostService> _logger;
@@ -129,7 +127,6 @@ namespace Moonglade.Core
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
             IRepository<PostCategoryEntity> postCatRepo,
-            IDateTimeResolver dateTimeResolver,
             IBlogAudit audit,
             IBlogCache cache,
             IOptions<List<TagNormalization>> tagNormalization)
@@ -140,7 +137,6 @@ namespace Moonglade.Core
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
             _postCatRepo = postCatRepo;
-            _dateTimeResolver = dateTimeResolver;
             _audit = audit;
             _cache = cache;
             _tagNormalization = tagNormalization;
@@ -441,7 +437,7 @@ namespace Moonglade.Core
             if (request.PublishDate is not null && post.PubDateUtc.HasValue)
             {
                 var tod = post.PubDateUtc.Value.TimeOfDay;
-                var adjustedDate = _dateTimeResolver.ToUtc(request.PublishDate.Value);
+                var adjustedDate = request.PublishDate.Value;
                 post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
             }
 

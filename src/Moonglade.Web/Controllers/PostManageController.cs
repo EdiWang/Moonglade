@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using DateTimeOps;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -188,7 +187,7 @@ namespace Moonglade.Web.Controllers
                     model.PublishDate <= tzDate &&
                     model.PublishDate.GetValueOrDefault().Year >= 1975)
                 {
-                    request.PublishDate = model.PublishDate;
+                    request.PublishDate = _dateTimeResolver.ToUtc(model.PublishDate.Value);
                 }
 
                 var postEntity = model.PostId == Guid.Empty ?
