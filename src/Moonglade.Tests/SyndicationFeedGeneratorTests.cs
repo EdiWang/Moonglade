@@ -168,6 +168,25 @@ namespace Moonglade.Tests
             Assert.IsTrue(xmlContent.StartsWith(@"﻿<?xml version=""1.0"" encoding=""utf-8""?><feed xmlns=""http://www.w3.org/2005/Atom""><title>996 ICU</title><subtitle>Work 996 and get into ICU</subtitle><rights>(c) 2020 996.icu</rights>"));
         }
 
+        [Test]
+        public async Task Rss20_NullCollection()
+        {
+            var rw = new FeedGenerator
+            {
+                HostUrl = "https://996.icu",
+                HeadTitle = "996 ICU",
+                HeadDescription = "Work 996 and get into ICU",
+                Copyright = "(c) 2020 996.icu",
+                Generator = "Fubao Generator",
+                FeedItemCollection = null,
+                TrackBackUrl = "https://996.icu/trackback",
+                GeneratorVersion = "9.9.6"
+            };
+
+            var xmlContent = await rw.WriteRssAsync();
+            Assert.IsNotNull(xmlContent);
+        }
+
         private static IEnumerable<FeedEntry> GetFeedItems()
         {
             var itemCollection = new List<FeedEntry>
