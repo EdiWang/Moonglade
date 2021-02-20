@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using NUnit.Framework;
 
 namespace Moonglade.Utils.Tests
@@ -141,6 +142,17 @@ namespace Moonglade.Utils.Tests
 
             Assert.IsTrue(envTags.Count() == 1);
             Assert.AreEqual(envTags.First(), string.Empty);
+        }
+
+        [Test]
+        public void GenerateSlug_English()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            var input = "Work 996 and Get into ICU";
+            var result = input.GenerateSlug();
+
+            Assert.AreEqual("work-996-and-get-into-icu", result);
         }
     }
 }
