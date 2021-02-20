@@ -8,14 +8,14 @@ namespace Moonglade.Web.TagHelpers
     {
         public DateTime? PubDateUtc { get; set; }
 
-        public IDateTimeResolver DateTimeResolver { get; set; }
+        public ITZoneResolver TZoneResolver { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "time";
             output.Attributes.SetAttribute("title", $"GMT {PubDateUtc}");
             output.Attributes.SetAttribute("datetime", PubDateUtc.GetValueOrDefault().ToString("u"));
-            output.Content.SetContent(DateTimeResolver.ToTimeZone(PubDateUtc.GetValueOrDefault()).ToLongDateString());
+            output.Content.SetContent(TZoneResolver.ToTimeZone(PubDateUtc.GetValueOrDefault()).ToLongDateString());
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Moonglade.Web.MetaWeblog
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IBlogConfig _blogConfig;
-        private readonly IDateTimeResolver _dateTimeResolver;
+        private readonly ITZoneResolver _tZoneResolver;
         private readonly ILogger<MetaWeblogService> _logger;
         private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
@@ -33,7 +33,7 @@ namespace Moonglade.Web.MetaWeblog
         public MetaWeblogService(
             IOptions<AuthenticationSettings> authOptions,
             IBlogConfig blogConfig,
-            IDateTimeResolver dateTimeResolver,
+            ITZoneResolver tZoneResolver,
             ILogger<MetaWeblogService> logger,
             ITagService tagService,
             ICategoryService categoryService,
@@ -44,7 +44,7 @@ namespace Moonglade.Web.MetaWeblog
         {
             _authenticationSettings = authOptions.Value;
             _blogConfig = blogConfig;
-            _dateTimeResolver = dateTimeResolver;
+            _tZoneResolver = tZoneResolver;
             _logger = logger;
             _tagService = tagService;
             _categoryService = categoryService;
@@ -516,7 +516,7 @@ namespace Moonglade.Web.MetaWeblog
             {
                 postid = post.Id,
                 categories = post.Categories.Select(p => p.DisplayName).ToArray(),
-                dateCreated = _dateTimeResolver.ToTimeZone(post.CreateTimeUtc),
+                dateCreated = _tZoneResolver.ToTimeZone(post.CreateTimeUtc),
                 description = post.ContentAbstract,
                 link = link,
                 permalink = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}/{link}",
@@ -536,7 +536,7 @@ namespace Moonglade.Web.MetaWeblog
             {
                 title = page.Title,
                 description = page.RawHtmlContent,
-                dateCreated = _dateTimeResolver.ToTimeZone(page.CreateTimeUtc),
+                dateCreated = _tZoneResolver.ToTimeZone(page.CreateTimeUtc),
                 categories = Array.Empty<string>(),
                 page_id = page.Id.ToString(),
                 wp_author_id = _blogConfig.GeneralSettings.OwnerName

@@ -6,7 +6,7 @@
 @using Moonglade.Utils
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Mvc.Core.Common
-@inject IDateTimeResolver DateTimeResolver
+@inject ITZoneResolver TZoneResolver
 
 @Html.AntiForgeryToken()
 
@@ -123,7 +123,7 @@ else
                 </div>
 
                 <small class="text-muted">
-                    <span>@DateTimeResolver.ToTimeZone(item.CreateTimeUtc).ToString("yyyy-MM-dd HH:mm")</span> <span class="text-muted d-none d-sm-inline">(@item.IpAddress)</span>
+                    <span>@TZoneResolver.ToTimeZone(item.CreateTimeUtc).ToString("yyyy-MM-dd HH:mm")</span> <span class="text-muted d-none d-sm-inline">(@item.IpAddress)</span>
                 </small>
 
                 <div class="reply-ui mt-3" style="display: none;">
@@ -148,7 +148,7 @@ else
                             <div>
                                 @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
                             </div>
-                            <small class="text-muted">@DateTimeResolver.ToTimeZone(reply.ReplyTimeUtc)</small>
+                            <small class="text-muted">@TZoneResolver.ToTimeZone(reply.ReplyTimeUtc)</small>
                         </div>
                     }
                 </div>

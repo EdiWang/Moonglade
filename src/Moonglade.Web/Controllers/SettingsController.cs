@@ -55,7 +55,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("general")]
-        public IActionResult General([FromServices] IDateTimeResolver dateTimeResolver)
+        public IActionResult General([FromServices] ITZoneResolver tZoneResolver)
         {
             var vm = new GeneralSettingsViewModel
             {
@@ -73,7 +73,7 @@ namespace Moonglade.Web.Controllers
                 OwnerDescription = _blogConfig.GeneralSettings.Description,
                 OwnerShortDescription = _blogConfig.GeneralSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
-                SelectedUtcOffset = dateTimeResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
+                SelectedUtcOffset = tZoneResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
                 SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
                 AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };
@@ -81,7 +81,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("general")]
-        public async Task<IActionResult> General(GeneralSettingsViewModel model, [FromServices] IDateTimeResolver dateTimeResolver)
+        public async Task<IActionResult> General(GeneralSettingsViewModel model, [FromServices] ITZoneResolver tZoneResolver)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -94,7 +94,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
             _blogConfig.GeneralSettings.SideBarOption = Enum.Parse<SideBarOption>(model.SideBarOption);
             _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-            _blogConfig.GeneralSettings.TimeZoneUtcOffset = dateTimeResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
+            _blogConfig.GeneralSettings.TimeZoneUtcOffset = tZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
             _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
             _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
             _blogConfig.GeneralSettings.OwnerName = model.OwnerName;

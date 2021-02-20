@@ -5,7 +5,7 @@ using TimeZoneConverter;
 
 namespace Moonglade.Web
 {
-    public interface IDateTimeResolver
+    public interface ITZoneResolver
     {
         DateTime NowOfTimeZone { get; }
 
@@ -15,11 +15,11 @@ namespace Moonglade.Web
         TimeSpan GetTimeSpanByZoneId(string timeZoneId);
     }
 
-    public class DateTimeResolver : IDateTimeResolver
+    public class BlogTZoneResolver : ITZoneResolver
     {
         public string TimeZoneUtcOffset { get; }
 
-        public DateTimeResolver(string timeZoneUtcOffset)
+        public BlogTZoneResolver(string timeZoneUtcOffset)
         {
             TimeZoneUtcOffset = timeZoneUtcOffset;
         }

@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Utils
 @using Moonglade.Web.HtmlHelpers
 @model IReadOnlyList<Moonglade.Comments.Comment>
-@inject IDateTimeResolver DateTimeResolver
+@inject ITZoneResolver TZoneResolver
 
 @{
     static string GetUserAvatarChar(string username)
@@ -43,7 +43,7 @@
                 <div class="card comment-item">
                     <div class="card-header">
                         <strong>@item.Username</strong>
-                        <span class="text-muted float-right"> @DateTimeResolver.ToTimeZone(item.CreateTimeUtc).ToString("yyyy-M-d HH:mm")</span>
+                        <span class="text-muted float-right"> @TZoneResolver.ToTimeZone(item.CreateTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                     </div>
                     <div class="card-body">
                         @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
@@ -56,7 +56,7 @@
                                         <strong>
                                             Author
                                         </strong>
-                                        <span class="float-right text-muted">Replied at @DateTimeResolver.ToTimeZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
+                                        <span class="float-right text-muted">Replied at @TZoneResolver.ToTimeZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
                                     <p>
                                         @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))

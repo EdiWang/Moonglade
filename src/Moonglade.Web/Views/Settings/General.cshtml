@@ -2,12 +2,12 @@
     Layout = "_LayoutAdmin";
 }
 @using Moonglade.Configuration
-@inject IDateTimeResolver DateTimeResolver
+@inject ITZoneResolver TZoneResolver
 @inject IOptions<List<BlogTheme>> Themes
 
 @model GeneralSettingsViewModel
 @{
-    var tzList = DateTimeResolver.ListTimeZones().Select(t => new SelectListItem
+    var tzList = TZoneResolver.ListTimeZones().Select(t => new SelectListItem
     {
         Text = t.DisplayName,
         Value = t.Id

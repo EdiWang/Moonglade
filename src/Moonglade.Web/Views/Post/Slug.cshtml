@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Utils
 
 @model Moonglade.Core.Post
-@inject IDateTimeResolver DateTimeResolver
+@inject ITZoneResolver TZoneResolver
 
 @{
     ViewBag.ShowBloggerIntroInXS = true;
@@ -128,14 +128,14 @@
         <div class="d-block d-sm-none">
             <div class="post-publish-info post-publish-info-mobile bg-light">
                 <span class="icon-calendar"></span>
-                <pubdate date-time-resolver="@DateTimeResolver" pub-date-utc="@Model.PubDateUtc"></pubdate>
+                <pubdate t-zone-resolver="@TZoneResolver" pub-date-utc="@Model.PubDateUtc"></pubdate>
                 @BlogConfig.GeneralSettings.TimeZoneId
             </div>
         </div>
 
         <div class="d-none d-md-block post-publish-info text-muted mb-2">
             <span class="icon-calendar"></span>
-            <pubdate date-time-resolver="@DateTimeResolver" pub-date-utc="@Model.PubDateUtc"></pubdate>
+            <pubdate t-zone-resolver="@TZoneResolver" pub-date-utc="@Model.PubDateUtc"></pubdate>
             @BlogConfig.GeneralSettings.TimeZoneId
             -
             <span class="post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>

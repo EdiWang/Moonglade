@@ -22,20 +22,20 @@ namespace Moonglade.Web.Controllers
         private readonly IPostService _postService;
         private readonly ICategoryService _catService;
         private readonly IBlogConfig _blogConfig;
-        private readonly IDateTimeResolver _dateTimeResolver;
+        private readonly ITZoneResolver _tZoneResolver;
         private readonly ILogger<PostManageController> _logger;
 
         public PostManageController(
             IPostService postService,
             ICategoryService catService,
             IBlogConfig blogConfig,
-            IDateTimeResolver dateTimeResolver,
+            ITZoneResolver tZoneResolver,
             ILogger<PostManageController> logger)
         {
             _postService = postService;
             _blogConfig = blogConfig;
             _catService = catService;
-            _dateTimeResolver = dateTimeResolver;
+            _tZoneResolver = tZoneResolver;
             _logger = logger;
         }
 
@@ -126,7 +126,7 @@ namespace Moonglade.Web.Controllers
 
             if (post.PubDateUtc is not null)
             {
-                viewModel.PublishDate = _dateTimeResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
+                viewModel.PublishDate = _tZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
             }
 
             var tagStr = post.Tags
@@ -181,13 +181,13 @@ namespace Moonglade.Web.Controllers
                     CategoryIds = model.SelectedCategoryIds
                 };
 
-                var tzDate = _dateTimeResolver.NowOfTimeZone;
+                var tzDate = _tZoneResolver.NowOfTimeZone;
                 if (model.ChangePublishDate &&
                     model.PublishDate.HasValue &&
                     model.PublishDate <= tzDate &&
                     model.PublishDate.GetValueOrDefault().Year >= 1975)
                 {
-                    request.PublishDate = _dateTimeResolver.ToUtc(model.PublishDate.Value);
+                    request.PublishDate = _tZoneResolver.ToUtc(model.PublishDate.Value);
                 }
 
                 var postEntity = model.PostId == Guid.Empty ?

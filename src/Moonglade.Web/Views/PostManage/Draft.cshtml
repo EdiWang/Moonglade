@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
-@inject IDateTimeResolver DateTimeResolver
+@inject ITZoneResolver TZoneResolver
 @model IReadOnlyList<Moonglade.Core.PostSegment>
 @section scripts{
     <script>
@@ -43,7 +43,7 @@
                     @post.ContentAbstract
                 </p>
 
-                <small class="text-muted">@DateTimeResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @DateTimeResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
+                <small class="text-muted">@TZoneResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @TZoneResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
             </div>
             <div class="card-footer">
                 <a class="btn btn-outline-accent btn-sm btn-edit" asp-controller="PostManage" asp-action="Edit" asp-route-id="@post.Id">
