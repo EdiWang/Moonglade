@@ -46,5 +46,41 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
+
+        [Test]
+        public async Task Delete_ValidId()
+        {
+            var ctl = CreateTagsController();
+            var result = await ctl.Delete(996);
+
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
+        [Test]
+        public async Task Update_BadModelState()
+        {
+            var ctl = CreateTagsController();
+            ctl.ModelState.AddModelError("", "error");
+
+            var request = new EditTagRequest();
+            var result = await ctl.Update(request);
+            
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Update_OK()
+        {
+            var ctl = CreateTagsController();
+
+            var request = new EditTagRequest
+            {
+                NewName = "fubao",
+                TagId = 996
+            };
+            var result = await ctl.Update(request);
+
+            Assert.IsInstanceOf<OkResult>(result);
+        }
     }
 }
