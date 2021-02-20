@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -27,5 +28,23 @@ namespace Moonglade.Web.Tests.Controllers
             return new(_mockTagService.Object);
         }
 
+        [Test]
+        public async Task Names_OK()
+        {
+            var ctl = CreateTagsController();
+            var result = await ctl.Names();
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [TestCase(-1)]
+        [TestCase(0)]
+        public async Task Delete_InvalidId(int tagId)
+        {
+            var ctl = CreateTagsController();
+            var result = await ctl.Delete(tagId);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
     }
 }
