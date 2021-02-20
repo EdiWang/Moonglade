@@ -85,6 +85,36 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task Edit_ValidModel()
+        {
+            var categoryController = CreateCategoryController();
+            var model = new CategoryEditModel
+            {
+                DisplayName = "996",
+                RouteName = "996",
+                Note = "fubao"
+            };
+
+            var result = await categoryController.Edit(model);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_BadModelState()
+        {
+            var categoryController = CreateCategoryController();
+            var model = new CategoryEditModel
+            {
+                DisplayName = "996",
+                Note = string.Empty
+            };
+            categoryController.ModelState.AddModelError("Note", "Note is required");
+
+            var result = await categoryController.Edit(model);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
         public async Task Delete_EmptyId()
         {
             var categoryController = CreateCategoryController();
