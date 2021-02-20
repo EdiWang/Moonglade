@@ -62,6 +62,15 @@ namespace Moonglade.Utils.Tests
         }
 
         [Test]
+        public void RemoveTags_Backup()
+        {
+            var html = @"<p>Microsoft</p><pRocks!</p><p>Azure&nbsp;<br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
+            var output = ContentProcessor.RemoveTags(html);
+
+            Assert.IsTrue(output == "MicrosoftAzure  The best cloud!");
+        }
+
+        [Test]
         public void GetPostAbstract()
         {
             var html = @"<p>Microsoft</p> <p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
