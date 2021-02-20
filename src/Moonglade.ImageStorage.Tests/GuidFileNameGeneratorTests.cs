@@ -1,9 +1,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Moonglade.ImageStorage;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.ImageStorage.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
