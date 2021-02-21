@@ -3,6 +3,7 @@ using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
@@ -15,6 +16,14 @@ namespace Moonglade.Web.Tests.ViewComponents
     {
         private MockRepository _mockRepository;
         private Mock<ICategoryService> _mockCategoryService;
+
+        private IReadOnlyList<Category> cats = new List<Category>
+        {
+            new ()
+            {
+                DisplayName = "Fubao", Id = Guid.Empty, Note = "Work 996", RouteName = "996"
+            }
+        };
 
         [SetUp]
         public void SetUp()
@@ -38,8 +47,32 @@ namespace Moonglade.Web.Tests.ViewComponents
 
             Assert.IsInstanceOf<ViewViewComponentResult>(result);
 
-            var message = ((ViewViewComponentResult) result).ViewData["ComponentErrorMessage"];
+            var message = ((ViewViewComponentResult)result).ViewData["ComponentErrorMessage"];
             Assert.AreEqual("996", message);
+        }
+
+        [Test]
+        public async Task InvokeAsync_IsMenu()
+        {
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+
+            var component = CreateComponent();
+            var result = await component.InvokeAsync(true);
+
+            Assert.IsInstanceOf<ViewViewComponentResult>(result);
+            Assert.AreEqual("CatMenu", ((ViewViewComponentResult)result).ViewName);
+        }
+
+        [Test]
+        public async Task InvokeAsync_NotMenu()
+        {
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+
+            var component = CreateComponent();
+            var result = await component.InvokeAsync(false);
+
+            Assert.IsInstanceOf<ViewViewComponentResult>(result);
+            Assert.AreEqual(null, ((ViewViewComponentResult)result).ViewName);
         }
     }
 }
