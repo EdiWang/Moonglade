@@ -17,7 +17,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         private MockRepository _mockRepository;
         private Mock<ICategoryService> _mockCategoryService;
 
-        private IReadOnlyList<Category> cats = new List<Category>
+        private readonly IReadOnlyList<Category> _cats = new List<Category>
         {
             new ()
             {
@@ -54,7 +54,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_IsMenu()
         {
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(_cats));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(true);
@@ -66,7 +66,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_NotMenu()
         {
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(_cats));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(false);
