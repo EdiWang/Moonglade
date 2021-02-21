@@ -100,6 +100,34 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task Page_NotFound_Null()
+        {
+            _mockBlogCache.Setup(p =>
+                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, Page>>()))
+                .Returns((Page)null);
+
+            var ctl = CreateHomeController();
+            var result = await ctl.Page("996");
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task Page_NotFound_Unpublished()
+        {
+            var page = new Page { IsPublished = false };
+
+            _mockBlogCache.Setup(p =>
+                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, Page>>()))
+                .Returns(page);
+
+            var ctl = CreateHomeController();
+            var result = await ctl.Page("996");
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
         public async Task Index_View()
         {
             _mockPostService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
@@ -191,6 +219,28 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateHomeController();
             var result = await ctl.TagList("fu-bao");
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult)result).Model;
+            Assert.IsInstanceOf<StaticPagedList<PostDigest>>(model);
+
+            var pagedList = (StaticPagedList<PostDigest>)model;
+            Assert.AreEqual(251, pagedList.TotalItemCount);
+        }
+
+        [Test]
+        public async Task Featured_View()
+        {
+            _mockPostService.Setup(p => p.ListFeatured(It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(Task.FromResult(_fakePosts));
+
+            _mockBlogCache.Setup(p =>
+                    p.GetOrCreate(CacheDivision.PostCountFeatured, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
+                .Returns(251);
+
+            var ctl = CreateHomeController();
+            var result = await ctl.Featured();
 
             Assert.IsInstanceOf<ViewResult>(result);
 
