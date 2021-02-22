@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Moonglade.Menus;
 using Moonglade.Web.ViewComponents;
@@ -40,6 +41,19 @@ namespace Moonglade.Web.Tests.ViewComponents
 
             var message = ((ViewViewComponentResult)result).ViewData["ComponentErrorMessage"];
             Assert.AreEqual("996", message);
+        }
+
+        [Test]
+        public async Task InvokeAsync_View()
+        {
+            IReadOnlyList<Menu> menus = new List<Menu>();
+
+            _mockMenuService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(menus));
+
+            var component = CreateComponent();
+            var result = await component.InvokeAsync();
+
+            Assert.IsInstanceOf<ViewViewComponentResult>(result);
         }
     }
 }
