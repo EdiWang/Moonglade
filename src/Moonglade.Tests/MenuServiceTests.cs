@@ -24,7 +24,7 @@ namespace Moonglade.Tests
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockLogger = _mockRepository.Create<ILogger<MenuService>>();
             _mockMenuRepository = _mockRepository.Create<IRepository<MenuEntity>>();
@@ -37,6 +37,18 @@ namespace Moonglade.Tests
                 _mockLogger.Object,
                 _mockMenuRepository.Object,
                 _mockBlogAudit.Object);
+        }
+
+        [Test]
+        public async Task GetAsync_Null()
+        {
+            _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((MenuEntity)null));
+
+            var ctl = CreateService();
+            var result = await ctl.GetAsync(Guid.Empty);
+
+            Assert.IsNull(result);
         }
     }
 }
