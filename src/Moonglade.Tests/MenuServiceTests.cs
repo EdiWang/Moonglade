@@ -50,5 +50,29 @@ namespace Moonglade.Tests
 
             Assert.IsNull(result);
         }
+
+        [Test]
+        public async Task GetAsync_EntityToMenuModel()
+        {
+            MenuEntity menu = new()
+            {
+                Id = Guid.Empty,
+                DisplayOrder = 996,
+                Icon = "work-996 ",
+                IsOpenInNewTab = true,
+                Title = "Work 996 ",
+                Url = "/work/996"
+            };
+
+            _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult(menu));
+
+            var ctl = CreateService();
+            var result = await ctl.GetAsync(Guid.Empty);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("work-996", result.Icon);
+            Assert.AreEqual("Work 996", result.Title);
+        }
     }
 }
