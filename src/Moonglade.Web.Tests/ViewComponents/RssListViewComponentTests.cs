@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
@@ -47,6 +48,25 @@ namespace Moonglade.Web.Tests.ViewComponents
 
             var message = ((ViewViewComponentResult)result).ViewData["ComponentErrorMessage"];
             Assert.AreEqual("996", message);
+        }
+
+        [Test]
+        public async Task InvokeAsync_View()
+        {
+            IReadOnlyList<Category> cats = new List<Category>
+            {
+                new() {DisplayName = "Fubao", Id = Guid.Empty, Note = "996", RouteName = "work-996"}
+            };
+
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+
+            var component = CreateComponent();
+            var result = await component.InvokeAsync();
+
+            Assert.IsInstanceOf<ViewViewComponentResult>(result);
+
+            var model = ((ViewViewComponentResult)result).ViewData.Model;
+            Assert.IsNotNull(model);
         }
     }
 }
