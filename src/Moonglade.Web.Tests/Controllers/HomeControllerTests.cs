@@ -154,14 +154,14 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Tags_Index()
         {
-            var fakeTags = new List<DegreeTag>
+            var fakeTags = new List<KeyValuePair<Tag, int>>
             {
-                new() { Degree = 251, DisplayName = "Huawei", Id = 35, NormalizedName = "aiguo" },
-                new() { Degree = 996, DisplayName = "Ali", Id = 35, NormalizedName = "fubao" }
+                new(new Tag { DisplayName = "Huawei", Id = 35, NormalizedName = "aiguo" }, 251),
+                new(new Tag { DisplayName = "Ali", Id = 35, NormalizedName = "fubao" }, 996)
             };
 
             _mockTagService.Setup(p => p.GetTagCountList())
-                .Returns(Task.FromResult((IReadOnlyList<DegreeTag>)fakeTags));
+                .Returns(Task.FromResult((IReadOnlyList<KeyValuePair<Tag, int>>)fakeTags));
 
             var ctl = CreateHomeController();
             var result = await ctl.Tags();
