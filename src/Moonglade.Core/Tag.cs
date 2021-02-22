@@ -8,9 +8,4 @@
 
         public string NormalizedName { get; set; }
     }
-
-    public class DegreeTag : Tag
-    {
-        public int Degree { get; set; }
-    }
 }

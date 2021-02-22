@@ -3,7 +3,7 @@
 }
 
 @using System.Web
-@model IReadOnlyList<Moonglade.Core.DegreeTag>
+@model IReadOnlyList<KeyValuePair<Moonglade.Core.Tag, int>>
 
 @functions {
     private static string Weight(double weightPercent)
@@ -27,20 +27,20 @@
 
 @if (Model.Any())
 {
-    var tagMax = Model.Select(p => p.Degree).Max();
+    var tagMax = Model.Select(p => p.Value).Max();
 
     <ul class="list-unstyled text-justify">
-        @foreach (var tag in Model.OrderBy(t => t.DisplayName))
+        @foreach (var tag in Model.OrderBy(t => t.Key.DisplayName))
         {
-            var weightPercent = tag.Degree * 1.0 / tagMax * 100;
+            var weightPercent = tag.Value * 1.0 / tagMax * 100;
             var weight = Weight(weightPercent);
 
             <li class="d-inline-block mb-2 mr-2">
                 <a asp-controller="Home"
                    asp-action="TagList"
-                   asp-route-normalizedName="@HttpUtility.UrlDecode(tag.NormalizedName.ToLower())"
-                   class="btn btn-sm btn-@weight" title="@(tag.Degree)">
-                    @tag.DisplayName.Replace("-", " ")
+                   asp-route-normalizedName="@HttpUtility.UrlDecode(tag.Key.NormalizedName.ToLower())"
+                   class="btn btn-sm btn-@weight" title="@(tag.Value)">
+                    @tag.Key.DisplayName.Replace("-", " ")
                 </a>
             </li>
         }
