@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Pages;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -55,7 +54,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreatePageController();
             ctl.ModelState.AddModelError("", "996");
 
-            var result = await ctl.CreateOrEdit(new ());
+            var result = await ctl.CreateOrEdit(new());
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
     }
