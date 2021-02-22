@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Pages;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -46,6 +47,16 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Delete(Guid.Empty, "work-996");
 
             Assert.IsInstanceOf<OkResult>(result);
+        }
+
+        [Test]
+        public async Task CreateOrEdit_BadModelState()
+        {
+            var ctl = CreatePageController();
+            ctl.ModelState.AddModelError("", "996");
+
+            var result = await ctl.CreateOrEdit(new ());
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
     }
 }
