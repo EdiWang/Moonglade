@@ -1,3 +1,7 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Core;
@@ -5,10 +9,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Moonglade.Tests
 {

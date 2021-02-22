@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Moonglade.Menus;
 using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace Moonglade.Web.Tests.ViewComponents
 {

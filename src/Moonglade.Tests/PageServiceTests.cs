@@ -132,7 +132,7 @@ namespace Moonglade.Tests
 
             var svc = CreatePageService();
             await svc.DeleteAsync(Guid.Empty);
-            
+
             _mockBlogAudit.Verify();
         }
 

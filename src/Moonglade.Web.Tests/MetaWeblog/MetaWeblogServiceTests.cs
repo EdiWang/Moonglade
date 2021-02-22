@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
@@ -5,13 +6,9 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.ImageStorage;
 using Moonglade.Pages;
-using Moonglade.Web;
 using Moonglade.Web.MetaWeblog;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.MetaWeblog
 {

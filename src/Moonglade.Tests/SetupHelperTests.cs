@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using Moonglade.Setup;
 using Moq;
 using Moq.Dapper;
@@ -109,7 +108,7 @@ namespace Moonglade.Tests
         {
             _mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Returns(1);
             var setupHelper = new SetupRunner(_mockDbConnection.Object);
-            
+
             var result = setupHelper.TestDatabaseConnection();
             Assert.AreEqual(true, result);
         }

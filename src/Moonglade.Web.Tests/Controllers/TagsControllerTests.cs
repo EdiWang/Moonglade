@@ -1,11 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -64,7 +63,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var request = new EditTagRequest();
             var result = await ctl.Update(request);
-            
+
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
