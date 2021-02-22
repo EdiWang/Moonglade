@@ -54,7 +54,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_View()
         {
-            IReadOnlyList<DegreeTag> tags = new List<DegreeTag>();
+            IReadOnlyList<KeyValuePair<Tag, int>> tags = new List<KeyValuePair<Tag, int>>();
 
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = 996 });
             _mockTagService.Setup(p => p.GetHotTagsAsync(It.IsAny<int>())).Returns(Task.FromResult(tags));

@@ -20,7 +20,7 @@ namespace Moonglade.Core
         Task<IReadOnlyList<string>> GetAllNames();
         Task UpdateAsync(int tagId, string newName);
         Task DeleteAsync(int tagId);
-        Task<IReadOnlyList<DegreeTag>> GetHotTagsAsync(int top);
+        Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top);
         Tag Get(string normalizedName);
         Task<IReadOnlyList<DegreeTag>> GetTagCountList();
     }
@@ -83,17 +83,18 @@ namespace Moonglade.Core
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagDeleted, $"Tag id '{tagId}' is deleted");
         }
 
-        public async Task<IReadOnlyList<DegreeTag>> GetHotTagsAsync(int top)
+        public async Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top)
         {
-            if (!_tagRepo.Any()) return new List<DegreeTag>();
+            if (!_tagRepo.Any()) return new List<KeyValuePair<Tag, int>>();
 
             var spec = new TagSpec(top);
-            var tags = await _tagRepo.SelectAsync(spec, t => new DegreeTag
-            {
-                Degree = t.Posts.Count,
-                DisplayName = t.DisplayName,
-                NormalizedName = t.NormalizedName
-            });
+            var tags = await _tagRepo.SelectAsync(spec, t => 
+                new KeyValuePair<Tag, int>(new ()
+                {
+                    Id = t.Id,
+                    DisplayName = t.DisplayName,
+                    NormalizedName = t.NormalizedName
+                }, t.Posts.Count));
 
             return tags;
         }
