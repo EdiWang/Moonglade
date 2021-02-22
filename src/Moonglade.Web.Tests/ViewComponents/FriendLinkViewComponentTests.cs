@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
@@ -46,6 +47,19 @@ namespace Moonglade.Web.Tests.ViewComponents
 
             var message = ((ViewViewComponentResult)result).ViewData["ComponentErrorMessage"];
             Assert.AreEqual("996", message);
+        }
+
+        [Test]
+        public async Task InvokeAsync_View()
+        {
+            IReadOnlyList<Link> links = new List<Link>();
+
+            _mockFriendLinkService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(links));
+
+            var component = CreateComponent();
+            var result = await component.InvokeAsync();
+
+            Assert.IsInstanceOf<ViewViewComponentResult>(result);
         }
     }
 }
