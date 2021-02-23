@@ -1,5 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using MemoryCache.Testing.Moq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -44,14 +47,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockAsyncImageStorageProvider = _mockRepository.Create<IBlogImageStorage>();
             _mockSiteIconGenerator = _mockRepository.Create<ISiteIconGenerator>();
             _mockImageStorageSettings = _mockRepository.Create<IOptions<ImageStorageSettings>>();
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
-            {
-                CDNSettings = new()
-                {
-                    CDNEndpoint = "https://fake-cdn.edi.wang/images",
-                    EnableCDNRedirect = true
-                }
-            });
         }
 
         private AssetsController CreateAssetsController()
@@ -70,6 +65,16 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task GetImage_CDN()
         {
             const string filename = "test.png";
+
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
+            {
+                CDNSettings = new()
+                {
+                    CDNEndpoint = "https://fake-cdn.edi.wang/images",
+                    EnableCDNRedirect = true
+                }
+            });
+
             var ctl = CreateAssetsController();
 
             var memCacheMock = new Mock<IMemoryCache>();
@@ -80,6 +85,37 @@ namespace Moonglade.Web.Tests.Controllers
                 var resultUrl = _mockImageStorageSettings.Object.Value.CDNSettings.CDNEndpoint.CombineUrl(filename);
                 Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
             }
+        }
+
+        [Test]
+        public async Task Image_Null()
+        {
+            const string filename = "test.png";
+
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
+            {
+                CDNSettings = new()
+                {
+                    EnableCDNRedirect = false
+                }
+            });
+
+            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
+            {
+                CacheSlidingExpirationMinutes = new()
+                {
+                    { "Image", 996 }
+                }
+            });
+
+            var memCacheMock = Create.MockedMemoryCache();
+            _mockAsyncImageStorageProvider.Setup(p => p.GetAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult((ImageInfo)null));
+
+            var ctl = CreateAssetsController();
+            var result = await ctl.Image(filename, memCacheMock);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [TestCase("<996>.png")]
