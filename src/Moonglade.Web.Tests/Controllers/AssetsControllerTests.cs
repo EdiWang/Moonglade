@@ -118,6 +118,39 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
+        [Test]
+        public async Task Image_Exception()
+        {
+            const string filename = "test.png";
+
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
+            {
+                CDNSettings = new()
+                {
+                    EnableCDNRedirect = false
+                }
+            });
+
+            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
+            {
+                CacheSlidingExpirationMinutes = new()
+                {
+                    { "Image", 996 }
+                }
+            });
+
+            var memCacheMock = Create.MockedMemoryCache();
+            _mockAsyncImageStorageProvider.Setup(p => p.GetAsync(It.IsAny<string>()))
+                .Throws(new ArgumentException("996"));
+
+            var ctl = CreateAssetsController();
+
+            var result = await ctl.Image(filename, memCacheMock);
+
+            Assert.IsInstanceOf<StatusCodeResult>(result);
+            Assert.AreEqual(500, ((StatusCodeResult)result).StatusCode);
+        }
+
         [TestCase("<996>.png")]
         [TestCase(":icu.gif")]
         [TestCase("|.jpg")]
