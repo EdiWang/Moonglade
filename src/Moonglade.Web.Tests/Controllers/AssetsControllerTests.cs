@@ -208,12 +208,46 @@ namespace Moonglade.Web.Tests.Controllers
                 AllowedExtensions = new[] { ".png" }
             });
 
-            IFormFile file = new FormFile(new MemoryStream(), 0, 0, "996.jpg", "996.jpg");
+            IFormFile file = new FormFile(new MemoryStream(), 0, 1024, "996.jpg", "996.jpg");
 
             var ctl = CreateAssetsController();
             var result = await ctl.Image(file, null);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
+        public async Task Image_Upload_EmptyAllowedExtensions()
+        {
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings()
+            {
+                AllowedExtensions = Array.Empty<string>()
+            });
+
+            IFormFile file = new FormFile(new MemoryStream(), 0, 1024, "996.jpg", "996.jpg");
+
+            var ctl = CreateAssetsController();
+            var result = await ctl.Image(file, null);
+
+            Assert.IsInstanceOf<StatusCodeResult>(result);
+            Assert.AreEqual(500, ((StatusCodeResult)result).StatusCode);
+        }
+
+        [Test]
+        public async Task Image_Upload_NullAllowedExtensions()
+        {
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings()
+            {
+                AllowedExtensions = null
+            });
+
+            IFormFile file = new FormFile(new MemoryStream(), 0, 1024, "996.jpg", "996.jpg");
+
+            var ctl = CreateAssetsController();
+            var result = await ctl.Image(file, null);
+
+            Assert.IsInstanceOf<StatusCodeResult>(result);
+            Assert.AreEqual(500, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestCase("<996>.png")]
