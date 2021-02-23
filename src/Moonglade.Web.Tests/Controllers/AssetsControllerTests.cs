@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Threading.Tasks;
+using Edi.Captcha;
 using MemoryCache.Testing.Moq;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Session;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -119,6 +124,41 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task Image_File()
+        {
+            const string filename = "test.png";
+
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
+            {
+                CDNSettings = new()
+                {
+                    EnableCDNRedirect = false
+                }
+            });
+
+            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
+            {
+                CacheSlidingExpirationMinutes = new()
+                {
+                    { "Image", 996 }
+                }
+            });
+
+            var memCacheMock = Create.MockedMemoryCache();
+            _mockAsyncImageStorageProvider.Setup(p => p.GetAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(new ImageInfo
+                {
+                    ImageBytes = Array.Empty<byte>(),
+                    ImageExtensionName = ".png"
+                }));
+
+            var ctl = CreateAssetsController();
+            var result = await ctl.Image(filename, memCacheMock);
+
+            Assert.IsInstanceOf<FileContentResult>(result);
+        }
+
+        [Test]
         public async Task Image_Exception()
         {
             const string filename = "test.png";
@@ -149,6 +189,31 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<StatusCodeResult>(result);
             Assert.AreEqual(500, ((StatusCodeResult)result).StatusCode);
+        }
+
+        [Test]
+        public async Task Image_Upload_NullFile()
+        {
+            var ctl = CreateAssetsController();
+            var result = await ctl.Image((IFormFile)null, null);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
+        public async Task Image_Upload_InvalidExtension()
+        {
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings()
+            {
+                AllowedExtensions = new[] { ".png" }
+            });
+
+            IFormFile file = new FormFile(new MemoryStream(), 0, 0, "996.jpg", "996.jpg");
+
+            var ctl = CreateAssetsController();
+            var result = await ctl.Image(file, null);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
         [TestCase("<996>.png")]
@@ -257,5 +322,32 @@ namespace Moonglade.Web.Tests.Controllers
             var content = (ContentResult)result;
             Assert.AreEqual("text/css", content.ContentType);
         }
+
+        //[Test]
+        //public void CaptchaImage_CrazySize()
+        //{
+        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings()
+        //    {
+        //        CaptchaSettings = new()
+        //        {
+        //            ImageHeight = 996,
+        //            ImageWidth = 996
+        //        }
+        //    });
+
+        //    var ms = new MemoryStream();
+        //    var captchaMock = new Mock<ISessionBasedCaptcha>();
+        //    captchaMock.Setup(p => p.GenerateCaptchaImageFileStream(It.IsAny<ISession>(), It.IsAny<int>(), It.IsAny<int>())).Returns(new FileStreamResult(ms, "image/png"));
+
+        //    var ctl = CreateAssetsController();
+        //    ctl.ControllerContext = new()
+        //    {
+        //        HttpContext = new DefaultHttpContext()
+        //    };
+
+        //    var result = ctl.CaptchaImage(captchaMock.Object);
+        //}
+
+
     }
 }
