@@ -79,7 +79,7 @@ namespace Moonglade.Tests
             return TagService.NormalizeTagName(str, dic);
         }
 
-        [TestCase("∏£±®", ExpectedResult = "8f-79-a5-62")]
+        [TestCase("Á¶èÊä•", ExpectedResult = "8f-79-a5-62")]
         public string NormalizeTagNameNonEnglish(string str)
         {
             var dic = Array.Empty<TagNormalization>();
