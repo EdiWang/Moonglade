@@ -24,8 +24,6 @@ namespace Moonglade.Core
         Task<Post> GetAsync(Guid id);
         Task<Post> GetAsync(PostSlug slug);
         Task<Post> GetDraft(Guid postId);
-        Task<string> GetContent(PostSlug slug);
-        Task<PostMeta> GetMeta(PostSlug slug);
         Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus);
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
@@ -186,37 +184,6 @@ namespace Moonglade.Core
             var spec = new PostSpec(id);
             var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
             return postSlugModel;
-        }
-
-        public Task<string> GetContent(PostSlug slug)
-        {
-            var date = new DateTime(slug.Year, slug.Month, slug.Day);
-            var spec = new PostSpec(date, slug.Slug);
-
-            return _postRepo.SelectFirstOrDefaultAsync(spec, post => post.PostContent);
-        }
-
-        public Task<PostMeta> GetMeta(PostSlug slug)
-        {
-            var date = new DateTime(slug.Year, slug.Month, slug.Day);
-            var spec = new PostSpec(date, slug.Slug);
-
-            var model = _postRepo.SelectFirstOrDefaultAsync(spec, post => new PostMeta
-            {
-                Title = post.Title,
-                PubDateUtc = post.PubDateUtc.GetValueOrDefault(),
-                UpdatedTimeUtc = post.LastModifiedUtc,
-
-                Categories = post.PostCategory
-                                 .Select(pc => pc.Category.DisplayName)
-                                 .ToArray(),
-
-                Tags = post.Tags
-                           .Select(pt => pt.DisplayName)
-                           .ToArray()
-            });
-
-            return model;
         }
 
         public Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus)

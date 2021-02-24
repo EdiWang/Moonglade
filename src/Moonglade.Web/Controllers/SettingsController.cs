@@ -451,8 +451,7 @@ namespace Moonglade.Web.Controllers
             {
                 WarnExternalLink = settings.WarnExternalLink,
                 AllowScriptsInPage = settings.AllowScriptsInPage,
-                ShowAdminLoginButton = settings.ShowAdminLoginButton,
-                EnablePostRawEndpoint = settings.EnablePostRawEndpoint
+                ShowAdminLoginButton = settings.ShowAdminLoginButton
             };
 
             return View(vm);
@@ -467,7 +466,6 @@ namespace Moonglade.Web.Controllers
             settings.WarnExternalLink = model.WarnExternalLink;
             settings.AllowScriptsInPage = model.AllowScriptsInPage;
             settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
-            settings.EnablePostRawEndpoint = model.EnablePostRawEndpoint;
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");

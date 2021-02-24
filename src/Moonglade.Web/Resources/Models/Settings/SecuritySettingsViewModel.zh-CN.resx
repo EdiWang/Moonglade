@@ -120,9 +120,6 @@
   <data name="Allow javascript in pages" xml:space="preserve">
     <value>允许页面中执JavaScript代码</value>
   </data>
-  <data name="Enable raw endpoint for posts" xml:space="preserve">
-    <value>启用文章RAW信息终端</value>
-  </data>
   <data name="Show Admin login button under sidebar" xml:space="preserve">
     <value>在侧边栏下显示管理员登录按钮</value>
   </data>

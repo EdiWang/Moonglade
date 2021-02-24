@@ -37,29 +37,6 @@ namespace Moonglade.Web.Controllers
             return View(post);
         }
 
-        [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}/{type:regex(^(meta|content)$)}")]
-        public async Task<IActionResult> Raw(int year, int month, int day, string slug, string type)
-        {
-            var slugInfo = new PostSlug(year, month, day, slug);
-
-            if (!_blogConfig.SecuritySettings.EnablePostRawEndpoint
-                || year > DateTime.UtcNow.Year
-                || string.IsNullOrWhiteSpace(slug)) return NotFound();
-
-            switch (type.ToLower())
-            {
-                case "meta":
-                    var meta = await _postService.GetMeta(slugInfo);
-                    return Json(meta);
-
-                case "content":
-                    var content = await _postService.GetContent(slugInfo);
-                    return Content(content, "text/plain");
-            }
-
-            return BadRequest();
-        }
-
         [Authorize]
         [Route("preview/{postId:guid}")]
         public async Task<IActionResult> Preview(Guid postId)

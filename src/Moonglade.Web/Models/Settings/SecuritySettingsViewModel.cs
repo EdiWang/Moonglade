@@ -12,8 +12,5 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Show Admin login button under sidebar")]
         public bool ShowAdminLoginButton { get; set; }
-
-        [Display(Name = "Enable raw endpoint for posts")]
-        public bool EnablePostRawEndpoint { get; set; }
     }
 }
