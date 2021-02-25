@@ -8,7 +8,7 @@
             @TZoneResolver.ToTimeZone(Model.PubDateUtc).Day.ToString("00")
         </div>
         <div class="post-date-month text-white">
-            @TZoneResolver.ToTimeZone(Model.PubDateUtc).ToString("MMM", new CultureInfo("en-US")).ToUpper()
+            @TZoneResolver.ToTimeZone(Model.PubDateUtc).ToString("MMM").ToUpper()
         </div>
     </div>
     <div class="post-summary-box d-block">
