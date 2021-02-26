@@ -15,15 +15,20 @@ namespace Moonglade.Tests
     public class FriendLinkServiceTests
     {
         private MockRepository _mockRepository;
-
         private Mock<IBlogAudit> _mockBlogAudit;
+        private Mock<IRepository<FriendLinkEntity>> _mockFriendlinkRepo;
 
         [SetUp]
         public void Setup()
         {
             _mockRepository = new(MockBehavior.Default);
-
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
+            _mockFriendlinkRepo = _mockRepository.Create<IRepository<FriendLinkEntity>>();
+        }
+
+        private FriendLinkService CreateService()
+        {
+            return new(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
         }
 
         [Test]
@@ -39,12 +44,20 @@ namespace Moonglade.Tests
             var tcs = new TaskCompletionSource<FriendLinkEntity>();
             tcs.SetResult(friendLinkEntity);
 
-            var friendlinkRepositoryMock = new Mock<IRepository<FriendLinkEntity>>();
-            friendlinkRepositoryMock.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
+            _mockFriendlinkRepo.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
 
-            var svc = new FriendLinkService(friendlinkRepositoryMock.Object, _mockBlogAudit.Object);
-
+            var svc = CreateService();
             await svc.AddAsync("Choice of 955", "https://dot.net");
+            Assert.Pass();
+        }
+
+        [Test]
+        public async Task DeleteAsync_OK()
+        {
+            var svc = CreateService();
+            await svc.DeleteAsync(Guid.Empty);
+
+            _mockBlogAudit.Verify();
             Assert.Pass();
         }
     }

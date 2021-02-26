@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Settings;
@@ -61,6 +62,17 @@ namespace Moonglade.Tests
             var result = svc.Get("work-996");
 
             Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public async Task UpdateAsync_Null()
+        {
+            _mockRepositoryTagEntity.Setup(p => p.GetAsync(It.IsAny<int>())).Returns(null);
+
+            var svc = CreateService();
+            await svc.UpdateAsync(996, "fubao");
+
+            _mockBlogAudit.VerifyNoOtherCalls();
         }
 
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
