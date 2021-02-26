@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -11,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
-using Moonglade.Auth;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
@@ -583,24 +581,5 @@ namespace Moonglade.Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
-
-        #region Account
-
-        [HttpGet("account")]
-        public async Task<IActionResult> AccountSettings([FromServices] ILocalAccountService accountService)
-        {
-            var accounts = await accountService.GetAllAsync();
-            var vm = new AccountManageViewModel { Accounts = accounts };
-
-            return View(vm);
-        }
-
-        #endregion
-    }
-
-    public class ResetPasswordRequest
-    {
-        [Required]
-        public string NewPassword { get; set; }
     }
 }

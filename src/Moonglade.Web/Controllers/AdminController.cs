@@ -210,6 +210,15 @@ namespace Moonglade.Web.Controllers
             return View(list);
         }
 
+        [HttpGet("account")]
+        public async Task<IActionResult> LocalAccount([FromServices] ILocalAccountService accountService)
+        {
+            var accounts = await accountService.GetAllAsync();
+            var vm = new AccountManageViewModel { Accounts = accounts };
+
+            return View(vm);
+        }
+
         // Keep session from expire when writing a very long post
         [IgnoreAntiforgeryToken]
         [Route("keep-alive")]
