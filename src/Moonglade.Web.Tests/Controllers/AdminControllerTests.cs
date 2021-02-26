@@ -138,6 +138,17 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task ClearAuditLogs_Redirect()
+        {
+            var ctl = CreateAdminController();
+            var result = await ctl.ClearAuditLogs();
+
+            _mockAudit.Verify();
+
+            Assert.IsInstanceOf<RedirectToActionResult>(result);
+        }
+
+        [Test]
         public async Task Page_View()
         {
             IReadOnlyList<PageSegment> fakePageSegments = new List<PageSegment>()

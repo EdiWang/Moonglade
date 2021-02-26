@@ -75,6 +75,25 @@ namespace Moonglade.Tests
             _mockBlogAudit.VerifyNoOtherCalls();
         }
 
+        [Test]
+        public async Task UpdateAsync_HasTag()
+        {
+            _mockRepositoryTagEntity.Setup(p => p.GetAsync(It.IsAny<int>()))
+                .Returns(ValueTask.FromResult(new TagEntity
+            {
+                Id = 996,
+                DisplayName = "Ma Yun",
+                NormalizedName = "ma-yun"
+            }));
+
+            _mockOptions.Setup(p => p.Value).Returns(new List<TagNormalization>());
+
+            var svc = CreateService();
+            await svc.UpdateAsync(996, "fubao");
+
+            _mockBlogAudit.Verify();
+        }
+
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
         [TestCase("C#", ExpectedResult = "csharp")]
         [TestCase("955", ExpectedResult = "955")]
