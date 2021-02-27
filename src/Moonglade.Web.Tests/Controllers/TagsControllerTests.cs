@@ -36,6 +36,37 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public async Task Create_EmptyName(string name)
+        {
+            var ctl = CreateTagsController();
+            var result = await ctl.Create(name);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [TestCase("(1)")]
+        [TestCase("usr/bin")]
+        public async Task Create_InvalidName(string name)
+        {
+            var ctl = CreateTagsController();
+            var result = await ctl.Create(name);
+
+            Assert.IsInstanceOf<ConflictResult>(result);
+        }
+
+        [Test]
+        public async Task Create_OK()
+        {
+            var ctl = CreateTagsController();
+            var result = await ctl.Create("996");
+
+            _mockTagService.Verify(p => p.Create(It.IsAny<string>()));
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
         [TestCase(-1)]
         [TestCase(0)]
         public async Task Delete_InvalidId(int tagId)
