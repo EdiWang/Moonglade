@@ -172,8 +172,8 @@ namespace Moonglade.Core
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
 
-                var postModel = await _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
-                return postModel;
+                var post = await _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
+                return post;
             });
 
             return psm;
@@ -182,8 +182,8 @@ namespace Moonglade.Core
         public Task<Post> GetDraft(Guid id)
         {
             var spec = new PostSpec(id);
-            var postSlugModel = _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
-            return postSlugModel;
+            var post = _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
+            return post;
         }
 
         public Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus)
@@ -349,20 +349,7 @@ namespace Moonglade.Core
                         continue;
                     }
 
-                    var tag = await _tagRepo.GetAsync(q => q.DisplayName == item);
-                    if (null == tag)
-                    {
-                        var newTag = new TagEntity
-                        {
-                            DisplayName = item,
-                            NormalizedName = TagService.NormalizeTagName(item, _tagNormalization.Value)
-                        };
-
-                        tag = await _tagRepo.AddAsync(newTag);
-                        await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
-                            $"Tag '{tag.NormalizedName}' created.");
-                    }
-
+                    var tag = await _tagRepo.GetAsync(q => q.DisplayName == item) ?? await CreateTag(item);
                     post.Tags.Add(tag);
                 }
             }
@@ -371,6 +358,20 @@ namespace Moonglade.Core
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.PostCreated, $"Post created, id: {post.Id}");
 
             return post;
+        }
+
+        private async Task<TagEntity> CreateTag(string item)
+        {
+            var newTag = new TagEntity
+            {
+                DisplayName = item,
+                NormalizedName = TagService.NormalizeTagName(item, _tagNormalization.Value)
+            };
+
+            var tag = await _tagRepo.AddAsync(newTag);
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
+                $"Tag '{tag.NormalizedName}' created.");
+            return tag;
         }
 
         public async Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request)
