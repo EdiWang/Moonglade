@@ -67,7 +67,7 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockBlogConfig.Object);
         }
 
-        Page fakePage = new()
+        readonly Page _fakePage = new()
         {
             Id = Guid.Empty,
             CreateTimeUtc = new DateTime(996, 9, 6),
@@ -223,14 +223,14 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Edit_View()
         {
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(fakePage));
+                .Returns(Task.FromResult(_fakePage));
 
             var ctl = CreateAdminController();
             var result = await ctl.EditPage(Guid.Empty);
 
             Assert.IsInstanceOf<ViewResult>(result);
 
-            var model = ((ViewResult) result).Model;
+            var model = ((ViewResult)result).Model;
             Assert.IsInstanceOf<PageEditModel>(model);
         }
 
@@ -238,7 +238,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Preview_HasPage()
         {
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(fakePage));
+                .Returns(Task.FromResult(_fakePage));
 
             var ctl = CreateAdminController();
             var result = await ctl.PreviewPage(Guid.Empty);
@@ -247,7 +247,26 @@ namespace Moonglade.Web.Tests.Controllers
 
             var model = ((ViewResult)result).Model;
             Assert.IsInstanceOf<Page>(model);
-            Assert.AreEqual(fakePage.Title, ((Page)model).Title);
+            Assert.AreEqual(_fakePage.Title, ((Page)model).Title);
+        }
+
+        [Test]
+        public async Task Category_View()
+        {
+            IReadOnlyList<Category> cats = new List<Category>()
+            {
+                new (){Id = Guid.Empty, DisplayName = "Work 996", Note = "Fubao", RouteName = "work-996" }
+            };
+
+            _mockCat.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.Category();
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult)result).Model;
+            Assert.IsInstanceOf<CategoryManageModel>(model);
         }
     }
 }
