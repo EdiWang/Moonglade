@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -73,7 +74,7 @@ namespace Moonglade.Web.Controllers
 
     public class EditTagRequest
     {
-        [Range(1, 9999)]
+        [Range(1, int.MaxValue)]
         public int TagId { get; set; }
 
         [Required]
