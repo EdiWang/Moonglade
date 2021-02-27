@@ -34,11 +34,24 @@
                 toastr.success('Tag updated');
             });
         });
+
+        $(".btn-submit").click(function () {
+            callApi(`/api/tags/create`, 'POST', $("#input-tag-name").val(),
+                (resp) => {
+                    $("#edit-form")[0].reset();
+                    $("#editTagModal").modal('hide');
+                    window.location.reload();
+                });
+        });
     </script>
 }
 
 <h3>
     @Localizer["Tags"]
+    <a class="btn btn-outline-success float-right" href="javascript:initCreateTag();">
+        <span class="icon-plus"></span>
+        @Localizer["New"]
+    </a>
 </h3>
 <hr />
 
@@ -46,7 +59,7 @@
     @foreach (var tag in Model.OrderBy(model => model.DisplayName))
     {
         <li id="li-tag-@tag.Id" class="border">
-            <span class="span-tagcontent-editable" contenteditable="true" data-tagid="@tag.Id">@tag.DisplayName</span>
+            <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tag.Id">@tag.DisplayName</span>
             <a class="btn-delete" data-tagid="@tag.Id">
                 <i class="icon-bin"></i>
                 <span class="d-none">@tag.DisplayName</span>
@@ -54,3 +67,29 @@
         </li>
     }
 </ul>
+
+<div class="modal fade" id="editTagModal" tabindex="-1" role="dialog" aria-labelledby="editTagModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTagModalLabel">@Localizer["Create Tag"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="edit-form" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>@Localizer["Name"]</label>
+                        <input type="text" id="input-tag-name" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

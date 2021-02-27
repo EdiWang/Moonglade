@@ -29,6 +29,19 @@ namespace Moonglade.Web.Controllers
             return Ok(tagNames);
         }
 
+        [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> Create([FromBody] string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return BadRequest();
+            if (!TagService.ValidateTagName(name)) return Conflict();
+
+            await _tagService.Create(name.Trim());
+            return Ok();
+        }
+
         [HttpPost("update")]
         [TypeFilter(typeof(ClearPagingCountCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]

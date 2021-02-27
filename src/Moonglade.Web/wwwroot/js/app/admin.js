@@ -461,6 +461,11 @@ function deleteSelectedComments() {
         });
 }
 
+function initCreateTag() {
+    $('#edit-form')[0].reset();
+    $('#editTagModal').modal();
+}
+
 function initCreateCategory() {
     $('#CategoryEditViewModel_Id').val(emptyGuid);
     $('#edit-form')[0].reset();

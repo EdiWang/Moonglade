@@ -18,6 +18,7 @@ namespace Moonglade.Core
     {
         Task<IReadOnlyList<Tag>> GetAll();
         Task<IReadOnlyList<string>> GetAllNames();
+        Task<Tag> Create(string name);
         Task UpdateAsync(int tagId, string newName);
         Task DeleteAsync(int tagId);
         Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top);
@@ -59,6 +60,33 @@ namespace Moonglade.Core
         public Task<IReadOnlyList<string>> GetAllNames()
         {
             return _tagRepo.SelectAsync(t => t.DisplayName);
+        }
+
+        public async Task<Tag> Create(string name)
+        {
+            if (!ValidateTagName(name)) return null;
+
+            var normalizedName = NormalizeTagName(name, _tagNormalization.Value);
+            if (_tagRepo.Any(t => t.NormalizedName == normalizedName))
+            {
+                return Get(normalizedName);
+            }
+
+            var newTag = new TagEntity
+            {
+                DisplayName = name,
+                NormalizedName = normalizedName
+            };
+
+            var tag = await _tagRepo.AddAsync(newTag);
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
+                $"Tag '{tag.NormalizedName}' created.");
+
+            return new()
+            {
+                DisplayName = newTag.DisplayName,
+                NormalizedName = newTag.NormalizedName
+            };
         }
 
         public async Task UpdateAsync(int tagId, string newName)
