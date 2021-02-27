@@ -67,6 +67,20 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockBlogConfig.Object);
         }
 
+        Page fakePage = new()
+        {
+            Id = Guid.Empty,
+            CreateTimeUtc = new DateTime(996, 9, 6),
+            CssContent = ".jack-ma .heart {color: black !important;}",
+            HideSidebar = false,
+            IsPublished = false,
+            MetaDescription = "Fuck Jack Ma",
+            RawHtmlContent = "<p>Fuck 996</p>",
+            Slug = "fuck-jack-ma",
+            Title = "Fuck Jack Ma 1000 years!",
+            UpdateTimeUtc = new DateTime(1996, 9, 6)
+        };
+
         [Test]
         public async Task Index_Local()
         {
@@ -206,22 +220,23 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task Edit_View()
+        {
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(fakePage));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.EditPage(Guid.Empty);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult) result).Model;
+            Assert.IsInstanceOf<PageEditModel>(model);
+        }
+
+        [Test]
         public async Task Preview_HasPage()
         {
-            var fakePage = new Page
-            {
-                Id = Guid.Empty,
-                CreateTimeUtc = new DateTime(996, 9, 6),
-                CssContent = ".jack-ma .heart {color: black !important;}",
-                HideSidebar = false,
-                IsPublished = false,
-                MetaDescription = "Fuck Jack Ma",
-                RawHtmlContent = "<p>Fuck 996</p>",
-                Slug = "fuck-jack-ma",
-                Title = "Fuck Jack Ma 1000 years!",
-                UpdateTimeUtc = new DateTime(1996, 9, 6)
-            };
-
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(fakePage));
 
