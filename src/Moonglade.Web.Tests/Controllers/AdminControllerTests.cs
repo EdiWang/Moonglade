@@ -251,6 +251,25 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task Tags_View()
+        {
+            IReadOnlyList<Tag> tags = new List<Tag>
+            {
+                new (){ Id = 996, DisplayName = "Work 996", NormalizedName = "work-996" }
+            };
+
+            _mockTagService.Setup(p => p.GetAll()).Returns(Task.FromResult(tags));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.Tags();
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var model = ((ViewResult)result).Model;
+            Assert.IsInstanceOf<IReadOnlyList<Tag>>(model);
+        }
+
+        [Test]
         public async Task Category_View()
         {
             IReadOnlyList<Category> cats = new List<Category>()
