@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Moonglade.Syndication;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Syndication.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

@@ -27,7 +27,6 @@
     <ProjectReference Include="..\Moonglade.Pages\Moonglade.Pages.csproj" />
     <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
     <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
-    <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
   </ItemGroup>
 
 </Project>

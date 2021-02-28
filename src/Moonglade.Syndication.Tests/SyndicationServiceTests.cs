@@ -12,11 +12,10 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Syndication;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Syndication.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
