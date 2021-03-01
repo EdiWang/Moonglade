@@ -15,7 +15,7 @@ namespace Moonglade.Core
 
         public string LangCode { get; set; }
 
-        public bool IsSelected { get; set; }
+        public bool IsFeatured { get; set; }
 
         public IEnumerable<Tag> Tags { get; set; }
     }

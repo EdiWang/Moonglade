@@ -108,7 +108,7 @@ namespace Moonglade.Core
             ContentAbstract = p.ContentAbstract,
             PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
             LangCode = p.ContentLanguageCode,
-            IsSelected = p.IsFeatured,
+            IsFeatured = p.IsFeatured,
             Tags = p.Tags.Select(pt => new Tag
             {
                 NormalizedName = pt.NormalizedName,
@@ -260,7 +260,7 @@ namespace Moonglade.Core
                     ContentAbstract = p.Post.ContentAbstract,
                     PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
                     LangCode = p.Post.ContentLanguageCode,
-                    IsSelected = p.Post.IsFeatured,
+                    IsFeatured = p.Post.IsFeatured,
                     Tags = p.Post.Tags.Select(pt => new Tag
                     {
                         NormalizedName = pt.NormalizedName,

@@ -70,6 +70,7 @@ namespace Moonglade.Core
                 ContentAbstract = p.ContentAbstract,
                 PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
                 LangCode = p.ContentLanguageCode,
+                IsFeatured = p.IsFeatured,
                 Tags = p.Tags.Select(pt => new Tag
                 {
                     NormalizedName = pt.NormalizedName,
