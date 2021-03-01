@@ -18,7 +18,7 @@
                 callApi(`/api/tags/${tagid}`, 'DELETE', {},
                     (resp) => {
                         $(`#li-tag-${tagid}`).hide();
-                        toastr.success('Tag deleted');
+                        notyf.success('Tag deleted');
                     });
             }
         });
@@ -31,7 +31,7 @@
                 tagId: tagId,
                 newName: newTagName
             }, (resp) => {
-                toastr.success('Tag updated');
+                notyf.success('Tag updated');
             });
         });
 

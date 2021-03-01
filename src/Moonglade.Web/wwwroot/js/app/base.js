@@ -1,11 +1,28 @@
-﻿window.toastr.options = {
-    "positionClass": 'toast-bottom-center'
-};
+﻿var notyf;
 
 var isDarkMode = false;
 var supportLightSwitch = false;
 
 $(function () {
+    notyf = new Notyf({
+        position: {
+            x: 'center',
+            y: 'bottom',
+        },
+        types: [
+            {
+                type: 'success',
+                background: 'var(--success)',
+                duration: 2000
+            },
+            {
+                type: 'error',
+                background: 'var(--danger)',
+                duration: 3000
+            }
+        ]
+    });
+
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
 

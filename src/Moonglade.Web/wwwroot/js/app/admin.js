@@ -28,30 +28,30 @@ function ImageUploader(targetName, hw, imgMimeType) {
                 success: function (data) {
                     console.info(data);
                     $(`#${targetName}modal`).modal('hide');
-                    toastr.success('Updated');
+                    notyf.success('Updated');
                     d = new Date();
                     $(`.blogadmin-${targetName}`).attr('src', `/${targetName}?${d.getTime()}`);
                 },
                 statusCode: {
                     400: function (responseObject, textStatus, jqXHR) {
                         var message = buildErrorMessage(responseObject);
-                        toastr.error(message);
+                        notyf.error(message);
                     },
                     401: function (responseObject, textStatus, jqXHR) {
-                        toastr.error('Unauthorized');
+                        notyf.error('Unauthorized');
                     },
                     404: function (responseObject, textStatus, jqXHR) {
-                        toastr.error('Endpoint not found');
+                        notyf.error('Endpoint not found');
                     },
                     409: function (responseObject, textStatus, jqXHR) {
                         var message = buildErrorMessage(responseObject);
-                        toastr.error(message);
+                        notyf.error(message);
                     },
                     500: function (responseObject, textStatus, jqXHR) {
-                        toastr.error('Server went boom');
+                        notyf.error('Server went boom');
                     },
                     503: function (responseObject, textStatus, jqXHR) {
-                        toastr.error('Server went boom boom');
+                        notyf.error('Server went boom boom');
                     }
                 },
                 error: function (xhr, status, err) {
@@ -60,7 +60,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
                 }
             });
         } else {
-            toastr.error('Please select an image');
+            notyf.error('Please select an image');
         }
     }
 
@@ -78,7 +78,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
             }
 
             if (!file.type.match('image.*')) {
-                toastr.error('Please select an image file.');
+                notyf.error('Please select an image file.');
                 return;
             }
 
@@ -118,7 +118,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
             }
             reader.readAsDataURL(file);
         } else {
-            toastr.error('The File APIs are not fully supported in this browser.');
+            notyf.error('The File APIs are not fully supported in this browser.');
         }
     }
 
@@ -284,7 +284,7 @@ var postEditor = {
 
             if ($('.post-edit-form').valid() && selectCatCount === 0) {
                 e.preventDefault();
-                window.toastr.error('Please select at least one category');
+                notyf.error('Please select at least one category');
             }
             else {
                 if ($('input[name="IsPublished"]').val() === 'True') {
@@ -330,7 +330,7 @@ var onPostCreateEditComplete = function () {
 var onPostCreateEditSuccess = function (data) {
     if (data.postId) {
         $('input[name="PostId"]').val(data.postId);
-        toastr.success('Post saved successfully.');
+        notyf.success('Post saved successfully.');
 
         if (isPreviewRequired) {
             isPreviewRequired = false;
@@ -341,8 +341,8 @@ var onPostCreateEditSuccess = function (data) {
 
 var onPostCreateEditFailed = function (context) {
     var message = buildErrorMessage(context);
-    if (window.toastr) {
-        window.toastr.error(message);
+    if (notyf) {
+        notyf.error(message);
     } else {
         alert(`Error: ${message}`);
     }
@@ -364,7 +364,7 @@ var onPageCreateEditComplete = function () {
 var onPageCreateEditSuccess = function (data) {
     if (data.pageId) {
         $('input[name="Id"]').val(data.pageId);
-        toastr.success('Page saved successfully.');
+        notyf.success('Page saved successfully.');
 
         if ($('input[name="IsPublished"]:checked').val() === 'true') {
             $('#btn-preview').hide();
@@ -380,8 +380,8 @@ var onPageCreateEditSuccess = function (data) {
 var onPageCreateEditFailed = function (context) {
     var message = buildErrorMessage(context);
 
-    if (window.toastr) {
-        window.toastr.error(message);
+    if (notyf) {
+        notyf.error(message);
     } else {
         alert(`Error: ${message}`);
     }
@@ -392,7 +392,7 @@ function deletePost(postid) {
     callApi(`/post/manage/${postid}/destroy`, 'DELETE', {},
         (resp) => {
             $(`#tr-${postid}`).hide();
-            toastr.success('Post deleted');
+            notyf.success('Post deleted');
         });
 }
 
@@ -401,7 +401,7 @@ function restorePost(postid) {
     callApi(`/post/manage/${postid}/restore`, 'POST', {},
         (resp) => {
             $(`#tr-${postid}`).hide();
-            toastr.success('Post restored');
+            notyf.success('Post restored');
         });
 }
 
@@ -490,7 +490,7 @@ function deleteCat(catid) {
     callApi(`/api/category/delete/${catid}`, 'DELETE', {},
         (resp) => {
             $(`#card-${catid}`).hide();
-            toastr.success('Category deleted');
+            notyf.success('Category deleted');
         });
 }
 
@@ -524,7 +524,7 @@ function deletePage(pageid, slug) {
         {},
         (resp) => {
             $(`#card-${pageid}`).hide();
-            toastr.success('Page deleted');
+            notyf.success('Page deleted');
         });
 }
 

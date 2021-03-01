@@ -23,7 +23,7 @@ function callApi(uri, method, request, funcSuccess, funcAlways) {
             funcAlways(response);
         }
     }).catch(err => {
-        toastr.error(err);
+        notyf.error(err);
         console.error(err);
     });
 }
@@ -31,26 +31,26 @@ function callApi(uri, method, request, funcSuccess, funcAlways) {
 async function handleHttpError(response) {
     switch (response.status) {
         case 400:
-            toastr.error(await buildErrorMessage2(response));
+            notyf.error(await buildErrorMessage2(response));
             break;
         case 401:
-            toastr.error('Unauthorized');
+            notyf.error('Unauthorized');
             break;
         case 404:
-            toastr.error('Endpoint not found');
+            notyf.error('Endpoint not found');
             break;
         case 409:
-            toastr.error(await buildErrorMessage2(response));
+            notyf.error(await buildErrorMessage2(response));
             break;
         case 429:
-            toastr.error('Too many requests');
+            notyf.error('Too many requests');
             break;
         case 500:
         case 503:
-            toastr.error('Server went boom');
+            notyf.error('Server went boom');
             break;
         default:
-            toastr.error(`Error ${response.status}`);
+            notyf.error(`Error ${response.status}`);
             break;
     }
 }

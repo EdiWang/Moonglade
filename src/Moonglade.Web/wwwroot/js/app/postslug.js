@@ -10,7 +10,7 @@
                 }
             })
             .catch(err => {
-                toastr.error(err);
+                notyf.error(err);
                 console.error(err);
             });
     },
