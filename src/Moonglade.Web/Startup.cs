@@ -139,6 +139,7 @@ namespace Moonglade.Web
                 app.UseMetaWeblog("/metaweblog");
             });
 
+            app.UseMiddleware<SiteMapMiddleware>();
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
 

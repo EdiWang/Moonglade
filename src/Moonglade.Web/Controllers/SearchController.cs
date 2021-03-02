@@ -1,34 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Caching;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Utils;
-using Moonglade.Web.BlogProtocols;
 
 namespace Moonglade.Web.Controllers
 {
     public class SearchController : Controller
     {
         private readonly ISearchService _searchService;
-        private readonly IBlogConfig _blogConfig;
 
-        public SearchController(ISearchService searchService, IBlogConfig blogConfig)
+        public SearchController(ISearchService searchService)
         {
             _searchService = searchService;
-            _blogConfig = blogConfig;
-        }
-
-        [Route("sitemap.xml")]
-        public async Task<IActionResult> SiteMap([FromServices] IBlogCache cache, [FromServices] ISiteMapWriter siteMapWriter)
-        {
-            return await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
-            {
-                var url = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true);
-                var xml = await siteMapWriter.GetSiteMapData(url);
-
-                return Content(xml, "text/xml");
-            });
         }
 
         [HttpPost("search")]
