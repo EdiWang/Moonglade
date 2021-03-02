@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
@@ -27,10 +26,10 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 7200)]
         public async Task<IActionResult> RSD()
         {
-            var bytes = await RSDWriter.GetRSDData(Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true));
-            var xmlContent = Encoding.UTF8.GetString(bytes);
+            var siteRootUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true);
+            var xml = await RSDWriter.GetRSDData(siteRootUrl);
 
-            return Content(xmlContent, "text/xml");
+            return Content(xml, "text/xml");
         }
 
         [FeatureGate(FeatureFlags.OpenSearch)]
@@ -38,14 +37,12 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 3600)]
         public async Task<IActionResult> OpenSearch()
         {
-            var bytes = await OpenSearchWriter.GetOpenSearchData(
+            var xml = await OpenSearchWriter.GetOpenSearchData(
                 Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true),
                 _blogConfig.GeneralSettings.SiteTitle,
                 _blogConfig.GeneralSettings.Description);
 
-            var xmlContent = Encoding.UTF8.GetString(bytes);
-
-            return Content(xmlContent, "text/xml");
+            return Content(xml, "text/xml");
         }
 
         [Route("sitemap.xml")]
@@ -54,10 +51,9 @@ namespace Moonglade.Web.Controllers
             return await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
             {
                 var url = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true);
-                var bytes = await siteMapWriter.GetSiteMapData(url);
-                var xmlContent = Encoding.UTF8.GetString(bytes);
+                var xml = await siteMapWriter.GetSiteMapData(url);
 
-                return Content(xmlContent, "text/xml");
+                return Content(xml, "text/xml");
             });
         }
 

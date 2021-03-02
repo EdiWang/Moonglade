@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -7,11 +6,12 @@ namespace Moonglade.Web.BlogProtocols
 {
     public class OpenSearchWriter
     {
-        public static async Task<byte[]> GetOpenSearchData(string siteRootUrl, string shortName, string description)
+        public static async Task<string> GetOpenSearchData(string siteRootUrl, string shortName, string description)
         {
-            await using var ms = new MemoryStream();
+            var sb = new StringBuilder();
+
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
-            await using (var writer = XmlWriter.Create(ms, writerSettings))
+            await using (var writer = XmlWriter.Create(sb, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
                 writer.WriteStartElement("OpenSearchDescription", "http://a9.com/-/spec/opensearch/1.1/");
@@ -34,8 +34,9 @@ namespace Moonglade.Web.BlogProtocols
 
                 await writer.WriteEndElementAsync();
             }
-            await ms.FlushAsync();
-            return ms.ToArray();
+
+            var xml = sb.ToString();
+            return xml;
         }
     }
 }

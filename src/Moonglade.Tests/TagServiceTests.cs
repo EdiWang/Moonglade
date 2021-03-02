@@ -80,11 +80,11 @@ namespace Moonglade.Tests
         {
             _mockRepositoryTagEntity.Setup(p => p.GetAsync(It.IsAny<int>()))
                 .Returns(ValueTask.FromResult(new TagEntity
-            {
-                Id = 996,
-                DisplayName = "Ma Yun",
-                NormalizedName = "ma-yun"
-            }));
+                {
+                    Id = 996,
+                    DisplayName = "Ma Yun",
+                    NormalizedName = "ma-yun"
+                }));
 
             _mockOptions.Setup(p => p.Value).Returns(new List<TagNormalization>());
 

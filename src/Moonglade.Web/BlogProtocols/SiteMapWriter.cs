@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ namespace Moonglade.Web.BlogProtocols
 {
     public interface ISiteMapWriter
     {
-        Task<byte[]> GetSiteMapData(string siteRootUrl);
+        Task<string> GetSiteMapData(string siteRootUrl);
     }
 
     public class SiteMapWriter : ISiteMapWriter
@@ -34,11 +33,12 @@ namespace Moonglade.Web.BlogProtocols
             _settings = settings.Value;
         }
 
-        public async Task<byte[]> GetSiteMapData(string siteRootUrl)
+        public async Task<string> GetSiteMapData(string siteRootUrl)
         {
-            await using var ms = new MemoryStream();
+            var sb = new StringBuilder();
+
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
-            await using (var writer = XmlWriter.Create(ms, writerSettings))
+            await using (var writer = XmlWriter.Create(sb, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
                 writer.WriteStartElement("urlset", _settings.SiteMap.UrlSetNamespace);
@@ -95,8 +95,9 @@ namespace Moonglade.Web.BlogProtocols
 
                 await writer.WriteEndElementAsync();
             }
-            await ms.FlushAsync();
-            return ms.ToArray();
+
+            var xml = sb.ToString();
+            return xml;
         }
     }
 }

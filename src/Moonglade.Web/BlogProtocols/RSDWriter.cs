@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Moonglade.Utils;
@@ -8,11 +7,12 @@ namespace Moonglade.Web.BlogProtocols
 {
     public class RSDWriter
     {
-        public static async Task<byte[]> GetRSDData(string siteRootUrl)
+        public static async Task<string> GetRSDData(string siteRootUrl)
         {
-            await using var ms = new MemoryStream();
+            var sb = new StringBuilder();
+
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
-            await using (var writer = XmlWriter.Create(ms, writerSettings))
+            await using (var writer = XmlWriter.Create(sb, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
 
@@ -49,8 +49,8 @@ namespace Moonglade.Web.BlogProtocols
                 await writer.WriteEndDocumentAsync();
             }
 
-            await ms.FlushAsync();
-            return ms.ToArray();
+            var xml = sb.ToString();
+            return xml;
         }
     }
 }
