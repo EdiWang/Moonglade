@@ -15,7 +15,7 @@ namespace Moonglade.Web.BlogProtocols
 {
     public interface ISiteMapWriter
     {
-        Task<byte[]> GetSiteMapStreamArrayAsync(string siteRootUrl);
+        Task<byte[]> GetSiteMapData(string siteRootUrl);
     }
 
     public class SiteMapWriter : ISiteMapWriter
@@ -34,7 +34,7 @@ namespace Moonglade.Web.BlogProtocols
             _settings = settings.Value;
         }
 
-        public async Task<byte[]> GetSiteMapStreamArrayAsync(string siteRootUrl)
+        public async Task<byte[]> GetSiteMapData(string siteRootUrl)
         {
             await using var ms = new MemoryStream();
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };

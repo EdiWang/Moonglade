@@ -8,7 +8,7 @@ namespace Moonglade.Web.BlogProtocols
 {
     public class RSDWriter
     {
-        public static async Task<byte[]> GetRSDStreamArray(string siteRootUrl)
+        public static async Task<byte[]> GetRSDData(string siteRootUrl)
         {
             await using var ms = new MemoryStream();
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };

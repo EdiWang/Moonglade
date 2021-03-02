@@ -7,7 +7,7 @@ namespace Moonglade.Web.BlogProtocols
 {
     public class OpenSearchWriter
     {
-        public static async Task<byte[]> GetOpenSearchStreamArray(string siteRootUrl, string shortName, string description)
+        public static async Task<byte[]> GetOpenSearchData(string siteRootUrl, string shortName, string description)
         {
             await using var ms = new MemoryStream();
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };

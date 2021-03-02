@@ -27,7 +27,7 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 7200)]
         public async Task<IActionResult> RSD()
         {
-            var bytes = await RSDWriter.GetRSDStreamArray(Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true));
+            var bytes = await RSDWriter.GetRSDData(Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true));
             var xmlContent = Encoding.UTF8.GetString(bytes);
 
             return Content(xmlContent, "text/xml");
@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 3600)]
         public async Task<IActionResult> OpenSearch()
         {
-            var bytes = await OpenSearchWriter.GetOpenSearchStreamArray(
+            var bytes = await OpenSearchWriter.GetOpenSearchData(
                 Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true),
                 _blogConfig.GeneralSettings.SiteTitle,
                 _blogConfig.GeneralSettings.Description);
@@ -54,7 +54,7 @@ namespace Moonglade.Web.Controllers
             return await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
             {
                 var url = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true);
-                var bytes = await siteMapWriter.GetSiteMapStreamArrayAsync(url);
+                var bytes = await siteMapWriter.GetSiteMapData(url);
                 var xmlContent = Encoding.UTF8.GetString(bytes);
 
                 return Content(xmlContent, "text/xml");
