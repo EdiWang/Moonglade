@@ -4,6 +4,6 @@ namespace Moonglade.Syndication
 {
     public interface IOpmlWriter
     {
-        Task<byte[]> GetOpmlStreamDataAsync(OpmlDoc opmlDoc);
+        Task<string> GetOpmlDataAsync(OpmlDoc opmlDoc);
     }
 }

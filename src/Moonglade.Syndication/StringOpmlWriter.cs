@@ -5,13 +5,14 @@ using System.Xml;
 
 namespace Moonglade.Syndication
 {
-    public class MemoryStreamOpmlWriter : IOpmlWriter
+    public class StringOpmlWriter : IOpmlWriter
     {
-        public async Task<byte[]> GetOpmlStreamDataAsync(OpmlDoc opmlDoc)
+        public async Task<string> GetOpmlDataAsync(OpmlDoc opmlDoc)
         {
-            await using var fs = new MemoryStream();
+            var sb = new StringBuilder();
+
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
-            await using (var writer = XmlWriter.Create(fs, writerSettings))
+            await using (var writer = XmlWriter.Create(sb, writerSettings))
             {
                 // open OPML
                 writer.WriteStartElement("opml");
@@ -61,8 +62,9 @@ namespace Moonglade.Syndication
                 // close OPML
                 await writer.WriteEndElementAsync();
             }
-            await fs.FlushAsync();
-            return fs.ToArray();
+
+            var xml = sb.ToString();
+            return xml;
         }
     }
 }

@@ -28,10 +28,10 @@ namespace Moonglade.Syndication.Tests
                 HtmlUrlTemplate = $"{siteRootUrl}/category/[catTitle]"
             };
 
-            var writer = new MemoryStreamOpmlWriter();
-            var bytes = await writer.GetOpmlStreamDataAsync(info);
+            var writer = new StringOpmlWriter();
+            var xml = await writer.GetOpmlDataAsync(info);
 
-            Assert.IsNotNull(bytes);
+            Assert.IsNotNull(xml);
         }
     }
 }

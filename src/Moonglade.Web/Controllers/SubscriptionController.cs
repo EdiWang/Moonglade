@@ -57,9 +57,8 @@ namespace Moonglade.Web.Controllers
                 HtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
             };
 
-            var bytes = await _opmlWriter.GetOpmlStreamDataAsync(oi);
-            var xmlContent = Encoding.UTF8.GetString(bytes);
-            return Content(xmlContent, "text/xml");
+            var xml = await _opmlWriter.GetOpmlDataAsync(oi);
+            return Content(xml, "text/xml");
         }
 
         [Route("rss/{routeName?}")]

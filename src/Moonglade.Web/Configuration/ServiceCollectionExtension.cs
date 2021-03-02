@@ -97,7 +97,7 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IBlogStatistics, BlogStatistics>();
             services.AddScoped<ISyndicationService, SyndicationService>();
-            services.AddScoped<IOpmlWriter, MemoryStreamOpmlWriter>();
+            services.AddScoped<IOpmlWriter, StringOpmlWriter>();
 
             services.AddBlogCache();
             services.AddPingback();
