@@ -22,11 +22,12 @@ using Moonglade.Menus;
 using Moonglade.Notification.Client;
 using Moonglade.Pages;
 using Moonglade.Syndication;
+using Moonglade.Web.BlogProtocols;
 using Moonglade.Web.Filters;
 using Moonglade.Web.SiteIconGenerator;
 using Polly;
 using WilderMinds.MetaWeblog;
-using MetaWeblogService = Moonglade.Web.MetaWeblog.MetaWeblogService;
+using MetaWeblogService = Moonglade.Web.BlogProtocols.MetaWeblogService;
 
 namespace Moonglade.Web.Configuration
 {
@@ -93,7 +94,7 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<ISiteIconGenerator, FileSystemIconGenerator>();
             services.AddScoped<IFoafWriter, FoafWriter>();
-            services.AddScoped<IRSDWriter, BlogRSDWriter>();
+            services.AddScoped<IRSDWriter, RSDWriter>();
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IBlogStatistics, BlogStatistics>();
             services.AddScoped<ISyndicationService, SyndicationService>();

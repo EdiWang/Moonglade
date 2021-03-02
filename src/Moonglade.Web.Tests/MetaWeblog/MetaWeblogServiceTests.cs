@@ -6,7 +6,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.ImageStorage;
 using Moonglade.Pages;
-using Moonglade.Web.MetaWeblog;
+using Moonglade.Web.BlogProtocols;
 using Moq;
 using NUnit.Framework;
 

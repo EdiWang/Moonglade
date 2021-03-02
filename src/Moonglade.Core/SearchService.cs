@@ -20,7 +20,6 @@ namespace Moonglade.Core
     public interface ISearchService
     {
         Task<IReadOnlyList<PostDigest>> SearchAsync(string keyword);
-        Task<byte[]> GetOpenSearchStreamArray(string siteRootUrl);
         Task<byte[]> GetSiteMapStreamArrayAsync(string siteRootUrl);
     }
 
@@ -66,37 +65,6 @@ namespace Moonglade.Core
             }).ToListAsync();
 
             return resultList;
-        }
-
-        public async Task<byte[]> GetOpenSearchStreamArray(string siteRootUrl)
-        {
-            await using var ms = new MemoryStream();
-            var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
-            await using (var writer = XmlWriter.Create(ms, writerSettings))
-            {
-                await writer.WriteStartDocumentAsync();
-                writer.WriteStartElement("OpenSearchDescription", "http://a9.com/-/spec/opensearch/1.1/");
-                writer.WriteAttributeString("xmlns", "http://a9.com/-/spec/opensearch/1.1/");
-
-                writer.WriteElementString("ShortName", _blogConfig.FeedSettings.RssTitle);
-                writer.WriteElementString("Description", _blogConfig.FeedSettings.RssDescription);
-
-                writer.WriteStartElement("Image");
-                writer.WriteAttributeString("height", "16");
-                writer.WriteAttributeString("width", "16");
-                writer.WriteAttributeString("type", "image/vnd.microsoft.icon");
-                writer.WriteValue($"{siteRootUrl.TrimEnd('/')}/favicon.ico");
-                await writer.WriteEndElementAsync();
-
-                writer.WriteStartElement("Url");
-                writer.WriteAttributeString("type", "text/html");
-                writer.WriteAttributeString("template", $"{siteRootUrl.TrimEnd('/')}/search/{{searchTerms}}");
-                await writer.WriteEndElementAsync();
-
-                await writer.WriteEndElementAsync();
-            }
-            await ms.FlushAsync();
-            return ms.ToArray();
         }
 
         public async Task<byte[]> GetSiteMapStreamArrayAsync(string siteRootUrl)

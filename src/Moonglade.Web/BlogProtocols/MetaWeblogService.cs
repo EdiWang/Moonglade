@@ -15,7 +15,7 @@ using Page = WilderMinds.MetaWeblog.Page;
 using Post = WilderMinds.MetaWeblog.Post;
 using Tag = WilderMinds.MetaWeblog.Tag;
 
-namespace Moonglade.Web.MetaWeblog
+namespace Moonglade.Web.BlogProtocols
 {
     public class MetaWeblogService : IMetaWeblogProvider
     {

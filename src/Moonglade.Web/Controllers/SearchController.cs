@@ -7,6 +7,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Utils;
+using Moonglade.Web.BlogProtocols;
 
 namespace Moonglade.Web.Controllers
 {
@@ -35,7 +36,11 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 3600)]
         public async Task<IActionResult> OpenSearch([FromServices] IBlogConfig blogConfig)
         {
-            var bytes = await _searchService.GetOpenSearchStreamArray(Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true));
+            var bytes = await OpenSearchWriter.GetOpenSearchStreamArray(
+                Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true),
+                blogConfig.GeneralSettings.SiteTitle,
+                blogConfig.GeneralSettings.Description);
+
             var xmlContent = Encoding.UTF8.GetString(bytes);
 
             return Content(xmlContent, "text/xml");
