@@ -29,7 +29,7 @@
                 @if (BlogConfig.ContentSettings.EnableGravatar && !string.IsNullOrWhiteSpace(item.Email))
                 {
                     <div class="user-avatar">
-                        @Html.GravatarImage(Helper.GetMd5Hash(item.Email), 58, forceSecureRequest: true)
+                        @Html.GravatarImage(Helper.GetMd5Hash(item.Email), forceSecureRequest: true)
                     </div>
                 }
                 else
