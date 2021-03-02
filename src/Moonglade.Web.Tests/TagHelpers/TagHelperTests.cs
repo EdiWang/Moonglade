@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Moonglade.Foaf;
+using Moonglade.Web.BlogProtocols;
 using Moonglade.Web.TagHelpers;
 using Moq;
 using NUnit.Framework;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Moonglade.Utils;
 
-namespace Moonglade.Foaf
+namespace Moonglade.Web.BlogProtocols
 {
     public interface IFoafWriter
     {

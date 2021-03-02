@@ -16,7 +16,6 @@ using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
-using Moonglade.Foaf;
 using Moonglade.FriendLink;
 using Moonglade.Menus;
 using Moonglade.Notification.Client;

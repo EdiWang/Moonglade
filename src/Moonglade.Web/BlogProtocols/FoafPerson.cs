@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Moonglade.Foaf
+namespace Moonglade.Web.BlogProtocols
 {
     public class FoafPerson
     {

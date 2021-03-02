@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Moonglade.Foaf;
+using Moonglade.Web.BlogProtocols;
 
 namespace Moonglade.Web.TagHelpers
 {
