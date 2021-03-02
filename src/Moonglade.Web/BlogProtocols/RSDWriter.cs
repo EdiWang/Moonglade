@@ -6,14 +6,9 @@ using Moonglade.Utils;
 
 namespace Moonglade.Web.BlogProtocols
 {
-    public interface IRSDWriter
+    public class RSDWriter
     {
-        Task<byte[]> GetRSDStreamArray(string siteRootUrl);
-    }
-
-    public class RSDWriter : IRSDWriter
-    {
-        public async Task<byte[]> GetRSDStreamArray(string siteRootUrl)
+        public static async Task<byte[]> GetRSDStreamArray(string siteRootUrl)
         {
             await using var ms = new MemoryStream();
             var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };

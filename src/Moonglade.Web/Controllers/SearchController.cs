@@ -25,9 +25,9 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.RSD)]
         [Route("rsd")]
         [ResponseCache(Duration = 7200)]
-        public async Task<IActionResult> RSD([FromServices] IRSDWriter rsdWriter)
+        public async Task<IActionResult> RSD()
         {
-            var bytes = await rsdWriter.GetRSDStreamArray(Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true));
+            var bytes = await RSDWriter.GetRSDStreamArray(Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true));
             var xmlContent = Encoding.UTF8.GetString(bytes);
 
             return Content(xmlContent, "text/xml");
@@ -49,12 +49,12 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("sitemap.xml")]
-        public async Task<IActionResult> SiteMap([FromServices] IBlogCache cache)
+        public async Task<IActionResult> SiteMap([FromServices] IBlogCache cache, [FromServices] ISiteMapWriter siteMapWriter)
         {
             return await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
             {
                 var url = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true);
-                var bytes = await _searchService.GetSiteMapStreamArrayAsync(url);
+                var bytes = await siteMapWriter.GetSiteMapStreamArrayAsync(url);
                 var xmlContent = Encoding.UTF8.GetString(bytes);
 
                 return Content(xmlContent, "text/xml");
