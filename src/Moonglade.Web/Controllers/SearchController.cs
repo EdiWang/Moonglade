@@ -14,18 +14,20 @@ namespace Moonglade.Web.Controllers
     public class SearchController : Controller
     {
         private readonly ISearchService _searchService;
+        private readonly IBlogConfig _blogConfig;
 
-        public SearchController(ISearchService searchService)
+        public SearchController(ISearchService searchService, IBlogConfig blogConfig)
         {
             _searchService = searchService;
+            _blogConfig = blogConfig;
         }
 
         [FeatureGate(FeatureFlags.RSD)]
         [Route("rsd")]
         [ResponseCache(Duration = 7200)]
-        public async Task<IActionResult> RSD([FromServices] IRSDWriter rsdWriter, [FromServices] IBlogConfig blogConfig)
+        public async Task<IActionResult> RSD([FromServices] IRSDWriter rsdWriter)
         {
-            var bytes = await rsdWriter.GetRSDStreamArray(Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true));
+            var bytes = await rsdWriter.GetRSDStreamArray(Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true));
             var xmlContent = Encoding.UTF8.GetString(bytes);
 
             return Content(xmlContent, "text/xml");
@@ -34,12 +36,12 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.OpenSearch)]
         [Route("opensearch")]
         [ResponseCache(Duration = 3600)]
-        public async Task<IActionResult> OpenSearch([FromServices] IBlogConfig blogConfig)
+        public async Task<IActionResult> OpenSearch()
         {
             var bytes = await OpenSearchWriter.GetOpenSearchStreamArray(
-                Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true),
-                blogConfig.GeneralSettings.SiteTitle,
-                blogConfig.GeneralSettings.Description);
+                Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true),
+                _blogConfig.GeneralSettings.SiteTitle,
+                _blogConfig.GeneralSettings.Description);
 
             var xmlContent = Encoding.UTF8.GetString(bytes);
 
@@ -47,11 +49,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("sitemap.xml")]
-        public async Task<IActionResult> SiteMap([FromServices] IBlogConfig blogConfig, [FromServices] IBlogCache cache)
+        public async Task<IActionResult> SiteMap([FromServices] IBlogCache cache)
         {
             return await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
             {
-                var url = Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix, true);
+                var url = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true);
                 var bytes = await _searchService.GetSiteMapStreamArrayAsync(url);
                 var xmlContent = Encoding.UTF8.GetString(bytes);
 

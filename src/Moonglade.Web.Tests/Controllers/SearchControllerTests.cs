@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Web.Controllers;
 using Moq;
@@ -15,17 +16,19 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
         private Mock<ISearchService> _mockSearchService;
+        private Mock<IBlogConfig> _mockBlogConfig;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
             _mockSearchService = _mockRepository.Create<ISearchService>();
+            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
         }
 
         private SearchController CreateSearchController()
         {
-            return new(_mockSearchService.Object);
+            return new(_mockSearchService.Object, _mockBlogConfig.Object);
         }
 
         [TestCase(null)]
