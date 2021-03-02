@@ -21,17 +21,6 @@ namespace Moonglade.Web.Controllers
             _blogConfig = blogConfig;
         }
 
-        [FeatureGate(FeatureFlags.RSD)]
-        [Route("rsd")]
-        [ResponseCache(Duration = 7200)]
-        public async Task<IActionResult> RSD()
-        {
-            var siteRootUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true);
-            var xml = await RSDWriter.GetRSDData(siteRootUrl);
-
-            return Content(xml, "text/xml");
-        }
-
         [FeatureGate(FeatureFlags.OpenSearch)]
         [Route("opensearch")]
         [ResponseCache(Duration = 3600)]
