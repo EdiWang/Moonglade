@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Moonglade.Utils;
 
 namespace Moonglade.Web.BlogProtocols
 {
@@ -31,7 +30,7 @@ namespace Moonglade.Web.BlogProtocols
 
         public async Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink.Link> friends)
         {
-            var sw = new StringWriterWithEncoding(Encoding.UTF8);
+            var sw = new StringWriter();
             var writer = await GetWriter(sw);
 
             await writer.WriteStartElementAsync("foaf", "PersonalProfileDocument", null);

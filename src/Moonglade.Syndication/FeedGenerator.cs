@@ -6,7 +6,6 @@ using System.Xml;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
-using Moonglade.Utils;
 
 namespace Moonglade.Syndication
 {
@@ -38,29 +37,28 @@ namespace Moonglade.Syndication
                 Async = true
             };
 
-            var sw = new StringWriterWithEncoding(Encoding.UTF8);
-
-            await using var xmlWriter = XmlWriter.Create(sw, settings);
-            var writer = new RssFeedWriter(xmlWriter);
-
-            await writer.WriteTitle(HeadTitle);
-            await writer.WriteDescription(HeadDescription);
-            await writer.Write(new SyndicationLink(new(TrackBackUrl)));
-            await writer.WritePubDate(DateTimeOffset.UtcNow);
-            await writer.WriteCopyright(Copyright);
-            await writer.WriteGenerator(Generator);
-
-            foreach (var item in feed)
+            var sb = new StringBuilder();
+            await using (var xmlWriter = XmlWriter.Create(sb, settings))
             {
-                await writer.Write(item);
+                var writer = new RssFeedWriter(xmlWriter);
+
+                await writer.WriteTitle(HeadTitle);
+                await writer.WriteDescription(HeadDescription);
+                await writer.Write(new SyndicationLink(new(TrackBackUrl)));
+                await writer.WritePubDate(DateTimeOffset.UtcNow);
+                await writer.WriteCopyright(Copyright);
+                await writer.WriteGenerator(Generator);
+
+                foreach (var item in feed)
+                {
+                    await writer.Write(item);
+                }
+
+                await xmlWriter.FlushAsync();
+                xmlWriter.Close();
             }
 
-            await xmlWriter.FlushAsync();
-            xmlWriter.Close();
-
-            await sw.FlushAsync();
-            sw.GetStringBuilder();
-            var xml = sw.ToString();
+            var xml = sb.ToString();
             return xml;
         }
 
@@ -72,28 +70,27 @@ namespace Moonglade.Syndication
                 Async = true
             };
 
-            var sw = new StringWriterWithEncoding(Encoding.UTF8);
-
-            await using var xmlWriter = XmlWriter.Create(sw, settings);
-            var writer = new AtomFeedWriter(xmlWriter);
-
-            await writer.WriteTitle(HeadTitle);
-            await writer.WriteSubtitle(HeadDescription);
-            await writer.WriteRights(Copyright);
-            await writer.WriteUpdated(DateTime.UtcNow);
-            await writer.WriteGenerator(Generator, HostUrl, GeneratorVersion);
-
-            foreach (var item in feed)
+            var sb = new StringBuilder();
+            await using (var xmlWriter = XmlWriter.Create(sb, settings))
             {
-                await writer.Write(item);
+                var writer = new AtomFeedWriter(xmlWriter);
+
+                await writer.WriteTitle(HeadTitle);
+                await writer.WriteSubtitle(HeadDescription);
+                await writer.WriteRights(Copyright);
+                await writer.WriteUpdated(DateTime.UtcNow);
+                await writer.WriteGenerator(Generator, HostUrl, GeneratorVersion);
+
+                foreach (var item in feed)
+                {
+                    await writer.Write(item);
+                }
+
+                await xmlWriter.FlushAsync();
+                xmlWriter.Close();
             }
 
-            await xmlWriter.FlushAsync();
-            xmlWriter.Close();
-
-            await sw.FlushAsync();
-            sw.GetStringBuilder();
-            var xml = sw.ToString();
+            var xml = sb.ToString();
             return xml;
         }
 
