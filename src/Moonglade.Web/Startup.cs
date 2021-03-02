@@ -131,11 +131,8 @@ namespace Moonglade.Web
 
             app.UseRobotsTxt();
 
-            app.UseForFeature(nameof(FeatureFlags.RSD), _ =>
-            {
-                app.UseMiddleware<RSDMiddleware>();
-            });
-
+            app.UseMiddlewareForFeature<OpenSearchMiddleware>(nameof(FeatureFlags.OpenSearch));
+            app.UseMiddlewareForFeature<RSDMiddleware>(nameof(FeatureFlags.RSD));
             app.UseForFeature(nameof(FeatureFlags.MetaWeblog), _ =>
             {
                 // Support MetaWeblog API

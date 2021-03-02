@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Utils;
 using Moonglade.Web.BlogProtocols;
@@ -19,19 +17,6 @@ namespace Moonglade.Web.Controllers
         {
             _searchService = searchService;
             _blogConfig = blogConfig;
-        }
-
-        [FeatureGate(FeatureFlags.OpenSearch)]
-        [Route("opensearch")]
-        [ResponseCache(Duration = 3600)]
-        public async Task<IActionResult> OpenSearch()
-        {
-            var xml = await OpenSearchWriter.GetOpenSearchData(
-                Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true),
-                _blogConfig.GeneralSettings.SiteTitle,
-                _blogConfig.GeneralSettings.Description);
-
-            return Content(xml, "text/xml");
         }
 
         [Route("sitemap.xml")]
