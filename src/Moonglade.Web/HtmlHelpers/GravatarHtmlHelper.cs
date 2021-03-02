@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -68,7 +66,7 @@ namespace Moonglade.Web.HtmlHelpers
         /// Returns a Globally Recognised Avatar as an &lt;img /&gt; - http://gravatar.com
         /// </summary>
         /// <param name="htmlHelper">IHtmlHelper</param>
-        /// <param name="emailAddress">Email Address for the Gravatar</param>
+        /// <param name="emailHash">Email Address for the Gravatar</param>
         /// <param name="defaultImage">Default image if user hasn't created a Gravatar</param>
         /// <param name="size">Size in pixels (default: 80)</param>
         /// <param name="defaultImageUrl">URL to a custom default image (e.g: 'Url.Content("~/images/no-grvatar.png")' )</param>
@@ -79,7 +77,7 @@ namespace Moonglade.Web.HtmlHelpers
         /// <param name="alt">Alt Text</param>
         public static IHtmlContent GravatarImage(
             this IHtmlHelper htmlHelper,
-            string emailAddress,
+            string emailHash,
             int size = 80,
             DefaultImage defaultImage = DefaultImage.Default,
             string defaultImageUrl = "",
@@ -92,13 +90,13 @@ namespace Moonglade.Web.HtmlHelpers
 
             var imgTag = new TagBuilder("img");
 
-            emailAddress = string.IsNullOrEmpty(emailAddress) ? string.Empty : emailAddress.Trim().ToLower();
+            emailHash = string.IsNullOrEmpty(emailHash) ? string.Empty : emailHash.Trim().ToLower();
 
             imgTag.Attributes.Add("src",
                 string.Format("{0}://{1}.gravatar.com/avatar/{2}?s={3}{4}{5}{6}",
                     htmlHelper.ViewContext.HttpContext.Request.IsHttps || forceSecureRequest ? "https" : "http",
                     htmlHelper.ViewContext.HttpContext.Request.IsHttps || forceSecureRequest ? "secure" : "www",
-                    GetMd5Hash(emailAddress),
+                    emailHash,
                     size.ToString(),
                     "&d=" + (!string.IsNullOrEmpty(defaultImageUrl) ? htmlHelper.UrlEncoder.Encode(defaultImageUrl) : defaultImage.GetDescription()),
                     forceDefaultImage ? "&f=y" : "",
@@ -111,30 +109,6 @@ namespace Moonglade.Web.HtmlHelpers
             imgTag.TagRenderMode = TagRenderMode.SelfClosing;
 
             return imgTag;
-        }
-
-        /// <summary>
-        /// Generates an MD5 hash of the given string
-        /// </summary>
-        /// <remarks>Source: http://msdn.microsoft.com/en-us/library/system.security.cryptography.md5.aspx </remarks>
-        private static string GetMd5Hash(string input)
-        {
-            // Convert the input string to a byte array and compute the hash.
-            var data = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(input));
-
-            // Create a new Stringbuilder to collect the bytes
-            // and create a string.
-            var sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data
-            // and format each one as a hexadecimal string.
-            foreach (var t in data)
-            {
-                sBuilder.Append(t.ToString("x2"));
-            }
-
-            // Return the hexadecimal string.
-            return sBuilder.ToString();
         }
 
         /// <summary>
