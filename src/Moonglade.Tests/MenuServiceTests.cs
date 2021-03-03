@@ -100,5 +100,22 @@ namespace Moonglade.Tests
 
             _mockBlogAudit.Verify();
         }
+
+        [Test]
+        public async Task CreateAsync_OK()
+        {
+            var svc = CreateService();
+            var result = await svc.CreateAsync(new()
+            {
+                DisplayOrder = 996,
+                Icon = "work-996",
+                Title = "Work 996",
+                IsOpenInNewTab = true,
+                Url = "work/996"
+            });
+
+            Assert.AreNotEqual(Guid.Empty, result);
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, It.IsAny<string>()));
+        }
     }
 }
