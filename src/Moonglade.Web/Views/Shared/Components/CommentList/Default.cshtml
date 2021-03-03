@@ -1,5 +1,4 @@
 ﻿@using Moonglade.Utils
-@using Moonglade.Web.HtmlHelpers
 @model IReadOnlyList<Moonglade.Comments.Comment>
 @inject ITZoneResolver TZoneResolver
 
@@ -29,7 +28,7 @@
                 @if (BlogConfig.ContentSettings.EnableGravatar && !string.IsNullOrWhiteSpace(item.Email))
                 {
                     <div class="user-avatar">
-                        @Html.GravatarImage(Helper.GetMd5Hash(item.Email), forceSecureRequest: true)
+                        <gravatar email="@item.Email" />
                     </div>
                 }
                 else
