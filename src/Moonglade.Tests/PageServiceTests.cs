@@ -182,5 +182,27 @@ namespace Moonglade.Tests
                 var result = await svc.UpdateAsync(Guid.Empty, new());
             });
         }
+
+        [Test]
+        public async Task UpdateAsync_OK()
+        {
+            _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult(_fakePageEntity));
+
+            var svc = CreatePageService();
+            var result = await svc.UpdateAsync(Guid.Empty, new()
+            {
+                CssContent = string.Empty,
+                HideSidebar = true,
+                HtmlContent = "<p>Work 996</p>",
+                IsPublished = true,
+                MetaDescription = "Work 996",
+                Slug = "work-996",
+                Title = "Work 996"
+            });
+
+            Assert.AreEqual(Guid.Empty, result);
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, AuditEventId.PageUpdated, It.IsAny<string>()));
+        }
     }
 }
