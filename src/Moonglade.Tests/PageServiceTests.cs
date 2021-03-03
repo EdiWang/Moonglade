@@ -149,5 +149,38 @@ namespace Moonglade.Tests
                 await svc.DeleteAsync(Guid.Empty);
             });
         }
+
+        [Test]
+        public async Task CreateAsync_OK()
+        {
+            var svc = CreatePageService();
+            var result = await svc.CreateAsync(new()
+            {
+                CssContent = string.Empty,
+                HideSidebar = true,
+                HtmlContent = "<p>Work 996</p>",
+                IsPublished = true,
+                MetaDescription = "Work 996",
+                Slug = "work-996",
+                Title = "Work 996"
+            });
+
+            Assert.AreNotEqual(Guid.Empty, result);
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, AuditEventId.PageCreated, It.IsAny<string>()));
+        }
+
+        [Test]
+        public void UpdateAsync_NullPage()
+        {
+            _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((PageEntity)null));
+
+            var svc = CreatePageService();
+
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                var result = await svc.UpdateAsync(Guid.Empty, new());
+            });
+        }
     }
 }
