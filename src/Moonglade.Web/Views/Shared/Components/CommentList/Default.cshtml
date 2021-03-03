@@ -54,9 +54,9 @@
                                 <div class="reply-container">
                                     <div>
                                         <strong>
-                                            Author
+                                            @Localizer["Author"]
                                         </strong>
-                                        <span class="float-right text-muted">Replied at @TZoneResolver.ToTimeZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
+                                        <span class="float-right text-muted">@Localizer["Replied at"] @TZoneResolver.ToTimeZone(reply.ReplyTimeUtc).ToString("yyyy-M-d HH:mm")</span>
                                     </div>
                                     <p>
                                         @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
@@ -73,6 +73,6 @@
 else
 {
     <div class="alert alert-info">
-        No Comments
+        @Localizer["No Comments"]
     </div>
 }
