@@ -110,26 +110,66 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_CurrentUser()
         {
-            var claims = new List<Claim>
+            var ctl = CreateLocalAccountController();
+            ctl.ControllerContext = new()
             {
-                new (ClaimTypes.Name, "moonglade"),
-                new (ClaimTypes.Role, "Administrator"),
-                new ("uid", "76169567-6ff3-42c0-b163-a883ff2ac4fb")
+                HttpContext = new DefaultHttpContext
+                {
+                    User = GetClaimsPrincipal("76169567-6ff3-42c0-b163-a883ff2ac4fb")
+                }
             };
-            var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var p = new ClaimsPrincipal(ci);
+
+            var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+            Assert.IsInstanceOf<ConflictObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Delete_LastUser()
+        {
+            _mockLocalAccountService.Setup(p => p.Count()).Returns(1);
 
             var ctl = CreateLocalAccountController();
             ctl.ControllerContext = new()
             {
                 HttpContext = new DefaultHttpContext
                 {
-                    User = p
+                    User = GetClaimsPrincipal("996")
                 }
             };
 
             var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
             Assert.IsInstanceOf<ConflictObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Delete_OK()
+        {
+            _mockLocalAccountService.Setup(p => p.Count()).Returns(996);
+            var ctl = CreateLocalAccountController();
+            ctl.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = GetClaimsPrincipal("996")
+                }
+            };
+
+            var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
+        private ClaimsPrincipal GetClaimsPrincipal(string uid)
+        {
+            var claims = new List<Claim>
+            {
+                new (ClaimTypes.Name, "moonglade"),
+                new (ClaimTypes.Role, "Administrator"),
+                new ("uid", uid)
+            };
+            var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var p = new ClaimsPrincipal(ci);
+
+            return p;
         }
     }
 }
