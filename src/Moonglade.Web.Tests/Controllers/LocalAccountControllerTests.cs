@@ -4,7 +4,9 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
@@ -83,6 +85,24 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Delete(Guid.Empty);
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Delete_NullCurrentUser()
+        {
+            var ctl = CreateLocalAccountController();
+            ctl.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext()
+                {
+                    User = new()
+                }
+            };
+
+            var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+            Assert.IsInstanceOf<ObjectResult>(result);
+
+            Assert.AreEqual(500, ((ObjectResult)result).StatusCode);
         }
     }
 }
