@@ -75,7 +75,7 @@ namespace Moonglade.Web.Controllers
             if (id == Guid.Empty) ModelState.AddModelError(nameof(id), "value is empty");
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (!Regex.IsMatch(request.NewPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"))
+            if (!Regex.IsMatch(request.NewPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))
             {
                 return Conflict("Password must be minimum eight characters, at least one letter and one number");
             }
