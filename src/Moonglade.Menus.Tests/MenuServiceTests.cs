@@ -5,11 +5,10 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Menus;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Menus.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
