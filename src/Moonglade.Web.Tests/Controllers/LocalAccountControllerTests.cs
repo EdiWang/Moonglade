@@ -3,9 +3,11 @@ using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Web.Models;
@@ -103,6 +105,31 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ObjectResult>(result);
 
             Assert.AreEqual(500, ((ObjectResult)result).StatusCode);
+        }
+
+        [Test]
+        public async Task Delete_CurrentUser()
+        {
+            var claims = new List<Claim>
+            {
+                new (ClaimTypes.Name, "moonglade"),
+                new (ClaimTypes.Role, "Administrator"),
+                new ("uid", "76169567-6ff3-42c0-b163-a883ff2ac4fb")
+            };
+            var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var p = new ClaimsPrincipal(ci);
+
+            var ctl = CreateLocalAccountController();
+            ctl.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = p
+                }
+            };
+
+            var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+            Assert.IsInstanceOf<ConflictObjectResult>(result);
         }
     }
 }
