@@ -75,5 +75,14 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
         }
+
+        [Test]
+        public async Task Delete_EmptyId()
+        {
+            var ctl = CreateLocalAccountController();
+            var result = await ctl.Delete(Guid.Empty);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
     }
 }
