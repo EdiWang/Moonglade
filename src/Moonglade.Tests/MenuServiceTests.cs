@@ -117,5 +117,19 @@ namespace Moonglade.Tests
             Assert.AreNotEqual(Guid.Empty, result);
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, It.IsAny<string>()));
         }
+
+        [Test]
+        public void UpdateAsync_NullMenu()
+        {
+            _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((MenuEntity)null));
+
+            var svc = CreateService();
+
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                var result = await svc.UpdateAsync(Guid.Empty, new());
+            });
+        }
     }
 }
