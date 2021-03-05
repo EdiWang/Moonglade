@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -27,6 +28,13 @@ namespace Moonglade.Web.Tests.Controllers
             return new(_mockPostService.Object);
         }
 
+        [Test]
+        public async Task Slug_YearOutOfRange()
+        {
+            var ctl = CreatePostController();
+            var result = await ctl.Slug(DateTime.UtcNow.Year + 1, 9, 9, "6");
 
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
     }
 }
