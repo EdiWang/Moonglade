@@ -88,5 +88,22 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
+
+        [Test]
+        public async Task Preview_View()
+        {
+            _mockPostService.Setup(p => p.GetDraft(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(new Post
+                {
+                    Id = Guid.Empty,
+                    Slug = "work-996",
+                    Title = "Work 996"
+                }));
+
+            var ctl = CreatePostController();
+            var result = await ctl.Preview(Guid.Parse("e172b031-1c9a-4e4c-b2ea-07469e7b963a"));
+
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
     }
 }
