@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Pingback.AspNetCore;
 
@@ -12,14 +11,11 @@ namespace Moonglade.Web.Controllers
     public class PostController : Controller
     {
         private readonly IPostService _postService;
-        private readonly IBlogConfig _blogConfig;
 
         public PostController(
-            IPostService postService,
-            IBlogConfig blogConfig)
+            IPostService postService)
         {
             _postService = postService;
-            _blogConfig = blogConfig;
         }
 
         [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
