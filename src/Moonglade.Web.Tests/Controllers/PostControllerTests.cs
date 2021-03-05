@@ -47,5 +47,17 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
+
+        [Test]
+        public async Task Slug_NullPost()
+        {
+            _mockPostService.Setup(p => p.GetAsync(It.IsAny<PostSlug>()))
+                .Returns(Task.FromResult((Post)null));
+
+            var ctl = CreatePostController();
+            var result = await ctl.Slug(DateTime.UtcNow.Year, 1, 9, "work-996");
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
     }
 }
