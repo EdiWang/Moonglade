@@ -36,5 +36,16 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public async Task Slug_EmptySlug(string slug)
+        {
+            var ctl = CreatePostController();
+            var result = await ctl.Slug(DateTime.UtcNow.Year + 1, 9, 9, slug);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
     }
 }
