@@ -48,5 +48,16 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Create(_menuEditViewModel);
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
+
+        [Test]
+        public async Task Create_OK()
+        {
+            var ctl = CreateMenuController();
+
+            var result = await ctl.Create(_menuEditViewModel);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+
+            _mockMenuService.Verify(p => p.CreateAsync(It.IsAny<UpdateMenuRequest>()));
+        }
     }
 }
