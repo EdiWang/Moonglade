@@ -24,6 +24,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(MenuEditViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -43,6 +44,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (id == Guid.Empty) return BadRequest();
