@@ -5,6 +5,8 @@ using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -13,8 +15,17 @@ namespace Moonglade.Web.Tests.Controllers
     public class MenuControllerTests
     {
         private MockRepository _mockRepository;
-
         private Mock<IMenuService> _mockMenuService;
+
+        private MenuEditViewModel _menuEditViewModel = new()
+        {
+            Id = Guid.Empty,
+            DisplayOrder = 996,
+            Icon = "work-996",
+            IsOpenInNewTab = true,
+            Title = "Work 996",
+            Url = "/work/996"
+        };
 
         [SetUp]
         public void SetUp()
@@ -32,6 +43,10 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Create_InvalidModel()
         {
             var ctl = CreateMenuController();
+            ctl.ModelState.AddModelError("Title", "Title is required");
+
+            var result = await ctl.Create(_menuEditViewModel);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
     }
 }
