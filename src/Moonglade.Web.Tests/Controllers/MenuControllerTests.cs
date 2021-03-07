@@ -16,6 +16,7 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
         private Mock<IMenuService> _mockMenuService;
+        private Guid _noneEmptyId = Guid.Parse("4ac8e62e-92f1-449d-8feb-ee42a99caa09");
 
         private MenuEditViewModel _menuEditViewModel = new()
         {
@@ -58,6 +59,63 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<OkObjectResult>(result);
 
             _mockMenuService.Verify(p => p.CreateAsync(It.IsAny<UpdateMenuRequest>()));
+        }
+
+        [Test]
+        public async Task Delete_EmptyId()
+        {
+            var ctl = CreateMenuController();
+            var result = await ctl.Delete(Guid.Empty);
+            Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
+        public async Task Delete_OK()
+        {
+            var ctl = CreateMenuController();
+            var result = await ctl.Delete(_noneEmptyId);
+            
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockMenuService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
+        }
+
+        [Test]
+        public async Task Edit_EmptyId()
+        {
+            var ctl = CreateMenuController();
+            var result = await ctl.Edit(Guid.Empty);
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_NullMenu()
+        {
+            _mockMenuService.Setup(p => p.GetAsync(_noneEmptyId))
+                .Returns(Task.FromResult((Menu) null));
+
+            var ctl = CreateMenuController();
+            var result = await ctl.Edit(_noneEmptyId);
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_Get_OK()
+        {
+            _mockMenuService.Setup(p => p.GetAsync(_noneEmptyId))
+                .Returns(Task.FromResult(new Menu
+                {
+                    Id = _noneEmptyId,
+                    DisplayOrder = 996,
+                    Icon = "jack-ma-pig",
+                    Url = "/fuck/996",
+                    IsOpenInNewTab = true,
+                    Title = "Fubao"
+                }));
+
+            var ctl = CreateMenuController();
+            var result = await ctl.Edit(_noneEmptyId);
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
         }
     }
 }
