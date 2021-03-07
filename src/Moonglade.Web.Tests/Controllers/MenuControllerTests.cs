@@ -74,7 +74,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreateMenuController();
             var result = await ctl.Delete(_noneEmptyId);
-            
+
             Assert.IsInstanceOf<OkResult>(result);
             _mockMenuService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
         }
@@ -91,7 +91,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Edit_NullMenu()
         {
             _mockMenuService.Setup(p => p.GetAsync(_noneEmptyId))
-                .Returns(Task.FromResult((Menu) null));
+                .Returns(Task.FromResult((Menu)null));
 
             var ctl = CreateMenuController();
             var result = await ctl.Edit(_noneEmptyId);
@@ -116,6 +116,26 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Edit(_noneEmptyId);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_Post_InvalidModel()
+        {
+            var ctl = CreateMenuController();
+            ctl.ModelState.AddModelError("Title", "Title is required");
+
+            var result = await ctl.Edit(_menuEditViewModel);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_Post_ok()
+        {
+            var ctl = CreateMenuController();
+            var result = await ctl.Edit(_menuEditViewModel);
+
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockMenuService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdateMenuRequest>()));
         }
     }
 }
