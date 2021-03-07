@@ -20,13 +20,18 @@ namespace Moonglade.Web.Tests.Controllers
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-
             _mockMenuService = _mockRepository.Create<IMenuService>();
         }
 
         private MenuController CreateMenuController()
         {
             return new(_mockMenuService.Object);
+        }
+
+        [Test]
+        public async Task Create_InvalidModel()
+        {
+            var ctl = CreateMenuController();
         }
     }
 }
