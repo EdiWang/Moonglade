@@ -190,7 +190,7 @@ namespace Moonglade.Web.Tests.TagHelpers
             {
                 Email = "996@icu.com"
             };
-            
+
             var outputAttributes = new TagHelperAttributeList();
             var context = TagHelperTestsHelpers.MakeTagHelperContext("img");
             var output = TagHelperTestsHelpers.MakeTagHelperOutput("img", outputAttributes);

@@ -1,12 +1,12 @@
-using Moonglade.Menus;
-using Moonglade.Web.Controllers;
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Moonglade.Menus;
+using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -16,9 +16,9 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
         private Mock<IMenuService> _mockMenuService;
-        private Guid _noneEmptyId = Guid.Parse("4ac8e62e-92f1-449d-8feb-ee42a99caa09");
+        private readonly Guid _noneEmptyId = Guid.Parse("4ac8e62e-92f1-449d-8feb-ee42a99caa09");
 
-        private MenuEditViewModel _menuEditViewModel = new()
+        private readonly MenuEditViewModel _menuEditViewModel = new()
         {
             Id = Guid.Empty,
             DisplayOrder = 996,

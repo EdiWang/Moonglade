@@ -1,7 +1,3 @@
-using Moonglade.Auth;
-using Moonglade.Web.Controllers;
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,8 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Web.Models;
-using Moonglade.Web.Models.Settings;
+using Moonglade.Auth;
+using Moonglade.Web.Controllers;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Controllers
 {
