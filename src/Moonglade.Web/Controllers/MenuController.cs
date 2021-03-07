@@ -45,6 +45,8 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(Guid id)
         {
+            if (id == Guid.Empty) return BadRequest();
+
             await _menuService.DeleteAsync(id);
             return Ok();
         }
@@ -54,6 +56,8 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit(Guid id)
         {
+            if (id == Guid.Empty) return NotFound();
+
             var menu = await _menuService.GetAsync(id);
             if (null == menu) return NotFound();
 
