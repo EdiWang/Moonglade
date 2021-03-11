@@ -10,7 +10,7 @@ namespace Moonglade.Web.Tests.TagHelpers
     public class GravatarImageHelperTests
     {
         [Test]
-        public void GravatarImage_Process()
+        public void Process_OK()
         {
             var tagHelper = new GravatarImageHelper
             {
@@ -33,7 +33,7 @@ namespace Moonglade.Web.Tests.TagHelpers
         }
 
         [Test]
-        public void GravatarImage_Process_ImageSize()
+        public void Process_ImageSize()
         {
             var tagHelper = new GravatarImageHelper
             {
@@ -57,7 +57,7 @@ namespace Moonglade.Web.Tests.TagHelpers
         }
 
         [Test]
-        public void GravatarImage_Process_NoHttps()
+        public void Process_NoHttps()
         {
             var tagHelper = new GravatarImageHelper
             {
