@@ -23,7 +23,7 @@ namespace Moonglade.Web.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
+            if (User?.Identity is null || !User.Identity.IsAuthenticated)
             {
                 base.Process(context, output);
             }
