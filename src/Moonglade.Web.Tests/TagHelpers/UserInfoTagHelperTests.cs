@@ -108,6 +108,33 @@ namespace Moonglade.Web.Tests.TagHelpers
             Assert.AreEqual("996@icu.com", output.Content.GetContent());
         }
 
+        [Test]
+        public void Process_PreferNameWithEmail()
+        {
+            var tagHelper = new UserInfoTagHelper
+            {
+                UserInfoDisplay = UserInfoDisplay.PreferName,
+                User = GetClaimsPrincipal(new Claim[]
+                {
+                    new(ClaimTypes.Email, "996@icu.com")
+                })
+            };
+
+            var outputAttributes = new TagHelperAttributeList();
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new ("class", UserInfoTagHelper.TagClassBase)
+            };
+
+            Assert.AreEqual(expectedAttributeList, output.Attributes);
+            Assert.AreEqual("996@icu.com", output.Content.GetContent());
+        }
+
         private ClaimsPrincipal GetClaimsPrincipal(IEnumerable<Claim> claims)
         {
             var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
