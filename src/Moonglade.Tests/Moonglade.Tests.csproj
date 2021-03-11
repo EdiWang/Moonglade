@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Auditing\Moonglade.Auditing.csproj" />
-    <ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
     <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
     <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
     <ProjectReference Include="..\Moonglade.Pages\Moonglade.Pages.csproj" />

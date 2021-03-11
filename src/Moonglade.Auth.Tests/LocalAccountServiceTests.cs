@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Moonglade.Auth;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Auth.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
