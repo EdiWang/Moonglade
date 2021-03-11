@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Moonglade.Web.TagHelpers;
 using NUnit.Framework;
@@ -49,6 +50,70 @@ namespace Moonglade.Web.Tests.TagHelpers
 
             var expectedAttributeList = new TagHelperAttributeList();
             Assert.AreEqual(expectedAttributeList, output.Attributes);
+        }
+
+        [TestCase("name")]
+        [TestCase(ClaimTypes.Name)]
+        public void Process_Name(string claimType)
+        {
+            var tagHelper = new UserInfoTagHelper
+            {
+                UserInfoDisplay = UserInfoDisplay.PreferName,
+                User = GetClaimsPrincipal(new Claim[]
+                {
+                    new(claimType, "fubao")
+                })
+            };
+
+            var outputAttributes = new TagHelperAttributeList();
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new ("class", UserInfoTagHelper.TagClassBase)
+            };
+
+            Assert.AreEqual(expectedAttributeList, output.Attributes);
+            Assert.AreEqual("fubao", output.Content.GetContent());
+        }
+
+        [TestCase("email")]
+        [TestCase(ClaimTypes.Email)]
+        public void Process_Email(string claimType)
+        {
+            var tagHelper = new UserInfoTagHelper
+            {
+                UserInfoDisplay = UserInfoDisplay.PreferEmail,
+                User = GetClaimsPrincipal(new Claim[]
+                {
+                    new(claimType, "996@icu.com")
+                })
+            };
+
+            var outputAttributes = new TagHelperAttributeList();
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new ("class", UserInfoTagHelper.TagClassBase)
+            };
+
+            Assert.AreEqual(expectedAttributeList, output.Attributes);
+            Assert.AreEqual("996@icu.com", output.Content.GetContent());
+        }
+
+        private ClaimsPrincipal GetClaimsPrincipal(IEnumerable<Claim> claims)
+        {
+            var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var p = new ClaimsPrincipal(ci);
+
+            return p;
         }
     }
 }
