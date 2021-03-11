@@ -135,6 +135,62 @@ namespace Moonglade.Web.Tests.TagHelpers
             Assert.AreEqual("996@icu.com", output.Content.GetContent());
         }
 
+
+        [Test]
+        public void Process_PreferEmailWithName()
+        {
+            var tagHelper = new UserInfoTagHelper
+            {
+                UserInfoDisplay = UserInfoDisplay.PreferEmail,
+                User = GetClaimsPrincipal(new Claim[]
+                {
+                    new(ClaimTypes.Name, "fubao")
+                })
+            };
+
+            var outputAttributes = new TagHelperAttributeList();
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new ("class", UserInfoTagHelper.TagClassBase)
+            };
+
+            Assert.AreEqual(expectedAttributeList, output.Attributes);
+            Assert.AreEqual("fubao", output.Content.GetContent());
+        }
+
+        [Test]
+        public void Process_Both()
+        {
+            var tagHelper = new UserInfoTagHelper
+            {
+                UserInfoDisplay = UserInfoDisplay.Both,
+                User = GetClaimsPrincipal(new Claim[]
+                {
+                    new(ClaimTypes.Name, "fubao"),
+                    new(ClaimTypes.Email, "996@icu.com")
+                })
+            };
+
+            var outputAttributes = new TagHelperAttributeList();
+            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+
+            tagHelper.Process(context, output);
+
+            var expectedAttributeList = new TagHelperAttributeList
+            {
+                new ("class", UserInfoTagHelper.TagClassBase)
+            };
+
+            Assert.AreEqual(expectedAttributeList, output.Attributes);
+            Assert.AreEqual($"<div class='{UserInfoTagHelper.TagClassBase}-name'>fubao</div><email class='{UserInfoTagHelper.TagClassBase}-email'>996@icu.com</email>", output.Content.GetContent());
+        }
+
         private ClaimsPrincipal GetClaimsPrincipal(IEnumerable<Claim> claims)
         {
             var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

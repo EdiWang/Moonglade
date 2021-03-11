@@ -55,7 +55,7 @@ namespace Moonglade.Web.TagHelpers
 
         private string GetName()
         {
-            var name = string.Empty;
+            string name = null;
 
             // try non-standard name
             if (User.HasClaim(c => c.Type.ToLower() == "name"))
@@ -72,7 +72,7 @@ namespace Moonglade.Web.TagHelpers
 
         private string GetEmail()
         {
-            var email = string.Empty;
+            string email = null;
             if (User.HasClaim(c => c.Type == ClaimTypes.Email))
             {
                 email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
