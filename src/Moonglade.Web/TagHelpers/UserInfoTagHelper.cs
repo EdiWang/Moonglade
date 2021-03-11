@@ -76,8 +76,10 @@ namespace Moonglade.Web.TagHelpers
             if (User.HasClaim(c => c.Type == ClaimTypes.Email))
             {
                 email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                if (!string.IsNullOrWhiteSpace(email)) return email;
+            }
 
+            if (string.IsNullOrWhiteSpace(email))
+            {
                 // non-standard name
                 if (User.HasClaim(c => c.Type.ToLower() == "email"))
                 {
