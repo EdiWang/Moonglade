@@ -83,7 +83,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Caching.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Syndication.Tests", "Moonglade.Syndication.Tests\Moonglade.Syndication.Tests.csproj", "{EEFBA2D5-661F-41FA-B540-8FD3E8FAE847}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Menus.Tests", "Moonglade.Menus.Tests\Moonglade.Menus.Tests.csproj", "{99791D1B-7E9B-4CF9-997C-873CF1BFF889}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Menus.Tests", "Moonglade.Menus.Tests\Moonglade.Menus.Tests.csproj", "{99791D1B-7E9B-4CF9-997C-873CF1BFF889}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Pingback.Tests", "Moonglade.Pingback.Tests\Moonglade.Pingback.Tests.csproj", "{9F7F7A06-1BA0-4716-8FF9-C47492048DCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -195,6 +197,10 @@ Global
 		{99791D1B-7E9B-4CF9-997C-873CF1BFF889}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99791D1B-7E9B-4CF9-997C-873CF1BFF889}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99791D1B-7E9B-4CF9-997C-873CF1BFF889}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F7F7A06-1BA0-4716-8FF9-C47492048DCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F7F7A06-1BA0-4716-8FF9-C47492048DCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F7F7A06-1BA0-4716-8FF9-C47492048DCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F7F7A06-1BA0-4716-8FF9-C47492048DCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -227,6 +233,7 @@ Global
 		{7B0CDF51-AF36-4E52-9CBF-7962529030F9} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 		{EEFBA2D5-661F-41FA-B540-8FD3E8FAE847} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 		{99791D1B-7E9B-4CF9-997C-873CF1BFF889} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
+		{9F7F7A06-1BA0-4716-8FF9-C47492048DCF} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}

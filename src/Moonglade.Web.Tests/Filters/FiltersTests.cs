@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
-using Moonglade.Pingback.AspNetCore;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using NUnit.Framework;
@@ -76,19 +75,6 @@ namespace Moonglade.Web.Tests.Filters
 
             var pddReply = mockedCache.Get<string>("General-pdd-overwork-death");
             Assert.AreEqual(null, pddReply);
-        }
-
-        [Test]
-        public void AddPingbackHeaderAttribute_OnResultExecuting()
-        {
-            var ctx = CreateResultExecutingContext(null);
-
-            var att = new AddPingbackHeaderAttribute("fubao");
-            att.OnResultExecuting(ctx);
-
-            var header = ctx.HttpContext.Response.Headers["x-pingback"];
-            Assert.IsNotNull(header);
-            Assert.AreEqual("https://996.icu/fubao", header);
         }
 
         [Test]

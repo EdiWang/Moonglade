@@ -24,7 +24,6 @@
     <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
     <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
     <ProjectReference Include="..\Moonglade.Pages\Moonglade.Pages.csproj" />
-    <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
     <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
   </ItemGroup>
 
