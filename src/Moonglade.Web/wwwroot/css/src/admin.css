@@ -27,6 +27,29 @@
     overflow-x: hidden;
 }
 
+.aspnet-tag-moonglade-userinfo,
+.aspnet-tag-moonglade-userinfo-name,
+.aspnet-tag-moonglade-userinfo-email {
+    display: inline-block;
+}
+
+.aspnet-tag-moonglade-userinfo-name {
+    font-weight: bold;
+}
+
+.aspnet-tag-moonglade-userinfo-email {
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+    .aspnet-tag-moonglade-userinfo-email:before {
+        content: '(';
+    }
+
+    .aspnet-tag-moonglade-userinfo-email:after {
+        content: ')';
+    }
+
 .admin-navbar {
     box-shadow: inherit !important;
 }

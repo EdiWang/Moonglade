@@ -92,7 +92,7 @@
                 <img src="@Url.Action("Avatar", "Assets")"
                      alt="@BlogConfig.GeneralSettings.OwnerName"
                      class="rounded-circle admin-nav-head-pic mr-1" />
-                @User.Identity?.Name
+                <userinfo user="User"></userinfo>
             </span>
             
             <a class="navbar-text d-inline-block" asp-controller="Auth" asp-action="SignOut" title="Sign Out">
