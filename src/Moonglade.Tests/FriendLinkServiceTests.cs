@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moonglade.FriendLink;
 using Moq;
 using NUnit.Framework;
@@ -29,6 +31,26 @@ namespace Moonglade.Tests
         private FriendLinkService CreateService()
         {
             return new(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+        }
+
+        [Test]
+        public async Task GetAsync_OK()
+        {
+            var svc = CreateService();
+            await svc.GetAsync(Guid.Empty);
+
+            _mockFriendlinkRepo.Verify(p =>
+                p.SelectFirstOrDefaultAsync(It.IsAny<ISpecification<FriendLinkEntity>>(),
+                    It.IsAny<Expression<Func<FriendLinkEntity, Link>>>(), true));
+        }
+
+        [Test]
+        public async Task GetAllAsync_OK()
+        {
+            var svc = CreateService();
+            await svc.GetAllAsync();
+
+            _mockFriendlinkRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<FriendLinkEntity, Link>>>(), true));
         }
 
         [Test]
