@@ -90,8 +90,15 @@ namespace Moonglade.Notification.Client
             }
         }
 
-        public async Task NotifyCommentReplyAsync(CommentReplyPayload payload)
+        public async Task NotifyCommentReplyAsync(string email, string commentContent, string title, string replyContentHtml, string postLink)
         {
+            var payload = new CommentReplyPayload(
+                email,
+                commentContent,
+                title,
+                replyContentHtml,
+                postLink);
+
             try
             {
                 await SendAsync(new NotificationRequest<CommentReplyPayload>(MailMesageTypes.AdminReplyNotification, payload));

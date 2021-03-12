@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Notification.Client
 {
-    public class CommentReplyPayload
+    internal class CommentReplyPayload
     {
         public CommentReplyPayload(
             string email, string commentContent, string title, string replyContentHtml, string postLink)

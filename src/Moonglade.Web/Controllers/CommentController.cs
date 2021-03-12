@@ -148,14 +148,11 @@ namespace Moonglade.Web.Controllers
                 var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
                 _ = Task.Run(async () =>
                 {
-                    var payload = new CommentReplyPayload(
-                        reply.Email,
+                    await _notificationClient.NotifyCommentReplyAsync(reply.Email,
                         reply.CommentContent,
                         reply.Title,
                         reply.ReplyContentHtml,
                         postLink);
-
-                    await _notificationClient.NotifyCommentReplyAsync(payload);
                 });
             }
 
