@@ -83,16 +83,13 @@ namespace Moonglade.Web.Controllers
             {
                 _ = Task.Run(async () =>
                 {
-                    var payload = new CommentPayload(
+                    await _notificationClient.NotifyCommentAsync(
                         response.Username,
                         response.Email,
                         response.IpAddress,
                         response.PostTitle,
-                        ContentProcessor.MarkdownToContent(response.CommentContent, ContentProcessor.MarkdownConvertType.Html),
-                        response.CreateTimeUtc
-                    );
-
-                    await _notificationClient.NotifyCommentAsync(payload);
+                        response.CommentContent,
+                        response.CreateTimeUtc);
                 });
             }
 

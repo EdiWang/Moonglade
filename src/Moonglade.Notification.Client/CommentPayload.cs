@@ -2,7 +2,7 @@
 
 namespace Moonglade.Notification.Client
 {
-    public class CommentPayload
+    internal class CommentPayload
     {
         public CommentPayload(
             string username, string email, string ipAddress, string postTitle, string commentContent, DateTime createTimeUtc)
