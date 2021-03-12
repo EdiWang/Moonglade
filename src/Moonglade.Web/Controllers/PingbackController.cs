@@ -53,15 +53,12 @@ namespace Moonglade.Web.Controllers
             var response = await _pingbackService.ReceivePingAsync(requestBody, ip,
                 history =>
                 {
-                    var payload = new PingPayload(
-                        history.TargetPostTitle,
+                    _notificationClient.NotifyPingbackAsync(history.TargetPostTitle,
                         history.PingTimeUtc,
                         history.Domain,
                         history.SourceIp,
                         history.SourceUrl,
                         history.SourceTitle);
-
-                    _notificationClient.NotifyPingbackAsync(payload);
                 });
 
             _logger.LogInformation($"Pingback Processor Response: {response}");
