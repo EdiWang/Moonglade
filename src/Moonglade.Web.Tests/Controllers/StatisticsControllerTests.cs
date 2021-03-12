@@ -41,6 +41,18 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task Get_OK()
+        {
+            _mockBlogStatistics.Setup(p => p.GetStatisticAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult((996, 404)));
+
+            var ctl = CreateStatisticsController();
+            var result = await ctl.Get(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+
+            Assert.IsInstanceOf(typeof(OkObjectResult), result);
+        }
+
+        [Test]
         public async Task Hit_EmptyGuid()
         {
             var ctl = CreateStatisticsController();
