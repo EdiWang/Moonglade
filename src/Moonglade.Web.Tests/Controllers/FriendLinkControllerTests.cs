@@ -59,5 +59,37 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<OkObjectResult>(result);
             _mockFriendLinkService.Verify(p => p.AddAsync(It.IsAny<string>(), It.IsAny<string>()));
         }
+
+        [Test]
+        public async Task Get_LinkNull()
+        {
+            _mockFriendLinkService.Setup(p => p.GetAsync(Guid.Empty)).Returns(Task.FromResult((Link)null));
+            var ctl = CreateFriendLinkController();
+            var result = await ctl.Get(Guid.Empty);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task Get_Exception()
+        {
+            _mockFriendLinkService.Setup(p => p.GetAsync(Guid.Empty)).Throws(new ArgumentOutOfRangeException());
+
+            var ctl = CreateFriendLinkController();
+            var result = await ctl.Get(Guid.Empty);
+
+            Assert.IsInstanceOf<StatusCodeResult>(result);
+            Assert.AreEqual(500, ((StatusCodeResult)result).StatusCode);
+        }
+
+        [Test]
+        public async Task Get_OK()
+        {
+            _mockFriendLinkService.Setup(p => p.GetAsync(Uid)).Returns(Task.FromResult(new Link()));
+            var ctl = CreateFriendLinkController();
+            var result = await ctl.Get(Uid);
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
     }
 }
