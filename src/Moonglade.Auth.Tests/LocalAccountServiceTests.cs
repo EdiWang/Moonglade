@@ -190,5 +190,43 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Verify(p => p.AddAsync(It.IsAny<LocalAccountEntity>()));
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountCreated, It.IsAny<string>()));
         }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void UpdatePasswordAsync_EmptyPassword(string clearPassword)
+        {
+            var svc = CreateService();
+            Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await svc.UpdatePasswordAsync(Uid, clearPassword);
+            });
+        }
+
+        [Test]
+        public void UpdatePasswordAsync_AccountNull()
+        {
+            _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((LocalAccountEntity)null));
+
+            var svc = CreateService();
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await svc.UpdatePasswordAsync(Uid, "Work996");
+            });
+        }
+
+        [Test]
+        public async Task UpdatePasswordAsync_OK()
+        {
+            _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult(_accountEntity));
+
+            var svc = CreateService();
+            await svc.UpdatePasswordAsync(Uid, "Work996andGetintoICU");
+
+            _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountPasswordUpdated, It.IsAny<string>()));
+        }
     }
 }
