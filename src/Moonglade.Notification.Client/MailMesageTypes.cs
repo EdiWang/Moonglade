@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Notification.Client
 {
-    public enum MailMesageTypes
+    internal enum MailMesageTypes
     {
         TestMail = 0,
         NewCommentNotification = 100,
