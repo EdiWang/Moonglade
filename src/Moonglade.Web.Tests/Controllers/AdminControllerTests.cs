@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
@@ -123,6 +124,20 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
             }
+        }
+
+        [Test]
+        public async Task Pingback_View()
+        {
+            IEnumerable<PingbackRecord> pingback = new PingbackRecord[] { };
+
+            _mockPingbackService.Setup(p => p.GetPingbackHistoryAsync())
+                .Returns(Task.FromResult(pingback));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.Pingback();
+
+            Assert.IsInstanceOf<ViewResult>(result);
         }
 
         [Test]

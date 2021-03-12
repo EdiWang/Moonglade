@@ -29,7 +29,7 @@ namespace Moonglade.Web.Tests.Controllers
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new MockRepository(MockBehavior.Default);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockFriendLinkService = _mockRepository.Create<IFriendLinkService>();
         }
@@ -90,6 +90,46 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Get(Uid);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_InvalidModel()
+        {
+            var ctl = CreateFriendLinkController();
+            ctl.ModelState.AddModelError("Title", "Title is required");
+
+            var result = await ctl.Edit(_friendlinkEditViewModel);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Edit_OK()
+        {
+            var ctl = CreateFriendLinkController();
+
+            var result = await ctl.Edit(_friendlinkEditViewModel);
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            _mockFriendLinkService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+        [Test]
+        public async Task Delete_EmptyId()
+        {
+            var ctl = CreateFriendLinkController();
+            var result = await ctl.Delete(Guid.Empty);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Delete_OK()
+        {
+            var ctl = CreateFriendLinkController();
+            var result = await ctl.Delete(Uid);
+
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockFriendLinkService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
         }
     }
 }
