@@ -156,5 +156,28 @@ namespace Moonglade.Auth.Tests
 
             _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()), Times.Once);
         }
+
+        [Test]
+        public void Exist_ToHaveBeenCalled()
+        {
+            var svc = CreateService();
+            svc.Exist("work996");
+
+            _mockLocalAccountRepository.Verify(p => p.Any(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()));
+        }
+
+        [TestCase(null, null)]
+        [TestCase(null, "")]
+        [TestCase(null, " ")]
+        [TestCase("", null)]
+        [TestCase(" ", null)]
+        public void CreateAsync_EmptyUsernameOrPassword(string username, string clearPassword)
+        {
+            var svc = CreateService();
+            Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await svc.CreateAsync(username, clearPassword);
+            });
+        }
     }
 }
