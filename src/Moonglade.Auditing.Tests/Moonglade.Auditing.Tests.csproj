@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Common.props" />
 
   <PropertyGroup>
@@ -7,22 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MemoryCache.Testing.Moq" Version="1.2.2" />
-    <PackageReference Include="Moq" Version="4.16.1" />
-    <PackageReference Include="Moq.Dapper" Version="1.0.4" />
     <PackageReference Include="nunit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
+    <PackageReference Include="Moq" Version="4.16.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
-    <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
-    <ProjectReference Include="..\Moonglade.Pages\Moonglade.Pages.csproj" />
-    <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
+    <ProjectReference Include="..\Moonglade.Auditing\Moonglade.Auditing.csproj" />
+    <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
   </ItemGroup>
 
 </Project>

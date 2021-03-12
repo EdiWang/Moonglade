@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
-using Moonglade.Auditing;
 using Moonglade.Configuration.Settings;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Auditing.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
