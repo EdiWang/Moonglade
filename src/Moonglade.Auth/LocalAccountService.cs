@@ -87,9 +87,8 @@ namespace Moonglade.Auth
             {
                 entity.LastLoginIp = ipAddress.Trim();
                 entity.LastLoginTimeUtc = DateTime.UtcNow;
+                await _accountRepo.UpdateAsync(entity);
             }
-
-            await _accountRepo.UpdateAsync(entity);
         }
 
         public bool Exist(string username)
