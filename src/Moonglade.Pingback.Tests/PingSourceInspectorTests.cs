@@ -1,10 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Moonglade.Pingback;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace Moonglade.Pingback.Tests
 {

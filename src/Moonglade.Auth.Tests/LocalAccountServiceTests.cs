@@ -1,13 +1,12 @@
-using Moonglade.Auditing;
-using Moonglade.Auth;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Moonglade.Auditing;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Auth.Tests
 {
