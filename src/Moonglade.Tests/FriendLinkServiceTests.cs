@@ -102,5 +102,33 @@ namespace Moonglade.Tests
                 await svc.UpdateAsync(Guid.Empty, "Fubao", "work006");
             });
         }
+
+        [Test]
+        public async Task UpdateAsync_LinkNull()
+        {
+            _mockFriendlinkRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()));
+
+            var svc = CreateService();
+            await svc.UpdateAsync(Guid.Empty, "work", "https://996.icu");
+
+            _mockFriendlinkRepo.Verify(p => p.UpdateAsync(It.IsAny<FriendLinkEntity>()), Times.Never);
+        }
+
+        [Test]
+        public async Task UpdateAsync_OK()
+        {
+            _mockFriendlinkRepo.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(ValueTask.FromResult(new FriendLinkEntity
+            {
+                Id = Guid.Empty,
+                LinkUrl = "https://dot.net",
+                Title = "Choice of 955"
+            }));
+
+            var svc = CreateService();
+            await svc.UpdateAsync(Guid.Empty, "work", "https://996.icu");
+
+            _mockFriendlinkRepo.Verify(p => p.UpdateAsync(It.IsAny<FriendLinkEntity>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedFriendLink, It.IsAny<string>()));
+        }
     }
 }
