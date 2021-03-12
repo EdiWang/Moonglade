@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
@@ -58,6 +59,15 @@ namespace Moonglade.Menus.Tests
             var result = await ctl.GetAsync(Guid.Empty);
 
             Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task GetAllAsync_OK()
+        {
+            var ctl = CreateService();
+            await ctl.GetAllAsync();
+
+            _mockMenuRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<MenuEntity, Menu>>>(), true));
         }
 
         [Test]

@@ -91,6 +91,15 @@ namespace Moonglade.Tests
         }
 
         [Test]
+        public async Task ListSegment_OK()
+        {
+            var svc = CreatePageService();
+            await svc.ListSegment();
+
+            _mockPageRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<PageEntity, PageSegment>>>(), true));
+        }
+
+        [Test]
         public async Task GetAsync_List()
         {
             IReadOnlyList<PageEntity> pageEntities = new List<PageEntity> { _fakePageEntity };
