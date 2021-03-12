@@ -370,5 +370,14 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
+
+        [Test]
+        public void SetLanguage_Cookie()
+        {
+            var ctl = CreateHomeController();
+            var result = ctl.SetLanguage("en-US", "/996/icu");
+
+            Assert.IsInstanceOf<LocalRedirectResult>(result);
+        }
     }
 }
