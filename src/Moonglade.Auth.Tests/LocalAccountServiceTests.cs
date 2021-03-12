@@ -132,5 +132,29 @@ namespace Moonglade.Auth.Tests
 
             Assert.AreEqual(Uid, result);
         }
+
+        [Test]
+        public async Task LogSuccessLoginAsync_EntityNull()
+        {
+            _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((LocalAccountEntity)null));
+
+            var svc = CreateService();
+            await svc.LogSuccessLoginAsync(Guid.Empty, "1.1.1.1");
+
+            _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()), Times.Never);
+        }
+
+        [Test]
+        public async Task LogSuccessLoginAsync_OK()
+        {
+            _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult(_accountEntity));
+
+            var svc = CreateService();
+            await svc.LogSuccessLoginAsync(Uid, "1.1.1.1");
+
+            _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()), Times.Once);
+        }
     }
 }
