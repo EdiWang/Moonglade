@@ -179,5 +179,17 @@ namespace Moonglade.Auth.Tests
                 await svc.CreateAsync(username, clearPassword);
             });
         }
+
+        [Test]
+        public async Task CreateAsync_OK()
+        {
+            var svc = CreateService();
+            var result = await svc.CreateAsync("work996", "&Get1n2icu");
+
+            Assert.IsTrue(result != Guid.Empty);
+
+            _mockLocalAccountRepository.Verify(p => p.AddAsync(It.IsAny<LocalAccountEntity>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountCreated, It.IsAny<string>()));
+        }
     }
 }
