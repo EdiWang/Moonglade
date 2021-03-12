@@ -32,7 +32,17 @@ namespace Moonglade.Tests
         }
 
         [Test]
-        public async Task AddFriendLinkAsync_Valid()
+        public void AddAsync_InvalidUrl()
+        {
+            var svc = CreateService();
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await svc.AddAsync("Fubao", "work006");
+            });
+        }
+
+        [Test]
+        public async Task AddAsync_Valid()
         {
             var uid = Guid.NewGuid();
             var friendLinkEntity = new FriendLinkEntity
@@ -59,6 +69,16 @@ namespace Moonglade.Tests
 
             _mockBlogAudit.Verify();
             Assert.Pass();
+        }
+
+        [Test]
+        public void UpdateAsync_InvalidUrl()
+        {
+            var svc = CreateService();
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await svc.UpdateAsync(Guid.Empty, "Fubao", "work006");
+            });
         }
     }
 }
