@@ -1,21 +1,15 @@
-using Microsoft.Extensions.Logging;
-using Moonglade.Auditing;
-using Moonglade.Configuration.Abstraction;
-using Moonglade.FriendLink;
-using Moonglade.Web.Controllers;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-using Moonglade.Caching;
+using Microsoft.Extensions.Logging;
+using Moonglade.Auditing;
 using Moonglade.Configuration;
-using Moonglade.DataPorting;
-using Moonglade.Notification.Client;
+using Moonglade.Configuration.Abstraction;
+using Moonglade.FriendLink;
+using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -81,35 +75,30 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, It.IsAny<string>()));
         }
 
-        //[Test]
-        //public void Content_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
+        [Test]
+        public void Content_Get()
+        {
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings());
 
-        //    // Act
-        //    var result = settingsController.Content();
+            var settingsController = CreateSettingsController();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var result = settingsController.Content();
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
-        //[Test]
-        //public async Task Content_StateUnderTest_ExpectedBehavior1()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    ContentSettingsViewModel model = null;
+        [Test]
+        public async Task Content_Post()
+        {
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings());
+            ContentSettingsViewModel model = new() { WordFilterMode = "Block" };
 
-        //    // Act
-        //    var result = await settingsController.Content(
-        //        model);
+            var settingsController = CreateSettingsController();
+            var result = await settingsController.Content(model);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, It.IsAny<string>()));
+        }
 
         //[Test]
         //public void Notification_StateUnderTest_ExpectedBehavior()
