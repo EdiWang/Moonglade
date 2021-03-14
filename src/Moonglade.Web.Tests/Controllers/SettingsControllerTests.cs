@@ -171,21 +171,19 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        //[Test]
-        //public async Task Watermark_StateUnderTest_ExpectedBehavior1()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    WatermarkSettingsViewModel model = null;
+        [Test]
+        public async Task Watermark_Post()
+        {
+            _mockBlogConfig.Setup(p => p.WatermarkSettings).Returns(new WatermarkSettings());
+            var settingsController = CreateSettingsController();
+            WatermarkSettingsViewModel model = new();
 
-        //    // Act
-        //    var result = await settingsController.Watermark(
-        //        model);
+            var result = await settingsController.Watermark(model);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<WatermarkSettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, It.IsAny<string>()));
+        }
 
         //[Test]
         //public async Task FriendLink_StateUnderTest_ExpectedBehavior()
