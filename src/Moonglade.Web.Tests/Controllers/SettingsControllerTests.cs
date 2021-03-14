@@ -235,21 +235,19 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        //[Test]
-        //public async Task Advanced_StateUnderTest_ExpectedBehavior1()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    AdvancedSettingsViewModel model = null;
+        [Test]
+        public async Task Advanced_Post()
+        {
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
+            var settingsController = CreateSettingsController();
+            AdvancedSettingsViewModel model = new();
 
-        //    // Act
-        //    var result = await settingsController.Advanced(
-        //        model);
+            var result = await settingsController.Advanced(model);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+        }
 
         //[Test]
         //public void Shutdown_StateUnderTest_ExpectedBehavior()
