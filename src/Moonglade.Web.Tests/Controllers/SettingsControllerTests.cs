@@ -33,7 +33,7 @@ namespace Moonglade.Web.Tests.Controllers
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockFriendLinkService = _mockRepository.Create<IFriendLinkService>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -54,7 +54,7 @@ namespace Moonglade.Web.Tests.Controllers
         public void General_Get()
         {
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
-            Mock<ITZoneResolver> tZoneResolverMock = new Mock<ITZoneResolver>();
+            var tZoneResolverMock = new Mock<ITZoneResolver>();
 
             var settingsController = CreateSettingsController();
             var result = settingsController.General(tZoneResolverMock.Object);
@@ -62,23 +62,24 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        //[Test]
-        //public async Task General_StateUnderTest_ExpectedBehavior1()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    GeneralSettingsViewModel model = null;
-        //    ITZoneResolver tZoneResolver = null;
+        [Test]
+        public async Task General_Post()
+        {
+            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
+            var model = new GeneralSettingsViewModel
+            {
+                SideBarOption = "Right"
+            };
 
-        //    // Act
-        //    var result = await settingsController.General(
-        //        model,
-        //        tZoneResolver);
+            Mock<ITZoneResolver> tZoneResolverMock = new();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var settingsController = CreateSettingsController();
+            var result = await settingsController.General(model, tZoneResolverMock.Object);
+
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, It.IsAny<string>()));
+        }
 
         //[Test]
         //public void Content_StateUnderTest_ExpectedBehavior()
