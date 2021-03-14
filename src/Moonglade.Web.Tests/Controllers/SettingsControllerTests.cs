@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Configuration;
@@ -249,21 +251,20 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
 
-        //[Test]
-        //public void Shutdown_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    IHostApplicationLifetime applicationLifetime = null;
+        [Test]
+        public void Shutdown_Post()
+        {
+            var settingsController = CreateSettingsController();
+            settingsController.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext()
+            };
 
-        //    // Act
-        //    var result = settingsController.Shutdown(
-        //        applicationLifetime);
+            Mock<IHostApplicationLifetime> applicationLifetimeMock = new();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var result = settingsController.Shutdown(applicationLifetimeMock.Object);
+            Assert.IsInstanceOf<AcceptedResult>(result);
+        }
 
         //[Test]
         //public async Task Reset_StateUnderTest_ExpectedBehavior()
@@ -283,35 +284,31 @@ namespace Moonglade.Web.Tests.Controllers
         //    _mockRepository.VerifyAll();
         //}
 
-        //[Test]
-        //public void Security_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
+        [Test]
+        public void Security_Get()
+        {
+            _mockBlogConfig.Setup(p => p.SecuritySettings).Returns(new SecuritySettings());
 
-        //    // Act
-        //    var result = settingsController.Security();
+            var settingsController = CreateSettingsController();
+            var result = settingsController.Security();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
-        //[Test]
-        //public async Task Security_StateUnderTest_ExpectedBehavior1()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    SecuritySettingsViewModel model = null;
+        [Test]
+        public async Task Security_Post()
+        {
+            _mockBlogConfig.Setup(p => p.SecuritySettings).Returns(new SecuritySettings());
 
-        //    // Act
-        //    var result = await settingsController.Security(
-        //        model);
+            var settingsController = CreateSettingsController();
+            SecuritySettingsViewModel model = new();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var result = await settingsController.Security(model);
+
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<SecuritySettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+        }
 
         //[Test]
         //public void CustomStyleSheet_StateUnderTest_ExpectedBehavior()
