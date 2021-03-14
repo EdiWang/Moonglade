@@ -310,49 +310,81 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
 
-        //[Test]
-        //public void CustomStyleSheet_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
+        [Test]
+        public void CustomStyleSheet_Get()
+        {
+            _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
-        //    // Act
-        //    var result = settingsController.CustomStyleSheet();
+            var settingsController = CreateSettingsController();
+            var result = settingsController.CustomStyleSheet();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
-        //[Test]
-        //public async Task CustomStyleSheet_StateUnderTest_ExpectedBehavior1()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    CustomStyleSheetSettingsViewModel model = null;
+        [Test]
+        public async Task CustomStyleSheet_Post_Enabled_EmptyCSS()
+        {
+            _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
-        //    // Act
-        //    var result = await settingsController.CustomStyleSheet(
-        //        model);
+            var settingsController = CreateSettingsController();
+            CustomStyleSheetSettingsViewModel model = new()
+            {
+                EnableCustomCss = true,
+                CssCode = string.Empty
+            };
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var result = await settingsController.CustomStyleSheet(model);
 
-        //[Test]
-        //public void DataPorting_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
+        }
 
-        //    // Act
-        //    var result = settingsController.DataPorting();
+        [Test]
+        public async Task CustomStyleSheet_Post_Enabled_BadCSS()
+        {
+            _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var settingsController = CreateSettingsController();
+            CustomStyleSheetSettingsViewModel model = new()
+            {
+                EnableCustomCss = true,
+                CssCode = ".996-{icu}"
+            };
+
+            var result = await settingsController.CustomStyleSheet(model);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public async Task CustomStyleSheet_Post_OK()
+        {
+            _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
+
+            var settingsController = CreateSettingsController();
+            CustomStyleSheetSettingsViewModel model = new()
+            {
+                EnableCustomCss = true,
+                CssCode = ".icu { color: #996; }"
+            };
+
+            var result = await settingsController.CustomStyleSheet(model);
+
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+        }
+
+        [Test]
+        public void DataPorting_Get()
+        {
+            var settingsController = CreateSettingsController();
+            var result = settingsController.DataPorting();
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
         //[Test]
         //public async Task ExportDownload_StateUnderTest_ExpectedBehavior()
