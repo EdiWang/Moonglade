@@ -6,6 +6,7 @@ using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.FriendLink;
+using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
 using Moq;
@@ -125,35 +126,26 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, It.IsAny<string>()));
         }
 
-        //[Test]
-        //public async Task SendTestEmail_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    IBlogNotificationClient notificationClient = null;
+        [Test]
+        public async Task SendTestEmail_Post()
+        {
+            var settingsController = CreateSettingsController();
+            Mock<IBlogNotificationClient> notificationClientMock = new();
 
-        //    // Act
-        //    var result = await settingsController.SendTestEmail(
-        //        notificationClient);
+            var result = await settingsController.SendTestEmail(notificationClientMock.Object);
+            Assert.IsInstanceOf<JsonResult>(result);
+        }
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+        [Test]
+        public void Subscription_Get()
+        {
+            _mockBlogConfig.Setup(p => p.FeedSettings).Returns(new FeedSettings());
+            var settingsController = CreateSettingsController();
 
-        //[Test]
-        //public void Subscription_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
+            var result = settingsController.Subscription();
 
-        //    // Act
-        //    var result = settingsController.Subscription();
-
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
         //[Test]
         //public async Task Subscription_StateUnderTest_ExpectedBehavior1()
