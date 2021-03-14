@@ -18,7 +18,7 @@ IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N
 CREATE TABLE BlogAsset(
 [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
 [Base64Data] [nvarchar](max) NULL,
-[LastModifiedTimeUtc] [datetime] NULL)
+[LastModifiedTimeUtc] [datetime] NOT NULL)
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'Category')
 CREATE TABLE [Category](
