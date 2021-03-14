@@ -147,35 +147,29 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        //[Test]
-        //public async Task Subscription_StateUnderTest_ExpectedBehavior1()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    SubscriptionSettingsViewModel model = null;
+        [Test]
+        public async Task Subscription_Post()
+        {
+            _mockBlogConfig.Setup(p => p.FeedSettings).Returns(new FeedSettings());
+            var settingsController = CreateSettingsController();
+            SubscriptionSettingsViewModel model = new();
 
-        //    // Act
-        //    var result = await settingsController.Subscription(
-        //        model);
+            var result = await settingsController.Subscription(model);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, It.IsAny<string>()));
+        }
 
-        //[Test]
-        //public void Watermark_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
+        [Test]
+        public void Watermark_Get()
+        {
+            _mockBlogConfig.Setup(p => p.WatermarkSettings).Returns(new WatermarkSettings());
+            var settingsController = CreateSettingsController();
 
-        //    // Act
-        //    var result = settingsController.Watermark();
-
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var result = settingsController.Watermark();
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
         //[Test]
         //public async Task Watermark_StateUnderTest_ExpectedBehavior1()
