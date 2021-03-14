@@ -126,7 +126,7 @@ namespace Moonglade.Configuration
                 else
                 {
                     await _dbConnection.ExecuteAsync(
-                        "UPDATE BlogAsset SET Base64Data = @assetBase64, LastModifiedTimeUtc = @utcNow WHERE Id = @assetId)",
+                        "UPDATE BlogAsset SET Base64Data = @assetBase64, LastModifiedTimeUtc = @utcNow WHERE Id = @assetId",
                         new
                         {
                             assetId,
