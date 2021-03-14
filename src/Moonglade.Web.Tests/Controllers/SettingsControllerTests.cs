@@ -185,37 +185,28 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, It.IsAny<string>()));
         }
 
-        //[Test]
-        //public async Task FriendLink_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    FriendLinkSettingsViewModelWrap model = null;
+        [Test]
+        public async Task FriendLink_Post()
+        {
+            _mockBlogConfig.Setup(p => p.FriendLinksSettings).Returns(new FriendLinksSettings());
+            var settingsController = CreateSettingsController();
+            FriendLinkSettingsViewModelWrap model = new() { FriendLinkSettingsViewModel = new() };
 
-        //    // Act
-        //    var result = await settingsController.FriendLink(
-        //        model);
+            var result = await settingsController.FriendLink(model);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FriendLinksSettings>()));
+        }
 
-        //[Test]
-        //public async Task SetBloggerAvatar_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    string base64Img = null;
+        [Test]
+        public async Task SetBloggerAvatar_Post_BadData()
+        {
+            var settingsController = CreateSettingsController();
+            string base64Img = "996.icu";
 
-        //    // Act
-        //    var result = await settingsController.SetBloggerAvatar(
-        //        base64Img);
-
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var result = await settingsController.SetBloggerAvatar(base64Img);
+            Assert.IsInstanceOf<ConflictObjectResult>(result);
+        }
 
         //[Test]
         //public async Task SetSiteIcon_StateUnderTest_ExpectedBehavior()
@@ -233,19 +224,16 @@ namespace Moonglade.Web.Tests.Controllers
         //    _mockRepository.VerifyAll();
         //}
 
-        //[Test]
-        //public void Advanced_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
+        [Test]
+        public void Advanced_Get()
+        {
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
 
-        //    // Act
-        //    var result = settingsController.Advanced();
+            var settingsController = CreateSettingsController();
+            var result = settingsController.Advanced();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
         //[Test]
         //public async Task Advanced_StateUnderTest_ExpectedBehavior1()
