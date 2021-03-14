@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
 using Moonglade.FriendLink;
 using Moq;
 using NUnit.Framework;

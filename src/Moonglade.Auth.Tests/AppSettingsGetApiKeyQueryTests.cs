@@ -1,10 +1,8 @@
-using Microsoft.Extensions.Options;
-using Moonglade.Auth;
-using Moq;
-using NUnit.Framework;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Auth.Tests
 {
