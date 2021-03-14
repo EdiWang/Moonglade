@@ -14,6 +14,12 @@ CREATE TABLE [BlogConfiguration](
 [CfgValue] [nvarchar](max) NULL,
 [LastModifiedTimeUtc] [datetime] NULL)
 
+IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'BlogAsset')
+CREATE TABLE BlogAsset(
+[Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
+[Base64Data] [nvarchar](max) NULL,
+[LastModifiedTimeUtc] [datetime] NULL)
+
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'Category')
 CREATE TABLE [Category](
 [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
