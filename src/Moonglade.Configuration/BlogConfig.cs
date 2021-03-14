@@ -101,6 +101,63 @@ namespace Moonglade.Configuration
             }
         }
 
+        public async Task SaveAssetAsync(Guid assetId, string assetBase64)
+        {
+            if (assetId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(assetId));
+            if (string.IsNullOrWhiteSpace(assetBase64)) throw new ArgumentNullException(nameof(assetBase64));
+
+            try
+            {
+                var exists = await
+                    _dbConnection.ExecuteScalarAsync<int>("SELECT TOP 1 1 FROM BlogAsset ba WHERE ba.Id = @assetId",
+                        new { assetId });
+
+                if (exists == 0)
+                {
+                    await _dbConnection.ExecuteAsync(
+                        "INSERT INTO BlogAsset(Id, Base64Data, LastModifiedTimeUtc) VALUES (@assetId, @assetBase64, @utcNow)",
+                        new
+                        {
+                            assetId,
+                            assetBase64,
+                            DateTime.UtcNow
+                        });
+                }
+                else
+                {
+                    await _dbConnection.ExecuteAsync(
+                        "UPDATE BlogAsset SET Base64Data = @assetBase64, LastModifiedTimeUtc = @utcNow WHERE Id = @assetId)",
+                        new
+                        {
+                            assetId,
+                            assetBase64,
+                            DateTime.UtcNow
+                        });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw;
+            }
+        }
+
+        public async Task<string> GetAssetDataAsync(Guid assetId)
+        {
+            try
+            {
+                var asset = await _dbConnection.QueryFirstOrDefaultAsync<BlogAsset>
+                    ("SELECT TOP 1 * FROM BlogAsset ba WHERE ba.Id = @assetId", new { assetId });
+
+                return asset?.Base64Data;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw;
+            }
+        }
+
         protected void Dirty()
         {
             _hasInitialized = false;
