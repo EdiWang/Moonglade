@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
 using Moonglade.FriendLink;
@@ -218,10 +219,11 @@ namespace Moonglade.Web.Controllers
 
         [Route("avatar")]
         [ResponseCache(Duration = 300)]
-        public IActionResult Avatar([FromServices] IBlogCache cache)
+        public async Task<IActionResult> Avatar([FromServices] IBlogCache cache)
         {
+            var data = await _blogConfig.GetAssetDataAsync(AssetId.AvatarBase64);
             var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
-            if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.AvatarBase64))
+            if (string.IsNullOrWhiteSpace(data))
             {
                 return PhysicalFile(fallbackImageFile, "image/png");
             }
@@ -231,7 +233,7 @@ namespace Moonglade.Web.Controllers
                 return cache.GetOrCreate(CacheDivision.General, "avatar", _ =>
                 {
                     _logger.LogTrace("Avatar not on cache, getting new avatar image...");
-                    var avatarBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.AvatarBase64);
+                    var avatarBytes = Convert.FromBase64String(data);
                     return File(avatarBytes, "image/png");
                 });
             }
@@ -251,7 +253,7 @@ namespace Moonglade.Web.Controllers
 
         [ResponseCache(Duration = 3600)]
         [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
-        public IActionResult SiteIcon(string filename)
+        public async Task<IActionResult> SiteIcon(string filename)
         {
             // BUG:
             // When `RefreshSiteIconCache()` is not finished, not all icons are there
@@ -259,7 +261,7 @@ namespace Moonglade.Web.Controllers
             // It is `false`, so the requested filename will be 404 because it's not there at this time
             if (!Directory.Exists(SiteIconDirectory) || !Directory.GetFiles(SiteIconDirectory).Any())
             {
-                RefreshSiteIconCache();
+                await RefreshSiteIconCache();
             }
 
             var iconPath = Path.Join(SiteIconDirectory, filename.ToLower());
@@ -278,17 +280,18 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [Route("siteicon")]
-        public IActionResult SiteIconOrigin()
+        public async Task<IActionResult> SiteIconOrigin()
         {
+            var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
             var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
-            if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.SiteIconBase64))
+            if (string.IsNullOrWhiteSpace(data))
             {
                 return PhysicalFile(fallbackImageFile, "image/png");
             }
 
             try
             {
-                var siteIconBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.SiteIconBase64);
+                var siteIconBytes = Convert.FromBase64String(data);
                 return File(siteIconBytes, "image/png");
             }
             catch (FormatException e)
@@ -303,7 +306,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        private void RefreshSiteIconCache()
+        private async Task RefreshSiteIconCache()
         {
             try
             {
@@ -311,11 +314,13 @@ namespace Moonglade.Web.Controllers
 
                 try
                 {
-                    if (!string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.SiteIconBase64))
-                    {
-                        var siteIconBytes = Convert.FromBase64String(_blogConfig.GeneralSettings.SiteIconBase64);
+                    var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
 
-                        using (var ms = new MemoryStream(siteIconBytes))
+                    if (!string.IsNullOrWhiteSpace(data))
+                    {
+                        var siteIconBytes = Convert.FromBase64String(data);
+
+                        await using (var ms = new MemoryStream(siteIconBytes))
                         {
                             var image = System.Drawing.Image.FromStream(ms);
                             if (image.Height != image.Width)
@@ -330,7 +335,7 @@ namespace Moonglade.Web.Controllers
                             Directory.CreateDirectory(SiteIconDirectory);
                         }
 
-                        System.IO.File.WriteAllBytes(p, siteIconBytes);
+                        await System.IO.File.WriteAllBytesAsync(p, siteIconBytes);
                         iconTemplatPath = p;
                     }
                 }

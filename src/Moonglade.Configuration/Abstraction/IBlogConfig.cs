@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Configuration.Abstraction
 {
@@ -15,5 +16,9 @@ namespace Moonglade.Configuration.Abstraction
         CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
         Task SaveAsync<T>(T blogSettings) where T : BlogSettings;
+
+        Task SaveAssetAsync(Guid assetId, string assetBase64);
+
+        Task<string> GetAssetDataAsync(Guid assetId);
     }
 }

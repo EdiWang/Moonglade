@@ -78,6 +78,7 @@ namespace Moonglade.Setup
 
             // Clear Configuration Table
             _conn.Execute("DELETE FROM BlogConfiguration");
+            _conn.Execute("DELETE FROM BlogAsset");
 
             // Clear AuditLog Table
             _conn.Execute("DELETE FROM AuditLog");

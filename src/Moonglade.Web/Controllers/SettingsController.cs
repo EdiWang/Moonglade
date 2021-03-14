@@ -319,8 +319,7 @@ namespace Moonglade.Web.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
                 }
 
-                _blogConfig.GeneralSettings.AvatarBase64 = base64Img;
-                await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+                await _blogConfig.SaveAssetAsync(AssetId.AvatarBase64, base64Img);
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
 
                 return Json(true);
@@ -359,8 +358,7 @@ namespace Moonglade.Web.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
                 }
 
-                _blogConfig.GeneralSettings.SiteIconBase64 = base64Img;
-                await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+                await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
 
                 if (Directory.Exists(SiteIconDirectory))
                 {
