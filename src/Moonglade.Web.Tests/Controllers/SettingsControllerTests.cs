@@ -81,8 +81,8 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings());
 
             var settingsController = CreateSettingsController();
-
             var result = settingsController.Content();
+
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
@@ -100,35 +100,30 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, It.IsAny<string>()));
         }
 
-        //[Test]
-        //public void Notification_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
+        [Test]
+        public void Notification_Get()
+        {
+            _mockBlogConfig.Setup(p => p.NotificationSettings).Returns(new NotificationSettings());
 
-        //    // Act
-        //    var result = settingsController.Notification();
+            var settingsController = CreateSettingsController();
+            var result = settingsController.Notification();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
-        //[Test]
-        //public async Task Notification_StateUnderTest_ExpectedBehavior1()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    NotificationSettingsViewModel model = null;
+        [Test]
+        public async Task Notification_Post()
+        {
+            _mockBlogConfig.Setup(p => p.NotificationSettings).Returns(new NotificationSettings());
+            var settingsController = CreateSettingsController();
+            NotificationSettingsViewModel model = new();
 
-        //    // Act
-        //    var result = await settingsController.Notification(
-        //        model);
+            var result = await settingsController.Notification(model);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, It.IsAny<string>()));
+        }
 
         //[Test]
         //public async Task SendTestEmail_StateUnderTest_ExpectedBehavior()
