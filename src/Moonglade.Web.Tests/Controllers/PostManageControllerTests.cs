@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Moonglade.Configuration;
 using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Web.Models;
@@ -97,19 +98,25 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        //[Test]
-        //public async Task Create_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
+        [Test]
+        public async Task Create_View()
+        {
+            IReadOnlyList<Category> cats = new List<Category>()
+            {
+                new(){Id = Guid.Empty, DisplayName = "Work 996", Note = "Get into ICU", RouteName = "work-996"}
+            };
 
-        //    // Act
-        //    var result = await postManageController.Create();
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            {
+                DefaultLangCode = "en-US"
+            });
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Create();
+
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
         //[Test]
         //public async Task Edit_StateUnderTest_ExpectedBehavior()
