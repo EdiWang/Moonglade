@@ -101,13 +101,13 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Create_View()
         {
-            IReadOnlyList<Category> cats = new List<Category>()
+            IReadOnlyList<Category> cats = new List<Category>
             {
                 new(){Id = Guid.Empty, DisplayName = "Work 996", Note = "Get into ICU", RouteName = "work-996"}
             };
 
             _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
                 DefaultLangCode = "en-US"
             });
@@ -131,7 +131,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Edit_View()
         {
-            var cat = new Category()
+            var cat = new Category
             {
                 DisplayName = "WTF",
                 Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"),
@@ -157,13 +157,13 @@ namespace Moonglade.Web.Tests.Controllers
                 CreateTimeUtc = new DateTime(2018, 9, 6, 6, 35, 7),
                 Tags = new[]
                 {
-                    new Tag() { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
-                    new Tag() { DisplayName = "996", Id = 251, NormalizedName = "996" }
+                    new Tag { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
+                    new Tag { DisplayName = "996", Id = 251, NormalizedName = "996" }
                 },
                 Categories = new[] { cat }
             };
 
-            IReadOnlyList<Category> cats = new List<Category>() { cat };
+            IReadOnlyList<Category> cats = new List<Category> { cat };
 
             _mockPostService.Setup(p => p.GetAsync(Uid)).Returns(Task.FromResult(post));
             _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
@@ -180,10 +180,10 @@ namespace Moonglade.Web.Tests.Controllers
             postManageController.ModelState.AddModelError("", "996");
 
             PostEditModel model = new();
-            LinkGenerator linkGenerator = null;
+            Mock<LinkGenerator> mockLinkGenerator = new();
             Mock<IPingbackSender> mockPingbackSender = new();
 
-            var result = await postManageController.CreateOrEdit(model, linkGenerator, mockPingbackSender.Object);
+            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object, mockPingbackSender.Object);
 
             Assert.IsInstanceOf<ConflictObjectResult>(result);
         }
