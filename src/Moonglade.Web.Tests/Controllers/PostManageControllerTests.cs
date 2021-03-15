@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
-using Moonglade.Web;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -174,25 +173,20 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        //[Test]
-        //public async Task CreateOrEdit_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
-        //    PostEditModel model = null;
-        //    LinkGenerator linkGenerator = null;
-        //    IPingbackSender pingbackSender = null;
+        [Test]
+        public async Task CreateOrEdit_BadModelState()
+        {
+            var postManageController = CreatePostManageController();
+            postManageController.ModelState.AddModelError("", "996");
 
-        //    // Act
-        //    var result = await postManageController.CreateOrEdit(
-        //        model,
-        //        linkGenerator,
-        //        pingbackSender);
+            PostEditModel model = new();
+            LinkGenerator linkGenerator = null;
+            Mock<IPingbackSender> mockPingbackSender = new();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var result = await postManageController.CreateOrEdit(model, linkGenerator, mockPingbackSender.Object);
+
+            Assert.IsInstanceOf<ConflictObjectResult>(result);
+        }
 
         [Test]
         public async Task Restore_EmptyId()
@@ -244,32 +238,22 @@ namespace Moonglade.Web.Tests.Controllers
             _mockPostService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), false));
         }
 
-        //[Test]
-        //public async Task EmptyRecycleBin_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
+        [Test]
+        public async Task EmptyRecycleBin_View()
+        {
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.EmptyRecycleBin();
 
-        //    // Act
-        //    var result = await postManageController.EmptyRecycleBin();
+            Assert.IsInstanceOf<RedirectToActionResult>(result);
+        }
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+        [Test]
+        public async Task Insights_StateUnderTest_ExpectedBehavior()
+        {
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Insights();
 
-        //[Test]
-        //public async Task Insights_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
-
-        //    // Act
-        //    var result = await postManageController.Insights();
-
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
     }
 }
