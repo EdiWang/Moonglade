@@ -29,6 +29,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITZoneResolver> _mockTZoneResolver;
         private Mock<ILogger<PostManageController>> _mockLogger;
+        private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
 
         [SetUp]
         public void SetUp()
@@ -118,21 +119,60 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        //[Test]
-        //public async Task Edit_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
-        //    Guid id = default(Guid);
+        [Test]
+        public async Task Edit_NotFound()
+        {
+            _mockPostService.Setup(p => p.GetAsync(Guid.Empty)).Returns(Task.FromResult((Post)null));
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Edit(Guid.Empty);
 
-        //    // Act
-        //    var result = await postManageController.Edit(
-        //        id);
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+        [Test]
+        public async Task Edit_View()
+        {
+            var cat = new Category()
+            {
+                DisplayName = "WTF",
+                Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"),
+                Note = "A wonderful contry",
+                RouteName = "wtf"
+            };
+
+            var post = new Post
+            {
+                Id = Uid,
+                Title = "Work 996 and Get into ICU",
+                Slug = "work-996-and-get-into-icu",
+                ContentAbstract = "Get some fubao",
+                RawPostContent = "<p>Get some fubao</p>",
+                ContentLanguageCode = "en-us",
+                Featured = true,
+                ExposedToSiteMap = true,
+                IsFeedIncluded = true,
+                IsPublished = true,
+                CommentEnabled = true,
+                PubDateUtc = new DateTime(2019, 9, 6, 6, 35, 7),
+                LastModifiedUtc = new DateTime(2020, 9, 6, 6, 35, 7),
+                CreateTimeUtc = new DateTime(2018, 9, 6, 6, 35, 7),
+                Tags = new[]
+                {
+                    new Tag() { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
+                    new Tag() { DisplayName = "996", Id = 251, NormalizedName = "996" }
+                },
+                Categories = new[] { cat }
+            };
+
+            IReadOnlyList<Category> cats = new List<Category>() { cat };
+
+            _mockPostService.Setup(p => p.GetAsync(Uid)).Returns(Task.FromResult(post));
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Edit(Uid);
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
         //[Test]
         //public async Task CreateOrEdit_StateUnderTest_ExpectedBehavior()
@@ -154,21 +194,21 @@ namespace Moonglade.Web.Tests.Controllers
         //    _mockRepository.VerifyAll();
         //}
 
-        //[Test]
-        //public async Task Restore_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
-        //    Guid postId = default(Guid);
+        [Test]
+        public async Task Restore_EmptyId()
+        {
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Restore(Guid.Empty);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
 
-        //    // Act
-        //    var result = await postManageController.Restore(
-        //        postId);
-
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+        [Test]
+        public async Task Restore_OK()
+        {
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Restore(Uid);
+            Assert.IsInstanceOf<OkResult>(result);
+        }
 
         //[Test]
         //public async Task Delete_StateUnderTest_ExpectedBehavior()
