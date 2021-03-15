@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Comments;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.FriendLink;
@@ -316,6 +317,19 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateAdminController();
             var result = await ctl.Menu();
+
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
+
+        [Test]
+        public async Task FriendLink_View()
+        {
+            IReadOnlyList<Link> links = new List<Link>();
+            _mockFriendlinkService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(links));
+            _mockBlogConfig.Setup(p => p.FriendLinksSettings).Returns(new FriendLinksSettings());
+
+            var ctl = CreateAdminController();
+            var result = await ctl.FriendLink();
 
             Assert.IsInstanceOf<ViewResult>(result);
         }
