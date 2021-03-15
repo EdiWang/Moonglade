@@ -95,7 +95,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
 
             var postManageController = CreatePostManageController();
-            DataTableRequest model = new DataTableRequest
+            var model = new DataTableRequest
             {
                 Draw = 251,
                 Length = 35,
@@ -192,6 +192,47 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task CreateOrEdit_Exception()
+        {
+            var postManageController = CreatePostManageController();
+            postManageController.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            PostEditModel model = new()
+            {
+                PostId = Guid.Empty,
+                Title = Post.Title,
+                Slug = Post.Slug,
+                EditorContent = Post.RawPostContent,
+                LanguageCode = Post.ContentLanguageCode,
+                IsPublished = false,
+                Featured = true,
+                ExposedToSiteMap = true,
+                ChangePublishDate = false,
+                EnableComment = true,
+                FeedIncluded = true,
+                Tags = "996,icu",
+                CategoryList = new List<CheckBoxViewModel>(),
+                SelectedCategoryIds = new[] { Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d") }
+            };
+
+            Mock<LinkGenerator> mockLinkGenerator = new();
+            Mock<IPingbackSender> mockPingbackSender = new();
+
+            _mockPostService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Throws(new Exception("Work 996"));
+
+            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object, mockPingbackSender.Object);
+            Assert.IsInstanceOf<JsonResult>(result);
+
+            var statusCode = postManageController.HttpContext.Response.StatusCode;
+            Assert.AreEqual(500, statusCode);
+
+            mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
         public async Task CreateOrEdit_Create_Draft()
         {
             var postManageController = CreatePostManageController();
@@ -254,7 +295,6 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             Mock<LinkGenerator> mockLinkGenerator = new();
-
             mockLinkGenerator.Setup(p => p.GetUriByAddress(
                 It.IsAny<HttpContext>(),
                 It.IsAny<RouteValuesAddress>(),
@@ -269,7 +309,7 @@ namespace Moonglade.Web.Tests.Controllers
                 .Returns("https://996.icu/1996/7/2/work-996-and-get-into-icu");
 
             Mock<IPingbackSender> mockPingbackSender = new();
-            ManualResetEvent trySendPingAsyncCalled = new ManualResetEvent(false);
+            var trySendPingAsyncCalled = new ManualResetEvent(false);
             mockPingbackSender.Setup(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>())).Callback(() =>
             {
                 trySendPingAsyncCalled.Set();
