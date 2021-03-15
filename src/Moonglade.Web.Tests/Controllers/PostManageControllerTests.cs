@@ -6,9 +6,12 @@ using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Web.Models;
 
@@ -48,21 +51,25 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockLogger.Object);
         }
 
-        //[Test]
-        //public async Task ListPublished_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
-        //    DataTableRequest model = null;
+        [Test]
+        public async Task ListPublished_Json()
+        {
+            (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
 
-        //    // Act
-        //    var result = await postManageController.ListPublished(
-        //        model);
+            _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var postManageController = CreatePostManageController();
+            DataTableRequest model = new DataTableRequest
+            {
+                Draw = 251,
+                Length = 35,
+                Start = 7,
+                Search = new SearchRequest { Value = "996" }
+            };
+
+            var result = await postManageController.ListPublished(model);
+            Assert.IsInstanceOf<JsonResult>(result);
+        }
 
         //[Test]
         //public async Task Draft_StateUnderTest_ExpectedBehavior()
