@@ -15,16 +15,12 @@ namespace Moonglade.Web.Configuration
             configuration.Bind("CommentModerator", settings);
             services.Configure<CommentModeratorSettings>(configuration.GetSection("CommentModerator"));
 
-            if (null == settings.Provider)
+            if (string.IsNullOrWhiteSpace(settings.Provider))
             {
                 throw new ArgumentNullException("Provider", "Provider can not be null.");
             }
 
             var provider = settings.Provider.ToLower();
-            if (string.IsNullOrWhiteSpace(provider))
-            {
-                throw new ArgumentNullException("Provider", "Provider can not be empty.");
-            }
 
             switch (provider)
             {
