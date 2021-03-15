@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Data.Entities;
@@ -25,7 +27,7 @@ namespace Moonglade.Comments.Tests
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
@@ -54,6 +56,15 @@ namespace Moonglade.Comments.Tests
 
             var result = service.Count();
             Assert.AreEqual(996, result);
+        }
+
+        [Test]
+        public async Task GetApprovedCommentsAsync_OK()
+        {
+            var service = CreateCommentService();
+            await service.GetApprovedCommentsAsync(Guid.Empty);
+
+            _mockRepositoryCommentEntity.Verify(p => p.SelectAsync(It.IsAny<ISpecification<CommentEntity>>(),It.IsAny<Expression<Func<CommentEntity, Comment>>>() ,true));
         }
 
         [Test]
