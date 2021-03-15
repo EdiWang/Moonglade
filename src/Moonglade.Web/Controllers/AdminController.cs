@@ -32,6 +32,7 @@ namespace Moonglade.Web.Controllers
         private readonly ITagService _tagService;
         private readonly ICommentService _commentService;
         private readonly IPingbackService _pingbackService;
+        private readonly IMenuService _menuService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
 
@@ -44,6 +45,7 @@ namespace Moonglade.Web.Controllers
             ITagService tagService,
             ICommentService commentService,
             IPingbackService pingbackService,
+            IMenuService menuService,
             IBlogConfig blogConfig)
         {
             _authenticationSettings = authSettings.Value;
@@ -53,6 +55,7 @@ namespace Moonglade.Web.Controllers
             _tagService = tagService;
             _commentService = commentService;
             _pingbackService = pingbackService;
+            _menuService = menuService;
 
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
@@ -176,9 +179,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("menu")]
-        public async Task<IActionResult> Menu([FromServices] IMenuService menuService)
+        public async Task<IActionResult> Menu()
         {
-            var menus = await menuService.GetAllAsync();
+            var menus = await _menuService.GetAllAsync();
             var model = new MenuManageModel
             {
                 MenuItems = menus
