@@ -210,37 +210,39 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<OkResult>(result);
         }
 
-        //[Test]
-        //public async Task Delete_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
-        //    Guid postId = default(Guid);
+        [Test]
+        public async Task Delete_EmptyId()
+        {
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Delete(Guid.Empty);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
 
-        //    // Act
-        //    var result = await postManageController.Delete(
-        //        postId);
+        [Test]
+        public async Task Delete_OK()
+        {
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Delete(Uid);
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockPostService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+        }
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+        [Test]
+        public async Task DeleteFromRecycleBin_EmptyId()
+        {
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.DeleteFromRecycleBin(Guid.Empty);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
 
-        //[Test]
-        //public async Task DeleteFromRecycleBin_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
-        //    Guid postId = default(Guid);
-
-        //    // Act
-        //    var result = await postManageController.DeleteFromRecycleBin(
-        //        postId);
-
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+        [Test]
+        public async Task DeleteFromRecycleBin_OK()
+        {
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.DeleteFromRecycleBin(Uid);
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockPostService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), false));
+        }
 
         //[Test]
         //public async Task EmptyRecycleBin_StateUnderTest_ExpectedBehavior()
