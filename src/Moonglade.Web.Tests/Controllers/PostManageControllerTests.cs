@@ -230,7 +230,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task CreateOrEdit_Create_Publish_EnablePingback()
         {
             var postManageController = CreatePostManageController();
-            postManageController.ControllerContext = new ControllerContext()
+            postManageController.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };

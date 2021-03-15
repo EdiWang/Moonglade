@@ -75,7 +75,7 @@ namespace Moonglade.Web.Tests.Middleware
         [Test]
         public async Task Invoke_404ImagePathButNoUseFriendlyNotFoundImage()
         {
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
                 UseFriendlyNotFoundImage = false
             });
@@ -96,7 +96,7 @@ namespace Moonglade.Web.Tests.Middleware
         [Test]
         public async Task Invoke_404ImageEnabled_ExtensionNotAllowed()
         {
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
                 UseFriendlyNotFoundImage = true
             });
@@ -117,7 +117,7 @@ namespace Moonglade.Web.Tests.Middleware
         [Test]
         public async Task Invoke_404ImageEnabled_SetDefault_FileNotFound()
         {
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
                 UseFriendlyNotFoundImage = true
             });

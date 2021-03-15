@@ -93,7 +93,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateLocalAccountController();
             ctl.ControllerContext = new()
             {
-                HttpContext = new DefaultHttpContext()
+                HttpContext = new DefaultHttpContext
                 {
                     User = new()
                 }

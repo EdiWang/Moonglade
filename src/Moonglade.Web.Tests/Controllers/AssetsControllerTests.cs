@@ -199,7 +199,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Image_Upload_InvalidExtension()
         {
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings()
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
             {
                 AllowedExtensions = new[] { ".png" }
             });
@@ -215,7 +215,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Image_Upload_EmptyAllowedExtensions()
         {
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings()
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
             {
                 AllowedExtensions = Array.Empty<string>()
             });
@@ -232,7 +232,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Image_Upload_NullAllowedExtensions()
         {
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings()
+            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
             {
                 AllowedExtensions = null
             });

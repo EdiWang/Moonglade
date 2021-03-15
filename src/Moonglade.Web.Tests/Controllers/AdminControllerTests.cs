@@ -189,7 +189,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Page_View()
         {
-            IReadOnlyList<PageSegment> fakePageSegments = new List<PageSegment>()
+            IReadOnlyList<PageSegment> fakePageSegments = new List<PageSegment>
             {
                 new ()
                 {
@@ -296,7 +296,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Category_View()
         {
-            IReadOnlyList<Category> cats = new List<Category>()
+            IReadOnlyList<Category> cats = new List<Category>
             {
                 new (){Id = Guid.Empty, DisplayName = "Work 996", Note = "Fubao", RouteName = "work-996" }
             };
