@@ -392,5 +392,21 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
+
+        [Test]
+        public async Task AuditLogs_View()
+        {
+            Mock<IFeatureManager> mockFeatureMgr = new Mock<IFeatureManager>();
+            mockFeatureMgr.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
+                .Returns(Task.FromResult(true));
+            (IReadOnlyList<AuditEntry> Entries, int Count) data = new(new List<AuditEntry>(), 996);
+
+            _mockAudit.Setup(p => p.GetAuditEntries(It.IsAny<int>(), It.IsAny<int>(), null, null)).Returns(Task.FromResult(data));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.AuditLogs(mockFeatureMgr.Object, 1);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
     }
 }
