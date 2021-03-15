@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.FriendLink;
 using Moonglade.Menus;
@@ -361,6 +363,34 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Comments(1);
 
             Assert.IsInstanceOf<ViewResult>(result);
+        }
+
+        [Test]
+        public async Task AuditLogs_FeatureDisabled()
+        {
+            Mock<IFeatureManager> mockFeatureMgr = new Mock<IFeatureManager>();
+            mockFeatureMgr.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
+                .Returns(Task.FromResult(false));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.AuditLogs(mockFeatureMgr.Object);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.IsNull(((ViewResult)result).Model);
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        public async Task AuditLogs_FeatureEnabled_BadPageSize(int pageSize)
+        {
+            Mock<IFeatureManager> mockFeatureMgr = new Mock<IFeatureManager>();
+            mockFeatureMgr.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
+                .Returns(Task.FromResult(true));
+
+            var ctl = CreateAdminController();
+            var result = await ctl.AuditLogs(mockFeatureMgr.Object, pageSize);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
     }
 }

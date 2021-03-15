@@ -89,7 +89,7 @@ namespace Moonglade.Web.Controllers
             var flag = await featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableAudit));
             if (!flag) return View();
 
-            if (page < 0) return BadRequest(ModelState);
+            if (page <= 0) return BadRequest(ModelState);
 
             var skip = (page - 1) * 20;
 
