@@ -11,7 +11,7 @@ using Moonglade.Pages;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Core.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

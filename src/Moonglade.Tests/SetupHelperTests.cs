@@ -6,7 +6,7 @@ using Moq;
 using Moq.Dapper;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Core.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

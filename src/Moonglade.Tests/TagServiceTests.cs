@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Core.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
