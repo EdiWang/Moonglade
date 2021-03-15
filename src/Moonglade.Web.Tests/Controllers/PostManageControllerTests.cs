@@ -7,7 +7,9 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration;
@@ -221,6 +223,73 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object, mockPingbackSender.Object);
             Assert.IsInstanceOf<JsonResult>(result);
+            mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public async Task CreateOrEdit_Create_Publish_EnablePingback()
+        {
+            var postManageController = CreatePostManageController();
+            postManageController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            PostEditModel model = new()
+            {
+                PostId = Guid.Empty,
+                Title = Post.Title,
+                Slug = Post.Slug,
+                EditorContent = Post.RawPostContent,
+                LanguageCode = Post.ContentLanguageCode,
+                IsPublished = true,
+                Featured = true,
+                ExposedToSiteMap = true,
+                ChangePublishDate = false,
+                EnableComment = true,
+                FeedIncluded = true,
+                Tags = "996,icu",
+                CategoryList = new List<CheckBoxViewModel>(),
+                SelectedCategoryIds = new[] { Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d") }
+            };
+
+            Mock<LinkGenerator> mockLinkGenerator = new();
+
+            mockLinkGenerator.Setup(p => p.GetUriByAddress(
+                It.IsAny<HttpContext>(),
+                It.IsAny<RouteValuesAddress>(),
+                It.IsAny<RouteValueDictionary>(),
+                It.IsAny<RouteValueDictionary>(),
+                It.IsAny<string>(),
+                It.IsAny<HostString>(),
+                It.IsAny<PathString>(),
+                It.IsAny<FragmentString>(),
+                It.IsAny<LinkOptions>()
+                ))
+                .Returns("https://996.icu/1996/7/2/work-996-and-get-into-icu");
+
+            Mock<IPingbackSender> mockPingbackSender = new();
+            ManualResetEvent trySendPingAsyncCalled = new ManualResetEvent(false);
+            mockPingbackSender.Setup(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>())).Callback(() =>
+            {
+                trySendPingAsyncCalled.Set();
+            });
+
+            _mockPostService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Returns(Task.FromResult(new PostEntity
+            {
+                Id = Uid,
+                PubDateUtc = new DateTime(1996, 7, 2, 5, 1, 0),
+                ContentAbstract = Post.ContentAbstract
+            }));
+
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings { EnablePingBackSend = true });
+
+            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object, mockPingbackSender.Object);
+
+            trySendPingAsyncCalled.WaitOne(TimeSpan.FromSeconds(2));
+            Assert.IsInstanceOf<JsonResult>(result);
+
+            mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()));
         }
 
         [Test]
