@@ -347,5 +347,20 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<ViewResult>(result);
         }
+
+        [Test]
+        public async Task Comments_View()
+        {
+            IReadOnlyList<CommentDetailedItem> comments = new List<CommentDetailedItem>();
+
+            _mockCommentService.Setup(p => p.GetCommentsAsync(It.IsAny<int>(), 1))
+                .Returns(Task.FromResult(comments));
+            _mockCommentService.Setup(p => p.Count()).Returns(996);
+
+            var ctl = CreateAdminController();
+            var result = await ctl.Comments(1);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
     }
 }
