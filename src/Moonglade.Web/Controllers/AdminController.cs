@@ -33,6 +33,8 @@ namespace Moonglade.Web.Controllers
         private readonly ICommentService _commentService;
         private readonly IPingbackService _pingbackService;
         private readonly IMenuService _menuService;
+        private readonly ILocalAccountService _accountService;
+
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
 
@@ -46,6 +48,7 @@ namespace Moonglade.Web.Controllers
             ICommentService commentService,
             IPingbackService pingbackService,
             IMenuService menuService,
+            ILocalAccountService accountService,
             IBlogConfig blogConfig)
         {
             _authenticationSettings = authSettings.Value;
@@ -56,6 +59,7 @@ namespace Moonglade.Web.Controllers
             _commentService = commentService;
             _pingbackService = pingbackService;
             _menuService = menuService;
+            _accountService = accountService;
 
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
@@ -214,9 +218,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("account")]
-        public async Task<IActionResult> LocalAccount([FromServices] ILocalAccountService accountService)
+        public async Task<IActionResult> LocalAccount()
         {
-            var accounts = await accountService.GetAllAsync();
+            var accounts = await _accountService.GetAllAsync();
             var vm = new AccountManageViewModel { Accounts = accounts };
 
             return View(vm);
