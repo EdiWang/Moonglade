@@ -181,7 +181,11 @@
     }
 
     <div id="page-content" class="content">
-        @if (null != ViewBag.ShowBloggerIntroInXS && ViewBag.ShowBloggerIntroInXS)
+        @if (null != ViewBag.HideSideBar && ViewBag.HideSideBar)
+        {
+            @RenderBody()
+        }
+        else
         {
             <section class="blogger-intro-mobile d-block d-sm-none">
                 <div class="card-bkimg-container">
@@ -202,13 +206,6 @@
                     </div>
                 </div>
             </section>
-        }
-        @if (null != ViewBag.HideSideBar && ViewBag.HideSideBar)
-        {
-            @RenderBody()
-        }
-        else
-        {
             <div class="container mt-4 mb-5">
                 <div class="row">
                     @if (BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Left)

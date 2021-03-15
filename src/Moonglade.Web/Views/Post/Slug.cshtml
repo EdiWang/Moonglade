@@ -4,7 +4,6 @@
 @inject ITZoneResolver TZoneResolver
 
 @{
-    ViewBag.ShowBloggerIntroInXS = true;
     ViewBag.BodyClass = "body-post-slug";
     var ec = Settings.Value.Editor;
     var content = ContentProcessor.AddLazyLoadToImgTag(Model.RawPostContent);
