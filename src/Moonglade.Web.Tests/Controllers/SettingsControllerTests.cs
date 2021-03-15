@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.DataPorting;
 using Moonglade.FriendLink;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
@@ -386,23 +388,69 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        //[Test]
-        //public async Task ExportDownload_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var settingsController = CreateSettingsController();
-        //    IExportManager expman = null;
-        //    ExportDataType type = default(ExportDataType);
+        [Test]
+        public async Task ExportDownload_SingleJsonFile()
+        {
+            Mock<IExportManager> mockExpman = new();
+            mockExpman.Setup(p => p.ExportData(ExportDataType.Tags))
+                .Returns(Task.FromResult(new ExportResult
+                {
+                    ExportFormat = ExportFormat.SingleJsonFile,
+                    Content = Array.Empty<byte>()
+                }));
 
-        //    // Act
-        //    var result = await settingsController.ExportDownload(
-        //        expman,
-        //        type);
+            var settingsController = CreateSettingsController();
+            ExportDataType type = ExportDataType.Tags;
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var result = await settingsController.ExportDownload(mockExpman.Object, type);
+            Assert.IsInstanceOf<FileContentResult>(result);
+        }
+
+        [Test]
+        public async Task ExportDownload_SingleCSVFile()
+        {
+            Mock<IExportManager> mockExpman = new();
+            mockExpman.Setup(p => p.ExportData(ExportDataType.Categories))
+                .Returns(Task.FromResult(new ExportResult
+                {
+                    ExportFormat = ExportFormat.SingleCSVFile,
+                    FilePath = @"C:\996\icu.csv"
+                }));
+
+            var settingsController = CreateSettingsController();
+            settingsController.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            ExportDataType type = ExportDataType.Categories;
+
+            var result = await settingsController.ExportDownload(mockExpman.Object, type);
+            Assert.IsInstanceOf<PhysicalFileResult>(result);
+        }
+
+        [Test]
+        public async Task ExportDownload_ZippedJsonFiles()
+        {
+            Mock<IExportManager> mockExpman = new();
+            mockExpman.Setup(p => p.ExportData(ExportDataType.Posts))
+                .Returns(Task.FromResult(new ExportResult
+                {
+                    ExportFormat = ExportFormat.ZippedJsonFiles,
+                    FilePath = @"C:\996\icu.zip"
+                }));
+
+            var settingsController = CreateSettingsController();
+            settingsController.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            ExportDataType type = ExportDataType.Posts;
+
+            var result = await settingsController.ExportDownload(mockExpman.Object, type);
+            Assert.IsInstanceOf<PhysicalFileResult>(result);
+        }
 
         //[Test]
         //public void ClearDataCache_StateUnderTest_ExpectedBehavior()
