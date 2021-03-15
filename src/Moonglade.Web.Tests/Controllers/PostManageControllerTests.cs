@@ -71,33 +71,31 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<JsonResult>(result);
         }
 
-        //[Test]
-        //public async Task Draft_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
+        [Test]
+        public async Task Draft_View()
+        {
+            (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
 
-        //    // Act
-        //    var result = await postManageController.Draft();
+            _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.Draft();
 
-        //[Test]
-        //public async Task RecycleBin_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var postManageController = CreatePostManageController();
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
-        //    // Act
-        //    var result = await postManageController.RecycleBin();
+        [Test]
+        public async Task RecycleBin_View()
+        {
+            (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
+
+            var postManageController = CreatePostManageController();
+            var result = await postManageController.RecycleBin();
+
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
 
         //[Test]
         //public async Task Create_StateUnderTest_ExpectedBehavior()
