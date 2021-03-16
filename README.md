@@ -79,14 +79,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 }
 ```
 
-When configured the image storage to use Azure Blob, you can take advantage of CDN for your image resources. Set ```GetImageByCDNRedirect``` to ```true```, the blog will get images from client browser using a 302 redirect. 
-
-```json
-"CDNSettings": {
-    "EnableCDNRedirect": true,
-    "CDNEndpoint": "https://yourendpoint.azureedge.net/moonglade-images"
-}
-```
+When configured the image storage to use Azure Blob, you can take advantage of CDN for your image resources. Just enable CDN in admin settings, the blog will get images from client browser using a 302 redirect.
 
 #### File System (Not Recommended)
 
