@@ -13,5 +13,9 @@ namespace Moonglade.Configuration
         public bool EnablePingBackReceive { get; set; }
 
         public bool EnableOpenGraph { get; set; }
+
+        public bool EnableCDNRedirect { get; set; }
+
+        public string CDNEndpoint { get; set; }
     }
 }
