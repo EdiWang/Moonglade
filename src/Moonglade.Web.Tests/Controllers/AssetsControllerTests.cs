@@ -67,13 +67,10 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
             {
-                CDNSettings = new()
-                {
-                    CDNEndpoint = "https://fake-cdn.edi.wang/images",
-                    EnableCDNRedirect = true
-                }
+                EnableCDNRedirect = true,
+                CDNEndpoint = "https://cdn.996.icu/fubao"
             });
 
             var ctl = CreateAssetsController();
@@ -83,7 +80,7 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf(typeof(RedirectResult), result);
             if (result is RedirectResult rdResult)
             {
-                var resultUrl = _mockImageStorageSettings.Object.Value.CDNSettings.CDNEndpoint.CombineUrl(filename);
+                var resultUrl = _mockBlogConfig.Object.AdvancedSettings.CDNEndpoint.CombineUrl(filename);
                 Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
             }
         }
@@ -93,12 +90,9 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
             {
-                CDNSettings = new()
-                {
-                    EnableCDNRedirect = false
-                }
+                EnableCDNRedirect = false,
             });
 
             _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
@@ -124,12 +118,9 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
             {
-                CDNSettings = new()
-                {
-                    EnableCDNRedirect = false
-                }
+                EnableCDNRedirect = false,
             });
 
             _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
@@ -159,12 +150,9 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
             {
-                CDNSettings = new()
-                {
-                    EnableCDNRedirect = false
-                }
+                EnableCDNRedirect = false,
             });
 
             _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
