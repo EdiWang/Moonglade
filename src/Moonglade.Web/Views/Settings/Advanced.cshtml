@@ -66,6 +66,22 @@
                         <span asp-validation-for="RobotsTxtContent" class="text-danger"></span>
                     </div>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="EnableCDNRedirect" class="custom-control-input">
+                            <label asp-for="EnableCDNRedirect" class="custom-control-label"></label>
+                        </div>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="CDNEndpoint" class="control-label"></label>
+                        <input asp-for="CDNEndpoint" class="form-control" />
+                        <span asp-validation-for="CDNEndpoint" class="text-danger"></span>
+                        <small class="form-text text-muted">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</small>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
