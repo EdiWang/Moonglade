@@ -390,7 +390,9 @@ namespace Moonglade.Web.Controllers
                 RobotsTxtContent = settings.RobotsTxtContent,
                 EnablePingbackSend = settings.EnablePingBackSend,
                 EnablePingbackReceive = settings.EnablePingBackReceive,
-                EnableOpenGraph = settings.EnableOpenGraph
+                EnableOpenGraph = settings.EnableOpenGraph,
+                EnableCDNRedirect = settings.EnableCDNRedirect,
+                CDNEndpoint = settings.CDNEndpoint
             };
 
             return View(vm);
@@ -407,6 +409,8 @@ namespace Moonglade.Web.Controllers
             settings.EnablePingBackSend = model.EnablePingbackSend;
             settings.EnablePingBackReceive = model.EnablePingbackReceive;
             settings.EnableOpenGraph = model.EnableOpenGraph;
+            settings.EnableCDNRedirect = model.EnableCDNRedirect;
+            settings.CDNEndpoint = model.CDNEndpoint;
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
