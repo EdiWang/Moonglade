@@ -168,4 +168,7 @@
   <data name="Try to shutdown and restart the website, this will terminate all current requests." xml:space="preserve">
     <value>尝试关闭并重新启动网站，该操作会终止所有当前请求</value>
   </data>
+  <data name="e.g. https://blog.ediwangcdn.com/ediwang-images" xml:space="preserve">
+    <value>示例 https://blog.ediwangcdn.com/ediwang-images</value>
+  </data>
 </root>
