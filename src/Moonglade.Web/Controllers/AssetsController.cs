@@ -74,9 +74,9 @@ namespace Moonglade.Web.Controllers
 
                 _logger.LogTrace($"Requesting image file {filename}");
 
-                if (_imageStorageSettings.CDNSettings.EnableCDNRedirect)
+                if (_blogConfig.AdvancedSettings.EnableCDNRedirect)
                 {
-                    var imageUrl = _imageStorageSettings.CDNSettings.CDNEndpoint.CombineUrl(filename);
+                    var imageUrl = _blogConfig.AdvancedSettings.CDNEndpoint.CombineUrl(filename);
                     return Redirect(imageUrl);
                 }
 

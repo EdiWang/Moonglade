@@ -13,7 +13,5 @@
         public FileSystemSettings FileSystemSettings { get; set; }
 
         public MinioStorageSettings MinioStorageSettings { get; set; }
-
-        public CDNSettings CDNSettings { get; set; }
     }
 }
