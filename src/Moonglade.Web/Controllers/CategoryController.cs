@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(typeof(IEnumerable<Category>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Categories()
+        public async Task<IActionResult> List()
         {
             var cats = await _catService.GetAll();
             return Ok(cats);
