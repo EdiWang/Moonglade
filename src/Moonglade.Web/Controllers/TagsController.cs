@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
+using Moonglade.Auth;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Web.Filters;
 
@@ -20,6 +24,17 @@ namespace Moonglade.Web.Controllers
         public TagsController(ITagService tagService)
         {
             _tagService = tagService;
+        }
+
+        [HttpGet("list")]
+        [FeatureGate(FeatureFlags.EnableWebApi)]
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
+        [ProducesResponseType(typeof(IEnumerable<Tag>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Tags()
+        {
+            var tags = await _tagService.GetAll();
+            return Ok(tags);
         }
 
         [HttpGet("names")]

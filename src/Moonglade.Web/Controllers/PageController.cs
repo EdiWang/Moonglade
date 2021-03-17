@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement.Mvc;
+using Moonglade.Auth;
 using Moonglade.Caching;
+using Moonglade.Configuration.Settings;
 using Moonglade.Pages;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
@@ -31,6 +36,23 @@ namespace Moonglade.Web.Controllers
             _cache = cache;
             _pageService = pageService;
             _logger = logger;
+        }
+
+        [HttpGet("segment/published")]
+        [FeatureGate(FeatureFlags.EnableWebApi)]
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
+        [ProducesResponseType(typeof(IEnumerable<PageSegment>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SegmentPages()
+        {
+            var pageSegments = await _pageService.ListSegment();
+            if (pageSegments is not null)
+            {
+                // for security, only allow published pages to be listed to third party API calls
+                var published = pageSegments.Where(p => p.IsPublished);
+                return Ok(published);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpPost("createoredit")]

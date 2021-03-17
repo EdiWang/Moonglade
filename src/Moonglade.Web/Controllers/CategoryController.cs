@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
+using Moonglade.Auth;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
@@ -20,6 +24,17 @@ namespace Moonglade.Web.Controllers
         public CategoryController(ICategoryService catService)
         {
             _catService = catService;
+        }
+
+        [HttpGet("list")]
+        [FeatureGate(FeatureFlags.EnableWebApi)]
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
+        [ProducesResponseType(typeof(IEnumerable<Category>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Categories()
+        {
+            var cats = await _catService.GetAll();
+            return Ok(cats);
         }
 
         [HttpPost("create")]
