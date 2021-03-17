@@ -118,6 +118,19 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task SignIn_Post_BadModelState()
+        {
+            var ctl = CreateAuthController();
+            var result = await ctl.SignIn(new SignInViewModel() { Username = "", Password = "996" });
+            ctl.ModelState.AddModelError("", "996");
+
+            Assert.IsInstanceOf<ViewResult>(result);
+
+            var modelState = ((ViewResult)result).ViewData.ModelState;
+            Assert.IsFalse(modelState.IsValid);
+        }
+
+       [Test]
         public void SignedOut()
         {
             var ctl = CreateAuthController();
