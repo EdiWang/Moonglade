@@ -28,5 +28,8 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "CDN Endpoint")]
         public string CDNEndpoint { get; set; }
+
+        [Display(Name = "Fit Image to Device Pixel Ratio")]
+        public bool FitImageToDevicePixelRatio { get; set; }
     }
 }

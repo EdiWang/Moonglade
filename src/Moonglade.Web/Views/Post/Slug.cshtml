@@ -50,6 +50,13 @@
     <script src="~/js/3rd/highlight.pack.js"></script>
     <script>
         var fitImageToDevicePixelRatio = false;
+        @if (BlogConfig.AdvancedSettings.FitImageToDevicePixelRatio)
+        {
+            <text>
+                fitImageToDevicePixelRatio = true;
+            </text>
+        }
+
         var pid = $("article").data("postid");
         postSlug.getStatistics(pid);
         postSlug.registerRatingButtons(pid);
@@ -90,11 +97,6 @@
         });
 
     </script>
-    <feature name="FitImageToDevicePixelRatio">
-        <script>
-            fitImageToDevicePixelRatio = true;
-        </script>
-    </feature>
 }
 
 @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))

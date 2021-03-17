@@ -392,7 +392,8 @@ namespace Moonglade.Web.Controllers
                 EnablePingbackReceive = settings.EnablePingBackReceive,
                 EnableOpenGraph = settings.EnableOpenGraph,
                 EnableCDNRedirect = settings.EnableCDNRedirect,
-                CDNEndpoint = settings.CDNEndpoint
+                CDNEndpoint = settings.CDNEndpoint,
+                FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio
             };
 
             return View(vm);
@@ -410,6 +411,7 @@ namespace Moonglade.Web.Controllers
             settings.EnablePingBackReceive = model.EnablePingbackReceive;
             settings.EnableOpenGraph = model.EnableOpenGraph;
             settings.EnableCDNRedirect = model.EnableCDNRedirect;
+            settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
 
             if (model.EnableCDNRedirect)
             {
