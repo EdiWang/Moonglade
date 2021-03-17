@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
+using Moonglade.Data.Spec;
+using Moonglade.Pages;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -104,6 +107,30 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Preview(Guid.Parse("e172b031-1c9a-4e4c-b2ea-07469e7b963a"));
 
             Assert.IsInstanceOf<ViewResult>(result);
+        }
+
+        [Test]
+        public async Task Segment_OK()
+        {
+            IReadOnlyList<PostSegment> ps = new List<PostSegment>();
+            _mockPostService.Setup(p => p.ListSegment(PostStatus.Published)).Returns(Task.FromResult(ps));
+
+            var ctl = CreatePostController();
+            var result = await ctl.Segment();
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Segment_Error()
+        {
+            IReadOnlyList<PostSegment> ps = new List<PostSegment>();
+            _mockPostService.Setup(p => p.ListSegment(PostStatus.Published)).Throws(new ArgumentOutOfRangeException("996"));
+
+            var ctl = CreatePostController();
+            var result = await ctl.Segment();
+
+            Assert.IsInstanceOf<StatusCodeResult>(result);
         }
     }
 }
