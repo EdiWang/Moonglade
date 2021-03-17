@@ -128,5 +128,13 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await categoryController.Delete(Guid.NewGuid());
             Assert.IsInstanceOf<OkResult>(result);
         }
+
+        [Test]
+        public async Task List_OK()
+        {
+            var categoryController = CreateCategoryController();
+            var result = await categoryController.List();
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
     }
 }
