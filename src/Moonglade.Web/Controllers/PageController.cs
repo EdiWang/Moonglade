@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(typeof(IEnumerable<PageSegment>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SegmentPages()
+        public async Task<IActionResult> Segment()
         {
             var pageSegments = await _pageService.ListSegment();
             if (pageSegments is not null)
