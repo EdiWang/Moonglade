@@ -254,6 +254,40 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public void Advanced_Post_EnableCDNRedirect_EmptyCDNEndpoint()
+        {
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
+            var settingsController = CreateSettingsController();
+            AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
+
+            Assert.ThrowsAsync<ArgumentNullException>(async () => { await settingsController.Advanced(model); });
+        }
+
+        [Test]
+        public void Advanced_Post_EnableCDNRedirect_InvalidCDNEndpoint()
+        {
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
+            var settingsController = CreateSettingsController();
+            AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
+
+            Assert.ThrowsAsync<UriFormatException>(async () => { await settingsController.Advanced(model); });
+        }
+
+        [Test]
+        public async Task Advanced_Post_EnableCDNRedirect_ValidCDNEndpoint()
+        {
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
+            var settingsController = CreateSettingsController();
+            AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
+
+            var result = await settingsController.Advanced(model);
+
+            Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+        }
+
+        [Test]
         public void Shutdown_Post()
         {
             var settingsController = CreateSettingsController();
