@@ -112,5 +112,14 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
         }
+
+
+        [Test]
+        public async Task List_OK()
+        {
+            var categoryController = CreateTagsController();
+            var result = await categoryController.List();
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
     }
 }
