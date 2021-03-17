@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(typeof(IEnumerable<Tag>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Tags()
+        public async Task<IActionResult> List()
         {
             var tags = await _tagService.GetAll();
             return Ok(tags);
