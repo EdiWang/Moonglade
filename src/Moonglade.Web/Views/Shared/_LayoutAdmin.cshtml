@@ -108,7 +108,7 @@
                         <span class="icon-file-text2"></span>
                         @Localizer["Posts"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Page" class="list-group-item list-group-item-action @(currentAction != null && currentAction.EndsWith("Page") ? "active" : null)">
+                    <a href="/admin/page" class="list-group-item list-group-item-action @(currentAction != null && currentAction.EndsWith("Page") || ViewBag.Title == "Manage Pages" ? "active" : null)">
                         <span class="icon-file-empty"></span>
                         @Localizer["Pages"]
                     </a>

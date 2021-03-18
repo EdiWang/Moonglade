@@ -88,14 +88,7 @@ namespace Moonglade.Web.Controllers
         {
             return View();
         }
-
-        [HttpGet("page")]
-        public async Task<IActionResult> Page()
-        {
-            var pageSegments = await _pageService.ListSegment();
-            return View(pageSegments);
-        }
-
+        
         [HttpGet("page/create")]
         public IActionResult CreatePage()
         {
