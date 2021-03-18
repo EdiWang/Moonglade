@@ -530,7 +530,7 @@ namespace Moonglade.Web.BlogProtocols
             return mPost;
         }
 
-        private Page ToMetaWeblogPage(Pages.Page page)
+        private Page ToMetaWeblogPage(Moonglade.Pages.Page page)
         {
             var mPage = new Page
             {

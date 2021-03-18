@@ -1,0 +1,11 @@
+﻿@using Moonglade.Web
+@using Moonglade.Configuration.Abstraction
+@using Moonglade.Configuration.Settings
+@using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@namespace Moonglade.Web.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject IOptions<AppSettings> Settings
+@inject IViewLocalizer Localizer

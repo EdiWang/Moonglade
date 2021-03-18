@@ -158,15 +158,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void About_View()
-        {
-            var ctl = CreateAdminController();
-            var result = ctl.About();
-
-            Assert.IsInstanceOf(typeof(ViewResult), result);
-        }
-
-        [Test]
         public void Post_View()
         {
             var ctl = CreateAdminController();

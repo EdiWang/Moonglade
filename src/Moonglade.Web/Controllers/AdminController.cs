@@ -77,12 +77,6 @@ namespace Moonglade.Web.Controllers
             return RedirectToAction("Post");
         }
 
-        [HttpGet("about")]
-        public IActionResult About()
-        {
-            return View();
-        }
-
         [HttpGet("auditlogs")]
         public async Task<IActionResult> AuditLogs([FromServices] IFeatureManager featureManager, int page = 1)
         {

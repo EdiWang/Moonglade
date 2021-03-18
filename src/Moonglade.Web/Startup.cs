@@ -72,7 +72,10 @@ namespace Moonglade.Web
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                     .AddViewLocalization()
-                    .AddDataAnnotationsLocalization();
+                    .AddDataAnnotationsLocalization().AddRazorPagesOptions(options =>
+                    {
+                        options.Conventions.AuthorizeFolder("/Admin");
+                    });
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
