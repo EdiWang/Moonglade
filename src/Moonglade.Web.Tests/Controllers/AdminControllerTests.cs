@@ -126,15 +126,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void Post_View()
-        {
-            var ctl = CreateAdminController();
-            var result = ctl.Post();
-
-            Assert.IsInstanceOf(typeof(ViewResult), result);
-        }
-
-        [Test]
         public async Task ClearAuditLogs_Redirect()
         {
             var ctl = CreateAdminController();

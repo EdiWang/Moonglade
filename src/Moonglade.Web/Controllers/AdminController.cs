@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
                     $"Authentication success for Azure account '{User.Identity?.Name}'");
             }
 
-            return RedirectToAction("Post");
+            return Redirect("/admin/post");
         }
 
         [HttpGet("auditlogs")]
@@ -81,12 +81,6 @@ namespace Moonglade.Web.Controllers
         {
             await _blogAudit.ClearAuditLog();
             return RedirectToAction("AuditLogs");
-        }
-
-        [HttpGet("post")]
-        public IActionResult Post()
-        {
-            return View();
         }
 
         [HttpGet("page/create")]

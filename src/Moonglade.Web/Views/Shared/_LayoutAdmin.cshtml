@@ -104,7 +104,7 @@
         <aside class="admin-nav">
             <section class="admin-nav-section mt-4 mb-3">
                 <div class="list-group list-group-flush">
-                    <a asp-controller="Admin" asp-action="Post" class="list-group-item list-group-item-action @(currentController == "PostManage" || currentAction == "Post" ? "active" : null)">
+                    <a href="/admin/post" class="list-group-item list-group-item-action @(currentController == "PostManage" || ViewBag.Title == "Manage Posts" ? "active" : null)">
                         <span class="icon-file-text2"></span>
                         @Localizer["Posts"]
                     </a>
