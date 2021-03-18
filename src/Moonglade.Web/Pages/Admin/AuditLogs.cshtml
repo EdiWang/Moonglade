@@ -1,6 +1,7 @@
-﻿@using X.PagedList.Mvc.Core
+﻿@page "/admin/auditlogs"
 @using X.PagedList.Mvc.Core.Common
-@model X.PagedList.StaticPagedList<Moonglade.Auditing.AuditEntry>
+@using X.PagedList.Mvc.Core
+@model Moonglade.Web.Pages.Admin.AuditLogsModel
 @{
     Layout = "_LayoutAdmin";
 }
@@ -13,7 +14,7 @@
     </div>
 </feature>
 
-@if (Model is not null && Model.Any())
+@if (Model is not null && Model.Entries.Any())
 {
     <a href="javascript:;" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#clearauditModal">
         <span class="icon-bin"></span>
@@ -33,7 +34,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Entries)
             {
                 <tr>
                     <td>
@@ -62,7 +63,7 @@
         </tbody>
     </table>
 
-    @Html.PagedListPager(Model, page => $"?page={page}", new PagedListRenderOptions
+    @Html.PagedListPager(Model.Entries, page => $"?pageIndex={page}", new PagedListRenderOptions
     {
         LiElementClasses = new[] { "page-item" },
         PageClasses = new[] { "page-link" },

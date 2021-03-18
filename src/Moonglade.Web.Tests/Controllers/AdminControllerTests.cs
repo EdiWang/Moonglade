@@ -115,7 +115,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockAudit.Verify();
 
-            Assert.IsInstanceOf<RedirectToActionResult>(result);
+            Assert.IsInstanceOf<RedirectResult>(result);
         }
 
         [Test]
@@ -157,50 +157,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateAdminController();
             var result = await ctl.Comments(1);
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
-        public async Task AuditLogs_FeatureDisabled()
-        {
-            Mock<IFeatureManager> mockFeatureMgr = new Mock<IFeatureManager>();
-            mockFeatureMgr.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
-                .Returns(Task.FromResult(false));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.AuditLogs(mockFeatureMgr.Object);
-
-            Assert.IsInstanceOf<ViewResult>(result);
-            Assert.IsNull(((ViewResult)result).Model);
-        }
-
-        [TestCase(0)]
-        [TestCase(-1)]
-        public async Task AuditLogs_FeatureEnabled_BadPageSize(int pageSize)
-        {
-            Mock<IFeatureManager> mockFeatureMgr = new Mock<IFeatureManager>();
-            mockFeatureMgr.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
-                .Returns(Task.FromResult(true));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.AuditLogs(mockFeatureMgr.Object, pageSize);
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
-        public async Task AuditLogs_View()
-        {
-            Mock<IFeatureManager> mockFeatureMgr = new Mock<IFeatureManager>();
-            mockFeatureMgr.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
-                .Returns(Task.FromResult(true));
-            (IReadOnlyList<AuditEntry> Entries, int Count) data = new(new List<AuditEntry>(), 996);
-
-            _mockAudit.Setup(p => p.GetAuditEntries(It.IsAny<int>(), It.IsAny<int>(), null, null)).Returns(Task.FromResult(data));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.AuditLogs(mockFeatureMgr.Object, 1);
 
             Assert.IsInstanceOf<ViewResult>(result);
         }

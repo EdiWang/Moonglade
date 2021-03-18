@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Auth;
@@ -49,28 +48,12 @@ namespace Moonglade.Web.Controllers
             return Redirect("/admin/post");
         }
 
-        [HttpGet("auditlogs")]
-        public async Task<IActionResult> AuditLogs([FromServices] IFeatureManager featureManager, int page = 1)
-        {
-            var flag = await featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableAudit));
-            if (!flag) return View();
-
-            if (page <= 0) return BadRequest(ModelState);
-
-            var skip = (page - 1) * 20;
-
-            var (entries, count) = await _blogAudit.GetAuditEntries(skip, 20);
-            var list = new StaticPagedList<AuditEntry>(entries, page, 20, count);
-
-            return View(list);
-        }
-
         [HttpGet("clear-auditlogs")]
         [FeatureGate(FeatureFlags.EnableAudit)]
         public async Task<IActionResult> ClearAuditLogs()
         {
             await _blogAudit.ClearAuditLog();
-            return RedirectToAction("AuditLogs");
+            return Redirect("/admin/auditlogs");
         }
 
         [Route("/page/preview/{pageId:guid}")]
