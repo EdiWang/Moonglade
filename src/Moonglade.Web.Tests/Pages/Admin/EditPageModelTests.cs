@@ -31,6 +31,15 @@ namespace Moonglade.Web.Tests.Pages.Admin
         }
 
         [Test]
+        public async Task OnGetAsync_NoId()
+        {
+            var editPageModel = CreateEditPageModel();
+            var result = await editPageModel.OnGetAsync(null);
+
+            Assert.IsInstanceOf<PageResult>(result);
+        }
+
+        [Test]
         public async Task OnGetAsync_NoPage()
         {
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))

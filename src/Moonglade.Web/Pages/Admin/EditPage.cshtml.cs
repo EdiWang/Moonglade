@@ -16,15 +16,12 @@ namespace Moonglade.Web.Pages.Admin
         public EditPageModel(IPageService pageService)
         {
             _pageService = pageService;
+            PageEditModel = new();
         }
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
-            if (id is null)
-            {
-                PageEditModel = new();
-                return Page();
-            }
+            if (id is null) return Page();
 
             var page = await _pageService.GetAsync(id.Value);
             if (page is null) return NotFound();

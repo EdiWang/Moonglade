@@ -13,7 +13,6 @@ using Moonglade.Comments;
 using Moonglade.Configuration.Settings;
 using Moonglade.Pages;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -117,16 +116,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockAudit.Verify();
 
             Assert.IsInstanceOf<RedirectToActionResult>(result);
-        }
-
-        [Test]
-        public void CreatePage_Success()
-        {
-            var ctl = CreateAdminController();
-            var result = ctl.CreatePage();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-            Assert.IsInstanceOf<PageEditModel>(((ViewResult)result).Model);
         }
 
         [Test]
