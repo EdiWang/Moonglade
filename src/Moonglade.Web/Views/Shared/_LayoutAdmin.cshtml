@@ -116,7 +116,7 @@
                         <span class="icon-folder"></span>
                         @Localizer["Categories"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Comments" class="list-group-item list-group-item-action @(currentAction == "Comments" ? "active" : null)">
+                    <a href="/admin/comments" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Comments" ? "active" : null)">
                         <span class="icon-bubbles3"></span>
                         @Localizer["Comments"]
                     </a>

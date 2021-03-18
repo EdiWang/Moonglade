@@ -74,6 +74,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             var result = await editPageModel.OnGetAsync(Guid.Empty);
 
             Assert.IsInstanceOf<PageResult>(result);
+            Assert.IsNotNull(editPageModel.PageEditModel);
         }
     }
 }

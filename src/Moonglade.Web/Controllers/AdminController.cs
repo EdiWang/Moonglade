@@ -6,10 +6,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Auth;
-using Moonglade.Comments;
 using Moonglade.Configuration.Settings;
 using Moonglade.Pages;
-using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
@@ -19,19 +17,15 @@ namespace Moonglade.Web.Controllers
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IPageService _pageService;
-        private readonly ICommentService _commentService;
-
         private readonly IBlogAudit _blogAudit;
 
         public AdminController(
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
-            IPageService pageService,
-            ICommentService commentService)
+            IPageService pageService)
         {
             _authenticationSettings = authSettings.Value;
             _pageService = pageService;
-            _commentService = commentService;
 
             _blogAudit = blogAudit;
         }
@@ -65,15 +59,6 @@ namespace Moonglade.Web.Controllers
             ViewBag.IsDraftPreview = true;
 
             return View("~/Views/Home/Page.cshtml", page);
-        }
-
-        [Route("comments")]
-        public async Task<IActionResult> Comments(int page = 1)
-        {
-            const int pageSize = 10;
-            var comments = await _commentService.GetCommentsAsync(pageSize, page);
-            var list = new StaticPagedList<CommentDetailedItem>(comments, page, pageSize, _commentService.Count());
-            return View(list);
         }
 
         // Keep session from expire when writing a very long post

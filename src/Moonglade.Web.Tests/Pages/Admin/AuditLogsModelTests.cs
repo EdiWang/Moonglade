@@ -78,6 +78,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             var result = await auditLogsModel.OnGetAsync(1);
 
             Assert.IsInstanceOf<PageResult>(result);
+            Assert.IsNotNull(auditLogsModel.Entries);
         }
     }
 }
