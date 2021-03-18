@@ -1,8 +1,9 @@
-﻿@{
+﻿@page "/admin/category"
+@model Moonglade.Web.Pages.Admin.CategoryModel
+@{
     Layout = "_LayoutAdmin";
+    ViewBag.Title = "Manage Categories";
 }
-
-@model CategoryManageModel
 
 @section scripts{
     <script>
@@ -75,13 +76,12 @@
             <div class="card-footer">
                 <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-accent btn-edit"><span class="icon-pencil"></span></a>
                 <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
-                
+
                 <span id="span-processing-@cat.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
             </div>
         </div>
     }
 </div>
-
 
 <div class="modal fade" id="editCatModal" tabindex="-1" role="dialog" aria-labelledby="editCatModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

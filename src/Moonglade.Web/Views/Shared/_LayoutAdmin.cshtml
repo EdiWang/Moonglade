@@ -112,7 +112,7 @@
                         <span class="icon-file-empty"></span>
                         @Localizer["Pages"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Category" class="list-group-item list-group-item-action @(currentAction == "Category" ? "active" : null)">
+                    <a href="/admin/category" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Categories" ? "active" : null)">
                         <span class="icon-folder"></span>
                         @Localizer["Categories"]
                     </a>

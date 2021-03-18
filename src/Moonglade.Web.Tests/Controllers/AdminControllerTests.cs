@@ -32,7 +32,6 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IOptions<AuthenticationSettings>> _mockAuthenticationSettings;
         private Mock<IBlogAudit> _mockAudit;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<ICategoryService> _mockCat;
         private Mock<IFriendLinkService> _mockFriendlinkService;
         private Mock<IPageService> _mockPageService;
         private Mock<ICommentService> _mockCommentService;
@@ -45,7 +44,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockAuthenticationSettings = _mockRepository.Create<IOptions<AuthenticationSettings>>();
             _mockAudit = _mockRepository.Create<IBlogAudit>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockCat = _mockRepository.Create<ICategoryService>();
             _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockCommentService = _mockRepository.Create<ICommentService>();
@@ -56,7 +54,6 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockAuthenticationSettings.Object,
                 _mockAudit.Object,
-                _mockCat.Object,
                 _mockFriendlinkService.Object,
                 _mockPageService.Object,
                 _mockCommentService.Object,
@@ -235,25 +232,6 @@ namespace Moonglade.Web.Tests.Controllers
             var model = ((ViewResult)result).Model;
             Assert.IsInstanceOf<Page>(model);
             Assert.AreEqual(_fakePage.Title, ((Page)model).Title);
-        }
-
-        [Test]
-        public async Task Category_View()
-        {
-            IReadOnlyList<Category> cats = new List<Category>
-            {
-                new (){Id = Guid.Empty, DisplayName = "Work 996", Note = "Fubao", RouteName = "work-996" }
-            };
-
-            _mockCat.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.Category();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<CategoryManageModel>(model);
         }
 
         [Test]

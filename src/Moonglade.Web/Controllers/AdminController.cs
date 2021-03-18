@@ -10,7 +10,6 @@ using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
 using Moonglade.FriendLink;
 using Moonglade.Pages;
 using Moonglade.Web.Models;
@@ -24,7 +23,6 @@ namespace Moonglade.Web.Controllers
     public class AdminController : Controller
     {
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly ICategoryService _categoryService;
         private readonly IFriendLinkService _friendLinkService;
         private readonly IPageService _pageService;
         private readonly ICommentService _commentService;
@@ -35,14 +33,12 @@ namespace Moonglade.Web.Controllers
         public AdminController(
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
-            ICategoryService categoryService,
             IFriendLinkService friendLinkService,
             IPageService pageService,
             ICommentService commentService,
             IBlogConfig blogConfig)
         {
             _authenticationSettings = authSettings.Value;
-            _categoryService = categoryService;
             _friendLinkService = friendLinkService;
             _pageService = pageService;
             _commentService = commentService;
@@ -85,13 +81,6 @@ namespace Moonglade.Web.Controllers
         {
             await _blogAudit.ClearAuditLog();
             return RedirectToAction("AuditLogs");
-        }
-
-        [HttpGet("category")]
-        public async Task<IActionResult> Category()
-        {
-            var cats = await _categoryService.GetAll();
-            return View(new CategoryManageModel { Categories = cats });
         }
 
         [HttpGet("post")]
