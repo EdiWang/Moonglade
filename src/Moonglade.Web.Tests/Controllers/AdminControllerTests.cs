@@ -142,33 +142,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Edit_NoPage()
-        {
-            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult((Page)null));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.EditPage(Guid.Empty);
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task Edit_View()
-        {
-            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(_fakePage));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.EditPage(Guid.Empty);
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<PageEditModel>(model);
-        }
-
-        [Test]
         public async Task Preview_HasPage()
         {
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))

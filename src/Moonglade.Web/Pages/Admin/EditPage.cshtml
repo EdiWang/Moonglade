@@ -1,12 +1,13 @@
-﻿@{
+﻿@page "/admin/page/edit/{id:guid}"
+@model Moonglade.Web.Pages.Admin.EditPageModel
+@{
     Layout = "_LayoutAdmin";
+    ViewBag.Title = "Manage Pages";
 }
-
-@model PageEditModel
 
 @{
     <script>
-    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.CssContent)).ToString().ToLower());
+    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.PageEditModel.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.PageEditModel.CssContent)).ToString().ToLower());
     </script>
 }
 
@@ -34,7 +35,7 @@
             htmlContentEditor.layout();
 
             if (needLoadInitValues) {
-                var htmlValue = $("#RawHtmlContent").val();
+                var htmlValue = $("#PageEditModel_RawHtmlContent").val();
                 htmlContentEditor.setValue(htmlValue);
             }
         }
@@ -48,7 +49,7 @@
             hasCssEditorInitialized = true;
 
             if (needLoadInitValues) {
-                var cssValue = $("#CssContent").val();
+                var cssValue = $("#PageEditModel_CssContent").val();
                 window.cssContentEditor.setValue(cssValue);
             }
         }
@@ -57,11 +58,11 @@
             var htmlValue = window.htmlContentEditor.getValue();
 
             // Edit Mode, preserve old value when user has not clicked on CSS tab
-            var oldCssValue = $("#CssContent").val();
+            var oldCssValue = $("#PageEditModel_CssContent").val();
             var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
 
-            $("#RawHtmlContent").val(htmlValue);
-            $("#CssContent").val(cssValue);
+            $("#PageEditModel_RawHtmlContent").val(htmlValue);
+            $("#PageEditModel_CssContent").val(cssValue);
         }
 
         $("#btn-submit").click(function (e) {
@@ -113,29 +114,29 @@
       data-ajax="true"
       data-ajax-method="POST">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="PageEditModel.Id" />
     <div class="row">
         <div class="col-md-9 col-xl-10">
-            <input type="text" asp-for="Title" class="form-control form-control-lg mb-1" placeholder="Title" />
+            <input type="text" asp-for="PageEditModel.Title" class="form-control form-control-lg mb-1" placeholder="Title" />
             <div>
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <span asp-validation-for="PageEditModel.Title" class="text-danger"></span>
             </div>
 
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">page/</span>
                 </div>
-                <input type="text" asp-for="Slug" class="form-control form-control-sm" placeholder="slug" />
+                <input type="text" asp-for="PageEditModel.Slug" class="form-control form-control-sm" placeholder="slug" />
             </div>
             <div>
-                <span asp-validation-for="Slug" class="text-danger"></span>
+                <span asp-validation-for="PageEditModel.Slug" class="text-danger"></span>
             </div>
 
             <div>
-                <span asp-validation-for="RawHtmlContent" class="text-danger"></span>
+                <span asp-validation-for="PageEditModel.RawHtmlContent" class="text-danger"></span>
             </div>
             <div>
-                <span asp-validation-for="CssContent" class="text-danger"></span>
+                <span asp-validation-for="PageEditModel.CssContent" class="text-danger"></span>
             </div>
 
             <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
@@ -152,13 +153,13 @@
                     <div id="RawHtmlContentEditor" class="monaco-target">
 
                     </div>
-                    <textarea asp-for="RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
+                    <textarea asp-for="PageEditModel.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
                 </div>
                 <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
                     <div id="CssContentEditor" class="monaco-target">
 
                     </div>
-                    <textarea asp-for="CssContent" class="page-csscontent-textarea d-none"></textarea>
+                    <textarea asp-for="PageEditModel.CssContent" class="page-csscontent-textarea d-none"></textarea>
                 </div>
             </div>
         </div>
@@ -169,21 +170,21 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="HideSidebar" class="custom-control-input">
-                            <label asp-for="HideSidebar" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="PageEditModel.HideSidebar" class="custom-control-input">
+                            <label asp-for="PageEditModel.HideSidebar" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="IsPublished" class="custom-control-input">
-                            <label asp-for="IsPublished" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="PageEditModel.IsPublished" class="custom-control-input">
+                            <label asp-for="PageEditModel.IsPublished" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
-                    <label asp-for="MetaDescription" class="control-label"></label>
-                    <textarea asp-for="MetaDescription" class="form-control"></textarea>
-                    <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                    <label asp-for="PageEditModel.MetaDescription" class="control-label"></label>
+                    <textarea asp-for="PageEditModel.MetaDescription" class="form-control"></textarea>
+                    <span asp-validation-for="PageEditModel.MetaDescription" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -195,10 +196,10 @@
         <button type="submit" class="btn btn-success" id="btn-submit">
             @Localizer["Save"]
         </button>
-        @if (!Model.IsPublished)
+        @if (!Model.PageEditModel.IsPublished)
         {
             <button class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
         }
-        <a href="/admin/page" class="btn btn-light">@Localizer["Cancel"]</a>
+        <a asp-page="./BlogPage" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>
 </form>

@@ -81,27 +81,6 @@ namespace Moonglade.Web.Controllers
             return View("EditPage", model);
         }
 
-        [HttpGet("page/edit/{id:guid}")]
-        public async Task<IActionResult> EditPage(Guid id)
-        {
-            var page = await _pageService.GetAsync(id);
-            if (page is null) return NotFound();
-
-            var model = new PageEditModel
-            {
-                Id = page.Id,
-                Title = page.Title,
-                Slug = page.Slug,
-                MetaDescription = page.MetaDescription,
-                CssContent = page.CssContent,
-                RawHtmlContent = page.RawHtmlContent,
-                HideSidebar = page.HideSidebar,
-                IsPublished = page.IsPublished
-            };
-
-            return View("EditPage", model);
-        }
-
         [Route("/page/preview/{pageId:guid}")]
         public async Task<IActionResult> PreviewPage(Guid pageId)
         {
