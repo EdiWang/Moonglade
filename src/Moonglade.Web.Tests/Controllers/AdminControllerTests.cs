@@ -37,7 +37,6 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<ICategoryService> _mockCat;
         private Mock<IFriendLinkService> _mockFriendlinkService;
         private Mock<IPageService> _mockPageService;
-        private Mock<ITagService> _mockTagService;
         private Mock<ICommentService> _mockCommentService;
         private Mock<IPingbackService> _mockPingbackService;
         private Mock<IMenuService> _mockMenuService;
@@ -54,7 +53,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockCat = _mockRepository.Create<ICategoryService>();
             _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
             _mockPageService = _mockRepository.Create<IPageService>();
-            _mockTagService = _mockRepository.Create<ITagService>();
             _mockCommentService = _mockRepository.Create<ICommentService>();
             _mockPingbackService = _mockRepository.Create<IPingbackService>();
             _mockMenuService = _mockRepository.Create<IMenuService>();
@@ -69,7 +67,6 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockCat.Object,
                 _mockFriendlinkService.Object,
                 _mockPageService.Object,
-                _mockTagService.Object,
                 _mockCommentService.Object,
                 _mockPingbackService.Object,
                 _mockMenuService.Object,
@@ -265,24 +262,24 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.AreEqual(_fakePage.Title, ((Page)model).Title);
         }
 
-        [Test]
-        public async Task Tags_View()
-        {
-            IReadOnlyList<Tag> tags = new List<Tag>
-            {
-                new (){ Id = 996, DisplayName = "Work 996", NormalizedName = "work-996" }
-            };
+        //[Test]
+        //public async Task Tags_View()
+        //{
+        //    IReadOnlyList<Tag> tags = new List<Tag>
+        //    {
+        //        new (){ Id = 996, DisplayName = "Work 996", NormalizedName = "work-996" }
+        //    };
 
-            _mockTagService.Setup(p => p.GetAll()).Returns(Task.FromResult(tags));
+        //    _mockTagService.Setup(p => p.GetAll()).Returns(Task.FromResult(tags));
 
-            var ctl = CreateAdminController();
-            var result = await ctl.Tags();
+        //    var ctl = CreateAdminController();
+        //    var result = await ctl.Tags();
 
-            Assert.IsInstanceOf<ViewResult>(result);
+        //    Assert.IsInstanceOf<ViewResult>(result);
 
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<IReadOnlyList<Tag>>(model);
-        }
+        //    var model = ((ViewResult)result).Model;
+        //    Assert.IsInstanceOf<IReadOnlyList<Tag>>(model);
+        //}
 
         [Test]
         public async Task Category_View()
