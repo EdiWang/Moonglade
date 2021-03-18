@@ -36,7 +36,6 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IFriendLinkService> _mockFriendlinkService;
         private Mock<IPageService> _mockPageService;
         private Mock<ICommentService> _mockCommentService;
-        private Mock<ILocalAccountService> _mockLocalAccountService;
 
         [SetUp]
         public void Setup()
@@ -50,7 +49,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockCommentService = _mockRepository.Create<ICommentService>();
-            _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
         }
 
         private AdminController CreateAdminController()
@@ -62,7 +60,6 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockFriendlinkService.Object,
                 _mockPageService.Object,
                 _mockCommentService.Object,
-                _mockLocalAccountService.Object,
                 _mockBlogConfig.Object);
         }
 
@@ -268,18 +265,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateAdminController();
             var result = await ctl.FriendLink();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
-        public async Task LocalAccount_View()
-        {
-            IReadOnlyList<Account> accounts = new List<Account>();
-            _mockLocalAccountService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(accounts));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.LocalAccount();
 
             Assert.IsInstanceOf<ViewResult>(result);
         }

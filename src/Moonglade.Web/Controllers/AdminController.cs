@@ -28,7 +28,6 @@ namespace Moonglade.Web.Controllers
         private readonly IFriendLinkService _friendLinkService;
         private readonly IPageService _pageService;
         private readonly ICommentService _commentService;
-        private readonly ILocalAccountService _accountService;
 
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
@@ -40,7 +39,6 @@ namespace Moonglade.Web.Controllers
             IFriendLinkService friendLinkService,
             IPageService pageService,
             ICommentService commentService,
-            ILocalAccountService accountService,
             IBlogConfig blogConfig)
         {
             _authenticationSettings = authSettings.Value;
@@ -48,7 +46,6 @@ namespace Moonglade.Web.Controllers
             _friendLinkService = friendLinkService;
             _pageService = pageService;
             _commentService = commentService;
-            _accountService = accountService;
 
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
@@ -170,15 +167,6 @@ namespace Moonglade.Web.Controllers
                 },
                 FriendLinks = links
             };
-
-            return View(vm);
-        }
-
-        [HttpGet("account")]
-        public async Task<IActionResult> LocalAccount()
-        {
-            var accounts = await _accountService.GetAllAsync();
-            var vm = new AccountManageViewModel { Accounts = accounts };
 
             return View(vm);
         }

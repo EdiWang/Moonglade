@@ -113,7 +113,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<ViewResult>(result);
 
-            var modelState = ((ViewResult) result).ViewData.ModelState;
+            var modelState = ((ViewResult)result).ViewData.ModelState;
             Assert.IsFalse(modelState.IsValid);
         }
 
@@ -130,7 +130,7 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsFalse(modelState.IsValid);
         }
 
-       [Test]
+        [Test]
         public void SignedOut()
         {
             var ctl = CreateAuthController();

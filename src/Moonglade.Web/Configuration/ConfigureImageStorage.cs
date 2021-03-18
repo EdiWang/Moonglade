@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.Providers;
-using Moonglade.Utils;
 
 namespace Moonglade.Web.Configuration
 {
