@@ -194,7 +194,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.FriendLinksSettings).Returns(new FriendLinksSettings());
             var settingsController = CreateSettingsController();
-            FriendLinkSettingsViewModelWrap model = new() { FriendLinkSettingsViewModel = new() };
+            FriendLinksSettings model = new();
 
             var result = await settingsController.FriendLink(model);
 

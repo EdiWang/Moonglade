@@ -10,10 +10,7 @@ using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Comments;
-using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
-using Moonglade.FriendLink;
 using Moonglade.Pages;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
@@ -30,8 +27,6 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IOptions<AuthenticationSettings>> _mockAuthenticationSettings;
         private Mock<IBlogAudit> _mockAudit;
-        private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IFriendLinkService> _mockFriendlinkService;
         private Mock<IPageService> _mockPageService;
         private Mock<ICommentService> _mockCommentService;
 
@@ -42,8 +37,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockAuthenticationSettings = _mockRepository.Create<IOptions<AuthenticationSettings>>();
             _mockAudit = _mockRepository.Create<IBlogAudit>();
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockCommentService = _mockRepository.Create<ICommentService>();
         }
@@ -53,10 +46,8 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockAuthenticationSettings.Object,
                 _mockAudit.Object,
-                _mockFriendlinkService.Object,
                 _mockPageService.Object,
-                _mockCommentService.Object,
-                _mockBlogConfig.Object);
+                _mockCommentService.Object);
         }
 
         readonly Page _fakePage = new()
@@ -84,11 +75,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateAdminController();
             var result = await ctl.Index();
-            Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
-            if (result is RedirectToActionResult rdResult)
-            {
-                Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
-            }
+            Assert.IsInstanceOf(typeof(RedirectResult), result);
         }
 
         [Test]
@@ -110,11 +97,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await ctl.Index();
-            Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
-            if (result is RedirectToActionResult rdResult)
-            {
-                Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
-            }
+            Assert.IsInstanceOf(typeof(RedirectResult), result);
         }
 
         [Test]
@@ -199,19 +182,6 @@ namespace Moonglade.Web.Tests.Controllers
             var model = ((ViewResult)result).Model;
             Assert.IsInstanceOf<Page>(model);
             Assert.AreEqual(_fakePage.Title, ((Page)model).Title);
-        }
-
-        [Test]
-        public async Task FriendLink_View()
-        {
-            IReadOnlyList<Link> links = new List<Link>();
-            _mockFriendlinkService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(links));
-            _mockBlogConfig.Setup(p => p.FriendLinksSettings).Returns(new FriendLinksSettings());
-
-            var ctl = CreateAdminController();
-            var result = await ctl.FriendLink();
-
-            Assert.IsInstanceOf<ViewResult>(result);
         }
 
         [Test]

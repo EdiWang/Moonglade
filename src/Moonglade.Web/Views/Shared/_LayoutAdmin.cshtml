@@ -132,7 +132,7 @@
                         <span class="icon-list"></span>
                         @Localizer["Menus"]
                     </a>
-                    <a asp-controller="Admin" asp-action="FriendLink" class="list-group-item list-group-item-action @(currentAction == "FriendLink" ? "active" : null)">
+                    <a href="/admin/friendlink" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Friend Links" ? "active" : null)">
                         <span class="icon-link"></span>
                         @Localizer["Friend Links"]
                     </a>

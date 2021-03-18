@@ -8,12 +8,9 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Comments;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
-using Moonglade.FriendLink;
 using Moonglade.Pages;
 using Moonglade.Web.Models;
-using Moonglade.Web.Models.Settings;
 using X.PagedList;
 
 namespace Moonglade.Web.Controllers
@@ -23,27 +20,21 @@ namespace Moonglade.Web.Controllers
     public class AdminController : Controller
     {
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly IFriendLinkService _friendLinkService;
         private readonly IPageService _pageService;
         private readonly ICommentService _commentService;
 
-        private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
 
         public AdminController(
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
-            IFriendLinkService friendLinkService,
             IPageService pageService,
-            ICommentService commentService,
-            IBlogConfig blogConfig)
+            ICommentService commentService)
         {
             _authenticationSettings = authSettings.Value;
-            _friendLinkService = friendLinkService;
             _pageService = pageService;
             _commentService = commentService;
 
-            _blogConfig = blogConfig;
             _blogAudit = blogAudit;
         }
 
@@ -129,22 +120,6 @@ namespace Moonglade.Web.Controllers
             var comments = await _commentService.GetCommentsAsync(pageSize, page);
             var list = new StaticPagedList<CommentDetailedItem>(comments, page, pageSize, _commentService.Count());
             return View(list);
-        }
-
-        [HttpGet("friendlink")]
-        public async Task<IActionResult> FriendLink()
-        {
-            var links = await _friendLinkService.GetAllAsync();
-            var vm = new FriendLinkSettingsViewModelWrap
-            {
-                FriendLinkSettingsViewModel = new()
-                {
-                    ShowFriendLinksSection = _blogConfig.FriendLinksSettings.ShowFriendLinksSection
-                },
-                FriendLinks = links
-            };
-
-            return View(vm);
         }
 
         // Keep session from expire when writing a very long post
