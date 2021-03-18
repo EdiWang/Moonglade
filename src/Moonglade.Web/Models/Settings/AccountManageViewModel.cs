@@ -1,21 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Moonglade.Auth;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Models.Settings
 {
-    public class AccountManageViewModel
-    {
-        public AccountEditViewModel AccountEditViewModel { get; set; }
-
-        public IReadOnlyList<Account> Accounts { get; set; }
-
-        public AccountManageViewModel()
-        {
-            Accounts = new List<Account>();
-        }
-    }
-
     public class AccountEditViewModel
     {
         [Required(ErrorMessage = "Please enter a username.")]

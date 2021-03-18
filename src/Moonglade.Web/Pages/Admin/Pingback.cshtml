@@ -1,8 +1,9 @@
-﻿@{
+﻿@page "/admin/pingback"
+@model Moonglade.Web.Pages.Admin.PingbackModel
+@{
     Layout = "_LayoutAdmin";
+    ViewBag.Title = "Pingback";
 }
-
-@model IEnumerable<Moonglade.Pingback.PingbackRecord>
 
 @Html.AntiForgeryToken()
 
@@ -43,7 +44,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.OrderByDescending(p => p.PingTimeUtc))
+        @foreach (var item in Model.PingbackRecords.OrderByDescending(p => p.PingTimeUtc))
         {
             <tr id="pingback-box-@item.Id">
                 <td class="table-item-w30">
@@ -63,7 +64,7 @@
                 </td>
                 <td class="p-2">
                     <a class="btn btn-sm btn-outline-danger btn-delete" href="#" data-pingbackid="@item.Id">
-                        <span class="icon-bin"></span> 
+                        <span class="icon-bin"></span>
 
                         <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                     </a>

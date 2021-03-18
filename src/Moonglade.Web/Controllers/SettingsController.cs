@@ -280,10 +280,10 @@ namespace Moonglade.Web.Controllers
 
 
         [HttpPost("friendlink")]
-        public async Task<IActionResult> FriendLink(FriendLinkSettingsViewModelWrap model)
+        public async Task<IActionResult> FriendLink(FriendLinksSettings model)
         {
             var fs = _blogConfig.FriendLinksSettings;
-            fs.ShowFriendLinksSection = model.FriendLinkSettingsViewModel.ShowFriendLinksSection;
+            fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
 
             await _blogConfig.SaveAsync(fs);
             return Ok();

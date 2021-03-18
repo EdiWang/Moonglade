@@ -1,13 +1,10 @@
-﻿@{
-    Layout = "_LayoutAdmin";
-}
-@Html.AntiForgeryToken()
-
-@model IReadOnlyList<Moonglade.Core.Tag>
-
+﻿@page "/admin/tags"
+@model Moonglade.Web.Pages.Admin.TagsModel
 @{
+    Layout = "_LayoutAdmin";
     ViewBag.Title = "Manage Tags";
 }
+@Html.AntiForgeryToken()
 
 @section scripts{
     <script>
@@ -56,7 +53,7 @@
 <hr />
 
 <ul class="list-unstyled ul-tag-mgr">
-    @foreach (var tag in Model.OrderBy(model => model.DisplayName))
+    @foreach (var tag in Model.Tags.OrderBy(model => model.DisplayName))
     {
         <li id="li-tag-@tag.Id" class="border">
             <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tag.Id">@tag.DisplayName</span>

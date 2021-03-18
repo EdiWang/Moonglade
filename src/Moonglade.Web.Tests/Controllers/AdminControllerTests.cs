@@ -10,14 +10,8 @@ using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Comments;
-using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
-using Moonglade.FriendLink;
-using Moonglade.Menus;
 using Moonglade.Pages;
-using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;
@@ -33,15 +27,8 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IOptions<AuthenticationSettings>> _mockAuthenticationSettings;
         private Mock<IBlogAudit> _mockAudit;
-        private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<ICategoryService> _mockCat;
-        private Mock<IFriendLinkService> _mockFriendlinkService;
         private Mock<IPageService> _mockPageService;
-        private Mock<ITagService> _mockTagService;
         private Mock<ICommentService> _mockCommentService;
-        private Mock<IPingbackService> _mockPingbackService;
-        private Mock<IMenuService> _mockMenuService;
-        private Mock<ILocalAccountService> _mockLocalAccountService;
 
         [SetUp]
         public void Setup()
@@ -50,15 +37,8 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockAuthenticationSettings = _mockRepository.Create<IOptions<AuthenticationSettings>>();
             _mockAudit = _mockRepository.Create<IBlogAudit>();
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockCat = _mockRepository.Create<ICategoryService>();
-            _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
             _mockPageService = _mockRepository.Create<IPageService>();
-            _mockTagService = _mockRepository.Create<ITagService>();
             _mockCommentService = _mockRepository.Create<ICommentService>();
-            _mockPingbackService = _mockRepository.Create<IPingbackService>();
-            _mockMenuService = _mockRepository.Create<IMenuService>();
-            _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
         }
 
         private AdminController CreateAdminController()
@@ -66,15 +46,8 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockAuthenticationSettings.Object,
                 _mockAudit.Object,
-                _mockCat.Object,
-                _mockFriendlinkService.Object,
                 _mockPageService.Object,
-                _mockTagService.Object,
-                _mockCommentService.Object,
-                _mockPingbackService.Object,
-                _mockMenuService.Object,
-                _mockLocalAccountService.Object,
-                _mockBlogConfig.Object);
+                _mockCommentService.Object);
         }
 
         readonly Page _fakePage = new()
@@ -102,11 +75,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateAdminController();
             var result = await ctl.Index();
-            Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
-            if (result is RedirectToActionResult rdResult)
-            {
-                Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
-            }
+            Assert.IsInstanceOf(typeof(RedirectResult), result);
         }
 
         [Test]
@@ -128,25 +97,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await ctl.Index();
-            Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
-            if (result is RedirectToActionResult rdResult)
-            {
-                Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
-            }
-        }
-
-        [Test]
-        public async Task Pingback_View()
-        {
-            IEnumerable<PingbackRecord> pingback = new PingbackRecord[] { };
-
-            _mockPingbackService.Setup(p => p.GetPingbackHistoryAsync())
-                .Returns(Task.FromResult(pingback));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.Pingback();
-
-            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.IsInstanceOf(typeof(RedirectResult), result);
         }
 
         [Test]
@@ -158,24 +109,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void About_View()
-        {
-            var ctl = CreateAdminController();
-            var result = ctl.About();
-
-            Assert.IsInstanceOf(typeof(ViewResult), result);
-        }
-
-        [Test]
-        public void Post_View()
-        {
-            var ctl = CreateAdminController();
-            var result = ctl.Post();
-
-            Assert.IsInstanceOf(typeof(ViewResult), result);
-        }
-
-        [Test]
         public async Task ClearAuditLogs_Redirect()
         {
             var ctl = CreateAdminController();
@@ -184,29 +117,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockAudit.Verify();
 
             Assert.IsInstanceOf<RedirectToActionResult>(result);
-        }
-
-        [Test]
-        public async Task Page_View()
-        {
-            IReadOnlyList<PageSegment> fakePageSegments = new List<PageSegment>
-            {
-                new ()
-                {
-                    IsPublished = true,
-                    CreateTimeUtc = DateTime.UtcNow,
-                    Id = Guid.Empty,
-                    Slug = "fuck-996",
-                    Title = "Fuck Jack Ma's Fu Bao"
-                }
-            };
-            _mockPageService.Setup(p => p.ListSegment()).Returns(Task.FromResult(fakePageSegments));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.Page();
-
-            Assert.IsInstanceOf(typeof(ViewResult), result);
-            Assert.AreEqual(fakePageSegments, ((ViewResult)result).Model);
         }
 
         [Test]
@@ -272,82 +182,6 @@ namespace Moonglade.Web.Tests.Controllers
             var model = ((ViewResult)result).Model;
             Assert.IsInstanceOf<Page>(model);
             Assert.AreEqual(_fakePage.Title, ((Page)model).Title);
-        }
-
-        [Test]
-        public async Task Tags_View()
-        {
-            IReadOnlyList<Tag> tags = new List<Tag>
-            {
-                new (){ Id = 996, DisplayName = "Work 996", NormalizedName = "work-996" }
-            };
-
-            _mockTagService.Setup(p => p.GetAll()).Returns(Task.FromResult(tags));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.Tags();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<IReadOnlyList<Tag>>(model);
-        }
-
-        [Test]
-        public async Task Category_View()
-        {
-            IReadOnlyList<Category> cats = new List<Category>
-            {
-                new (){Id = Guid.Empty, DisplayName = "Work 996", Note = "Fubao", RouteName = "work-996" }
-            };
-
-            _mockCat.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.Category();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<CategoryManageModel>(model);
-        }
-
-        [Test]
-        public async Task Menu_View()
-        {
-            IReadOnlyList<Menu> menus = new List<Menu>();
-
-            _mockMenuService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(menus));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.Menu();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
-        public async Task FriendLink_View()
-        {
-            IReadOnlyList<Link> links = new List<Link>();
-            _mockFriendlinkService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(links));
-            _mockBlogConfig.Setup(p => p.FriendLinksSettings).Returns(new FriendLinksSettings());
-
-            var ctl = CreateAdminController();
-            var result = await ctl.FriendLink();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
-        public async Task LocalAccount_View()
-        {
-            IReadOnlyList<Account> accounts = new List<Account>();
-            _mockLocalAccountService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(accounts));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.LocalAccount();
-
-            Assert.IsInstanceOf<ViewResult>(result);
         }
 
         [Test]

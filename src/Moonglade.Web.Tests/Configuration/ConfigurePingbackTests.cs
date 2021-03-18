@@ -1,11 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Web.Configuration;
-using Moq;
-using NUnit.Framework;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Pingback;
+using Moonglade.Web.Configuration;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Configuration
 {

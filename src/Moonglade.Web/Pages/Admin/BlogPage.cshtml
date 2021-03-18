@@ -1,8 +1,9 @@
-﻿@{
+﻿@page "/admin/page"
+@model Moonglade.Web.Pages.Admin.BlogPageModel
+@{
     Layout = "_LayoutAdmin";
+    ViewBag.Title = "Manage Pages";
 }
-
-@model IReadOnlyList<Moonglade.Pages.PageSegment>
 
 @section scripts{
     <script>
@@ -25,12 +26,12 @@
 <hr />
 
 
-@if (Model.Any())
+@if (Model.PageSegments.Any())
 {
     @Html.AntiForgeryToken()
 
     <div class="card-columns card-columns-pages">
-        @foreach (var item in Model.OrderByDescending(p => p.CreateTimeUtc))
+        @foreach (var item in Model.PageSegments.OrderByDescending(p => p.CreateTimeUtc))
         {
             <div class="card mb-4" id="card-@item.Id">
                 <div class="card-body">
@@ -49,7 +50,7 @@
                     <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" data-slug="@item.Slug" href="javascript:;">
                         <span class="icon-bin"></span>
                     </a>
-                    
+
                     <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                 </div>
             </div>

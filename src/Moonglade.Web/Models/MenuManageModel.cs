@@ -1,24 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Menus;
 
 namespace Moonglade.Web.Models
 {
-    public class MenuManageModel
-    {
-        public MenuEditViewModel MenuEditViewModel { get; set; }
-
-        public IReadOnlyList<Menu> MenuItems { get; set; }
-
-        public MenuManageModel()
-        {
-            MenuEditViewModel = new();
-            MenuItems = new List<Menu>();
-        }
-    }
-
     public class MenuEditViewModel
     {
         [HiddenInput]

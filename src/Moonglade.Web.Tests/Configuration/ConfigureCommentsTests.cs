@@ -1,6 +1,3 @@
-using Moonglade.Web.Configuration;
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -8,6 +5,8 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Comments;
+using Moonglade.Web.Configuration;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Configuration
 {
@@ -73,7 +72,7 @@ namespace Moonglade.Web.Tests.Configuration
             IServiceCollection services = new ServiceCollection();
 
             services.AddComments(configuration);
-            
+
             var obj = services.FirstOrDefault(p => p.ServiceType == typeof(ICommentModerator));
             Assert.IsNotNull(obj);
         }

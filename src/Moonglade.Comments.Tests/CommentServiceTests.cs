@@ -64,7 +64,7 @@ namespace Moonglade.Comments.Tests
             var service = CreateCommentService();
             await service.GetApprovedCommentsAsync(Guid.Empty);
 
-            _mockRepositoryCommentEntity.Verify(p => p.SelectAsync(It.IsAny<ISpecification<CommentEntity>>(),It.IsAny<Expression<Func<CommentEntity, Comment>>>() ,true));
+            _mockRepositoryCommentEntity.Verify(p => p.SelectAsync(It.IsAny<ISpecification<CommentEntity>>(), It.IsAny<Expression<Func<CommentEntity, Comment>>>(), true));
         }
 
         [Test]

@@ -77,7 +77,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Admin" asp-action="About">
+                    <a class="nav-link" href="/admin/about">
                         <span class="icon-info"></span>
                     </a>
                 </li>
@@ -104,15 +104,15 @@
         <aside class="admin-nav">
             <section class="admin-nav-section mt-4 mb-3">
                 <div class="list-group list-group-flush">
-                    <a asp-controller="Admin" asp-action="Post" class="list-group-item list-group-item-action @(currentController == "PostManage" || currentAction == "Post" ? "active" : null)">
+                    <a href="/admin/post" class="list-group-item list-group-item-action @(currentController == "PostManage" || ViewBag.Title == "Manage Posts" ? "active" : null)">
                         <span class="icon-file-text2"></span>
                         @Localizer["Posts"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Page" class="list-group-item list-group-item-action @(currentAction != null && currentAction.EndsWith("Page") ? "active" : null)">
+                    <a href="/admin/page" class="list-group-item list-group-item-action @(currentAction != null && currentAction.EndsWith("Page") || ViewBag.Title == "Manage Pages" ? "active" : null)">
                         <span class="icon-file-empty"></span>
                         @Localizer["Pages"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Category" class="list-group-item list-group-item-action @(currentAction == "Category" ? "active" : null)">
+                    <a href="/admin/category" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Categories" ? "active" : null)">
                         <span class="icon-folder"></span>
                         @Localizer["Categories"]
                     </a>
@@ -120,25 +120,25 @@
                         <span class="icon-bubbles3"></span>
                         @Localizer["Comments"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Tags" class="list-group-item list-group-item-action @(currentAction == "Tags" ? "active" : null)">
+                    <a href="/admin/tags" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Tags" ? "active" : null)">
                         <span class="icon-price-tag"></span>
                         @Localizer["Tags"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Pingback" class="list-group-item list-group-item-action @(currentAction == "Pingback" ? "active" : null)">
+                    <a href="/admin/pingback" class="list-group-item list-group-item-action @(ViewBag.Title == "Pingback" ? "active" : null)">
                         <span class="icon-earth"></span>
                         @Localizer["Pingbacks"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Menu" class="list-group-item list-group-item-action @(currentAction == "Menu" ? "active" : null)">
+                    <a href="/admin/menu" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Menus" ? "active" : null)">
                         <span class="icon-list"></span>
                         @Localizer["Menus"]
                     </a>
-                    <a asp-controller="Admin" asp-action="FriendLink" class="list-group-item list-group-item-action @(currentAction == "FriendLink" ? "active" : null)">
+                    <a href="/admin/friendlink" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Friend Links" ? "active" : null)">
                         <span class="icon-link"></span>
                         @Localizer["Friend Links"]
                     </a>
                     @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
                     {
-                        <a asp-controller="Admin" asp-action="LocalAccount" class="list-group-item list-group-item-action @(currentAction == "LocalAccount" ? "active" : null)">
+                        <a href="/admin/account" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Accounts" ? "active" : null)">
                             <span class="icon-user"></span>
                             @Localizer["Account"]
                         </a>

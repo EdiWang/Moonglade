@@ -1,23 +1,23 @@
-﻿@{
-    Layout = "_LayoutAdmin";
-}
-@model AccountManageViewModel
+﻿@page "/admin/account"
+@model Moonglade.Web.Pages.Admin.LocalAccountModel
 @{
+    Layout = "_LayoutAdmin";
+    ViewBag.Title = "Manage Accounts";
     var currentUidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
 }
 
 @section scripts{
     <script>
         var cid = '';
-        $(function() {
-            $(".btn-delete").click(function() {
+        $(function () {
+            $(".btn-delete").click(function () {
                 var cfm = confirm("Delete Confirmation?");
                 if (cfm) {
                     deleteAccount($(this).data("accountid"));
                 }
             });
 
-            $(".btn-updatepwd").click(function() {
+            $(".btn-updatepwd").click(function () {
                 $("#resetpassword-form")[0].reset();
                 $('#resetPasswordModal').modal();
                 cid = $(this).data("accountid");
@@ -29,7 +29,7 @@
             $('#editAccountModal').modal();
         }
 
-        $(".btn-submit").click(function() {
+        $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
                 callApi(`/api/localaccount/create`,
                     'POST',
@@ -45,7 +45,7 @@
             }
         });
 
-        $(".btn-resetpwd").click(function() {
+        $(".btn-resetpwd").click(function () {
             if ($("#resetpassword-form").valid()) {
                 callApi(`/api/localaccount/${cid}/reset-password`,
                     'POST',
