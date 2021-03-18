@@ -98,8 +98,8 @@
                     "MetaDescription": $("#PageEditModel_MetaDescription").val(),
                     "RawHtmlContent": $("#PageEditModel_RawHtmlContent").val(),
                     "CssContent": $("#PageEditModel_CssContent").val(),
-                    "HideSidebar": $('#MenuEditViewModel_HideSidebar').prop('checked'),
-                    "IsPublished": $('#MenuEditViewModel_IsPublished').prop('checked')
+                    "HideSidebar": $('#PageEditModel_HideSidebar').prop('checked'),
+                    "IsPublished": $('#PageEditModel_IsPublished').prop('checked')
                 },
                 async (resp) => {
                     onPageCreateEditComplete();
@@ -115,7 +115,7 @@
 
                         if (isPreviewRequired) {
                             isPreviewRequired = false;
-                            window.open(`/admin/page/preview/${data.pageId}`);
+                            window.open(`/page/preview/${data.pageId}`);
                         }
                     }
                 });
