@@ -88,7 +88,7 @@ namespace Moonglade.Web.Controllers
         {
             return View();
         }
-        
+
         [HttpGet("page/create")]
         public IActionResult CreatePage()
         {

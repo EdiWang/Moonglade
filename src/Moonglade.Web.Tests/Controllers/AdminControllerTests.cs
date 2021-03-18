@@ -13,7 +13,6 @@ using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
 using Moonglade.FriendLink;
 using Moonglade.Pages;
 using Moonglade.Web.Controllers;
