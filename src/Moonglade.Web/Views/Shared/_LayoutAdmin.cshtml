@@ -120,7 +120,7 @@
                         <span class="icon-bubbles3"></span>
                         @Localizer["Comments"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Tags" class="list-group-item list-group-item-action @(currentAction == "Tags" ? "active" : null)">
+                    <a href="/admin/tags" class="list-group-item list-group-item-action @(ViewBag.Title == "Manage Tags" ? "active" : null)">
                         <span class="icon-price-tag"></span>
                         @Localizer["Tags"]
                     </a>

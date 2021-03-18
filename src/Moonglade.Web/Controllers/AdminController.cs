@@ -29,7 +29,6 @@ namespace Moonglade.Web.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IFriendLinkService _friendLinkService;
         private readonly IPageService _pageService;
-        private readonly ITagService _tagService;
         private readonly ICommentService _commentService;
         private readonly IPingbackService _pingbackService;
         private readonly IMenuService _menuService;
@@ -44,7 +43,6 @@ namespace Moonglade.Web.Controllers
             ICategoryService categoryService,
             IFriendLinkService friendLinkService,
             IPageService pageService,
-            ITagService tagService,
             ICommentService commentService,
             IPingbackService pingbackService,
             IMenuService menuService,
@@ -55,7 +53,6 @@ namespace Moonglade.Web.Controllers
             _categoryService = categoryService;
             _friendLinkService = friendLinkService;
             _pageService = pageService;
-            _tagService = tagService;
             _commentService = commentService;
             _pingbackService = pingbackService;
             _menuService = menuService;
@@ -158,13 +155,6 @@ namespace Moonglade.Web.Controllers
             ViewBag.IsDraftPreview = true;
 
             return View("~/Views/Home/Page.cshtml", page);
-        }
-
-        [HttpGet("tags")]
-        public async Task<IActionResult> Tags()
-        {
-            var tags = await _tagService.GetAll();
-            return View(tags);
         }
 
         [Route("comments")]
