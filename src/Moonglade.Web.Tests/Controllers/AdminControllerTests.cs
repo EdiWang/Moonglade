@@ -15,7 +15,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.FriendLink;
-using Moonglade.Menus;
 using Moonglade.Pages;
 using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
@@ -39,7 +38,6 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IPageService> _mockPageService;
         private Mock<ICommentService> _mockCommentService;
         private Mock<IPingbackService> _mockPingbackService;
-        private Mock<IMenuService> _mockMenuService;
         private Mock<ILocalAccountService> _mockLocalAccountService;
 
         [SetUp]
@@ -55,7 +53,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockCommentService = _mockRepository.Create<ICommentService>();
             _mockPingbackService = _mockRepository.Create<IPingbackService>();
-            _mockMenuService = _mockRepository.Create<IMenuService>();
             _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
         }
 
@@ -69,7 +66,6 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockPageService.Object,
                 _mockCommentService.Object,
                 _mockPingbackService.Object,
-                _mockMenuService.Object,
                 _mockLocalAccountService.Object,
                 _mockBlogConfig.Object);
         }
@@ -279,19 +275,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             var model = ((ViewResult)result).Model;
             Assert.IsInstanceOf<CategoryManageModel>(model);
-        }
-
-        [Test]
-        public async Task Menu_View()
-        {
-            IReadOnlyList<Menu> menus = new List<Menu>();
-
-            _mockMenuService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(menus));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.Menu();
-
-            Assert.IsInstanceOf<ViewResult>(result);
         }
 
         [Test]

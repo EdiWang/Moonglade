@@ -31,7 +31,6 @@ namespace Moonglade.Web.Controllers
         private readonly IPageService _pageService;
         private readonly ICommentService _commentService;
         private readonly IPingbackService _pingbackService;
-        private readonly IMenuService _menuService;
         private readonly ILocalAccountService _accountService;
 
         private readonly IBlogConfig _blogConfig;
@@ -45,7 +44,6 @@ namespace Moonglade.Web.Controllers
             IPageService pageService,
             ICommentService commentService,
             IPingbackService pingbackService,
-            IMenuService menuService,
             ILocalAccountService accountService,
             IBlogConfig blogConfig)
         {
@@ -55,7 +53,6 @@ namespace Moonglade.Web.Controllers
             _pageService = pageService;
             _commentService = commentService;
             _pingbackService = pingbackService;
-            _menuService = menuService;
             _accountService = accountService;
 
             _blogConfig = blogConfig;
@@ -164,18 +161,6 @@ namespace Moonglade.Web.Controllers
             var comments = await _commentService.GetCommentsAsync(pageSize, page);
             var list = new StaticPagedList<CommentDetailedItem>(comments, page, pageSize, _commentService.Count());
             return View(list);
-        }
-
-        [HttpGet("menu")]
-        public async Task<IActionResult> Menu()
-        {
-            var menus = await _menuService.GetAllAsync();
-            var model = new MenuManageModel
-            {
-                MenuItems = menus
-            };
-
-            return View(model);
         }
 
         [HttpGet("friendlink")]
