@@ -124,7 +124,7 @@
                         <span class="icon-price-tag"></span>
                         @Localizer["Tags"]
                     </a>
-                    <a asp-controller="Admin" asp-action="Pingback" class="list-group-item list-group-item-action @(currentAction == "Pingback" ? "active" : null)">
+                    <a href="/admin/pingback" class="list-group-item list-group-item-action @(ViewBag.Title == "Pingback" ? "active" : null)">
                         <span class="icon-earth"></span>
                         @Localizer["Pingbacks"]
                     </a>

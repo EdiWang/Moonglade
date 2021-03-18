@@ -12,9 +12,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.FriendLink;
-using Moonglade.Menus;
 using Moonglade.Pages;
-using Moonglade.Pingback;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
 using X.PagedList;
@@ -30,7 +28,6 @@ namespace Moonglade.Web.Controllers
         private readonly IFriendLinkService _friendLinkService;
         private readonly IPageService _pageService;
         private readonly ICommentService _commentService;
-        private readonly IPingbackService _pingbackService;
         private readonly ILocalAccountService _accountService;
 
         private readonly IBlogConfig _blogConfig;
@@ -43,7 +40,6 @@ namespace Moonglade.Web.Controllers
             IFriendLinkService friendLinkService,
             IPageService pageService,
             ICommentService commentService,
-            IPingbackService pingbackService,
             ILocalAccountService accountService,
             IBlogConfig blogConfig)
         {
@@ -52,7 +48,6 @@ namespace Moonglade.Web.Controllers
             _friendLinkService = friendLinkService;
             _pageService = pageService;
             _commentService = commentService;
-            _pingbackService = pingbackService;
             _accountService = accountService;
 
             _blogConfig = blogConfig;
@@ -177,13 +172,6 @@ namespace Moonglade.Web.Controllers
             };
 
             return View(vm);
-        }
-
-        [Route("pingback")]
-        public async Task<IActionResult> Pingback()
-        {
-            var list = await _pingbackService.GetPingbackHistoryAsync();
-            return View(list);
         }
 
         [HttpGet("account")]

@@ -16,7 +16,6 @@ using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.FriendLink;
 using Moonglade.Pages;
-using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;
@@ -37,7 +36,6 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IFriendLinkService> _mockFriendlinkService;
         private Mock<IPageService> _mockPageService;
         private Mock<ICommentService> _mockCommentService;
-        private Mock<IPingbackService> _mockPingbackService;
         private Mock<ILocalAccountService> _mockLocalAccountService;
 
         [SetUp]
@@ -52,7 +50,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockFriendlinkService = _mockRepository.Create<IFriendLinkService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockCommentService = _mockRepository.Create<ICommentService>();
-            _mockPingbackService = _mockRepository.Create<IPingbackService>();
             _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
         }
 
@@ -65,7 +62,6 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockFriendlinkService.Object,
                 _mockPageService.Object,
                 _mockCommentService.Object,
-                _mockPingbackService.Object,
                 _mockLocalAccountService.Object,
                 _mockBlogConfig.Object);
         }
@@ -126,20 +122,6 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 Assert.That(rdResult.ActionName, Is.EqualTo("Post"));
             }
-        }
-
-        [Test]
-        public async Task Pingback_View()
-        {
-            IEnumerable<PingbackRecord> pingback = new PingbackRecord[] { };
-
-            _mockPingbackService.Setup(p => p.GetPingbackHistoryAsync())
-                .Returns(Task.FromResult(pingback));
-
-            var ctl = CreateAdminController();
-            var result = await ctl.Pingback();
-
-            Assert.IsInstanceOf<ViewResult>(result);
         }
 
         [Test]
