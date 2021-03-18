@@ -10,7 +10,6 @@ using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Configuration.Settings;
 using Moonglade.Pages;
-using Moonglade.Web.Models;
 using X.PagedList;
 
 namespace Moonglade.Web.Controllers
@@ -72,13 +71,6 @@ namespace Moonglade.Web.Controllers
         {
             await _blogAudit.ClearAuditLog();
             return RedirectToAction("AuditLogs");
-        }
-
-        [HttpGet("page/create")]
-        public IActionResult CreatePage()
-        {
-            var model = new PageEditModel();
-            return View("EditPage", model);
         }
 
         [Route("/page/preview/{pageId:guid}")]

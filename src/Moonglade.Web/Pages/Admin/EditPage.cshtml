@@ -1,4 +1,4 @@
-﻿@page "/admin/page/edit/{id:guid}"
+﻿@page "/admin/page/edit/{id:guid?}"
 @model Moonglade.Web.Pages.Admin.EditPageModel
 @{
     Layout = "_LayoutAdmin";
@@ -18,6 +18,8 @@
         $("#Title").change(function () {
             $("#Slug").val(slugify($(this).val()));
         });
+
+        var btnSubmitPage = '#btn-submit';
 
         var htmlContentEditor = null;
         var cssContentEditor = null;
@@ -65,20 +67,67 @@
             $("#PageEditModel_CssContent").val(cssValue);
         }
 
-        $("#btn-submit").click(function (e) {
+        $('#btn-preview').click(function () {
             assignEditorValues();
-            if (!$(".page-edit-form").valid()) {
-                e.preventDefault();
+
+            if ($("#page-edit-form").valid()) {
+                isPreviewRequired = true;
+                postCreateOrEdit();
             }
-            isPreviewRequired = false;
         });
 
-        $('#btn-preview').click(function (e) {
+        var onPageCreateEditBegin = function () {
+            $(btnSubmitPage).text('Saving...');
+            $(btnSubmitPage).addClass('disabled');
+            $(btnSubmitPage).attr('disabled', 'disabled');
+        };
+
+        var onPageCreateEditComplete = function () {
+            $(btnSubmitPage).text('Save');
+            $(btnSubmitPage).removeClass('disabled');
+            $(btnSubmitPage).removeAttr('disabled');
+        };
+
+        function postCreateOrEdit() {
+            onPageCreateEditBegin();
+            callApi(`/api/page/createoredit`, 'POST',
+                {
+                    "Id": $("#PageEditModel_Id").val(),
+                    "Title": $("#PageEditModel_Title").val(),
+                    "Slug": $("#PageEditModel_Slug").val(),
+                    "MetaDescription": $("#PageEditModel_MetaDescription").val(),
+                    "RawHtmlContent": $("#PageEditModel_RawHtmlContent").val(),
+                    "CssContent": $("#PageEditModel_CssContent").val(),
+                    "HideSidebar": $('#MenuEditViewModel_HideSidebar').prop('checked'),
+                    "IsPublished": $('#MenuEditViewModel_IsPublished').prop('checked')
+                },
+                async (resp) => {
+                    onPageCreateEditComplete();
+                    var data = await resp.json();
+
+                    if (data.pageId) {
+                        $('input[name="Id"]').val(data.pageId);
+                        notyf.success('Page saved successfully.');
+
+                        if ($('input[name="IsPublished"]:checked').val() === 'true') {
+                            $('#btn-preview').hide();
+                        }
+
+                        if (isPreviewRequired) {
+                            isPreviewRequired = false;
+                            window.open(`/admin/page/preview/${data.pageId}`);
+                        }
+                    }
+                });
+        }
+
+        $("#btn-submit").click(function () {
+            isPreviewRequired = false;
             assignEditorValues();
-            if (!$(".page-edit-form").valid()) {
-                e.preventDefault();
+
+            if ($("#page-edit-form").valid()) {
+                postCreateOrEdit();
             }
-            isPreviewRequired = true;
         });
 
         $(function () {
@@ -106,13 +155,7 @@
     </style>
 }
 
-<form class="page-edit-form" method="post" asp-controller="Page" asp-action="CreateOrEdit"
-      data-ajax-begin="onPageCreateEditBegin"
-      data-ajax-complete="onPageCreateEditComplete"
-      data-ajax-failure="onPageCreateEditFailed"
-      data-ajax-success="onPageCreateEditSuccess"
-      data-ajax="true"
-      data-ajax-method="POST">
+<form id="page-edit-form" method="post">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <input type="hidden" asp-for="PageEditModel.Id" />
     <div class="row">
@@ -193,12 +236,12 @@
     <hr />
 
     <div>
-        <button type="submit" class="btn btn-success" id="btn-submit">
+        <button type="button" class="btn btn-success" id="btn-submit">
             @Localizer["Save"]
         </button>
         @if (!Model.PageEditModel.IsPublished)
         {
-            <button class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
+            <button type="button" class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
         }
         <a asp-page="./BlogPage" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>

@@ -20,13 +20,11 @@ namespace Moonglade.Web.Models
         public string Slug { get; set; }
 
         [Required(ErrorMessage = "Please enter the meta description.")]
-        [JsonIgnore]
         [DataType(DataType.MultilineText)]
         [MaxLength(256)]
         public string MetaDescription { get; set; }
 
         [Required(ErrorMessage = "Please enter content.")]
-        [JsonIgnore]
         [DataType(DataType.MultilineText)]
         public string RawHtmlContent { get; set; }
 

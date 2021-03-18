@@ -348,35 +348,6 @@ var onPostCreateEditFailed = function (context) {
     }
 };
 
-var btnSubmitPage = '#btn-submit';
-var onPageCreateEditBegin = function () {
-    $(btnSubmitPage).text('Saving...');
-    $(btnSubmitPage).addClass('disabled');
-    $(btnSubmitPage).attr('disabled', 'disabled');
-};
-
-var onPageCreateEditComplete = function () {
-    $(btnSubmitPage).text('Save');
-    $(btnSubmitPage).removeClass('disabled');
-    $(btnSubmitPage).removeAttr('disabled');
-};
-
-var onPageCreateEditSuccess = function (data) {
-    if (data.pageId) {
-        $('input[name="Id"]').val(data.pageId);
-        notyf.success('Page saved successfully.');
-
-        if ($('input[name="IsPublished"]:checked').val() === 'true') {
-            $('#btn-preview').hide();
-        }
-
-        if (isPreviewRequired) {
-            isPreviewRequired = false;
-            window.open(`/admin/page/preview/${data.pageId}`);
-        }
-    }
-};
-
 var onPageCreateEditFailed = function (context) {
     var message = buildErrorMessage(context);
 

@@ -60,7 +60,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateOrEdit([FromForm] PageEditModel model)
+        public async Task<IActionResult> CreateOrEdit(PageEditModel model)
         {
             try
             {

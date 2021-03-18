@@ -18,9 +18,15 @@ namespace Moonglade.Web.Pages.Admin
             _pageService = pageService;
         }
 
-        public async Task<IActionResult> OnGetAsync(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid? id)
         {
-            var page = await _pageService.GetAsync(id);
+            if (id is null)
+            {
+                PageEditModel = new();
+                return Page();
+            }
+
+            var page = await _pageService.GetAsync(id.Value);
             if (page is null) return NotFound();
 
             PageEditModel = new()
