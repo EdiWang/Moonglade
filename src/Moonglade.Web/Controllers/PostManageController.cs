@@ -66,13 +66,6 @@ namespace Moonglade.Web.Controllers
             return jqdtResponse;
         }
 
-        [Route("recycle-bin")]
-        public async Task<IActionResult> RecycleBin()
-        {
-            var list = await _postService.ListSegment(PostStatus.Deleted);
-            return View(list);
-        }
-
         [Route("create")]
         public async Task<IActionResult> Create()
         {
@@ -271,7 +264,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postService.PurgeRecycledAsync();
-            return RedirectToAction("RecycleBin");
+            return Redirect("/admin/post/recycle-bin");
         }
     }
 }

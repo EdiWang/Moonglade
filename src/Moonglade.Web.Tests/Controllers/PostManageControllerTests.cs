@@ -100,24 +100,11 @@ namespace Moonglade.Web.Tests.Controllers
                 Draw = 251,
                 Length = 35,
                 Start = 7,
-                Search = new SearchRequest { Value = "996" }
+                Search = new() { Value = "996" }
             };
 
             var result = await postManageController.ListPublished(model);
             Assert.IsInstanceOf<JsonResult>(result);
-        }
-
-        [Test]
-        public async Task RecycleBin_View()
-        {
-            (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
-
-            _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
-
-            var postManageController = CreatePostManageController();
-            var result = await postManageController.RecycleBin();
-
-            Assert.IsInstanceOf<ViewResult>(result);
         }
 
         [Test]
@@ -375,7 +362,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostManageController();
             var result = await postManageController.EmptyRecycleBin();
 
-            Assert.IsInstanceOf<RedirectToActionResult>(result);
+            Assert.IsInstanceOf<RedirectResult>(result);
         }
     }
 }
