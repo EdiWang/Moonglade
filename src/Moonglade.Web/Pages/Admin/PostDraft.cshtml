@@ -1,8 +1,10 @@
-﻿@{
+﻿@page "/admin/post/draft"
+@model Moonglade.Web.Pages.Admin.PostDraftModel
+@{
     Layout = "_LayoutAdmin";
+    ViewBag.Title = "Drafts";
 }
 @inject ITZoneResolver TZoneResolver
-@model IReadOnlyList<Moonglade.Core.PostSegment>
 @section scripts{
     <script>
         $(function () {
@@ -27,11 +29,11 @@
 
 <partial name="_PostManageHeader" />
 
-@if (Model.Any())
+@if (Model.PostSegments.Any())
 {
     @Html.AntiForgeryToken()
 
-    @foreach (var post in Model.OrderByDescending(p => p.LastModifiedUtc))
+    @foreach (var post in Model.PostSegments.OrderByDescending(p => p.LastModifiedUtc))
     {
         <div class="card mb-3" id="tr-@post.Id">
             <div class="card-body">

@@ -66,13 +66,6 @@ namespace Moonglade.Web.Controllers
             return jqdtResponse;
         }
 
-        [Route("draft")]
-        public async Task<IActionResult> Draft()
-        {
-            var list = await _postService.ListSegment(PostStatus.Draft);
-            return View(list);
-        }
-
         [Route("recycle-bin")]
         public async Task<IActionResult> RecycleBin()
         {

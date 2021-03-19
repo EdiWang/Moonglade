@@ -108,19 +108,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Draft_View()
-        {
-            (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
-
-            _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
-
-            var postManageController = CreatePostManageController();
-            var result = await postManageController.Draft();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task RecycleBin_View()
         {
             (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
