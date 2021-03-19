@@ -1,0 +1,28 @@
+﻿@{
+    var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
+}
+
+<h3>
+    @Localizer["Posts"]
+    <a class="btn btn-outline-success float-right" asp-controller="PostManage" asp-action="Create">
+        <span class="icon-plus"></span>
+        @Localizer["New"]
+    </a>
+</h3>
+<hr />
+
+<ul class="nav nav-tabs">
+    <li role="presentation" class="nav-item nav-item-non-margin">
+        <a class="nav-link @(currentPage == "/Admin/Post" ? "active" : null)" asp-page="./Post">@Localizer["Published"]</a>
+    </li>
+    <li role="presentation" class="nav-item nav-item-non-margin">
+        <a class="nav-link @(currentPage == "/Admin/PostDraft" ? "active" : null)" asp-page="./PostDraft">@Localizer["Drafts"]</a>
+    </li>
+    <li role="presentation" class="nav-item nav-item-non-margin">
+        <a class="nav-link @(currentPage == "/Admin/RecycleBin" ? "active" : null)" asp-page="./RecycleBin">@Localizer["Recycle Bin"]</a>
+    </li>
+    <li role="presentation" class="nav-item nav-item-non-margin">
+        <a class="nav-link @(currentPage == "/Admin/PostInsights" ? "active" : null)" asp-page="./PostInsights">@Localizer["Insights"]</a>
+    </li>
+</ul>
+<div class="mb-3"></div>
