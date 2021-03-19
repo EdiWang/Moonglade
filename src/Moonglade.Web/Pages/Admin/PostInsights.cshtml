@@ -1,11 +1,13 @@
-﻿@{
+﻿@page "/admin/post/insight"
+@model Moonglade.Web.Pages.Admin.PostInsightsModel
+@{
     Layout = "_LayoutAdmin";
+    ViewBag.Title = "Insights";
 }
-@model PostInsight
 
 <partial name="_PostManageHeader" />
 
-@if (Model.TopReadPosts.Any() || Model.TopCommentedPosts.Any())
+@if (Model.TopReadList.Any() || Model.TopReadList.Any())
 {
     <div class="row">
         <div class="col-md-6">
@@ -19,7 +21,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var post in Model.TopReadPosts.OrderByDescending(p => p.Hits))
+                    @foreach (var post in Model.TopReadList.OrderByDescending(p => p.Hits))
                     {
                         <tr id="tr-@post.Id">
                             <td>
@@ -50,7 +52,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var post in Model.TopCommentedPosts.OrderByDescending(p => p.PubDateUtc))
+                    @foreach (var post in Model.TopCommentedList.OrderByDescending(p => p.PubDateUtc))
                     {
                         <tr id="tr-@post.Id">
                             <td>

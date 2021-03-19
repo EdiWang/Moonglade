@@ -273,20 +273,5 @@ namespace Moonglade.Web.Controllers
             await _postService.PurgeRecycledAsync();
             return RedirectToAction("RecycleBin");
         }
-
-        [HttpGet("insights")]
-        public async Task<IActionResult> Insights()
-        {
-            var topReadList = await _postService.ListInsights(PostInsightsType.TopRead);
-            var topCommentedList = await _postService.ListInsights(PostInsightsType.TopCommented);
-
-            var vm = new PostInsight
-            {
-                TopReadPosts = topReadList,
-                TopCommentedPosts = topCommentedList
-            };
-
-            return View(vm);
-        }
     }
 }

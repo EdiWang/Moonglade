@@ -377,14 +377,5 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<RedirectToActionResult>(result);
         }
-
-        [Test]
-        public async Task Insights_StateUnderTest_ExpectedBehavior()
-        {
-            var postManageController = CreatePostManageController();
-            var result = await postManageController.Insights();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
     }
 }
