@@ -32,38 +32,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<ILogger<PostManageController>> _mockLogger;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
-        private static readonly Category Cat = new()
-        {
-            DisplayName = "WTF",
-            Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"),
-            Note = "A wonderful contry",
-            RouteName = "wtf"
-        };
-
-        private static readonly Post Post = new()
-        {
-            Id = Uid,
-            Title = "Work 996 and Get into ICU",
-            Slug = "work-996-and-get-into-icu",
-            ContentAbstract = "Get some fubao",
-            RawPostContent = "<p>Get some fubao</p>",
-            ContentLanguageCode = "en-us",
-            Featured = true,
-            ExposedToSiteMap = true,
-            IsFeedIncluded = true,
-            IsPublished = true,
-            CommentEnabled = true,
-            PubDateUtc = new(2019, 9, 6, 6, 35, 7),
-            LastModifiedUtc = new(2020, 9, 6, 6, 35, 7),
-            CreateTimeUtc = new(2018, 9, 6, 6, 35, 7),
-            Tags = new[]
-                {
-                    new Tag { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
-                    new Tag { DisplayName = "996", Id = 251, NormalizedName = "996" }
-                },
-            Categories = new[] { Cat }
-        };
-
+        
         [SetUp]
         public void SetUp()
         {
@@ -103,29 +72,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await postManageController.ListPublished(model);
             Assert.IsInstanceOf<JsonResult>(result);
         }
-
-        //[Test]
-        //public async Task Edit_NotFound()
-        //{
-        //    _mockPostService.Setup(p => p.GetAsync(Guid.Empty)).Returns(Task.FromResult((Post)null));
-        //    var postManageController = CreatePostManageController();
-        //    var result = await postManageController.Edit(Guid.Empty);
-
-        //    Assert.IsInstanceOf<NotFoundResult>(result);
-        //}
-
-        //[Test]
-        //public async Task Edit_View()
-        //{
-        //    IReadOnlyList<Category> cats = new List<Category> { Cat };
-
-        //    _mockPostService.Setup(p => p.GetAsync(Uid)).Returns(Task.FromResult(Post));
-        //    _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
-
-        //    var postManageController = CreatePostManageController();
-        //    var result = await postManageController.Edit(Uid);
-        //    Assert.IsInstanceOf<ViewResult>(result);
-        //}
 
         //[Test]
         //public async Task CreateOrEdit_BadModelState()
