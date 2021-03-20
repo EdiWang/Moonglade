@@ -16,8 +16,29 @@ namespace Moonglade.Utils
 {
     public static class Helper
     {
-        public static string AppVersion =>
-            Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        public static string AppVersion
+        {
+            get
+            {
+                var asm = Assembly.GetEntryAssembly();
+                if (null == asm) return "N/A";
+                var fileVersion = asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+
+                // e.g. 11.2-preview+e57ab0321ae44bd778c117646273a77123b6983f
+                var version = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                if (!string.IsNullOrWhiteSpace(version) && version.IndexOf('+') > 0)
+                {
+                    var gitHash = version.Substring(version.IndexOf('+') + 1);
+                    if (gitHash.Length <= 6) return version;
+
+                    // consider valid hash
+                    var gitHashShort = gitHash.Substring(gitHash.Length - 6, 6);
+                    return !string.IsNullOrWhiteSpace(gitHashShort) ? $"{fileVersion} ({gitHashShort})" : fileVersion;
+                }
+
+                return version ?? fileVersion;
+            }
+        }
 
         public static string TryGetFullOSVersion()
         {
