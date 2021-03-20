@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Win32;
 
 namespace Moonglade.Utils
@@ -172,7 +173,7 @@ namespace Moonglade.Utils
             if (uri.HostNameType == UriHostNameType.IPv4)
             {
                 // Disallow LAN IP (e.g. 192.168.0.1, 10.0.0.1)
-                if (Helper.IsPrivateIP(uri.Host))
+                if (IsPrivateIP(uri.Host))
                 {
                     return invalidReturn;
                 }
@@ -330,8 +331,25 @@ namespace Moonglade.Utils
 
         public static string RemoveAccent(this string txt)
         {
-            byte[] bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(txt);
-            return System.Text.Encoding.ASCII.GetString(bytes);
+            byte[] bytes = Encoding.GetEncoding("Cyrillic").GetBytes(txt);
+            return Encoding.ASCII.GetString(bytes);
+        }
+
+        public static string GetCombinedErrorMessageFromModelState(ModelStateDictionary modelStateDictionary, string sep = ", ")
+        {
+            var messages = GetErrorMessagesFromModelState(modelStateDictionary);
+            var enumerable = messages as string[] ?? messages.ToArray();
+            return enumerable.Any() ? string.Join(sep, enumerable) : string.Empty;
+        }
+
+        public static IEnumerable<string> GetErrorMessagesFromModelState(ModelStateDictionary modelStateDictionary)
+        {
+            if (modelStateDictionary is null) return null;
+            if (modelStateDictionary.ErrorCount == 0) return null;
+
+            return from modelState in modelStateDictionary.Values
+                   from error in modelState.Errors
+                   select error.ErrorMessage;
         }
     }
 }

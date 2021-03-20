@@ -10,6 +10,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.Pingback;
+using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
@@ -146,7 +147,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) return Conflict(ModelState);
+                if (!ModelState.IsValid) return Conflict(Helper.GetCombinedErrorMessageFromModelState(ModelState));
 
                 var tags = string.IsNullOrWhiteSpace(model.Tags)
                     ? Array.Empty<string>()
