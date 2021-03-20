@@ -87,7 +87,7 @@ namespace Moonglade.Web.Controllers
                 view.CategoryList = cbCatList;
             }
 
-            return View("CreateOrEdit", view);
+            return View("EditPost", view);
         }
 
         [Route("edit/{id:guid}")]
@@ -133,7 +133,7 @@ namespace Moonglade.Web.Controllers
                 viewModel.CategoryList = cbCatList;
             }
 
-            return View("CreateOrEdit", viewModel);
+            return View("EditPost", viewModel);
         }
 
         [HttpPost("createoredit")]
