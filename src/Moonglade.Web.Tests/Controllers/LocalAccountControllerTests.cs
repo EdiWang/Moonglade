@@ -34,21 +34,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Create_InvalidModel()
-        {
-            var ctl = CreateLocalAccountController();
-            ctl.ModelState.AddModelError("", "996");
-
-            var result = await ctl.Create(new()
-            {
-                Username = "996",
-                Password = "icu"
-            });
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Create_AlreadyExists()
         {
             _mockLocalAccountService.Setup(p => p.Exist(It.IsAny<string>())).Returns(true);

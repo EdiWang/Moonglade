@@ -27,8 +27,6 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(MenuEditViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             var request = new UpdateMenuRequest
             {
                 DisplayOrder = model.DisplayOrder,
@@ -81,8 +79,6 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(MenuEditViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             var request = new UpdateMenuRequest
             {
                 Title = model.Title,

@@ -49,8 +49,6 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> NewComment(Guid postId, NewCommentModel model, [FromServices] ISessionBasedCaptcha captcha)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             if (!string.IsNullOrWhiteSpace(model.Email) && !Helper.IsValidEmailAddress(model.Email))
             {
                 ModelState.AddModelError(nameof(model.Email), "Invalid Email address.");
@@ -137,8 +135,11 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Reply(ReplyRequest request, [FromServices] LinkGenerator linkGenerator)
         {
-            if (request.CommentId == Guid.Empty) ModelState.AddModelError(nameof(request.CommentId), "value is empty");
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (request.CommentId == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(request.CommentId), "value is empty");
+                return BadRequest(ModelState);
+            }
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 

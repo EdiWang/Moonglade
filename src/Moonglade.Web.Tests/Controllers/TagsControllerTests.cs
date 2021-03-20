@@ -87,18 +87,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Update_BadModelState()
-        {
-            var ctl = CreateTagsController();
-            ctl.ModelState.AddModelError("", "error");
-
-            var request = new EditTagRequest();
-            var result = await ctl.Update(request);
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Update_OK()
         {
             var ctl = CreateTagsController();

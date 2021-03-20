@@ -50,16 +50,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task CreateOrEdit_BadModelState()
-        {
-            var ctl = CreatePageController();
-            ctl.ModelState.AddModelError("", "996");
-
-            var result = await ctl.CreateOrEdit(new());
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Segment_OK()
         {
             IReadOnlyList<PageSegment> ps = new List<PageSegment>

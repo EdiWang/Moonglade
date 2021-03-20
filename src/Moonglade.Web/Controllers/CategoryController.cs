@@ -42,8 +42,6 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CategoryEditModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             var request = new UpdateCatRequest
             {
                 RouteName = model.RouteName,
@@ -79,8 +77,6 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(CategoryEditModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             var request = new UpdateCatRequest
             {
                 RouteName = model.RouteName,

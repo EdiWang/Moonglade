@@ -40,16 +40,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Create_InvalidModel()
-        {
-            var ctl = CreateFriendLinkController();
-            ctl.ModelState.AddModelError("Title", "Title is required");
-
-            var result = await ctl.Create(_friendlinkEditViewModel);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Create_OK()
         {
             var ctl = CreateFriendLinkController();
@@ -90,16 +80,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Get(Uid);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-        }
-
-        [Test]
-        public async Task Edit_InvalidModel()
-        {
-            var ctl = CreateFriendLinkController();
-            ctl.ModelState.AddModelError("Title", "Title is required");
-
-            var result = await ctl.Edit(_friendlinkEditViewModel);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]

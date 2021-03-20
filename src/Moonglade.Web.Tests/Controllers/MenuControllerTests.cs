@@ -41,16 +41,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Create_InvalidModel()
-        {
-            var ctl = CreateMenuController();
-            ctl.ModelState.AddModelError("Title", "Title is required");
-
-            var result = await ctl.Create(_menuEditViewModel);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Create_OK()
         {
             var ctl = CreateMenuController();
@@ -116,16 +106,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Edit(_noneEmptyId);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-        }
-
-        [Test]
-        public async Task Edit_Post_InvalidModel()
-        {
-            var ctl = CreateMenuController();
-            ctl.ModelState.AddModelError("Title", "Title is required");
-
-            var result = await ctl.Edit(_menuEditViewModel);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]

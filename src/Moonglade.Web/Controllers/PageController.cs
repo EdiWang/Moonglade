@@ -64,8 +64,6 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
-
                 if (!string.IsNullOrWhiteSpace(model.CssContent))
                 {
                     var uglifyTest = Uglify.Css(model.CssContent);

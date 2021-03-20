@@ -30,21 +30,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Create_BadModelState()
-        {
-            var categoryController = CreateCategoryController();
-            var model = new CategoryEditModel
-            {
-                DisplayName = "996",
-                Note = string.Empty
-            };
-            categoryController.ModelState.AddModelError("Note", "Note is required");
-
-            var result = await categoryController.Create(model);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Create_ValidModel()
         {
             var categoryController = CreateCategoryController();
@@ -96,21 +81,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await categoryController.Edit(model);
             Assert.IsInstanceOf<OkObjectResult>(result);
-        }
-
-        [Test]
-        public async Task Edit_BadModelState()
-        {
-            var categoryController = CreateCategoryController();
-            var model = new CategoryEditModel
-            {
-                DisplayName = "996",
-                Note = string.Empty
-            };
-            categoryController.ModelState.AddModelError("Note", "Note is required");
-
-            var result = await categoryController.Edit(model);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]

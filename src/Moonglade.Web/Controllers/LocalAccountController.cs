@@ -28,7 +28,6 @@ namespace Moonglade.Web.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create(AccountEditViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
             if (_accountService.Exist(model.Username))
             {
                 ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
@@ -72,8 +71,11 @@ namespace Moonglade.Web.Controllers
         [HttpPost("{id:guid}/reset-password")]
         public async Task<IActionResult> ResetPassword(Guid id, ResetPasswordRequest request)
         {
-            if (id == Guid.Empty) ModelState.AddModelError(nameof(id), "value is empty");
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (id == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(id), "value is empty");
+                return BadRequest(ModelState);
+            }
 
             if (!Regex.IsMatch(request.NewPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))
             {

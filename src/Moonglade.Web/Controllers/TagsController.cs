@@ -64,8 +64,6 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(EditTagRequest request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             await _tagService.UpdateAsync(request.TagId, request.NewName);
             return Ok();
         }
