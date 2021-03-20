@@ -219,7 +219,7 @@ namespace Moonglade.Web.Tests.Controllers
                     Slug = Post.Slug,
                     EditorContent = Post.RawPostContent,
                     LanguageCode = Post.ContentLanguageCode,
-                    IsPublished = false,
+                    IsPublished = true,
                     Featured = true,
                     ExposedToSiteMap = true,
                     ChangePublishDate = false,
