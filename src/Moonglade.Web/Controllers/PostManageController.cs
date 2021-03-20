@@ -21,21 +21,18 @@ namespace Moonglade.Web.Controllers
     public class PostManageController : Controller
     {
         private readonly IPostService _postService;
-        private readonly ICategoryService _catService;
         private readonly IBlogConfig _blogConfig;
         private readonly ITZoneResolver _tZoneResolver;
         private readonly ILogger<PostManageController> _logger;
 
         public PostManageController(
             IPostService postService,
-            ICategoryService catService,
             IBlogConfig blogConfig,
             ITZoneResolver tZoneResolver,
             ILogger<PostManageController> logger)
         {
             _postService = postService;
             _blogConfig = blogConfig;
-            _catService = catService;
             _tZoneResolver = tZoneResolver;
             _logger = logger;
         }
@@ -67,87 +64,20 @@ namespace Moonglade.Web.Controllers
             return jqdtResponse;
         }
 
-        [Route("create")]
-        public async Task<IActionResult> Create()
-        {
-            var view = new PostEditModel
-            {
-                IsPublished = false,
-                Featured = false,
-                EnableComment = true,
-                ExposedToSiteMap = true,
-                FeedIncluded = true,
-                LanguageCode = _blogConfig.ContentSettings.DefaultLangCode
-            };
-
-            var cats = await _catService.GetAll();
-            if (cats.Count > 0)
-            {
-                var cbCatList = cats.Select(p =>
-                    new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false));
-                view.CategoryList = cbCatList;
-            }
-
-            return View("EditPost", view);
-        }
-
-        [Route("edit/{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id)
-        {
-            var post = await _postService.GetAsync(id);
-            if (null == post) return NotFound();
-
-            var viewModel = new PostEditModel
-            {
-                PostId = post.Id,
-                IsPublished = post.IsPublished,
-                EditorContent = post.RawPostContent,
-                Slug = post.Slug,
-                Title = post.Title,
-                EnableComment = post.CommentEnabled,
-                ExposedToSiteMap = post.ExposedToSiteMap,
-                FeedIncluded = post.IsFeedIncluded,
-                LanguageCode = post.ContentLanguageCode,
-                Featured = post.Featured
-            };
-
-            if (post.PubDateUtc is not null)
-            {
-                viewModel.PublishDate = _tZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
-            }
-
-            var tagStr = post.Tags
-                .Select(p => p.DisplayName)
-                .Aggregate(string.Empty, (current, item) => current + item + ",");
-
-            tagStr = tagStr.TrimEnd(',');
-            viewModel.Tags = tagStr;
-
-            var cats = await _catService.GetAll();
-            if (cats.Count > 0)
-            {
-                var cbCatList = cats.Select(p =>
-                    new CheckBoxViewModel(
-                        p.DisplayName,
-                        p.Id.ToString(),
-                        post.Categories.Any(q => q.Id == p.Id)));
-                viewModel.CategoryList = cbCatList;
-            }
-
-            return View("EditPost", viewModel);
-        }
-
         [HttpPost("createoredit")]
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [TypeFilter(typeof(ClearPagingCountCache))]
-        public async Task<IActionResult> CreateOrEdit(PostEditModel model,
+        public async Task<IActionResult> CreateOrEdit(PostEditModelWrapper tempModel,
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] IPingbackSender pingbackSender)
         {
             try
             {
                 if (!ModelState.IsValid) return Conflict(Helper.GetCombinedErrorMessageFromModelState(ModelState));
+
+                // temp solution
+                var model = tempModel.PostEditModel;
 
                 var tags = string.IsNullOrWhiteSpace(model.Tags)
                     ? Array.Empty<string>()
