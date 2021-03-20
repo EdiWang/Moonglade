@@ -31,33 +31,6 @@ namespace Moonglade.Web.Tests.Controllers
         [TestCase(null)]
         [TestCase("")]
         [TestCase(" ")]
-        public void Post_EmptyTerm(string term)
-        {
-            var searchController = CreateSearchController();
-            var result = searchController.Post(term);
-
-            Assert.IsInstanceOf<RedirectToActionResult>(result);
-
-            var redirectResult = (RedirectToActionResult)result;
-            Assert.AreEqual("Home", redirectResult.ControllerName);
-            Assert.AreEqual("Index", redirectResult.ActionName);
-        }
-
-        [Test]
-        public void Post_HasTerm()
-        {
-            var searchController = CreateSearchController();
-            var result = searchController.Post("Fuck 996");
-
-            Assert.IsInstanceOf<RedirectToActionResult>(result);
-
-            var redirectResult = (RedirectToActionResult)result;
-            Assert.AreEqual("Search", redirectResult.ActionName);
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
         public async Task Search_EmptyTerm(string term)
         {
             var searchController = CreateSearchController();
