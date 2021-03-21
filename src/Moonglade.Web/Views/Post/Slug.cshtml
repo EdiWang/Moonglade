@@ -2,6 +2,7 @@
 
 @model Moonglade.Core.Post
 @inject ITZoneResolver TZoneResolver
+@Html.AntiForgeryToken()
 
 @{
     ViewBag.BodyClass = "body-post-slug";
