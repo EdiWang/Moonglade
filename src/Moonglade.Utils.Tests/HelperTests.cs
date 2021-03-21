@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NUnit.Framework;
 
 namespace Moonglade.Utils.Tests
@@ -227,6 +228,21 @@ namespace Moonglade.Utils.Tests
         public string SterilizeMenuLink(string rawUrl)
         {
             return Helper.SterilizeLink(rawUrl);
+        }
+
+        [Test]
+        public void GetErrorMessagesFromModelState_NullModelStateDictionary()
+        {
+            var result = Helper.GetErrorMessagesFromModelState(null);
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void GetErrorMessagesFromModelState_NoModelErrors()
+        {
+            var msd = new ModelStateDictionary();
+            var result = Helper.GetErrorMessagesFromModelState(msd);
+            Assert.IsNull(result);
         }
     }
 }
