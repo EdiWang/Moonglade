@@ -274,7 +274,7 @@ namespace Moonglade.Utils.Tests
             msd.AddModelError("251", "Use HW and be a patriot");
 
             var result = msd.CombineErrorMessages();
-            
+
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Contains("Jack Ma is an asshole"));
             Assert.IsTrue(result.Contains("Use HW and be a patriot"));

@@ -9,7 +9,6 @@ using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.DataPorting;
-using Moonglade.FriendLink;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
@@ -24,7 +23,6 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<IFriendLinkService> _mockFriendLinkService;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<ILogger<SettingsController>> _mockLogger;
@@ -34,7 +32,6 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockFriendLinkService = _mockRepository.Create<IFriendLinkService>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockLogger = _mockRepository.Create<ILogger<SettingsController>>();
@@ -43,7 +40,6 @@ namespace Moonglade.Web.Tests.Controllers
         private SettingsController CreateSettingsController()
         {
             return new(
-                _mockFriendLinkService.Object,
                 _mockBlogConfig.Object,
                 _mockBlogAudit.Object,
                 _mockLogger.Object);

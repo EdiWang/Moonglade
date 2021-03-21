@@ -59,13 +59,13 @@ namespace Moonglade.Web.Controllers
             var take = model.Length;
             var offset = model.Start;
 
-            var posts = await _postService.ListSegment(status, offset, take, searchBy);
+            var (posts, totalRows) = await _postService.ListSegment(status, offset, take, searchBy);
             var jqdtResponse = new JqDataTableResponse<PostSegment>
             {
                 Draw = model.Draw,
-                RecordsFiltered = posts.TotalRows,
-                RecordsTotal = posts.TotalRows,
-                Data = posts.Posts
+                RecordsFiltered = totalRows,
+                RecordsTotal = totalRows,
+                Data = posts
             };
 
             return jqdtResponse;

@@ -29,7 +29,7 @@ namespace Moonglade.Utils
                 var version = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
                 if (!string.IsNullOrWhiteSpace(version) && version.IndexOf('+') > 0)
                 {
-                    var gitHash = version.Substring(version.IndexOf('+') + 1);
+                    var gitHash = version[(version.IndexOf('+') + 1)..];
                     if (gitHash.Length <= 6) return version;
 
                     // consider valid hash

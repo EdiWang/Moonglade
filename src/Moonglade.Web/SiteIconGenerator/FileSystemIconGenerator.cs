@@ -69,7 +69,7 @@ namespace Moonglade.Web.SiteIconGenerator
             GenerateStandardFaviconIco(Path.Join(directory, "favicon-16x16.png"), Path.Join(directory, "favicon.ico"));
         }
 
-        private static readonly object FileLock = new object();
+        private static readonly object FileLock = new();
 
         private static void GenerateStandardFaviconIco(string originImagePath, string icoFilePath)
         {

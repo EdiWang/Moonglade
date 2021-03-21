@@ -14,7 +14,6 @@ using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.DataPorting;
-using Moonglade.FriendLink;
 using Moonglade.Notification.Client;
 using Moonglade.Setup;
 using Moonglade.Utils;
@@ -30,7 +29,6 @@ namespace Moonglade.Web.Controllers
     {
         #region Private Fields
 
-        private readonly IFriendLinkService _friendLinkService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
         private readonly ILogger<SettingsController> _logger;
@@ -40,7 +38,6 @@ namespace Moonglade.Web.Controllers
         #endregion
 
         public SettingsController(
-            IFriendLinkService friendLinkService,
             IBlogConfig blogConfig,
             IBlogAudit blogAudit,
             ILogger<SettingsController> logger)
@@ -48,7 +45,6 @@ namespace Moonglade.Web.Controllers
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
 
-            _friendLinkService = friendLinkService;
             _logger = logger;
         }
 
