@@ -244,5 +244,40 @@ namespace Moonglade.Utils.Tests
             var result = Helper.GetErrorMessagesFromModelState(msd);
             Assert.IsNull(result);
         }
+
+        [Test]
+        public void GetErrorMessagesFromModelState_HasModelErrors()
+        {
+            var msd = new ModelStateDictionary
+            {
+                MaxAllowedErrors = 35
+            };
+
+            msd.AddModelError("996", "Jack Ma is an asshole");
+            msd.AddModelError("251", "Use HW and be a patriot");
+
+            var result = Helper.GetErrorMessagesFromModelState(msd);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+        }
+
+        [Test]
+        public void CombineErrorMessages_Default_HasModelErrors()
+        {
+            var msd = new ModelStateDictionary
+            {
+                MaxAllowedErrors = 35
+            };
+
+            msd.AddModelError("996", "Jack Ma is an asshole");
+            msd.AddModelError("251", "Use HW and be a patriot");
+
+            var result = msd.CombineErrorMessages();
+            
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Contains("Jack Ma is an asshole"));
+            Assert.IsTrue(result.Contains("Use HW and be a patriot"));
+        }
     }
 }
