@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
@@ -17,33 +18,39 @@ using Moonglade.Web.Models;
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
-    [Route("post/manage")]
-    public class PostManageController : Controller
+    [ApiController]
+    [AppendAppVersion]
+    [Route("api/[controller]")]
+    public class PostManageController : ControllerBase
     {
         private readonly IPostService _postService;
         private readonly IBlogConfig _blogConfig;
         private readonly ITZoneResolver _tZoneResolver;
+        private readonly IPingbackSender _pingbackSender;
         private readonly ILogger<PostManageController> _logger;
 
         public PostManageController(
             IPostService postService,
             IBlogConfig blogConfig,
             ITZoneResolver tZoneResolver,
+            IPingbackSender pingbackSender,
             ILogger<PostManageController> logger)
         {
             _postService = postService;
             _blogConfig = blogConfig;
             _tZoneResolver = tZoneResolver;
+            _pingbackSender = pingbackSender;
             _logger = logger;
         }
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
         [Route("list-published")]
-        public async Task<IActionResult> ListPublished(DataTableRequest model)
+        [ProducesResponseType(typeof(JqDataTableResponse<PostSegment>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ListPublished([FromForm] DataTableRequest model)
         {
             var jqdtResponse = await GetJqDataTableResponse(PostStatus.Published, model);
-            return Json(jqdtResponse);
+            return Ok(jqdtResponse);
         }
 
         private async Task<JqDataTableResponse<PostSegment>> GetJqDataTableResponse(PostStatus status, DataTableRequest model)
@@ -68,9 +75,7 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [TypeFilter(typeof(ClearPagingCountCache))]
-        public async Task<IActionResult> CreateOrEdit(PostEditModelWrapper tempModel,
-            [FromServices] LinkGenerator linkGenerator,
-            [FromServices] IPingbackSender pingbackSender)
+        public async Task<IActionResult> CreateOrEdit([FromForm] PostEditModelWrapper tempModel, [FromServices] LinkGenerator linkGenerator)
         {
             try
             {
@@ -128,17 +133,17 @@ namespace Moonglade.Web.Controllers
 
                     if (_blogConfig.AdvancedSettings.EnablePingBackSend)
                     {
-                        _ = Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, postEntity.PostContent); });
+                        _ = Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, postEntity.PostContent); });
                     }
                 }
 
-                return Json(new { PostId = postEntity.Id });
+                return Ok(new { PostId = postEntity.Id });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error Creating New Post.");
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json(ex.Message);
+                return Conflict(ex.Message);
             }
         }
 

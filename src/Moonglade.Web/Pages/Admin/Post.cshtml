@@ -21,7 +21,7 @@
                 "ordering": false,
                 "ajax":
                 {
-                    url: "/post/manage/list-published",
+                    url: "/api/postmanage/list-published",
                     type: "POST"
                 },
                 "initComplete": function (settings, json) {
@@ -89,7 +89,7 @@
         function deletePost(postid) {
             $(`#span-processing-${postid}`).show();
 
-            callApi(`/post/manage/${postid}/recycle`,
+            callApi(`/api/postmanage/${postid}/recycle`,
                 'DELETE',
                 {},
                 (resp) => {

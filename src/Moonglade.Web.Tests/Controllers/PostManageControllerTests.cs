@@ -29,6 +29,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IPostService> _mockPostService;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITZoneResolver> _mockTZoneResolver;
+        private Mock<IPingbackSender> _mockPingbackSender;
         private Mock<ILogger<PostManageController>> _mockLogger;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
@@ -72,6 +73,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockPostService = _mockRepository.Create<IPostService>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockTZoneResolver = _mockRepository.Create<ITZoneResolver>();
+            _mockPingbackSender = _mockRepository.Create<IPingbackSender>();
             _mockLogger = _mockRepository.Create<ILogger<PostManageController>>();
         }
 
@@ -81,6 +83,7 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockPostService.Object,
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
+                _mockPingbackSender.Object,
                 _mockLogger.Object);
         }
 
@@ -112,9 +115,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             PostEditModelWrapper model = new();
             Mock<LinkGenerator> mockLinkGenerator = new();
-            Mock<IPingbackSender> mockPingbackSender = new();
-
-            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object, mockPingbackSender.Object);
+            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
 
             Assert.IsInstanceOf<ConflictObjectResult>(result);
         }
@@ -150,17 +151,16 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             Mock<LinkGenerator> mockLinkGenerator = new();
-            Mock<IPingbackSender> mockPingbackSender = new();
 
             _mockPostService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Throws(new("Work 996"));
 
-            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object, mockPingbackSender.Object);
+            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
             Assert.IsInstanceOf<JsonResult>(result);
 
             var statusCode = postManageController.HttpContext.Response.StatusCode;
             Assert.AreEqual(500, statusCode);
 
-            mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            _mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -189,16 +189,14 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             Mock<LinkGenerator> mockLinkGenerator = new();
-            Mock<IPingbackSender> mockPingbackSender = new();
-
             _mockPostService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Returns(Task.FromResult(new PostEntity
             {
                 Id = Uid
             }));
 
-            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object, mockPingbackSender.Object);
+            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
             Assert.IsInstanceOf<JsonResult>(result);
-            mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            _mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -245,9 +243,8 @@ namespace Moonglade.Web.Tests.Controllers
                 ))
                 .Returns("https://996.icu/1996/7/2/work-996-and-get-into-icu");
 
-            Mock<IPingbackSender> mockPingbackSender = new();
             var trySendPingAsyncCalled = new ManualResetEvent(false);
-            mockPingbackSender.Setup(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>())).Callback(() =>
+            _mockPingbackSender.Setup(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>())).Callback(() =>
             {
                 trySendPingAsyncCalled.Set();
             });
@@ -261,12 +258,12 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings { EnablePingBackSend = true });
 
-            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object, mockPingbackSender.Object);
+            var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
 
             trySendPingAsyncCalled.WaitOne(TimeSpan.FromSeconds(2));
             Assert.IsInstanceOf<JsonResult>(result);
 
-            mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()));
+            _mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()));
         }
 
         [Test]

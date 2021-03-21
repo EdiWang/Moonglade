@@ -360,7 +360,7 @@ var onPageCreateEditFailed = function (context) {
 
 function deletePost(postid) {
     $(`#span-processing-${postid}`).show();
-    callApi(`/post/manage/${postid}/destroy`, 'DELETE', {},
+    callApi(`/api/postmanage/${postid}/destroy`, 'DELETE', {},
         (resp) => {
             $(`#tr-${postid}`).hide();
             notyf.success('Post deleted');
@@ -369,7 +369,7 @@ function deletePost(postid) {
 
 function restorePost(postid) {
     $(`#span-processing-${postid}`).show();
-    callApi(`/post/manage/${postid}/restore`, 'POST', {},
+    callApi(`/api/postmanage/${postid}/restore`, 'POST', {},
         (resp) => {
             $(`#tr-${postid}`).hide();
             notyf.success('Post restored');

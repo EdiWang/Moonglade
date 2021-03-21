@@ -18,9 +18,9 @@ namespace Moonglade.Web.Pages.Admin
         public PostEditModel PostEditModel { get; set; }
 
         public EditPostModel(
-            ICategoryService catService, 
-            IPostService postService, 
-            ITZoneResolver tZoneResolver, 
+            ICategoryService catService,
+            IPostService postService,
+            ITZoneResolver tZoneResolver,
             IBlogConfig blogConfig)
         {
             _catService = catService;

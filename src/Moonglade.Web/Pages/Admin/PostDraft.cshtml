@@ -19,7 +19,7 @@
         function deletePost(postid) {
             $(`#span-processing-${postid}`).show();
 
-            callApi(`/post/manage/${postid}/recycle`, 'DELETE', {},
+            callApi(`/api/postmanage/${postid}/recycle`, 'DELETE', {},
                 (resp) => {
                     $(`#tr-${postid}`).hide();
                 });
