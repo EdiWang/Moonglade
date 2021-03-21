@@ -73,7 +73,7 @@ namespace Moonglade.Web.Controllers
                         {
                             ModelState.AddModelError(model.CssContent, err.ToString());
                         }
-                        return BadRequest(ModelState);
+                        return BadRequest(ModelState.CombineErrorMessages());
                     }
                 }
 

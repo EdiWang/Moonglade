@@ -52,7 +52,7 @@ namespace Moonglade.Web.Controllers
             if (!string.IsNullOrWhiteSpace(model.Email) && !Helper.IsValidEmailAddress(model.Email))
             {
                 ModelState.AddModelError(nameof(model.Email), "Invalid Email address.");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
@@ -107,7 +107,7 @@ namespace Moonglade.Web.Controllers
             if (commentId == Guid.Empty)
             {
                 ModelState.AddModelError(nameof(commentId), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             await _commentService.ToggleApprovalAsync(new[] { commentId });
@@ -122,7 +122,7 @@ namespace Moonglade.Web.Controllers
             if (commentIds.Length == 0)
             {
                 ModelState.AddModelError(nameof(commentIds), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             await _commentService.DeleteAsync(commentIds);
@@ -138,7 +138,7 @@ namespace Moonglade.Web.Controllers
             if (request.CommentId == Guid.Empty)
             {
                 ModelState.AddModelError(nameof(request.CommentId), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();

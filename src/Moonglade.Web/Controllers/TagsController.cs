@@ -77,7 +77,7 @@ namespace Moonglade.Web.Controllers
             if (tagId <= 0)
             {
                 ModelState.AddModelError(nameof(tagId), "Value out of range");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             await _tagService.DeleteAsync(tagId);

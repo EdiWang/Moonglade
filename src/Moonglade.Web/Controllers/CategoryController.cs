@@ -8,6 +8,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
@@ -96,7 +97,7 @@ namespace Moonglade.Web.Controllers
             if (id == Guid.Empty)
             {
                 ModelState.AddModelError(nameof(id), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             await _catService.DeleteAsync(id);

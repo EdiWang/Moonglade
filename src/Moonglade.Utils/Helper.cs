@@ -335,7 +335,7 @@ namespace Moonglade.Utils
             return Encoding.ASCII.GetString(bytes);
         }
 
-        public static string GetCombinedErrorMessageFromModelState(ModelStateDictionary modelStateDictionary, string sep = ", ")
+        public static string CombineErrorMessages(this ModelStateDictionary modelStateDictionary, string sep = ", ")
         {
             var messages = GetErrorMessagesFromModelState(modelStateDictionary);
             var enumerable = messages as string[] ?? messages.ToArray();

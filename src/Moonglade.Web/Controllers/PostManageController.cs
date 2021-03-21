@@ -79,7 +79,7 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) return Conflict(Helper.GetCombinedErrorMessageFromModelState(ModelState));
+                if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
                 // temp solution
                 var model = tempModel.PostEditModel;
@@ -156,7 +156,7 @@ namespace Moonglade.Web.Controllers
             if (postId == Guid.Empty)
             {
                 ModelState.AddModelError(nameof(postId), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             await _postService.RestoreAsync(postId);
@@ -172,7 +172,7 @@ namespace Moonglade.Web.Controllers
             if (postId == Guid.Empty)
             {
                 ModelState.AddModelError(nameof(postId), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             await _postService.DeleteAsync(postId, true);
@@ -187,7 +187,7 @@ namespace Moonglade.Web.Controllers
             if (postId == Guid.Empty)
             {
                 ModelState.AddModelError(nameof(postId), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             await _postService.DeleteAsync(postId);

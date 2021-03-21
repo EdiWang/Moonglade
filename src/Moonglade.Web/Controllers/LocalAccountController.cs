@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
             if (id == Guid.Empty)
             {
                 ModelState.AddModelError(nameof(id), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
@@ -74,7 +74,7 @@ namespace Moonglade.Web.Controllers
             if (id == Guid.Empty)
             {
                 ModelState.AddModelError(nameof(id), "value is empty");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             if (!Regex.IsMatch(request.NewPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))

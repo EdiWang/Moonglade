@@ -81,7 +81,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("general")]
         public async Task<IActionResult> General(GeneralSettingsViewModel model, [FromServices] ITZoneResolver tZoneResolver)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
             _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
             _blogConfig.GeneralSettings.MetaDescription = model.MetaDescription;
@@ -136,7 +136,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("content")]
         public async Task<IActionResult> Content(ContentSettingsViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
             _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
             _blogConfig.ContentSettings.EnableComments = model.EnableComments;
@@ -178,7 +178,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("notification")]
         public async Task<IActionResult> Notification(NotificationSettingsViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
             var settings = _blogConfig.NotificationSettings;
             settings.EmailDisplayName = model.EmailDisplayName;
@@ -224,7 +224,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("subscription")]
         public async Task<IActionResult> Subscription(SubscriptionSettingsViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
             var settings = _blogConfig.FeedSettings;
             settings.AuthorName = model.AuthorName;
@@ -262,7 +262,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("watermark")]
         public async Task<IActionResult> Watermark(WatermarkSettingsViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
             var settings = _blogConfig.WatermarkSettings;
             settings.IsEnabled = model.IsEnabled;
@@ -402,7 +402,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("advanced")]
         public async Task<IActionResult> Advanced(AdvancedSettingsViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
             var settings = _blogConfig.AdvancedSettings;
             settings.DNSPrefetchEndpoint = model.DNSPrefetchEndpoint;
@@ -485,7 +485,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("security")]
         public async Task<IActionResult> Security(SecuritySettingsViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
             var settings = _blogConfig.SecuritySettings;
             settings.WarnExternalLink = model.WarnExternalLink;
@@ -517,14 +517,14 @@ namespace Moonglade.Web.Controllers
         [HttpPost("custom-css")]
         public async Task<IActionResult> CustomStyleSheet(CustomStyleSheetSettingsViewModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
             var settings = _blogConfig.CustomStyleSheetSettings;
 
             if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
             {
                 ModelState.AddModelError(nameof(CustomStyleSheetSettingsViewModel.CssCode), "CSS Code is required");
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             var uglifyTest = Uglify.Css(model.CssCode);
@@ -534,7 +534,7 @@ namespace Moonglade.Web.Controllers
                 {
                     ModelState.AddModelError(model.CssCode, err.ToString());
                 }
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.CombineErrorMessages());
             }
 
             settings.EnableCustomCss = model.EnableCustomCss;
@@ -572,7 +572,7 @@ namespace Moonglade.Web.Controllers
                 case ExportFormat.ZippedJsonFiles:
                     return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
                 default:
-                    return BadRequest(ModelState);
+                    return BadRequest(ModelState.CombineErrorMessages());
             }
         }
 
@@ -588,7 +588,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
 
                 if (cachedObjectValues.Contains("MCO_IMEM"))
                 {
