@@ -15,7 +15,7 @@ namespace Moonglade.Web.Pages.Admin
         private readonly IPostService _postService;
         private readonly ITZoneResolver _tZoneResolver;
 
-        public PostEditModel PostEditModel { get; set; }
+        public PostEditModel ViewModel { get; set; }
 
         public EditPostModel(
             ICategoryService catService,
@@ -26,7 +26,7 @@ namespace Moonglade.Web.Pages.Admin
             _catService = catService;
             _postService = postService;
             _tZoneResolver = tZoneResolver;
-            PostEditModel = new()
+            ViewModel = new()
             {
                 IsPublished = false,
                 Featured = false,
@@ -46,7 +46,7 @@ namespace Moonglade.Web.Pages.Admin
                 {
                     var cbCatList = cats1.Select(p =>
                         new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false));
-                    PostEditModel.CategoryList = cbCatList;
+                    ViewModel.CategoryList = cbCatList;
                 }
 
                 return Page();
@@ -55,7 +55,7 @@ namespace Moonglade.Web.Pages.Admin
             var post = await _postService.GetAsync(id.Value);
             if (null == post) return NotFound();
 
-            PostEditModel = new()
+            ViewModel = new()
             {
                 PostId = post.Id,
                 IsPublished = post.IsPublished,
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Pages.Admin
 
             if (post.PubDateUtc is not null)
             {
-                PostEditModel.PublishDate = _tZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
+                ViewModel.PublishDate = _tZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
             }
 
             var tagStr = post.Tags
@@ -79,7 +79,7 @@ namespace Moonglade.Web.Pages.Admin
                 .Aggregate(string.Empty, (current, item) => current + item + ",");
 
             tagStr = tagStr.TrimEnd(',');
-            PostEditModel.Tags = tagStr;
+            ViewModel.Tags = tagStr;
 
             var cats2 = await _catService.GetAll();
             if (cats2.Count > 0)
@@ -89,7 +89,7 @@ namespace Moonglade.Web.Pages.Admin
                         p.DisplayName,
                         p.Id.ToString(),
                         post.Categories.Any(q => q.Id == p.Id)));
-                PostEditModel.CategoryList = cbCatList;
+                ViewModel.CategoryList = cbCatList;
             }
 
             return Page();

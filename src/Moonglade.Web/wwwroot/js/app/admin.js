@@ -224,8 +224,8 @@ var postEditor = {
         }
     },
     initEvents: function () {
-        $('#PostEditModel_Title').change(function () {
-            $('#PostEditModel_Slug').val(slugify($(this).val()));
+        $('#ViewModel_Title').change(function () {
+            $('#ViewModel_Slug').val(slugify($(this).val()));
         });
 
         var tagnames = new Bloodhound({
@@ -242,7 +242,7 @@ var postEditor = {
         });
 
         tagnames.initialize();
-        $('#PostEditModel_Tags').tagsinput({
+        $('#ViewModel_Tags').tagsinput({
             typeaheadjs: {
                 name: 'tagnames',
                 displayKey: 'name',
@@ -265,7 +265,7 @@ var postEditor = {
 
         $('#btn-publish').click(function (e) {
             if ($('form').valid()) {
-                $('input[name="PostEditModel.IsPublished"]').val('True');
+                $('input[name="ViewModel.IsPublished"]').val('True');
                 submitForm(e);
             }
         });
@@ -276,7 +276,7 @@ var postEditor = {
             }
 
             var selectCatCount = 0;
-            $('input[name="PostEditModel.SelectedCategoryIds"]').each(function () {
+            $('input[name="ViewModel.SelectedCategoryIds"]').each(function () {
                 if ($(this).prop('checked') === true) {
                     ++selectCatCount;
                 }
@@ -287,7 +287,7 @@ var postEditor = {
                 notyf.error('Please select at least one category');
             }
             else {
-                if ($('input[name="PostEditModel.IsPublished"]').val() === 'True') {
+                if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
                     $('#btn-publish').hide();
                     $('#btn-preview').hide();
                 }
@@ -298,7 +298,7 @@ var postEditor = {
             message: 'You have unsaved changes, are you sure to leave this page?'
         });
 
-        $('#PostEditModel_Title').focus();
+        $('#ViewModel_Title').focus();
     },
     keepAlive: function () {
         var tid = setInterval(postNonce, 60 * 1000);

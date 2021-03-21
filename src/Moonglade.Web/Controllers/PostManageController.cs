@@ -75,14 +75,15 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [TypeFilter(typeof(ClearPagingCountCache))]
-        public async Task<IActionResult> CreateOrEdit([FromForm] PostEditModelWrapper tempModel, [FromServices] LinkGenerator linkGenerator)
+        public async Task<IActionResult> CreateOrEdit(
+            [FromForm] MagicCodeWrapper<PostEditModel> temp, [FromServices] LinkGenerator linkGenerator)
         {
             try
             {
                 if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
                 // temp solution
-                var model = tempModel.PostEditModel;
+                var model = temp.ViewModel;
 
                 var tags = string.IsNullOrWhiteSpace(model.Tags)
                     ? Array.Empty<string>()

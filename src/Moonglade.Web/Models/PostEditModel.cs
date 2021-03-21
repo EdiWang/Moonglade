@@ -6,12 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Web.Models
 {
-    // TODO: Remove this temp code
-    public class PostEditModelWrapper
-    {
-        public PostEditModel PostEditModel { get; set; }
-    }
-
     public class PostEditModel
     {
         [HiddenInput]

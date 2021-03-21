@@ -96,8 +96,8 @@ namespace Moonglade.Web.Tests.Pages.Admin
             var result = await editPostModel.OnGetAsync(null);
 
             Assert.IsInstanceOf<PageResult>(result);
-            Assert.IsNotNull(editPostModel.PostEditModel);
-            Assert.IsNull(editPostModel.PostEditModel.EditorContent);
+            Assert.IsNotNull(editPostModel.ViewModel);
+            Assert.IsNull(editPostModel.ViewModel.EditorContent);
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             var result = await editPostModel.OnGetAsync(Uid);
 
             Assert.IsInstanceOf<PageResult>(result);
-            Assert.IsNotNull(editPostModel.PostEditModel);
+            Assert.IsNotNull(editPostModel.ViewModel);
         }
     }
 }

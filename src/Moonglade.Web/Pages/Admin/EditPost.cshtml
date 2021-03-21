@@ -71,42 +71,42 @@
       data-ajax="true"
       data-ajax-method="POST">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-    <input type="hidden" asp-for="PostEditModel.PostId" />
-    <input type="hidden" asp-for="PostEditModel.IsPublished" />
+    <input type="hidden" asp-for="ViewModel.PostId" />
+    <input type="hidden" asp-for="ViewModel.IsPublished" />
     <div class="row">
         <div class="col-md-9 col-xl-10">
-            <input type="text" asp-for="PostEditModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" />
+            <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" />
             <div>
-                <span asp-validation-for="PostEditModel.Title" class="text-danger"></span>
+                <span asp-validation-for="ViewModel.Title" class="text-danger"></span>
             </div>
             <div class="mt-1 mb-1">
                 <div class="form-row">
                     <div class="col-10">
                         <div class="input-group input-group-sm">
-                            <input type="text" asp-for="PostEditModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" />
+                            <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" />
                         </div>
                         <div>
-                            <span asp-validation-for="PostEditModel.Slug" class="text-danger"></span>
+                            <span asp-validation-for="ViewModel.Slug" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-2">
-                        <input type="text" asp-for="PostEditModel.LanguageCode" class="form-control form-control-sm" placeholder="@Localizer["Language Code"]" />
+                        <input type="text" asp-for="ViewModel.LanguageCode" class="form-control form-control-sm" placeholder="@Localizer["Language Code"]" />
                         <div>
-                            <span asp-validation-for="PostEditModel.LanguageCode" class="text-danger"></span>
+                            <span asp-validation-for="ViewModel.LanguageCode" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="mb-1">
-                <textarea asp-for="PostEditModel.EditorContent" class="post-content-textarea"></textarea>
+                <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
                 <div>
-                    <span asp-validation-for="PostEditModel.EditorContent" class="text-danger"></span>
+                    <span asp-validation-for="ViewModel.EditorContent" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group">
-                <input type="text" asp-for="PostEditModel.Tags" class="form-control" placeholder="@Localizer["Tags"]" />
+                <input type="text" asp-for="ViewModel.Tags" class="form-control" placeholder="@Localizer["Tags"]" />
             </div>
         </div>
         <div class="col-md-3 col-xl-2">
@@ -115,30 +115,30 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="PostEditModel.EnableComment" class="custom-control-input">
-                            <label asp-for="PostEditModel.EnableComment" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnableComment" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableComment" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="PostEditModel.Featured" class="custom-control-input">
-                            <label asp-for="PostEditModel.Featured" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.Featured" class="custom-control-input">
+                            <label asp-for="ViewModel.Featured" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="PostEditModel.FeedIncluded" class="custom-control-input">
-                            <label asp-for="PostEditModel.FeedIncluded" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.FeedIncluded" class="custom-control-input">
+                            <label asp-for="ViewModel.FeedIncluded" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="PostEditModel.ExposedToSiteMap" class="custom-control-input">
-                            <label asp-for="PostEditModel.ExposedToSiteMap" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.ExposedToSiteMap" class="custom-control-input">
+                            <label asp-for="ViewModel.ExposedToSiteMap" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
-                @if (Model.PostEditModel.PostId != Guid.Empty)
+                @if (Model.ViewModel.PostId != Guid.Empty)
                 {
                     <div class="card-body">
                         <a class="btn btn-light" data-toggle="modal" data-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
@@ -148,15 +148,15 @@
             <div class="card">
                 <div class="card-header">@Localizer["Categories"]</div>
                 <div class="card-body">
-                    @if (null != Model.PostEditModel.CategoryList && Model.PostEditModel.CategoryList.Any())
+                    @if (null != Model.ViewModel.CategoryList && Model.ViewModel.CategoryList.Any())
                     {
                         <div class="catlist">
                             <ul>
-                                @foreach (var item in Model.PostEditModel.CategoryList)
+                                @foreach (var item in Model.ViewModel.CategoryList)
                                 {
                                     <li>
                                         <div class="custom-control custom-checkbox">
-                                            <input id="cat-@item.Value" name="PostEditModel.SelectedCategoryIds" class="custom-control-input" type="checkbox" value="@item.Value"
+                                            <input id="cat-@item.Value" name="ViewModel.SelectedCategoryIds" class="custom-control-input" type="checkbox" value="@item.Value"
                                                    @(item.IsChecked ? "checked=\"checked\"" : null)>
                                             <label for="cat-@item.Value" class="custom-control-label">@item.DisplayText</label>
                                         </div>
@@ -179,7 +179,7 @@
         <button type="submit" class="btn btn-success ediblogeditor-save" id="btn-save">
             @Localizer["Save"]
         </button>
-        @if (!Model.PostEditModel.IsPublished)
+        @if (!Model.ViewModel.IsPublished)
         {
             <button type="submit" class="btn btn-accent ediblogeditor-publish" id="btn-publish">
                 @Localizer["Publish"]
@@ -201,14 +201,14 @@
                 <div class="modal-body">
                     <div class="alert alert-warning">@Localizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
                     <div class="form-group">
-                        <input asp-for="PostEditModel.ChangePublishDate" type="checkbox" />
-                        <label asp-for="PostEditModel.ChangePublishDate" class="control-label"></label>
+                        <input asp-for="ViewModel.ChangePublishDate" type="checkbox" />
+                        <label asp-for="ViewModel.ChangePublishDate" class="control-label"></label>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="PostEditModel.PublishDate" class="control-label"></label>
-                        <input asp-for="PostEditModel.PublishDate" class="form-control" />
-                        <span asp-validation-for="PostEditModel.PublishDate" class="text-danger"></span>
+                        <label asp-for="ViewModel.PublishDate" class="control-label"></label>
+                        <input asp-for="ViewModel.PublishDate" class="form-control" />
+                        <span asp-validation-for="ViewModel.PublishDate" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
