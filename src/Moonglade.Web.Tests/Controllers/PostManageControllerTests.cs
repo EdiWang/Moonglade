@@ -104,7 +104,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await postManageController.ListPublished(model);
-            Assert.IsInstanceOf<JsonResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
         [Test]
@@ -155,7 +155,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockPostService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Throws(new("Work 996"));
 
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
-            Assert.IsInstanceOf<JsonResult>(result);
+            Assert.IsInstanceOf<ConflictObjectResult>(result);
 
             var statusCode = postManageController.HttpContext.Response.StatusCode;
             Assert.AreEqual(500, statusCode);
@@ -195,7 +195,7 @@ namespace Moonglade.Web.Tests.Controllers
             }));
 
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
-            Assert.IsInstanceOf<JsonResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
             _mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
@@ -261,7 +261,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
 
             trySendPingAsyncCalled.WaitOne(TimeSpan.FromSeconds(2));
-            Assert.IsInstanceOf<JsonResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
 
             _mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()));
         }
