@@ -77,24 +77,13 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void Content_Get()
-        {
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings());
-
-            var settingsController = CreateSettingsController();
-            var result = settingsController.Content();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task Content_Post()
         {
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings());
             ContentSettingsViewModel model = new() { WordFilterMode = "Block" };
 
             var settingsController = CreateSettingsController();
-            var result = await settingsController.Content(model);
+            var result = await settingsController.Content(new(model));
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));

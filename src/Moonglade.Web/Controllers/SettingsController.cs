@@ -107,33 +107,11 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpGet("content")]
-        public IActionResult Content()
-        {
-            var vm = new ContentSettingsViewModel
-            {
-                DisharmonyWords = _blogConfig.ContentSettings.DisharmonyWords,
-                EnableComments = _blogConfig.ContentSettings.EnableComments,
-                RequireCommentReview = _blogConfig.ContentSettings.RequireCommentReview,
-                EnableWordFilter = _blogConfig.ContentSettings.EnableWordFilter,
-                WordFilterMode = _blogConfig.ContentSettings.WordFilterMode.ToString(),
-                UseFriendlyNotFoundImage = _blogConfig.ContentSettings.UseFriendlyNotFoundImage,
-                PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
-                HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
-                EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,
-                ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
-                CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
-                ShowPostFooter = _blogConfig.ContentSettings.ShowPostFooter,
-                PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch,
-                DefaultLangCode = _blogConfig.ContentSettings.DefaultLangCode
-            };
-            return View(vm);
-        }
-
         [HttpPost("content")]
-        public async Task<IActionResult> Content(ContentSettingsViewModel model)
+        public async Task<IActionResult> Content(MagicCodeWrapper<ContentSettingsViewModel> wrapperModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
+            var model = wrapperModel.ViewModel;
 
             _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
             _blogConfig.ContentSettings.EnableComments = model.EnableComments;

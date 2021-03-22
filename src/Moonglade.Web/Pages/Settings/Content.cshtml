@@ -1,9 +1,9 @@
-﻿@{
+﻿@page "/admin/settings/content"
+@model Moonglade.Web.Pages.Settings.ContentModel
+@{
     Layout = "_LayoutAdmin";
 }
-
 @using Moonglade.Configuration
-@model ContentSettingsViewModel
 
 <partial name="_SettingsHeader" />
 
@@ -23,46 +23,46 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnableComments" class="custom-control-input">
-                            <label asp-for="EnableComments" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnableComments" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableComments" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="RequireCommentReview" class="custom-control-input">
-                            <label asp-for="RequireCommentReview" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="custom-control-input">
+                            <label asp-for="ViewModel.RequireCommentReview" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnableGravatar" class="custom-control-input">
-                            <label asp-for="EnableGravatar" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableGravatar" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnableWordFilter" class="custom-control-input">
-                            <label asp-for="EnableWordFilter" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableWordFilter" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="DisharmonyWords"></label>
-                        <textarea asp-for="DisharmonyWords" class="form-control h-300px"></textarea>
-                        <span asp-validation-for="DisharmonyWords" class="text-danger"></span>
+                        <label asp-for="ViewModel.DisharmonyWords"></label>
+                        <textarea asp-for="ViewModel.DisharmonyWords" class="form-control h-300px"></textarea>
+                        <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                     </div>
                     <hr />
                     <div>
-                        <label asp-for="WordFilterMode" class="mr-4"></label>
+                        <label asp-for="ViewModel.WordFilterMode" class="mr-4"></label>
 
                         <div class="custom-control custom-radio custom-control-inline">
-                            @Html.RadioButtonFor(model => model.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "custom-control-input" })
+                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "custom-control-input" })
                             <label class="custom-control-label" for="@WordFilterMode.Mask.ToString()">@Localizer["Mask Word"]</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            @Html.RadioButtonFor(model => model.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "custom-control-input" })
+                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "custom-control-input" })
                             <label class="custom-control-label" for="@WordFilterMode.Block.ToString()">@Localizer["Block Comment"]</label>
                         </div>
                     </div>
@@ -75,41 +75,41 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="UseFriendlyNotFoundImage" class="custom-control-input">
-                            <label asp-for="UseFriendlyNotFoundImage" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="custom-control-input">
+                            <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="PostListPageSize"></label>
-                        <input asp-for="PostListPageSize" class="form-control" />
-                        <span asp-validation-for="PostListPageSize" class="text-danger"></span>
+                        <label asp-for="ViewModel.PostListPageSize"></label>
+                        <input asp-for="ViewModel.PostListPageSize" class="form-control" />
+                        <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="HotTagAmount"></label>
-                        <input asp-for="HotTagAmount" class="form-control" />
-                        <span asp-validation-for="HotTagAmount" class="text-danger"></span>
+                        <label asp-for="ViewModel.HotTagAmount"></label>
+                        <input asp-for="ViewModel.HotTagAmount" class="form-control" />
+                        <span asp-validation-for="ViewModel.HotTagAmount" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="DefaultLangCode"></label>
-                        <input asp-for="DefaultLangCode" class="form-control" />
-                        <span asp-validation-for="DefaultLangCode" class="text-danger"></span>
+                        <label asp-for="ViewModel.DefaultLangCode"></label>
+                        <input asp-for="ViewModel.DefaultLangCode" class="form-control" />
+                        <span asp-validation-for="ViewModel.DefaultLangCode" class="text-danger"></span>
                     </div>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ShowPostFooter" class="custom-control-input">
-                            <label asp-for="ShowPostFooter" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="custom-control-input">
+                            <label asp-for="ViewModel.ShowPostFooter" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="PostFooterHtmlPitch"></label>
-                        <textarea asp-for="PostFooterHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
-                        <span asp-validation-for="PostFooterHtmlPitch" class="text-danger"></span>
+                        <label asp-for="ViewModel.PostFooterHtmlPitch"></label>
+                        <textarea asp-for="ViewModel.PostFooterHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <span asp-validation-for="ViewModel.PostFooterHtmlPitch" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["e.g. Your blog post license information."]</small>
                     </div>
                 </div>
@@ -119,16 +119,16 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ShowCalloutSection" class="custom-control-input">
-                            <label asp-for="ShowCalloutSection" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.ShowCalloutSection" class="custom-control-input">
+                            <label asp-for="ViewModel.ShowCalloutSection" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="CalloutSectionHtmlPitch"></label>
-                        <textarea asp-for="CalloutSectionHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
-                        <span asp-validation-for="CalloutSectionHtmlPitch" class="text-danger"></span>
+                        <label asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
+                        <textarea asp-for="ViewModel.CalloutSectionHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <span asp-validation-for="ViewModel.CalloutSectionHtmlPitch" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["The call-out section will display on top of every page in the website."]</small>
                     </div>
                 </div>
