@@ -99,7 +99,7 @@ namespace Moonglade.Web.Tests.Controllers
             Mock<IBlogNotificationClient> notificationClientMock = new();
 
             var result = await settingsController.SendTestEmail(notificationClientMock.Object);
-            Assert.IsInstanceOf<JsonResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
         [Test]

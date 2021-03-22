@@ -261,10 +261,10 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateAssetsController();
 
             var result = await ctl.Manifest(_mockWebHostEnv.Object, null);
-            Assert.IsInstanceOf(typeof(JsonResult), result);
-            if (result is JsonResult jsonResult)
+            Assert.IsInstanceOf(typeof(OkObjectResult), result);
+            if (result is OkObjectResult ojbkResult)
             {
-                if (jsonResult.Value is ManifestModel model)
+                if (ojbkResult.Value is ManifestModel model)
                 {
                     Assert.IsTrue(model.ShortName == _mockBlogConfig.Object.GeneralSettings.SiteTitle);
                     Assert.IsTrue(model.Name == _mockBlogConfig.Object.GeneralSettings.SiteTitle);
