@@ -29,7 +29,7 @@ using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
-    public class AssetsController : Controller
+    public class AssetsController : ControllerBase
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogImageStorage _imageStorage;
@@ -188,7 +188,7 @@ namespace Moonglade.Web.Controllers
 
                 _logger.LogInformation($"Image '{primaryFileName}' uloaded.");
 
-                return Json(new
+                return Ok(new
                 {
                     location = $"/image/{finalFileName}",
                     filename = finalFileName
@@ -384,7 +384,7 @@ namespace Moonglade.Web.Controllers
                 Display = "standalone",
                 Orientation = "portrait"
             };
-            return Json(model);
+            return Ok(model);
         }
 
         [FeatureGate(FeatureFlags.Foaf)]
