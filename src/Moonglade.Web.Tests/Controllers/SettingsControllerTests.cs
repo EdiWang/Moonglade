@@ -138,24 +138,13 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void Subscription_Get()
-        {
-            _mockBlogConfig.Setup(p => p.FeedSettings).Returns(new FeedSettings());
-            var settingsController = CreateSettingsController();
-
-            var result = settingsController.Subscription();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task Subscription_Post()
         {
             _mockBlogConfig.Setup(p => p.FeedSettings).Returns(new FeedSettings());
             var settingsController = CreateSettingsController();
             SubscriptionSettingsViewModel model = new();
 
-            var result = await settingsController.Subscription(model);
+            var result = await settingsController.Subscription(new(model));
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));

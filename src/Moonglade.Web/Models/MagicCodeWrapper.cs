@@ -6,7 +6,12 @@
     {
         public T ViewModel { get; set; }
 
-        public MagicCodeWrapper(T model = null)
+        public MagicCodeWrapper()
+        {
+            
+        }
+
+        public MagicCodeWrapper(T model)
         {
             ViewModel = model;
         }

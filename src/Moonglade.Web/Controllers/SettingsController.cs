@@ -199,29 +199,11 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        #region Feed Settings
-
-        [HttpGet("subscription")]
-        public IActionResult Subscription()
-        {
-            var settings = _blogConfig.FeedSettings;
-            var vm = new SubscriptionSettingsViewModel
-            {
-                AuthorName = settings.AuthorName,
-                RssCopyright = settings.RssCopyright,
-                RssDescription = settings.RssDescription,
-                RssItemCount = settings.RssItemCount,
-                RssTitle = settings.RssTitle,
-                UseFullContent = settings.UseFullContent
-            };
-
-            return View(vm);
-        }
-
         [HttpPost("subscription")]
-        public async Task<IActionResult> Subscription(SubscriptionSettingsViewModel model)
+        public async Task<IActionResult> Subscription(MagicCodeWrapper<SubscriptionSettingsViewModel> wrapperModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
+            var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.FeedSettings;
             settings.AuthorName = model.AuthorName;
@@ -237,15 +219,10 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        #endregion
-
-        #region Watermark Settings
-
         [HttpPost("watermark")]
         public async Task<IActionResult> Watermark(MagicCodeWrapper<WatermarkSettingsViewModel> wrapperModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
-            
             var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.WatermarkSettings;
@@ -259,9 +236,6 @@ namespace Moonglade.Web.Controllers
 
             return Ok();
         }
-
-        #endregion
-
 
         [HttpPost("friendlink")]
         public async Task<IActionResult> FriendLink(FriendLinksSettings model)
