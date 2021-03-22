@@ -1,8 +1,8 @@
-﻿@{
+﻿@page "/admin/settings/watermark"
+@model Moonglade.Web.Pages.Settings.WatermarkModel
+@{
     Layout = "_LayoutAdmin";
 }
-
-@model WatermarkSettingsViewModel
 
 <partial name="_SettingsHeader" />
 
@@ -22,27 +22,27 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="IsEnabled" class="custom-control-input">
-                            <label asp-for="IsEnabled" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.IsEnabled" class="custom-control-input">
+                            <label asp-for="ViewModel.IsEnabled" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="KeepOriginImage" class="custom-control-input">
-                            <label asp-for="KeepOriginImage" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.KeepOriginImage" class="custom-control-input">
+                            <label asp-for="ViewModel.KeepOriginImage" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="FontSize" class="control-label"></label>
-                        <input asp-for="FontSize" class="form-control" />
-                        <span asp-validation-for="FontSize" class="text-danger"></span>
+                        <label asp-for="ViewModel.FontSize" class="control-label"></label>
+                        <input asp-for="ViewModel.FontSize" class="form-control" />
+                        <span asp-validation-for="ViewModel.FontSize" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="WatermarkText" class="control-label"></label>
-                        <input asp-for="WatermarkText" class="form-control" />
-                        <span asp-validation-for="WatermarkText" class="text-danger"></span>
+                        <label asp-for="ViewModel.WatermarkText" class="control-label"></label>
+                        <input asp-for="ViewModel.WatermarkText" class="form-control" />
+                        <span asp-validation-for="ViewModel.WatermarkText" class="text-danger"></span>
                     </div>
                 </div>
             </div>

@@ -18,6 +18,7 @@ using Moonglade.Notification.Client;
 using Moonglade.Setup;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
+using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
 using NUglify;
 
@@ -240,25 +241,12 @@ namespace Moonglade.Web.Controllers
 
         #region Watermark Settings
 
-        [HttpGet("watermark")]
-        public IActionResult Watermark()
-        {
-            var settings = _blogConfig.WatermarkSettings;
-            var vm = new WatermarkSettingsViewModel
-            {
-                IsEnabled = settings.IsEnabled,
-                KeepOriginImage = settings.KeepOriginImage,
-                FontSize = settings.FontSize,
-                WatermarkText = settings.WatermarkText
-            };
-
-            return View(vm);
-        }
-
         [HttpPost("watermark")]
-        public async Task<IActionResult> Watermark(WatermarkSettingsViewModel model)
+        public async Task<IActionResult> Watermark(MagicCodeWrapper<WatermarkSettingsViewModel> wrapperModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
+            
+            var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.WatermarkSettings;
             settings.IsEnabled = model.IsEnabled;

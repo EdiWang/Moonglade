@@ -5,5 +5,10 @@
     public class MagicCodeWrapper<T> where T : class
     {
         public T ViewModel { get; set; }
+
+        public MagicCodeWrapper(T model = null)
+        {
+            ViewModel = model;
+        }
     }
 }

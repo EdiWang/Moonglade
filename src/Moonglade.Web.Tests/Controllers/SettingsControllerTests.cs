@@ -11,6 +11,7 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.DataPorting;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
 using Moq;
 using NUnit.Framework;
@@ -162,23 +163,13 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void Watermark_Get()
-        {
-            _mockBlogConfig.Setup(p => p.WatermarkSettings).Returns(new WatermarkSettings());
-            var settingsController = CreateSettingsController();
-
-            var result = settingsController.Watermark();
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task Watermark_Post()
         {
             _mockBlogConfig.Setup(p => p.WatermarkSettings).Returns(new WatermarkSettings());
             var settingsController = CreateSettingsController();
             WatermarkSettingsViewModel model = new();
 
-            var result = await settingsController.Watermark(model);
+            var result = await settingsController.Watermark(new(model));
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<WatermarkSettings>()));
