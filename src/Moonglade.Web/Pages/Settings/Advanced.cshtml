@@ -1,5 +1,5 @@
-﻿@model AdvancedSettingsViewModel
-
+﻿@page "/admin/settings/advanced"
+@model Moonglade.Web.Pages.Settings.AdvancedModel
 @{
     Layout = "_LayoutAdmin";
 }
@@ -36,55 +36,55 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnablePingbackSend" class="custom-control-input">
-                            <label asp-for="EnablePingbackSend" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnablePingbackSend" class="custom-control-input">
+                            <label asp-for="ViewModel.EnablePingbackSend" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnablePingbackReceive" class="custom-control-input">
-                            <label asp-for="EnablePingbackReceive" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnablePingbackReceive" class="custom-control-input">
+                            <label asp-for="ViewModel.EnablePingbackReceive" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnableOpenGraph" class="custom-control-input">
-                            <label asp-for="EnableOpenGraph" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnableOpenGraph" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableOpenGraph" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="FitImageToDevicePixelRatio" class="custom-control-input">
-                            <label asp-for="FitImageToDevicePixelRatio" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.FitImageToDevicePixelRatio" class="custom-control-input">
+                            <label asp-for="ViewModel.FitImageToDevicePixelRatio" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="DNSPrefetchEndpoint" class="control-label"></label>
-                        <input asp-for="DNSPrefetchEndpoint" class="form-control" />
-                        <span asp-validation-for="DNSPrefetchEndpoint" class="text-danger"></span>
+                        <label asp-for="ViewModel.DNSPrefetchEndpoint" class="control-label"></label>
+                        <input asp-for="ViewModel.DNSPrefetchEndpoint" class="form-control" />
+                        <span asp-validation-for="ViewModel.DNSPrefetchEndpoint" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["Leave blank if you are not using a DNS service."]</small>
                     </div>
                     <div class="form-group">
-                        <label asp-for="RobotsTxtContent" class="control-label"></label>
-                        <textarea asp-for="RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10"></textarea>
-                        <span asp-validation-for="RobotsTxtContent" class="text-danger"></span>
+                        <label asp-for="ViewModel.RobotsTxtContent" class="control-label"></label>
+                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10"></textarea>
+                        <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
                     </div>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnableCDNRedirect" class="custom-control-input">
-                            <label asp-for="EnableCDNRedirect" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnableCDNRedirect" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableCDNRedirect" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="CDNEndpoint" class="control-label"></label>
-                        <input asp-for="CDNEndpoint" class="form-control" />
-                        <span asp-validation-for="CDNEndpoint" class="text-danger"></span>
+                        <label asp-for="ViewModel.CDNEndpoint" class="control-label"></label>
+                        <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
+                        <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</small>
                     </div>
                 </div>

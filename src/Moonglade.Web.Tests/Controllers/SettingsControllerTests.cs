@@ -11,7 +11,6 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.DataPorting;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
 using Moq;
 using NUnit.Framework;
@@ -194,24 +193,13 @@ namespace Moonglade.Web.Tests.Controllers
         //}
 
         [Test]
-        public void Advanced_Get()
-        {
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
-
-            var settingsController = CreateSettingsController();
-            var result = settingsController.Advanced();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task Advanced_Post()
         {
             _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
             var settingsController = CreateSettingsController();
             AdvancedSettingsViewModel model = new();
 
-            var result = await settingsController.Advanced(model);
+            var result = await settingsController.Advanced(new(model));
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
@@ -225,7 +213,7 @@ namespace Moonglade.Web.Tests.Controllers
             var settingsController = CreateSettingsController();
             AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => { await settingsController.Advanced(model); });
+            Assert.ThrowsAsync<ArgumentNullException>(async () => { await settingsController.Advanced(new(model)); });
         }
 
         [Test]
@@ -235,7 +223,7 @@ namespace Moonglade.Web.Tests.Controllers
             var settingsController = CreateSettingsController();
             AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
 
-            Assert.ThrowsAsync<UriFormatException>(async () => { await settingsController.Advanced(model); });
+            Assert.ThrowsAsync<UriFormatException>(async () => { await settingsController.Advanced(new(model)); });
         }
 
         [Test]
@@ -245,7 +233,7 @@ namespace Moonglade.Web.Tests.Controllers
             var settingsController = CreateSettingsController();
             AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
 
-            var result = await settingsController.Advanced(model);
+            var result = await settingsController.Advanced(new(model));
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));

@@ -319,31 +319,11 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        #region Advanced Settings
-
-        [HttpGet("advanced")]
-        public IActionResult Advanced()
-        {
-            var settings = _blogConfig.AdvancedSettings;
-            var vm = new AdvancedSettingsViewModel
-            {
-                DNSPrefetchEndpoint = settings.DNSPrefetchEndpoint,
-                RobotsTxtContent = settings.RobotsTxtContent,
-                EnablePingbackSend = settings.EnablePingBackSend,
-                EnablePingbackReceive = settings.EnablePingBackReceive,
-                EnableOpenGraph = settings.EnableOpenGraph,
-                EnableCDNRedirect = settings.EnableCDNRedirect,
-                CDNEndpoint = settings.CDNEndpoint,
-                FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio
-            };
-
-            return View(vm);
-        }
-
         [HttpPost("advanced")]
-        public async Task<IActionResult> Advanced(AdvancedSettingsViewModel model)
+        public async Task<IActionResult> Advanced(MagicCodeWrapper<AdvancedSettingsViewModel> wrapperModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
+            var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.AdvancedSettings;
             settings.DNSPrefetchEndpoint = model.DNSPrefetchEndpoint;
@@ -404,8 +384,6 @@ namespace Moonglade.Web.Controllers
             applicationLifetime.StopApplication();
             return Accepted();
         }
-
-        #endregion
 
         [HttpPost("security")]
         public async Task<IActionResult> Security(MagicCodeWrapper<SecuritySettingsViewModel> wrapperModel)
