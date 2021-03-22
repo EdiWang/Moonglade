@@ -46,18 +46,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void General_Get()
-        {
-            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
-            var tZoneResolverMock = new Mock<ITZoneResolver>();
-
-            var settingsController = CreateSettingsController();
-            var result = settingsController.General(tZoneResolverMock.Object);
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task General_Post()
         {
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
@@ -69,7 +57,7 @@ namespace Moonglade.Web.Tests.Controllers
             Mock<ITZoneResolver> tZoneResolverMock = new();
 
             var settingsController = CreateSettingsController();
-            var result = await settingsController.General(model, tZoneResolverMock.Object);
+            var result = await settingsController.General(new(model), tZoneResolverMock.Object);
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));
