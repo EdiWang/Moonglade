@@ -25,7 +25,7 @@
         <a class="nav-link @(currentPage == "/Settings/Watermark" ? "active" : null)" asp-page="./Watermark">@Localizer["Watermark"]</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "Security" ? "active" : null)" asp-controller="Settings" asp-action="Security">@Localizer["Security"]</a>
+        <a class="nav-link @(currentPage == "/Settings/Security" ? "active" : null)" asp-page="./Security">@Localizer["Security"]</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
         <a class="nav-link @(currentAction == "CustomStyleSheet" ? "active" : null)" asp-controller="Settings" asp-action="CustomStyleSheet">@Localizer["Custom CSS"]</a>

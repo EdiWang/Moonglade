@@ -297,17 +297,6 @@ namespace Moonglade.Web.Tests.Controllers
         //}
 
         [Test]
-        public void Security_Get()
-        {
-            _mockBlogConfig.Setup(p => p.SecuritySettings).Returns(new SecuritySettings());
-
-            var settingsController = CreateSettingsController();
-            var result = settingsController.Security();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task Security_Post()
         {
             _mockBlogConfig.Setup(p => p.SecuritySettings).Returns(new SecuritySettings());
@@ -315,7 +304,7 @@ namespace Moonglade.Web.Tests.Controllers
             var settingsController = CreateSettingsController();
             SecuritySettingsViewModel model = new();
 
-            var result = await settingsController.Security(model);
+            var result = await settingsController.Security(new(model));
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<SecuritySettings>()));

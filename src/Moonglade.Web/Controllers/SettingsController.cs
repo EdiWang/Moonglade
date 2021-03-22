@@ -424,26 +424,11 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        #region Security Settings
-
-        [HttpGet("security")]
-        public IActionResult Security()
-        {
-            var settings = _blogConfig.SecuritySettings;
-            var vm = new SecuritySettingsViewModel
-            {
-                WarnExternalLink = settings.WarnExternalLink,
-                AllowScriptsInPage = settings.AllowScriptsInPage,
-                ShowAdminLoginButton = settings.ShowAdminLoginButton
-            };
-
-            return View(vm);
-        }
-
         [HttpPost("security")]
-        public async Task<IActionResult> Security(SecuritySettingsViewModel model)
+        public async Task<IActionResult> Security(MagicCodeWrapper<SecuritySettingsViewModel> wrapperModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
+            var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.SecuritySettings;
             settings.WarnExternalLink = model.WarnExternalLink;
@@ -454,8 +439,6 @@ namespace Moonglade.Web.Controllers
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
             return Ok();
         }
-
-        #endregion
 
         #region CustomCss
 
