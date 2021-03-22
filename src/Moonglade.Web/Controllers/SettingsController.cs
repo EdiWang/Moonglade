@@ -25,8 +25,11 @@ using NUglify;
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
-    [Route("admin/settings")]
-    public class SettingsController : Controller
+    [ApiController]
+    [AppendAppVersion]
+    //[Route("api/[controller]")] // TODO: use 'api/'
+    [Route("admin/[controller]")]
+    public class SettingsController : ControllerBase
     {
         #region Private Fields
 
@@ -50,9 +53,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("general")]
-        public async Task<IActionResult> General(MagicCodeWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITZoneResolver tZoneResolver)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> General([FromForm] MagicCodeWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITZoneResolver tZoneResolver)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
             var model = wrapperModel.ViewModel;
 
             _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
@@ -83,9 +86,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("content")]
-        public async Task<IActionResult> Content(MagicCodeWrapper<ContentSettingsViewModel> wrapperModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Content([FromForm] MagicCodeWrapper<ContentSettingsViewModel> wrapperModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
             var model = wrapperModel.ViewModel;
 
             _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
@@ -110,9 +113,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("notification")]
-        public async Task<IActionResult> Notification(MagicCodeWrapper<NotificationSettingsViewModel> wrapperModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Notification([FromForm] MagicCodeWrapper<NotificationSettingsViewModel> wrapperModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
             var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.NotificationSettings;
@@ -129,16 +132,17 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("send-test-email")]
         [IgnoreAntiforgeryToken]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SendTestEmail([FromServices] IBlogNotificationClient notificationClient)
         {
             await notificationClient.TestNotificationAsync();
-            return Json(true);
+            return Ok(true);
         }
 
         [HttpPost("subscription")]
-        public async Task<IActionResult> Subscription(MagicCodeWrapper<SubscriptionSettingsViewModel> wrapperModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Subscription([FromForm] MagicCodeWrapper<SubscriptionSettingsViewModel> wrapperModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
             var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.FeedSettings;
@@ -156,9 +160,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("watermark")]
-        public async Task<IActionResult> Watermark(MagicCodeWrapper<WatermarkSettingsViewModel> wrapperModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Watermark([FromForm] MagicCodeWrapper<WatermarkSettingsViewModel> wrapperModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
             var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.WatermarkSettings;
@@ -174,7 +178,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("friendlink")]
-        public async Task<IActionResult> FriendLink(FriendLinksSettings model)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> FriendLink([FromForm] FriendLinksSettings model)
         {
             var fs = _blogConfig.FriendLinksSettings;
             fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
@@ -183,12 +188,10 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-
-        #region User Avatar
-
         [HttpPost("set-blogger-avatar")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "avatar" })]
-        public async Task<IActionResult> SetBloggerAvatar(string base64Img)
+        public async Task<IActionResult> SetBloggerAvatar([FromForm] string base64Img)
         {
             try
             {
@@ -216,7 +219,7 @@ namespace Moonglade.Web.Controllers
                 await _blogConfig.SaveAssetAsync(AssetId.AvatarBase64, base64Img);
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
 
-                return Json(true);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -225,12 +228,9 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        #endregion
-
-        #region Site Icon
-
         [HttpPost("set-siteicon")]
-        public async Task<IActionResult> SetSiteIcon(string base64Img)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetSiteIcon([FromForm] string base64Img)
         {
             try
             {
@@ -261,7 +261,7 @@ namespace Moonglade.Web.Controllers
 
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
 
-                return Json(true);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -270,12 +270,10 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        #endregion
-
         [HttpPost("advanced")]
-        public async Task<IActionResult> Advanced(MagicCodeWrapper<AdvancedSettingsViewModel> wrapperModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Advanced([FromForm] MagicCodeWrapper<AdvancedSettingsViewModel> wrapperModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
             var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.AdvancedSettings;
@@ -317,6 +315,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("shutdown")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
         public IActionResult Shutdown([FromServices] IHostApplicationLifetime applicationLifetime)
         {
             _logger.LogWarning($"Shutdown is requested by '{User.Identity?.Name}'.");
@@ -325,6 +324,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("reset")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
         public async Task<IActionResult> Reset([FromServices] IDbConnection dbConnection, [FromServices] IHostApplicationLifetime applicationLifetime)
         {
             _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
@@ -339,9 +339,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("security")]
-        public async Task<IActionResult> Security(MagicCodeWrapper<SecuritySettingsViewModel> wrapperModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Security([FromForm] MagicCodeWrapper<SecuritySettingsViewModel> wrapperModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
             var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.SecuritySettings;
@@ -354,14 +354,11 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        #region CustomCss
-
         [HttpPost("custom-css")]
-        public async Task<IActionResult> CustomStyleSheet(MagicCodeWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> CustomStyleSheet([FromForm] MagicCodeWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
             var model = wrapperModel.ViewModel;
-
             var settings = _blogConfig.CustomStyleSheetSettings;
 
             if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
@@ -388,8 +385,6 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        #endregion
-
         [HttpGet("export/{type}")]
         public async Task<IActionResult> ExportDownload([FromServices] IExportManager expman, ExportDataType type)
         {
@@ -412,6 +407,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("clear-data-cache")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult ClearDataCache(string[] cachedObjectValues, [FromServices] IBlogCache cache)
         {
             static void DeleteIfExists(string path)
