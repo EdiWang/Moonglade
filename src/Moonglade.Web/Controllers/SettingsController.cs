@@ -488,14 +488,6 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        #region DataPorting
-
-        [HttpGet("data-porting")]
-        public IActionResult DataPorting()
-        {
-            return View();
-        }
-
         [HttpGet("export/{type}")]
         public async Task<IActionResult> ExportDownload([FromServices] IExportManager expman, ExportDataType type)
         {
@@ -516,8 +508,6 @@ namespace Moonglade.Web.Controllers
                     return BadRequest(ModelState.CombineErrorMessages());
             }
         }
-
-        #endregion
 
         [HttpPost("clear-data-cache")]
         public IActionResult ClearDataCache(string[] cachedObjectValues, [FromServices] IBlogCache cache)

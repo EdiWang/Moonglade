@@ -34,7 +34,7 @@
         <a class="nav-link @(currentAction == "Advanced" ? "active" : null)" asp-controller="Settings" asp-action="Advanced">@Localizer["Advanced"]</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "DataPorting" ? "active" : null)" asp-controller="Settings" asp-action="DataPorting">@Localizer["Import &amp; Export Data"]</a>
+        <a class="nav-link @(currentPage == "/Settings/DataPorting" ? "active" : null)" asp-page="./DataPorting">@Localizer["Import &amp; Export Data"]</a>
     </li>
 </ul>
 <div class="mb-3"></div>

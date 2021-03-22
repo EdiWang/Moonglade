@@ -380,14 +380,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void DataPorting_Get()
-        {
-            var settingsController = CreateSettingsController();
-            var result = settingsController.DataPorting();
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task ExportDownload_SingleJsonFile()
         {
             Mock<IExportManager> mockExpman = new();
