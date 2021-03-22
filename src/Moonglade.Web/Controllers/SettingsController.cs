@@ -156,26 +156,11 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        #region Email Settings
-
-        [HttpGet("notification")]
-        public IActionResult Notification()
-        {
-            var settings = _blogConfig.NotificationSettings;
-            var vm = new NotificationSettingsViewModel
-            {
-                EmailDisplayName = settings.EmailDisplayName,
-                EnableEmailSending = settings.EnableEmailSending,
-                SendEmailOnCommentReply = settings.SendEmailOnCommentReply,
-                SendEmailOnNewComment = settings.SendEmailOnNewComment
-            };
-            return View(vm);
-        }
-
         [HttpPost("notification")]
-        public async Task<IActionResult> Notification(NotificationSettingsViewModel model)
+        public async Task<IActionResult> Notification(MagicCodeWrapper<NotificationSettingsViewModel> wrapperModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
+            var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.NotificationSettings;
             settings.EmailDisplayName = model.EmailDisplayName;
@@ -196,8 +181,6 @@ namespace Moonglade.Web.Controllers
             await notificationClient.TestNotificationAsync();
             return Json(true);
         }
-
-        #endregion
 
         [HttpPost("subscription")]
         public async Task<IActionResult> Subscription(MagicCodeWrapper<SubscriptionSettingsViewModel> wrapperModel)

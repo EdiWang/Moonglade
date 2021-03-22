@@ -16,7 +16,7 @@
         <a class="nav-link @(currentAction == "Content" ? "active" : null)" asp-controller="Settings" asp-action="Content">@Localizer["Content"]</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentAction == "Notification" ? "active" : null)" asp-controller="Settings" asp-action="Notification">@Localizer["Notification"]</a>
+        <a class="nav-link @(currentPage == "/Settings/Notification" ? "active" : null)" asp-page="./Notification">@Localizer["Notification"]</a>
     </li>
     <li role="presentation" class="nav-item nav-item-non-margin">
         <a class="nav-link @(currentPage == "/Settings/Subscription" ? "active" : null)" asp-page="./Subscription">@Localizer["Subscription"]</a>

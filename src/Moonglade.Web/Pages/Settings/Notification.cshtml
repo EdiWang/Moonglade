@@ -1,7 +1,8 @@
-﻿@{
+﻿@page "/admin/settings/notification"
+@model Moonglade.Web.Pages.Settings.NotificationModel
+@{
     Layout = "_LayoutAdmin";
 }
-@model NotificationSettingsViewModel
 @inject IOptionsSnapshot<AppSettings> Settings
 
 <partial name="_SettingsHeader" />
@@ -35,9 +36,9 @@ else
                 <div class="card-header">@Localizer["Email Options"]</div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="EmailDisplayName" class="control-label"></label>
-                        <input asp-for="EmailDisplayName" class="form-control" />
-                        <span asp-validation-for="EmailDisplayName" class="text-danger"></span>
+                        <label asp-for="ViewModel.EmailDisplayName" class="control-label"></label>
+                        <input asp-for="ViewModel.EmailDisplayName" class="form-control" />
+                        <span asp-validation-for="ViewModel.EmailDisplayName" class="text-danger"></span>
                     </div>
 
                     @if (Settings.Value.Notification.Enabled)
@@ -54,20 +55,20 @@ else
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnableEmailSending" class="custom-control-input">
-                            <label asp-for="EnableEmailSending" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnableEmailSending" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableEmailSending" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="SendEmailOnCommentReply" class="custom-control-input">
-                            <label asp-for="SendEmailOnCommentReply" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.SendEmailOnCommentReply" class="custom-control-input">
+                            <label asp-for="ViewModel.SendEmailOnCommentReply" class="custom-control-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="SendEmailOnNewComment" class="custom-control-input">
-                            <label asp-for="SendEmailOnNewComment" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.SendEmailOnNewComment" class="custom-control-input">
+                            <label asp-for="ViewModel.SendEmailOnNewComment" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>

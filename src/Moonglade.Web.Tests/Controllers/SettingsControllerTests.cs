@@ -103,24 +103,13 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void Notification_Get()
-        {
-            _mockBlogConfig.Setup(p => p.NotificationSettings).Returns(new NotificationSettings());
-
-            var settingsController = CreateSettingsController();
-            var result = settingsController.Notification();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task Notification_Post()
         {
             _mockBlogConfig.Setup(p => p.NotificationSettings).Returns(new NotificationSettings());
             var settingsController = CreateSettingsController();
             NotificationSettingsViewModel model = new();
 
-            var result = await settingsController.Notification(model);
+            var result = await settingsController.Notification(new(model));
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
