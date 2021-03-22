@@ -381,23 +381,11 @@ namespace Moonglade.Web.Controllers
 
         #region CustomCss
 
-        [HttpGet("custom-css")]
-        public IActionResult CustomStyleSheet()
-        {
-            var settings = _blogConfig.CustomStyleSheetSettings;
-            var vm = new CustomStyleSheetSettingsViewModel
-            {
-                EnableCustomCss = settings.EnableCustomCss,
-                CssCode = settings.CssCode
-            };
-
-            return View(vm);
-        }
-
         [HttpPost("custom-css")]
-        public async Task<IActionResult> CustomStyleSheet(CustomStyleSheetSettingsViewModel model)
+        public async Task<IActionResult> CustomStyleSheet(MagicCodeWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
+            var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.CustomStyleSheetSettings;
 

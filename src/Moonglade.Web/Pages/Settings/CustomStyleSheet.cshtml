@@ -1,5 +1,5 @@
-﻿@model CustomStyleSheetSettingsViewModel
-
+﻿@page "/admin/settings/custom-css"
+@model Moonglade.Web.Pages.Settings.CustomStyleSheetModel
 @{
     Layout = "_LayoutAdmin";
 }
@@ -7,7 +7,7 @@
 
 @{
     <script>
-        var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.CssCode)).ToString().ToLower());
+        var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.ViewModel.CssCode)).ToString().ToLower());
     </script>
 }
 
@@ -29,14 +29,14 @@
             cssContentEditor.layout();
 
             if (needLoadInitValues) {
-                var cssValue = $("#CssCode").val();
+                var cssValue = $("#ViewModel_CssCode").val();
                 window.cssContentEditor.setValue(cssValue);
             }
         }
 
         var assignEditorValues = function () {
             var cssValue = window.cssContentEditor.getValue();
-            $("#CssCode").val(cssValue);
+            $("#ViewModel_CssCode").val(cssValue);
         }
 
         $("#btn-submit").click(function (e) {
@@ -71,13 +71,13 @@
     <div class="row">
         <div class="col-md-9 col-xl-10">
             <div>
-                <span asp-validation-for="CssCode" class="text-danger"></span>
+                <span asp-validation-for="ViewModel.CssCode" class="text-danger"></span>
             </div>
 
             <div id="CssContentEditor" class="monaco-target">
 
             </div>
-            <textarea asp-for="CssCode" class="settings-csscontent-textarea d-none"></textarea>
+            <textarea asp-for="ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
         </div>
 
         <div class="col-md-3 col-xl-2">
@@ -86,8 +86,8 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="EnableCustomCss" class="custom-control-input">
-                            <label asp-for="EnableCustomCss" class="custom-control-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.EnableCustomCss" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableCustomCss" class="custom-control-label"></label>
                         </div>
                     </li>
                 </ul>

@@ -278,17 +278,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void CustomStyleSheet_Get()
-        {
-            _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
-
-            var settingsController = CreateSettingsController();
-            var result = settingsController.CustomStyleSheet();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task CustomStyleSheet_Post_Enabled_EmptyCSS()
         {
             _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
@@ -300,7 +289,7 @@ namespace Moonglade.Web.Tests.Controllers
                 CssCode = string.Empty
             };
 
-            var result = await settingsController.CustomStyleSheet(model);
+            var result = await settingsController.CustomStyleSheet(new(model));
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
@@ -319,7 +308,7 @@ namespace Moonglade.Web.Tests.Controllers
                 CssCode = ".996-{icu}"
             };
 
-            var result = await settingsController.CustomStyleSheet(model);
+            var result = await settingsController.CustomStyleSheet(new(model));
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
@@ -338,7 +327,7 @@ namespace Moonglade.Web.Tests.Controllers
                 CssCode = ".icu { color: #996; }"
             };
 
-            var result = await settingsController.CustomStyleSheet(model);
+            var result = await settingsController.CustomStyleSheet(new(model));
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()));
