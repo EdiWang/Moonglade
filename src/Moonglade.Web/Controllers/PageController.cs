@@ -100,7 +100,6 @@ namespace Moonglade.Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error Create or Edit CustomPage.");
-                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

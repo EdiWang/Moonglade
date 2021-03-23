@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Pages;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -22,6 +24,8 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IPageService> _mockPageService;
         private Mock<ILogger<PageController>> _mockLogger;
 
+        private PageEditModel _pageEditModel;
+
         [SetUp]
         public void SetUp()
         {
@@ -30,6 +34,17 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockLogger = _mockRepository.Create<ILogger<PageController>>();
+
+            _pageEditModel = new()
+            {
+                CssContent = ".fubao { color: #996 }",
+                HideSidebar = true,
+                IsPublished = true,
+                MetaDescription = "This is Jack Ma's fubao",
+                RawHtmlContent = "<p>Work 996 and Get into ICU</p>",
+                Slug = "work-996",
+                Title = "Work 996"
+            };
         }
 
         private PageController CreatePageController()
@@ -80,6 +95,21 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Segment();
 
             Assert.IsInstanceOf<StatusCodeResult>(result);
+        }
+
+        [Test]
+        public async Task CreateOrEdit_Exception()
+        {
+            _mockPageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()))
+                .Throws(new Exception("Too much fubao"));
+            var ctl = CreatePageController();
+
+            _pageEditModel.Id = Guid.Empty;
+
+            var result = await ctl.CreateOrEdit(_pageEditModel);
+            Assert.IsInstanceOf<StatusCodeResult>(result);
+
+            Assert.AreEqual(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
         }
     }
 }
