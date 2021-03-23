@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.Auth;
 using Moonglade.Web.Pages.Admin;
@@ -8,6 +9,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages.Admin
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
     public class LocalAccountModelTests
     {
         private MockRepository _mockRepository;
