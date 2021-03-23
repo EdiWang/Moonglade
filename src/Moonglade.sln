@@ -34,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Solution Items", ".Solutio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D56318F7-8E6D-4667-8A11-43B664CDD02C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Core.Tests", "Moonglade.Tests\Moonglade.Core.Tests.csproj", "{68D59F9F-F0F7-45F4-98DE-02C9AD432A5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Core.Tests", "Moonglade.Core.Tests\Moonglade.Core.Tests.csproj", "{68D59F9F-F0F7-45F4-98DE-02C9AD432A5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Setup", "Moonglade.Setup\Moonglade.Setup.csproj", "{DFA86009-057C-4435-B88D-1A4AB06B26EB}"
 EndProject
