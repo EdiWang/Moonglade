@@ -156,6 +156,7 @@ namespace Moonglade.Utils.Tests
             Assert.AreEqual("work-996-and-get-into-icu", result);
         }
 
+        [TestCase(null, ExpectedResult = true)]
         [TestCase("someName@someDomain.com", ExpectedResult = true)] // Simple valid value
         [TestCase("1234@someDomain.com", ExpectedResult = true)] // numbers are valid
         [TestCase("firstName.lastName@someDomain.com", ExpectedResult = true)] // With dot in name
