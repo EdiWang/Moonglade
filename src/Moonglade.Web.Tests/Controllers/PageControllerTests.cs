@@ -111,5 +111,16 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.AreEqual(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
         }
+
+        [Test]
+        public async Task CreateOrEdit_OK()
+        {
+            var ctl = CreatePageController();
+
+            _pageEditModel.Id = Guid.Parse("54453036-c75d-4333-8cb6-6ff7543e6306");
+
+            var result = await ctl.CreateOrEdit(_pageEditModel);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
     }
 }
