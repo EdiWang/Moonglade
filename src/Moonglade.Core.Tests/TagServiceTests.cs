@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -77,6 +78,26 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.GetAllNames();
             _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, string>>>(), true));
+        }
+
+        [Test]
+        public async Task Create_Exists()
+        {
+            var dic = new TagNormalization[]
+            {
+                new() { Source = " ", Target = "-" }
+            };
+            _mockOptions.Setup(p => p.Value).Returns(dic.ToList());
+
+            _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(true);
+            _mockRepositoryTagEntity.Setup(p =>
+                    p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>(), true))
+                .Returns(new Tag());
+
+            var svc = CreateService();
+            var result = await svc.Create("Work 996");
+            
+            Assert.IsNotNull(result);
         }
 
         [Test]
