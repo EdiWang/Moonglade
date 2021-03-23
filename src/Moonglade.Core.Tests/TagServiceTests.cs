@@ -64,6 +64,22 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
+        public async Task GetAll_OK()
+        {
+            var svc = CreateService();
+            await svc.GetAll();
+            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, Tag>>>(), true));
+        }
+
+        [Test]
+        public async Task GetAllNames_OK()
+        {
+            var svc = CreateService();
+            await svc.GetAllNames();
+            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, string>>>(), true));
+        }
+
+        [Test]
         public async Task UpdateAsync_Null()
         {
             _mockRepositoryTagEntity.Setup(p => p.GetAsync(It.IsAny<int>())).Returns(null);
