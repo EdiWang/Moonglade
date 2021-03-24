@@ -3,17 +3,25 @@
 # Reference: https://docs.microsoft.com/en-us/visualstudio/code-quality/how-to-generate-code-metrics-data?view=vs-2019
 
 param(
-    $targetPath = "D:\GitHub\ediwang\Moonglade\src",
-    $metricsPath = "D:\CodeMetricsResult",
+    $targetPath = "C:\GitHub\Moonglade\src",
+    $metricsPath = "C:\CodeMetricsResult",
     [bool] $useMetricsExe = 1,
-    $metricsExePath = "D:\Workspace\Metrics\Release\net472",
-    $devPsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+    $metricsExePath = "C:\Tools\Metrics\Release\net472"
 )
 
 Clear-Host
 Write-Host "This script will run Code Metrics on [$targetPath], output to [$metricsPath]. Please confirm before continue." -ForegroundColor Green
 if ($useMetricsExe) {
-    Write-Host "+ Using pre-compiled Metrics.exe at 'metricsExePath'" -ForegroundColor Cyan
+    if (Test-Path $metricsExePath) {
+        Write-Host "'$metricsExePath' exists, remember to check update regularly." -ForegroundColor Gray           
+    }
+    else {
+        Write-Host "'$metricsExePath' does not exist, downloading pre-compiled package..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri "https://go.edi.wang/aka/metrics" -OutFile "Metrics.zip"
+        Expand-Archive -Path Metrics.zip -DestinationPath $metricsExePath.Replace("Metrics\Release\net472", "") -Force
+    }
+
+    Write-Host "+ Using pre-compiled Metrics.exe at '$metricsExePath'" -ForegroundColor Cyan
 }
 else {
     Write-Host "+ Using 'Microsoft.CodeAnalysis.Metrics', this will only support .NET Core or .NET 5 projects." -ForegroundColor Cyan
@@ -21,8 +29,9 @@ else {
 
 Read-Host -Prompt "Press [ENTER] to continue, [CTRL + C] to cancel"
 
-Import-Module $devPsPath; 
-Enter-VsDevShell c436d3f6
+$vsPath = &(Join-Path ${env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe") -property installationpath
+Import-Module (Get-ChildItem $vsPath -Recurse -File -Filter Microsoft.VisualStudio.DevShell.dll).FullName
+Enter-VsDevShell -VsInstallPath $vsPath -SkipAutomaticLocation
 
 Write-Host "Creating output directory" -ForegroundColor Yellow
 New-Item -ItemType Directory -Force $metricsPath
