@@ -36,7 +36,6 @@ Enter-VsDevShell -VsInstallPath $vsPath -SkipAutomaticLocation
 Write-Host "Creating output directory '$metricsPath'" -ForegroundColor Yellow
 $echo = New-Item -ItemType Directory -Force $metricsPath
 
-cd $targetPath
 Write-Host "Finding C# project files in '$targetPath'" -ForegroundColor Yellow
 Get-ChildItem -Path $targetPath -Filter *.csproj -Recurse -File | ForEach-Object {
     $csprojPath = $_.FullName
