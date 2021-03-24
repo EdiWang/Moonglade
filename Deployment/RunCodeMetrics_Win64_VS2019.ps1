@@ -84,10 +84,10 @@ foreach ($report in $reports) {
 }
 
 Write-Host "Exporting to CSV file" -ForegroundColor Cyan
-$collectionWithItems | Export-Csv -Path .\CodeMetrics.csv -NoTypeInformation
+$collectionWithItems | Export-Csv -Path $metricsPath\CodeMetrics.csv -NoTypeInformation
 
 Write-Host "Exporting to HTML file" -ForegroundColor Cyan
-$collectionWithItems | ConvertTo-Html | Out-File .\CodeMetrics.html
+$collectionWithItems | ConvertTo-Html | Out-File $metricsPath\CodeMetrics.html
 
 Write-Host
 Write-Host "Metrics calculation completed, you should be able to see results at '$metricsPath'." -ForegroundColor Green
