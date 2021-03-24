@@ -33,8 +33,8 @@ $vsPath = &(Join-Path ${env:ProgramFiles(x86)} "\Microsoft Visual Studio\Install
 Import-Module (Get-ChildItem $vsPath -Recurse -File -Filter Microsoft.VisualStudio.DevShell.dll).FullName
 Enter-VsDevShell -VsInstallPath $vsPath -SkipAutomaticLocation
 
-Write-Host "Creating output directory" -ForegroundColor Yellow
-New-Item -ItemType Directory -Force $metricsPath
+Write-Host "Creating output directory '$metricsPath'" -ForegroundColor Yellow
+$echo = New-Item -ItemType Directory -Force $metricsPath
 
 cd $targetPath
 Write-Host "Finding C# project files in '$targetPath'" -ForegroundColor Yellow
@@ -44,7 +44,7 @@ Get-ChildItem -Path $targetPath -Filter *.csproj -Recurse -File | ForEach-Object
     $dirName = $_.DirectoryName
 
     if ($csprojPath.EndsWith("Tests.csproj")) {
-        Write-Host "Skipping Unit Test project '$projName'" -ForegroundColor Gray
+        Write-Host "Skipped Unit Test project '$projName'" -ForegroundColor Gray
     }
     else {
         Write-Host "Running Code Metrics' for '$projName'" -ForegroundColor Cyan
@@ -61,5 +61,14 @@ Get-ChildItem -Path $targetPath -Filter *.csproj -Recurse -File | ForEach-Object
     }
 }
 
-cd $targetPath
+# Show report
+Get-ChildItem -Path $metricsPath -Filter *.csproj.xml -Recurse -File | ForEach-Object {
+    $xmlPath = $_.FullName
+    $xmlName = $_.Name
+    
+    Write-Host "Code Metrics for '$xmlName':" -ForegroundColor Green
+    [xml]$xmlElm = Get-Content -Path $xmlPath
+    $xmlElm.CodeMetricsReport.Targets.Target.Assembly.Metrics.Metric
+}
+
 Read-Host -Prompt "Metrics calculation completed, you should be able to see results at '$metricsPath', press [ENTER] to exit."
