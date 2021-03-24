@@ -40,7 +40,7 @@ Write-Host "Finding C# project files in '$targetPath'" -ForegroundColor Yellow
 Get-ChildItem -Path $targetPath -Filter *.csproj -Recurse -File | ForEach-Object {
     $csprojPath = $_.FullName
     $projName = $_.Name
-    $dirName = $_.DirectoryName
+    #$dirName = $_.DirectoryName
 
     if ($csprojPath.EndsWith("Tests.csproj")) {
         Write-Host "Skipped Unit Test project '$projName'" -ForegroundColor Gray
@@ -48,7 +48,7 @@ Get-ChildItem -Path $targetPath -Filter *.csproj -Recurse -File | ForEach-Object
     else {
         Write-Host "Running Code Metrics' for '$projName'" -ForegroundColor Cyan
         if ($useMetricsExe) {
-            cd $metricsExePath
+            Set-Location $metricsExePath
             $echo = .\Metrics.exe /project:$csprojPath /out:$metricsPath/$projName.xml
         }
         else {
@@ -60,6 +60,7 @@ Get-ChildItem -Path $targetPath -Filter *.csproj -Recurse -File | ForEach-Object
     }
 }
 
+$collectionWithItems = New-Object System.Collections.ArrayList
 $reports = Get-ChildItem -Path $metricsPath -Filter *.csproj.xml -Recurse -File
 foreach ($report in $reports) {
     $xmlPath = $report.FullName
@@ -72,9 +73,22 @@ foreach ($report in $reports) {
         $name = $_.Name
         $val = $_.Value
         Write-Host "$name [$val]"
+
+        $temp = New-Object System.Object
+        $temp | Add-Member -MemberType NoteProperty -Name "Project" -Value $xmlName.Replace(".csproj.xml", "")
+        $temp | Add-Member -MemberType NoteProperty -Name "Name" -Value $name
+        $temp | Add-Member -MemberType NoteProperty -Name "Value" -Value $val
+        $collectionWithItems.Add($temp) | Out-Null
     }
     Write-Host
 }
 
+Write-Host "Exporting to CSV file" -ForegroundColor Cyan
+$collectionWithItems | Export-Csv -Path .\CodeMetrics.csv -NoTypeInformation
+
+Write-Host "Exporting to HTML file" -ForegroundColor Cyan
+$collectionWithItems | ConvertTo-Html | Out-File .\CodeMetrics.html
+
 Write-Host
-Write-Host "Metrics calculation completed, you should be able to see results at '$metricsPath', press [ENTER] to exit." -ForegroundColor Cyan
+Write-Host "Metrics calculation completed, you should be able to see results at '$metricsPath'." -ForegroundColor Green
+Set-Location $metricsPath
