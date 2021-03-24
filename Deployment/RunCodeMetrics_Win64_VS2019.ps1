@@ -18,7 +18,20 @@ if ($useMetricsExe) {
     else {
         Write-Host "'$metricsExePath' does not exist, downloading pre-compiled package..." -ForegroundColor Yellow
         Invoke-WebRequest -Uri "https://go.edi.wang/aka/metrics" -OutFile "Metrics.zip"
-        Expand-Archive -Path Metrics.zip -DestinationPath $metricsExePath.Replace("Metrics\Release\net472", "") -Force
+
+        # Check hash to prevent downloading malware
+        Write-Host "Checking file hash..." -ForegroundColor Cyan
+        $zipHash = "F2A61A34E9913BB1A66101E092D8755B2C9AFA8ED804A92EC0450E44F92BC82E"
+        $downloadedZipHash = Get-FileHash .\Metrics.zip
+        Write-Host "SHA256:" $downloadedZipHash.Hash
+
+        if ($downloadedZipHash.Hash -eq $zipHash) {
+            Expand-Archive -Path Metrics.zip -DestinationPath $metricsExePath.Replace("Metrics\Release\net472", "") -Force    
+        }
+        else {
+            Write-Host "Metrics.zip hash does not match '$zipHash', script is terminated to prevent security breach"
+            exit
+        }
     }
 
     Write-Host "+ Using pre-compiled Metrics.exe at '$metricsExePath'" -ForegroundColor Cyan
