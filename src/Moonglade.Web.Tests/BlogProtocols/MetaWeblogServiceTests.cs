@@ -36,11 +36,19 @@ namespace Moonglade.Web.Tests.BlogProtocols
         private readonly string _key = "work996andgetintoicu";
         private readonly string _username = "programmer";
         private readonly string _password = "work996";
+        private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
+        private static readonly Category Cat = new()
+        {
+            DisplayName = "WTF",
+            Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"),
+            Note = "A wonderful contry",
+            RouteName = "wtf"
+        };
 
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new MockRepository(MockBehavior.Default);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -55,7 +63,7 @@ namespace Moonglade.Web.Tests.BlogProtocols
 
             _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
             {
-                MetaWeblog = new MetaWeblogCredential
+                MetaWeblog = new()
                 {
                     Username = _username,
                     Password = _password
@@ -65,7 +73,7 @@ namespace Moonglade.Web.Tests.BlogProtocols
 
         private MetaWeblogService CreateService()
         {
-            return new MetaWeblogService(
+            return new(
                 _mockOptions.Object,
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
@@ -79,7 +87,7 @@ namespace Moonglade.Web.Tests.BlogProtocols
         }
 
         [Test]
-        public async Task GetUserInfoAsync_StateUnderTest_ExpectedBehavior()
+        public async Task GetUserInfoAsync_ExpectedBehavior()
         {
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
@@ -91,6 +99,58 @@ namespace Moonglade.Web.Tests.BlogProtocols
             var service = CreateService();
 
             var result = await service.GetUserInfoAsync(_key, _username, _password);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public async Task GetUsersBlogsAsync_ExpectedBehavior()
+        {
+            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
+            {
+                SiteTitle = "996 ICU"
+            });
+
+            var service = CreateService();
+            var result = await service.GetUsersBlogsAsync(_key, _username, _password);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public async Task GetPostAsync_ExpectedBehavior()
+        {
+            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
+            {
+                OwnerEmail = "fubao@996.icu",
+                OwnerName = "996 Worker",
+                CanonicalPrefix = "https://996.icu"
+            });
+
+            _mockPostService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(new Post
+            {
+                Id = Uid,
+                Title = "Work 996 and Get into ICU",
+                Slug = "work-996-and-get-into-icu",
+                ContentAbstract = "Get some fubao",
+                RawPostContent = "<p>Get some fubao</p>",
+                ContentLanguageCode = "en-us",
+                Featured = true,
+                ExposedToSiteMap = true,
+                IsFeedIncluded = true,
+                IsPublished = true,
+                CommentEnabled = true,
+                PubDateUtc = new(2019, 9, 6, 6, 35, 7),
+                LastModifiedUtc = new(2020, 9, 6, 6, 35, 7),
+                CreateTimeUtc = new(2018, 9, 6, 6, 35, 7),
+                Tags = new[]
+                {
+                    new Tag { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
+                    new Tag { DisplayName = "996", Id = 251, NormalizedName = "996" }
+                },
+                Categories = new[] { Cat }
+            }));
+
+            var service = CreateService();
+            var result = await service.GetPostAsync(Uid.ToString(), _username, _password);
             Assert.IsNotNull(result);
         }
     }
