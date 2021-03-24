@@ -61,14 +61,21 @@ Get-ChildItem -Path $targetPath -Filter *.csproj -Recurse -File | ForEach-Object
     }
 }
 
-# Show report
-Get-ChildItem -Path $metricsPath -Filter *.csproj.xml -Recurse -File | ForEach-Object {
-    $xmlPath = $_.FullName
-    $xmlName = $_.Name
-    
-    Write-Host "Code Metrics for '$xmlName':" -ForegroundColor Green
+$reports = Get-ChildItem -Path $metricsPath -Filter *.csproj.xml -Recurse -File
+foreach ($report in $reports) {
+    $xmlPath = $report.FullName
+    $xmlName = $report.Name
+
+    Write-Host "Code Metrics for '$xmlName'" -ForegroundColor Green
+    Write-Host "---------------------------------------------------"
     [xml]$xmlElm = Get-Content -Path $xmlPath
-    $xmlElm.CodeMetricsReport.Targets.Target.Assembly.Metrics.Metric
+    $xmlElm.CodeMetricsReport.Targets.Target.Assembly.Metrics.Metric | ForEach-Object {
+        $name = $_.Name
+        $val = $_.Value
+        Write-Host "$name [$val]"
+    }
+    Write-Host
 }
 
-Read-Host -Prompt "Metrics calculation completed, you should be able to see results at '$metricsPath', press [ENTER] to exit."
+Write-Host
+Write-Host "Metrics calculation completed, you should be able to see results at '$metricsPath', press [ENTER] to exit." -ForegroundColor Cyan
