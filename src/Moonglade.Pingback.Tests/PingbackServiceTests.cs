@@ -3,11 +3,10 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Moonglade.Pingback;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Tests
+namespace Moonglade.Pingback.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
