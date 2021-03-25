@@ -104,34 +104,6 @@ namespace Moonglade.Utils
             return requestedRoot;
         }
 
-        public static async Task<string> GetThemeColorAsync(string webRootPath, string currentTheme)
-        {
-            var color = AppDomain.CurrentDomain.GetData("CurrentThemeColor")?.ToString();
-            if (!string.IsNullOrWhiteSpace(color))
-            {
-                return color;
-            }
-
-            var cssPath = Path.Join(webRootPath, "css", "theme", currentTheme);
-            if (File.Exists(cssPath))
-            {
-                var lines = await File.ReadAllLinesAsync(cssPath);
-                var accentColorLine = lines.FirstOrDefault(l => l.Contains("accent-color1"));
-                if (accentColorLine is not null)
-                {
-                    var regex = new Regex("#(?:[0-9a-f]{3}){1,2}");
-                    var match = regex.Match(accentColorLine);
-                    if (match.Success)
-                    {
-                        var colorHex = match.Captures[0].Value;
-                        AppDomain.CurrentDomain.SetData("CurrentThemeColor", colorHex);
-                        return colorHex;
-                    }
-                }
-            }
-            return "#FFFFFF";
-        }
-
         public static string SterilizeLink(string rawUrl)
         {
             bool IsUnderLocalSlash()

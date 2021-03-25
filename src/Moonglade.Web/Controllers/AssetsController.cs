@@ -370,7 +370,7 @@ namespace Moonglade.Web.Controllers
             [FromServices] IWebHostEnvironment hostEnvironment,
             [FromServices] IOptions<List<ManifestIcon>> manifestIcons)
         {
-            var themeColor = await Helper.GetThemeColorAsync(hostEnvironment.WebRootPath, _blogConfig.GeneralSettings.ThemeFileName);
+            var themeColor = "#333333";
 
             var model = new ManifestModel
             {
