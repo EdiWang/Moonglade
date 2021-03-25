@@ -153,5 +153,13 @@ namespace Moonglade.Web.Tests.BlogProtocols
             var result = await service.GetPostAsync(Uid.ToString(), _username, _password);
             Assert.IsNotNull(result);
         }
+
+        [Test]
+        public async Task GetRecentPostsAsync_ExpectedBehavior()
+        {
+            var service = CreateService();
+            var result = await service.GetRecentPostsAsync("996.icu", _username, _password, 996);
+            Assert.IsNotNull(result);
+        }
     }
 }
