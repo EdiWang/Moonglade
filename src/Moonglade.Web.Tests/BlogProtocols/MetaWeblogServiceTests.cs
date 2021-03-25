@@ -6,13 +6,16 @@ using Moonglade.Core;
 using Moonglade.ImageStorage;
 using Moonglade.Pages;
 using Moonglade.Web;
-using Moonglade.Web.BlogProtocols;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.Configuration;
+using WilderMinds.MetaWeblog;
+using MetaWeblogService = Moonglade.Web.BlogProtocols.MetaWeblogService;
+using Post = Moonglade.Core.Post;
+using Tag = Moonglade.Core.Tag;
 
 namespace Moonglade.Web.Tests.BlogProtocols
 {
@@ -160,6 +163,16 @@ namespace Moonglade.Web.Tests.BlogProtocols
             var service = CreateService();
             var result = await service.GetRecentPostsAsync("996.icu", _username, _password, 996);
             Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void GetRecentPostsAsync_InvalidParameter()
+        {
+            var service = CreateService();
+            Assert.ThrowsAsync<MetaWeblogException>(async () =>
+            {
+                await service.GetRecentPostsAsync("996.icu", _username, _password, -1);
+            });
         }
     }
 }
