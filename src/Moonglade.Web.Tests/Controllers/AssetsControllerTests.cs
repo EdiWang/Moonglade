@@ -272,21 +272,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         //[Test]
-        //public void CustomCss_Disabled()
-        //{
-        //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
-        //    {
-        //        EnableCustomCss = false
-        //    });
-
-        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
-
-        //    var ctl = CreateAssetsController();
-        //    var result = ctl.CustomCss();
-        //    Assert.IsInstanceOf(typeof(NotFoundResult), result);
-        //}
-
-        //[Test]
         //public void CustomCss_TooLargeCss()
         //{
         //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
@@ -339,32 +324,5 @@ namespace Moonglade.Web.Tests.Controllers
         //    var content = (ContentResult)result;
         //    Assert.AreEqual("text/css", content.ContentType);
         //}
-
-        //[Test]
-        //public void CaptchaImage_CrazySize()
-        //{
-        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings()
-        //    {
-        //        CaptchaSettings = new()
-        //        {
-        //            ImageHeight = 996,
-        //            ImageWidth = 996
-        //        }
-        //    });
-
-        //    var ms = new MemoryStream();
-        //    var captchaMock = new Mock<ISessionBasedCaptcha>();
-        //    captchaMock.Setup(p => p.GenerateCaptchaImageFileStream(It.IsAny<ISession>(), It.IsAny<int>(), It.IsAny<int>())).Returns(new FileStreamResult(ms, "image/png"));
-
-        //    var ctl = CreateAssetsController();
-        //    ctl.ControllerContext = new()
-        //    {
-        //        HttpContext = new DefaultHttpContext()
-        //    };
-
-        //    var result = ctl.CaptchaImage(captchaMock.Object);
-        //}
-
-
     }
 }
