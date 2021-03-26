@@ -9,9 +9,12 @@ using Moonglade.Web;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using Moonglade.Configuration;
+using Moonglade.Data.Entities;
 using WilderMinds.MetaWeblog;
 using MetaWeblogService = Moonglade.Web.BlogProtocols.MetaWeblogService;
 using Post = Moonglade.Core.Post;
@@ -46,6 +49,30 @@ namespace Moonglade.Web.Tests.BlogProtocols
             Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"),
             Note = "A wonderful contry",
             RouteName = "wtf"
+        };
+
+        private static readonly Post Post = new()
+        {
+            Id = Uid,
+            Title = "Work 996 and Get into ICU",
+            Slug = "work-996-and-get-into-icu",
+            ContentAbstract = "Get some fubao",
+            RawPostContent = "<p>Get some fubao</p>",
+            ContentLanguageCode = "en-us",
+            Featured = true,
+            ExposedToSiteMap = true,
+            IsFeedIncluded = true,
+            IsPublished = true,
+            CommentEnabled = true,
+            PubDateUtc = new(2019, 9, 6, 6, 35, 7),
+            LastModifiedUtc = new(2020, 9, 6, 6, 35, 7),
+            CreateTimeUtc = new(2018, 9, 6, 6, 35, 7),
+            Tags = new[]
+            {
+                new Tag {DisplayName = "Fubao", Id = 996, NormalizedName = "fubao"},
+                new Tag {DisplayName = "996", Id = 251, NormalizedName = "996"}
+            },
+            Categories = new[] { Cat }
         };
 
         [SetUp]
@@ -128,29 +155,7 @@ namespace Moonglade.Web.Tests.BlogProtocols
                 CanonicalPrefix = "https://996.icu"
             });
 
-            _mockPostService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(new Post
-            {
-                Id = Uid,
-                Title = "Work 996 and Get into ICU",
-                Slug = "work-996-and-get-into-icu",
-                ContentAbstract = "Get some fubao",
-                RawPostContent = "<p>Get some fubao</p>",
-                ContentLanguageCode = "en-us",
-                Featured = true,
-                ExposedToSiteMap = true,
-                IsFeedIncluded = true,
-                IsPublished = true,
-                CommentEnabled = true,
-                PubDateUtc = new(2019, 9, 6, 6, 35, 7),
-                LastModifiedUtc = new(2020, 9, 6, 6, 35, 7),
-                CreateTimeUtc = new(2018, 9, 6, 6, 35, 7),
-                Tags = new[]
-                {
-                    new Tag { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
-                    new Tag { DisplayName = "996", Id = 251, NormalizedName = "996" }
-                },
-                Categories = new[] { Cat }
-            }));
+            _mockPostService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(Post));
 
             var service = CreateService();
             var result = await service.GetPostAsync(Uid.ToString(), _username, _password);
@@ -173,6 +178,31 @@ namespace Moonglade.Web.Tests.BlogProtocols
             {
                 await service.GetRecentPostsAsync("996.icu", _username, _password, -1);
             });
+        }
+
+        [Test]
+        public async Task AddPostAsync_OK()
+        {
+            IReadOnlyList<Category> cats = new List<Category>
+            {
+                Cat
+            };
+
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockPostService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()))
+                .Returns(Task.FromResult(new PostEntity { Id = Uid }));
+
+            var service = CreateService();
+            await service.AddPostAsync("996.icu", _username, _password, new()
+            {
+                title = Post.Title,
+                categories = new[] { Cat.DisplayName },
+                wp_slug = Post.Slug,
+                description = Post.RawPostContent,
+                mt_keywords = "996,icu"
+            }, true);
+
+            _mockPostService.Verify(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()));
         }
     }
 }
