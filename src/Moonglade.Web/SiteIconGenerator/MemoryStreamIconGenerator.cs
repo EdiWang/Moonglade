@@ -42,70 +42,77 @@ namespace Moonglade.Web.SiteIconGenerator
         {
             if (_hasInitialized) return;
 
-            var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
-            byte[] buffer;
-
-            // Fall back to default image
-            if (string.IsNullOrWhiteSpace(data))
+            try
             {
-                _logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
+                var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
+                byte[] buffer;
 
-                var defaultImagePath = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
-                if (!File.Exists(defaultImagePath))
+                // Fall back to default image
+                if (string.IsNullOrWhiteSpace(data))
                 {
-                    throw new FileNotFoundException("Can not find source image for generating favicons.", defaultImagePath);
-                }
+                    _logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
 
-                var ext = Path.GetExtension(defaultImagePath);
-                if (ext is not null && ext.ToLower() is not ".png")
-                {
-                    throw new FormatException("Source file is not an PNG image.");
-                }
-
-                buffer = await File.ReadAllBytesAsync(defaultImagePath);
-            }
-            else
-            {
-                buffer = Convert.FromBase64String(data);
-            }
-
-            await using (var ms = new MemoryStream(buffer))
-            {
-                var image = Image.FromStream(ms);
-                if (image.Height != image.Width)
-                {
-                    throw new InvalidOperationException("Invalid Site Icon Data");
-                }
-
-                var dic = new Dictionary<string, int[]>
-                {
-                    { "android-icon-", new[] { 36, 48, 72, 96, 144, 192 } },
-                    { "favicon-", new[] { 16, 32, 96 } },
-                    { "apple-icon-", new[] { 57, 60, 72, 76, 114, 120, 144, 152, 180 } }
-                };
-
-                foreach (var (key, value) in dic)
-                {
-                    foreach (var size in value)
+                    var defaultImagePath = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
+                    if (!File.Exists(defaultImagePath))
                     {
-                        var fileName = $"{key}{size}x{size}.png";
-                        var bytes = ResizeImageToBytes(ms, size, size, ImageFormat.Png);
-
-                        SiteIconDictionary.TryAdd(fileName, bytes);
+                        throw new FileNotFoundException("Can not find source image for generating favicons.", defaultImagePath);
                     }
+
+                    var ext = Path.GetExtension(defaultImagePath);
+                    if (ext is not null && ext.ToLower() is not ".png")
+                    {
+                        throw new FormatException("Source file is not an PNG image.");
+                    }
+
+                    buffer = await File.ReadAllBytesAsync(defaultImagePath);
+                }
+                else
+                {
+                    buffer = Convert.FromBase64String(data);
                 }
 
-                var icon1Bytes = ResizeImageToBytes(ms, 192, 192, ImageFormat.Png);
-                SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
+                await using (var ms = new MemoryStream(buffer))
+                {
+                    var image = Image.FromStream(ms);
+                    if (image.Height != image.Width)
+                    {
+                        throw new InvalidOperationException("Invalid Site Icon Data");
+                    }
 
-                var icon2Bytes = ResizeImageToBytes(ms, 192, 192, ImageFormat.Png);
-                SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
+                    var dic = new Dictionary<string, int[]>
+                    {
+                        { "android-icon-", new[] { 36, 48, 72, 96, 144, 192 } },
+                        { "favicon-", new[] { 16, 32, 96 } },
+                        { "apple-icon-", new[] { 57, 60, 72, 76, 114, 120, 144, 152, 180 } }
+                    };
 
-                var icoBytes = GenerateFaviconIco(SiteIconDictionary["favicon-16x16.png"]);
-                SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
+                    foreach (var (key, value) in dic)
+                    {
+                        foreach (var size in value)
+                        {
+                            var fileName = $"{key}{size}x{size}.png";
+                            var bytes = ResizeImageToBytes(ms, size, size, ImageFormat.Png);
+
+                            SiteIconDictionary.TryAdd(fileName, bytes);
+                        }
+                    }
+
+                    var icon1Bytes = ResizeImageToBytes(ms, 192, 192, ImageFormat.Png);
+                    SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
+
+                    var icon2Bytes = ResizeImageToBytes(ms, 192, 192, ImageFormat.Png);
+                    SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
+
+                    var icoBytes = GenerateFaviconIco(SiteIconDictionary["favicon-16x16.png"]);
+                    SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
+                }
+
+                _hasInitialized = true;
             }
-
-            _hasInitialized = true;
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
         }
 
         public byte[] GetIcon(string fileName)
@@ -121,10 +128,10 @@ namespace Moonglade.Web.SiteIconGenerator
 
         private static byte[] GenerateFaviconIco(byte[] fromBytes)
         {
-            var fs = new MemoryStream(fromBytes);
-            using (fs)
+            var stream = new MemoryStream(fromBytes);
+            using (stream)
             {
-                using var image = new Bitmap(fs);
+                using var image = new Bitmap(stream);
 
                 // Wrong color and incorrect ico image, but since mordern browsers only use 'favicon-16x16.png', this .ico file is considerable fine.
                 var icon = Icon.FromHandle(image.GetHicon());
