@@ -271,74 +271,74 @@ namespace Moonglade.Web.Tests.Controllers
             }
         }
 
-        [Test]
-        public void CustomCss_Disabled()
-        {
-            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
-            {
-                EnableCustomCss = false
-            });
+        //[Test]
+        //public void CustomCss_Disabled()
+        //{
+        //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+        //    {
+        //        EnableCustomCss = false
+        //    });
 
-            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
+        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = CreateAssetsController();
-            var result = ctl.CustomCss();
-            Assert.IsInstanceOf(typeof(NotFoundResult), result);
-        }
+        //    var ctl = CreateAssetsController();
+        //    var result = ctl.CustomCss();
+        //    Assert.IsInstanceOf(typeof(NotFoundResult), result);
+        //}
 
-        [Test]
-        public void CustomCss_TooLargeCss()
-        {
-            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
-            {
-                EnableCustomCss = true,
-                CssCode = new('a', 65536)
-            });
+        //[Test]
+        //public void CustomCss_TooLargeCss()
+        //{
+        //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+        //    {
+        //        EnableCustomCss = true,
+        //        CssCode = new('a', 65536)
+        //    });
 
-            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
+        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = CreateAssetsController();
+        //    var ctl = CreateAssetsController();
 
-            var result = ctl.CustomCss();
-            Assert.IsInstanceOf(typeof(ConflictObjectResult), result);
-        }
+        //    var result = ctl.CustomCss();
+        //    Assert.IsInstanceOf(typeof(ConflictObjectResult), result);
+        //}
 
-        [Test]
-        public void CustomCss_InvalidCss()
-        {
-            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
-            {
-                EnableCustomCss = true,
-                CssCode = "Work 996, Sick ICU!"
-            });
+        //[Test]
+        //public void CustomCss_InvalidCss()
+        //{
+        //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+        //    {
+        //        EnableCustomCss = true,
+        //        CssCode = "Work 996, Sick ICU!"
+        //    });
 
-            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
+        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = CreateAssetsController();
+        //    var ctl = CreateAssetsController();
 
-            var result = ctl.CustomCss();
-            Assert.IsInstanceOf(typeof(ConflictObjectResult), result);
-        }
+        //    var result = ctl.CustomCss();
+        //    Assert.IsInstanceOf(typeof(ConflictObjectResult), result);
+        //}
 
-        [Test]
-        public void CustomCss_ValidCss()
-        {
-            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
-            {
-                EnableCustomCss = true,
-                CssCode = ".honest-man .hat { color: green !important;}"
-            });
+        //[Test]
+        //public void CustomCss_ValidCss()
+        //{
+        //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+        //    {
+        //        EnableCustomCss = true,
+        //        CssCode = ".honest-man .hat { color: green !important;}"
+        //    });
 
-            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
+        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
 
-            var ctl = CreateAssetsController();
+        //    var ctl = CreateAssetsController();
 
-            var result = ctl.CustomCss();
-            Assert.IsInstanceOf(typeof(ContentResult), result);
+        //    var result = ctl.CustomCss();
+        //    Assert.IsInstanceOf(typeof(ContentResult), result);
 
-            var content = (ContentResult)result;
-            Assert.AreEqual("text/css", content.ContentType);
-        }
+        //    var content = (ContentResult)result;
+        //    Assert.AreEqual("text/css", content.ContentType);
+        //}
 
         //[Test]
         //public void CaptchaImage_CrazySize()

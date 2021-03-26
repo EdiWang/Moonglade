@@ -132,6 +132,7 @@ namespace Moonglade.Web
                 _logger.LogInformation("Moonglade is stopping...");
             });
 
+            app.UseCustomCss(options => options.MaxContentLength = 10240);
             app.UseRobotsTxt();
 
             app.UseMiddlewareForFeature<OpenSearchMiddleware>(nameof(FeatureFlags.OpenSearch));

@@ -107,7 +107,7 @@
     <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
     {
-        <link href="@Url.Action("CustomCss", "Assets")" rel="stylesheet" asp-append-version="true" />
+        <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
     }
 </head>
 <body class="@ViewBag.BodyClass">
