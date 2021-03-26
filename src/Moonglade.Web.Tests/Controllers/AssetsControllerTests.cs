@@ -248,7 +248,7 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Manifest()
+        public void Manifest()
         {
             _mockBlogConfig.Setup(bc => bc.GeneralSettings).Returns(new GeneralSettings
             {
@@ -260,7 +260,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateAssetsController();
 
-            var result = await ctl.Manifest(_mockWebHostEnv.Object, null);
+            var result = ctl.Manifest(null);
             Assert.IsInstanceOf(typeof(OkObjectResult), result);
             if (result is OkObjectResult ojbkResult)
             {
