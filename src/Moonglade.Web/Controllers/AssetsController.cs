@@ -39,8 +39,6 @@ namespace Moonglade.Web.Controllers
         private readonly AppSettings _settings;
         private readonly ILogger<AssetsController> _logger;
 
-        private static string SiteIconDirectory => Path.Join(AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString(), "siteicons");
-
         public AssetsController(
             ILogger<AssetsController> logger,
             IOptions<AppSettings> settings,
@@ -252,20 +250,13 @@ namespace Moonglade.Web.Controllers
         #region Site Icon
 
         [ResponseCache(Duration = 3600)]
-        [Route(@"/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|ico))}")]
+        [Route(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
         public async Task<IActionResult> SiteIcon(string filename)
         {
-            // BUG:
-            // When `RefreshSiteIconCache()` is not finished, not all icons are there
-            // And the second request hits this `if` statement
-            // It is `false`, so the requested filename will be 404 because it's not there at this time
-            if (!Directory.Exists(SiteIconDirectory) || !Directory.GetFiles(SiteIconDirectory).Any())
-            {
-                await RefreshSiteIconCache();
-            }
+            await _siteIconGenerator.GenerateIcons();
 
-            var iconPath = Path.Join(SiteIconDirectory, filename.ToLower());
-            if (!System.IO.File.Exists(iconPath)) return NotFound();
+            var iconBytes = _siteIconGenerator.GetIcon(filename);
+            if (iconBytes is null) return NotFound();
 
             var contentType = "image/png";
             var ext = Path.GetExtension(filename);
@@ -275,7 +266,7 @@ namespace Moonglade.Web.Controllers
                 ".ico" => "image/x-icon",
                 _ => contentType
             };
-            return PhysicalFile(iconPath, contentType);
+            return File(iconBytes, contentType);
         }
 
         [Authorize]
@@ -306,69 +297,12 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        private async Task RefreshSiteIconCache()
-        {
-            try
-            {
-                string iconTemplatPath = string.Empty;
-
-                try
-                {
-                    var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
-
-                    if (!string.IsNullOrWhiteSpace(data))
-                    {
-                        var siteIconBytes = Convert.FromBase64String(data);
-
-                        await using (var ms = new MemoryStream(siteIconBytes))
-                        {
-                            var image = System.Drawing.Image.FromStream(ms);
-                            if (image.Height != image.Width)
-                            {
-                                throw new InvalidOperationException("Invalid Site Icon Data");
-                            }
-                        }
-
-                        var p = Path.Join(SiteIconDirectory, "siteicon.png");
-                        if (!Directory.Exists(SiteIconDirectory))
-                        {
-                            Directory.CreateDirectory(SiteIconDirectory);
-                        }
-
-                        await System.IO.File.WriteAllBytesAsync(p, siteIconBytes);
-                        iconTemplatPath = p;
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError($"Error {nameof(RefreshSiteIconCache)}()", e);
-                }
-
-                if (string.IsNullOrWhiteSpace(iconTemplatPath))
-                {
-                    _logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
-                    iconTemplatPath = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
-                }
-
-                if (System.IO.File.Exists(iconTemplatPath))
-                {
-                    _siteIconGenerator.GenerateIcons(iconTemplatPath, SiteIconDirectory);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error {nameof(RefreshSiteIconCache)}()", ex);
-            }
-        }
-
         #endregion
 
         // Credits: https://github.com/Anduin2017/Blog
         [ResponseCache(Duration = 3600)]
         [Route("/manifest.json")]
-        public async Task<IActionResult> Manifest(
-            [FromServices] IWebHostEnvironment hostEnvironment,
-            [FromServices] IOptions<List<ManifestIcon>> manifestIcons)
+        public IActionResult Manifest([FromServices] IOptions<List<ManifestIcon>> manifestIcons)
         {
             var themeColor = "#333333";
 

@@ -20,6 +20,7 @@ using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
+using Moonglade.Web.SiteIconGenerator;
 using NUglify;
 
 namespace Moonglade.Web.Controllers
@@ -35,19 +36,20 @@ namespace Moonglade.Web.Controllers
 
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
+        private readonly ISiteIconGenerator _siteIconGenerator;
         private readonly ILogger<SettingsController> _logger;
-
-        private static string SiteIconDirectory => Path.Join(AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString(), "siteicons");
 
         #endregion
 
         public SettingsController(
             IBlogConfig blogConfig,
             IBlogAudit blogAudit,
+            ISiteIconGenerator siteIconGenerator,
             ILogger<SettingsController> logger)
         {
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
+            _siteIconGenerator = siteIconGenerator;
 
             _logger = logger;
         }
@@ -253,11 +255,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
-
-                if (Directory.Exists(SiteIconDirectory))
-                {
-                    Directory.Delete(SiteIconDirectory, true);
-                }
+                _siteIconGenerator.Dirty();
 
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
 
@@ -426,7 +424,7 @@ namespace Moonglade.Web.Controllers
 
                 if (cachedObjectValues.Contains("MCO_SICO"))
                 {
-                    DeleteIfExists(SiteIconDirectory);
+                    _siteIconGenerator.Dirty();
                 }
 
                 return Ok();
