@@ -16,7 +16,6 @@ using Moonglade.ImageStorage;
 using Moonglade.Utils;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
-using Moonglade.Web.SiteIconGenerator;
 using Moq;
 using NUnit.Framework;
 

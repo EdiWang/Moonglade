@@ -20,7 +20,6 @@ using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
-using Moonglade.Web.SiteIconGenerator;
 using NUglify;
 
 namespace Moonglade.Web.Controllers
@@ -408,11 +407,6 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult ClearDataCache(string[] cachedObjectValues, [FromServices] IBlogCache cache)
         {
-            static void DeleteIfExists(string path)
-            {
-                if (Directory.Exists(path)) Directory.Delete(path);
-            }
-
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());

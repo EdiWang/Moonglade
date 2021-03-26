@@ -24,7 +24,6 @@ using Moonglade.ImageStorage;
 using Moonglade.Utils;
 using Moonglade.Web.BlogProtocols;
 using Moonglade.Web.Models;
-using Moonglade.Web.SiteIconGenerator;
 using NUglify;
 
 namespace Moonglade.Web.Controllers

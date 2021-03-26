@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 
-namespace Moonglade.Web.SiteIconGenerator
+namespace Moonglade.Web
 {
     public interface ISiteIconGenerator
     {
@@ -30,7 +30,8 @@ namespace Moonglade.Web.SiteIconGenerator
 
         private bool _hasInitialized;
 
-        public MemoryStreamIconGenerator(IBlogConfig blogConfig, ILogger<MemoryStreamIconGenerator> logger, IWebHostEnvironment env)
+        public MemoryStreamIconGenerator(
+            IBlogConfig blogConfig, ILogger<MemoryStreamIconGenerator> logger, IWebHostEnvironment env)
         {
             _blogConfig = blogConfig;
             _logger = logger;
@@ -91,19 +92,19 @@ namespace Moonglade.Web.SiteIconGenerator
                         foreach (var size in value)
                         {
                             var fileName = $"{key}{size}x{size}.png";
-                            var bytes = ResizeImageToBytes(ms, size, size, ImageFormat.Png);
+                            var bytes = ResizeImage(ms, size, size, ImageFormat.Png);
 
                             SiteIconDictionary.TryAdd(fileName, bytes);
                         }
                     }
 
-                    var icon1Bytes = ResizeImageToBytes(ms, 192, 192, ImageFormat.Png);
+                    var icon1Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
                     SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
 
-                    var icon2Bytes = ResizeImageToBytes(ms, 192, 192, ImageFormat.Png);
+                    var icon2Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
                     SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
 
-                    var icoBytes = GenerateFaviconIco(SiteIconDictionary["favicon-16x16.png"]);
+                    var icoBytes = GenerateIco(SiteIconDictionary["favicon-16x16.png"]);
                     SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
                 }
 
@@ -126,7 +127,7 @@ namespace Moonglade.Web.SiteIconGenerator
             _hasInitialized = false;
         }
 
-        private static byte[] GenerateFaviconIco(byte[] fromBytes)
+        private static byte[] GenerateIco(byte[] fromBytes)
         {
             var stream = new MemoryStream(fromBytes);
             using (stream)
@@ -144,27 +145,22 @@ namespace Moonglade.Web.SiteIconGenerator
             }
         }
 
-        private static byte[] ResizeImageToBytes(Stream fromStream, int toWidth, int toHeight, ImageFormat format)
+        private static byte[] ResizeImage(Stream fromStream, int toWidth, int toHeight, ImageFormat format)
         {
-            var resizedImage = ResizeImage(fromStream, toWidth, toHeight);
-
-            using var ms = new MemoryStream();
-            resizedImage.Save(ms, format);
-            ms.Flush();
-
-            return ms.ToArray();
-        }
-
-        private static Bitmap ResizeImage(Stream originImageStream, int toWidth, int toHeight)
-        {
-            using var image = new Bitmap(originImageStream);
+            using var image = new Bitmap(fromStream);
             var resized = new Bitmap(toWidth, toHeight);
+
             using var graphics = Graphics.FromImage(resized);
             graphics.CompositingQuality = CompositingQuality.HighQuality;
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             graphics.CompositingMode = CompositingMode.SourceCopy;
             graphics.DrawImage(image, 0, 0, toWidth, toHeight);
-            return resized;
+
+            using var ms = new MemoryStream();
+            resized.Save(ms, format);
+            ms.Flush();
+
+            return ms.ToArray();
         }
     }
 }

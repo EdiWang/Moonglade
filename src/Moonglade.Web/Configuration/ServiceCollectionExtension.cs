@@ -23,7 +23,6 @@ using Moonglade.Pages;
 using Moonglade.Syndication;
 using Moonglade.Web.BlogProtocols;
 using Moonglade.Web.Filters;
-using Moonglade.Web.SiteIconGenerator;
 using Polly;
 using WilderMinds.MetaWeblog;
 using MetaWeblogService = Moonglade.Web.BlogProtocols.MetaWeblogService;

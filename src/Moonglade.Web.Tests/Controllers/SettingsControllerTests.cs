@@ -12,7 +12,6 @@ using Moonglade.DataPorting;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
-using Moonglade.Web.SiteIconGenerator;
 using Moq;
 using NUnit.Framework;
 
