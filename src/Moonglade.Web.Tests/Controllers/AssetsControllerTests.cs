@@ -272,23 +272,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         //[Test]
-        //public void CustomCss_TooLargeCss()
-        //{
-        //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
-        //    {
-        //        EnableCustomCss = true,
-        //        CssCode = new('a', 65536)
-        //    });
-
-        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
-
-        //    var ctl = CreateAssetsController();
-
-        //    var result = ctl.CustomCss();
-        //    Assert.IsInstanceOf(typeof(ConflictObjectResult), result);
-        //}
-
-        //[Test]
         //public void CustomCss_InvalidCss()
         //{
         //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
