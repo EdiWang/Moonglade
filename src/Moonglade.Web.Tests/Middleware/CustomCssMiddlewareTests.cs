@@ -79,5 +79,25 @@ namespace Moonglade.Web.Tests.Middleware
             await middleware.Invoke(ctx, _mockBlogConfig.Object);
             Assert.AreEqual(409, ctx.Response.StatusCode);
         }
+
+        [Test]
+        public async Task Invoke_InvalidCss()
+        {
+            _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
+            {
+                EnableCustomCss = true,
+                CssCode = "Work 996, Sick ICU!"
+            });
+
+            var ctx = new DefaultHttpContext();
+            ctx.Response.Body = new MemoryStream();
+            ctx.Request.Path = "/custom.css";
+
+            static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
+            var middleware = new CustomCssMiddleware(RequestDelegate);
+
+            await middleware.Invoke(ctx, _mockBlogConfig.Object);
+            Assert.AreEqual(409, ctx.Response.StatusCode);
+        }
     }
 }
