@@ -204,5 +204,14 @@ namespace Moonglade.Web.Tests.BlogProtocols
 
             _mockPostService.Verify(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()));
         }
+
+        [Test]
+        public async Task DeletePostAsync_OK()
+        {
+            var service = CreateService();
+            await service.DeletePostAsync("996.icu", Uid.ToString(), _username, _password, true);
+
+            _mockPostService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+        }
     }
 }
