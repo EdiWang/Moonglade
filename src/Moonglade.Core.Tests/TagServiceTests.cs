@@ -88,7 +88,6 @@ namespace Moonglade.Core.Tests
                 new() { Source = " ", Target = "-" }
             };
             _mockOptions.Setup(p => p.Value).Returns(dic.ToList());
-
             _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(true);
             _mockRepositoryTagEntity.Setup(p =>
                     p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>(), true))
@@ -98,6 +97,30 @@ namespace Moonglade.Core.Tests
             var result = await svc.Create("Work 996");
             
             Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public async Task Create_New()
+        {
+            var dic = new TagNormalization[]
+            {
+                new() { Source = " ", Target = "-" }
+            };
+            _mockOptions.Setup(p => p.Value).Returns(dic.ToList());
+            _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(false);
+            _mockRepositoryTagEntity.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(
+                new TagEntity
+                {
+                    DisplayName = "Work 996",
+                    Id = 996,
+                    NormalizedName = "work-996"
+                }));
+
+            var svc = CreateService();
+            var result = await svc.Create("Work 996");
+
+            Assert.IsNotNull(result);
+            _mockRepositoryTagEntity.Verify(p => p.AddAsync(It.IsAny<TagEntity>()));
         }
 
         [Test]
@@ -128,6 +151,25 @@ namespace Moonglade.Core.Tests
             await svc.UpdateAsync(996, "fubao");
 
             _mockBlogAudit.Verify();
+        }
+
+        [Test]
+        public async Task DeleteAsync_OK()
+        {
+            _mockRepositoryTagEntity.Setup(p => p.GetAsync(It.IsAny<int>()))
+                .Returns(ValueTask.FromResult(new TagEntity
+                {
+                    Id = 996,
+                    DisplayName = "Ma Yun",
+                    NormalizedName = "ma-yun"
+                }));
+
+            var svc = CreateService();
+            await svc.DeleteAsync(996);
+
+            _mockRepositoryPostTagEntity.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostTagEntity>>()));
+            _mockRepositoryTagEntity.Verify(p => p.DeleteAsync(996));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, AuditEventId.TagDeleted, It.IsAny<string>()));
         }
 
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
