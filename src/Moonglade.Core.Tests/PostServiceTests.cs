@@ -11,6 +11,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
@@ -32,6 +33,8 @@ namespace Moonglade.Core.Tests
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IOptions<List<TagNormalization>>> _mockOptionsListTagNormalization;
+
+        private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
 
         [SetUp]
         public void SetUp()
@@ -61,6 +64,15 @@ namespace Moonglade.Core.Tests
                 _mockBlogAudit.Object,
                 _mockBlogCache.Object,
                 _mockOptionsListTagNormalization.Object);
+        }
+
+        [Test]
+        public async Task GetAsync_OK()
+        {
+            var svc = CreateService();
+            var result = await svc.GetAsync(Uid);
+
+            _mockRepositoryPostEntity.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>(), true));
         }
 
         [Test]
