@@ -95,7 +95,7 @@ namespace Moonglade.Core.Tests
 
             var svc = CreateService();
             var result = await svc.Create("Work 996");
-            
+
             Assert.IsNotNull(result);
         }
 
@@ -170,6 +170,17 @@ namespace Moonglade.Core.Tests
             _mockRepositoryPostTagEntity.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostTagEntity>>()));
             _mockRepositoryTagEntity.Verify(p => p.DeleteAsync(996));
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, AuditEventId.TagDeleted, It.IsAny<string>()));
+        }
+
+        [Test]
+        public async Task GetHotTagsAsync_Empty()
+        {
+            _mockRepositoryTagEntity.Setup(p => p.Any((Expression<Func<TagEntity, bool>>)null)).Returns(false);
+
+            var svc = CreateService();
+            var result = await svc.GetHotTagsAsync(35);
+
+            Assert.IsNotNull(result);
         }
 
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
