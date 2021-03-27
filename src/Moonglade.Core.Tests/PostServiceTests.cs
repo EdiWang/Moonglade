@@ -163,6 +163,15 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
+        public async Task List_OK()
+        {
+            var svc = CreateService();
+            await svc.List(35, 7, Uid);
+
+            _mockRepositoryPostEntity.Verify(p => p.SelectAsync(It.IsAny<PostPagingSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
+        }
+
+        [Test]
         public void LazyLoadToImgTag_ExistLoading()
         {
             const string html = @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>";
