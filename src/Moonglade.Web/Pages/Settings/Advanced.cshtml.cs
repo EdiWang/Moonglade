@@ -25,6 +25,7 @@ namespace Moonglade.Web.Pages.Settings
                 EnablePingbackReceive = settings.EnablePingBackReceive,
                 EnableOpenGraph = settings.EnableOpenGraph,
                 EnableCDNRedirect = settings.EnableCDNRedirect,
+                EnableOpenSearch = settings.EnableOpenSearch,
                 CDNEndpoint = settings.CDNEndpoint,
                 FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio
             };

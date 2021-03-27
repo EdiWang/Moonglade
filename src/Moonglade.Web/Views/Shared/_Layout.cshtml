@@ -58,9 +58,10 @@
 
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
     <rss title="@BlogConfig.FeedSettings.RssTitle" href="@Url.Action("Rss", "Subscription")" />
-    <feature name="OpenSearch">
+    @if (BlogConfig.AdvancedSettings.EnableOpenSearch)
+    {
         <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" />
-    </feature>
+    }
     <feature name="RSD">
         <rsd href="/rsd" />
     </feature>

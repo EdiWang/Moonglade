@@ -39,7 +39,6 @@ namespace Moonglade.Configuration.Settings
         EnableWebApi,
         EnableAudit,
         Foaf,
-        OPML,
-        OpenSearch
+        OPML
     }
 }

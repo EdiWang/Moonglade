@@ -129,6 +129,9 @@
   <data name="Enable OpenGraph" xml:space="preserve">
     <value>启用 OpenGraph</value>
   </data>
+  <data name="Enable OpenSearch" xml:space="preserve">
+    <value>启用 OpenSearch</value>
+  </data>
   <data name="Enable Pingback Receive" xml:space="preserve">
     <value>启用 Pingback 接受</value>
   </data>

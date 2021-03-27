@@ -135,7 +135,7 @@ namespace Moonglade.Web
             app.UseCustomCss(options => options.MaxContentLength = 10240);
             app.UseRobotsTxt();
 
-            app.UseMiddlewareForFeature<OpenSearchMiddleware>(nameof(FeatureFlags.OpenSearch));
+            app.UseMiddleware<OpenSearchMiddleware>();
             app.UseMiddlewareForFeature<RSDMiddleware>(nameof(FeatureFlags.RSD));
             app.UseForFeature(nameof(FeatureFlags.MetaWeblog), _ =>
             {

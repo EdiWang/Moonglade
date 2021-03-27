@@ -17,9 +17,10 @@
     <meta name="keywords" content="@Html.Raw(BlogConfig.GeneralSettings.MetaKeyword)" />
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
     <rss title="@BlogConfig.FeedSettings.RssTitle" href="@Url.Action("Rss", "Subscription")" />
-    <feature name="OpenSearch">
+    @if (BlogConfig.AdvancedSettings.EnableOpenSearch)
+    {
         <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" />
-    </feature>
+    }
     <feature name="Foaf">
         <foaf href="/foaf.xml" />
     </feature>
@@ -93,7 +94,7 @@
                      class="rounded-circle admin-nav-head-pic mr-1" />
                 <userinfo user="User"></userinfo>
             </span>
-            
+
             <a class="navbar-text d-inline-block" asp-controller="Auth" asp-action="SignOut" title="Sign Out">
                 <span class="icon-enter"></span>
             </a>

@@ -16,6 +16,8 @@ namespace Moonglade.Configuration
 
         public bool EnableCDNRedirect { get; set; }
 
+        public bool EnableOpenSearch { get; set; }
+
         public string CDNEndpoint { get; set; }
 
         public bool FitImageToDevicePixelRatio { get; set; }

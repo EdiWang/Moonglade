@@ -17,7 +17,7 @@ namespace Moonglade.Web.Middleware
 
         public async Task Invoke(HttpContext httpContext, IBlogConfig blogConfig)
         {
-            if (httpContext.Request.Path == "/opensearch")
+            if (httpContext.Request.Path == "/opensearch" && blogConfig.AdvancedSettings.EnableOpenSearch)
             {
                 var siteRootUrl = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true);
                 var xml = await OpenSearchWriter.GetOpenSearchData(siteRootUrl, blogConfig.GeneralSettings.SiteTitle, blogConfig.GeneralSettings.Description);

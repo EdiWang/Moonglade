@@ -26,6 +26,9 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Enable CDN for images")]
         public bool EnableCDNRedirect { get; set; }
 
+        [Display(Name = "Enable OpenSearch")]
+        public bool EnableOpenSearch { get; set; }
+
         [Display(Name = "CDN Endpoint")]
         public string CDNEndpoint { get; set; }
 

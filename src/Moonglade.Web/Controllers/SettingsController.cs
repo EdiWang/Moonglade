@@ -278,6 +278,7 @@ namespace Moonglade.Web.Controllers
             settings.EnablePingBackReceive = model.EnablePingbackReceive;
             settings.EnableOpenGraph = model.EnableOpenGraph;
             settings.EnableCDNRedirect = model.EnableCDNRedirect;
+            settings.EnableOpenSearch = model.EnableOpenSearch;
             settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
 
             if (model.EnableCDNRedirect)
