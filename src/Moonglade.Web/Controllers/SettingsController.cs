@@ -13,7 +13,6 @@ using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.DataPorting;
 using Moonglade.Notification.Client;
 using Moonglade.Setup;
 using Moonglade.Utils;
@@ -379,27 +378,6 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
             return Ok();
-        }
-
-        [HttpGet("export/{type}")]
-        public async Task<IActionResult> ExportDownload([FromServices] IExportManager expman, ExportDataType type)
-        {
-            var exportResult = await expman.ExportData(type);
-            switch (exportResult.ExportFormat)
-            {
-                case ExportFormat.SingleJsonFile:
-                    return new FileContentResult(exportResult.Content, exportResult.ContentType)
-                    {
-                        FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
-                    };
-                case ExportFormat.SingleCSVFile:
-                    Response.Headers.Add("Content-Disposition", $"attachment;filename={Path.GetFileName(exportResult.FilePath)}");
-                    return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
-                case ExportFormat.ZippedJsonFiles:
-                    return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
-                default:
-                    return BadRequest(ModelState.CombineErrorMessages());
-            }
         }
 
         [HttpPost("clear-data-cache")]
