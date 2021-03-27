@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
 
@@ -78,6 +79,19 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
+        public async Task GetAsync_Slug_OK()
+        {
+            _mockRepositoryPostEntity
+                .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(),
+                    It.IsAny<Expression<Func<PostEntity, Guid>>>(), true)).Returns(Task.FromResult(Uid));
+
+            var svc = CreateService();
+            var result = await svc.GetAsync(new PostSlug(996, 3, 5, "work-996-junk-35"));
+
+            _mockBlogCache.Verify(p => p.GetOrCreateAsync(CacheDivision.Post, Uid.ToString(), It.IsAny<Func<ICacheEntry, Task<Post>>>()));
+        }
+
+        [Test]
         public async Task GetDraft_OK()
         {
             var svc = CreateService();
@@ -97,6 +111,18 @@ namespace Moonglade.Core.Tests
             _mockRepositoryPostEntity.Verify(
                 p => p.SelectAsync(
                     It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true));
+        }
+
+        [TestCase(-1, 0)]
+        [TestCase(-2, -1)]
+        public void ListSegment_InvalidParameter(int offset, int pageSize)
+        {
+            var svc = CreateService();
+
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await svc.ListSegment(PostStatus.Published, offset, pageSize);
+            });
         }
 
         [Test]
