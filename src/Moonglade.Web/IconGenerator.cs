@@ -104,8 +104,11 @@ namespace Moonglade.Web
                     var icon2Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
                     SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
 
-                    var icoBytes = GenerateIco(SiteIconDictionary["favicon-16x16.png"]);
-                    SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
+                    if (SiteIconDictionary.ContainsKey("favicon-16x16.png"))
+                    {
+                        var icoBytes = GenerateIco(SiteIconDictionary["favicon-16x16.png"]);
+                        SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
+                    }
                 }
 
                 _hasInitialized = true;
