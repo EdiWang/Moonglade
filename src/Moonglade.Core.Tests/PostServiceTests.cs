@@ -114,7 +114,7 @@ namespace Moonglade.Core.Tests
         }
 
         [TestCase(-1, 0)]
-        [TestCase(-2, -1)]
+        [TestCase(-1, 1)]
         public void ListSegment_InvalidParameter(int offset, int pageSize)
         {
             var svc = CreateService();
@@ -123,6 +123,32 @@ namespace Moonglade.Core.Tests
             {
                 await svc.ListSegment(PostStatus.Published, offset, pageSize);
             });
+        }
+
+        [TestCase(PostStatus.Published)]
+        [TestCase(PostStatus.Deleted)]
+        [TestCase(PostStatus.Draft)]
+        [TestCase(PostStatus.NotSet)]
+        public async Task ListSegment_WithPaging(PostStatus postStatus)
+        {
+            IReadOnlyList<PostSegment> segments = new List<PostSegment>()
+            {
+                new()
+                {
+                    Id = Uid, ContentAbstract = "Work 996 and get into ICU", CreateTimeUtc = DateTime.MinValue, Hits = 996, Slug = "work-996", Title = "Fubao"
+                }
+            };
+
+            _mockRepositoryPostEntity
+                .Setup(p => p.SelectAsync(It.IsAny<PostPagingSpec>(),
+                    It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true)).Returns(Task.FromResult(segments));
+
+            _mockRepositoryPostEntity.Setup(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>())).Returns(996);
+
+            var svc = CreateService();
+            var result = await svc.ListSegment(postStatus, 0, 35);
+
+            Assert.IsNotNull(result);
         }
 
         [Test]
