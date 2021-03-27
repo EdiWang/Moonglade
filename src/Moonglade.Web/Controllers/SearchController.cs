@@ -4,6 +4,7 @@ using Moonglade.Core;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class SearchController : Controller
     {
         private readonly ISearchService _searchService;
