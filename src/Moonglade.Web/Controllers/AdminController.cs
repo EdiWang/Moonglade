@@ -30,7 +30,7 @@ namespace Moonglade.Web.Controllers
             _blogAudit = blogAudit;
         }
 
-        [Route("")]
+        [HttpGet("")]
         public async Task<IActionResult> Index()
         {
             if (_authenticationSettings.Provider == AuthenticationProvider.AzureAD)
@@ -50,7 +50,7 @@ namespace Moonglade.Web.Controllers
             return Redirect("/admin/auditlogs");
         }
 
-        [Route("/page/preview/{pageId:guid}")]
+        [HttpGet("/page/preview/{pageId:guid}")]
         public async Task<IActionResult> PreviewPage(Guid pageId)
         {
             var page = await _pageService.GetAsync(pageId);
@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
 
         // Keep session from expire when writing a very long post
         [IgnoreAntiforgeryToken]
-        [Route("keep-alive")]
+        [HttpPost("keep-alive")]
         public IActionResult KeepAlive(string nonce)
         {
             return Json(new

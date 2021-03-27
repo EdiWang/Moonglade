@@ -16,7 +16,7 @@ namespace Moonglade.Web.Controllers
             if (logger is not null) Logger = logger;
         }
 
-        [Route("/error")]
+        [HttpGet("/error")]
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

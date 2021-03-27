@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [HttpGet("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         [AddPingbackHeader("pingback")]
         public async Task<IActionResult> Slug(int year, int month, int day, string slug)
         {
@@ -59,7 +59,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("preview/{postId:guid}")]
+        [HttpGet("preview/{postId:guid}")]
         public async Task<IActionResult> Preview(Guid postId)
         {
             var post = await _postService.GetDraft(postId);

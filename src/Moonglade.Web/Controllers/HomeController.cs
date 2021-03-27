@@ -73,14 +73,14 @@ namespace Moonglade.Web.Controllers
         }
 
 
-        [Route("tags")]
+        [HttpGet("tags")]
         public async Task<IActionResult> Tags()
         {
             var tags = await _tagService.GetTagCountList();
             return View(tags);
         }
 
-        [Route("tags/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [HttpGet("tags/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> TagList(string normalizedName, int page = 1)
         {
             var tagResponse = _tagService.Get(normalizedName);
@@ -96,7 +96,7 @@ namespace Moonglade.Web.Controllers
             return View(list);
         }
 
-        [Route("category/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [HttpGet("category/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> CategoryList([FromServices] ICategoryService categoryService, string routeName, int page = 1)
         {
             if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
@@ -119,15 +119,15 @@ namespace Moonglade.Web.Controllers
             return View(postsAsIPagedList);
         }
 
-        [Route("archive")]
+        [HttpGet("archive")]
         public async Task<IActionResult> Archive()
         {
             var archives = await _blogArchiveService.ListAsync();
             return View(archives);
         }
 
-        [Route("archive/{year:int:length(4)}")]
-        [Route("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
+        [HttpGet("archive/{year:int:length(4)}")]
+        [HttpGet("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
         public async Task<IActionResult> ArchiveList(int year, int? month)
         {
             if (year > DateTime.UtcNow.Year) return BadRequest();
@@ -150,7 +150,7 @@ namespace Moonglade.Web.Controllers
             return View(model);
         }
 
-        [Route("archive/featured")]
+        [HttpGet("archive/featured")]
         public async Task<IActionResult> Featured(int page = 1)
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
