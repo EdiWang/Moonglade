@@ -142,6 +142,22 @@ namespace Moonglade.Configuration
             }
         }
 
+        public string GetAssetData(Guid assetId)
+        {
+            try
+            {
+                var asset = _dbConnection.QueryFirstOrDefault<BlogAsset>
+                    ("SELECT TOP 1 * FROM BlogAsset ba WHERE ba.Id = @assetId", new { assetId });
+
+                return asset?.Base64Data;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw;
+            }
+        }
+
         public async Task<string> GetAssetDataAsync(Guid assetId)
         {
             try

@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -15,7 +14,7 @@ namespace Moonglade.Web
 {
     public interface ISiteIconGenerator
     {
-        Task GenerateIcons();
+        void GenerateIcons();
         byte[] GetIcon(string fileName);
         void Dirty();
     }
@@ -29,6 +28,7 @@ namespace Moonglade.Web
         private readonly IWebHostEnvironment _env;
 
         private bool _hasInitialized;
+        // private static readonly object CurryLock = new();
 
         public MemoryStreamIconGenerator(
             IBlogConfig blogConfig, ILogger<MemoryStreamIconGenerator> logger, IWebHostEnvironment env)
@@ -39,13 +39,18 @@ namespace Moonglade.Web
             SiteIconDictionary = new();
         }
 
-        public async Task GenerateIcons()
+        public void GenerateIcons()
         {
             if (_hasInitialized) return;
 
             try
             {
-                var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
+                //lock (CurryLock)
+                //{
+                    
+                //}
+
+                var data = _blogConfig.GetAssetData(AssetId.SiteIconBase64);
                 byte[] buffer;
 
                 // Fall back to default image
@@ -65,14 +70,14 @@ namespace Moonglade.Web
                         throw new FormatException("Source file is not an PNG image.");
                     }
 
-                    buffer = await File.ReadAllBytesAsync(defaultImagePath);
+                    buffer = File.ReadAllBytes(defaultImagePath);
                 }
                 else
                 {
                     buffer = Convert.FromBase64String(data);
                 }
 
-                await using (var ms = new MemoryStream(buffer))
+                using (var ms = new MemoryStream(buffer))
                 {
                     var image = Image.FromStream(ms);
                     if (image.Height != image.Width)

@@ -19,6 +19,7 @@ namespace Moonglade.Configuration.Abstraction
 
         Task SaveAssetAsync(Guid assetId, string assetBase64);
 
+        string GetAssetData(Guid assetId);
         Task<string> GetAssetDataAsync(Guid assetId);
     }
 }

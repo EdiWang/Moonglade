@@ -249,9 +249,9 @@ namespace Moonglade.Web.Controllers
 
         [ResponseCache(Duration = 3600)]
         [Route(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
-        public async Task<IActionResult> SiteIcon(string filename)
+        public IActionResult SiteIcon(string filename)
         {
-            await _siteIconGenerator.GenerateIcons();
+            _siteIconGenerator.GenerateIcons();
 
             var iconBytes = _siteIconGenerator.GetIcon(filename);
             if (iconBytes is null) return NotFound();
