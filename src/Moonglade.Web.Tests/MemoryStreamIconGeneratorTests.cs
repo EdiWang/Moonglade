@@ -51,22 +51,22 @@ namespace Moonglade.Web.Tests
 
             var memoryStreamIconGenerator = CreateMemoryStreamIconGenerator();
 
-            Assert.DoesNotThrowAsync(async () =>
+            Assert.DoesNotThrow(() =>
             {
-                await memoryStreamIconGenerator.GenerateIcons();
+                memoryStreamIconGenerator.GenerateIcons();
             });
         }
 
         [TestCase("favicon-16x16.png")]
         [TestCase("favicon.ico")]
         [TestCase("android-icon-144x144.png")]
-        public async Task GetIcon_StateUnderTest_ExpectedBehavior(string fileName)
+        public void GetIcon_StateUnderTest_ExpectedBehavior(string fileName)
         {
             _mockBlogConfig.Setup(p => p.GetAssetDataAsync(AssetId.SiteIconBase64))
                 .Returns(Task.FromResult(_iconData));
 
             var memoryStreamIconGenerator = CreateMemoryStreamIconGenerator();
-            await memoryStreamIconGenerator.GenerateIcons();
+            memoryStreamIconGenerator.GenerateIcons();
 
             var result = memoryStreamIconGenerator.GetIcon(fileName);
 
