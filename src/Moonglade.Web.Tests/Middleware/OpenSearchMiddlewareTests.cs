@@ -42,6 +42,11 @@ namespace Moonglade.Web.Tests.Middleware
                 Description = "Work 996 and get into ICU"
             });
 
+            blogConfigMock.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
+            {
+                EnableOpenSearch = true
+            });
+
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new OpenSearchMiddleware(RequestDelegate);
 
