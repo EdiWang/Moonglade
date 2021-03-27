@@ -12,6 +12,7 @@ using Moonglade.Pages;
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("admin")]
     public class AdminController : Controller
     {

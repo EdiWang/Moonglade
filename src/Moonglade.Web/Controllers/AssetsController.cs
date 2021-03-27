@@ -27,6 +27,7 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class AssetsController : ControllerBase
     {
         private readonly IBlogConfig _blogConfig;

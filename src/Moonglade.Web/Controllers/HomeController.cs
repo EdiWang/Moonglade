@@ -14,6 +14,7 @@ using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : Controller
     {
         private readonly IPostService _postService;
@@ -55,7 +56,7 @@ namespace Moonglade.Web.Controllers
             return View(list);
         }
 
-        [HttpGet("page/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [Route("page/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> Page(string slug)
         {
             if (string.IsNullOrWhiteSpace(slug)) return BadRequest();
@@ -73,14 +74,14 @@ namespace Moonglade.Web.Controllers
         }
 
 
-        [HttpGet("tags")]
+        [Route("tags")]
         public async Task<IActionResult> Tags()
         {
             var tags = await _tagService.GetTagCountList();
             return View(tags);
         }
 
-        [HttpGet("tags/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [Route("tags/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> TagList(string normalizedName, int page = 1)
         {
             var tagResponse = _tagService.Get(normalizedName);
@@ -96,7 +97,7 @@ namespace Moonglade.Web.Controllers
             return View(list);
         }
 
-        [HttpGet("category/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [Route("category/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> CategoryList([FromServices] ICategoryService categoryService, string routeName, int page = 1)
         {
             if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
@@ -119,15 +120,15 @@ namespace Moonglade.Web.Controllers
             return View(postsAsIPagedList);
         }
 
-        [HttpGet("archive")]
+        [Route("archive")]
         public async Task<IActionResult> Archive()
         {
             var archives = await _blogArchiveService.ListAsync();
             return View(archives);
         }
 
-        [HttpGet("archive/{year:int:length(4)}")]
-        [HttpGet("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
+        [Route("archive/{year:int:length(4)}")]
+        [Route("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
         public async Task<IActionResult> ArchiveList(int year, int? month)
         {
             if (year > DateTime.UtcNow.Year) return BadRequest();
@@ -150,7 +151,7 @@ namespace Moonglade.Web.Controllers
             return View(model);
         }
 
-        [HttpGet("archive/featured")]
+        [Route("archive/featured")]
         public async Task<IActionResult> Featured(int page = 1)
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;

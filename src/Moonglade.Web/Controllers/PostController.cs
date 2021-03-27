@@ -13,6 +13,7 @@ using Moonglade.Pingback.AspNetCore;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("post")]
     public class PostController : Controller
     {
@@ -43,7 +44,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [HttpGet("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [Route("{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         [AddPingbackHeader("pingback")]
         public async Task<IActionResult> Slug(int year, int month, int day, string slug)
         {

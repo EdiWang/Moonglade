@@ -7,6 +7,7 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ErrorController : Controller
     {
         protected readonly ILogger<ErrorController> Logger;
