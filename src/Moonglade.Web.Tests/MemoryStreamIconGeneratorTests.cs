@@ -46,8 +46,8 @@ namespace Moonglade.Web.Tests
         [Test]
         public void GenerateIcons_StateUnderTest_ExpectedBehavior()
         {
-            _mockBlogConfig.Setup(p => p.GetAssetDataAsync(AssetId.SiteIconBase64))
-                .Returns(Task.FromResult(_iconData));
+            _mockBlogConfig.Setup(p => p.GetAssetData(AssetId.SiteIconBase64))
+                .Returns(_iconData);
 
             var memoryStreamIconGenerator = CreateMemoryStreamIconGenerator();
 
@@ -62,8 +62,8 @@ namespace Moonglade.Web.Tests
         [TestCase("android-icon-144x144.png")]
         public void GetIcon_StateUnderTest_ExpectedBehavior(string fileName)
         {
-            _mockBlogConfig.Setup(p => p.GetAssetDataAsync(AssetId.SiteIconBase64))
-                .Returns(Task.FromResult(_iconData));
+            _mockBlogConfig.Setup(p => p.GetAssetData(AssetId.SiteIconBase64))
+                .Returns(_iconData);
 
             var memoryStreamIconGenerator = CreateMemoryStreamIconGenerator();
             memoryStreamIconGenerator.GenerateIcons();
