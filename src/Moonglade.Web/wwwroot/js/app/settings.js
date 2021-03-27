@@ -3,7 +3,7 @@
     $('#a-send-test-mail').addClass('disabled');
     $('#a-send-test-mail').attr('disabled', 'disabled');
 
-    $.post('/admin/settings/send-test-email',
+    $.post('/api/settings/send-test-email',
         function (data) {
             if (data.isSuccess) {
                 notyf.success('Email is sent.');

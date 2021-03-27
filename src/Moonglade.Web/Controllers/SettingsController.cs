@@ -27,8 +27,7 @@ namespace Moonglade.Web.Controllers
     [Authorize]
     [ApiController]
     [AppendAppVersion]
-    //[Route("api/[controller]")] // TODO: use 'api/'
-    [Route("admin/[controller]")]
+    [Route("api/[controller]")]
     public class SettingsController : ControllerBase
     {
         #region Private Fields

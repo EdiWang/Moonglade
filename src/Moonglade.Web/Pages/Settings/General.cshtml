@@ -33,10 +33,10 @@
         $(document).ready(function () {
             bsCustomFileInput.init();
             $("#btn-upload-avatar").click(function () {
-                avatarUploader.uploadImage('/admin/settings/set-blogger-avatar');
+                avatarUploader.uploadImage('/api/settings/set-blogger-avatar');
             });
             $("#btn-upload-siteicon").click(function () {
-                siteiconUploader.uploadImage('/admin/settings/set-siteicon');
+                siteiconUploader.uploadImage('/api/settings/set-siteicon');
             });
         });
     </script>
