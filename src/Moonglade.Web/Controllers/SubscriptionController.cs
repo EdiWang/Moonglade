@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [FeatureGate(FeatureFlags.OPML)]
-        [Route("opml")]
+        [HttpGet("opml")]
         public async Task<IActionResult> Opml()
         {
             var cats = await _categoryService.GetAll();
@@ -60,7 +60,7 @@ namespace Moonglade.Web.Controllers
             return Content(xml, "text/xml");
         }
 
-        [Route("rss/{routeName?}")]
+        [HttpGet("rss/{routeName?}")]
         public async Task<IActionResult> Rss(string routeName = null)
         {
             bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
@@ -81,7 +81,7 @@ namespace Moonglade.Web.Controllers
             });
         }
 
-        [Route("atom")]
+        [HttpGet("atom")]
         public async Task<IActionResult> Atom()
         {
             return await _cache.GetOrCreateAsync(CacheDivision.General, "atom", async entry =>

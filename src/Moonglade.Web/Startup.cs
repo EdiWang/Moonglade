@@ -92,6 +92,8 @@ namespace Moonglade.Web
                 options.HeaderName = "XSRF-TOKEN";
             });
 
+            services.AddSwaggerGen();
+
             // Blog Services
             services.AddBlogServices();
             services.Configure<List<BlogTheme>>(_configuration.GetSection("Themes"));
@@ -118,6 +120,15 @@ namespace Moonglade.Web
 
             // Support Chinese contents
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            if (_environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1");
+                });
+            }
 
             if (!_environment.IsProduction())
             {

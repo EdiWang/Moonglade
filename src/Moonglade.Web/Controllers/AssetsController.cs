@@ -27,6 +27,7 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class AssetsController : ControllerBase
     {
         private readonly IBlogConfig _blogConfig;
@@ -57,7 +58,7 @@ namespace Moonglade.Web.Controllers
 
         #region Blog Post Images
 
-        [Route(@"image/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
+        [HttpGet(@"image/{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
         public async Task<IActionResult> Image(string filename, [FromServices] IMemoryCache cache)
         {
             try
@@ -199,7 +200,7 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        [Route("captcha-image")]
+        [HttpGet("captcha-image")]
         public IActionResult CaptchaImage([FromServices] ISessionBasedCaptcha captcha)
         {
             var w = _settings.CaptchaSettings.ImageWidth;
@@ -213,7 +214,7 @@ namespace Moonglade.Web.Controllers
             return s;
         }
 
-        [Route("avatar")]
+        [HttpGet("avatar")]
         [ResponseCache(Duration = 300)]
         public async Task<IActionResult> Avatar([FromServices] IBlogCache cache)
         {
@@ -248,7 +249,7 @@ namespace Moonglade.Web.Controllers
         #region Site Icon
 
         [ResponseCache(Duration = 3600)]
-        [Route(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
+        [HttpGet(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
         public IActionResult SiteIcon(string filename)
         {
             _siteIconGenerator.GenerateIcons();
@@ -268,7 +269,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("siteicon")]
+        [HttpGet("siteicon")]
         public async Task<IActionResult> SiteIconOrigin()
         {
             var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
@@ -299,7 +300,7 @@ namespace Moonglade.Web.Controllers
 
         // Credits: https://github.com/Anduin2017/Blog
         [ResponseCache(Duration = 3600)]
-        [Route("/manifest.json")]
+        [HttpGet("/manifest.json")]
         public IActionResult Manifest([FromServices] IOptions<List<ManifestIcon>> manifestIcons)
         {
             var themeColor = "#333333";
@@ -321,7 +322,7 @@ namespace Moonglade.Web.Controllers
 
         [FeatureGate(FeatureFlags.Foaf)]
         [ResponseCache(Duration = 3600)]
-        [Route("foaf.xml")]
+        [HttpGet("foaf.xml")]
         public async Task<IActionResult> Foaf(
             [FromServices] IFoafWriter foafWriter,
             [FromServices] IFriendLinkService friendLinkService,

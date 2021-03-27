@@ -7,6 +7,7 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ErrorController : Controller
     {
         protected readonly ILogger<ErrorController> Logger;
@@ -16,7 +17,7 @@ namespace Moonglade.Web.Controllers
             if (logger is not null) Logger = logger;
         }
 
-        [Route("/error")]
+        [HttpGet("/error")]
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

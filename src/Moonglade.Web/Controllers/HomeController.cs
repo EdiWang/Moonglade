@@ -14,6 +14,7 @@ using X.PagedList;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : Controller
     {
         private readonly IPostService _postService;
@@ -55,7 +56,7 @@ namespace Moonglade.Web.Controllers
             return View(list);
         }
 
-        [HttpGet("page/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
+        [Route("page/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> Page(string slug)
         {
             if (string.IsNullOrWhiteSpace(slug)) return BadRequest();

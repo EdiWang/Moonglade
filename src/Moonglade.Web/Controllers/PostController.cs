@@ -13,6 +13,7 @@ using Moonglade.Pingback.AspNetCore;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("post")]
     public class PostController : Controller
     {
@@ -59,7 +60,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [Route("preview/{postId:guid}")]
+        [HttpGet("preview/{postId:guid}")]
         public async Task<IActionResult> Preview(Guid postId)
         {
             var post = await _postService.GetDraft(postId);
