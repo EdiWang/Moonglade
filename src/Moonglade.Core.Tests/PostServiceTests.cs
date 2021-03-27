@@ -72,7 +72,42 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             var result = await svc.GetAsync(Uid);
 
-            _mockRepositoryPostEntity.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>(), true));
+            _mockRepositoryPostEntity.Verify(
+                p => p.SelectFirstOrDefaultAsync(
+                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>(), true));
+        }
+
+        [Test]
+        public async Task GetDraft_OK()
+        {
+            var svc = CreateService();
+            var result = await svc.GetDraft(Uid);
+
+            _mockRepositoryPostEntity.Verify(
+                p => p.SelectFirstOrDefaultAsync(
+                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>(), true));
+        }
+
+        [Test]
+        public async Task ListSegment_OK()
+        {
+            var svc = CreateService();
+            var result = await svc.ListSegment(PostStatus.Published);
+
+            _mockRepositoryPostEntity.Verify(
+                p => p.SelectAsync(
+                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true));
+        }
+
+        [Test]
+        public async Task ListInsights_OK()
+        {
+            var svc = CreateService();
+            var result = await svc.ListInsights(PostInsightsType.TopRead);
+
+            _mockRepositoryPostEntity.Verify(
+                p => p.SelectAsync(
+                    It.IsAny<PostInsightsSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true));
         }
 
         [Test]
