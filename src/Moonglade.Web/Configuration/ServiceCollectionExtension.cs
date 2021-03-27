@@ -90,7 +90,6 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<IPageService, PageService>();
             services.AddScoped<IFriendLinkService, FriendLinkService>();
             services.AddScoped<IBlogAudit, BlogAudit>();
-            services.AddSingleton<ISiteIconGenerator, MemoryStreamIconGenerator>();
             services.AddScoped<IFoafWriter, FoafWriter>();
             services.AddScoped<ISiteMapWriter, SiteMapWriter>();
             services.AddScoped<IExportManager, ExportManager>();

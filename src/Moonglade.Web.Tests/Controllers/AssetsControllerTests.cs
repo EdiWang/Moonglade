@@ -33,7 +33,6 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IWebHostEnvironment> _mockWebHostEnv;
         private Mock<IOptions<ImageStorageSettings>> _mockImageStorageSettings;
         private Mock<IBlogImageStorage> _mockAsyncImageStorageProvider;
-        private Mock<ISiteIconGenerator> _mockSiteIconGenerator;
 
         [SetUp]
         public void Setup()
@@ -45,7 +44,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockWebHostEnv = _mockRepository.Create<IWebHostEnvironment>();
             _mockAsyncImageStorageProvider = _mockRepository.Create<IBlogImageStorage>();
-            _mockSiteIconGenerator = _mockRepository.Create<ISiteIconGenerator>();
             _mockImageStorageSettings = _mockRepository.Create<IOptions<ImageStorageSettings>>();
         }
 
@@ -57,7 +55,6 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockImageStorageSettings.Object,
                 _mockAsyncImageStorageProvider.Object,
                 _mockBlogConfig.Object,
-                _mockSiteIconGenerator.Object,
                 _mockWebHostEnv.Object);
         }
 

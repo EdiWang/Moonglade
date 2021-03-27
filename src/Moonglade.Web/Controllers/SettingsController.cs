@@ -33,7 +33,6 @@ namespace Moonglade.Web.Controllers
 
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
-        private readonly ISiteIconGenerator _siteIconGenerator;
         private readonly ILogger<SettingsController> _logger;
 
         #endregion
@@ -41,12 +40,10 @@ namespace Moonglade.Web.Controllers
         public SettingsController(
             IBlogConfig blogConfig,
             IBlogAudit blogAudit,
-            ISiteIconGenerator siteIconGenerator,
             ILogger<SettingsController> logger)
         {
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
-            _siteIconGenerator = siteIconGenerator;
 
             _logger = logger;
         }
@@ -252,8 +249,6 @@ namespace Moonglade.Web.Controllers
                 }
 
                 await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
-                _siteIconGenerator.Dirty();
-
                 await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
 
                 return Ok();
@@ -392,11 +387,6 @@ namespace Moonglade.Web.Controllers
                 if (cachedObjectValues.Contains("MCO_IMEM"))
                 {
                     cache.RemoveAllCache();
-                }
-
-                if (cachedObjectValues.Contains("MCO_SICO"))
-                {
-                    _siteIconGenerator.Dirty();
                 }
 
                 return Ok();

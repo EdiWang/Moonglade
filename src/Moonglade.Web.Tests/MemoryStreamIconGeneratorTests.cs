@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration.Abstraction;
 using Moq;
 using NUnit.Framework;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Moonglade.Configuration;
 
 namespace Moonglade.Web.Tests
 {
@@ -15,8 +12,7 @@ namespace Moonglade.Web.Tests
     {
         private MockRepository _mockRepository;
 
-        private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<ILogger<MemoryStreamIconGenerator>> _mockLogger;
+        private Mock<ILogger> _mockLogger;
         private Mock<IWebHostEnvironment> _mockWebHostEnvironment;
 
         #region Curry
@@ -30,30 +26,16 @@ namespace Moonglade.Web.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockLogger = _mockRepository.Create<ILogger<MemoryStreamIconGenerator>>();
+            _mockLogger = _mockRepository.Create<ILogger>();
             _mockWebHostEnvironment = _mockRepository.Create<IWebHostEnvironment>();
-        }
-
-        private MemoryStreamIconGenerator CreateMemoryStreamIconGenerator()
-        {
-            return new(
-                _mockBlogConfig.Object,
-                _mockLogger.Object,
-                _mockWebHostEnvironment.Object);
         }
 
         [Test]
         public void GenerateIcons_StateUnderTest_ExpectedBehavior()
         {
-            _mockBlogConfig.Setup(p => p.GetAssetData(AssetId.SiteIconBase64))
-                .Returns(_iconData);
-
-            var memoryStreamIconGenerator = CreateMemoryStreamIconGenerator();
-
             Assert.DoesNotThrow(() =>
             {
-                memoryStreamIconGenerator.GenerateIcons();
+                MemoryStreamIconGenerator.GenerateIcons(_iconData, _mockWebHostEnvironment.Object, _mockLogger.Object);
             });
         }
 
@@ -62,23 +44,10 @@ namespace Moonglade.Web.Tests
         [TestCase("android-icon-144x144.png")]
         public void GetIcon_StateUnderTest_ExpectedBehavior(string fileName)
         {
-            _mockBlogConfig.Setup(p => p.GetAssetData(AssetId.SiteIconBase64))
-                .Returns(_iconData);
-
-            var memoryStreamIconGenerator = CreateMemoryStreamIconGenerator();
-            memoryStreamIconGenerator.GenerateIcons();
-
-            var result = memoryStreamIconGenerator.GetIcon(fileName);
+            MemoryStreamIconGenerator.GenerateIcons(_iconData, _mockWebHostEnvironment.Object, _mockLogger.Object);
+            var result = MemoryStreamIconGenerator.GetIcon(fileName);
 
             Assert.IsNotNull(result);
-        }
-
-        [Test]
-        public void Dirty_StateUnderTest_ExpectedBehavior()
-        {
-            var memoryStreamIconGenerator = CreateMemoryStreamIconGenerator();
-            memoryStreamIconGenerator.Dirty();
-            _mockBlogConfig.Verify(p => p.GetAssetDataAsync(AssetId.SiteIconBase64), Times.Never);
         }
     }
 }

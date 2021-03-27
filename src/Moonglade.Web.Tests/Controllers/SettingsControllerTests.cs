@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.DataPorting;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
@@ -25,7 +24,6 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogAudit> _mockBlogAudit;
-        private Mock<ISiteIconGenerator> _mockSiteIconGenerator;
         private Mock<ILogger<SettingsController>> _mockLogger;
 
         [SetUp]
@@ -35,7 +33,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-            _mockSiteIconGenerator = _mockRepository.Create<ISiteIconGenerator>();
             _mockLogger = _mockRepository.Create<ILogger<SettingsController>>();
         }
 
@@ -44,7 +41,6 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockBlogConfig.Object,
                 _mockBlogAudit.Object,
-                _mockSiteIconGenerator.Object,
                 _mockLogger.Object);
         }
 

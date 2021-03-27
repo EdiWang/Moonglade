@@ -7,132 +7,86 @@ using System.Drawing.Imaging;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 
 namespace Moonglade.Web
 {
-    public interface ISiteIconGenerator
+    public static class IconRepository
     {
-        void GenerateIcons();
-        byte[] GetIcon(string fileName);
-        void Dirty();
+        public static ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; } = new();
     }
 
-    public class MemoryStreamIconGenerator : ISiteIconGenerator
+    public static class MemoryStreamIconGenerator
     {
-        public ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; }
-
-        private readonly IBlogConfig _blogConfig;
-        private readonly ILogger<MemoryStreamIconGenerator> _logger;
-        private readonly IWebHostEnvironment _env;
-
-        private bool _hasInitialized;
-        // private static readonly object CurryLock = new();
-
-        public MemoryStreamIconGenerator(
-            IBlogConfig blogConfig, ILogger<MemoryStreamIconGenerator> logger, IWebHostEnvironment env)
+        public static void GenerateIcons(string base64Data, IWebHostEnvironment env, ILogger logger)
         {
-            _blogConfig = blogConfig;
-            _logger = logger;
-            _env = env;
-            SiteIconDictionary = new();
-        }
+            byte[] buffer;
 
-        public void GenerateIcons()
-        {
-            if (_hasInitialized) return;
-
-            try
+            // Fall back to default image
+            if (string.IsNullOrWhiteSpace(base64Data))
             {
-                //lock (CurryLock)
-                //{
-                    
-                //}
+                logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
 
-                var data = _blogConfig.GetAssetData(AssetId.SiteIconBase64);
-                byte[] buffer;
-
-                // Fall back to default image
-                if (string.IsNullOrWhiteSpace(data))
+                var defaultImagePath = Path.Join($"{env.WebRootPath}", "images", "siteicon-default.png");
+                if (!File.Exists(defaultImagePath))
                 {
-                    _logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
-
-                    var defaultImagePath = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
-                    if (!File.Exists(defaultImagePath))
-                    {
-                        throw new FileNotFoundException("Can not find source image for generating favicons.", defaultImagePath);
-                    }
-
-                    var ext = Path.GetExtension(defaultImagePath);
-                    if (ext is not null && ext.ToLower() is not ".png")
-                    {
-                        throw new FormatException("Source file is not an PNG image.");
-                    }
-
-                    buffer = File.ReadAllBytes(defaultImagePath);
-                }
-                else
-                {
-                    buffer = Convert.FromBase64String(data);
+                    throw new FileNotFoundException("Can not find source image for generating favicons.", defaultImagePath);
                 }
 
-                using (var ms = new MemoryStream(buffer))
+                var ext = Path.GetExtension(defaultImagePath);
+                if (ext is not null && ext.ToLower() is not ".png")
                 {
-                    var image = Image.FromStream(ms);
-                    if (image.Height != image.Width)
-                    {
-                        throw new InvalidOperationException("Invalid Site Icon Data");
-                    }
-
-                    var dic = new Dictionary<string, int[]>
-                    {
-                        { "android-icon-", new[] { 36, 48, 72, 96, 144, 192 } },
-                        { "favicon-", new[] { 16, 32, 96 } },
-                        { "apple-icon-", new[] { 57, 60, 72, 76, 114, 120, 144, 152, 180 } }
-                    };
-
-                    foreach (var (key, value) in dic)
-                    {
-                        foreach (var size in value)
-                        {
-                            var fileName = $"{key}{size}x{size}.png";
-                            var bytes = ResizeImage(ms, size, size, ImageFormat.Png);
-
-                            SiteIconDictionary.TryAdd(fileName, bytes);
-                        }
-                    }
-
-                    var icon1Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
-                    SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
-
-                    var icon2Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
-                    SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
-
-                    if (SiteIconDictionary.ContainsKey("favicon-16x16.png"))
-                    {
-                        var icoBytes = GenerateIco(SiteIconDictionary["favicon-16x16.png"]);
-                        SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
-                    }
+                    throw new FormatException("Source file is not an PNG image.");
                 }
 
-                _hasInitialized = true;
+                buffer = File.ReadAllBytes(defaultImagePath);
             }
-            catch (Exception e)
+            else
             {
-                _logger.LogError(e, e.Message);
+                buffer = Convert.FromBase64String(base64Data);
+            }
+
+            using var ms = new MemoryStream(buffer);
+            var image = Image.FromStream(ms);
+            if (image.Height != image.Width)
+            {
+                throw new InvalidOperationException("Invalid Site Icon Data");
+            }
+
+            var dic = new Dictionary<string, int[]>
+            {
+                { "android-icon-", new[] { 36, 48, 72, 96, 144, 192 } },
+                { "favicon-", new[] { 16, 32, 96 } },
+                { "apple-icon-", new[] { 57, 60, 72, 76, 114, 120, 144, 152, 180 } }
+            };
+
+            foreach (var (key, value) in dic)
+            {
+                foreach (var size in value)
+                {
+                    var fileName = $"{key}{size}x{size}.png";
+                    var bytes = ResizeImage(ms, size, size, ImageFormat.Png);
+
+                    IconRepository.SiteIconDictionary.TryAdd(fileName, bytes);
+                }
+            }
+
+            var icon1Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
+            IconRepository.SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
+
+            var icon2Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
+            IconRepository.SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
+
+            if (IconRepository.SiteIconDictionary.ContainsKey("favicon-16x16.png"))
+            {
+                var icoBytes = GenerateIco(IconRepository.SiteIconDictionary["favicon-16x16.png"]);
+                IconRepository.SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
             }
         }
 
-        public byte[] GetIcon(string fileName)
+        public static byte[] GetIcon(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return null;
-            return SiteIconDictionary.ContainsKey(fileName) ? SiteIconDictionary[fileName] : null;
-        }
-
-        public void Dirty()
-        {
-            _hasInitialized = false;
+            return IconRepository.SiteIconDictionary.ContainsKey(fileName) ? IconRepository.SiteIconDictionary[fileName] : null;
         }
 
         private static byte[] GenerateIco(byte[] fromBytes)

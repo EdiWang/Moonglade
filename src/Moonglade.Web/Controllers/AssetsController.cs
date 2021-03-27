@@ -32,7 +32,6 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogImageStorage _imageStorage;
-        private readonly ISiteIconGenerator _siteIconGenerator;
         private readonly IWebHostEnvironment _env;
         private readonly ImageStorageSettings _imageStorageSettings;
         private readonly AppSettings _settings;
@@ -44,12 +43,10 @@ namespace Moonglade.Web.Controllers
             IOptions<ImageStorageSettings> imageStorageSettings,
             IBlogImageStorage imageStorage,
             IBlogConfig blogConfig,
-            ISiteIconGenerator siteIconGenerator,
             IWebHostEnvironment env)
         {
             _settings = settings.Value;
             _blogConfig = blogConfig;
-            _siteIconGenerator = siteIconGenerator;
             _env = env;
             _imageStorage = imageStorage;
             _imageStorageSettings = imageStorageSettings.Value;
@@ -252,9 +249,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
         public IActionResult SiteIcon(string filename)
         {
-            _siteIconGenerator.GenerateIcons();
-
-            var iconBytes = _siteIconGenerator.GetIcon(filename);
+            var iconBytes = MemoryStreamIconGenerator.GetIcon(filename);
             if (iconBytes is null) return NotFound();
 
             var contentType = "image/png";

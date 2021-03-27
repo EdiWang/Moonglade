@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Setup;
 using Moonglade.Utils;
 
@@ -40,6 +42,7 @@ namespace Moonglade.Web
 
                     var dbConnection = services.GetRequiredService<IDbConnection>();
                     TryInitFirstRun(dbConnection, logger);
+                    TryInitSiteIcons(services, logger);
                 }
                 catch (Exception ex)
                 {
@@ -83,6 +86,27 @@ namespace Moonglade.Web
                                   logging.AddAzureWebAppDiagnostics();
                               });
                 });
+
+        private static void TryInitSiteIcons(IServiceProvider services, ILogger logger)
+        {
+            try
+            {
+                logger.LogInformation("Generating site icons");
+
+                var blogConfig = services.GetRequiredService<IBlogConfig>();
+                var env = services.GetRequiredService<IWebHostEnvironment>();
+
+                var iconData = blogConfig.GetAssetData(AssetId.SiteIconBase64);
+                MemoryStreamIconGenerator.GenerateIcons(iconData, env, logger);
+
+                logger.LogInformation($"Generated {IconRepository.SiteIconDictionary.Count} icon(s).");
+            }
+            catch (Exception e)
+            {
+                // Non critical error, just log, do not block application start
+                logger.LogError(e, e.Message);
+            }
+        }
 
         private static string CreateDataDirectory()
         {
