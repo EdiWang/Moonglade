@@ -27,9 +27,9 @@ namespace Moonglade.Core.Tests
 
         private Mock<ILogger<PostService>> _mockLogger;
         private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
-        private Mock<IRepository<PostEntity>> _mockRepositoryPostEntity;
+        private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
         private Mock<IRepository<TagEntity>> _mockRepositoryTagEntity;
-        private Mock<IRepository<PostTagEntity>> _mockRepositoryPostTagEntity;
+        private Mock<IRepository<PostTagEntity>> _mockPostTagEntityRepo;
         private Mock<IRepository<PostCategoryEntity>> _mockRepositoryPostCategoryEntity;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<IBlogCache> _mockBlogCache;
@@ -44,9 +44,9 @@ namespace Moonglade.Core.Tests
 
             _mockLogger = _mockRepository.Create<ILogger<PostService>>();
             _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
-            _mockRepositoryPostEntity = _mockRepository.Create<IRepository<PostEntity>>();
+            _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
             _mockRepositoryTagEntity = _mockRepository.Create<IRepository<TagEntity>>();
-            _mockRepositoryPostTagEntity = _mockRepository.Create<IRepository<PostTagEntity>>();
+            _mockPostTagEntityRepo = _mockRepository.Create<IRepository<PostTagEntity>>();
             _mockRepositoryPostCategoryEntity = _mockRepository.Create<IRepository<PostCategoryEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
@@ -58,9 +58,9 @@ namespace Moonglade.Core.Tests
             return new(
                 _mockLogger.Object,
                 _mockOptionsAppSettings.Object,
-                _mockRepositoryPostEntity.Object,
+                _mockPostEntityRepo.Object,
                 _mockRepositoryTagEntity.Object,
-                _mockRepositoryPostTagEntity.Object,
+                _mockPostTagEntityRepo.Object,
                 _mockRepositoryPostCategoryEntity.Object,
                 _mockBlogAudit.Object,
                 _mockBlogCache.Object,
@@ -73,7 +73,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             var result = await svc.GetAsync(Uid);
 
-            _mockRepositoryPostEntity.Verify(
+            _mockPostEntityRepo.Verify(
                 p => p.SelectFirstOrDefaultAsync(
                     It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>(), true));
         }
@@ -81,7 +81,7 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetAsync_Slug_OK()
         {
-            _mockRepositoryPostEntity
+            _mockPostEntityRepo
                 .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(),
                     It.IsAny<Expression<Func<PostEntity, Guid>>>(), true)).Returns(Task.FromResult(Uid));
 
@@ -97,7 +97,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             var result = await svc.GetDraft(Uid);
 
-            _mockRepositoryPostEntity.Verify(
+            _mockPostEntityRepo.Verify(
                 p => p.SelectFirstOrDefaultAsync(
                     It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>(), true));
         }
@@ -108,7 +108,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             var result = await svc.ListSegment(PostStatus.Published);
 
-            _mockRepositoryPostEntity.Verify(
+            _mockPostEntityRepo.Verify(
                 p => p.SelectAsync(
                     It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true));
         }
@@ -139,11 +139,11 @@ namespace Moonglade.Core.Tests
                 }
             };
 
-            _mockRepositoryPostEntity
+            _mockPostEntityRepo
                 .Setup(p => p.SelectAsync(It.IsAny<PostPagingSpec>(),
                     It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true)).Returns(Task.FromResult(segments));
 
-            _mockRepositoryPostEntity.Setup(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>())).Returns(996);
+            _mockPostEntityRepo.Setup(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>())).Returns(996);
 
             var svc = CreateService();
             var result = await svc.ListSegment(postStatus, 0, 35);
@@ -157,7 +157,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             var result = await svc.ListInsights(PostInsightsType.TopRead);
 
-            _mockRepositoryPostEntity.Verify(
+            _mockPostEntityRepo.Verify(
                 p => p.SelectAsync(
                     It.IsAny<PostInsightsSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true));
         }
@@ -168,7 +168,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.List(35, 7, Uid);
 
-            _mockRepositoryPostEntity.Verify(p => p.SelectAsync(It.IsAny<PostPagingSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
+            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostPagingSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
         }
 
         [Test]
@@ -187,7 +187,16 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             var result = await svc.ListByTag(35, 996, 251);
             
-            _mockRepositoryPostTagEntity.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>(), true));
+            _mockPostTagEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>(), true));
+        }
+
+        [Test]
+        public async Task ListFeatured_OK()
+        {
+            var svc = CreateService();
+            var result = await svc.ListFeatured(7, 404);
+
+            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<FeaturedPostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
         }
     }
 }
