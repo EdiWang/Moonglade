@@ -116,6 +116,21 @@ namespace Moonglade.Core
             })
         };
 
+        private readonly Expression<Func<PostTagEntity, PostDigest>> _postDigestSelectorByTag = p => new()
+        {
+            Title = p.Post.Title,
+            Slug = p.Post.Slug,
+            ContentAbstract = p.Post.ContentAbstract,
+            PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
+            LangCode = p.Post.ContentLanguageCode,
+            IsFeatured = p.Post.IsFeatured,
+            Tags = p.Post.Tags.Select(pt => new Tag
+            {
+                NormalizedName = pt.NormalizedName,
+                DisplayName = pt.DisplayName
+            })
+        };
+
         #endregion
 
         public PostService(
@@ -252,22 +267,7 @@ namespace Moonglade.Core
             if (tagId <= 0) throw new ArgumentOutOfRangeException(nameof(tagId));
             ValidatePagingParameters(pageSize, pageIndex);
 
-            var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex),
-                p => new PostDigest
-                {
-                    Title = p.Post.Title,
-                    Slug = p.Post.Slug,
-                    ContentAbstract = p.Post.ContentAbstract,
-                    PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
-                    LangCode = p.Post.ContentLanguageCode,
-                    IsFeatured = p.Post.IsFeatured,
-                    Tags = p.Post.Tags.Select(pt => new Tag
-                    {
-                        NormalizedName = pt.NormalizedName,
-                        DisplayName = pt.DisplayName
-                    })
-                });
-
+            var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex), _postDigestSelectorByTag);
             return posts;
         }
 
