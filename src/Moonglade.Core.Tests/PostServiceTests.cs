@@ -172,6 +172,25 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
+        public void ListByTag_TagIdOutOfRange()
+        {
+            var svc = CreateService();
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await svc.ListByTag(-35, 996, 251);
+            });
+        }
+
+        [Test]
+        public async Task ListByTag_OK()
+        {
+            var svc = CreateService();
+            var result = await svc.ListByTag(35, 996, 251);
+            
+            _mockRepositoryPostTagEntity.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>(), true));
+        }
+
+        [Test]
         public void LazyLoadToImgTag_ExistLoading()
         {
             const string html = @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>";
