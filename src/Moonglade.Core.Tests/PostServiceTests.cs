@@ -189,20 +189,5 @@ namespace Moonglade.Core.Tests
             
             _mockRepositoryPostTagEntity.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>(), true));
         }
-
-        [Test]
-        public void LazyLoadToImgTag_ExistLoading()
-        {
-            const string html = @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>";
-            var result = ContentProcessor.AddLazyLoadToImgTag(html);
-            Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>");
-        }
-
-        [Test]
-        public void LazyLoadToImgTag_Empty()
-        {
-            var result = ContentProcessor.AddLazyLoadToImgTag(string.Empty);
-            Assert.IsTrue(result == string.Empty);
-        }
     }
 }

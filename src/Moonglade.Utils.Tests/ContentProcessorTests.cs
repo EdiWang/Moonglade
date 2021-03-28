@@ -124,5 +124,20 @@ namespace Moonglade.Utils.Tests
                 var result = ContentProcessor.MarkdownToContent(md, (ContentProcessor.MarkdownConvertType)4);
             });
         }
+
+        [Test]
+        public void LazyLoadToImgTag_ExistLoading()
+        {
+            const string html = @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>";
+            var result = ContentProcessor.AddLazyLoadToImgTag(html);
+            Assert.IsTrue(result == @"<p>Work 996 and have some fu bao!</p><img loading=""lazy"" src=""icu.jpg"" /><video src=""java996.mp4""></video>");
+        }
+
+        [Test]
+        public void LazyLoadToImgTag_Empty()
+        {
+            var result = ContentProcessor.AddLazyLoadToImgTag(string.Empty);
+            Assert.IsTrue(result == string.Empty);
+        }
     }
 }
