@@ -12,9 +12,9 @@ namespace Moonglade.Pages
 {
     public interface IPageService
     {
-        Task<Page> GetAsync(Guid pageId);
-        Task<Page> GetAsync(string slug);
-        Task<IReadOnlyList<Page>> GetAsync(int top);
+        Task<BlogPage> GetAsync(Guid pageId);
+        Task<BlogPage> GetAsync(string slug);
+        Task<IReadOnlyList<BlogPage>> GetAsync(int top);
         Task<IReadOnlyList<PageSegment>> ListSegment();
         Task<Guid> CreateAsync(UpdatePageRequest request);
         Task<Guid> UpdateAsync(Guid id, UpdatePageRequest request);
@@ -34,14 +34,14 @@ namespace Moonglade.Pages
             _audit = audit;
         }
 
-        public async Task<Page> GetAsync(Guid pageId)
+        public async Task<BlogPage> GetAsync(Guid pageId)
         {
             var entity = await _pageRepo.GetAsync(pageId);
             var item = EntityToPage(entity);
             return item;
         }
 
-        public async Task<Page> GetAsync(string slug)
+        public async Task<BlogPage> GetAsync(string slug)
         {
             var lower = slug.ToLower();
             var entity = await _pageRepo.GetAsync(p => p.Slug == lower);
@@ -49,7 +49,7 @@ namespace Moonglade.Pages
             return item;
         }
 
-        public async Task<IReadOnlyList<Page>> GetAsync(int top)
+        public async Task<IReadOnlyList<BlogPage>> GetAsync(int top)
         {
             if (top <= 0) throw new ArgumentOutOfRangeException(nameof(top));
 
@@ -136,7 +136,7 @@ namespace Moonglade.Pages
             return result;
         }
 
-        private static Page EntityToPage(PageEntity entity)
+        private static BlogPage EntityToPage(PageEntity entity)
         {
             if (entity is null) return null;
 

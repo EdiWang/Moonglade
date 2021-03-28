@@ -2,7 +2,7 @@
 
 namespace Moonglade.Pages
 {
-    public class Page
+    public class BlogPage
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

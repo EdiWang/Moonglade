@@ -530,15 +530,15 @@ namespace Moonglade.Web.BlogProtocols
             return mPost;
         }
 
-        private Page ToMetaWeblogPage(Moonglade.Pages.Page page)
+        private Page ToMetaWeblogPage(BlogPage blogPage)
         {
             var mPage = new Page
             {
-                title = page.Title,
-                description = page.RawHtmlContent,
-                dateCreated = _tZoneResolver.ToTimeZone(page.CreateTimeUtc),
+                title = blogPage.Title,
+                description = blogPage.RawHtmlContent,
+                dateCreated = _tZoneResolver.ToTimeZone(blogPage.CreateTimeUtc),
                 categories = Array.Empty<string>(),
-                page_id = page.Id.ToString(),
+                page_id = blogPage.Id.ToString(),
                 wp_author_id = _blogConfig.GeneralSettings.OwnerName
             };
 

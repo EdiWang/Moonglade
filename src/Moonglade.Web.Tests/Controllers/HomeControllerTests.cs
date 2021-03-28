@@ -103,8 +103,8 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Page_NotFound_Null()
         {
             _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, Page>>()))
-                .Returns((Page)null);
+                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, BlogPage>>()))
+                .Returns((BlogPage)null);
 
             var ctl = CreateHomeController();
             var result = await ctl.Page("996");
@@ -115,10 +115,10 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Page_NotFound_Unpublished()
         {
-            var page = new Page { IsPublished = false };
+            var page = new BlogPage { IsPublished = false };
 
             _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, Page>>()))
+                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, BlogPage>>()))
                 .Returns(page);
 
             var ctl = CreateHomeController();

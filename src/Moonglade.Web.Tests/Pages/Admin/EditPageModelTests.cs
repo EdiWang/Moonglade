@@ -7,7 +7,6 @@ using Moonglade.Pages;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
-using Page = Moonglade.Pages.Page;
 
 namespace Moonglade.Web.Tests.Pages.Admin
 {
@@ -43,7 +42,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         public async Task OnGetAsync_NoPage()
         {
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult((Page)null));
+                .Returns(Task.FromResult((BlogPage)null));
 
             var editPageModel = CreateEditPageModel();
             var result = await editPageModel.OnGetAsync(Guid.Empty);
@@ -54,7 +53,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         [Test]
         public async Task OnGetAsync_HasPage()
         {
-            var fakePage = new Page
+            var fakePage = new BlogPage
             {
                 Id = Guid.Empty,
                 CreateTimeUtc = new DateTime(996, 9, 6),

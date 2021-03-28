@@ -42,7 +42,7 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockPageService.Object);
         }
 
-        readonly Page _fakePage = new()
+        readonly BlogPage _fakeBlogPage = new()
         {
             Id = Guid.Empty,
             CreateTimeUtc = new(996, 9, 6),
@@ -115,7 +115,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Preview_NoPage()
         {
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult((Page)null));
+                .Returns(Task.FromResult((BlogPage)null));
 
             var ctl = CreateAdminController();
             var result = await ctl.PreviewPage(Guid.Empty);
@@ -127,7 +127,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Preview_HasPage()
         {
             _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(_fakePage));
+                .Returns(Task.FromResult(_fakeBlogPage));
 
             var ctl = CreateAdminController();
             var result = await ctl.PreviewPage(Guid.Empty);
@@ -135,8 +135,8 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ViewResult>(result);
 
             var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<Page>(model);
-            Assert.AreEqual(_fakePage.Title, ((Page)model).Title);
+            Assert.IsInstanceOf<BlogPage>(model);
+            Assert.AreEqual(_fakeBlogPage.Title, ((BlogPage)model).Title);
         }
     }
 }
