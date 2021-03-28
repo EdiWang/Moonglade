@@ -35,19 +35,20 @@ namespace Moonglade.Core.Tests
                 _mockPostEntityRepository.Object);
         }
 
-        //[Test]
-        //public async Task ListAsync_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var service = this.CreateService();
+        [Test]
+        public async Task ListAsync_NoPosts()
+        {
+            _mockPostEntityRepository.Setup(p => p.Any(p => p.IsPublished && !p.IsDeleted)).Returns(false);
 
-        //    // Act
-        //    var result = await service.ListAsync();
+            // Arrange
+            var service = CreateService();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    this.mockRepository.VerifyAll();
-        //}
+            // Act
+            var result = await service.ListAsync();
+            
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
+        }
 
         //[Test]
         //public async Task ListPostsAsync_StateUnderTest_ExpectedBehavior()
