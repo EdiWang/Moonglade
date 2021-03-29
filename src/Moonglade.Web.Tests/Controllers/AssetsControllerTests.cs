@@ -244,31 +244,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         //[Test]
-        //public void Manifest()
-        //{
-        //    _mockBlogConfig.Setup(bc => bc.GeneralSettings).Returns(new GeneralSettings
-        //    {
-        //        SiteTitle = "Fake Title"
-        //    });
-
-        //    _mockWebHostEnv.Setup(p => p.WebRootPath).Returns(@"C:\35\404\996\251");
-        //    _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings());
-
-        //    var ctl = CreateAssetsController();
-
-        //    var result = ctl.Manifest(null);
-        //    Assert.IsInstanceOf(typeof(OkObjectResult), result);
-        //    if (result is OkObjectResult ojbkResult)
-        //    {
-        //        if (ojbkResult.Value is ManifestModel model)
-        //        {
-        //            Assert.IsTrue(model.ShortName == _mockBlogConfig.Object.GeneralSettings.SiteTitle);
-        //            Assert.IsTrue(model.Name == _mockBlogConfig.Object.GeneralSettings.SiteTitle);
-        //        }
-        //    }
-        //}
-
-        //[Test]
         //public void CustomCss_ValidCss()
         //{
         //    _mockBlogConfig.Setup(bc => bc.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings
