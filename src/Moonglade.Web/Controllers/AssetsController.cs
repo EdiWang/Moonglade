@@ -293,28 +293,6 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        // Credits: https://github.com/Anduin2017/Blog
-        [ResponseCache(Duration = 3600)]
-        [HttpGet("/manifest.json")]
-        public IActionResult Manifest([FromServices] IOptions<List<ManifestIcon>> manifestIcons)
-        {
-            var themeColor = "#333333";
-
-            var model = new ManifestModel
-            {
-                ShortName = _blogConfig.GeneralSettings.SiteTitle,
-                Name = _blogConfig.GeneralSettings.SiteTitle,
-                Description = _blogConfig.GeneralSettings.SiteTitle,
-                StartUrl = "/",
-                Icons = manifestIcons?.Value,
-                BackgroundColor = themeColor,
-                ThemeColor = themeColor,
-                Display = "standalone",
-                Orientation = "portrait"
-            };
-            return Ok(model);
-        }
-
         [FeatureGate(FeatureFlags.Foaf)]
         [ResponseCache(Duration = 3600)]
         [HttpGet("foaf.xml")]
