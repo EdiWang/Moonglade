@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Moonglade.Configuration.Abstraction;
 
 namespace Moonglade.Web.Middleware
@@ -44,14 +45,25 @@ namespace Moonglade.Web.Middleware
             var path = Path.Combine(Directory.GetCurrentDirectory(), Options.DefaultImagePath);
             if (!File.Exists(path)) return;
 
+            // Reference: https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/Infrastructure/FileResultExecutorBase.cs,408
             var fs = File.OpenRead(path);
-            var bytes = new byte[fs.Length];
-
-            await fs.ReadAsync(bytes.AsMemory(0, bytes.Length));
+            await using (fs)
+            {
+                try
+                {
+                    await StreamCopyOperation.CopyToAsync(
+                        fs, context.Response.Body, null, 64 * 1024, context.RequestAborted);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Don't throw this exception, it's most likely caused by the client disconnecting.
+                    // However, if it was cancelled for any other reason we need to prevent empty responses.
+                    context.Abort();
+                }
+            }
 
             //this header is use for browser cache, format like: "Mon, 15 May 2017 07:03:37 GMT".
-            //context.Response.Headers.Append("Last-Modified", $"{File.GetLastWriteTimeUtc(path).ToString("ddd, dd MMM yyyy HH:mm:ss")} GMT");
-            await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
+            context.Response.Headers.Append("Last-Modified", $"{File.GetLastWriteTimeUtc(path):ddd, dd MMM yyyy HH:mm:ss} GMT");
         }
     }
 
