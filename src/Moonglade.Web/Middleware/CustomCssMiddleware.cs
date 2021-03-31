@@ -44,7 +44,7 @@ namespace Moonglade.Web.Middleware
 
                 context.Response.StatusCode = StatusCodes.Status200OK;
                 context.Response.ContentType = "text/css";
-                await context.Response.WriteAsync(uglifiedCss.Code);
+                await context.Response.WriteAsync(uglifiedCss.Code, context.RequestAborted);
             }
             else
             {

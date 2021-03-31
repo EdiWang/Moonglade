@@ -45,7 +45,7 @@ namespace Moonglade.Web.Middleware
                 context.Response.ContentType = "application/json";
                 context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
-                await context.Response.WriteAsync(json);
+                await context.Response.WriteAsync(json, context.RequestAborted);
             }
             else
             {

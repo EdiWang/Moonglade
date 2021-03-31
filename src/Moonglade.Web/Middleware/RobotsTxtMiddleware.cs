@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration.Abstraction;
 
@@ -23,16 +24,26 @@ namespace Moonglade.Web.Middleware
                 if (string.IsNullOrWhiteSpace(robotsTxtContent))
                 {
                     httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-                    await httpContext.Response.WriteAsync("No robots.txt is present.");
+                    await httpContext.Response.WriteAsync("No robots.txt is present.", httpContext.RequestAborted);
                 }
 
                 httpContext.Response.ContentType = "text/plain";
-                await httpContext.Response.WriteAsync(blogConfig.AdvancedSettings.RobotsTxtContent, Encoding.UTF8);
+                await httpContext.Response.WriteAsync(blogConfig.AdvancedSettings.RobotsTxtContent, Encoding.UTF8, httpContext.RequestAborted);
             }
             else
             {
                 await _next(httpContext);
             }
+        }
+    }
+
+    public static class RobotsTxtMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseRobotsTxt(this IApplicationBuilder builder)
+        {
+            return builder.MapWhen(
+                context => context.Request.Path == "/robots.txt",
+                p => p.UseMiddleware<RobotsTxtMiddleware>());
         }
     }
 }

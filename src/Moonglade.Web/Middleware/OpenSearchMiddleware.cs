@@ -23,7 +23,7 @@ namespace Moonglade.Web.Middleware
                 var xml = await OpenSearchWriter.GetOpenSearchData(siteRootUrl, blogConfig.GeneralSettings.SiteTitle, blogConfig.GeneralSettings.Description);
 
                 httpContext.Response.ContentType = "text/xml";
-                await httpContext.Response.WriteAsync(xml);
+                await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
             }
             else
             {

@@ -28,7 +28,7 @@ namespace Moonglade.Web.Middleware
                 });
 
                 httpContext.Response.ContentType = "text/xml";
-                await httpContext.Response.WriteAsync(xml);
+                await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
             }
             else
             {

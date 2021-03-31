@@ -23,7 +23,7 @@ namespace Moonglade.Web.Middleware
                 var xml = await RSDWriter.GetRSDData(siteRootUrl);
 
                 httpContext.Response.ContentType = "text/xml";
-                await httpContext.Response.WriteAsync(xml);
+                await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
             }
             else
             {
