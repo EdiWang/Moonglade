@@ -57,7 +57,7 @@ namespace Moonglade.Web.Controllers
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            if (!captcha.ValidateCaptchaCode(model.CaptchaCode, HttpContext.Session))
+            if (!captcha.Validate(model.CaptchaCode, HttpContext.Session))
             {
                 ModelState.AddModelError(nameof(model.CaptchaCode), "Wrong Captcha Code");
                 return Conflict(ModelState);
