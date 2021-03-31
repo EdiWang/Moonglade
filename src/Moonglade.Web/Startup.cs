@@ -193,7 +193,7 @@ namespace Moonglade.Web
             });
 
             app.UseStaticFiles();
-            app.UseSession();
+            app.UseSession().UseCaptchaImage(options => options.RequestPath = "/captcha-image");
 
             app.UseIpRateLimiting();
             app.UseRouting();

@@ -197,20 +197,6 @@ namespace Moonglade.Web.Controllers
 
         #endregion
 
-        [HttpGet("captcha-image")]
-        public IActionResult CaptchaImage([FromServices] ISessionBasedCaptcha captcha)
-        {
-            var w = _settings.CaptchaSettings.ImageWidth;
-            var h = _settings.CaptchaSettings.ImageHeight;
-
-            // prevent crazy size
-            if (w > 640) w = 640;
-            if (h > 480) h = 480;
-
-            var s = captcha.GenerateCaptchaImageFileStream(HttpContext.Session, w, h);
-            return s;
-        }
-
         [HttpGet("avatar")]
         [ResponseCache(Duration = 300)]
         public async Task<IActionResult> Avatar([FromServices] IBlogCache cache)
