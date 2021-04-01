@@ -201,21 +201,27 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 300)]
         public async Task<IActionResult> Avatar([FromServices] IBlogCache cache)
         {
-            var data = await _blogConfig.GetAssetDataAsync(AssetId.AvatarBase64);
             var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
-            if (string.IsNullOrWhiteSpace(data))
-            {
-                return PhysicalFile(fallbackImageFile, "image/png");
-            }
 
             try
             {
-                return cache.GetOrCreate(CacheDivision.General, "avatar", _ =>
+                var bytes = await cache.GetOrCreateAsync(CacheDivision.General, "avatar", async x =>
                 {
                     _logger.LogTrace("Avatar not on cache, getting new avatar image...");
+
+                    var data = await _blogConfig.GetAssetDataAsync(AssetId.AvatarBase64);
+                    if (string.IsNullOrWhiteSpace(data)) return null;
+
                     var avatarBytes = Convert.FromBase64String(data);
-                    return File(avatarBytes, "image/png");
+                    return avatarBytes;
                 });
+
+                if (null == bytes)
+                {
+                    return PhysicalFile(fallbackImageFile, "image/png");
+                }
+
+                return File(bytes, "image/png");
             }
             catch (FormatException e)
             {
