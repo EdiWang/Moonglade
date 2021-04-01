@@ -1,12 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace Moonglade.Core.Tests
 {
@@ -45,7 +43,7 @@ namespace Moonglade.Core.Tests
 
             // Act
             var result = await service.ListAsync();
-            
+
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
         }

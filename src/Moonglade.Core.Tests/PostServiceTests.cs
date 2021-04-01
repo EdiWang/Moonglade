@@ -1,21 +1,19 @@
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
-using Moonglade.Caching;
-using Moonglade.Configuration.Settings;
-using Moonglade.Core;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
+using Moonglade.Caching;
+using Moonglade.Configuration.Settings;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Utils;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Core.Tests
 {
@@ -186,7 +184,7 @@ namespace Moonglade.Core.Tests
         {
             var svc = CreateService();
             var result = await svc.ListByTag(35, 996, 251);
-            
+
             _mockPostTagEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>(), true));
         }
 

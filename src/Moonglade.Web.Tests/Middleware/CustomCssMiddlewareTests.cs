@@ -1,15 +1,14 @@
-using Microsoft.AspNetCore.Http;
-using Moonglade.Web.Middleware;
-using Moq;
-using NUnit.Framework;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
+using Moonglade.Web.Middleware;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Middleware
 {

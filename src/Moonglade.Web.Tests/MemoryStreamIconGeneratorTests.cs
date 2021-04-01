@@ -1,8 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Web.Tests
 {

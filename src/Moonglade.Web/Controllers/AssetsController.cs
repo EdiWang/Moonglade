@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Edi.Captcha;
 using Edi.ImageWatermark;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -23,7 +21,6 @@ using Moonglade.FriendLink;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
 using Moonglade.Web.BlogProtocols;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {

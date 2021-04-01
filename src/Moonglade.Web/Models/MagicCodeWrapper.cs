@@ -8,7 +8,7 @@
 
         public MagicCodeWrapper()
         {
-            
+
         }
 
         public MagicCodeWrapper(T model)
