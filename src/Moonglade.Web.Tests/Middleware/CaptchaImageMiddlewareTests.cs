@@ -56,7 +56,7 @@ namespace Moonglade.Web.Tests.Middleware
 
             public void Clear()
             {
-                
+
             }
 
             public Task CommitAsync(CancellationToken cancellationToken = default)
@@ -94,7 +94,12 @@ namespace Moonglade.Web.Tests.Middleware
             serviceCollection.AddSessionBasedCaptcha();
 
             var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
-            applicationBuilder.UseSession().UseCaptchaImage(options => options.RequestPath = "/captcha-image");
+            applicationBuilder.UseSession().UseCaptchaImage(options =>
+            {
+                options.RequestPath = "/captcha-image";
+                options.ImageHeight = 36;
+                options.ImageWidth = 100;
+            });
 
             var app = applicationBuilder.Build();
 
@@ -111,20 +116,11 @@ namespace Moonglade.Web.Tests.Middleware
 
             var middleware = new CaptchaImageMiddleware(app);
 
-            _appSettingsOptionsMock.Setup(p => p.Value).Returns(new AppSettings()
-            {
-                CaptchaSettings = new()
-                {
-                    ImageHeight = 36,
-                    ImageWidth = 100
-                }
-            });
-
             _captchaMock.Setup(p =>
                 p.GenerateCaptchaImageBytes(It.IsAny<ISession>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Array.Empty<byte>());
 
-            await middleware.Invoke(httpContextMock.Object, _appSettingsOptionsMock.Object, _captchaMock.Object);
+            await middleware.Invoke(httpContextMock.Object, _captchaMock.Object);
 
             _captchaMock.Verify(p => p.GenerateCaptchaImageBytes(It.IsAny<ISession>(), It.IsAny<int>(), It.IsAny<int>()));
         }

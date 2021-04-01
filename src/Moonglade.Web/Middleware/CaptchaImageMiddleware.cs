@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Edi.Captcha;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Moonglade.Configuration.Settings;
 
 namespace Moonglade.Web.Middleware
 {
@@ -18,12 +16,12 @@ namespace Moonglade.Web.Middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, IOptions<AppSettings> settings, ISessionBasedCaptcha captcha)
+        public async Task Invoke(HttpContext context, ISessionBasedCaptcha captcha)
         {
             if (context.Request.Path == Options.RequestPath)
             {
-                var w = settings.Value.CaptchaSettings.ImageWidth;
-                var h = settings.Value.CaptchaSettings.ImageHeight;
+                var w = Options.ImageWidth;
+                var h = Options.ImageHeight;
 
                 // prevent crazy size
                 if (w > 640) w = 640;
@@ -54,5 +52,9 @@ namespace Moonglade.Web.Middleware
     public class CaptchaImageMiddlewareOptions
     {
         public PathString RequestPath { get; set; }
+
+        public int ImageWidth { get; set; }
+
+        public int ImageHeight { get; set; }
     }
 }

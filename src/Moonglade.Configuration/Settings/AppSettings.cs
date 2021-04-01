@@ -7,7 +7,6 @@ namespace Moonglade.Configuration.Settings
         public EditorChoice Editor { get; set; }
         public int[] WatermarkARGB { get; set; }
         public int WatermarkSkipPixel { get; set; }
-        public CaptchaSettings CaptchaSettings { get; set; }
         public int PostAbstractWords { get; set; }
         public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
         public NotificationSettings Notification { get; set; }
@@ -15,12 +14,6 @@ namespace Moonglade.Configuration.Settings
 
         public AppSettings()
         {
-            // Prevent Null Reference Exception if user didn't assign config values
-            CaptchaSettings = new()
-            {
-                ImageHeight = 36,
-                ImageWidth = 100
-            };
             Notification = new();
             SiteMap = new();
         }
