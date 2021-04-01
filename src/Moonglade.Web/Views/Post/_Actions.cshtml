@@ -27,7 +27,7 @@
                 @foreach (var item in Model.Categories)
                 {
                     <li>
-                        <a class="btn btn-sm btn-outline-secondary"
+                        <a class="btn btn-sm btn-outline-secondary mb-1"
                            asp-controller="Home"
                            asp-action="CategoryList"
                            asp-route-routeName="@item.RouteName.ToLower()">
@@ -44,7 +44,7 @@
                         <li>
                             <a asp-controller="Home"
                                asp-action="TagList"
-                               asp-route-normalizedName="@item.NormalizedName" class="btn btn-sm btn-outline-secondary">
+                               asp-route-normalizedName="@item.NormalizedName" class="btn btn-sm btn-outline-secondary mb-1">
                                 <span class="icon-price-tag" aria-hidden="true"></span>
                                 @item.DisplayName
                             </a>
