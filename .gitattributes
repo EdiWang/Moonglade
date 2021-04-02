@@ -1,15 +1,13 @@
 src/Moonglade.Web/wwwroot/lib/* linguist-vendored
-datatables.min.css linguist-vendored
-normalize.css linguist-vendored
-errorpages-bundle.css linguist-vendored
-mooglade-css-bundle.css linguist-vendored
-errorpages-bundle.min.css linguist-vendored
-errorpages-bundle.min.css linguist-vendored
-mooglade-css-bundle.min.css linguist-vendored
-mooglade-css-bundle.css linguist-vendored
-mooglade-css-bundle.min.css linguist-vendored
-tinymce-editor-bs-bundle.css linguist-vendored
-tinymce-editor-bs-bundle.min.css linguist-vendored
+src/Moonglade.Web/wwwroot/css/3rd/* linguist-vendored
+src/Moonglade.Web/wwwroot/js/3rd/* linguist-vendored
+src/Moonglade.Web/wwwroot/js/dist/* linguist-vendored
+bundle.css linguist-vendored
+bundle.min.css linguist-vendored
+admin-bundle.css linguist-vendored
+admin-bundle.min.css linguist-vendored
+tinymce-bs-bundle.css linguist-vendored
+tinymce-bs-bundle.min.css linguist-vendored
 
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
