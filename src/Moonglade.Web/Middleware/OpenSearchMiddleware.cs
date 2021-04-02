@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Utils;
-using Moonglade.Web.BlogProtocols;
 
 namespace Moonglade.Web.Middleware
 {
@@ -36,7 +35,7 @@ namespace Moonglade.Web.Middleware
             }
         }
 
-        private static async Task<string> GetOpenSearchData(string siteRootUrl, string shortName, string description)
+        private async Task<string> GetOpenSearchData(string siteRootUrl, string shortName, string description)
         {
             var sb = new StringBuilder();
 
@@ -44,8 +43,8 @@ namespace Moonglade.Web.Middleware
             await using (var writer = XmlWriter.Create(sb, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
-                writer.WriteStartElement("OpenSearchDescription", "http://a9.com/-/spec/opensearch/1.1/");
-                writer.WriteAttributeString("xmlns", "http://a9.com/-/spec/opensearch/1.1/");
+                writer.WriteStartElement("OpenSearchDescription", Options.Xmlns);
+                writer.WriteAttributeString("xmlns", Options.Xmlns);
 
                 writer.WriteElementString("ShortName", shortName);
                 writer.WriteElementString("Description", description);
@@ -53,8 +52,8 @@ namespace Moonglade.Web.Middleware
                 writer.WriteStartElement("Image");
                 writer.WriteAttributeString("height", "16");
                 writer.WriteAttributeString("width", "16");
-                writer.WriteAttributeString("type", "image/vnd.microsoft.icon");
-                writer.WriteValue($"{siteRootUrl.TrimEnd('/')}/favicon.ico");
+                writer.WriteAttributeString("type", Options.IconFileType);
+                writer.WriteValue($"{siteRootUrl.TrimEnd('/')}{Options.IconFilePath}");
                 await writer.WriteEndElementAsync();
 
                 writer.WriteStartElement("Url");
@@ -81,6 +80,9 @@ namespace Moonglade.Web.Middleware
 
     public class OpenSearchMiddlewareOptions
     {
+        public string Xmlns { get; set; } = "http://a9.com/-/spec/opensearch/1.1/";
+        public string IconFileType { get; set; } // image/vnd.microsoft.icon
+        public PathString IconFilePath { get; set; }
         public PathString RequestPath { get; set; }
     }
 }
