@@ -112,8 +112,8 @@
     }
 </head>
 <body class="@ViewBag.BodyClass">
-    <header>
-        <nav id="blog-nav" class="navbar fixed-top navbar-expand-lg navbar-dark bg-accent1">
+    <header class="sticky-top">
+        <nav id="blog-nav" class="navbar navbar-expand-lg navbar-dark bg-accent1">
             <div class="container">
                 <div class="animbrand">
                     <a class="moonglade-logo font-sairas navbar-brand animate" href="/">
@@ -228,6 +228,7 @@
     </div>
     <div class="clearfix"></div>
     <partial name="_Footer" />
+    <partial name="_EnvInfo" />
 
     @await RenderSectionAsync("scripts", false)
     @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
