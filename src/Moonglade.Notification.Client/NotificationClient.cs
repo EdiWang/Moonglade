@@ -3,10 +3,8 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration.Abstraction;
-using Moonglade.Configuration.Settings;
 using Moonglade.Utils;
 
 namespace Moonglade.Notification.Client
@@ -20,26 +18,23 @@ namespace Moonglade.Notification.Client
 
         public NotificationClient(
             ILogger<NotificationClient> logger,
-            IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             HttpClient httpClient)
         {
             _logger = logger;
             _blogConfig = blogConfig;
-            if (settings.Value.Notification.Enabled)
+            if (_blogConfig.NotificationSettings.EnableEmailSending)
             {
-                if (Uri.IsWellFormedUriString(settings.Value.Notification.AzureFunctionEndpoint, UriKind.Absolute))
+                if (Uri.IsWellFormedUriString(_blogConfig.NotificationSettings.AzureFunctionEndpoint, UriKind.Absolute))
                 {
-                    httpClient.BaseAddress = new(settings.Value.Notification.AzureFunctionEndpoint);
+                    httpClient.BaseAddress = new(_blogConfig.NotificationSettings.AzureFunctionEndpoint);
                 }
+
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
                 httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Helper.AppVersion}");
                 _httpClient = httpClient;
 
-                if (_blogConfig.NotificationSettings.EnableEmailSending)
-                {
-                    _isEnabled = true;
-                }
+                _isEnabled = true;
             }
         }
 

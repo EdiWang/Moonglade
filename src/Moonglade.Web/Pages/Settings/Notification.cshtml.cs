@@ -22,7 +22,8 @@ namespace Moonglade.Web.Pages.Settings
                 EmailDisplayName = settings.EmailDisplayName,
                 EnableEmailSending = settings.EnableEmailSending,
                 SendEmailOnCommentReply = settings.SendEmailOnCommentReply,
-                SendEmailOnNewComment = settings.SendEmailOnNewComment
+                SendEmailOnNewComment = settings.SendEmailOnNewComment,
+                AzureFunctionEndpoint = settings.AzureFunctionEndpoint
             };
         }
     }

@@ -7,19 +7,7 @@
 
 <partial name="_SettingsHeader" />
 
-@if (!Settings.Value.Notification.Enabled)
-{
-    <div class="alert alert-warning">Notification is not enabled. Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup notification API.</div>
-}
-else
-{
-    <div class="alert alert-info">
-        @if (!string.IsNullOrWhiteSpace(Settings.Value.Notification.AzureFunctionEndpoint))
-        {
-            @Localizer["Current Endpoint:"] @(new Uri(Settings.Value.Notification.AzureFunctionEndpoint).Host)
-        }
-    </div>
-}
+<div class="alert alert-info">Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup notification API.</div>
 
 <form id="form-settings" asp-controller="Settings" asp-action="Notification"
       data-ajax-begin="onUpdateSettingsBegin"
@@ -41,11 +29,8 @@ else
                         <span asp-validation-for="ViewModel.EmailDisplayName" class="text-danger"></span>
                     </div>
 
-                    @if (Settings.Value.Notification.Enabled)
-                    {
-                        <hr />
-                        <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">@Localizer["Send Test Email"]</a>
-                    }
+                    <hr />
+                    <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">@Localizer["Send Test Email"]</a>
                 </div>
             </div>
         </div>
@@ -72,6 +57,13 @@ else
                         </div>
                     </li>
                 </ul>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="ViewModel.AzureFunctionEndpoint" class="control-label"></label>
+                        <input asp-for="ViewModel.AzureFunctionEndpoint" class="form-control" />
+                        <span asp-validation-for="ViewModel.AzureFunctionEndpoint" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

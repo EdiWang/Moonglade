@@ -119,6 +119,7 @@ namespace Moonglade.Web.Controllers
             settings.EnableEmailSending = model.EnableEmailSending;
             settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
             settings.SendEmailOnNewComment = model.SendEmailOnNewComment;
+            settings.AzureFunctionEndpoint = model.AzureFunctionEndpoint;
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, "Notification Settings updated.");

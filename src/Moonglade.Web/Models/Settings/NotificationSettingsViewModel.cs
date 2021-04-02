@@ -17,5 +17,8 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Display Name")]
         [MaxLength(64)]
         public string EmailDisplayName { get; set; }
+
+        [Display(Name = "Azure Function Endpoint")]
+        public string AzureFunctionEndpoint { get; set; }
     }
 }

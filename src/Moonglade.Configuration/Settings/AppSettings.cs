@@ -9,12 +9,10 @@ namespace Moonglade.Configuration.Settings
         public int WatermarkSkipPixel { get; set; }
         public int PostAbstractWords { get; set; }
         public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
-        public NotificationSettings Notification { get; set; }
         public SiteMapSettings SiteMap { get; set; }
 
         public AppSettings()
         {
-            Notification = new();
             SiteMap = new();
         }
     }

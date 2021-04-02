@@ -113,14 +113,8 @@ You need to hava an [**Minio Server**](https://docs.min.io/).
 
 ### 📧 Email Notification
 
-If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Notification Azure Function](https://github.com/EdiWang/Moonglade.Notification) first, and then set the values in ```appsettings.[env].json``` or in your runtime environment variables.
+If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Notification Azure Function](https://github.com/EdiWang/Moonglade.Notification) first, and then enable notification in admin portal.
 
-```json
-"Notification": {
-  "Enabled": true,
-  "AzureFunctionEndpoint": "{PROD-ENV-VARIABLE}"
-}
-```
 ### 🔩 Others
 
 - [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
