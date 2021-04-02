@@ -6,6 +6,7 @@ using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moq;
 using NUnit.Framework;
 
@@ -25,7 +26,7 @@ namespace Moonglade.Core.Tests
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockRepositoryCategoryEntity = _mockRepository.Create<IRepository<CategoryEntity>>();
             _mockRepositoryPostCategoryEntity = _mockRepository.Create<IRepository<PostCategoryEntity>>();
@@ -40,6 +41,24 @@ namespace Moonglade.Core.Tests
                 _mockRepositoryPostCategoryEntity.Object,
                 _mockBlogAudit.Object,
                 _mockBlogCache.Object);
+        }
+
+        [Test]
+        public async Task Get_ByName()
+        {
+            var svc = CreateService();
+            await svc.Get("work996");
+
+            _mockRepositoryCategoryEntity.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
+        }
+
+        [Test]
+        public async Task Get_ById()
+        {
+            var svc = CreateService();
+            await svc.Get(Guid.Empty);
+
+            _mockRepositoryCategoryEntity.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
         }
 
         [Test]
