@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Web.Middleware;
@@ -14,6 +16,20 @@ namespace Moonglade.Web.Tests.Middleware
     [ExcludeFromCodeCoverage]
     public class OpenSearchMiddlewareTests
     {
+        [Test]
+        public void UseCustomCssMiddlewareExtensions()
+        {
+            var serviceCollection = new ServiceCollection();
+            var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
+
+            applicationBuilder.UseOpenSearch(options => { });
+
+            var app = applicationBuilder.Build();
+
+            var type = app.Target.GetType();
+            Assert.AreEqual(nameof(UseMiddlewareExtensions), type.DeclaringType.Name);
+        }
+
         [Test]
         public async Task Invoke_NonOpenSearchRequestPath()
         {

@@ -147,7 +147,7 @@ namespace Moonglade.Web
             app.UseManifest(options => options.ThemeColor = "#333333");
             app.UseRobotsTxt();
 
-            app.UseMiddleware<OpenSearchMiddleware>();
+            app.UseOpenSearch(options => options.RequestPath = "/opensearch");
             app.UseMiddlewareForFeature<RSDMiddleware>(nameof(FeatureFlags.RSD));
             app.UseForFeature(nameof(FeatureFlags.MetaWeblog), _ =>
             {

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Utils;
@@ -9,6 +11,7 @@ namespace Moonglade.Web.Middleware
     public class OpenSearchMiddleware
     {
         private readonly RequestDelegate _next;
+        public static OpenSearchMiddlewareOptions Options { get; set; } = new();
 
         public OpenSearchMiddleware(RequestDelegate next)
         {
@@ -17,7 +20,7 @@ namespace Moonglade.Web.Middleware
 
         public async Task Invoke(HttpContext httpContext, IBlogConfig blogConfig)
         {
-            if (httpContext.Request.Path == "/opensearch" && blogConfig.AdvancedSettings.EnableOpenSearch)
+            if (httpContext.Request.Path == Options.RequestPath && blogConfig.AdvancedSettings.EnableOpenSearch)
             {
                 var siteRootUrl = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true);
                 var xml = await OpenSearchWriter.GetOpenSearchData(siteRootUrl, blogConfig.GeneralSettings.SiteTitle, blogConfig.GeneralSettings.Description);
@@ -30,5 +33,19 @@ namespace Moonglade.Web.Middleware
                 await _next(httpContext);
             }
         }
+    }
+
+    public static class OpenSearchMiddlewareOptionsExtensions
+    {
+        public static IApplicationBuilder UseOpenSearch(this IApplicationBuilder app, Action<OpenSearchMiddlewareOptions> options)
+        {
+            options(OpenSearchMiddleware.Options);
+            return app.UseMiddleware<OpenSearchMiddleware>();
+        }
+    }
+
+    public class OpenSearchMiddlewareOptions
+    {
+        public PathString RequestPath { get; set; }
     }
 }
