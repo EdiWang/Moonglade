@@ -18,7 +18,7 @@ namespace Moonglade.Core.Tests
     {
         private MockRepository _mockRepository;
 
-        private Mock<IRepository<CategoryEntity>> _mockRepositoryCategoryEntity;
+        private Mock<IRepository<CategoryEntity>> _mockCatRepo;
         private Mock<IRepository<PostCategoryEntity>> _mockRepositoryPostCategoryEntity;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<IBlogCache> _mockBlogCache;
@@ -28,7 +28,7 @@ namespace Moonglade.Core.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockRepositoryCategoryEntity = _mockRepository.Create<IRepository<CategoryEntity>>();
+            _mockCatRepo = _mockRepository.Create<IRepository<CategoryEntity>>();
             _mockRepositoryPostCategoryEntity = _mockRepository.Create<IRepository<PostCategoryEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
@@ -37,7 +37,7 @@ namespace Moonglade.Core.Tests
         private CategoryService CreateService()
         {
             return new(
-                _mockRepositoryCategoryEntity.Object,
+                _mockCatRepo.Object,
                 _mockRepositoryPostCategoryEntity.Object,
                 _mockBlogAudit.Object,
                 _mockBlogCache.Object);
@@ -49,7 +49,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.Get("work996");
 
-            _mockRepositoryCategoryEntity.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
+            _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
         }
 
         [Test]
@@ -58,19 +58,47 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.Get(Guid.Empty);
 
-            _mockRepositoryCategoryEntity.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
+            _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
+        }
+
+        [Test]
+        public async Task CreateAsync_Exists()
+        {
+            _mockCatRepo.Setup(p => p.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(true);
+
+            var svc = CreateService();
+            await svc.CreateAsync(new UpdateCatRequest() { RouteName = "work-996" });
+
+            _mockCatRepo.Verify(p => p.AddAsync(It.IsAny<CategoryEntity>()), Times.Never);
+        }
+
+        [Test]
+        public async Task CreateAsync_Success()
+        {
+            _mockCatRepo.Setup(p => p.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(false);
+
+            var svc = CreateService();
+            await svc.CreateAsync(new UpdateCatRequest()
+            {
+                DisplayName = "Work 996",
+                RouteName = "work-996",
+                Note = "Fubao"
+            });
+
+            _mockCatRepo.Verify(p => p.AddAsync(It.IsAny<CategoryEntity>()));
+            _mockBlogCache.Verify(p => p.Remove(CacheDivision.General, "allcats"));
         }
 
         [Test]
         public async Task DeleteAsync_NotExists()
         {
-            _mockRepositoryCategoryEntity.Setup(c => c.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>()))
+            _mockCatRepo.Setup(c => c.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>()))
                 .Returns(false);
 
             var svc = CreateService();
             await svc.DeleteAsync(Guid.Empty);
 
-            _mockRepositoryCategoryEntity.Verify();
+            _mockCatRepo.Verify();
         }
     }
 }
