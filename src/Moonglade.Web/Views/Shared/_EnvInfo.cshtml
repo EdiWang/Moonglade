@@ -1,0 +1,7 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+
+<environment exclude="Production">
+    <div class="environment-info bg-danger text-light fixed-bottom text-center p-1">
+        You are accessing @WebHostEnvironment.EnvironmentName environment, data and changes may be isolated from production.
+    </div>
+</environment>
