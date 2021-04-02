@@ -65,6 +65,7 @@ namespace Moonglade.Web.Tests.Middleware
 
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new OpenSearchMiddleware(RequestDelegate);
+            OpenSearchMiddleware.Options.RequestPath = "/opensearch";
 
             var ctx = new DefaultHttpContext();
             ctx.Response.Body = new MemoryStream();
