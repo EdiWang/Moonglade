@@ -50,6 +50,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 	ProjectSection(SolutionItems) = preProject
 		..\Deployment\AzureQuickDeploy.ps1 = ..\Deployment\AzureQuickDeploy.ps1
 		..\Deployment\install.sh = ..\Deployment\install.sh
+		..\Deployment\RunCodeMetrics_Win64_VS2019.ps1 = ..\Deployment\RunCodeMetrics_Win64_VS2019.ps1
 		..\Deployment\uninstall.sh = ..\Deployment\uninstall.sh
 	EndProjectSection
 EndProject
@@ -90,6 +91,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auth.Tests", "Moonglade.Auth.Tests\Moonglade.Auth.Tests.csproj", "{5A02F702-451F-4B0B-9505-F3DD663E1E90}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing.Tests", "Moonglade.Auditing.Tests\Moonglade.Auditing.Tests.csproj", "{EBDCC076-8966-4E1C-8804-D942C401DC6F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{FE0F6EA1-5520-4DD9-9CD4-7A2365A03C8C}"
+	ProjectSection(SolutionItems) = preProject
+		..\.vscode\launch.json = ..\.vscode\launch.json
+		..\.vscode\settings.json = ..\.vscode\settings.json
+		..\.vscode\tasks.json = ..\.vscode\tasks.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -248,6 +256,7 @@ Global
 		{9F7F7A06-1BA0-4716-8FF9-C47492048DCF} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 		{5A02F702-451F-4B0B-9505-F3DD663E1E90} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 		{EBDCC076-8966-4E1C-8804-D942C401DC6F} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
+		{FE0F6EA1-5520-4DD9-9CD4-7A2365A03C8C} = {BE685106-CE96-4A43-A161-3425565C6A9D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
