@@ -15,7 +15,6 @@ using Moonglade.Configuration.Settings;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 

@@ -34,7 +34,7 @@ namespace Moonglade.Web.Tests.Pages.Settings
 
             var watermarkModel = CreateWatermarkModel();
             watermarkModel.OnGet();
-            
+
             Assert.IsNotNull(watermarkModel.ViewModel);
         }
     }
