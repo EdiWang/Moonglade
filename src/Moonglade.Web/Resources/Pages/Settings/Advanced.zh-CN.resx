@@ -171,4 +171,8 @@
   <data name="e.g. https://blog.ediwangcdn.com/ediwang-images" xml:space="preserve">
     <value>示例 https://blog.ediwangcdn.com/ediwang-images</value>
   </data>
+  <data name="* Requires restarting application" xml:space="preserve">
+    <value>* 需要重启应用程序生效</value>
+    <comment>* Requires restarting application</comment>
+  </data>
 </root>

@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Auth;
 using Moonglade.Configuration;
+using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
 using Moonglade.Utils;
 using Moonglade.Web.Configuration;
@@ -114,6 +115,7 @@ namespace Moonglade.Web
             IApplicationBuilder app,
             ILogger<Startup> logger,
             IHostApplicationLifetime appLifetime,
+            IBlogConfig blogConfig,
             TelemetryConfiguration configuration)
         {
             _logger = logger;
@@ -155,11 +157,11 @@ namespace Moonglade.Web
             });
 
             app.UseMiddlewareForFeature<RSDMiddleware>(nameof(FeatureFlags.RSD));
-            app.UseForFeature(nameof(FeatureFlags.MetaWeblog), _ =>
+            
+            if (blogConfig.AdvancedSettings.EnableMetaWeblog)
             {
-                // Support MetaWeblog API
                 app.UseMetaWeblog("/metaweblog");
-            });
+            }
 
             app.UseMiddleware<SiteMapMiddleware>();
             app.UseMiddleware<PoweredByMiddleware>();

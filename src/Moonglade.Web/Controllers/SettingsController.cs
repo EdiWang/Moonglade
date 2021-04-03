@@ -276,6 +276,7 @@ namespace Moonglade.Web.Controllers
             settings.EnableCDNRedirect = model.EnableCDNRedirect;
             settings.EnableOpenSearch = model.EnableOpenSearch;
             settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
+            settings.EnableMetaWeblog = model.EnableMetaWeblog;
 
             if (model.EnableCDNRedirect)
             {

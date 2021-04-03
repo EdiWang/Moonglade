@@ -126,6 +126,9 @@
   <data name="Enable CDN for images" xml:space="preserve">
     <value>启用图片 CDN</value>
   </data>
+  <data name="Enable MetaWeblog API" xml:space="preserve">
+    <value>启用 MetaWeblog API</value>
+  </data>
   <data name="Enable OpenGraph" xml:space="preserve">
     <value>启用 OpenGraph</value>
   </data>

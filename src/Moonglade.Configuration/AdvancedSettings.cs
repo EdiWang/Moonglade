@@ -18,6 +18,8 @@ namespace Moonglade.Configuration
 
         public bool EnableOpenSearch { get; set; }
 
+        public bool EnableMetaWeblog { get; set; }
+
         public string CDNEndpoint { get; set; }
 
         public bool FitImageToDevicePixelRatio { get; set; }

@@ -60,6 +60,13 @@
                     </li>
                     <li class="list-group-item">
                         <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="ViewModel.EnableMetaWeblog" class="custom-control-input">
+                            <label asp-for="ViewModel.EnableMetaWeblog" class="custom-control-label"></label>
+                        </div>
+                        <small class="form-text text-muted">@Localizer["* Requires restarting application"]</small>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="custom-control custom-switch">
                             <input type="checkbox" asp-for="ViewModel.FitImageToDevicePixelRatio" class="custom-control-input">
                             <label asp-for="ViewModel.FitImageToDevicePixelRatio" class="custom-control-label"></label>
                         </div>
