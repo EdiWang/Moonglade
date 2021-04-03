@@ -113,7 +113,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostManageController();
             postManageController.ModelState.AddModelError("", "996");
 
-            MagicCodeWrapper<PostEditModel> model = new();
+            MagicWrapper<PostEditModel> model = new();
             Mock<LinkGenerator> mockLinkGenerator = new();
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
 
@@ -129,7 +129,7 @@ namespace Moonglade.Web.Tests.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            MagicCodeWrapper<PostEditModel> model = new()
+            MagicWrapper<PostEditModel> model = new()
             {
                 ViewModel = new()
                 {
@@ -167,7 +167,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task CreateOrEdit_Create_Draft()
         {
             var postManageController = CreatePostManageController();
-            MagicCodeWrapper<PostEditModel> model = new()
+            MagicWrapper<PostEditModel> model = new()
             {
                 ViewModel = new()
                 {
@@ -208,7 +208,7 @@ namespace Moonglade.Web.Tests.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            MagicCodeWrapper<PostEditModel> model = new()
+            MagicWrapper<PostEditModel> model = new()
             {
                 ViewModel = new()
                 {

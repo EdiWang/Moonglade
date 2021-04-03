@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moonglade.Auth;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.ImageStorage;
@@ -19,7 +17,6 @@ namespace Moonglade.Web.BlogProtocols
 {
     public class MetaWeblogService : IMetaWeblogProvider
     {
-        private readonly AuthenticationSettings _authenticationSettings;
         private readonly IBlogConfig _blogConfig;
         private readonly ITZoneResolver _tZoneResolver;
         private readonly ILogger<MetaWeblogService> _logger;
@@ -31,7 +28,6 @@ namespace Moonglade.Web.BlogProtocols
         private readonly IFileNameGenerator _fileNameGenerator;
 
         public MetaWeblogService(
-            IOptions<AuthenticationSettings> authOptions,
             IBlogConfig blogConfig,
             ITZoneResolver tZoneResolver,
             ILogger<MetaWeblogService> logger,
@@ -42,7 +38,6 @@ namespace Moonglade.Web.BlogProtocols
             IBlogImageStorage blogImageStorage,
             IFileNameGenerator fileNameGenerator)
         {
-            _authenticationSettings = authOptions.Value;
             _blogConfig = blogConfig;
             _tZoneResolver = tZoneResolver;
             _logger = logger;
@@ -487,7 +482,7 @@ namespace Moonglade.Web.BlogProtocols
 
             if (string.Compare(username.Trim(), "moonglade",
                 StringComparison.Ordinal) == 0 && string.Compare(password.Trim(),
-                _authenticationSettings.MetaWeblog.Password.Trim(),
+                _blogConfig.AdvancedSettings.MetaWeblogPassword.Trim(),
                 StringComparison.Ordinal) == 0) return;
 
             throw new MetaWeblogException("Authentication failed.");

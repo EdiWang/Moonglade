@@ -31,10 +31,6 @@ namespace Moonglade.Auth.Tests
             _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
             {
                 Provider = AuthenticationProvider.AzureAD,
-                MetaWeblog = new MetaWeblogCredential
-                {
-                    Password = "work996"
-                },
                 ApiKeys = new ApiKey[]
                 {
                     new () { Id = 1, Key = "fuck996", Owner = "996fucker" },

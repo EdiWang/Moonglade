@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
@@ -26,7 +24,6 @@ namespace Moonglade.Web.Tests.BlogProtocols
     {
         private MockRepository _mockRepository;
 
-        private Mock<IOptions<AuthenticationSettings>> _mockOptions;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITZoneResolver> _mockTZoneResolver;
         private Mock<ILogger<MetaWeblogService>> _mockLogger;
@@ -78,7 +75,6 @@ namespace Moonglade.Web.Tests.BlogProtocols
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockTZoneResolver = _mockRepository.Create<ITZoneResolver>();
             _mockLogger = _mockRepository.Create<ILogger<MetaWeblogService>>();
@@ -89,19 +85,23 @@ namespace Moonglade.Web.Tests.BlogProtocols
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
 
-            _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
+            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
-                MetaWeblog = new()
-                {
-                    Password = _password
-                }
+                OwnerEmail = "fubao@996.icu",
+                OwnerName = "996 Worker",
+                CanonicalPrefix = "https://996.icu",
+                SiteTitle = "996 ICU"
+            });
+
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
+            {
+                MetaWeblogPassword = _password
             });
         }
 
         private MetaWeblogService CreateService()
         {
             return new(
-                _mockOptions.Object,
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
                 _mockLogger.Object,
@@ -116,13 +116,6 @@ namespace Moonglade.Web.Tests.BlogProtocols
         [Test]
         public async Task GetUserInfoAsync_ExpectedBehavior()
         {
-            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
-            {
-                OwnerEmail = "fubao@996.icu",
-                OwnerName = "996 Worker",
-                CanonicalPrefix = "https://996.icu"
-            });
-
             var service = CreateService();
 
             var result = await service.GetUserInfoAsync(_key, _username, _password);
@@ -132,11 +125,6 @@ namespace Moonglade.Web.Tests.BlogProtocols
         [Test]
         public async Task GetUsersBlogsAsync_ExpectedBehavior()
         {
-            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
-            {
-                SiteTitle = "996 ICU"
-            });
-
             var service = CreateService();
             var result = await service.GetUsersBlogsAsync(_key, _username, _password);
             Assert.IsNotNull(result);
@@ -145,13 +133,6 @@ namespace Moonglade.Web.Tests.BlogProtocols
         [Test]
         public async Task GetPostAsync_ExpectedBehavior()
         {
-            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
-            {
-                OwnerEmail = "fubao@996.icu",
-                OwnerName = "996 Worker",
-                CanonicalPrefix = "https://996.icu"
-            });
-
             _mockPostService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(Post));
 
             var service = CreateService();

@@ -76,7 +76,7 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [TypeFilter(typeof(ClearPagingCountCache))]
         public async Task<IActionResult> CreateOrEdit(
-            [FromForm] MagicCodeWrapper<PostEditModel> temp, [FromServices] LinkGenerator linkGenerator)
+            [FromForm] MagicWrapper<PostEditModel> temp, [FromServices] LinkGenerator linkGenerator)
         {
             try
             {

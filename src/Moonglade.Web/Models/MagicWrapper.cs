@@ -2,16 +2,16 @@
 {
     // Used to wrap models so that Model Binders can recognize ModelPrefix_ModelProperty
     // This is a temp workaround
-    public class MagicCodeWrapper<T> where T : class
+    public class MagicWrapper<T> where T : class
     {
         public T ViewModel { get; set; }
 
-        public MagicCodeWrapper()
+        public MagicWrapper()
         {
 
         }
 
-        public MagicCodeWrapper(T model)
+        public MagicWrapper(T model)
         {
             ViewModel = model;
         }

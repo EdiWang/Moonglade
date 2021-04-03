@@ -157,7 +157,7 @@ namespace Moonglade.Web
             });
 
             app.UseMiddlewareForFeature<RSDMiddleware>(nameof(FeatureFlags.RSD));
-            
+
             if (blogConfig.AdvancedSettings.EnableMetaWeblog)
             {
                 app.UseMetaWeblog("/metaweblog");

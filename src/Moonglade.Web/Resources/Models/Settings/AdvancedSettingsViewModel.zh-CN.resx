@@ -141,4 +141,7 @@
   <data name="Enable Pingback Send" xml:space="preserve">
     <value>启用 Pingback 发送</value>
   </data>
+  <data name="MetaWeblog Password" xml:space="preserve">
+    <value>MetaWeblog 密码</value>
+  </data>
 </root>

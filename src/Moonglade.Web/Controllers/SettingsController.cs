@@ -50,7 +50,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("general")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> General([FromForm] MagicCodeWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITZoneResolver tZoneResolver)
+        public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITZoneResolver tZoneResolver)
         {
             var model = wrapperModel.ViewModel;
 
@@ -83,7 +83,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("content")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Content([FromForm] MagicCodeWrapper<ContentSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Content([FromForm] MagicWrapper<ContentSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
@@ -110,7 +110,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("notification")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Notification([FromForm] MagicCodeWrapper<NotificationSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Notification([FromForm] MagicWrapper<NotificationSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
@@ -138,7 +138,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("subscription")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Subscription([FromForm] MagicCodeWrapper<SubscriptionSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Subscription([FromForm] MagicWrapper<SubscriptionSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
@@ -158,7 +158,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("watermark")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Watermark([FromForm] MagicCodeWrapper<WatermarkSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Watermark([FromForm] MagicWrapper<WatermarkSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
@@ -263,7 +263,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("advanced")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Advanced([FromForm] MagicCodeWrapper<AdvancedSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Advanced([FromForm] MagicWrapper<AdvancedSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
@@ -277,6 +277,7 @@ namespace Moonglade.Web.Controllers
             settings.EnableOpenSearch = model.EnableOpenSearch;
             settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
             settings.EnableMetaWeblog = model.EnableMetaWeblog;
+            settings.MetaWeblogPassword = model.MetaWeblogPassword;
 
             if (model.EnableCDNRedirect)
             {
@@ -333,7 +334,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("security")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Security([FromForm] MagicCodeWrapper<SecuritySettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Security([FromForm] MagicWrapper<SecuritySettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
@@ -349,7 +350,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("custom-css")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> CustomStyleSheet([FromForm] MagicCodeWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
             var settings = _blogConfig.CustomStyleSheetSettings;
