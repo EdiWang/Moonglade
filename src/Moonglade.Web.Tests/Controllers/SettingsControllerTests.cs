@@ -321,6 +321,15 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
 
+        [Test]
+        public void GeneratePassword_OK()
+        {
+            var settingsController = CreateSettingsController();
+            var result = settingsController.GeneratePassword();
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
         //[Test]
         //public void ClearDataCache_StateUnderTest_ExpectedBehavior()
         //{
