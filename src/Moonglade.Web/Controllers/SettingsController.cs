@@ -399,5 +399,17 @@ namespace Moonglade.Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+
+        [HttpGet("generate-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GeneratePassword()
+        {
+            var password = Helper.GeneratePassword(10, 3);
+            return Ok(new
+            {
+                ServerTimeUtc = DateTime.UtcNow,
+                Password = password
+            });
+        }
     }
 }
