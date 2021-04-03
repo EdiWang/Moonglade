@@ -20,7 +20,6 @@ namespace Moonglade.Auth
 
     public class MetaWeblogCredential
     {
-        public string Username { get; set; }
         public string Password { get; set; }
     }
 }

@@ -33,8 +33,7 @@ namespace Moonglade.Auth.Tests
                 Provider = AuthenticationProvider.AzureAD,
                 MetaWeblog = new MetaWeblogCredential
                 {
-                    Password = "work996",
-                    Username = "getintoicu"
+                    Password = "work996"
                 },
                 ApiKeys = new ApiKey[]
                 {

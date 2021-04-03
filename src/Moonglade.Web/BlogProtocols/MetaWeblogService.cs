@@ -485,7 +485,7 @@ namespace Moonglade.Web.BlogProtocols
                 throw new ArgumentNullException(nameof(password));
             }
 
-            if (string.Compare(username.Trim(), _authenticationSettings.MetaWeblog.Username.Trim(),
+            if (string.Compare(username.Trim(), "moonglade",
                 StringComparison.Ordinal) == 0 && string.Compare(password.Trim(),
                 _authenticationSettings.MetaWeblog.Password.Trim(),
                 StringComparison.Ordinal) == 0) return;

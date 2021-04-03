@@ -38,7 +38,7 @@ namespace Moonglade.Web.Tests.BlogProtocols
         private Mock<IFileNameGenerator> _mockFileNameGenerator;
 
         private readonly string _key = "work996andgetintoicu";
-        private readonly string _username = "programmer";
+        private readonly string _username = "moonglade";
         private readonly string _password = "work996";
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
         private static readonly Category Cat = new()
@@ -93,7 +93,6 @@ namespace Moonglade.Web.Tests.BlogProtocols
             {
                 MetaWeblog = new()
                 {
-                    Username = _username,
                     Password = _password
                 }
             });
