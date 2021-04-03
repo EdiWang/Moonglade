@@ -116,5 +116,40 @@ namespace Moonglade.Core.Tests
             _mockCatRepo.Verify(p => p.Delete(It.IsAny<Guid>()));
             _mockBlogCache.Verify(p => p.Remove(CacheDivision.General, "allcats"));
         }
+
+        [Test]
+        public async Task UpdateAsync_NullCat()
+        {
+            _mockCatRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((CategoryEntity)null));
+
+            var svc = CreateService();
+            await svc.UpdateAsync(Guid.Empty, new());
+
+            _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()), Times.Never);
+        }
+
+        [Test]
+        public async Task UpdateAsync_OK()
+        {
+            _mockCatRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult(new CategoryEntity()
+                {
+                    Id = Guid.Empty,
+                    DisplayName = "Work 996",
+                    Note = "Fubao",
+                    RouteName = "work-996"
+                }));
+
+            var svc = CreateService();
+            await svc.UpdateAsync(Guid.Empty, new()
+            {
+                Note = "ICU",
+                DisplayName = "Fubao",
+                RouteName = "fubao"
+            });
+
+            _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()));
+        }
     }
 }
