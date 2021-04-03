@@ -280,5 +280,26 @@ namespace Moonglade.Utils.Tests
             Assert.IsTrue(result.Contains("Jack Ma is an asshole"));
             Assert.IsTrue(result.Contains("Use HW and be a patriot"));
         }
+
+        [TestCase(0, 0)]
+        [TestCase(251, 0)]
+        [TestCase(10, -1)]
+        [TestCase(10, 11)]
+        public void GeneratePassword_BadParameterRange(int length, int numberOfNonAlphanumericCharacters)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                Helper.GeneratePassword(length, numberOfNonAlphanumericCharacters);
+            });
+        }
+
+        [Test]
+        public void GeneratePassword_OK()
+        {
+            var password = Helper.GeneratePassword(10, 3);
+
+            Assert.IsNotNull(password);
+            Assert.AreEqual(10, password.Length);
+        }
     }
 }
