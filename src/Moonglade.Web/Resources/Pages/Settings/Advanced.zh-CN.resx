@@ -180,4 +180,10 @@
   <data name="Generate Password" xml:space="preserve">
     <value>生成密码</value>
   </data>
+  <data name="Endpoint" xml:space="preserve">
+    <value>CDN 终端</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>密码</value>
+  </data>
 </root>
