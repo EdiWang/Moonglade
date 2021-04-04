@@ -16,6 +16,13 @@
                 tryResetWebsite();
             });
         });
+
+        function generateMetaWeblogPassword() {
+            callApi('/api/settings/generate-password', 'GET', {}, async (resp) => {
+                var data = await resp.json();
+                $('#ViewModel_MetaWeblogPassword').val(data.password);
+            });
+        }
     </script>
 }
 
@@ -130,6 +137,9 @@
                         <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" />
                         <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["* Username: moonglade"]</small>
+                    </div>
+                    <div>
+                        <a href="javascript:;" class="btn btn-sm btn-outline-accent" onclick="generateMetaWeblogPassword()">@Localizer["Generate Password"]</a>
                     </div>
                 </div>
             </div>

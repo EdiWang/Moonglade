@@ -173,10 +173,11 @@
   </data>
   <data name="* Requires restarting application" xml:space="preserve">
     <value>* 需要重启应用程序生效</value>
-    <comment>* Requires restarting application</comment>
   </data>
   <data name="* Username: moonglade" xml:space="preserve">
     <value>* 用户名: moonglade</value>
-    <comment>* Username: moonglade</comment>
+  </data>
+  <data name="Generate Password" xml:space="preserve">
+    <value>生成密码</value>
   </data>
 </root>
