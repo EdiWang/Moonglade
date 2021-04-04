@@ -29,8 +29,6 @@ namespace Moonglade.Configuration
 
         public AdvancedSettings AdvancedSettings { get; set; }
 
-        public SecuritySettings SecuritySettings { get; set; }
-
         public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
         private bool _hasInitialized;
@@ -49,7 +47,6 @@ namespace Moonglade.Configuration
             WatermarkSettings = new();
             FriendLinksSettings = new();
             AdvancedSettings = new();
-            SecuritySettings = new();
             CustomStyleSheetSettings = new();
 
             Initialize();
@@ -68,7 +65,6 @@ namespace Moonglade.Configuration
             WatermarkSettings = cfgDic[nameof(WatermarkSettings)].FromJson<WatermarkSettings>();
             FriendLinksSettings = cfgDic[nameof(FriendLinksSettings)].FromJson<FriendLinksSettings>();
             AdvancedSettings = cfgDic[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
-            SecuritySettings = cfgDic[nameof(SecuritySettings)].FromJson<SecuritySettings>();
             CustomStyleSheetSettings = cfgDic[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
 
             _hasInitialized = true;

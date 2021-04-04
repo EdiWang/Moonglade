@@ -6,9 +6,8 @@ INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (3, 
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (4, 'GeneralSettings', '{"OwnerName":"Admin","Description":"Moonglade Admin","ShortDescription":"Moonglade Admin","AvatarBase64":"","SiteTitle":"Moonglade","LogoText":"moonglade","MetaKeyword":"moonglade","MetaDescription":"Just another .NET blog system","Copyright":"&copy; 2021","SideBarCustomizedHtmlPitch":"","FooterCustomizedHtmlPitch":"","UserTimeZoneBaseUtcOffset":"08:00:00","TimeZoneId":"China Standard Time"}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (5, 'WatermarkSettings', '{"IsEnabled":true,"KeepOriginImage":false,"FontSize":20,"WatermarkText":"Moonglade"}', GETDATE())
 INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (6, 'FriendLinksSettings', '{"ShowFriendLinksSection":true}', GETDATE())
-INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (7, 'AdvancedSettings', '{"DNSPrefetchEndpoint":"","EnableOpenGraph":true,"EnablePingBackSend":true,"EnablePingBackReceive":true,"EnableOpenSearch":true}', GETDATE())
-INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (8, 'SecuritySettings', '{"WarnExternalLink":true,"AllowScriptsInPage":false,"ShowAdminLoginButton":false,"EnablePostRawEndpoint":true}', GETDATE())
-INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (9, 'CustomStyleSheetSettings', '{"EnableCustomCss":false,"CssCode":""}', GETDATE())
+INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (7, 'AdvancedSettings', '{"DNSPrefetchEndpoint":"","EnableOpenGraph":true,"EnablePingBackSend":true,"EnablePingBackReceive":true,"EnableOpenSearch":true,"WarnExternalLink":true,"AllowScriptsInPage":false,"ShowAdminLoginButton":false,"EnablePostRawEndpoint":true}', GETDATE())
+INSERT BlogConfiguration (Id, CfgKey, CfgValue, LastModifiedTimeUtc) VALUES (8, 'CustomStyleSheetSettings', '{"EnableCustomCss":false,"CssCode":""}', GETDATE())
 
 DELETE FROM LocalAccount
 INSERT LocalAccount(Id, Username, PasswordHash, CreateTimeUtc) VALUES (NEWID(), 'admin', 'JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=', GETDATE())

@@ -25,5 +25,9 @@ namespace Moonglade.Configuration
         public string CDNEndpoint { get; set; }
 
         public bool FitImageToDevicePixelRatio { get; set; }
+
+        public bool WarnExternalLink { get; set; }
+        public bool AllowScriptsInPage { get; set; }
+        public bool ShowAdminLoginButton { get; set; }
     }
 }

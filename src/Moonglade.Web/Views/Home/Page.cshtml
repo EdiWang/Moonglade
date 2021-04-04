@@ -40,7 +40,7 @@
     </div>
 }
 
-@if (BlogConfig.SecuritySettings.AllowScriptsInPage)
+@if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
 {
     @Html.Raw(Model.RawHtmlContent)
 }

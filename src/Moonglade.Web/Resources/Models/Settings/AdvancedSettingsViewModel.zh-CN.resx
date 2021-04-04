@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Allow javascript in pages" xml:space="preserve">
+    <value>允许页面中执JavaScript代码</value>
+  </data>
   <data name="DNS Prefetch Endpoint" xml:space="preserve">
     <value>DNS 预加载终端地址</value>
   </data>
@@ -137,5 +140,11 @@
   </data>
   <data name="Enable Pingback Send" xml:space="preserve">
     <value>启用 Pingback 发送</value>
+  </data>
+  <data name="Show Admin login button under sidebar" xml:space="preserve">
+    <value>在侧边栏下显示管理员登录按钮</value>
+  </data>
+  <data name="Show warning when clicking external links" xml:space="preserve">
+    <value>点击外部链接时弹出警告</value>
   </data>
 </root>

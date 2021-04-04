@@ -186,4 +186,7 @@
   <data name="Password" xml:space="preserve">
     <value>密码</value>
   </data>
+  <data name="Security Settings" xml:space="preserve">
+    <value>安全设置</value>
+  </data>
 </root>

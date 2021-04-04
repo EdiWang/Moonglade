@@ -38,5 +38,14 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Fit Image to Device Pixel Ratio")]
         public bool FitImageToDevicePixelRatio { get; set; }
+
+        [Display(Name = "Show warning when clicking external links")]
+        public bool WarnExternalLink { get; set; }
+
+        [Display(Name = "Allow javascript in pages")]
+        public bool AllowScriptsInPage { get; set; }
+
+        [Display(Name = "Show Admin login button under sidebar")]
+        public bool ShowAdminLoginButton { get; set; }
     }
 }

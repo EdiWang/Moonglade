@@ -250,21 +250,6 @@ namespace Moonglade.Web.Tests.Controllers
         //}
 
         [Test]
-        public async Task Security_Post()
-        {
-            _mockBlogConfig.Setup(p => p.SecuritySettings).Returns(new SecuritySettings());
-
-            var settingsController = CreateSettingsController();
-            SecuritySettingsViewModel model = new();
-
-            var result = await settingsController.Security(new(model));
-
-            Assert.IsInstanceOf<OkResult>(result);
-            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<SecuritySettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
-        }
-
-        [Test]
         public async Task CustomStyleSheet_Post_Enabled_EmptyCSS()
         {
             _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());

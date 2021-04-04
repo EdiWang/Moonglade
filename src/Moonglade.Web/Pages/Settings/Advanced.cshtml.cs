@@ -29,7 +29,10 @@ namespace Moonglade.Web.Pages.Settings
                 EnableMetaWeblog = settings.EnableMetaWeblog,
                 MetaWeblogPassword = settings.MetaWeblogPassword,
                 CDNEndpoint = settings.CDNEndpoint,
-                FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio
+                FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio,
+                WarnExternalLink = settings.WarnExternalLink,
+                AllowScriptsInPage = settings.AllowScriptsInPage,
+                ShowAdminLoginButton = settings.ShowAdminLoginButton
             };
         }
     }

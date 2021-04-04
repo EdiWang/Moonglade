@@ -278,6 +278,9 @@ namespace Moonglade.Web.Controllers
             settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
             settings.EnableMetaWeblog = model.EnableMetaWeblog;
             settings.MetaWeblogPassword = model.MetaWeblogPassword;
+            settings.WarnExternalLink = model.WarnExternalLink;
+            settings.AllowScriptsInPage = model.AllowScriptsInPage;
+            settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
 
             if (model.EnableCDNRedirect)
             {
@@ -330,22 +333,6 @@ namespace Moonglade.Web.Controllers
 
             applicationLifetime.StopApplication();
             return Accepted();
-        }
-
-        [HttpPost("security")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Security([FromForm] MagicWrapper<SecuritySettingsViewModel> wrapperModel)
-        {
-            var model = wrapperModel.ViewModel;
-
-            var settings = _blogConfig.SecuritySettings;
-            settings.WarnExternalLink = model.WarnExternalLink;
-            settings.AllowScriptsInPage = model.AllowScriptsInPage;
-            settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
-
-            await _blogConfig.SaveAsync(settings);
-            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, "Security Settings updated.");
-            return Ok();
         }
 
         [HttpPost("custom-css")]

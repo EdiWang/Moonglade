@@ -12,7 +12,6 @@ namespace Moonglade.Configuration.Abstraction
         WatermarkSettings WatermarkSettings { get; set; }
         FriendLinksSettings FriendLinksSettings { get; set; }
         AdvancedSettings AdvancedSettings { get; set; }
-        SecuritySettings SecuritySettings { get; set; }
         CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
         Task SaveAsync<T>(T blogSettings) where T : BlogSettings;

@@ -150,6 +150,30 @@
                     </div>
                 </div>
             </div>
+            <div class="card mb-4">
+                <div class="card-header">@Localizer["Security Settings"]</div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="ViewModel.WarnExternalLink" class="custom-control-input">
+                            <label asp-for="ViewModel.WarnExternalLink" class="custom-control-label"></label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="ViewModel.AllowScriptsInPage" class="custom-control-input">
+                            <label asp-for="ViewModel.AllowScriptsInPage" class="custom-control-label"></label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="ViewModel.ShowAdminLoginButton" class="custom-control-input">
+                            <label asp-for="ViewModel.ShowAdminLoginButton" class="custom-control-label"></label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
             <div class="card">
                 <div class="card-header">
                     @Localizer["Options"]

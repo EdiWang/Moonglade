@@ -66,7 +66,7 @@
         postSlug.renderCodeHighlighter();
 
         $(function() {
-            @if (BlogConfig.SecuritySettings.WarnExternalLink)
+            @if (BlogConfig.AdvancedSettings.WarnExternalLink)
             {
                 <text>
                     postSlug.warnExtLink();
@@ -268,7 +268,7 @@
     </div>
 </div>
 
-@if (BlogConfig.SecuritySettings.WarnExternalLink)
+@if (BlogConfig.AdvancedSettings.WarnExternalLink)
 {
     <div class="modal fade" id="externalLinkModal" tabindex="-1" role="dialog" aria-labelledby="externalLinkModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-externalLink" role="document">
