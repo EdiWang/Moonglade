@@ -33,7 +33,7 @@ namespace Moonglade.Web.Tests.Middleware
             await middleware.Invoke(httpContextMock.Object);
 
             Assert.AreEqual(value, headersArray[key]);
-            httpResponseMock.Verify(r => r.Headers, Times.Once);
+            httpResponseMock.Verify(r => r.Headers, Times.Exactly(2));
         }
     }
 }
