@@ -67,7 +67,7 @@ namespace Moonglade.Web
                                         .AddJsonFile("tagnormalization.json", false, true);
 
                                   var settings = config.Build();
-                                  if (bool.Parse(settings["AppSettings:PreferAzureAppConfiguration"]))
+                                  if (settings.GetValue<bool>("PreferAzureAppConfiguration"))
                                   {
                                       config.AddAzureAppConfiguration(options =>
                                       {

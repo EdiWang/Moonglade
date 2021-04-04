@@ -166,7 +166,7 @@ namespace Moonglade.Web
             app.UseMiddleware<PoweredByMiddleware>();
             app.UseMiddleware<DNTMiddleware>();
 
-            if (_configuration.GetValue<bool>("AppSettings:PreferAzureAppConfiguration"))
+            if (_configuration.GetValue<bool>("PreferAzureAppConfiguration"))
             {
                 app.UseAzureAppConfiguration();
             }
