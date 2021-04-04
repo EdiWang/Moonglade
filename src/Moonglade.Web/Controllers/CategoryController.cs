@@ -9,14 +9,12 @@ using Moonglade.Auth;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Utils;
-using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [ApiController]
-    [AppendAppVersion]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {

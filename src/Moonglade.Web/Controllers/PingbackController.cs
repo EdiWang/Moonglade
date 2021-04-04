@@ -11,12 +11,10 @@ using Moonglade.Configuration.Abstraction;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Pingback.AspNetCore;
-using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers
 {
     [ApiController]
-    [AppendAppVersion]
     [Route("pingback")]
     public class PingbackController : ControllerBase
     {

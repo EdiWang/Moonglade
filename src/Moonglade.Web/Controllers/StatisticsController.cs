@@ -9,7 +9,6 @@ using Moonglade.Web.Filters;
 namespace Moonglade.Web.Controllers
 {
     [ApiController]
-    [AppendAppVersion]
     [Route("api/[controller]")]
     public class StatisticsController : ControllerBase
     {

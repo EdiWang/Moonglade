@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
-using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using NUnit.Framework;
 
@@ -17,19 +16,6 @@ namespace Moonglade.Web.Tests.Filters
     [ExcludeFromCodeCoverage]
     public class FiltersTests
     {
-        [Test]
-        public void AppendMoongladeVersionAttribute_OnResultExecuting()
-        {
-            var ctx = CreateResultExecutingContext(null);
-
-            var att = new AppendAppVersion();
-            att.OnResultExecuting(ctx);
-
-            var header = ctx.HttpContext.Response.Headers["X-Moonglade-Version"];
-            Assert.IsNotNull(header);
-            Assert.AreEqual(header, Helper.AppVersion);
-        }
-
         [Test]
         public void ClearPagingCountCache_OnActionExecuted()
         {

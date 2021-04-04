@@ -5,13 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.DataPorting;
 using Moonglade.Utils;
-using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [ApiController]
-    [AppendAppVersion]
     [Route("api/[controller]")]
     public class DataPortingController : ControllerBase
     {
