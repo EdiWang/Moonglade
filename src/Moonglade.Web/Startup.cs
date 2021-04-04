@@ -19,7 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.FeatureManagement;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
