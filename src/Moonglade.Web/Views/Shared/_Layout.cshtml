@@ -62,9 +62,11 @@
     {
         <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" />
     }
-    <feature name="RSD">
+
+    @if (BlogConfig.AdvancedSettings.EnableMetaWeblog)
+    {
         <rsd href="/rsd" />
-    </feature>
+    }
     <feature name="Foaf">
         <foaf href="/foaf.xml" />
     </feature>

@@ -156,10 +156,10 @@ namespace Moonglade.Web
                 options.IconFilePath = "/favicon-16x16.png";
             });
 
-            app.UseMiddlewareForFeature<RSDMiddleware>(nameof(FeatureFlags.RSD));
 
             if (blogConfig.AdvancedSettings.EnableMetaWeblog)
             {
+                app.UseMiddleware<RSDMiddleware>();
                 app.UseMetaWeblog("/metaweblog");
             }
 
