@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.FriendLink;
 using Moonglade.Web.BlogProtocols;
+using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 

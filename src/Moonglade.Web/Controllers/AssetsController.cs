@@ -8,19 +8,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
-using Moonglade.FriendLink;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
-using Moonglade.Web.BlogProtocols;
 
 namespace Moonglade.Web.Controllers
 {
@@ -281,41 +277,5 @@ namespace Moonglade.Web.Controllers
         }
 
         #endregion
-
-        [FeatureGate(FeatureFlags.Foaf)]
-        [ResponseCache(Duration = 3600)]
-        [HttpGet("foaf.xml")]
-        public async Task<IActionResult> Foaf(
-            [FromServices] IFoafWriter foafWriter,
-            [FromServices] IFriendLinkService friendLinkService,
-            [FromServices] LinkGenerator linkGenerator)
-        {
-            static Uri GetUri(HttpRequest request)
-            {
-                return new(string.Concat(
-                    request.Scheme,
-                    "://",
-                    request.Host.HasValue
-                        ? (request.Host.Value.IndexOf(",", StringComparison.Ordinal) > 0
-                            ? "MULTIPLE-HOST"
-                            : request.Host.Value)
-                        : "UNKNOWN-HOST",
-                    request.Path.HasValue ? request.Path.Value : string.Empty,
-                    request.QueryString.HasValue ? request.QueryString.Value : string.Empty));
-            }
-
-            var friends = await friendLinkService.GetAllAsync();
-            var foafDoc = new FoafDoc
-            {
-                Name = _blogConfig.GeneralSettings.OwnerName,
-                BlogUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix, true),
-                Email = _blogConfig.GeneralSettings.OwnerEmail,
-                PhotoUrl = linkGenerator.GetUriByAction(HttpContext, "Avatar", "Assets")
-            };
-            var requestUrl = GetUri(Request).ToString();
-            var xml = await foafWriter.GetFoafData(foafDoc, requestUrl, friends);
-
-            return Content(xml, FoafWriter.ContentType);
-        }
     }
 }

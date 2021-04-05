@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Moonglade.Web.Models;
 
 namespace Moonglade.Web.BlogProtocols
 {

@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Web.BlogProtocols
+﻿namespace Moonglade.Web.Models
 {
     public class FoafDoc
     {

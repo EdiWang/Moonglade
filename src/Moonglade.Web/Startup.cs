@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
@@ -173,6 +174,7 @@ namespace Moonglade.Web
                 options.IconFilePath = "/favicon-16x16.png";
             });
 
+            app.UseMiddlewareForFeature<FoafMiddleware>(nameof(FeatureFlags.Foaf));
 
             if (blogConfig.AdvancedSettings.EnableMetaWeblog)
             {
