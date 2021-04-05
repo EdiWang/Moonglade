@@ -31,6 +31,7 @@ function callApi(uri, method, request, funcSuccess, funcAlways) {
 async function handleHttpError(response) {
     switch (response.status) {
         case 400:
+        case 409:
             notyf.error(await buildErrorMessage2(response));
             break;
         case 401:
@@ -38,9 +39,6 @@ async function handleHttpError(response) {
             break;
         case 404:
             notyf.error('Endpoint not found');
-            break;
-        case 409:
-            notyf.error(await buildErrorMessage2(response));
             break;
         case 429:
             notyf.error('Too many requests');
@@ -59,15 +57,21 @@ async function buildErrorMessage2(response) {
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.indexOf('application/json') !== -1) {
         var data = await response.json();
-        console.info(data);
+        var t = typeof (data);
+        
+        if (data.combinedErrorMessage) {
+            return data.combinedErrorMessage;
+        } else if (t == 'string') {
+            return data;
+        } else {
+            var errorMessage2 = 'Error(s):\n\r';
 
-        var errorMessage2 = 'Error(s):\n\r';
+            Object.keys(data).forEach(function (k) {
+                errorMessage2 += (k + ': ' + data[k]) + '\n\r';
+            });
 
-        Object.keys(data).forEach(function (k) {
-            errorMessage2 += (k + ': ' + data[k]) + '\n\r';
-        });
-
-        return errorMessage2;
+            return errorMessage2;
+        }
     } else {
         var text = await response.text();
         return text;

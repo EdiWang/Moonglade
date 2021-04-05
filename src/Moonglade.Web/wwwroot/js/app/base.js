@@ -73,13 +73,17 @@ function getResponsiveBreakpoint() {
 function buildErrorMessage(responseObject) {
     if (responseObject.responseJSON) {
         var json = responseObject.responseJSON;
-        var errorMessage = 'Error(s):\n\r';
+        if (json.combinedErrorMessage) {
+            return json.combinedErrorMessage;
+        } else {
+            var errorMessage = 'Error(s):\n\r';
 
-        Object.keys(json).forEach(function (k) {
-            errorMessage += (k + ': ' + json[k]) + '\n\r';
-        });
+            Object.keys(json).forEach(function (k) {
+                errorMessage += (k + ': ' + json[k]) + '\n\r';
+            });
 
-        return errorMessage;
+            return errorMessage;
+        }
     }
 
     if (responseObject.responseText) {
