@@ -13,7 +13,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
-using Moonglade.Web.BlogProtocols;
 
 namespace Moonglade.Web.Middleware
 {
@@ -53,8 +52,8 @@ namespace Moonglade.Web.Middleware
         }
 
         private async Task<string> GetSiteMapData(
-            string siteRootUrl, 
-            SiteMapSettings settings, 
+            string siteRootUrl,
+            SiteMapSettings settings,
             IRepository<PostEntity> postRepo,
             IRepository<PageEntity> pageRepo)
         {

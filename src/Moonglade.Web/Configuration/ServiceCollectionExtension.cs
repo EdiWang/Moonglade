@@ -21,11 +21,10 @@ using Moonglade.Menus;
 using Moonglade.Notification.Client;
 using Moonglade.Pages;
 using Moonglade.Syndication;
-using Moonglade.Web.BlogProtocols;
 using Moonglade.Web.Filters;
+using Moonglade.Web.Middleware;
 using Polly;
 using WilderMinds.MetaWeblog;
-using MetaWeblogService = Moonglade.Web.MetaWeblogService;
 
 namespace Moonglade.Web.Configuration
 {

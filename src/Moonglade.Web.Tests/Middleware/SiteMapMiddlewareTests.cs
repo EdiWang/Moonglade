@@ -9,7 +9,6 @@ using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
-using Moonglade.Web.BlogProtocols;
 using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;

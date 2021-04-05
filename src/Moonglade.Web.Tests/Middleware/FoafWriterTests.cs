@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.FriendLink;
-using Moonglade.Web.BlogProtocols;
+using Moonglade.Web.Middleware;
 using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.BlogProtocols
+namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

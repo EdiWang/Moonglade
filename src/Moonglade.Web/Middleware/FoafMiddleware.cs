@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.FriendLink;
 using Moonglade.Utils;
-using Moonglade.Web.BlogProtocols;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Middleware
