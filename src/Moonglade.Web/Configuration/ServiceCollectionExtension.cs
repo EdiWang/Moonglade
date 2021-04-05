@@ -25,7 +25,7 @@ using Moonglade.Web.BlogProtocols;
 using Moonglade.Web.Filters;
 using Polly;
 using WilderMinds.MetaWeblog;
-using MetaWeblogService = Moonglade.Web.BlogProtocols.MetaWeblogService;
+using MetaWeblogService = Moonglade.Web.MetaWeblogService;
 
 namespace Moonglade.Web.Configuration
 {

@@ -12,11 +12,10 @@ using Moonglade.Pages;
 using Moq;
 using NUnit.Framework;
 using WilderMinds.MetaWeblog;
-using MetaWeblogService = Moonglade.Web.BlogProtocols.MetaWeblogService;
 using Post = Moonglade.Core.Post;
 using Tag = Moonglade.Core.Tag;
 
-namespace Moonglade.Web.Tests.BlogProtocols
+namespace Moonglade.Web.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]

@@ -13,7 +13,7 @@ using Page = WilderMinds.MetaWeblog.Page;
 using Post = WilderMinds.MetaWeblog.Post;
 using Tag = WilderMinds.MetaWeblog.Tag;
 
-namespace Moonglade.Web.BlogProtocols
+namespace Moonglade.Web
 {
     public class MetaWeblogService : IMetaWeblogProvider
     {
