@@ -64,7 +64,7 @@ namespace Moonglade.Web.Tests.Middleware
 
             await middleware.Invoke(ctx, _mockBlogConfig.Object, _mockManifestIcons.Object);
             Assert.AreEqual(200, ctx.Response.StatusCode);
-            Assert.AreEqual("application/json", ctx.Response.ContentType);
+            Assert.AreEqual("application/json; charset=utf-8", ctx.Response.ContentType);
             Assert.IsNotNull(ctx.Response.Headers["cache-control"]);
         }
     }

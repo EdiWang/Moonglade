@@ -44,10 +44,7 @@ namespace Moonglade.Web.Tests.ViewComponents
             var component = CreateComponent();
             var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));
 
-            Assert.IsInstanceOf<ViewViewComponentResult>(result);
-
-            var message = ((ViewViewComponentResult)result).ViewData["ComponentErrorMessage"];
-            Assert.AreEqual("996", message);
+            Assert.IsInstanceOf<ContentViewComponentResult>(result);
         }
 
         [Test]
@@ -56,8 +53,7 @@ namespace Moonglade.Web.Tests.ViewComponents
             var component = CreateComponent();
             var result = await component.InvokeAsync(Guid.Empty);
 
-            Assert.IsInstanceOf<ViewViewComponentResult>(result);
-            Assert.AreEqual("Error", ((ViewViewComponentResult)result).ViewName);
+            Assert.IsInstanceOf<ContentViewComponentResult>(result);
         }
 
         [Test]

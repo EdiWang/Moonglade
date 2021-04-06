@@ -43,10 +43,7 @@ namespace Moonglade.Web.Tests.ViewComponents
             var component = CreateComponent();
             var result = await component.InvokeAsync();
 
-            Assert.IsInstanceOf<ViewViewComponentResult>(result);
-
-            var message = ((ViewViewComponentResult)result).ViewData["ComponentErrorMessage"];
-            Assert.AreEqual("996", message);
+            Assert.IsInstanceOf<ContentViewComponentResult>(result);
         }
 
         [Test]
