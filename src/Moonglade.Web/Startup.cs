@@ -50,10 +50,9 @@ namespace Moonglade.Web
 
             // Workaround stupid ASP.NET "by design" issue
             // https://github.com/aspnet/Configuration/issues/451
-            _supportedCultures = _configuration.GetSection("SupportedCultures")
-                .GetChildren()
-                .Select(p => new CultureInfo(p.Value))
-                .ToList();
+            _supportedCultures = _configuration.GetSection("SupportedCultures").Get<string[]>()
+                                               .Select(p => new CultureInfo(p))
+                                               .ToList();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -210,9 +209,7 @@ namespace Moonglade.Web
 
             app.UseDefaultImage(options =>
             {
-                options.AllowedExtensions = _configuration.GetSection("ImageStorage:AllowedExtensions")
-                    .GetChildren()
-                    .Select(x => x.Value);
+                options.AllowedExtensions = _configuration.GetSection("ImageStorage:AllowedExtensions").Get<string[]>();
                 options.DefaultImagePath = _configuration["ImageStorage:DefaultImagePath"];
             });
 
