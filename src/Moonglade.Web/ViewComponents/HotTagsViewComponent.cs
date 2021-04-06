@@ -27,8 +27,7 @@ namespace Moonglade.Web.ViewComponents
             }
             catch (Exception e)
             {
-                ViewBag.ComponentErrorMessage = e.Message;
-                return View("~/Views/Shared/ComponentError.cshtml");
+                return Content(e.Message);
             }
         }
     }
