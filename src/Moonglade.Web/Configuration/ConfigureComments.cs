@@ -11,9 +11,10 @@ namespace Moonglade.Web.Configuration
         {
             services.AddScoped<ICommentService, CommentService>();
 
-            var settings = new CommentModeratorSettings();
-            configuration.Bind("CommentModerator", settings);
-            services.Configure<CommentModeratorSettings>(configuration.GetSection("CommentModerator"));
+            var section = configuration.GetSection("CommentModerator");
+            var settings = section.Get<CommentModeratorSettings>();
+
+            services.Configure<CommentModeratorSettings>(section);
 
             if (string.IsNullOrWhiteSpace(settings.Provider))
             {

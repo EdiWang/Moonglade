@@ -21,10 +21,10 @@ namespace Moonglade.Web.Configuration
         {
             options(Options);
 
-            var imageStorage = new ImageStorageSettings();
-            configuration.Bind(nameof(ImageStorage), imageStorage);
-            services.Configure<ImageStorageSettings>(configuration.GetSection(nameof(ImageStorage)));
-
+            var section = configuration.GetSection(nameof(ImageStorage));
+            var imageStorage = section.Get<ImageStorageSettings>();
+            
+            services.Configure<ImageStorageSettings>(section);
             services.AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
 
             if (null == imageStorage.Provider)

@@ -11,9 +11,9 @@ namespace Moonglade.Auth
     {
         public static void AddBlogAuthenticaton(this IServiceCollection services, IConfiguration configuration)
         {
-            var authentication = new AuthenticationSettings();
-            configuration.Bind("Authentication", authentication);
-            services.Configure<AuthenticationSettings>(configuration.GetSection("Authentication"));
+            var section = configuration.GetSection("Authentication");
+            var authentication = section.Get<AuthenticationSettings>();
+            services.Configure<AuthenticationSettings>(section);
             services.AddScoped<IGetApiKeyQuery, AppSettingsGetApiKeyQuery>();
             services.AddScoped<ILocalAccountService, LocalAccountService>();
 
