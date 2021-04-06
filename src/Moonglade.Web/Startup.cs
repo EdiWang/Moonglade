@@ -50,7 +50,7 @@ namespace Moonglade.Web
 
             // Workaround stupid ASP.NET "by design" issue
             // https://github.com/aspnet/Configuration/issues/451
-            _supportedCultures = _appSettings.GetSection("SupportedCultures")
+            _supportedCultures = _configuration.GetSection("SupportedCultures")
                 .GetChildren()
                 .Select(p => new CultureInfo(p.Value))
                 .ToList();
@@ -220,8 +220,8 @@ namespace Moonglade.Web
             app.UseSession().UseCaptchaImage(options =>
             {
                 options.RequestPath = "/captcha-image";
-                options.ImageHeight = int.Parse(_configuration["CaptchaSettings:ImageHeight"]);
-                options.ImageWidth = int.Parse(_configuration["CaptchaSettings:ImageWidth"]);
+                options.ImageHeight = _configuration.GetValue<int>("CaptchaSettings:ImageHeight");
+                options.ImageWidth = _configuration.GetValue<int>("CaptchaSettings:ImageWidth");
             });
 
             app.UseIpRateLimiting();
