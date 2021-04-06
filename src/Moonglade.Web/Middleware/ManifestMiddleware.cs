@@ -39,13 +39,11 @@ namespace Moonglade.Web.Middleware
                     Orientation = "portrait"
                 };
 
-                var json = JsonSerializer.Serialize(model);
-
                 context.Response.StatusCode = StatusCodes.Status200OK;
                 context.Response.ContentType = "application/json";
                 context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
-                await context.Response.WriteAsync(json, context.RequestAborted);
+                await context.Response.WriteAsJsonAsync(model, context.RequestAborted);
             }
             else
             {

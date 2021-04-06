@@ -51,7 +51,7 @@ namespace Moonglade.Web.Middleware
             }
         }
 
-        private async Task<string> GetSiteMapData(
+        private static async Task<string> GetSiteMapData(
             string siteRootUrl,
             SiteMapSettings settings,
             IRepository<PostEntity> postRepo,
