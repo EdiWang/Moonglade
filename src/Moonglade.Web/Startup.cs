@@ -138,9 +138,6 @@ namespace Moonglade.Web
         {
             _logger = logger;
 
-            // Support Chinese contents
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
             if (_environment.IsDevelopment())
             {
                 app.UseSwagger();

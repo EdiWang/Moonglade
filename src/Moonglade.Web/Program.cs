@@ -2,6 +2,7 @@
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,9 @@ namespace Moonglade.Web
                        $"User:\t{Environment.UserName}";
             Trace.WriteLine(info);
             Console.WriteLine(info);
+
+            // Support Chinese contents
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             var host = CreateHostBuilder(args).Build();
 
