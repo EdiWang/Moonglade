@@ -130,23 +130,23 @@ namespace Moonglade.Web.Controllers
                 MemoryStream watermarkedStream = null;
                 if (_blogConfig.WatermarkSettings.IsEnabled)
                 {
-                    if (null == _imageStorageSettings.NoWatermarkExtensions
-                        || _imageStorageSettings.NoWatermarkExtensions.All(
+                    if (null == _imageStorageSettings.Watermark.NoWatermarkExtensions
+                        || _imageStorageSettings.Watermark.NoWatermarkExtensions.All(
                             p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
                     {
                         using var watermarker = new ImageWatermarker(stream, ext);
-                        watermarker.SkipImageSize(_settings.WatermarkSkipPixel);
+                        watermarker.SkipImageSize(_imageStorageSettings.Watermark.WatermarkSkipPixel);
 
                         // Get ARGB values
-                        var colorArray = _settings.WatermarkARGB;
+                        var colorArray = _imageStorageSettings.Watermark.WatermarkARGB;
                         if (colorArray.Length != 4)
                         {
-                            throw new InvalidDataException($"'{nameof(_settings.WatermarkARGB)}' must be an integer array with 4 items.");
+                            throw new InvalidDataException($"'{nameof(_imageStorageSettings.Watermark.WatermarkARGB)}' must be an integer array with 4 items.");
                         }
 
                         if (colorArray.Any(c => !IsValidColorValue(c)))
                         {
-                            throw new InvalidDataException($"'{nameof(_settings.WatermarkARGB)}' values must all fall in range 0-255.");
+                            throw new InvalidDataException($"'{nameof(_imageStorageSettings.Watermark.WatermarkARGB)}' values must all fall in range 0-255.");
                         }
 
                         watermarkedStream = watermarker.AddWatermark(
