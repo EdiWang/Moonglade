@@ -104,6 +104,15 @@
     color: var(--gray-3);
 }
 
+.darkmode .modal-content {
+    color: var(--gray-3);
+    background-color: var(--moca-dark-1);
+}
+
+.darkmode .close {
+    color: var(--gray-3);
+}
+
 @media (max-width: 767px) {
     .darkmode .article-post-summary {
         border-bottom: 1px solid var(--gray-7);
