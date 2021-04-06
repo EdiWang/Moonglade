@@ -217,8 +217,8 @@ namespace Moonglade.Web
             app.UseSession().UseCaptchaImage(options =>
             {
                 options.RequestPath = "/captcha-image";
-                options.ImageHeight = _configuration.GetValue<int>("CaptchaSettings:ImageHeight");
-                options.ImageWidth = _configuration.GetValue<int>("CaptchaSettings:ImageWidth");
+                options.ImageHeight = _configuration.GetValue<int>("Captcha:ImageHeight");
+                options.ImageWidth = _configuration.GetValue<int>("Captcha:ImageWidth");
             });
 
             app.UseIpRateLimiting();
