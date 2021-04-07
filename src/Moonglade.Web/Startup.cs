@@ -230,7 +230,6 @@ namespace Moonglade.Web
             {
                 endpoints.MapGet("/ping", async context =>
                 {
-                    context.Response.Headers.Add("X-Moonglade-Version", Helper.AppVersion);
                     var obj = new
                     {
                         MoongladeVersion = Helper.AppVersion,
