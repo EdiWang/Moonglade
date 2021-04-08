@@ -70,24 +70,7 @@ namespace Moonglade.Web
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-                    .ConfigureApiBehaviorOptions(
-                    options =>
-                    {
-                        options.InvalidModelStateResponseFactory = context =>
-                        {
-                            // Refer https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/ControllerBase.cs,1885
-                            var errorModel = new BlogApiErrorModel
-                            {
-                                CombinedErrorMessage = context.ModelState.CombineErrorMessages(),
-                                RequestId = context.HttpContext.TraceIdentifier
-                            };
-
-                            return new ObjectResult(errorModel)
-                            {
-                                StatusCode = StatusCodes.Status400BadRequest
-                            };
-                        };
-                    })
+                    .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior)
                     .AddViewLocalization()
                     .AddDataAnnotationsLocalization().AddRazorPagesOptions(options =>
                     {
@@ -193,19 +176,7 @@ namespace Moonglade.Web
             }
             else
             {
-                app.UseStatusCodePages(async context =>
-                {
-                    var statusCode = context.HttpContext.Response.StatusCode;
-                    var requestId = context.HttpContext.TraceIdentifier;
-                    var description = ReasonPhrases.GetReasonPhrase(context.HttpContext.Response.StatusCode);
-
-                    await context.HttpContext.Response.WriteAsJsonAsync(new
-                    {
-                        statusCode,
-                        requestId,
-                        description
-                    }, context.HttpContext.RequestAborted);
-                });
+                app.UseStatusCodePages(ConfigureStatusCodePages.Handler);
                 app.UseExceptionHandler("/error");
                 app.UseHttpsRedirection();
                 app.UseHsts();
