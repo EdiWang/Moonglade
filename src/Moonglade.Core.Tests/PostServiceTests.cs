@@ -224,5 +224,52 @@ namespace Moonglade.Core.Tests
             _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
             Assert.IsFalse(post.IsDeleted);
         }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task DeleteAsync_NullPost(bool softDelete)
+        {
+            _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
+
+            var svc = CreateService();
+            await svc.DeleteAsync(Guid.Empty, softDelete);
+
+            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()), Times.Never);
+            _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<PostEntity>()), Times.Never);
+        }
+
+        [Test]
+        public async Task DeleteAsync_SoftDelete()
+        {
+            var post = new PostEntity
+            {
+                IsDeleted = false
+            };
+
+            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
+
+            var svc = CreateService();
+            await svc.DeleteAsync(Uid, true);
+
+            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
+            Assert.IsTrue(post.IsDeleted);
+        }
+
+        [Test]
+        public async Task DeleteAsync_HardDelete()
+        {
+            var post = new PostEntity
+            {
+                IsDeleted = false
+            };
+
+            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
+
+            var svc = CreateService();
+            await svc.DeleteAsync(Uid);
+
+            _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<PostEntity>()));
+            Assert.IsFalse(post.IsDeleted);
+        }
     }
 }
