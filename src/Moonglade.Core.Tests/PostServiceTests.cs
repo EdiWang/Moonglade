@@ -26,12 +26,12 @@ namespace Moonglade.Core.Tests
         private Mock<ILogger<PostService>> _mockLogger;
         private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
         private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
-        private Mock<IRepository<TagEntity>> _mockRepositoryTagEntity;
+        private Mock<IRepository<TagEntity>> _mockTagEntityRepo;
         private Mock<IRepository<PostTagEntity>> _mockPostTagEntityRepo;
         private Mock<IRepository<PostCategoryEntity>> _mockRepositoryPostCategoryEntity;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<IBlogCache> _mockBlogCache;
-        private Mock<IOptions<Dictionary<string, string>>> _mockOptionsListTagNormalization;
+        private Mock<IOptions<Dictionary<string, string>>> _mockOptionsTagNormalization;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
 
@@ -43,12 +43,12 @@ namespace Moonglade.Core.Tests
             _mockLogger = _mockRepository.Create<ILogger<PostService>>();
             _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
             _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
-            _mockRepositoryTagEntity = _mockRepository.Create<IRepository<TagEntity>>();
+            _mockTagEntityRepo = _mockRepository.Create<IRepository<TagEntity>>();
             _mockPostTagEntityRepo = _mockRepository.Create<IRepository<PostTagEntity>>();
             _mockRepositoryPostCategoryEntity = _mockRepository.Create<IRepository<PostCategoryEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
-            _mockOptionsListTagNormalization = _mockRepository.Create<IOptions<Dictionary<string, string>>>();
+            _mockOptionsTagNormalization = _mockRepository.Create<IOptions<Dictionary<string, string>>>();
         }
 
         private PostService CreateService()
@@ -57,12 +57,12 @@ namespace Moonglade.Core.Tests
                 _mockLogger.Object,
                 _mockOptionsAppSettings.Object,
                 _mockPostEntityRepo.Object,
-                _mockRepositoryTagEntity.Object,
+                _mockTagEntityRepo.Object,
                 _mockPostTagEntityRepo.Object,
                 _mockRepositoryPostCategoryEntity.Object,
                 _mockBlogAudit.Object,
                 _mockBlogCache.Object,
-                _mockOptionsListTagNormalization.Object);
+                _mockOptionsTagNormalization.Object);
         }
 
         [Test]
@@ -195,6 +195,44 @@ namespace Moonglade.Core.Tests
             var result = await svc.ListFeatured(7, 404);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<FeaturedPostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
+        }
+
+        [Test]
+        public async Task CreateAsync_HTMLEditor_HappyPath()
+        {
+            _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings()
+            {
+                PostAbstractWords = 404,
+                Editor = EditorChoice.Html
+            });
+
+            _mockOptionsTagNormalization.Setup(p => p.Value).Returns(new Dictionary<string, string>());
+            _mockPostEntityRepo.Setup(p => p.Any(It.IsAny<PostSpec>())).Returns(false);
+            _mockTagEntityRepo.Setup(p => p.GetAsync(It.IsAny<Expression<Func<TagEntity, bool>>>()))
+                .Returns(Task.FromResult((TagEntity)null));
+            _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
+
+            var req = new UpdatePostRequest
+            {
+                Title = "Work 996 and Get into ICU",
+                Slug = "work-996-and-get-into-icu",
+                ContentLanguageCode = "en-us",
+                EditorContent = "<p>996 is fubao</p>",
+                EnableComment = true,
+                ExposedToSiteMap = true,
+                IsFeedIncluded = true,
+                IsPublished = true,
+                IsSelected = true,
+                Tags = new[] { "996", "Fubao" },
+                CategoryIds = new[] { Uid }
+            };
+
+            var svc = CreateService();
+            var result = await svc.CreateAsync(req);
+
+            Assert.IsNotNull(result);
+            Assert.AreNotEqual(Guid.Empty, result.Id);
+            _mockPostEntityRepo.Verify(p => p.AddAsync(It.IsAny<PostEntity>()));
         }
 
         [Test]
