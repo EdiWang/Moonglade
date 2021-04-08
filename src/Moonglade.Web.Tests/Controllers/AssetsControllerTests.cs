@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
@@ -92,7 +93,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
             {
-                CacheSlidingExpirationMinutes = new()
+                CacheSlidingExpirationMinutes = new Dictionary<string, int>
                 {
                     { "Image", 996 }
                 }
@@ -120,7 +121,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
             {
-                CacheSlidingExpirationMinutes = new()
+                CacheSlidingExpirationMinutes = new Dictionary<string, int>
                 {
                     { "Image", 996 }
                 }
@@ -152,7 +153,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
             {
-                CacheSlidingExpirationMinutes = new()
+                CacheSlidingExpirationMinutes = new Dictionary<string, int>
                 {
                     { "Image", 996 }
                 }
