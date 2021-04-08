@@ -23,7 +23,7 @@ namespace Moonglade.Web.Configuration
 
             var section = configuration.GetSection(nameof(ImageStorage));
             var imageStorage = section.Get<ImageStorageSettings>();
-            
+
             services.Configure<ImageStorageSettings>(section);
             services.AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
 

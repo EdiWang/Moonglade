@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -21,7 +21,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Auth;
-using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Configuration.Settings;
 using Moonglade.Utils;
@@ -194,7 +193,19 @@ namespace Moonglade.Web
             }
             else
             {
-                app.UseStatusCodePages();
+                app.UseStatusCodePages(async context =>
+                {
+                    var statusCode = context.HttpContext.Response.StatusCode;
+                    var requestId = context.HttpContext.TraceIdentifier;
+                    var description = ReasonPhrases.GetReasonPhrase(context.HttpContext.Response.StatusCode);
+
+                    await context.HttpContext.Response.WriteAsJsonAsync(new
+                    {
+                        statusCode,
+                        requestId,
+                        description
+                    }, context.HttpContext.RequestAborted);
+                });
                 app.UseExceptionHandler("/error");
                 app.UseHttpsRedirection();
                 app.UseHsts();
@@ -225,25 +236,7 @@ namespace Moonglade.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/ping", async context =>
-                {
-                    var obj = new
-                    {
-                        MoongladeVersion = Helper.AppVersion,
-                        DotNetVersion = Environment.Version.ToString(),
-                        EnvironmentTags = Helper.GetEnvironmentTags()
-                    };
-
-                    await context.Response.WriteAsync(obj.ToJson(), Encoding.UTF8);
-                });
-                endpoints.MapControllerRoute(
-                    "default",
-                    "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
-            });
+            app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
         }
     }
 }
