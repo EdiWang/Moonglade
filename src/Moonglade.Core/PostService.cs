@@ -297,7 +297,7 @@ namespace Moonglade.Core
                 ContentLanguageCode = request.ContentLanguageCode,
                 ExposedToSiteMap = request.ExposedToSiteMap,
                 IsFeedIncluded = request.IsFeedIncluded,
-                PubDateUtc = request.IsPublished ? DateTime.UtcNow : (DateTime?)null,
+                PubDateUtc = request.IsPublished ? DateTime.UtcNow : null,
                 IsDeleted = false,
                 IsPublished = request.IsPublished,
                 IsFeatured = request.IsSelected,
