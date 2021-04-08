@@ -22,7 +22,7 @@ namespace Moonglade.Core.Tests
         private Mock<IRepository<TagEntity>> _mockRepositoryTagEntity;
         private Mock<IRepository<PostTagEntity>> _mockRepositoryPostTagEntity;
         private Mock<IBlogAudit> _mockBlogAudit;
-        private Mock<IOptions<IDictionary<string, string>>> _mockOptions;
+        private Mock<IOptions<Dictionary<string, string>>> _mockOptions;
 
         [SetUp]
         public void SetUp()
@@ -32,7 +32,7 @@ namespace Moonglade.Core.Tests
             _mockRepositoryTagEntity = _mockRepository.Create<IRepository<TagEntity>>();
             _mockRepositoryPostTagEntity = _mockRepository.Create<IRepository<PostTagEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-            _mockOptions = _mockRepository.Create<IOptions<IDictionary<string, string>>>();
+            _mockOptions = _mockRepository.Create<IOptions<Dictionary<string, string>>>();
         }
 
         private TagService CreateService()
