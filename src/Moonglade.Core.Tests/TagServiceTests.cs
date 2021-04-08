@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
-using Moonglade.Configuration.Settings;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -24,7 +22,7 @@ namespace Moonglade.Core.Tests
         private Mock<IRepository<TagEntity>> _mockRepositoryTagEntity;
         private Mock<IRepository<PostTagEntity>> _mockRepositoryPostTagEntity;
         private Mock<IBlogAudit> _mockBlogAudit;
-        private Mock<IOptions<List<TagNormalization>>> _mockOptions;
+        private Mock<IOptions<IDictionary<string, string>>> _mockOptions;
 
         [SetUp]
         public void SetUp()
@@ -34,7 +32,7 @@ namespace Moonglade.Core.Tests
             _mockRepositoryTagEntity = _mockRepository.Create<IRepository<TagEntity>>();
             _mockRepositoryPostTagEntity = _mockRepository.Create<IRepository<PostTagEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-            _mockOptions = _mockRepository.Create<IOptions<List<TagNormalization>>>();
+            _mockOptions = _mockRepository.Create<IOptions<IDictionary<string, string>>>();
         }
 
         private TagService CreateService()
@@ -83,11 +81,11 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task Create_Exists()
         {
-            var dic = new TagNormalization[]
+            var dic = new Dictionary<string, string>
             {
-                new() { Source = " ", Target = "-" }
+                { " ", "-" }
             };
-            _mockOptions.Setup(p => p.Value).Returns(dic.ToList());
+            _mockOptions.Setup(p => p.Value).Returns(dic);
             _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(true);
             _mockRepositoryTagEntity.Setup(p =>
                     p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>(), true))
@@ -102,11 +100,11 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task Create_New()
         {
-            var dic = new TagNormalization[]
+            var dic = new Dictionary<string, string>
             {
-                new() { Source = " ", Target = "-" }
+                { " ", "-" }
             };
-            _mockOptions.Setup(p => p.Value).Returns(dic.ToList());
+            _mockOptions.Setup(p => p.Value).Returns(dic);
             _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(false);
             _mockRepositoryTagEntity.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(
                 new TagEntity
@@ -145,7 +143,7 @@ namespace Moonglade.Core.Tests
                     NormalizedName = "ma-yun"
                 }));
 
-            _mockOptions.Setup(p => p.Value).Returns(new List<TagNormalization>());
+            _mockOptions.Setup(p => p.Value).Returns(new Dictionary<string, string>());
 
             var svc = CreateService();
             await svc.UpdateAsync(996, "fubao");
@@ -188,11 +186,11 @@ namespace Moonglade.Core.Tests
         [TestCase("955", ExpectedResult = "955")]
         public string NormalizeTagNameEnglish(string str)
         {
-            var dic = new TagNormalization[]
+            var dic = new Dictionary<string, string>
             {
-                new() { Source = " ", Target = "-" },
-                new() { Source = "#", Target = "sharp" },
-                new() { Source = ".", Target = "dot" }
+                { " ", "-" },
+                { "#", "sharp" },
+                { ".", "dot" }
             };
 
             return TagService.NormalizeTagName(str, dic);
@@ -201,7 +199,7 @@ namespace Moonglade.Core.Tests
         [TestCase("福报", ExpectedResult = "8f-79-a5-62")]
         public string NormalizeTagNameNonEnglish(string str)
         {
-            var dic = Array.Empty<TagNormalization>();
+            var dic = new Dictionary<string, string>();
             return TagService.NormalizeTagName(str, dic);
         }
 

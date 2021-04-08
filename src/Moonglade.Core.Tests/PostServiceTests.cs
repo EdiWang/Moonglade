@@ -31,7 +31,7 @@ namespace Moonglade.Core.Tests
         private Mock<IRepository<PostCategoryEntity>> _mockRepositoryPostCategoryEntity;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<IBlogCache> _mockBlogCache;
-        private Mock<IOptions<List<TagNormalization>>> _mockOptionsListTagNormalization;
+        private Mock<IOptions<Dictionary<string, string>>> _mockOptionsListTagNormalization;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
 
@@ -48,7 +48,7 @@ namespace Moonglade.Core.Tests
             _mockRepositoryPostCategoryEntity = _mockRepository.Create<IRepository<PostCategoryEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
-            _mockOptionsListTagNormalization = _mockRepository.Create<IOptions<List<TagNormalization>>>();
+            _mockOptionsListTagNormalization = _mockRepository.Create<IOptions<Dictionary<string, string>>>();
         }
 
         private PostService CreateService()

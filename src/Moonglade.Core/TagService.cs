@@ -31,7 +31,7 @@ namespace Moonglade.Core
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IBlogAudit _audit;
-        private readonly IOptions<List<TagNormalization>> _tagNormalization;
+        private readonly IOptions<Dictionary<string, string>> _tagNormalization;
 
         private readonly Expression<Func<TagEntity, Tag>> _tagSelector = t => new()
         {
@@ -44,7 +44,7 @@ namespace Moonglade.Core
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
             IBlogAudit audit,
-            IOptions<List<TagNormalization>> tagNormalization)
+            IOptions<Dictionary<string, string>> tagNormalization)
         {
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
@@ -144,7 +144,7 @@ namespace Moonglade.Core
                 }, t.Posts.Count));
         }
 
-        public static string NormalizeTagName(string orgTagName, IList<TagNormalization> normalizations)
+        public static string NormalizeTagName(string orgTagName, IDictionary<string, string> normalizations)
         {
             var isEnglishName = Regex.IsMatch(orgTagName, @"^[a-zA-Z 0-9\.\-\+\#\s]*$");
             if (isEnglishName)
@@ -152,7 +152,7 @@ namespace Moonglade.Core
                 var result = new StringBuilder(orgTagName);
                 foreach (var item in normalizations)
                 {
-                    result.Replace(item.Source, item.Target);
+                    result.Replace(item.Key, item.Value);
                 }
                 return result.ToString().ToLower();
             }

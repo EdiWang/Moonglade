@@ -43,7 +43,7 @@ namespace Moonglade.Core
         private readonly IBlogCache _cache;
         private readonly ILogger<PostService> _logger;
         private readonly AppSettings _settings;
-        private readonly IOptions<List<TagNormalization>> _tagNormalization;
+        private readonly IOptions<IDictionary<string, string>> _tagNormalization;
 
         #region Repository Objects
 
@@ -142,7 +142,7 @@ namespace Moonglade.Core
             IRepository<PostCategoryEntity> postCatRepo,
             IBlogAudit audit,
             IBlogCache cache,
-            IOptions<List<TagNormalization>> tagNormalization)
+            IOptions<IDictionary<string, string>> tagNormalization)
         {
             _logger = logger;
             _settings = settings.Value;
