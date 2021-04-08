@@ -6,7 +6,7 @@ namespace Moonglade.Configuration.Settings
     {
         public EditorChoice Editor { get; set; }
         public int PostAbstractWords { get; set; }
-        public Dictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
+        public IDictionary<string, int> CacheSlidingExpirationMinutes { get; set; }
         public SiteMapSettings SiteMap { get; set; }
 
         public AppSettings()
