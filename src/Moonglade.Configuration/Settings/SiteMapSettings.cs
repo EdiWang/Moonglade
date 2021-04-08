@@ -6,6 +6,6 @@ namespace Moonglade.Configuration.Settings
     {
         public string UrlSetNamespace { get; set; }
 
-        public Dictionary<string, string> ChangeFreq { get; set; }
+        public IDictionary<string, string> ChangeFreq { get; set; }
     }
 }
