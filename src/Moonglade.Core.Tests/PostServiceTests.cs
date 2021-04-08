@@ -196,5 +196,33 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<FeaturedPostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
         }
+
+        [Test]
+        public async Task RestoreAsync_NullPost()
+        {
+            _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
+
+            var svc = CreateService();
+            await svc.RestoreAsync(Guid.Empty);
+
+            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()), Times.Never);
+        }
+
+        [Test]
+        public async Task RestoreAsync_OK()
+        {
+            var post = new PostEntity
+            {
+                IsDeleted = true
+            };
+
+            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
+
+            var svc = CreateService();
+            await svc.RestoreAsync(Uid);
+
+            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
+            Assert.IsFalse(post.IsDeleted);
+        }
     }
 }
