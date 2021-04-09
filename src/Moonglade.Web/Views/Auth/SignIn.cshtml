@@ -23,6 +23,14 @@
         <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
         @Html.Raw(JavaScriptSnippet.FullScript)
     </environment>
+    <script>
+        $(function () {
+            $("#img-captcha").click(function () {
+                d = new Date();
+                $('#img-captcha').attr('src', `/captcha-image?${d.getTime()}`);
+            });
+        });
+    </script>
 </head>
 <body class="pt-5">
     <div class="container">
@@ -41,6 +49,20 @@
                                 <label asp-for="Password"></label>
                                 <input asp-for="Password" class="form-control" required />
                             </div>
+                            <div clas="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <img id="img-captcha" src="~/captcha-image" data-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
+                                    </div>
+                                    <input asp-for="CaptchaCode"
+                                           minlength="4"
+                                           maxlength="4"
+                                           placeholder="Captcha Code"
+                                           autocomplete="off"
+                                           class="form-control input-captcha" required />
+                                </div>
+                            </div>
+
                             <hr />
                             <input type="submit" value="@Localizer["Sign In"]" class="btn btn-success" />
                         </form>

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Auth;
+using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
@@ -61,6 +62,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("signin")]
+        [ServiceFilter(typeof(ValidateCaptcha))]
         [AllowAnonymous]
         public async Task<IActionResult> SignIn(SignInViewModel model)
         {
