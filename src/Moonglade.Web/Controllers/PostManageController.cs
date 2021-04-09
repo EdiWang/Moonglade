@@ -98,7 +98,7 @@ namespace Moonglade.Web.Controllers
                     IsFeedIncluded = model.FeedIncluded,
                     ContentLanguageCode = model.LanguageCode,
                     IsPublished = model.IsPublished,
-                    IsSelected = model.Featured,
+                    IsFeatured = model.Featured,
                     Tags = tags,
                     CategoryIds = model.SelectedCategoryIds
                 };

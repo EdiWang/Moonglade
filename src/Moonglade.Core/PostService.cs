@@ -285,7 +285,7 @@ namespace Moonglade.Core
                 PubDateUtc = request.IsPublished ? DateTime.UtcNow : null,
                 IsDeleted = false,
                 IsPublished = request.IsPublished,
-                IsFeatured = request.IsSelected,
+                IsFeatured = request.IsFeatured,
                 PostExtension = new()
                 {
                     Hits = 0,
@@ -391,7 +391,7 @@ namespace Moonglade.Core
             post.LastModifiedUtc = DateTime.UtcNow;
             post.IsFeedIncluded = request.IsFeedIncluded;
             post.ContentLanguageCode = request.ContentLanguageCode;
-            post.IsFeatured = request.IsSelected;
+            post.IsFeatured = request.IsFeatured;
 
             // 1. Add new tags to tag lib
             foreach (var item in request.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))

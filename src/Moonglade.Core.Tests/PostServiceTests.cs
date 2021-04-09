@@ -243,7 +243,7 @@ namespace Moonglade.Core.Tests
                 ExposedToSiteMap = true,
                 IsFeedIncluded = true,
                 IsPublished = true,
-                IsSelected = true,
+                IsFeatured = true,
                 Tags = new[] { "996", "Fubao" },
                 CategoryIds = new[] { Uid }
             };
@@ -291,7 +291,7 @@ namespace Moonglade.Core.Tests
                 ExposedToSiteMap = true,
                 IsFeedIncluded = true,
                 IsPublished = true,
-                IsSelected = true,
+                IsFeatured = true,
                 Tags = new[] { "996", "Fubao" },
                 CategoryIds = new[] { Uid }
             };
