@@ -17,23 +17,23 @@ namespace Moonglade.Web
 
     public class BlogTZoneResolver : ITZoneResolver
     {
-        public string TimeZoneUtcOffset { get; }
+        public string UtcOffset { get; }
 
-        public BlogTZoneResolver(string timeZoneUtcOffset)
+        public BlogTZoneResolver(string utcOffset)
         {
-            TimeZoneUtcOffset = timeZoneUtcOffset;
+            UtcOffset = utcOffset;
         }
 
-        public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, TimeZoneUtcOffset);
+        public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);
 
         public DateTime ToTimeZone(DateTime utcDateTime)
         {
-            return UtcToZoneTime(utcDateTime, TimeZoneUtcOffset);
+            return UtcToZoneTime(utcDateTime, UtcOffset);
         }
 
         public DateTime ToUtc(DateTime userDateTime)
         {
-            return ZoneTimeToUtc(userDateTime, TimeZoneUtcOffset);
+            return ZoneTimeToUtc(userDateTime, UtcOffset);
         }
 
         public IEnumerable<TimeZoneInfo> ListTimeZones()
