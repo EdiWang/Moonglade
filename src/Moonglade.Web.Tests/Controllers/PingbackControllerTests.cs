@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
@@ -8,6 +9,7 @@ using Moonglade.Configuration;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
+using Moonglade.Pingback.AspNetCore;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -56,6 +58,28 @@ namespace Moonglade.Web.Tests.Controllers
             var pingbackController = CreatePingbackController();
             var result = await pingbackController.Process();
             Assert.IsInstanceOf(typeof(ForbidResult), result);
+        }
+
+        [Test]
+        public async Task Process_OK()
+        {
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
+            {
+                EnablePingBackReceive = true
+            });
+
+            _mockPingbackService
+                .Setup(p => p.ReceivePingAsync(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<Action<PingbackRecord>>())).Returns(Task.FromResult(PingbackResponse.Success));
+
+            var pingbackController = CreatePingbackController();
+            pingbackController.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = await pingbackController.Process();
+            Assert.IsInstanceOf(typeof(PingbackResult), result);
         }
 
         [Test]
