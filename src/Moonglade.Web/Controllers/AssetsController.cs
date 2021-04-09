@@ -198,7 +198,7 @@ namespace Moonglade.Web.Controllers
 
             try
             {
-                var bytes = await cache.GetOrCreateAsync(CacheDivision.General, "avatar", async x =>
+                var bytes = await cache.GetOrCreateAsync(CacheDivision.General, "avatar", async _ =>
                 {
                     _logger.LogTrace("Avatar not on cache, getting new avatar image...");
 

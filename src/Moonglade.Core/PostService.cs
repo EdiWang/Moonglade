@@ -318,7 +318,7 @@ namespace Moonglade.Core
             }
 
             // add categories
-            if (request.CategoryIds is not null and { Length: > 0 })
+            if (request.CategoryIds is { Length: > 0 })
             {
                 foreach (var id in request.CategoryIds)
                 {
@@ -331,7 +331,7 @@ namespace Moonglade.Core
             }
 
             // add tags
-            if (request.Tags is not null and { Length: > 0 })
+            if (request.Tags is { Length: > 0 })
             {
                 foreach (var item in request.Tags)
                 {
@@ -439,7 +439,7 @@ namespace Moonglade.Core
 
             // 3. update categories
             post.PostCategory.Clear();
-            if (request.CategoryIds is not null and { Length: > 0 })
+            if (request.CategoryIds is { Length: > 0 })
             {
                 foreach (var cid in request.CategoryIds)
                 {
