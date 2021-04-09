@@ -200,7 +200,7 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task CreateAsync_HTMLEditor_HappyPath()
         {
-            _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings()
+            _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
             {
                 PostAbstractWords = 404,
                 Editor = EditorChoice.Html
@@ -233,6 +233,64 @@ namespace Moonglade.Core.Tests
             Assert.IsNotNull(result);
             Assert.AreNotEqual(Guid.Empty, result.Id);
             _mockPostEntityRepo.Verify(p => p.AddAsync(It.IsAny<PostEntity>()));
+        }
+
+        [Test]
+        public async Task UpdateAsync_HTMLEditor_HappyPath()
+        {
+            var postEntity = new PostEntity
+            {
+                Id = Uid,
+                Title = "Work 996 and Get into ICU",
+                Slug = "work-996-and-get-into-icu",
+                ContentLanguageCode = "en-us",
+                PostContent = "<p>996 is fubao</p>",
+                ContentAbstract = "996 is fubao",
+                CommentEnabled = true,
+                ExposedToSiteMap = true,
+                IsFeedIncluded = true,
+                IsPublished = true,
+                IsFeatured = true,
+                PostExtension = new() { Hits = 996, Likes = 251, PostId = Uid },
+                IsDeleted = false,
+                CreateTimeUtc = new(2020, 9, 9, 6, 35, 7),
+                LastModifiedUtc = new(2021, 2, 5, 1, 4, 4),
+                PubDateUtc = new(2020, 10, 5, 5, 6, 6),
+                Tags = new List<TagEntity> { new() { DisplayName = "996", Id = 996, NormalizedName = "996" } },
+                PostCategory = new List<PostCategoryEntity> { new() { PostId = Uid, CategoryId = Guid.Parse("b20b3a09-f436-4b42-877c-f6acdd16b105") } }
+            };
+
+            _mockOptionsTagNormalization.Setup(p => p.Value).Returns(new Dictionary<string, string>());
+            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(postEntity));
+            _mockTagEntityRepo.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(false);
+            _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
+            _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
+            {
+                PostAbstractWords = 404,
+                Editor = EditorChoice.Html
+            });
+
+            var req = new UpdatePostRequest
+            {
+                Title = "Work 996 and Get into ICU",
+                Slug = "work-996-and-get-into-icu",
+                ContentLanguageCode = "en-us",
+                EditorContent = "<p>996 is fubao</p>",
+                EnableComment = true,
+                ExposedToSiteMap = true,
+                IsFeedIncluded = true,
+                IsPublished = true,
+                IsSelected = true,
+                Tags = new[] { "996", "Fubao" },
+                CategoryIds = new[] { Uid }
+            };
+
+            var svc = CreateService();
+            var result = await svc.UpdateAsync(Uid, req);
+
+            Assert.IsNotNull(result);
+            Assert.AreNotEqual(Guid.Empty, result.Id);
+            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
         }
 
         [Test]
