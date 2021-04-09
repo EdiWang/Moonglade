@@ -94,6 +94,7 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<IBlogStatistics, BlogStatistics>();
             services.AddScoped<ISyndicationService, SyndicationService>();
             services.AddScoped<IOpmlWriter, StringOpmlWriter>();
+            services.AddScoped<ValidateCaptcha>();
 
             services.AddBlogCache();
             services.AddPingback();

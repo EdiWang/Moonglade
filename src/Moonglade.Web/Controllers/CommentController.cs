@@ -10,6 +10,7 @@ using Moonglade.Comments;
 using Moonglade.Configuration.Abstraction;
 using Moonglade.Notification.Client;
 using Moonglade.Utils;
+using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
@@ -40,6 +41,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("{postId:guid}")]
         [AllowAnonymous]
+        [ServiceFilter(typeof(ValidateCaptcha))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,12 +56,6 @@ namespace Moonglade.Web.Controllers
             }
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
-
-            if (!captcha.Validate(model.CaptchaCode, HttpContext.Session))
-            {
-                ModelState.AddModelError(nameof(model.CaptchaCode), "Wrong Captcha Code");
-                return Conflict(ModelState);
-            }
 
             var response = await _commentService.CreateAsync(new(postId)
             {

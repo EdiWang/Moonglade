@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Models
 {
-    public class NewCommentModel
+    public class NewCommentModel : ICaptchable
     {
         [Required]
         [MaxLength(64)]
@@ -19,5 +19,10 @@ namespace Moonglade.Web.Models
         [Required]
         [StringLength(4)]
         public string CaptchaCode { get; set; }
+    }
+
+    public interface ICaptchable
+    {
+        string CaptchaCode { get; set; }
     }
 }
