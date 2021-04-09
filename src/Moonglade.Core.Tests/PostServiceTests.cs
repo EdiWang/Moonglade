@@ -34,6 +34,27 @@ namespace Moonglade.Core.Tests
         private Mock<IOptions<Dictionary<string, string>>> _mockOptionsTagNormalization;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
+        private PostEntity _postEntity = new()
+        {
+            Id = Uid,
+            Title = "Work 996 and Get into ICU",
+            Slug = "work-996-and-get-into-icu",
+            ContentLanguageCode = "en-us",
+            PostContent = "<p>996 is fubao</p>",
+            ContentAbstract = "996 is fubao",
+            CommentEnabled = true,
+            ExposedToSiteMap = true,
+            IsFeedIncluded = true,
+            IsPublished = true,
+            IsFeatured = true,
+            PostExtension = new() { Hits = 996, Likes = 251, PostId = Uid },
+            IsDeleted = false,
+            CreateTimeUtc = new(2020, 9, 9, 6, 35, 7),
+            LastModifiedUtc = new(2021, 2, 5, 1, 4, 4),
+            PubDateUtc = new(2020, 10, 5, 5, 6, 6),
+            Tags = new List<TagEntity> { new() { DisplayName = "996", Id = 996, NormalizedName = "996" } },
+            PostCategory = new List<PostCategoryEntity> { new() { PostId = Uid, CategoryId = Guid.Parse("b20b3a09-f436-4b42-877c-f6acdd16b105") } }
+        };
 
         [SetUp]
         public void SetUp()
@@ -236,32 +257,22 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
+        public void UpdateAsync_NullPost()
+        {
+            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult((PostEntity)null));
+            var svc = CreateService();
+
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await svc.UpdateAsync(Uid, new());
+            });
+        }
+
+        [Test]
         public async Task UpdateAsync_HTMLEditor_HappyPath()
         {
-            var postEntity = new PostEntity
-            {
-                Id = Uid,
-                Title = "Work 996 and Get into ICU",
-                Slug = "work-996-and-get-into-icu",
-                ContentLanguageCode = "en-us",
-                PostContent = "<p>996 is fubao</p>",
-                ContentAbstract = "996 is fubao",
-                CommentEnabled = true,
-                ExposedToSiteMap = true,
-                IsFeedIncluded = true,
-                IsPublished = true,
-                IsFeatured = true,
-                PostExtension = new() { Hits = 996, Likes = 251, PostId = Uid },
-                IsDeleted = false,
-                CreateTimeUtc = new(2020, 9, 9, 6, 35, 7),
-                LastModifiedUtc = new(2021, 2, 5, 1, 4, 4),
-                PubDateUtc = new(2020, 10, 5, 5, 6, 6),
-                Tags = new List<TagEntity> { new() { DisplayName = "996", Id = 996, NormalizedName = "996" } },
-                PostCategory = new List<PostCategoryEntity> { new() { PostId = Uid, CategoryId = Guid.Parse("b20b3a09-f436-4b42-877c-f6acdd16b105") } }
-            };
-
             _mockOptionsTagNormalization.Setup(p => p.Value).Returns(new Dictionary<string, string>());
-            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(postEntity));
+            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(_postEntity));
             _mockTagEntityRepo.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(false);
             _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
             _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
@@ -366,6 +377,20 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<PostEntity>()));
             Assert.IsFalse(post.IsDeleted);
+        }
+
+        [Test]
+        public async Task PurgeRecycledAsync_OK()
+        {
+            IReadOnlyList<PostEntity> entities = new List<PostEntity> { _postEntity };
+
+            _mockPostEntityRepo.Setup(p => p.GetAsync(It.IsAny<ISpecification<PostEntity>>(), true))
+                .Returns(Task.FromResult(entities));
+
+            var svc = CreateService();
+            await svc.PurgeRecycledAsync();
+
+            _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostEntity>>()));
         }
     }
 }
