@@ -31,19 +31,7 @@ namespace Moonglade.Core
             }
 
             var postList = SearchByKeyword(keyword);
-
-            var resultList = await postList.Select(p => new PostDigest
-            {
-                Title = p.Title,
-                Slug = p.Slug,
-                ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-                Tags = p.Tags.Select(pt => new Tag
-                {
-                    NormalizedName = pt.NormalizedName,
-                    DisplayName = pt.DisplayName
-                })
-            }).ToListAsync();
+            var resultList = await postList.Select(SharedSelectors.PostDigestSelector).ToListAsync();
 
             return resultList;
         }

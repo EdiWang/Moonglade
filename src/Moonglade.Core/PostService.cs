@@ -101,21 +101,6 @@ namespace Moonglade.Core
             Hits = p.PostExtension.Hits
         };
 
-        private readonly Expression<Func<PostEntity, PostDigest>> _postDigestSelector = p => new()
-        {
-            Title = p.Title,
-            Slug = p.Slug,
-            ContentAbstract = p.ContentAbstract,
-            PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-            LangCode = p.ContentLanguageCode,
-            IsFeatured = p.IsFeatured,
-            Tags = p.Tags.Select(pt => new Tag
-            {
-                NormalizedName = pt.NormalizedName,
-                DisplayName = pt.DisplayName
-            })
-        };
-
         private readonly Expression<Func<PostTagEntity, PostDigest>> _postDigestSelectorByTag = p => new()
         {
             Title = p.Post.Title,
@@ -259,7 +244,7 @@ namespace Moonglade.Core
             ValidatePagingParameters(pageSize, pageIndex);
 
             var spec = new PostPagingSpec(pageSize, pageIndex, categoryId);
-            return _postRepo.SelectAsync(spec, _postDigestSelector);
+            return _postRepo.SelectAsync(spec, SharedSelectors.PostDigestSelector);
         }
 
         public Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex)
@@ -275,7 +260,7 @@ namespace Moonglade.Core
         {
             ValidatePagingParameters(pageSize, pageIndex);
 
-            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), _postDigestSelector);
+            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), SharedSelectors.PostDigestSelector);
             return posts;
         }
 
