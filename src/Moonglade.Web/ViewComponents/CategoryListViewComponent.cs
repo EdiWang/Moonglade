@@ -7,18 +7,18 @@ namespace Moonglade.Web.ViewComponents
 {
     public class CategoryListViewComponent : ViewComponent
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryService _catService;
 
-        public CategoryListViewComponent(ICategoryService categoryService)
+        public CategoryListViewComponent(ICategoryService catService)
         {
-            _categoryService = categoryService;
+            _catService = catService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(bool isMenu)
         {
             try
             {
-                var cats = await _categoryService.GetAll();
+                var cats = await _catService.GetAll();
                 return isMenu ? View("CatMenu", cats) : View(cats);
             }
             catch (Exception e)
