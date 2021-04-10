@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Web.Configuration
 {
+    [ExcludeFromCodeCoverage]
     public class ConfigureEndpoints
     {
         public static Action<IEndpointRouteBuilder> BlogEndpoints => endpoints =>

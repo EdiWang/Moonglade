@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ using WilderMinds.MetaWeblog;
 
 namespace Moonglade.Web.Configuration
 {
+    [ExcludeFromCodeCoverage]
     public static class ServiceCollectionExtension
     {
         public static void AddBlogConfiguration(this IServiceCollection services, IConfigurationSection appSettings)
