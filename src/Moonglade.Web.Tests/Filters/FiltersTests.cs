@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Edi.Captcha;
 using MemoryCache.Testing.Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
 using Moonglade.Web.Filters;
+using Moq;
 using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Filters
@@ -141,6 +143,18 @@ namespace Moonglade.Web.Tests.Filters
             att.OnActionExecuting(ctx);
 
             Assert.IsInstanceOf<ForbidResult>(ctx.Result);
+        }
+
+        [Test]
+        public void ValidateCaptcha_OnActionExecuting_CaptchaNotPresent()
+        {
+            Mock<ISessionBasedCaptcha> mockCaptcha = new();
+            var ctx = CreateActionExecutingContext(null);
+            
+            var att = new ValidateCaptcha(mockCaptcha.Object);
+            att.OnActionExecuting(ctx);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(ctx.Result);
         }
 
         #region Helper Methods
