@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
 using Moonglade.Web.Filters;
+using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -150,11 +151,55 @@ namespace Moonglade.Web.Tests.Filters
         {
             Mock<ISessionBasedCaptcha> mockCaptcha = new();
             var ctx = CreateActionExecutingContext(null);
-            
+
             var att = new ValidateCaptcha(mockCaptcha.Object);
             att.OnActionExecuting(ctx);
 
             Assert.IsInstanceOf<BadRequestObjectResult>(ctx.Result);
+        }
+
+        [Test]
+        public void ValidateCaptcha_OnActionExecuting_InvalidCaptcha()
+        {
+            Mock<ICaptchable> mockCaptchable = new();
+            mockCaptchable.Setup(p => p.CaptchaCode).Returns("9960");
+
+            Mock<ISessionBasedCaptcha> mockCaptcha = new();
+            mockCaptcha.Setup(p =>
+                    p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                .Returns(false);
+
+            var ctx = CreateActionExecutingContext(null, new Dictionary<string, object>
+            {
+                {"996", mockCaptchable.Object}
+            });
+
+            var att = new ValidateCaptcha(mockCaptcha.Object);
+            att.OnActionExecuting(ctx);
+
+            Assert.IsInstanceOf<ConflictObjectResult>(ctx.Result);
+        }
+
+        [Test]
+        public void ValidateCaptcha_OnActionExecuting_ValidCaptcha()
+        {
+            Mock<ICaptchable> mockCaptchable = new();
+            mockCaptchable.Setup(p => p.CaptchaCode).Returns("9960");
+
+            Mock<ISessionBasedCaptcha> mockCaptcha = new();
+            mockCaptcha.Setup(p =>
+                    p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                .Returns(true);
+
+            var ctx = CreateActionExecutingContext(null, new Dictionary<string, object>
+            {
+                {"996", mockCaptchable.Object}
+            });
+
+            var att = new ValidateCaptcha(mockCaptcha.Object);
+            att.OnActionExecuting(ctx);
+
+            Assert.IsNull(ctx.Result);
         }
 
         #region Helper Methods
@@ -185,6 +230,15 @@ namespace Moonglade.Web.Tests.Filters
                 controller: new());
         }
 
+        private static ActionExecutingContext CreateActionExecutingContext(IFilterMetadata filter, IDictionary<string, object> actionArguments)
+        {
+            return new(
+                CreateActionContext(),
+                new[] { filter },
+                actionArguments,
+                controller: new());
+        }
+
         private static ActionExecutedContext CreateActionExecutedContext(ActionExecutingContext context)
         {
             return new(context, context.Filters, context.Controller)
@@ -198,6 +252,7 @@ namespace Moonglade.Web.Tests.Filters
             var httpCtx = new DefaultHttpContext();
             httpCtx.Request.Scheme = "https";
             httpCtx.Request.Host = new("996.icu");
+            httpCtx.Session = new MockHttpSession();
 
             return new(httpCtx, new(), new());
         }
