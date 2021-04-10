@@ -41,7 +41,7 @@ namespace Moonglade.Notification.Client.Tests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(""),
+                    Content = new StringContent("")
                 })
                 .Verifiable();
 
@@ -83,6 +83,41 @@ namespace Moonglade.Notification.Client.Tests
                 ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Post
                         && req.RequestUri == new Uri(_mockBlogConfig.Object.NotificationSettings.AzureFunctionEndpoint)
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+        }
+
+        [Test]
+        public void TestNotificationAsync_Exception()
+        {
+            _handlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Content = new StringContent("Oh shit")
+                })
+                .Verifiable();
+
+            var notificationClient = CreateNotificationClient();
+
+            Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await notificationClient.TestNotificationAsync();
+            });
+
+            _handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Exactly(1),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post
+                    && req.RequestUri == new Uri(_mockBlogConfig.Object.NotificationSettings.AzureFunctionEndpoint)
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
