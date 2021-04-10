@@ -43,7 +43,7 @@ namespace Moonglade.DataPorting
             }
 
             Directory.CreateDirectory(path);
-            return Path.Join(directory, "export");
+            return path;
         }
 
         public async Task<ExportResult> ExportData(ExportDataType dataType)
