@@ -5,8 +5,12 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using Moonglade.Configuration;
+using Moq.Protected;
 
 namespace Moonglade.Notification.Client.Tests
 {
@@ -18,39 +22,71 @@ namespace Moonglade.Notification.Client.Tests
 
         private Mock<ILogger<NotificationClient>> _mockLogger;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<HttpClient> _mockHttpClient;
+        private Mock<HttpMessageHandler> _handlerMock;
+        private HttpClient _magicHttpClient;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
 
+            _handlerMock = _mockRepository.Create<HttpMessageHandler>();
+            _handlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(""),
+                })
+                .Verifiable();
+
             _mockLogger = _mockRepository.Create<ILogger<NotificationClient>>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockHttpClient = _mockRepository.Create<HttpClient>();
+            _magicHttpClient = new(_handlerMock.Object);
         }
 
         private NotificationClient CreateNotificationClient()
         {
+            _mockBlogConfig.Setup(p => p.NotificationSettings).Returns(new NotificationSettings()
+            {
+                EnableEmailSending = true,
+                AzureFunctionEndpoint = "https://996.icu/fubao",
+                EmailDisplayName = "996"
+            });
+
+            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings()
+            {
+                OwnerEmail = "fubao@996.icu"
+            });
+
             return new(
                 _mockLogger.Object,
                 _mockBlogConfig.Object,
-                _mockHttpClient.Object);
+                _magicHttpClient);
         }
 
-        //[Test]
-        //public async Task TestNotificationAsync_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var notificationClient = CreateNotificationClient();
+        [Test]
+        public async Task TestNotificationAsync_StateUnderTest_ExpectedBehavior()
+        {
+            var notificationClient = CreateNotificationClient();
 
-        //    // Act
-        //    await notificationClient.TestNotificationAsync();
+            await notificationClient.TestNotificationAsync();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            _handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Exactly(1),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post
+                        && req.RequestUri == new Uri(_mockBlogConfig.Object.NotificationSettings.AzureFunctionEndpoint)
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+        }
 
         //[Test]
         //public async Task NotifyCommentAsync_StateUnderTest_ExpectedBehavior()
