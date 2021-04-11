@@ -24,20 +24,20 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IPostService _postService;
         private readonly IBlogConfig _blogConfig;
-        private readonly ITZoneResolver _tZoneResolver;
+        private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly IPingbackSender _pingbackSender;
         private readonly ILogger<PostManageController> _logger;
 
         public PostManageController(
             IPostService postService,
             IBlogConfig blogConfig,
-            ITZoneResolver tZoneResolver,
+            ITimeZoneResolver timeZoneResolver,
             IPingbackSender pingbackSender,
             ILogger<PostManageController> logger)
         {
             _postService = postService;
             _blogConfig = blogConfig;
-            _tZoneResolver = tZoneResolver;
+            _timeZoneResolver = timeZoneResolver;
             _pingbackSender = pingbackSender;
             _logger = logger;
         }
@@ -103,13 +103,13 @@ namespace Moonglade.Web.Controllers
                     CategoryIds = model.SelectedCategoryIds
                 };
 
-                var tzDate = _tZoneResolver.NowOfTimeZone;
+                var tzDate = _timeZoneResolver.NowOfTimeZone;
                 if (model.ChangePublishDate &&
                     model.PublishDate.HasValue &&
                     model.PublishDate <= tzDate &&
                     model.PublishDate.GetValueOrDefault().Year >= 1975)
                 {
-                    request.PublishDate = _tZoneResolver.ToUtc(model.PublishDate.Value);
+                    request.PublishDate = _timeZoneResolver.ToUtc(model.PublishDate.Value);
                 }
 
                 var postEntity = model.PostId == Guid.Empty ?

@@ -153,7 +153,7 @@ namespace Moonglade.Web.Tests.TagHelpers
         {
             var pubDateUtc = new DateTime(996, 9, 6);
 
-            var dateTimeResolverMock = new Mock<ITZoneResolver>();
+            var dateTimeResolverMock = new Mock<ITimeZoneResolver>();
             dateTimeResolverMock.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(pubDateUtc);
 
             var outputAttributes = new TagHelperAttributeList();

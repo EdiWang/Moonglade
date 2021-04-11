@@ -14,7 +14,7 @@ namespace Moonglade.Web.Tests.Pages.Settings
         private MockRepository _mockRepository;
 
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<ITZoneResolver> _mockTZoneResolver;
+        private Mock<ITimeZoneResolver> _mockTZoneResolver;
 
         [SetUp]
         public void SetUp()
@@ -22,7 +22,7 @@ namespace Moonglade.Web.Tests.Pages.Settings
             _mockRepository = new(MockBehavior.Default);
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockTZoneResolver = _mockRepository.Create<ITZoneResolver>();
+            _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
         }
 
         private GeneralModel CreateGeneralModel()

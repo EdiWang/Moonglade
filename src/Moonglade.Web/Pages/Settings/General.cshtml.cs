@@ -7,13 +7,13 @@ namespace Moonglade.Web.Pages.Settings
     public class GeneralModel : PageModel
     {
         private readonly IBlogConfig _blogConfig;
-        private readonly ITZoneResolver _tZoneResolver;
+        private readonly ITimeZoneResolver _timeZoneResolver;
         public GeneralSettingsViewModel ViewModel { get; set; }
 
-        public GeneralModel(IBlogConfig blogConfig, ITZoneResolver tZoneResolver)
+        public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver)
         {
             _blogConfig = blogConfig;
-            _tZoneResolver = tZoneResolver;
+            _timeZoneResolver = timeZoneResolver;
         }
 
         public void OnGet()
@@ -34,7 +34,7 @@ namespace Moonglade.Web.Pages.Settings
                 OwnerDescription = _blogConfig.GeneralSettings.Description,
                 OwnerShortDescription = _blogConfig.GeneralSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
-                SelectedUtcOffset = _tZoneResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
+                SelectedUtcOffset = _timeZoneResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
                 SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
                 AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };

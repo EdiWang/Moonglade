@@ -21,7 +21,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
 
         private Mock<ICategoryService> _mockCategoryService;
         private Mock<IPostService> _mockPostService;
-        private Mock<ITZoneResolver> _mockTZoneResolver;
+        private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<IBlogConfig> _mockBlogConfig;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
@@ -64,7 +64,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
 
             _mockCategoryService = _mockRepository.Create<ICategoryService>();
             _mockPostService = _mockRepository.Create<IPostService>();
-            _mockTZoneResolver = _mockRepository.Create<ITZoneResolver>();
+            _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
         }
 

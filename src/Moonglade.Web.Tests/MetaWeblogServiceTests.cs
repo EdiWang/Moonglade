@@ -25,7 +25,7 @@ namespace Moonglade.Web.Tests
         private MockRepository _mockRepository;
 
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<ITZoneResolver> _mockTZoneResolver;
+        private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<ILogger<MetaWeblogService>> _mockLogger;
         private Mock<ITagService> _mockTagService;
         private Mock<ICategoryService> _mockCategoryService;
@@ -76,7 +76,7 @@ namespace Moonglade.Web.Tests
             _mockRepository = new(MockBehavior.Default);
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockTZoneResolver = _mockRepository.Create<ITZoneResolver>();
+            _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockLogger = _mockRepository.Create<ILogger<MetaWeblogService>>();
             _mockTagService = _mockRepository.Create<ITagService>();
             _mockCategoryService = _mockRepository.Create<ICategoryService>();

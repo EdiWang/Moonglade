@@ -5,7 +5,7 @@
 }
 @using Moonglade.Configuration
 @using Moonglade.Web.Models
-@inject ITZoneResolver TZoneResolver
+@inject ITimeZoneResolver TZoneResolver
 @inject IOptions<List<BlogTheme>> Themes
 @{
     var tzList = TZoneResolver.ListTimeZones().Select(t => new SelectListItem

@@ -8,7 +8,7 @@ namespace Moonglade.Web.TagHelpers
     {
         public DateTime? PubDateUtc { get; set; }
 
-        public ITZoneResolver TZoneResolver { get; set; }
+        public ITimeZoneResolver TZoneResolver { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

@@ -13,19 +13,19 @@ namespace Moonglade.Web.Pages.Admin
     {
         private readonly ICategoryService _catService;
         private readonly IPostService _postService;
-        private readonly ITZoneResolver _tZoneResolver;
+        private readonly ITimeZoneResolver _timeZoneResolver;
 
         public PostEditModel ViewModel { get; set; }
 
         public EditPostModel(
             ICategoryService catService,
             IPostService postService,
-            ITZoneResolver tZoneResolver,
+            ITimeZoneResolver timeZoneResolver,
             IBlogConfig blogConfig)
         {
             _catService = catService;
             _postService = postService;
-            _tZoneResolver = tZoneResolver;
+            _timeZoneResolver = timeZoneResolver;
             ViewModel = new()
             {
                 IsPublished = false,
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Pages.Admin
 
             if (post.PubDateUtc is not null)
             {
-                ViewModel.PublishDate = _tZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
+                ViewModel.PublishDate = _timeZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
             }
 
             var tagStr = post.Tags

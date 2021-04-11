@@ -38,8 +38,8 @@ namespace Moonglade.Web.Configuration
             services.AddOptions();
             services.Configure<AppSettings>(appSettings);
             services.AddSingleton<IBlogConfig, BlogConfig>();
-            services.AddScoped<ITZoneResolver>(c =>
-                new BlogTZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
+            services.AddScoped<ITimeZoneResolver>(c =>
+                new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
         }
 
         public static void AddDataStorage(this IServiceCollection services, string connectionString)

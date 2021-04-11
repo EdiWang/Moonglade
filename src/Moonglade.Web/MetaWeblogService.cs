@@ -18,7 +18,7 @@ namespace Moonglade.Web
     public class MetaWeblogService : IMetaWeblogProvider
     {
         private readonly IBlogConfig _blogConfig;
-        private readonly ITZoneResolver _tZoneResolver;
+        private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly ILogger<MetaWeblogService> _logger;
         private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
@@ -29,7 +29,7 @@ namespace Moonglade.Web
 
         public MetaWeblogService(
             IBlogConfig blogConfig,
-            ITZoneResolver tZoneResolver,
+            ITimeZoneResolver timeZoneResolver,
             ILogger<MetaWeblogService> logger,
             ITagService tagService,
             ICategoryService categoryService,
@@ -39,7 +39,7 @@ namespace Moonglade.Web
             IFileNameGenerator fileNameGenerator)
         {
             _blogConfig = blogConfig;
-            _tZoneResolver = tZoneResolver;
+            _timeZoneResolver = timeZoneResolver;
             _logger = logger;
             _tagService = tagService;
             _categoryService = categoryService;
@@ -511,7 +511,7 @@ namespace Moonglade.Web
             {
                 postid = post.Id,
                 categories = post.Categories.Select(p => p.DisplayName).ToArray(),
-                dateCreated = _tZoneResolver.ToTimeZone(post.CreateTimeUtc),
+                dateCreated = _timeZoneResolver.ToTimeZone(post.CreateTimeUtc),
                 description = post.ContentAbstract,
                 link = link,
                 permalink = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}/{link}",
@@ -531,7 +531,7 @@ namespace Moonglade.Web
             {
                 title = blogPage.Title,
                 description = blogPage.RawHtmlContent,
-                dateCreated = _tZoneResolver.ToTimeZone(blogPage.CreateTimeUtc),
+                dateCreated = _timeZoneResolver.ToTimeZone(blogPage.CreateTimeUtc),
                 categories = Array.Empty<string>(),
                 page_id = blogPage.Id.ToString(),
                 wp_author_id = _blogConfig.GeneralSettings.OwnerName

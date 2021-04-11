@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("general")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITZoneResolver tZoneResolver)
+        public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITimeZoneResolver timeZoneResolver)
         {
             var model = wrapperModel.ViewModel;
 
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
             _blogConfig.GeneralSettings.SideBarOption = Enum.Parse<SideBarOption>(model.SideBarOption);
             _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-            _blogConfig.GeneralSettings.TimeZoneUtcOffset = tZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
+            _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
             _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
             _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
             _blogConfig.GeneralSettings.OwnerName = model.OwnerName;

@@ -53,7 +53,7 @@ namespace Moonglade.Web.Tests.Controllers
                 SideBarOption = "Right"
             };
 
-            Mock<ITZoneResolver> tZoneResolverMock = new();
+            Mock<ITimeZoneResolver> tZoneResolverMock = new();
 
             var settingsController = CreateSettingsController();
             var result = await settingsController.General(new(model), tZoneResolverMock.Object);

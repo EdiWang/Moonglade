@@ -28,7 +28,7 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IPostService> _mockPostService;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<ITZoneResolver> _mockTZoneResolver;
+        private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<IPingbackSender> _mockPingbackSender;
         private Mock<ILogger<PostManageController>> _mockLogger;
 
@@ -72,7 +72,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockPostService = _mockRepository.Create<IPostService>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockTZoneResolver = _mockRepository.Create<ITZoneResolver>();
+            _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockPingbackSender = _mockRepository.Create<IPingbackSender>();
             _mockLogger = _mockRepository.Create<ILogger<PostManageController>>();
         }
