@@ -110,7 +110,7 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10"></textarea>
+                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                         <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
                     </div>
                 </div>
@@ -142,6 +142,7 @@
                                 <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" />
                             </div>
                             <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
+                            <small class="form-text text-muted">@Localizer["Leave blank if you don't need to change password."]</small>
                             <small class="form-text text-muted">@Localizer["* Username: moonglade"]</small>
                         </div>
                         <div class="col-auto">

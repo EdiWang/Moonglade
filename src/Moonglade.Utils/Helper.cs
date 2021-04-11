@@ -89,6 +89,16 @@ namespace Moonglade.Utils
             return sBuilder.ToString();
         }
 
+        public static string HashPassword(string plainMessage)
+        {
+            if (string.IsNullOrWhiteSpace(plainMessage)) return string.Empty;
+
+            var data = Encoding.UTF8.GetBytes(plainMessage);
+            using HashAlgorithm sha = new SHA256Managed();
+            sha.TransformFinalBlock(data, 0, data.Length);
+            return Convert.ToBase64String(sha.Hash ?? throw new InvalidOperationException());
+        }
+
         public static string ResolveRootUrl(HttpContext ctx, string canonicalPrefix, bool preferCanonical = false)
         {
             if (ctx is null && !preferCanonical)

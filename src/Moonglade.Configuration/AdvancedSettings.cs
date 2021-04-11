@@ -20,7 +20,7 @@ namespace Moonglade.Configuration
 
         public bool EnableMetaWeblog { get; set; }
 
-        public string MetaWeblogPassword { get; set; }
+        public string MetaWeblogPasswordHash { get; set; }
 
         public string CDNEndpoint { get; set; }
 

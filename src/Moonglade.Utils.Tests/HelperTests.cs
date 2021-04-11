@@ -67,6 +67,15 @@ namespace Moonglade.Utils.Tests
             Assert.IsNull(base64);
         }
 
+        [TestCase("", ExpectedResult = "")]
+        [TestCase(null, ExpectedResult = "")]
+        [TestCase(" ", ExpectedResult = "")]
+        [TestCase("admin123", ExpectedResult = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=")]
+        public string HashPassword(string plainMessage)
+        {
+            return Helper.HashPassword(plainMessage);
+        }
+
         [TestCase("https://edi.wang", null, ExpectedResult = "https://edi.wang/")]
         [TestCase("https://edi.wang", "", ExpectedResult = "https://edi.wang/")]
         [TestCase("https://edi.wang", " ", ExpectedResult = "https://edi.wang/")]

@@ -276,10 +276,14 @@ namespace Moonglade.Web.Controllers
             settings.EnableOpenSearch = model.EnableOpenSearch;
             settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
             settings.EnableMetaWeblog = model.EnableMetaWeblog;
-            settings.MetaWeblogPassword = model.MetaWeblogPassword;
             settings.WarnExternalLink = model.WarnExternalLink;
             settings.AllowScriptsInPage = model.AllowScriptsInPage;
             settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
+
+            if (!string.IsNullOrWhiteSpace(model.MetaWeblogPassword))
+            {
+                settings.MetaWeblogPasswordHash = Helper.HashPassword(model.MetaWeblogPassword);
+            }
 
             if (model.EnableCDNRedirect)
             {

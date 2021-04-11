@@ -27,7 +27,6 @@ namespace Moonglade.Web.Pages.Settings
                 EnableCDNRedirect = settings.EnableCDNRedirect,
                 EnableOpenSearch = settings.EnableOpenSearch,
                 EnableMetaWeblog = settings.EnableMetaWeblog,
-                MetaWeblogPassword = settings.MetaWeblogPassword,
                 CDNEndpoint = settings.CDNEndpoint,
                 FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio,
                 WarnExternalLink = settings.WarnExternalLink,

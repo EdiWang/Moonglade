@@ -480,10 +480,10 @@ namespace Moonglade.Web
                 throw new ArgumentNullException(nameof(password));
             }
 
-            if (string.Compare(username.Trim(), "moonglade",
-                StringComparison.Ordinal) == 0 && string.Compare(password.Trim(),
-                _blogConfig.AdvancedSettings.MetaWeblogPassword.Trim(),
-                StringComparison.Ordinal) == 0) return;
+            var pwdHash = Helper.HashPassword(password.Trim());
+
+            if (string.Compare(username.Trim(), "moonglade", StringComparison.Ordinal) == 0 && 
+                string.Compare(pwdHash, _blogConfig.AdvancedSettings.MetaWeblogPasswordHash.Trim(), StringComparison.Ordinal) == 0) return;
 
             throw new MetaWeblogException("Authentication failed.");
         }

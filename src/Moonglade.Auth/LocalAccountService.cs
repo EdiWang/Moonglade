@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Utils;
 
 namespace Moonglade.Auth
 {
@@ -76,7 +77,7 @@ namespace Moonglade.Auth
             var account = await _accountRepo.GetAsync(p => p.Username == username);
             if (account is null) return Guid.Empty;
 
-            var valid = account.PasswordHash == HashPassword(inputPassword.Trim());
+            var valid = account.PasswordHash == Helper.HashPassword(inputPassword.Trim());
             return valid ? account.Id : Guid.Empty;
         }
 
@@ -115,7 +116,7 @@ namespace Moonglade.Auth
                 Id = uid,
                 CreateTimeUtc = DateTime.UtcNow,
                 Username = username.ToLower().Trim(),
-                PasswordHash = HashPassword(clearPassword.Trim())
+                PasswordHash = Helper.HashPassword(clearPassword.Trim())
             };
 
             await _accountRepo.AddAsync(account);
@@ -137,7 +138,7 @@ namespace Moonglade.Auth
                 throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
             }
 
-            account.PasswordHash = HashPassword(clearPassword);
+            account.PasswordHash = Helper.HashPassword(clearPassword);
             await _accountRepo.UpdateAsync(account);
 
             await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountPasswordUpdated, $"Account password for '{id}' updated.");
@@ -153,16 +154,6 @@ namespace Moonglade.Auth
 
             _accountRepo.Delete(id);
             await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsDeleteAccount, $"Account '{id}' deleted.");
-        }
-
-        public static string HashPassword(string plainMessage)
-        {
-            if (string.IsNullOrWhiteSpace(plainMessage)) return string.Empty;
-
-            var data = Encoding.UTF8.GetBytes(plainMessage);
-            using HashAlgorithm sha = new SHA256Managed();
-            sha.TransformFinalBlock(data, 0, data.Length);
-            return Convert.ToBase64String(sha.Hash ?? throw new InvalidOperationException());
         }
 
         private static Account EntityToAccountModel(LocalAccountEntity entity)

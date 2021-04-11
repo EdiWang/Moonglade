@@ -24,7 +24,7 @@ namespace Moonglade.Auth.Tests
         private readonly LocalAccountEntity _accountEntity = new()
         {
             Id = Uid,
-            CreateTimeUtc = new DateTime(996, 9, 6),
+            CreateTimeUtc = new(996, 9, 6),
             Username = "icuworker",
             LastLoginIp = "7.35.251.110",
             LastLoginTimeUtc = new DateTime(997, 3, 5)
@@ -46,15 +46,6 @@ namespace Moonglade.Auth.Tests
             return new(
                 _mockLocalAccountRepository.Object,
                 _mockBlogAudit.Object);
-        }
-
-        [TestCase("", ExpectedResult = "")]
-        [TestCase(null, ExpectedResult = "")]
-        [TestCase(" ", ExpectedResult = "")]
-        [TestCase("admin123", ExpectedResult = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=")]
-        public string HashPassword(string plainMessage)
-        {
-            return LocalAccountService.HashPassword(plainMessage);
         }
 
         [Test]
