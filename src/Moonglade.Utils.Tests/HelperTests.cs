@@ -203,6 +203,22 @@ namespace Moonglade.Utils.Tests
             Assert.IsTrue(osversion.StartsWith("Windows"));
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void GetDNSPrefetchUrl_Empty(string url)
+        {
+            var result = Helper.GetDNSPrefetchUrl(url);
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        [Test]
+        public void GetDNSPrefetchUrl_Success()
+        {
+            var result = Helper.GetDNSPrefetchUrl("https://996.icu/fubao");
+            Assert.AreEqual("https://996.icu/", result);
+        }
+
         // Valid Urls
         [TestCase("http://996.icu", ExpectedResult = "http://996.icu")]
         [TestCase("https://996.icu", ExpectedResult = "https://996.icu")]

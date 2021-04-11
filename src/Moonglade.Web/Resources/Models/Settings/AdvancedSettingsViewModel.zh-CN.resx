@@ -120,9 +120,6 @@
   <data name="Allow javascript in pages" xml:space="preserve">
     <value>允许页面中执JavaScript代码</value>
   </data>
-  <data name="DNS Prefetch Endpoint" xml:space="preserve">
-    <value>DNS 预加载终端地址</value>
-  </data>
   <data name="Enable CDN for images" xml:space="preserve">
     <value>启用图片 CDN</value>
   </data>

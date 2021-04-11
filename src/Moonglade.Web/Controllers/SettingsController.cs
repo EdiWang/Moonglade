@@ -267,7 +267,6 @@ namespace Moonglade.Web.Controllers
             var model = wrapperModel.ViewModel;
 
             var settings = _blogConfig.AdvancedSettings;
-            settings.DNSPrefetchEndpoint = model.DNSPrefetchEndpoint;
             settings.RobotsTxtContent = model.RobotsTxtContent;
             settings.EnablePingBackSend = model.EnablePingbackSend;
             settings.EnablePingBackReceive = model.EnablePingbackReceive;

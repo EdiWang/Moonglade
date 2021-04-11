@@ -46,9 +46,10 @@
         <metadesc description="@BlogConfig.GeneralSettings.MetaDescription" />
     }
 
-    @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.DNSPrefetchEndpoint))
+    @if (BlogConfig.AdvancedSettings.EnableCDNRedirect && 
+         !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
     {
-        <link rel="dns-prefetch" href="@BlogConfig.AdvancedSettings.DNSPrefetchEndpoint" />
+        <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
     }
 
     @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))

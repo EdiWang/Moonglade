@@ -19,7 +19,6 @@ namespace Moonglade.Web.Pages.Settings
             var settings = _blogConfig.AdvancedSettings;
             ViewModel = new()
             {
-                DNSPrefetchEndpoint = settings.DNSPrefetchEndpoint,
                 RobotsTxtContent = settings.RobotsTxtContent,
                 EnablePingbackSend = settings.EnablePingBackSend,
                 EnablePingbackReceive = settings.EnablePingBackReceive,

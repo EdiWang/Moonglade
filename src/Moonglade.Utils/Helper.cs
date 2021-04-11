@@ -69,6 +69,14 @@ namespace Moonglade.Utils
             return osVer.VersionString;
         }
 
+        public static string GetDNSPrefetchUrl(string cdnEndpoint)
+        {
+            if (string.IsNullOrWhiteSpace(cdnEndpoint)) return string.Empty;
+
+            var uri = new Uri(cdnEndpoint);
+            return $"{uri.Scheme}://{uri.Host}/";
+        }
+
         public static string GetMd5Hash(string input)
         {
             // Convert the input string to a byte array and compute the hash.
