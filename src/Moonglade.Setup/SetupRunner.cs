@@ -89,7 +89,7 @@ namespace Moonglade.Setup
 
         public void ResetDefaultConfiguration()
         {
-            var sql = GetEmbeddedSqlScript("init-blogconfiguration");
+            var sql = GetEmbeddedSqlScript("seed-configuration");
             if (!string.IsNullOrWhiteSpace(sql))
             {
                 _conn.Execute(sql);
@@ -102,7 +102,7 @@ namespace Moonglade.Setup
 
         public void InitSampleData()
         {
-            var sql = GetEmbeddedSqlScript("init-sampledata");
+            var sql = GetEmbeddedSqlScript("seed-sampledata");
             if (!string.IsNullOrWhiteSpace(sql))
             {
                 _conn.Execute(sql);
