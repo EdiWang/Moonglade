@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Web.Pages.Settings;
 using Moq;
 using NUnit.Framework;

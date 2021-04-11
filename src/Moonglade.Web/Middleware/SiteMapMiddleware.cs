@@ -7,7 +7,7 @@ using System.Xml;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;

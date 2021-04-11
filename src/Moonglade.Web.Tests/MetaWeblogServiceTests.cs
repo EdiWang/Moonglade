@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.ImageStorage;

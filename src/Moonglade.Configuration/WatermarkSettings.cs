@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration.Abstraction;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
-    public class WatermarkSettings : BlogSettings
+    public class WatermarkSettings : IBlogSettings
     {
         public bool IsEnabled { get; set; }
         public bool KeepOriginImage { get; set; }

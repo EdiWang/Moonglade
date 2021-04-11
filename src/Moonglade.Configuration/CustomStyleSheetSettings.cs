@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration.Abstraction;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
-    public class CustomStyleSheetSettings : BlogSettings
+    public class CustomStyleSheetSettings : IBlogSettings
     {
         public bool EnableCustomCss { get; set; }
 

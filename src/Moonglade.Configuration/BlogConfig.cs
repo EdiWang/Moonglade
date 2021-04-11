@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration.Abstraction;
 
 namespace Moonglade.Configuration
 {
@@ -70,7 +69,7 @@ namespace Moonglade.Configuration
             _hasInitialized = true;
         }
 
-        public async Task SaveAsync<T>(T blogSettings) where T : BlogSettings
+        public async Task SaveAsync<T>(T blogSettings) where T : IBlogSettings
         {
             async Task SetConfiguration(string key, string value)
             {

@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration.Abstraction;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
-    public class AdvancedSettings : BlogSettings
+    public class AdvancedSettings : IBlogSettings
     {
         public string RobotsTxtContent { get; set; }
 

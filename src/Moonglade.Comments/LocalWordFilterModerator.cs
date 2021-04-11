@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Edi.WordFilter;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 
 namespace Moonglade.Comments
 {

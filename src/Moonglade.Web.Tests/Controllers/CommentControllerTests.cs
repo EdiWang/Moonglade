@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Comments;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moq;

@@ -1,12 +1,9 @@
-﻿using Moonglade.Data.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.DataPorting;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Moonglade.DataPorting.Tests
 {
@@ -51,7 +48,7 @@ namespace Moonglade.DataPorting.Tests
             string subDirName = "996";
 
             var result = ExportManager.CreateExportDirectory(directory, subDirName);
-            
+
             Assert.IsNotNull(result);
             Assert.AreEqual(Path.Join(directory, "export", subDirName), result);
         }

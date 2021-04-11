@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Syndication;

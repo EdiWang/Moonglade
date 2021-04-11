@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Pages.Settings

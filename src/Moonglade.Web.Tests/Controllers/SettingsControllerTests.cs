@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;

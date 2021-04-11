@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Spec;

@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moq;
 using NUnit.Framework;
 

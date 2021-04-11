@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents

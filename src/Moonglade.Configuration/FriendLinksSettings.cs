@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration.Abstraction;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
-    public class FriendLinksSettings : BlogSettings
+    public class FriendLinksSettings : IBlogSettings
     {
         public bool ShowFriendLinksSection { get; set; }
     }

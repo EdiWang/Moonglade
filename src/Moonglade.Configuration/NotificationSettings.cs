@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration.Abstraction;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
-    public class NotificationSettings : BlogSettings
+    public class NotificationSettings : IBlogSettings
     {
         public bool EnableEmailSending { get; set; }
         public bool SendEmailOnCommentReply { get; set; }

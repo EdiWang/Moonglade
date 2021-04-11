@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 
 namespace Moonglade.Web.Middleware
 {

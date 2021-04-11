@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration.Abstraction;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
-    public class ContentSettings : BlogSettings
+    public class ContentSettings : IBlogSettings
     {
         public string DisharmonyWords { get; set; }
 

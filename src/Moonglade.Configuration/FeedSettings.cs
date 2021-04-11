@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration.Abstraction;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
-    public class FeedSettings : BlogSettings
+    public class FeedSettings : IBlogSettings
     {
         public int RssItemCount { get; set; }
         public string RssCopyright { get; set; }

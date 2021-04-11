@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.ImageStorage;
 using Moonglade.Pages;
@@ -482,7 +482,7 @@ namespace Moonglade.Web
 
             var pwdHash = Helper.HashPassword(password.Trim());
 
-            if (string.Compare(username.Trim(), "moonglade", StringComparison.Ordinal) == 0 && 
+            if (string.Compare(username.Trim(), "moonglade", StringComparison.Ordinal) == 0 &&
                 string.Compare(pwdHash, _blogConfig.AdvancedSettings.MetaWeblogPasswordHash.Trim(), StringComparison.Ordinal) == 0) return;
 
             throw new MetaWeblogException("Authentication failed.");

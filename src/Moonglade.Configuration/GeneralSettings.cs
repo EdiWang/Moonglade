@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration.Abstraction;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
-    public class GeneralSettings : BlogSettings
+    public class GeneralSettings : IBlogSettings
     {
         public string SiteTitle { get; set; }
 

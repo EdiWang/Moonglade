@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.AspNetCore.Http;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.Utils;
 
 namespace Moonglade.Web.Middleware

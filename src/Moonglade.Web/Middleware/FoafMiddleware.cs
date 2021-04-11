@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.FriendLink;
 using Moonglade.Utils;
 using Moonglade.Web.Models;

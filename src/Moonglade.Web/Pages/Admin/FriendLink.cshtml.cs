@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.FriendLink;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;

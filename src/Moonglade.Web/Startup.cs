@@ -19,7 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Auth;
-using Moonglade.Configuration.Abstraction;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;

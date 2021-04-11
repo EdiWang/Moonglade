@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Moonglade.Configuration.Abstraction
+namespace Moonglade.Configuration
 {
+    public interface IBlogSettings
+    {
+    }
+
     public interface IBlogConfig
     {
         GeneralSettings GeneralSettings { get; set; }
@@ -14,7 +18,7 @@ namespace Moonglade.Configuration.Abstraction
         AdvancedSettings AdvancedSettings { get; set; }
         CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
-        Task SaveAsync<T>(T blogSettings) where T : BlogSettings;
+        Task SaveAsync<T>(T blogSettings) where T : IBlogSettings;
 
         Task SaveAssetAsync(Guid assetId, string assetBase64);
 

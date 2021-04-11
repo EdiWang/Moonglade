@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Abstraction;
 using Moonglade.FriendLink;
 using Moonglade.Web.Pages.Admin;
 using Moq;
