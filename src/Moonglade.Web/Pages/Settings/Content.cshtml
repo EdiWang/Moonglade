@@ -49,7 +49,7 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label asp-for="ViewModel.DisharmonyWords"></label>
-                        <textarea asp-for="ViewModel.DisharmonyWords" class="form-control h-300px"></textarea>
+                        <textarea asp-for="ViewModel.DisharmonyWords" class="form-control h-200px" spellcheck="false"></textarea>
                         <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                     </div>
@@ -81,17 +81,23 @@
                     </li>
                 </ul>
                 <div class="card-body">
-                    <div class="form-group">
-                        <label asp-for="ViewModel.PostListPageSize"></label>
-                        <input asp-for="ViewModel.PostListPageSize" class="form-control" />
-                        <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="ViewModel.PostListPageSize"></label>
+                                <input asp-for="ViewModel.PostListPageSize" class="form-control" />
+                                <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="ViewModel.HotTagAmount"></label>
+                                <input asp-for="ViewModel.HotTagAmount" class="form-control" />
+                                <span asp-validation-for="ViewModel.HotTagAmount" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="ViewModel.HotTagAmount"></label>
-                        <input asp-for="ViewModel.HotTagAmount" class="form-control" />
-                        <span asp-validation-for="ViewModel.HotTagAmount" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
+                    <div>
                         <label asp-for="ViewModel.DefaultLangCode"></label>
                         <input asp-for="ViewModel.DefaultLangCode" class="form-control" />
                         <span asp-validation-for="ViewModel.DefaultLangCode" class="text-danger"></span>
@@ -106,9 +112,12 @@
                     </li>
                 </ul>
                 <div class="card-body">
-                    <div class="form-group">
+                    <div>
                         <label asp-for="ViewModel.PostFooterHtmlPitch"></label>
-                        <textarea asp-for="ViewModel.PostFooterHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <textarea asp-for="ViewModel.PostFooterHtmlPitch" 
+                                  class="form-control h-100px" 
+                                  style="font-size: 12px; font-family: 'Consolas'" 
+                                  spellcheck="false"></textarea>
                         <span asp-validation-for="ViewModel.PostFooterHtmlPitch" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["e.g. Your blog post license information."]</small>
                     </div>
@@ -125,9 +134,9 @@
                     </li>
                 </ul>
                 <div class="card-body">
-                    <div class="form-group">
+                    <div>
                         <label asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
-                        <textarea asp-for="ViewModel.CalloutSectionHtmlPitch" class="form-control" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <textarea asp-for="ViewModel.CalloutSectionHtmlPitch" class="form-control h-100px" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
                         <span asp-validation-for="ViewModel.CalloutSectionHtmlPitch" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["The call-out section will display on top of every page in the website."]</small>
                     </div>

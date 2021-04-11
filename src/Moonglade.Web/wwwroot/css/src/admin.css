@@ -261,3 +261,8 @@ div.mce-fullscreen {
         .bootstrap-tagsinput .tag [data-role="remove"]:hover {
             box-shadow: inherit;
         }
+
+.icon-admin-title {
+    font-size: 1.4rem;
+    color: var(--accent-color2);
+}

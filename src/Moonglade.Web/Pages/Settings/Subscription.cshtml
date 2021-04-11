@@ -12,13 +12,22 @@
       data-ajax-failure="onUpdateSettingsFailed"
       data-ajax-success="onUpdateSettingsSuccess"
       data-ajax="true"
-      data-ajax-method="POST">
+      data-ajax-method="POST" 
+      spellcheck="false">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header">@Localizer["General"]</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="ViewModel.UseFullContent" class="custom-control-input">
+                            <label asp-for="ViewModel.UseFullContent" class="custom-control-label"></label>
+                        </div>
+                    </li>
+                </ul>
                 <div class="card-body">
                     <div class="form-group">
                         <label asp-for="ViewModel.RssTitle" class="control-label"></label>
@@ -40,21 +49,6 @@
                         <input asp-for="ViewModel.RssCopyright" class="form-control" />
                         <span asp-validation-for="ViewModel.RssCopyright" class="text-danger"></span>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">@Localizer["Advanced"]</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.UseFullContent" class="custom-control-input">
-                            <label asp-for="ViewModel.UseFullContent" class="custom-control-label"></label>
-                        </div>
-                    </li>
-                </ul>
-                <div class="card-body">
                     <div class="form-group">
                         <label asp-for="ViewModel.RssItemCount" class="control-label"></label>
                         <input asp-for="ViewModel.RssItemCount" class="form-control" />

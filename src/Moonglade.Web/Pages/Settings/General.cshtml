@@ -45,6 +45,7 @@
 <partial name="_SettingsHeader" />
 
 <form id="form-settings" asp-controller="Settings" asp-action="General"
+      spellcheck="false"
       data-ajax-begin="onUpdateSettingsBegin"
       data-ajax-complete="onUpdateSettingsComplete"
       data-ajax-failure="onUpdateSettingsFailed"
@@ -112,7 +113,7 @@
                                     <label asp-for="ViewModel.AutoDarkLightTheme" class="custom-control-label">@Localizer["Auto Light / Dark theme regarding client system settings"]</label>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="SelectedUtcOffset">@Localizer["Time Zone"]</label>
@@ -148,7 +149,7 @@
                                 <textarea asp-for="ViewModel.OwnerDescription" class="form-control"></textarea>
                                 <span asp-validation-for="ViewModel.OwnerDescription" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
+                            <div>
                                 <label asp-for="ViewModel.OwnerShortDescription" class="control-label"></label>
                                 <input asp-for="ViewModel.OwnerShortDescription" class="form-control" />
                                 <span asp-validation-for="ViewModel.OwnerShortDescription" class="text-danger"></span>
@@ -179,7 +180,7 @@
                         <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" cols="10" rows="10"></textarea>
                         <span asp-validation-for="ViewModel.SideBarCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div>
                         <label asp-for="ViewModel.SideBarOption" class="mr-4"></label>
 
                         <div class="custom-control custom-radio custom-control-inline">
