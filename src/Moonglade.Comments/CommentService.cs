@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moonglade.Auditing;
 using Moonglade.Configuration;
@@ -32,6 +33,23 @@ namespace Moonglade.Comments
         private readonly IRepository<CommentEntity> _commentRepo;
         private readonly IRepository<CommentReplyEntity> _commentReplyRepo;
         private readonly ICommentModerator _commentModerator;
+
+        private static Expression<Func<CommentEntity, CommentDetailedItem>> CmtDetailSelector => p => new()
+        {
+            Id = p.Id,
+            CommentContent = p.CommentContent,
+            CreateTimeUtc = p.CreateTimeUtc,
+            Email = p.Email,
+            IpAddress = p.IPAddress,
+            Username = p.Username,
+            IsApproved = p.IsApproved,
+            PostTitle = p.Post.Title,
+            CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
+            {
+                ReplyContent = cr.ReplyContent,
+                ReplyTimeUtc = cr.CreateTimeUtc
+            }).ToList()
+        };
 
         public CommentService(
             IBlogConfig blogConfig,
@@ -79,22 +97,7 @@ namespace Moonglade.Comments
             }
 
             var spec = new CommentSpec(pageSize, pageIndex);
-            var comments = _commentRepo.SelectAsync(spec, p => new CommentDetailedItem
-            {
-                Id = p.Id,
-                CommentContent = p.CommentContent,
-                CreateTimeUtc = p.CreateTimeUtc,
-                Email = p.Email,
-                IpAddress = p.IPAddress,
-                Username = p.Username,
-                IsApproved = p.IsApproved,
-                PostTitle = p.Post.Title,
-                CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
-                {
-                    ReplyContent = cr.ReplyContent,
-                    ReplyTimeUtc = cr.CreateTimeUtc
-                }).ToList()
-            });
+            var comments = _commentRepo.SelectAsync(spec, CmtDetailSelector);
 
             return comments;
         }
