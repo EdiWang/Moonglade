@@ -14,7 +14,7 @@ namespace Moonglade.Core.Tests
     {
         private MockRepository _mockRepository;
 
-        private Mock<ILogger<BlogArchiveService>> _mockLogger;
+        private Mock<ILogger<PostArchiveService>> _mockLogger;
         private Mock<IRepository<PostEntity>> _mockPostEntityRepository;
 
         [SetUp]
@@ -22,11 +22,11 @@ namespace Moonglade.Core.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockLogger = _mockRepository.Create<ILogger<BlogArchiveService>>();
+            _mockLogger = _mockRepository.Create<ILogger<PostArchiveService>>();
             _mockPostEntityRepository = _mockRepository.Create<IRepository<PostEntity>>();
         }
 
-        private BlogArchiveService CreateService()
+        private PostArchiveService CreateService()
         {
             return new(
                 _mockLogger.Object,

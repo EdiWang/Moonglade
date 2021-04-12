@@ -27,7 +27,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IPostService> _mockPostService;
         private Mock<IPageService> _mockPageService;
         private Mock<ITagService> _mockTagService;
-        private Mock<IBlogArchiveService> _mockArchiveService;
+        private Mock<IPostArchiveService> _mockArchiveService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ILogger<HomeController>> _mockLogger;
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockPostService = _mockRepository.Create<IPostService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockTagService = _mockRepository.Create<ITagService>();
-            _mockArchiveService = _mockRepository.Create<IBlogArchiveService>();
+            _mockArchiveService = _mockRepository.Create<IPostArchiveService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockLogger = _mockRepository.Create<ILogger<HomeController>>();

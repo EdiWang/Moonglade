@@ -9,19 +9,19 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core
 {
-    public interface IBlogArchiveService
+    public interface IPostArchiveService
     {
         Task<IReadOnlyList<Archive>> ListAsync();
         Task<IReadOnlyList<PostDigest>> ListPostsAsync(int year, int month = 0);
     }
 
-    public class BlogArchiveService : IBlogArchiveService
+    public class PostArchiveService : IPostArchiveService
     {
-        private readonly ILogger<BlogArchiveService> _logger;
+        private readonly ILogger<PostArchiveService> _logger;
         private readonly IRepository<PostEntity> _postRepo;
 
-        public BlogArchiveService(
-            ILogger<BlogArchiveService> logger,
+        public PostArchiveService(
+            ILogger<PostArchiveService> logger,
             IRepository<PostEntity> postRepo)
         {
             _logger = logger;

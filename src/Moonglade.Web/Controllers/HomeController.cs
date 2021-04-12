@@ -20,7 +20,7 @@ namespace Moonglade.Web.Controllers
         private readonly IPostService _postService;
         private readonly IPageService _pageService;
         private readonly ITagService _tagService;
-        private readonly IBlogArchiveService _blogArchiveService;
+        private readonly IPostArchiveService _postArchiveService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
         private readonly ILogger<HomeController> _logger;
@@ -30,7 +30,7 @@ namespace Moonglade.Web.Controllers
             IPostService postService,
             IPageService pageService,
             ITagService tagService,
-            IBlogArchiveService blogArchiveService,
+            IPostArchiveService postArchiveService,
             IBlogCache cache,
             IBlogConfig blogConfig,
             ILogger<HomeController> logger,
@@ -39,7 +39,7 @@ namespace Moonglade.Web.Controllers
             _postService = postService;
             _pageService = pageService;
             _tagService = tagService;
-            _blogArchiveService = blogArchiveService;
+            _postArchiveService = postArchiveService;
             _cache = cache;
             _blogConfig = blogConfig;
             _logger = logger;
@@ -123,7 +123,7 @@ namespace Moonglade.Web.Controllers
         [Route("archive")]
         public async Task<IActionResult> Archive()
         {
-            var archives = await _blogArchiveService.ListAsync();
+            var archives = await _postArchiveService.ListAsync();
             return View(archives);
         }
 
@@ -139,13 +139,13 @@ namespace Moonglade.Web.Controllers
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
-                model = await _blogArchiveService.ListPostsAsync(year, month.Value);
+                model = await _postArchiveService.ListPostsAsync(year, month.Value);
             }
             else
             {
                 // {year}
                 ViewBag.ArchiveInfo = $"{year}";
-                model = await _blogArchiveService.ListPostsAsync(year);
+                model = await _postArchiveService.ListPostsAsync(year);
             }
 
             return View(model);
