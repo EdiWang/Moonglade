@@ -1,4 +1,4 @@
-﻿namespace Moonglade.ImageStorage
+﻿namespace Moonglade.ImageStorage.Providers
 {
     public class AzureStorageSettings
     {
