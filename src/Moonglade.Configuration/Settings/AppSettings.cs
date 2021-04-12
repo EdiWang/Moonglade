@@ -14,12 +14,4 @@ namespace Moonglade.Configuration.Settings
             SiteMap = new();
         }
     }
-
-    public enum FeatureFlags
-    {
-        EnableWebApi,
-        EnableAudit,
-        Foaf,
-        OPML
-    }
 }
