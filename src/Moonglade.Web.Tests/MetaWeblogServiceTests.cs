@@ -28,7 +28,7 @@ namespace Moonglade.Web.Tests
         private Mock<ILogger<MetaWeblogService>> _mockLogger;
         private Mock<ITagService> _mockTagService;
         private Mock<ICategoryService> _mockCategoryService;
-        private Mock<IPostService> _mockPostService;
+        private Mock<IPostQueryService> _mockPostService;
         private Mock<IPostManageService> _mockPostManageService;
         private Mock<IPageService> _mockPageService;
         private Mock<IBlogImageStorage> _mockBlogImageStorage;
@@ -80,7 +80,7 @@ namespace Moonglade.Web.Tests
             _mockLogger = _mockRepository.Create<ILogger<MetaWeblogService>>();
             _mockTagService = _mockRepository.Create<ITagService>();
             _mockCategoryService = _mockRepository.Create<ICategoryService>();
-            _mockPostService = _mockRepository.Create<IPostService>();
+            _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockPostManageService = _mockRepository.Create<IPostManageService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();

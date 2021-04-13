@@ -22,7 +22,7 @@ namespace Moonglade.Web
         private readonly ILogger<MetaWeblogService> _logger;
         private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
-        private readonly IPostService _postService;
+        private readonly IPostQueryService _postQueryService;
         private readonly IPostManageService _postManageService;
         private readonly IPageService _pageService;
         private readonly IBlogImageStorage _blogImageStorage;
@@ -34,7 +34,7 @@ namespace Moonglade.Web
             ILogger<MetaWeblogService> logger,
             ITagService tagService,
             ICategoryService categoryService,
-            IPostService postService,
+            IPostQueryService postQueryService,
             IPostManageService postManageService,
             IPageService pageService,
             IBlogImageStorage blogImageStorage,
@@ -45,7 +45,7 @@ namespace Moonglade.Web
             _logger = logger;
             _tagService = tagService;
             _categoryService = categoryService;
-            _postService = postService;
+            _postQueryService = postQueryService;
             _pageService = pageService;
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
@@ -110,7 +110,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(postid));
                 }
 
-                var post = await _postService.GetAsync(id);
+                var post = await _postQueryService.GetAsync(id);
                 return ToMetaWeblogPost(post);
             }
             catch (Exception e)

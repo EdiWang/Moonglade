@@ -41,7 +41,7 @@ namespace Moonglade.Core.Tests
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
         }
 
-        private PostService CreateService()
+        private PostQueryService CreateService()
         {
             return new(
                 _mockOptionsAppSettings.Object,

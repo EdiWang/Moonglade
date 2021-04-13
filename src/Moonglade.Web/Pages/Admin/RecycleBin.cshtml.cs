@@ -8,18 +8,18 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class RecycleBinModel : PageModel
     {
-        private readonly IPostService _postService;
+        private readonly IPostQueryService _postQueryService;
 
         public IReadOnlyList<PostSegment> Posts { get; set; }
 
-        public RecycleBinModel(IPostService postService)
+        public RecycleBinModel(IPostQueryService postQueryService)
         {
-            _postService = postService;
+            _postQueryService = postQueryService;
         }
 
         public async Task OnGet()
         {
-            Posts = await _postService.ListSegment(PostStatus.Deleted);
+            Posts = await _postQueryService.ListSegment(PostStatus.Deleted);
         }
     }
 }

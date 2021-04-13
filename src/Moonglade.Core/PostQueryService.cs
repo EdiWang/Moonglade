@@ -12,7 +12,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core
 {
-    public interface IPostService
+    public interface IPostQueryService
     {
         int CountPublic();
         int CountByCategory(Guid catId);
@@ -29,7 +29,7 @@ namespace Moonglade.Core
         Task<IReadOnlyList<PostDigest>> ListFeatured(int pageSize, int pageIndex);
     }
 
-    public class PostService : IPostService
+    public class PostQueryService : IPostQueryService
     {
         private readonly IBlogCache _cache;
         private readonly AppSettings _settings;
@@ -106,7 +106,7 @@ namespace Moonglade.Core
 
         #endregion
 
-        public PostService(
+        public PostQueryService(
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepo,
             IRepository<PostTagEntity> postTagRepo,

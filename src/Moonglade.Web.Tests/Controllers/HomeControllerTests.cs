@@ -24,7 +24,7 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<IPostService> _mockPostService;
+        private Mock<IPostQueryService> _mockPostService;
         private Mock<IPageService> _mockPageService;
         private Mock<ITagService> _mockTagService;
         private Mock<IPostArchiveService> _mockArchiveService;
@@ -59,7 +59,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockPostService = _mockRepository.Create<IPostService>();
+            _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockTagService = _mockRepository.Create<ITagService>();
             _mockArchiveService = _mockRepository.Create<IPostArchiveService>();

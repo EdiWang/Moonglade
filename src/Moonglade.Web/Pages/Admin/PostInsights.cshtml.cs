@@ -8,21 +8,21 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class PostInsightsModel : PageModel
     {
-        private readonly IPostService _postService;
+        private readonly IPostQueryService _postQueryService;
 
         public IReadOnlyList<PostSegment> TopReadList { get; set; }
 
         public IReadOnlyList<PostSegment> TopCommentedList { get; set; }
 
-        public PostInsightsModel(IPostService postService)
+        public PostInsightsModel(IPostQueryService postQueryService)
         {
-            _postService = postService;
+            _postQueryService = postQueryService;
         }
 
         public async Task OnGet()
         {
-            TopReadList = await _postService.ListInsights(PostInsightsType.TopRead);
-            TopCommentedList = await _postService.ListInsights(PostInsightsType.TopCommented);
+            TopReadList = await _postQueryService.ListInsights(PostInsightsType.TopRead);
+            TopCommentedList = await _postQueryService.ListInsights(PostInsightsType.TopCommented);
         }
     }
 }

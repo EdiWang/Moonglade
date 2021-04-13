@@ -14,13 +14,13 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class RecycleBinModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPostService> _mockPostService;
+        private Mock<IPostQueryService> _mockPostService;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPostService = _mockRepository.Create<IPostService>();
+            _mockPostService = _mockRepository.Create<IPostQueryService>();
         }
 
         private RecycleBinModel CreateRecycleBinModel()

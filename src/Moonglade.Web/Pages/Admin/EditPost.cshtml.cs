@@ -12,19 +12,19 @@ namespace Moonglade.Web.Pages.Admin
     public class EditPostModel : PageModel
     {
         private readonly ICategoryService _catService;
-        private readonly IPostService _postService;
+        private readonly IPostQueryService _postQueryService;
         private readonly ITimeZoneResolver _timeZoneResolver;
 
         public PostEditModel ViewModel { get; set; }
 
         public EditPostModel(
             ICategoryService catService,
-            IPostService postService,
+            IPostQueryService postQueryService,
             ITimeZoneResolver timeZoneResolver,
             IBlogConfig blogConfig)
         {
             _catService = catService;
-            _postService = postService;
+            _postQueryService = postQueryService;
             _timeZoneResolver = timeZoneResolver;
             ViewModel = new()
             {
@@ -52,7 +52,7 @@ namespace Moonglade.Web.Pages.Admin
                 return Page();
             }
 
-            var post = await _postService.GetAsync(id.Value);
+            var post = await _postQueryService.GetAsync(id.Value);
             if (null == post) return NotFound();
 
             ViewModel = new()

@@ -17,12 +17,12 @@ namespace Moonglade.Web.Controllers
     [Route("post")]
     public class PostController : Controller
     {
-        private readonly IPostService _postService;
+        private readonly IPostQueryService _postQueryService;
 
         public PostController(
-            IPostService postService)
+            IPostQueryService postQueryService)
         {
-            _postService = postService;
+            _postQueryService = postQueryService;
         }
 
         [HttpGet("segment/published")]
@@ -35,7 +35,7 @@ namespace Moonglade.Web.Controllers
             try
             {
                 // for security, only allow published posts to be listed to third party API calls
-                var list = await _postService.ListSegment(PostStatus.Published);
+                var list = await _postQueryService.ListSegment(PostStatus.Published);
                 return Ok(list);
             }
             catch (Exception)
@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
             if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
             var slugInfo = new PostSlug(year, month, day, slug);
-            var post = await _postService.GetAsync(slugInfo);
+            var post = await _postQueryService.GetAsync(slugInfo);
 
             if (post is null) return NotFound();
 
@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("preview/{postId:guid}")]
         public async Task<IActionResult> Preview(Guid postId)
         {
-            var post = await _postService.GetDraft(postId);
+            var post = await _postQueryService.GetDraft(postId);
             if (post is null) return NotFound();
 
             ViewBag.TitlePrefix = $"{post.Title}";

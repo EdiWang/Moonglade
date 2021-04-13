@@ -17,7 +17,7 @@ namespace Moonglade.Web.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : Controller
     {
-        private readonly IPostService _postService;
+        private readonly IPostQueryService _postQueryService;
         private readonly IPageService _pageService;
         private readonly ITagService _tagService;
         private readonly IPostArchiveService _postArchiveService;
@@ -27,7 +27,7 @@ namespace Moonglade.Web.Controllers
         private readonly AppSettings _settings;
 
         public HomeController(
-            IPostService postService,
+            IPostQueryService postQueryService,
             IPageService pageService,
             ITagService tagService,
             IPostArchiveService postArchiveService,
@@ -36,7 +36,7 @@ namespace Moonglade.Web.Controllers
             ILogger<HomeController> logger,
             IOptions<AppSettings> settingsOptions)
         {
-            _postService = postService;
+            _postQueryService = postQueryService;
             _pageService = pageService;
             _tagService = tagService;
             _postArchiveService = postArchiveService;
@@ -49,8 +49,8 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Index(int page = 1)
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postService.List(pagesize, page);
-            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postService.CountPublic());
+            var posts = await _postQueryService.List(pagesize, page);
+            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postQueryService.CountPublic());
 
             var list = new StaticPagedList<PostDigest>(posts, page, pagesize, count);
             return View(list);
@@ -88,8 +88,8 @@ namespace Moonglade.Web.Controllers
             if (tagResponse is null) return NotFound();
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postService.ListByTag(tagResponse.Id, pagesize, page);
-            var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postService.CountByTag(tagResponse.Id));
+            var posts = await _postQueryService.ListByTag(tagResponse.Id, pagesize, page);
+            var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postQueryService.CountByTag(tagResponse.Id));
 
             ViewBag.TitlePrefix = tagResponse.DisplayName;
 
@@ -112,9 +112,9 @@ namespace Moonglade.Web.Controllers
             ViewBag.CategoryDescription = cat.Note;
 
             var postCount = _cache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
-                _ => _postService.CountByCategory(cat.Id));
+                _ => _postQueryService.CountByCategory(cat.Id));
 
-            var postList = await _postService.List(pageSize, page, cat.Id);
+            var postList = await _postQueryService.List(pageSize, page, cat.Id);
 
             var postsAsIPagedList = new StaticPagedList<PostDigest>(postList, page, pageSize, postCount);
             return View(postsAsIPagedList);
@@ -155,8 +155,8 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Featured(int page = 1)
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postService.ListFeatured(pagesize, page);
-            var count = _cache.GetOrCreate(CacheDivision.PostCountFeatured, "featured", _ => _postService.CountByFeatured());
+            var posts = await _postQueryService.ListFeatured(pagesize, page);
+            var count = _cache.GetOrCreate(CacheDivision.PostCountFeatured, "featured", _ => _postQueryService.CountByFeatured());
 
             var list = new StaticPagedList<PostDigest>(posts, page, pagesize, count);
             return View(list);

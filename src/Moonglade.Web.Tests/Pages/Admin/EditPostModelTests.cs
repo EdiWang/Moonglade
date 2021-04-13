@@ -19,7 +19,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         private MockRepository _mockRepository;
 
         private Mock<ICategoryService> _mockCategoryService;
-        private Mock<IPostService> _mockPostService;
+        private Mock<IPostQueryService> _mockPostService;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<IBlogConfig> _mockBlogConfig;
 
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             _mockRepository = new(MockBehavior.Default);
 
             _mockCategoryService = _mockRepository.Create<ICategoryService>();
-            _mockPostService = _mockRepository.Create<IPostService>();
+            _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
         }

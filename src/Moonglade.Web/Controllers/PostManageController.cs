@@ -22,7 +22,7 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class PostManageController : ControllerBase
     {
-        private readonly IPostService _postService;
+        private readonly IPostQueryService _postQueryService;
         private readonly IPostManageService _postManageService;
 
         private readonly IBlogConfig _blogConfig;
@@ -31,14 +31,14 @@ namespace Moonglade.Web.Controllers
         private readonly ILogger<PostManageController> _logger;
 
         public PostManageController(
-            IPostService postService,
+            IPostQueryService postQueryService,
             IPostManageService postManageService,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IPingbackSender pingbackSender,
             ILogger<PostManageController> logger)
         {
-            _postService = postService;
+            _postQueryService = postQueryService;
             _postManageService = postManageService;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Controllers
             var take = model.Length;
             var offset = model.Start;
 
-            var (posts, totalRows) = await _postService.ListSegment(status, offset, take, searchBy);
+            var (posts, totalRows) = await _postQueryService.ListSegment(status, offset, take, searchBy);
             var jqdtResponse = new JqDataTableResponse<PostSegment>
             {
                 Draw = model.Draw,

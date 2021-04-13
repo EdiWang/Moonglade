@@ -8,18 +8,18 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class PostDraftModel : PageModel
     {
-        private readonly IPostService _postService;
+        private readonly IPostQueryService _postQueryService;
 
         public IReadOnlyList<PostSegment> PostSegments { get; set; }
 
-        public PostDraftModel(IPostService postService)
+        public PostDraftModel(IPostQueryService postQueryService)
         {
-            _postService = postService;
+            _postQueryService = postQueryService;
         }
 
         public async Task OnGet()
         {
-            PostSegments = await _postService.ListSegment(PostStatus.Draft);
+            PostSegments = await _postQueryService.ListSegment(PostStatus.Draft);
         }
     }
 }
