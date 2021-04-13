@@ -135,7 +135,7 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [ ] APML - Not planned
 - [ ] Trackback - Not planned
 
-## 🐼 Customers
+## 🐼 Example Blogs
 
 There are a few individuals already setup thier blogs using Moonglade on Azure (Global or China), Alibaba Cloud, Tencent Cloud, etc.
 
