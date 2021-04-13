@@ -27,7 +27,6 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IPostQueryService> _mockPostService;
         private Mock<IPageService> _mockPageService;
         private Mock<ITagService> _mockTagService;
-        private Mock<IPostArchiveService> _mockArchiveService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ILogger<HomeController>> _mockLogger;
@@ -62,7 +61,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockTagService = _mockRepository.Create<ITagService>();
-            _mockArchiveService = _mockRepository.Create<IPostArchiveService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockLogger = _mockRepository.Create<ILogger<HomeController>>();
@@ -80,7 +78,6 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockPostService.Object,
                 _mockPageService.Object,
                 _mockTagService.Object,
-                _mockArchiveService.Object,
                 _mockBlogCache.Object,
                 _mockBlogConfig.Object,
                 _mockLogger.Object,
@@ -178,7 +175,7 @@ namespace Moonglade.Web.Tests.Controllers
                 new (251,3,5)
             };
 
-            _mockArchiveService.Setup(p => p.ListAsync())
+            _mockPostService.Setup(p => p.ListArchiveAsync())
                 .Returns(Task.FromResult((IReadOnlyList<Archive>)fakeArchives));
 
             var ctl = CreateHomeController();
@@ -328,7 +325,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ArchiveList_Year()
         {
-            _mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), 0))
+            _mockPostService.Setup(p => p.List(It.IsAny<int>(), null))
                 .Returns(Task.FromResult(_fakePosts));
 
             var ctl = CreateHomeController();
@@ -345,7 +342,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ArchiveList_Year_Month()
         {
-            _mockArchiveService.Setup(p => p.ListPostsAsync(It.IsAny<int>(), It.IsAny<int>()))
+            _mockPostService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int?>()))
                 .Returns(Task.FromResult(_fakePosts));
 
             var ctl = CreateHomeController();

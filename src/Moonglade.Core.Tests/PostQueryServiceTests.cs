@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
@@ -17,10 +18,11 @@ namespace Moonglade.Core.Tests
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
-    public class PostServiceTests
+    public class PostQueryServiceTests
     {
         private MockRepository _mockRepository;
 
+        private Mock<ILogger<PostQueryService>> _mockLogger;
         private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
         private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
         private Mock<IRepository<PostTagEntity>> _mockPostTagEntityRepo;
@@ -34,6 +36,7 @@ namespace Moonglade.Core.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
+            _mockLogger = _mockRepository.Create<ILogger<PostQueryService>>();
             _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
             _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
             _mockPostTagEntityRepo = _mockRepository.Create<IRepository<PostTagEntity>>();
@@ -44,6 +47,7 @@ namespace Moonglade.Core.Tests
         private PostQueryService CreateService()
         {
             return new(
+                _mockLogger.Object,
                 _mockOptionsAppSettings.Object,
                 _mockPostEntityRepo.Object,
                 _mockPostTagEntityRepo.Object,
@@ -181,6 +185,21 @@ namespace Moonglade.Core.Tests
             var result = await svc.ListFeatured(7, 404);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<FeaturedPostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
+        }
+
+        [Test]
+        public async Task ListArchiveAsync_NoPosts()
+        {
+            _mockPostEntityRepo.Setup(p => p.Any(p => p.IsPublished && !p.IsDeleted)).Returns(false);
+
+            // Arrange
+            var service = CreateService();
+
+            // Act
+            var result = await service.ListArchiveAsync();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
         }
     }
 }

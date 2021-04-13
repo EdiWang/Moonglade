@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
@@ -25,12 +26,15 @@ namespace Moonglade.Core
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
         Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null);
+        Task<IReadOnlyList<PostDigest>> List(int year, int? month);
         Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
         Task<IReadOnlyList<PostDigest>> ListFeatured(int pageSize, int pageIndex);
+        Task<IReadOnlyList<Archive>> ListArchiveAsync();
     }
 
     public class PostQueryService : IPostQueryService
     {
+        private readonly ILogger<PostQueryService> _logger;
         private readonly IBlogCache _cache;
         private readonly AppSettings _settings;
 
@@ -107,12 +111,14 @@ namespace Moonglade.Core
         #endregion
 
         public PostQueryService(
+            ILogger<PostQueryService> logger,
             IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepo,
             IRepository<PostTagEntity> postTagRepo,
             IRepository<PostCategoryEntity> postCatRepo,
             IBlogCache cache)
         {
+            _logger = logger;
             _settings = settings.Value;
             _postRepo = postRepo;
             _postTagRepo = postTagRepo;
@@ -242,6 +248,45 @@ namespace Moonglade.Core
 
             var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), SharedSelectors.PostDigestSelector);
             return posts;
+        }
+
+        public async Task<IReadOnlyList<Archive>> ListArchiveAsync()
+        {
+            if (!_postRepo.Any(p => p.IsPublished && !p.IsDeleted))
+            {
+                return new List<Archive>();
+            }
+
+            var spec = new PostSpec(PostStatus.Published);
+            var list = await _postRepo.SelectAsync(spec, post => new
+            {
+                post.PubDateUtc.Value.Year,
+                post.PubDateUtc.Value.Month
+            }, monthList => new Archive(
+                monthList.Key.Year,
+                monthList.Key.Month,
+                monthList.Count()));
+
+            return list;
+        }
+
+        public Task<IReadOnlyList<PostDigest>> List(int year, int? month)
+        {
+            if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
+            {
+                _logger.LogError($"parameter '{nameof(year)}:{year}' is out of range");
+                throw new ArgumentOutOfRangeException(nameof(year));
+            }
+
+            if (month is > 12 or < 0)
+            {
+                _logger.LogError($"parameter '{nameof(month)}:{month}' is out of range");
+                throw new ArgumentOutOfRangeException(nameof(month));
+            }
+
+            var spec = new PostSpec(year, month.GetValueOrDefault());
+            var list = _postRepo.SelectAsync(spec, SharedSelectors.PostDigestSelector);
+            return list;
         }
 
         private static void ValidatePagingParameters(int pageSize, int pageIndex)

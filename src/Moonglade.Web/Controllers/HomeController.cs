@@ -20,7 +20,6 @@ namespace Moonglade.Web.Controllers
         private readonly IPostQueryService _postQueryService;
         private readonly IPageService _pageService;
         private readonly ITagService _tagService;
-        private readonly IPostArchiveService _postArchiveService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
         private readonly ILogger<HomeController> _logger;
@@ -30,7 +29,6 @@ namespace Moonglade.Web.Controllers
             IPostQueryService postQueryService,
             IPageService pageService,
             ITagService tagService,
-            IPostArchiveService postArchiveService,
             IBlogCache cache,
             IBlogConfig blogConfig,
             ILogger<HomeController> logger,
@@ -39,7 +37,6 @@ namespace Moonglade.Web.Controllers
             _postQueryService = postQueryService;
             _pageService = pageService;
             _tagService = tagService;
-            _postArchiveService = postArchiveService;
             _cache = cache;
             _blogConfig = blogConfig;
             _logger = logger;
@@ -123,7 +120,7 @@ namespace Moonglade.Web.Controllers
         [Route("archive")]
         public async Task<IActionResult> Archive()
         {
-            var archives = await _postArchiveService.ListAsync();
+            var archives = await _postQueryService.ListArchiveAsync();
             return View(archives);
         }
 
@@ -139,13 +136,13 @@ namespace Moonglade.Web.Controllers
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
-                model = await _postArchiveService.ListPostsAsync(year, month.Value);
+                model = await _postQueryService.List(year, month);
             }
             else
             {
                 // {year}
                 ViewBag.ArchiveInfo = $"{year}";
-                model = await _postArchiveService.ListPostsAsync(year);
+                model = await _postQueryService.List(year, null);
             }
 
             return View(model);
