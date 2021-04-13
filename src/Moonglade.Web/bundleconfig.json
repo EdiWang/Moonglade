@@ -10,7 +10,7 @@
   {
     "outputFileName": "wwwroot/js/dist/app-bundle.js",
     "inputFiles": [
-      "wwwroot/js/3rd/jquery.min.js",
+      "wwwroot/lib/jquery/jquery.min.js",
       "wwwroot/js/3rd/bootstrap.bundle.min.js",
       "wwwroot/js/3rd/jquery.qrcode.min.js",
       "wwwroot/js/3rd/notyf.min.js",
