@@ -23,6 +23,8 @@ namespace Moonglade.Web.Controllers
     public class PostManageController : ControllerBase
     {
         private readonly IPostService _postService;
+        private readonly IPostManageService _postManageService;
+
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly IPingbackSender _pingbackSender;
@@ -30,12 +32,14 @@ namespace Moonglade.Web.Controllers
 
         public PostManageController(
             IPostService postService,
+            IPostManageService postManageService,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IPingbackSender pingbackSender,
             ILogger<PostManageController> logger)
         {
             _postService = postService;
+            _postManageService = postManageService;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _pingbackSender = pingbackSender;
@@ -113,8 +117,8 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var postEntity = model.PostId == Guid.Empty ?
-                    await _postService.CreateAsync(request) :
-                    await _postService.UpdateAsync(model.PostId, request);
+                    await _postManageService.CreateAsync(request) :
+                    await _postManageService.UpdateAsync(model.PostId, request);
 
                 if (model.IsPublished)
                 {
@@ -159,7 +163,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            await _postService.RestoreAsync(postId);
+            await _postManageService.RestoreAsync(postId);
             return Ok();
         }
 
@@ -175,7 +179,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            await _postService.DeleteAsync(postId, true);
+            await _postManageService.DeleteAsync(postId, true);
             return Ok();
         }
 
@@ -190,7 +194,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            await _postService.DeleteAsync(postId);
+            await _postManageService.DeleteAsync(postId);
             return Ok();
         }
 
@@ -199,7 +203,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("empty-recycle-bin")]
         public async Task<IActionResult> EmptyRecycleBin()
         {
-            await _postService.PurgeRecycledAsync();
+            await _postManageService.PurgeRecycledAsync();
             return Redirect("/admin/post/recycle-bin");
         }
     }

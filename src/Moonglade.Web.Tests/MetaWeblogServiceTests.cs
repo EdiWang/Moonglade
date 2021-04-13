@@ -29,6 +29,7 @@ namespace Moonglade.Web.Tests
         private Mock<ITagService> _mockTagService;
         private Mock<ICategoryService> _mockCategoryService;
         private Mock<IPostService> _mockPostService;
+        private Mock<IPostManageService> _mockPostManageService;
         private Mock<IPageService> _mockPageService;
         private Mock<IBlogImageStorage> _mockBlogImageStorage;
         private Mock<IFileNameGenerator> _mockFileNameGenerator;
@@ -80,6 +81,7 @@ namespace Moonglade.Web.Tests
             _mockTagService = _mockRepository.Create<ITagService>();
             _mockCategoryService = _mockRepository.Create<ICategoryService>();
             _mockPostService = _mockRepository.Create<IPostService>();
+            _mockPostManageService = _mockRepository.Create<IPostManageService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
@@ -107,6 +109,7 @@ namespace Moonglade.Web.Tests
                 _mockTagService.Object,
                 _mockCategoryService.Object,
                 _mockPostService.Object,
+                _mockPostManageService.Object,
                 _mockPageService.Object,
                 _mockBlogImageStorage.Object,
                 _mockFileNameGenerator.Object);
@@ -166,7 +169,7 @@ namespace Moonglade.Web.Tests
             };
 
             _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
-            _mockPostService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()))
+            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()))
                 .Returns(Task.FromResult(new PostEntity { Id = Uid }));
 
             var service = CreateService();
@@ -179,7 +182,7 @@ namespace Moonglade.Web.Tests
                 mt_keywords = "996,icu"
             }, true);
 
-            _mockPostService.Verify(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()));
+            _mockPostManageService.Verify(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()));
         }
 
         [Test]
@@ -188,7 +191,7 @@ namespace Moonglade.Web.Tests
             var service = CreateService();
             await service.DeletePostAsync("996.icu", Uid.ToString(), _username, _password, true);
 
-            _mockPostService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+            _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
         }
     }
 }

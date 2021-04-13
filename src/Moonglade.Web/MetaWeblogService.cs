@@ -23,6 +23,7 @@ namespace Moonglade.Web
         private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
+        private readonly IPostManageService _postManageService;
         private readonly IPageService _pageService;
         private readonly IBlogImageStorage _blogImageStorage;
         private readonly IFileNameGenerator _fileNameGenerator;
@@ -34,6 +35,7 @@ namespace Moonglade.Web
             ITagService tagService,
             ICategoryService categoryService,
             IPostService postService,
+            IPostManageService postManageService,
             IPageService pageService,
             IBlogImageStorage blogImageStorage,
             IFileNameGenerator fileNameGenerator)
@@ -47,6 +49,7 @@ namespace Moonglade.Web
             _pageService = pageService;
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
+            _postManageService = postManageService;
         }
 
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
@@ -163,7 +166,7 @@ namespace Moonglade.Web
                     PublishDate = DateTime.UtcNow
                 };
 
-                var p = await _postService.CreateAsync(req);
+                var p = await _postManageService.CreateAsync(req);
                 return p.Id.ToString();
             }
             catch (Exception e)
@@ -184,7 +187,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(postid));
                 }
 
-                await _postService.DeleteAsync(id, publish);
+                await _postManageService.DeleteAsync(id, publish);
                 return true;
             }
             catch (Exception e)
@@ -226,7 +229,7 @@ namespace Moonglade.Web
                     PublishDate = DateTime.UtcNow
                 };
 
-                await _postService.UpdateAsync(id, req);
+                await _postManageService.UpdateAsync(id, req);
                 return true;
             }
             catch (Exception e)
