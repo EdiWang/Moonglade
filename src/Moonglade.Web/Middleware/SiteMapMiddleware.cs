@@ -37,7 +37,7 @@ namespace Moonglade.Web.Middleware
             {
                 var xml = await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
                 {
-                    var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true);
+                    var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
                     var data = await GetSiteMapData(url, settings.Value, postRepo, pageRepo);
                     return data;
                 });

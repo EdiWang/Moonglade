@@ -107,21 +107,23 @@ namespace Moonglade.Utils
             return Convert.ToBase64String(sha.Hash ?? throw new InvalidOperationException());
         }
 
-        public static string ResolveRootUrl(HttpContext ctx, string canonicalPrefix, bool preferCanonical = false)
+        public static string ResolveRootUrl(HttpContext ctx, string canonicalPrefix, bool preferCanonical = false, bool removeTailSlash = false)
         {
             if (ctx is null && !preferCanonical)
             {
                 throw new ArgumentNullException(nameof(ctx), "HttpContext must not be null when preferCanonical is 'false'");
             }
 
-            if (preferCanonical)
+            var url = preferCanonical ?
+                        ResolveCanonicalUrl(canonicalPrefix, string.Empty) :
+                        $"{ctx.Request.Scheme}://{ctx.Request.Host}";
+
+            if (removeTailSlash && url.EndsWith('/'))
             {
-                var url = ResolveCanonicalUrl(canonicalPrefix, string.Empty);
-                return url;
+                return url.TrimEnd('/');
             }
 
-            var requestedRoot = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
-            return requestedRoot;
+            return url;
         }
 
         public static string SterilizeLink(string rawUrl)
