@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Moonglade.Configuration.Settings
+namespace Moonglade.Web.Models
 {
     public class SiteMapSettings
     {

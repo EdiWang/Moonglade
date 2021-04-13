@@ -93,6 +93,7 @@ namespace Moonglade.Web
 
             // Blog Services
             services.AddBlogServices();
+            services.Configure<SiteMapSettings>(_configuration.GetSection("SiteMap"));
             services.Configure<List<BlogTheme>>(_configuration.GetSection("Themes"));
             services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
             services.Configure<Dictionary<string, string>>(_configuration.GetSection("TagNormalization"));

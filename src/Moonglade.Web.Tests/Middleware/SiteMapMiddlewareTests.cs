@@ -7,8 +7,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Settings;
 using Moonglade.Web.Middleware;
+using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -21,7 +21,7 @@ namespace Moonglade.Web.Tests.Middleware
         private MockRepository _mockRepository;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
+        private Mock<IOptions<SiteMapSettings>> _mockOptionsSiteMapSettings;
 
         [SetUp]
         public void Setup()
@@ -29,7 +29,7 @@ namespace Moonglade.Web.Tests.Middleware
             _mockRepository = new(MockBehavior.Default);
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
+            _mockOptionsSiteMapSettings = _mockRepository.Create<IOptions<SiteMapSettings>>();
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace Moonglade.Web.Tests.Middleware
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new SiteMapMiddleware(RequestDelegate);
 
-            await middleware.Invoke(httpContextMock.Object, _mockBlogConfig.Object, _mockBlogCache.Object, _mockOptionsAppSettings.Object, null, null);
+            await middleware.Invoke(httpContextMock.Object, _mockBlogConfig.Object, _mockBlogCache.Object, _mockOptionsSiteMapSettings.Object, null, null);
 
             Assert.Pass();
         }
@@ -68,7 +68,7 @@ namespace Moonglade.Web.Tests.Middleware
             ctx.Response.Body = new MemoryStream();
             ctx.Request.Path = "/sitemap.xml";
 
-            await middleware.Invoke(ctx, _mockBlogConfig.Object, _mockBlogCache.Object, _mockOptionsAppSettings.Object, null, null);
+            await middleware.Invoke(ctx, _mockBlogConfig.Object, _mockBlogCache.Object, _mockOptionsSiteMapSettings.Object, null, null);
 
             Assert.AreEqual("text/xml", ctx.Response.ContentType);
             Assert.Pass();
