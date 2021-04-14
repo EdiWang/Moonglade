@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
@@ -50,7 +51,13 @@ namespace Moonglade.Menus
                 Icon = p.Icon,
                 Title = p.Title,
                 Url = p.Url,
-                IsOpenInNewTab = p.IsOpenInNewTab
+                IsOpenInNewTab = p.IsOpenInNewTab,
+                SubMenus = p.SubMenus.Select(sm => new SubMenu
+                {
+                    Id = sm.Id,
+                    Title = sm.Title,
+                    Url = sm.Url
+                }).ToList()
             });
 
             return list;
