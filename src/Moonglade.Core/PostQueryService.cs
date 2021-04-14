@@ -26,10 +26,10 @@ namespace Moonglade.Core
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
         Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null);
-        Task<IReadOnlyList<PostDigest>> List(int year, int? month);
+        Task<IReadOnlyList<PostDigest>> ListArchive(int year, int? month);
         Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
         Task<IReadOnlyList<PostDigest>> ListFeatured(int pageSize, int pageIndex);
-        Task<IReadOnlyList<Archive>> ListArchiveAsync();
+        Task<IReadOnlyList<Archive>> GetArchiveAsync();
     }
 
     public class PostQueryService : IPostQueryService
@@ -250,7 +250,7 @@ namespace Moonglade.Core
             return posts;
         }
 
-        public async Task<IReadOnlyList<Archive>> ListArchiveAsync()
+        public async Task<IReadOnlyList<Archive>> GetArchiveAsync()
         {
             if (!_postRepo.Any(p => p.IsPublished && !p.IsDeleted))
             {
@@ -270,7 +270,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public Task<IReadOnlyList<PostDigest>> List(int year, int? month)
+        public Task<IReadOnlyList<PostDigest>> ListArchive(int year, int? month)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {

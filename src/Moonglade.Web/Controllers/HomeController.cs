@@ -120,7 +120,7 @@ namespace Moonglade.Web.Controllers
         [Route("archive")]
         public async Task<IActionResult> Archive()
         {
-            var archives = await _postQueryService.ListArchiveAsync();
+            var archives = await _postQueryService.GetArchiveAsync();
             return View(archives);
         }
 
@@ -136,13 +136,13 @@ namespace Moonglade.Web.Controllers
             {
                 // {year}/{month}
                 ViewBag.ArchiveInfo = $"{year}.{month}";
-                model = await _postQueryService.List(year, month);
+                model = await _postQueryService.ListArchive(year, month);
             }
             else
             {
                 // {year}
                 ViewBag.ArchiveInfo = $"{year}";
-                model = await _postQueryService.List(year, null);
+                model = await _postQueryService.ListArchive(year, null);
             }
 
             return View(model);

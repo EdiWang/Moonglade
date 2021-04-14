@@ -196,7 +196,7 @@ namespace Moonglade.Core.Tests
             var service = CreateService();
 
             // Act
-            var result = await service.ListArchiveAsync();
+            var result = await service.GetArchiveAsync();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
