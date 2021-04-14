@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Moonglade.Menus
 {
@@ -15,6 +16,8 @@ namespace Moonglade.Menus
         public int DisplayOrder { get; set; }
 
         public bool IsOpenInNewTab { get; set; }
+
+        public List<SubMenu> SubMenus { get; set; }
 
         public Menu()
         {
