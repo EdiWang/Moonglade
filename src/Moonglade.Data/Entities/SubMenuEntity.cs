@@ -10,6 +10,8 @@ namespace Moonglade.Data.Entities
 
         public string Url { get; set; }
 
+        public bool IsOpenInNewTab { get; set; }
+
         public Guid MenuId { get; set; }
 
         public virtual MenuEntity Menu { get; set; }

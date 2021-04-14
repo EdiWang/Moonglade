@@ -56,7 +56,8 @@ namespace Moonglade.Menus
                 {
                     Id = sm.Id,
                     Title = sm.Title,
-                    Url = sm.Url
+                    Url = sm.Url,
+                    IsOpenInNewTab = sm.IsOpenInNewTab
                 }).ToList()
             });
 
