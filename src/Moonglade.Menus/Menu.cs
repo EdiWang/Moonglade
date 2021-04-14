@@ -21,6 +21,7 @@ namespace Moonglade.Menus
 
         public Menu()
         {
+            SubMenus = new();
             Icon = "icon-file-text2";
         }
     }
