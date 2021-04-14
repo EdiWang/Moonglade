@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Menus
 {
-    public class UpdateMenuRequest
+    public struct UpdateMenuRequest
     {
         public string Title { get; set; }
 
