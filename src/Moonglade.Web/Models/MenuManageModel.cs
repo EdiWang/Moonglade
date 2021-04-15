@@ -29,11 +29,6 @@ namespace Moonglade.Web.Models
         public bool IsOpenInNewTab { get; set; }
 
         public List<SubMenuEditViewModel> SubMenuEditViewModels { get; set; }
-
-        public MenuEditViewModel()
-        {
-            Icon = "icon-file-text2";
-        }
     }
 
     public class SubMenuEditViewModel

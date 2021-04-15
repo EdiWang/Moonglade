@@ -7,14 +7,49 @@
 
 @section scripts{
     <script>
+        var menuJson = @Html.Raw(Model.MenuItems.ToJson());
+
+        function expandSubMenu(topMenuId) {
+            console.debug(topMenuId);
+        }
+
+        function loadMenuEditor(topMenuId) {
+
+            callApi(`/api/menu/edit/${topMenuId}`, 'GET', {},
+                async (resp) => {
+                    var data = await resp.json();
+                    $('#MenuEditViewModel_Id').val(data.id);
+                    $('#MenuEditViewModel_Title').val(data.title);
+                    $('#MenuEditViewModel_Url').val(data.url);
+                    $('#MenuEditViewModel_Icon').val(data.icon);
+                    $('#MenuEditViewModel_DisplayOrder').val(data.displayOrder);
+                    if (data.isOpenInNewTab) {
+                        $('#MenuEditViewModel_IsOpenInNewTab').prop('checked', 'checked');
+                    }
+                    $('.btn-delete').show();
+                    $('.btn-delete').data('menuid', topMenuId);
+                });
+        }
+
         $(".btn-delete").click(function () {
             var cfm = confirm("Delete Confirmation?");
             if (cfm) deleteMenu($(this).data("menuid"));
         });
 
-        $(".btn-edit").click(function () {
-            editMenu($(this).data("menuid"));
-        });
+        function initCreateMenu() {
+            $('#MenuEditViewModel_Id').val(emptyGuid);
+            $('#edit-form')[0].reset();
+            $('.btn-delete').hide();
+        }
+
+        function deleteMenu(menuid) {
+            $(`#span-processing-${menuid}`).show();
+
+            callApi(`/api/menu/${menuid}`, 'DELETE', {},
+                (resp) => {
+                    $(`#tr-${menuid}`).hide();
+                });
+        }
 
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
@@ -48,10 +83,7 @@
 
 <h3>
     @Localizer["Navigation Menus"]
-    <a class="btn btn-outline-success float-right" href="javascript:initCreateMenu();">
-        <span class="icon-plus"></span>
-        @Localizer["New"]
-    </a>
+
 </h3>
 <hr />
 
@@ -59,57 +91,62 @@
     @Localizer["To turn on / off system navigation items (Categories / Tags / Archive), edit"] <code>appsettings.json</code> @Localizer["or override with environment variables."]
 </div>
 
-@if (null != Model.MenuItems && Model.MenuItems.Any())
+@if (null != Model.MenuItems)
 {
-    <h5>Top Level Menus</h5>
-    <table class="table table-bordered mt-3">
-        <thead>
-            <tr>
-                <th>@Localizer["Title"]</th>
-                <th>@Localizer["URL"]</th>
-                <th>@Localizer["Icon"]</th>
-                <th>@Localizer["Order"]</th>
-                <th>@Localizer["Open in New Tab"]</th>
-                <th>@Localizer["Action"]</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.MenuItems.Where(p => p.SubMenus.Count == 0).OrderBy(p => p.DisplayOrder))
-            {
-                <tr id="tr-@item.Id">
-                    <td>@item.Title</td>
-                    <td>@item.Url</td>
-                    <td>@item.Icon</td>
-                    <td>@item.DisplayOrder</td>
-                    <td>@item.IsOpenInNewTab</td>
-                    <td class="p-2">
-                        <a href="javascript:;" data-menuid="@item.Id" class="btn btn-sm btn-outline-accent btn-edit"><span class="icon-pencil"></span></a>
-                        <a href="javascript:;" data-menuid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
+    if (Model.MenuItems.Count == 0)
+    {
+        <div class="alert alert-info">@Localizer["No Customized Menus"]</div>
+    }
 
-                        <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div class="alert alert-info">@Localizer["No Customized Menus"]</div>
-}
+    <div class="row">
+        <div class="col-3">
+            <h5>Top Level</h5>
+            <hr />
+            <div class="list-group mb-2">
+                @foreach (var menu in Model.MenuItems.OrderBy(m => m.DisplayOrder))
+                {
+                    @if (menu.SubMenus.Count > 0)
+                    {
+                        <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
+                           href="javascript:expandSubMenu('@menu.Id');">
+                            <span class="icon-list mr-2"></span>
+                            @menu.Title
 
-<div class="modal fade" id="editMenuModal" tabindex="-1" role="dialog" aria-labelledby="editMenuModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editMenuModalLabel">@Localizer["Menu Information"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                            <span class="text-muted float-right">
+                                ...
+                            </span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
+                           href="javascript:loadMenuEditor('@menu.Id');">
+                            <span class="@menu.Icon mr-2"></span>
+                            @menu.Title
+                        </a>
+                    }
+                }
             </div>
-
-            <form id="edit-form" method="post">
-                <div class="modal-body">
+            <a class="btn btn-outline-success btn-block" href="javascript:initCreateMenu();">
+                <span class="icon-plus"></span>
+                @Localizer["New"]
+            </a>
+        </div>
+        <div class="col-3">
+            <h5>Sub Menu</h5>
+            <hr />
+            <div class="alert alert-warning">
+                Under construction
+            </div>
+            <div class="list-group">
+                
+            </div>
+        </div>
+        <div class="col-6">
+            <h5>Menu Editor</h5>
+            <hr />
+            <div>
+                <form id="edit-form" method="post">
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <input type="hidden" asp-for="MenuEditViewModel.Id" />
                     <div class="form-group">
@@ -139,12 +176,15 @@ else
                             <label asp-for="MenuEditViewModel.IsOpenInNewTab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
+                    <hr />
                     <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
-                </div>
-            </form>
+                    <button type="button" class="btn btn-secondary">@Localizer["Cancel"]</button>
+
+                    <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><span class="icon-bin"></span></a>
+                </form>
+            </div>
+
+            <span id="span-processing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
         </div>
     </div>
-</div>
+}

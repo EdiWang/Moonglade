@@ -385,15 +385,6 @@ function deleteFriendLink(friendlinkid) {
         });
 }
 
-function deleteMenu(menuid) {
-    $(`#span-processing-${menuid}`).show();
-
-    callApi(`/api/menu/${menuid}`, 'DELETE', {},
-        (resp) => {
-            $(`#tr-${menuid}`).hide();
-        });
-}
-
 function initCreateFriendLink() {
     $('#FriendLinkEditViewModel_Id').val(emptyGuid);
     $('#edit-form')[0].reset();
@@ -462,28 +453,6 @@ function deleteCat(catid) {
         (resp) => {
             $(`#card-${catid}`).hide();
             notyf.success('Category deleted');
-        });
-}
-
-function initCreateMenu() {
-    $('#MenuEditViewModel_Id').val(emptyGuid);
-    $('#edit-form')[0].reset();
-    $('#editMenuModal').modal();
-}
-
-function editMenu(id) {
-    callApi(`/api/menu/edit/${id}`, 'GET', {},
-        async (resp) => {
-            var data = await resp.json();
-            $('#MenuEditViewModel_Id').val(data.id);
-            $('#MenuEditViewModel_Title').val(data.title);
-            $('#MenuEditViewModel_Url').val(data.url);
-            $('#MenuEditViewModel_Icon').val(data.icon);
-            $('#MenuEditViewModel_DisplayOrder').val(data.displayOrder);
-            if (data.isOpenInNewTab) {
-                $('#MenuEditViewModel_IsOpenInNewTab').prop('checked', 'checked');
-            }
-            $('#editMenuModal').modal();
         });
 }
 
