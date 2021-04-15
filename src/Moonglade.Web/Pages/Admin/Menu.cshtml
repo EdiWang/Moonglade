@@ -33,8 +33,8 @@
                     $('#topmenu-id').val(data.id);
                     $('#topmenu-title').val(data.title);
                     $('#topmenu-url').val(data.url);
-                    $('#MenuEditViewModel_Icon').val(data.icon);
-                    $('#MenuEditViewModel_DisplayOrder').val(data.displayOrder);
+                    $('#topmenu-iconcssclass').val(data.icon);
+                    $('#topmenu-displayorder').val(data.displayOrder);
                     if (data.isOpenInNewTab) {
                         $('#MenuEditViewModel_IsOpenInNewTab').prop('checked', 'checked');
                     }
@@ -86,8 +86,8 @@
                         "Id": $("#topmenu-id").val(),
                         "Title": $("#topmenu-title").val(),
                         "Url": $("#topmenu-url").val(),
-                        "Icon": $("#MenuEditViewModel_Icon").val(),
-                        "DisplayOrder": parseInt($("#MenuEditViewModel_DisplayOrder").val()),
+                        "Icon": $("#topmenu-iconcssclass").val(),
+                        "DisplayOrder": parseInt($("#topmenu-displayorder").val()),
                         "IsOpenInNewTab": $('#MenuEditViewModel_IsOpenInNewTab').prop('checked')
                     },
                     (resp) => {
@@ -173,13 +173,16 @@
                         <input id="topmenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required/>
                     </div>
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Icon" placeholder="@Localizer["Icon CSS Class"]" class="form-control"/>
-                        <span asp-validation-for="MenuEditViewModel.Icon" class="text-danger"></span>
+                        <input id="topmenu-iconcssclass" placeholder="@Localizer["Icon CSS Class"]" class="form-control" pattern="[a-z0-9-]+"/>
                         <small class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</small>
                     </div>
                     <div class="form-group">
-                        <label asp-for="MenuEditViewModel.DisplayOrder"></label>
-                        <input asp-for="MenuEditViewModel.DisplayOrder" class="form-control"/>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Order</span>
+                            </div>
+                            <input id="topmenu-displayorder" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
