@@ -49,7 +49,7 @@
                 });
         }
 
-        $(".btn-delete").click(function() {
+        $('.btn-delete').click(function() {
             var cfm = confirm("Delete Confirmation?");
             if (cfm) deleteMenu($(this).data("menuid"));
         });
@@ -61,8 +61,6 @@
         }
 
         function deleteMenu(menuid) {
-            $(`#span-processing-${menuid}`).show();
-
             callApi(`/api/menu/${menuid}`,
                 'DELETE',
                 {},
@@ -104,7 +102,6 @@
 
 <h3>
     @Localizer["Navigation Menus"]
-
 </h3>
 <hr/>
 
@@ -159,9 +156,6 @@
             <div class="alert alert-warning">
                 Under construction
             </div>
-            <div class="debug">
-
-            </div>
             <div class="list-group submenu-list">
 
             </div>
@@ -200,8 +194,6 @@
                     <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><span class="icon-bin"></span></a>
                 </form>
             </div>
-
-            <span id="span-processing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
         </div>
     </div>
 }
