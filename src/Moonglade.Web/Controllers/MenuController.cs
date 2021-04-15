@@ -9,7 +9,7 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MenuController : ControllerBase
@@ -102,7 +102,6 @@ namespace Moonglade.Web.Controllers
             return Ok(model);
         }
 
-        [IgnoreAntiforgeryToken]
         [HttpPost("edit")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
