@@ -11,7 +11,13 @@
 
         function expandSubMenu(topMenuId, subMenuEditViewModels) {
             console.debug(topMenuId);
-            $('.submenu-list').html(JSON.stringify(subMenuEditViewModels));
+
+            subMenuEditViewModels.forEach(function(sm) {
+                var h = '';
+                h += `<a id="menu-${sm.id}" class="list-group-item list-group-item-action">${sm.title}</a>`;
+
+                $('.submenu-list').html(h);
+            });
         }
 
         function clearSubMenus() {
@@ -19,7 +25,9 @@
         }
 
         function loadMenuEditor(topMenuId) {
-            callApi(`/api/menu/edit/${topMenuId}`, 'GET', {},
+            callApi(`/api/menu/edit/${topMenuId}`,
+                'GET',
+                {},
                 async (resp) => {
                     var data = await resp.json();
                     $('#MenuEditViewModel_Id').val(data.id);
@@ -41,7 +49,7 @@
                 });
         }
 
-        $(".btn-delete").click(function () {
+        $(".btn-delete").click(function() {
             var cfm = confirm("Delete Confirmation?");
             if (cfm) deleteMenu($(this).data("menuid"));
         });
@@ -55,25 +63,27 @@
         function deleteMenu(menuid) {
             $(`#span-processing-${menuid}`).show();
 
-            callApi(`/api/menu/${menuid}`, 'DELETE', {},
+            callApi(`/api/menu/${menuid}`,
+                'DELETE',
+                {},
                 (resp) => {
                     initCreateMenu();
                     $(`#menu-${menuid}`).hide();
                 });
         }
 
-        $(".btn-submit").click(function () {
+        $(".btn-submit").click(function() {
             if ($("#edit-form").valid()) {
                 var action = '';
                 var menuId = $("#MenuEditViewModel_Id").val();
                 if (menuId == emptyGuid) {
                     action = "create";
-                }
-                else {
+                } else {
                     action = "edit";
                 }
 
-                callApi(`/api/menu/${action}`, 'POST',
+                callApi(`/api/menu/${action}`,
+                    'POST',
                     {
                         "Id": $("#MenuEditViewModel_Id").val(),
                         "Title": $("#MenuEditViewModel_Title").val(),
@@ -96,7 +106,7 @@
     @Localizer["Navigation Menus"]
 
 </h3>
-<hr />
+<hr/>
 
 <div class="alert alert-info">
     @Localizer["To turn on / off system navigation items (Categories / Tags / Archive), edit"] <code>appsettings.json</code> @Localizer["or override with environment variables."]
@@ -112,7 +122,7 @@
     <div class="row">
         <div class="col-3">
             <h5>Top Level</h5>
-            <hr />
+            <hr/>
             <div class="list-group mb-2">
                 @foreach (var menu in Model.MenuItems.OrderBy(m => m.DisplayOrder))
                 {
@@ -145,7 +155,7 @@
         </div>
         <div class="col-3">
             <h5>Sub Menu</h5>
-            <hr />
+            <hr/>
             <div class="alert alert-warning">
                 Under construction
             </div>
@@ -158,24 +168,24 @@
         </div>
         <div class="col-6">
             <h5>@Localizer["Menu Editor"]</h5>
-            <hr />
+            <hr/>
             <div>
                 <form id="edit-form" method="post">
-                    <input type="hidden" asp-for="MenuEditViewModel.Id" />
+                    <input type="hidden" asp-for="MenuEditViewModel.Id"/>
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
+                        <input asp-for="MenuEditViewModel.Title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required/>
                     </div>
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
+                        <input asp-for="MenuEditViewModel.Url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required/>
                     </div>
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Icon" placeholder="@Localizer["Icon CSS Class"]" class="form-control" />
+                        <input asp-for="MenuEditViewModel.Icon" placeholder="@Localizer["Icon CSS Class"]" class="form-control"/>
                         <span asp-validation-for="MenuEditViewModel.Icon" class="text-danger"></span>
                         <small class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</small>
                     </div>
                     <div class="form-group">
                         <label asp-for="MenuEditViewModel.DisplayOrder"></label>
-                        <input asp-for="MenuEditViewModel.DisplayOrder" class="form-control" />
+                        <input asp-for="MenuEditViewModel.DisplayOrder" class="form-control"/>
                     </div>
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
@@ -183,7 +193,7 @@
                             <label asp-for="MenuEditViewModel.IsOpenInNewTab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
                         </div>
                     </div>
-                    <hr />
+                    <hr/>
                     <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
                     <button type="button" class="btn btn-secondary">@Localizer["Cancel"]</button>
 
