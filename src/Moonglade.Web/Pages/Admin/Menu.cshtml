@@ -36,8 +36,11 @@
                     $('#topmenu-iconcssclass').val(data.icon);
                     $('#topmenu-displayorder').val(data.displayOrder);
                     if (data.isOpenInNewTab) {
-                        $('#MenuEditViewModel_IsOpenInNewTab').prop('checked', 'checked');
+                        $('#topmenu-isopeninnewtab').prop('checked', 'checked');
+                    } else {
+                        $('#topmenu-isopeninnewtab').prop('checked', null);
                     }
+
                     $('.btn-delete').show();
                     $('.btn-delete').data('menuid', topMenuId);
 
@@ -88,7 +91,7 @@
                         "Url": $("#topmenu-url").val(),
                         "Icon": $("#topmenu-iconcssclass").val(),
                         "DisplayOrder": parseInt($("#topmenu-displayorder").val()),
-                        "IsOpenInNewTab": $('#MenuEditViewModel_IsOpenInNewTab').prop('checked')
+                        "IsOpenInNewTab": $('#topmenu-isopeninnewtab').prop('checked')
                     },
                     (resp) => {
                         $("#edit-form")[0].reset();
@@ -186,8 +189,8 @@
                     </div>
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            <input asp-for="MenuEditViewModel.IsOpenInNewTab" class="custom-control-input" type="checkbox">
-                            <label asp-for="MenuEditViewModel.IsOpenInNewTab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
+                            <input id="topmenu-isopeninnewtab" class="custom-control-input" type="checkbox">
+                            <label for="topmenu-isopeninnewtab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
                         </div>
                     </div>
                     <hr/>
