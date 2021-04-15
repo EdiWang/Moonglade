@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
@@ -13,8 +14,8 @@ namespace Moonglade.Menus
     {
         Task<Menu> GetAsync(Guid id);
         Task<IReadOnlyList<Menu>> GetAllAsync();
-        Task<Guid> CreateAsync(UpdateMenuRequest request);
-        Task<Guid> UpdateAsync(Guid id, UpdateMenuRequest request);
+        Task<Guid> CreateAsync(UpdateMenuRequest request, UpdateSubMenuRequest[] subMenuRequests = null);
+        Task<Guid> UpdateAsync(Guid id, UpdateMenuRequest request, UpdateSubMenuRequest[] subMenuRequests = null);
         Task DeleteAsync(Guid id);
     }
 
@@ -22,15 +23,18 @@ namespace Moonglade.Menus
     {
         private readonly ILogger<MenuService> _logger;
         private readonly IRepository<MenuEntity> _menuRepo;
+        private readonly IRepository<SubMenuEntity> _subMenuRepo;
         private readonly IBlogAudit _audit;
 
         public MenuService(
             ILogger<MenuService> logger,
             IRepository<MenuEntity> menuRepo,
+            IRepository<SubMenuEntity> subMenuRepo,
             IBlogAudit audit)
         {
             _logger = logger;
             _menuRepo = menuRepo;
+            _subMenuRepo = subMenuRepo;
             _audit = audit;
         }
 
@@ -50,32 +54,66 @@ namespace Moonglade.Menus
                 Icon = p.Icon,
                 Title = p.Title,
                 Url = p.Url,
-                IsOpenInNewTab = p.IsOpenInNewTab
+                IsOpenInNewTab = p.IsOpenInNewTab,
+                SubMenus = p.SubMenus.Select(sm => new SubMenu
+                {
+                    Id = sm.Id,
+                    Title = sm.Title,
+                    Url = sm.Url,
+                    IsOpenInNewTab = sm.IsOpenInNewTab
+                }).ToList()
             });
 
             return list;
         }
 
-        public async Task<Guid> CreateAsync(UpdateMenuRequest request)
+        public async Task<Guid> CreateAsync(UpdateMenuRequest request, UpdateSubMenuRequest[] subMenuRequests = null)
         {
             var uid = Guid.NewGuid();
-            var menu = new MenuEntity
+            if (null == subMenuRequests)
             {
-                Id = uid,
-                Title = request.Title.Trim(),
-                DisplayOrder = request.DisplayOrder,
-                Icon = request.Icon,
-                Url = request.Url,
-                IsOpenInNewTab = request.IsOpenInNewTab
-            };
+                var menu = new MenuEntity
+                {
+                    Id = uid,
+                    Title = request.Title.Trim(),
+                    DisplayOrder = request.DisplayOrder,
+                    Icon = request.Icon,
+                    Url = request.Url,
+                    IsOpenInNewTab = request.IsOpenInNewTab
+                };
 
-            await _menuRepo.AddAsync(menu);
-            await _audit.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, $"Menu '{menu.Id}' created.");
+                await _menuRepo.AddAsync(menu);
+            }
+            else
+            {
+                var sms = subMenuRequests.Select(p => new SubMenuEntity
+                {
+                    Id = Guid.NewGuid(),
+                    IsOpenInNewTab = p.IsOpenInNewTab,
+                    Title = p.Title,
+                    Url = p.Url,
+                    MenuId = uid
+                });
 
+                var menu = new MenuEntity
+                {
+                    Id = uid,
+                    Title = request.Title.Trim(),
+                    DisplayOrder = request.DisplayOrder,
+                    Icon = null,
+                    Url = "#",
+                    IsOpenInNewTab = false,
+                    SubMenus = sms.ToList()
+                };
+
+                await _menuRepo.AddAsync(menu);
+            }
+
+            await _audit.AddAuditEntry(EventType.Content, AuditEventId.MenuCreated, $"Menu '{uid}' created.");
             return uid;
         }
 
-        public async Task<Guid> UpdateAsync(Guid id, UpdateMenuRequest request)
+        public async Task<Guid> UpdateAsync(Guid id, UpdateMenuRequest request, UpdateSubMenuRequest[] subMenuRequests = null)
         {
             var menu = await _menuRepo.GetAsync(id);
             if (menu is null)
@@ -83,18 +121,42 @@ namespace Moonglade.Menus
                 throw new InvalidOperationException($"MenuEntity with Id '{id}' not found.");
             }
 
-            var url = Helper.SterilizeLink(request.Url.Trim());
-            _logger.LogInformation($"Sterilized URL from '{request.Url}' to '{url}'");
+            if (null == subMenuRequests)
+            {
+                var url = Helper.SterilizeLink(request.Url.Trim());
+                _logger.LogInformation($"Sterilized URL from '{request.Url}' to '{url}'");
 
-            menu.Title = request.Title.Trim();
-            menu.Url = url;
-            menu.DisplayOrder = request.DisplayOrder;
-            menu.Icon = request.Icon;
-            menu.IsOpenInNewTab = request.IsOpenInNewTab;
+                menu.Title = request.Title.Trim();
+                menu.Url = url;
+                menu.DisplayOrder = request.DisplayOrder;
+                menu.Icon = request.Icon;
+                menu.IsOpenInNewTab = request.IsOpenInNewTab;
 
-            await _menuRepo.UpdateAsync(menu);
+                await _menuRepo.UpdateAsync(menu);
+            }
+            else
+            {
+                menu.Title = request.Title.Trim();
+                menu.Url = "#";
+                menu.DisplayOrder = request.DisplayOrder;
+                menu.Icon = null;
+                menu.IsOpenInNewTab = false;
+
+                menu.SubMenus.Clear();
+                var sms = subMenuRequests.Select(p => new SubMenuEntity
+                {
+                    Id = Guid.NewGuid(),
+                    IsOpenInNewTab = p.IsOpenInNewTab,
+                    Title = p.Title,
+                    Url = p.Url,
+                    MenuId = menu.Id
+                });
+
+                menu.SubMenus = sms.ToList();
+                await _menuRepo.UpdateAsync(menu);
+            }
+
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.MenuUpdated, $"Menu '{id}' updated.");
-
             return menu.Id;
         }
 
@@ -121,7 +183,14 @@ namespace Moonglade.Menus
                 DisplayOrder = entity.DisplayOrder,
                 Icon = entity.Icon.Trim(),
                 Url = entity.Url.Trim(),
-                IsOpenInNewTab = entity.IsOpenInNewTab
+                IsOpenInNewTab = entity.IsOpenInNewTab,
+                SubMenus = entity.SubMenus.Select(sm => new SubMenu
+                {
+                    Id = sm.Id,
+                    Title = sm.Title,
+                    Url = sm.Url,
+                    IsOpenInNewTab = sm.IsOpenInNewTab
+                }).ToList()
             };
         }
     }

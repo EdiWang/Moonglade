@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Moonglade.Menus
 {
@@ -16,8 +17,11 @@ namespace Moonglade.Menus
 
         public bool IsOpenInNewTab { get; set; }
 
+        public List<SubMenu> SubMenus { get; set; }
+
         public Menu()
         {
+            SubMenus = new();
             Icon = "icon-file-text2";
         }
     }

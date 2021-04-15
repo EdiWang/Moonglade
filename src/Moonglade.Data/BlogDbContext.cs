@@ -26,6 +26,7 @@ namespace Moonglade.Data
         public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
         public virtual DbSet<PageEntity> CustomPage { get; set; }
         public virtual DbSet<MenuEntity> Menu { get; set; }
+        public virtual DbSet<SubMenuEntity> SubMenu { get; set; }
         public virtual DbSet<LocalAccountEntity> LocalAccount { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,6 +43,7 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
             modelBuilder.ApplyConfiguration(new PageConfiguration());
             modelBuilder.ApplyConfiguration(new MenuConfiguration());
+            modelBuilder.ApplyConfiguration(new SubMenuConfiguration());
             modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
 
             modelBuilder

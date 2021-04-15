@@ -61,6 +61,7 @@
 
 @if (null != Model.MenuItems && Model.MenuItems.Any())
 {
+    <h5>Top Level Menus</h5>
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
@@ -73,7 +74,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.MenuItems.OrderBy(p => p.DisplayOrder))
+            @foreach (var item in Model.MenuItems.Where(p => p.SubMenus.Count == 0).OrderBy(p => p.DisplayOrder))
             {
                 <tr id="tr-@item.Id">
                     <td>@item.Title</td>
