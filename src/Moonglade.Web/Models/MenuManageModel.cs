@@ -10,15 +10,12 @@ namespace Moonglade.Web.Models
         [HiddenInput]
         public Guid Id { get; set; }
 
-        [Display(Name = "Title")]
         [MaxLength(64)]
         public string Title { get; set; }
 
-        [Display(Name = "Url (Relative or Absolute)")]
         [MaxLength(256)]
         public string Url { get; set; }
 
-        [Display(Name = "Icon CSS Class")]
         [RegularExpression("[a-z0-9-]+", ErrorMessage = "Invalid Icon CSS Class")]
         public string Icon { get; set; }
 

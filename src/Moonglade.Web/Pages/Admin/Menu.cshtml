@@ -10,6 +10,7 @@
         var menuJson = @Html.Raw(Model.MenuItems.ToJson());
 
         function expandSubMenu(topMenuId) {
+            loadMenuEditor(topMenuId);
             console.debug(topMenuId);
         }
 
@@ -140,7 +141,7 @@
                 Under construction
             </div>
             <div class="list-group">
-                
+
             </div>
         </div>
         <div class="col-6">
@@ -148,28 +149,21 @@
             <hr />
             <div>
                 <form id="edit-form" method="post">
-                    <div asp-validation-summary="All" class="text-danger"></div>
                     <input type="hidden" asp-for="MenuEditViewModel.Id" />
                     <div class="form-group">
-                        <label asp-for="MenuEditViewModel.Title"></label>
-                        <input asp-for="MenuEditViewModel.Title" class="form-control" />
-                        <span asp-validation-for="MenuEditViewModel.Title" class="text-danger"></span>
+                        <input asp-for="MenuEditViewModel.Title" placeholder="Menu title" class="form-control" max-length="64" required />
                     </div>
                     <div class="form-group">
-                        <label asp-for="MenuEditViewModel.Url"></label>
-                        <input asp-for="MenuEditViewModel.Url" class="form-control" />
-                        <span asp-validation-for="MenuEditViewModel.Url" class="text-danger"></span>
+                        <input asp-for="MenuEditViewModel.Url" placeholder="Url (Relative or Absolute)" class="form-control" max-length="256" required />
                     </div>
                     <div class="form-group">
-                        <label asp-for="MenuEditViewModel.Icon"></label>
-                        <input asp-for="MenuEditViewModel.Icon" class="form-control" />
+                        <input asp-for="MenuEditViewModel.Icon" placeholder="Icon CSS Class" class="form-control" />
                         <span asp-validation-for="MenuEditViewModel.Icon" class="text-danger"></span>
-                        <p class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</p>
+                        <small class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</small>
                     </div>
                     <div class="form-group">
                         <label asp-for="MenuEditViewModel.DisplayOrder"></label>
                         <input asp-for="MenuEditViewModel.DisplayOrder" class="form-control" />
-                        <span asp-validation-for="MenuEditViewModel.DisplayOrder" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
