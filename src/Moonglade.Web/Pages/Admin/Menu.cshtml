@@ -30,9 +30,9 @@
                 {},
                 async (resp) => {
                     var data = await resp.json();
-                    $('#MenuEditViewModel_Id').val(data.id);
-                    $('#MenuEditViewModel_Title').val(data.title);
-                    $('#MenuEditViewModel_Url').val(data.url);
+                    $('#topmenu-id').val(data.id);
+                    $('#topmenu-title').val(data.title);
+                    $('#topmenu-url').val(data.url);
                     $('#MenuEditViewModel_Icon').val(data.icon);
                     $('#MenuEditViewModel_DisplayOrder').val(data.displayOrder);
                     if (data.isOpenInNewTab) {
@@ -55,7 +55,7 @@
         });
 
         function initCreateMenu() {
-            $('#MenuEditViewModel_Id').val(emptyGuid);
+            $('#topmenu-id').val(emptyGuid);
             $('#edit-form')[0].reset();
             $('.btn-delete').hide();
         }
@@ -75,7 +75,7 @@
         $(".btn-submit").click(function() {
             if ($("#edit-form").valid()) {
                 var action = '';
-                var menuId = $("#MenuEditViewModel_Id").val();
+                var menuId = $("#topmenu-id").val();
                 if (menuId == emptyGuid) {
                     action = "create";
                 } else {
@@ -85,9 +85,9 @@
                 callApi(`/api/menu/${action}`,
                     'POST',
                     {
-                        "Id": $("#MenuEditViewModel_Id").val(),
-                        "Title": $("#MenuEditViewModel_Title").val(),
-                        "Url": $("#MenuEditViewModel_Url").val(),
+                        "Id": $("#topmenu-id").val(),
+                        "Title": $("#topmenu-title").val(),
+                        "Url": $("#topmenu-url").val(),
                         "Icon": $("#MenuEditViewModel_Icon").val(),
                         "DisplayOrder": parseInt($("#MenuEditViewModel_DisplayOrder").val()),
                         "IsOpenInNewTab": $('#MenuEditViewModel_IsOpenInNewTab').prop('checked')
@@ -121,7 +121,7 @@
 
     <div class="row">
         <div class="col-3">
-            <h5>Top Level</h5>
+            <h5>@Localizer["Top Level"]</h5>
             <hr/>
             <div class="list-group mb-2">
                 @foreach (var menu in Model.MenuItems.OrderBy(m => m.DisplayOrder))
@@ -154,7 +154,7 @@
             </a>
         </div>
         <div class="col-3">
-            <h5>Sub Menu</h5>
+            <h5>@Localizer["Sub Menu"]</h5>
             <hr/>
             <div class="alert alert-warning">
                 Under construction
@@ -171,12 +171,12 @@
             <hr/>
             <div>
                 <form id="edit-form" method="post">
-                    <input type="hidden" asp-for="MenuEditViewModel.Id"/>
+                    <input type="hidden" id="topmenu-id" />
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required/>
+                        <input id="topmenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required/>
                     </div>
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required/>
+                        <input id="topmenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required/>
                     </div>
                     <div class="form-group">
                         <input asp-for="MenuEditViewModel.Icon" placeholder="@Localizer["Icon CSS Class"]" class="form-control"/>

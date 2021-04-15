@@ -165,4 +165,10 @@
   <data name="Menu Editor" xml:space="preserve">
     <value>菜单编辑器</value>
   </data>
+  <data name="Sub Menu" xml:space="preserve">
+    <value>子菜单</value>
+  </data>
+  <data name="Top Level" xml:space="preserve">
+    <value>顶级菜单</value>
+  </data>
 </root>
