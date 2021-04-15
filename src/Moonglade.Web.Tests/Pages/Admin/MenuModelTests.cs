@@ -37,7 +37,6 @@ namespace Moonglade.Web.Tests.Pages.Admin
             await menuModel.OnGet();
 
             Assert.IsNotNull(menuModel.MenuItems);
-            Assert.IsNotNull(menuModel.MenuEditViewModel);
         }
     }
 }
