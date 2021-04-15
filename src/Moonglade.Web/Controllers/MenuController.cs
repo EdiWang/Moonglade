@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +9,7 @@ using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MenuController : ControllerBase
@@ -25,17 +26,39 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(MenuEditViewModel model)
         {
-            var request = new UpdateMenuRequest
+            if (null == model.SubMenuEditViewModels)
             {
-                DisplayOrder = model.DisplayOrder,
-                Icon = model.Icon,
-                Title = model.Title,
-                Url = model.Url,
-                IsOpenInNewTab = model.IsOpenInNewTab
-            };
+                var request = new UpdateMenuRequest
+                {
+                    DisplayOrder = model.DisplayOrder,
+                    Icon = model.Icon,
+                    Title = model.Title,
+                    Url = model.Url,
+                    IsOpenInNewTab = model.IsOpenInNewTab
+                };
 
-            var response = await _menuService.CreateAsync(request);
-            return Ok(response);
+                var response = await _menuService.CreateAsync(request);
+                return Ok(response);
+            }
+            else
+            {
+                var topMenuRequest = new UpdateMenuRequest
+                {
+                    DisplayOrder = model.DisplayOrder,
+                    Title = model.Title
+                };
+
+                var subMenuRequests = model.SubMenuEditViewModels
+                    .Select(p => new UpdateSubMenuRequest
+                    {
+                        Title = p.Title,
+                        Url = p.Url,
+                        IsOpenInNewTab = p.IsOpenInNewTab
+                    }).ToArray();
+
+                var response = await _menuService.CreateAsync(topMenuRequest, subMenuRequests);
+                return Ok(response);
+            }
         }
 
         [HttpDelete("{id:guid}")]
@@ -66,28 +89,58 @@ namespace Moonglade.Web.Controllers
                 Icon = menu.Icon,
                 Title = menu.Title,
                 Url = menu.Url,
-                IsOpenInNewTab = menu.IsOpenInNewTab
+                IsOpenInNewTab = menu.IsOpenInNewTab,
+                SubMenuEditViewModels = menu.SubMenus.Select(p => new SubMenuEditViewModel
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Url = p.Url,
+                    IsOpenInNewTab = p.IsOpenInNewTab
+                }).ToList()
             };
 
             return Ok(model);
         }
 
+        [IgnoreAntiforgeryToken]
         [HttpPost("edit")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(MenuEditViewModel model)
         {
-            var request = new UpdateMenuRequest
+            if (null == model.SubMenuEditViewModels)
             {
-                Title = model.Title,
-                DisplayOrder = model.DisplayOrder,
-                Icon = model.Icon,
-                Url = model.Url,
-                IsOpenInNewTab = model.IsOpenInNewTab
-            };
+                var request = new UpdateMenuRequest
+                {
+                    Title = model.Title,
+                    DisplayOrder = model.DisplayOrder,
+                    Icon = model.Icon,
+                    Url = model.Url,
+                    IsOpenInNewTab = model.IsOpenInNewTab
+                };
 
-            await _menuService.UpdateAsync(model.Id, request);
-            return Ok();
+                await _menuService.UpdateAsync(model.Id, request);
+                return Ok();
+            }
+            else
+            {
+                var topMenuRequest = new UpdateMenuRequest
+                {
+                    DisplayOrder = model.DisplayOrder,
+                    Title = model.Title
+                };
+
+                var subMenuRequests = model.SubMenuEditViewModels
+                    .Select(p => new UpdateSubMenuRequest
+                    {
+                        Title = p.Title,
+                        Url = p.Url,
+                        IsOpenInNewTab = p.IsOpenInNewTab
+                    }).ToArray();
+
+                var response = await _menuService.UpdateAsync(model.Id, topMenuRequest, subMenuRequests);
+                return Ok(response);
+            }
         }
     }
 }
