@@ -1,9 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Builder
 @using Moonglade.Utils
 
-@inject IOptions<RequestLocalizationOptions> LocOptions
+@inject IOptions<RequestLocalizationOptions> _locOptions
 @{
-    var cultureItems = LocOptions.Value.SupportedUICultures
+    var cultureItems = _locOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
 }

@@ -1,4 +1,4 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet _javaScriptSnippet
 @using Moonglade.Utils
 @model SignInViewModel
 @{
@@ -21,7 +21,7 @@
     <environment exclude="Development">
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
         <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
-        @Html.Raw(JavaScriptSnippet.FullScript)
+        @Html.Raw(_javaScriptSnippet.FullScript)
     </environment>
     <script>
         $(function () {
