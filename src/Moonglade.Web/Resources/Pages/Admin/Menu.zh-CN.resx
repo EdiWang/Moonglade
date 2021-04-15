@@ -129,9 +129,6 @@
   <data name="Icon" xml:space="preserve">
     <value>图标</value>
   </data>
-  <data name="Menu Information" xml:space="preserve">
-    <value>菜单信息</value>
-  </data>
   <data name="Navigation Menus" xml:space="preserve">
     <value>导航菜单</value>
   </data>
@@ -158,5 +155,14 @@
   </data>
   <data name="URL" xml:space="preserve">
     <value>链接</value>
+  </data>
+  <data name="Icon CSS Class" xml:space="preserve">
+    <value>图标CSS类名</value>
+  </data>
+  <data name="Url (Relative or Absolute)" xml:space="preserve">
+    <value>链接 (相对或绝对)</value>
+  </data>
+  <data name="Menu Editor" xml:space="preserve">
+    <value>菜单编辑器</value>
   </data>
 </root>

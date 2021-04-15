@@ -9,13 +9,16 @@
     <script>
         var menuJson = @Html.Raw(Model.MenuItems.ToJson());
 
-        function expandSubMenu(topMenuId) {
-            loadMenuEditor(topMenuId);
+        function expandSubMenu(topMenuId, subMenuEditViewModels) {
             console.debug(topMenuId);
+            $('.submenu-list').html(JSON.stringify(subMenuEditViewModels));
+        }
+
+        function clearSubMenus() {
+            $('.submenu-list').html('');
         }
 
         function loadMenuEditor(topMenuId) {
-
             callApi(`/api/menu/edit/${topMenuId}`, 'GET', {},
                 async (resp) => {
                     var data = await resp.json();
@@ -29,6 +32,12 @@
                     }
                     $('.btn-delete').show();
                     $('.btn-delete').data('menuid', topMenuId);
+
+                    if (data.subMenuEditViewModels.length > 0) {
+                        expandSubMenu(topMenuId, data.subMenuEditViewModels);
+                    } else {
+                        clearSubMenus();
+                    }
                 });
         }
 
@@ -110,7 +119,7 @@
                     @if (menu.SubMenus.Count > 0)
                     {
                         <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
-                           href="javascript:expandSubMenu('@menu.Id');">
+                           href="javascript:loadMenuEditor('@menu.Id');">
                             <span class="icon-list mr-2"></span>
                             @menu.Title
 
@@ -140,24 +149,27 @@
             <div class="alert alert-warning">
                 Under construction
             </div>
-            <div class="list-group">
+            <div class="debug">
+
+            </div>
+            <div class="list-group submenu-list">
 
             </div>
         </div>
         <div class="col-6">
-            <h5>Menu Editor</h5>
+            <h5>@Localizer["Menu Editor"]</h5>
             <hr />
             <div>
                 <form id="edit-form" method="post">
                     <input type="hidden" asp-for="MenuEditViewModel.Id" />
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Title" placeholder="Menu title" class="form-control" max-length="64" required />
+                        <input asp-for="MenuEditViewModel.Title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
                     </div>
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Url" placeholder="Url (Relative or Absolute)" class="form-control" max-length="256" required />
+                        <input asp-for="MenuEditViewModel.Url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
                     </div>
                     <div class="form-group">
-                        <input asp-for="MenuEditViewModel.Icon" placeholder="Icon CSS Class" class="form-control" />
+                        <input asp-for="MenuEditViewModel.Icon" placeholder="@Localizer["Icon CSS Class"]" class="form-control" />
                         <span asp-validation-for="MenuEditViewModel.Icon" class="text-danger"></span>
                         <small class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</small>
                     </div>
