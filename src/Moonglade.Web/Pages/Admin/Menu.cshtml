@@ -47,7 +47,8 @@
 
             callApi(`/api/menu/${menuid}`, 'DELETE', {},
                 (resp) => {
-                    $(`#tr-${menuid}`).hide();
+                    initCreateMenu();
+                    $(`#menu-${menuid}`).hide();
                 });
         }
 
