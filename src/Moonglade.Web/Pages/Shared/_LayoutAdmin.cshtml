@@ -1,6 +1,6 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
-@inject IOptions<AuthenticationSettings> AuthOptions
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
+@inject IOptions<AuthenticationSettings> _authOptions
 
 @using Moonglade.Auth
 @{
@@ -136,7 +136,7 @@
                         <span class="icon-link"></span>
                         @Localizer["Friend Links"]
                     </a>
-                    @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
+                    @if (_authOptions.Value.Provider == AuthenticationProvider.Local)
                     {
                         <a asp-page="/Admin/LocalAccount" class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
                             <span class="icon-user"></span>

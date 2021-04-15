@@ -1,8 +1,8 @@
 ﻿@using Moonglade.Configuration
 @using Moonglade.Utils
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet _javaScriptSnippet
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
 
 <!DOCTYPE html>
 <html>
@@ -105,7 +105,7 @@
     <environment include="Production">
         @if (!(bool)Context.Items["DNT"])
         {
-            @Html.Raw(JavaScriptSnippet.FullScript)
+            @Html.Raw(_javaScriptSnippet.FullScript)
         }
     </environment>
     <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
