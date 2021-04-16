@@ -10,11 +10,9 @@
         var menuJson = @Html.Raw(Model.MenuItems.ToJson());
 
         function expandSubMenu(topMenuId, subMenuEditViewModels) {
-            console.debug(topMenuId);
-
             subMenuEditViewModels.forEach(function(sm) {
                 var h = '';
-                h += `<a id="menu-${sm.id}" class="list-group-item list-group-item-action">${sm.title}</a>`;
+                h += `<a id="menu-${sm.id}" href="#" class="list-group-item list-group-item-action">${sm.title}</a>`;
 
                 $('.submenu-list').html(h);
             });
@@ -25,6 +23,9 @@
         }
 
         function loadMenuEditor(topMenuId) {
+            $('.top-menu-list a').removeClass('active');
+            $(`#menu-${topMenuId}`).addClass('active');
+
             callApi(`/api/menu/edit/${topMenuId}`,
                 'GET',
                 {},
@@ -45,8 +46,12 @@
                     $('.btn-delete').data('menuid', topMenuId);
 
                     if (data.subMenuEditViewModels.length > 0) {
+                        $('.fg-open-in-new-tab').hide();
+                        $('#topmenu-url, #topmenu-iconcssclass').attr('readonly', '');
                         expandSubMenu(topMenuId, data.subMenuEditViewModels);
                     } else {
+                        $('.fg-open-in-new-tab').show();
+                        $('#topmenu-url, #topmenu-iconcssclass').attr('readonly', null);
                         clearSubMenus();
                     }
                 });
@@ -106,7 +111,7 @@
 <h3>
     @Localizer["Navigation Menus"]
 </h3>
-<hr/>
+<hr />
 
 <div class="alert alert-info">
     @Localizer["To turn on / off system navigation items (Categories / Tags / Archive), edit"] <code>appsettings.json</code> @Localizer["or override with environment variables."]
@@ -122,8 +127,8 @@
     <div class="row">
         <div class="col-3">
             <h5>@Localizer["Top Level"]</h5>
-            <hr/>
-            <div class="list-group mb-2">
+            <hr />
+            <div class="list-group top-menu-list mb-2">
                 @foreach (var menu in Model.MenuItems.OrderBy(m => m.DisplayOrder))
                 {
                     @if (menu.SubMenus.Count > 0)
@@ -155,28 +160,25 @@
         </div>
         <div class="col-3">
             <h5>@Localizer["Sub Menu"]</h5>
-            <hr/>
-            <div class="alert alert-warning">
-                Under construction
-            </div>
+            <hr />
             <div class="list-group submenu-list">
 
             </div>
         </div>
         <div class="col-6">
             <h5>@Localizer["Menu Editor"]</h5>
-            <hr/>
+            <hr />
             <div>
                 <form id="edit-form" method="post">
                     <input type="hidden" id="topmenu-id" />
                     <div class="form-group">
-                        <input id="topmenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required/>
+                        <input id="topmenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
                     </div>
                     <div class="form-group">
-                        <input id="topmenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required/>
+                        <input id="topmenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
                     </div>
                     <div class="form-group">
-                        <input id="topmenu-iconcssclass" placeholder="@Localizer["Icon CSS Class"]" class="form-control" pattern="[a-z0-9-]+"/>
+                        <input id="topmenu-iconcssclass" placeholder="@Localizer["Icon CSS Class"]" class="form-control" pattern="[a-z0-9-]+" />
                         <small class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</small>
                     </div>
                     <div class="form-group">
@@ -184,16 +186,16 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Order</span>
                             </div>
-                            <input id="topmenu-displayorder" class="form-control"/>
+                            <input id="topmenu-displayorder" class="form-control" />
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group fg-open-in-new-tab">
                         <div class="custom-control custom-checkbox">
                             <input id="topmenu-isopeninnewtab" class="custom-control-input" type="checkbox">
                             <label for="topmenu-isopeninnewtab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
                         </div>
                     </div>
-                    <hr/>
+                    <hr />
                     <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
                     <button type="button" class="btn btn-secondary">@Localizer["Cancel"]</button>
 
