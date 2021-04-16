@@ -25,7 +25,7 @@ namespace Moonglade.Web.Models
         [Display(Name = "Open in New Tab")]
         public bool IsOpenInNewTab { get; set; }
 
-        public List<SubMenuEditViewModel> SubMenuEditViewModels { get; set; }
+        public SubMenuEditViewModel[] SubMenus { get; set; }
     }
 
     public class SubMenuEditViewModel

@@ -35,9 +35,9 @@ namespace Moonglade.Web.Controllers
                 IsOpenInNewTab = model.IsOpenInNewTab
             };
 
-            if (null != model.SubMenuEditViewModels)
+            if (null != model.SubMenus)
             {
-                var subMenuRequests = model.SubMenuEditViewModels
+                var subMenuRequests = model.SubMenus
                     .Select(p => new UpdateSubMenuRequest
                     {
                         Title = p.Title,
@@ -81,13 +81,13 @@ namespace Moonglade.Web.Controllers
                 Title = menu.Title,
                 Url = menu.Url,
                 IsOpenInNewTab = menu.IsOpenInNewTab,
-                SubMenuEditViewModels = menu.SubMenus.Select(p => new SubMenuEditViewModel
+                SubMenus = menu.SubMenus.Select(p => new SubMenuEditViewModel
                 {
                     Id = p.Id,
                     Title = p.Title,
                     Url = p.Url,
                     IsOpenInNewTab = p.IsOpenInNewTab
-                }).ToList()
+                }).ToArray()
             };
 
             return Ok(model);
@@ -107,9 +107,9 @@ namespace Moonglade.Web.Controllers
                 IsOpenInNewTab = model.IsOpenInNewTab
             };
 
-            if (null != model.SubMenuEditViewModels)
+            if (null != model.SubMenus)
             {
-                var subMenuRequests = model.SubMenuEditViewModels
+                var subMenuRequests = model.SubMenus
                     .Select(p => new UpdateSubMenuRequest
                     {
                         Title = p.Title,
