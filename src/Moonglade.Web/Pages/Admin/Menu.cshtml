@@ -111,6 +111,10 @@
             if (cfm) deleteMenu($(this).data("menuid"));
         });
 
+        $('.btn-delete-submenu').click(function () {
+            notyf.error('Under construction');
+        });
+
         function initCreateMenu() {
             $('#topmenu-id').val(emptyGuid);
             $('#edit-form')[0].reset();
@@ -158,6 +162,7 @@
                     currentSm.IsOpenInNewTab = $('#submenu-isopeninnewtab').prop('checked');
                 } else {
                     // TODO: Find father menu, append a new submenu under it
+                    notyf.error('Under construction');
                 }
 
                 callApi(`/api/menu/${action}`,
