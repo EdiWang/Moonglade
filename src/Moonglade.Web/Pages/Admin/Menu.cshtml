@@ -77,6 +77,16 @@
             })[0];
 
             console.debug(currentSm);
+
+            $('#submenu-id').val(currentSm.Id);
+            $('#submenu-title').val(currentSm.Title);
+            $('#submenu-url').val(currentSm.Url);
+
+            if (currentSm.IsOpenInNewTab) {
+                $('#submenu-isopeninnewtab').prop('checked', 'checked');
+            } else {
+                $('#submenu-isopeninnewtab').prop('checked', null);
+            }
         }
 
         $('.btn-delete').click(function() {
@@ -237,7 +247,7 @@
 
             <div class="sub-menu-editor" style="display: none;">
                 <form id="edit-form-submenu" method="post">
-                    <input type="hidden" id="topmenu-id"/>
+                    <input type="hidden" id="submenu-id"/>
                     <div class="form-group">
                         <input id="submenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required/>
                     </div>
