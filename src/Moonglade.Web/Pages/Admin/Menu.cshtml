@@ -8,6 +8,13 @@
 @section scripts{
     <script>
         var menuJson = @Html.Raw(Model.MenuItems.ToJson());
+        var isNewSubMenu = false;
+        var currentSm = {
+            Id: emptyGuid,
+            Title: '',
+            Url: '',
+            IsOpenInNewTab: false
+        };
 
         function expandSubMenu(topMenuId, subMenuEditViewModels) {
             subMenuEditViewModels.forEach(function(sm) {
@@ -83,9 +90,10 @@
             $('.btn-delete-submenu').data('menuid', subMenuId);
 
             var father = findTopMenu(topMenuId);
-            var currentSm = findSubMenu(father, subMenuId);
+            currentSm = findSubMenu(father, subMenuId);
 
             console.debug(currentSm);
+            isNewSubMenu = false;
 
             $('#submenu-id').val(currentSm.Id);
             $('#submenu-title').val(currentSm.Title);
@@ -115,7 +123,12 @@
         }
 
         function initCreateSubMenu() {
-
+            isNewSubMenu = true;
+            $('.sub-menu-editor').show();
+            $('#submenu-id').val(emptyGuid);
+            $('#submenu-title').val('');
+            $('#submenu-url').val('');
+            $('#submenu-isopeninnewtab').prop('checked', null);
         }
 
         function deleteMenu(menuid) {
@@ -138,6 +151,15 @@
                     action = "edit";
                 }
 
+                if (!isNewSubMenu) {
+                    currentSm.Id = $('#submenu-id').val();
+                    currentSm.Title = $('#submenu-title').val();
+                    currentSm.Url = $('#submenu-url').val();
+                    currentSm.IsOpenInNewTab = $('#submenu-isopeninnewtab').prop('checked');
+                } else {
+                    // TODO: Find father menu, append a new submenu under it
+                }
+
                 callApi(`/api/menu/${action}`,
                     'POST',
                     {
@@ -151,7 +173,6 @@
                     },
                     (resp) => {
                         $("#edit-form")[0].reset();
-                        $("#edit-form-submenu")[0].reset();
 
                         //notyf.success('Menu updated');
                         window.location.reload();
