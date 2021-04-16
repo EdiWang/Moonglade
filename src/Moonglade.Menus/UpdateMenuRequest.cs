@@ -11,6 +11,8 @@
         public int DisplayOrder { get; set; }
 
         public bool IsOpenInNewTab { get; set; }
+
+        public UpdateSubMenuRequest[] SubMenus { get; set; }
     }
 
     public struct UpdateSubMenuRequest

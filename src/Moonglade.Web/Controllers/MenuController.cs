@@ -26,28 +26,17 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(MenuEditViewModel model)
         {
-            if (null == model.SubMenuEditViewModels)
+            var request = new UpdateMenuRequest
             {
-                var request = new UpdateMenuRequest
-                {
-                    DisplayOrder = model.DisplayOrder,
-                    Icon = model.Icon,
-                    Title = model.Title,
-                    Url = model.Url,
-                    IsOpenInNewTab = model.IsOpenInNewTab
-                };
+                DisplayOrder = model.DisplayOrder,
+                Icon = model.Icon,
+                Title = model.Title,
+                Url = model.Url,
+                IsOpenInNewTab = model.IsOpenInNewTab
+            };
 
-                var response = await _menuService.CreateAsync(request);
-                return Ok(response);
-            }
-            else
+            if (null != model.SubMenuEditViewModels)
             {
-                var topMenuRequest = new UpdateMenuRequest
-                {
-                    DisplayOrder = model.DisplayOrder,
-                    Title = model.Title
-                };
-
                 var subMenuRequests = model.SubMenuEditViewModels
                     .Select(p => new UpdateSubMenuRequest
                     {
@@ -56,9 +45,11 @@ namespace Moonglade.Web.Controllers
                         IsOpenInNewTab = p.IsOpenInNewTab
                     }).ToArray();
 
-                var response = await _menuService.CreateAsync(topMenuRequest, subMenuRequests);
-                return Ok(response);
+                request.SubMenus = subMenuRequests;
             }
+
+            var response = await _menuService.CreateAsync(request);
+            return Ok(response);
         }
 
         [HttpDelete("{id:guid}")]
@@ -107,28 +98,17 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(MenuEditViewModel model)
         {
-            if (null == model.SubMenuEditViewModels)
+            var request = new UpdateMenuRequest
             {
-                var request = new UpdateMenuRequest
-                {
-                    Title = model.Title,
-                    DisplayOrder = model.DisplayOrder,
-                    Icon = model.Icon,
-                    Url = model.Url,
-                    IsOpenInNewTab = model.IsOpenInNewTab
-                };
+                Title = model.Title,
+                DisplayOrder = model.DisplayOrder,
+                Icon = model.Icon,
+                Url = model.Url,
+                IsOpenInNewTab = model.IsOpenInNewTab
+            };
 
-                await _menuService.UpdateAsync(model.Id, request);
-                return Ok();
-            }
-            else
+            if (null != model.SubMenuEditViewModels)
             {
-                var topMenuRequest = new UpdateMenuRequest
-                {
-                    DisplayOrder = model.DisplayOrder,
-                    Title = model.Title
-                };
-
                 var subMenuRequests = model.SubMenuEditViewModels
                     .Select(p => new UpdateSubMenuRequest
                     {
@@ -137,9 +117,11 @@ namespace Moonglade.Web.Controllers
                         IsOpenInNewTab = p.IsOpenInNewTab
                     }).ToArray();
 
-                var response = await _menuService.UpdateAsync(model.Id, topMenuRequest, subMenuRequests);
-                return Ok(response);
+                request.SubMenus = subMenuRequests;
             }
+
+            await _menuService.UpdateAsync(model.Id, request);
+            return Ok();
         }
     }
 }
