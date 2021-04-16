@@ -46,10 +46,12 @@
                     $('.btn-delete').data('menuid', topMenuId);
 
                     if (data.subMenuEditViewModels.length > 0) {
+                        $('.btn-create-submenu').show();
                         $('.fg-open-in-new-tab').hide();
                         $('#topmenu-url, #topmenu-iconcssclass').attr('readonly', '');
                         expandSubMenu(topMenuId, data.subMenuEditViewModels);
                     } else {
+                        $('.btn-create-submenu').hide();
                         $('.fg-open-in-new-tab').show();
                         $('#topmenu-url, #topmenu-iconcssclass').attr('readonly', null);
                         clearSubMenus();
@@ -66,6 +68,12 @@
             $('#topmenu-id').val(emptyGuid);
             $('#edit-form')[0].reset();
             $('.btn-delete').hide();
+
+            $('.top-menu-list a').removeClass('active');
+            $('.btn-create-submenu').hide();
+            $('.fg-open-in-new-tab').show();
+            $('#topmenu-url, #topmenu-iconcssclass').attr('readonly', null);
+            clearSubMenus();
         }
 
         function deleteMenu(menuid) {
@@ -161,9 +169,13 @@
         <div class="col-3">
             <h5>@Localizer["Sub Menu"]</h5>
             <hr />
-            <div class="list-group submenu-list">
+            <div class="list-group submenu-list mb-2">
 
             </div>
+            <a class="btn btn-outline-success btn-block btn-create-submenu" href="javascript:initCreateSubMenu();" style="display: none;">
+                <span class="icon-plus"></span>
+                @Localizer["New"]
+            </a>
         </div>
         <div class="col-6">
             <h5>@Localizer["Menu Editor"]</h5>
