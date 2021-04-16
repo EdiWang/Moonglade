@@ -42,7 +42,6 @@
         }
 
         function loadMenuEditor(topMenuId) {
-            $('.top-menu-editor').show();
             $('.sub-menu-editor').hide();
             $('.btn-create-submenu').show();
 
@@ -79,7 +78,6 @@
         }
 
         function loadSubMenuEditor(topMenuId, subMenuId) {
-            $('.top-menu-editor').hide();
             $('.sub-menu-editor').show();
             $('.btn-delete-submenu').show();
             $('.btn-delete-submenu').data('menuid', subMenuId);
@@ -229,17 +227,31 @@
             <hr />
             <div class="top-menu-editor">
                 <form id="edit-form" method="post">
+                    <h6>Top Menu Properties</h6>
+                    <hr />
                     <input type="hidden" id="topmenu-id" />
-                    <div class="form-group">
-                        <input id="topmenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
+
+                    <div class="form-row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <input id="topmenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <input id="topmenu-iconcssclass" placeholder="@Localizer["Icon CSS Class"]" class="form-control" pattern="[a-z0-9-]+" />
+
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <a class="btn btn-outline-secondary btn-block" href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">Icons</a>
+                        </div>
                     </div>
+
                     <div class="form-group">
                         <input id="topmenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
                     </div>
-                    <div class="form-group">
-                        <input id="topmenu-iconcssclass" placeholder="@Localizer["Icon CSS Class"]" class="form-control" pattern="[a-z0-9-]+" />
-                        <small class="text-muted">Check <a href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">here</a> for icons</small>
-                    </div>
+
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -254,34 +266,38 @@
                             <label for="topmenu-isopeninnewtab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
                         </div>
                     </div>
-                    <hr />
-                    <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary">@Localizer["Cancel"]</button>
 
-                    <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><span class="icon-bin"></span></a>
-                </form>
-            </div>
+                    <div class="sub-menu-editor" style="display: none;">
+                        <h6>Sub Menu Properties</h6>
+                        <hr />
+                        <input type="hidden" id="submenu-id" />
+                        <div class="form-row">
+                            <div class="col-10">
+                                <div class="form-group">
+                                    <input id="submenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
+                                </div>
+                                <div class="form-group">
+                                    <input id="submenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <a href="javascript:;" data-menuid="" class="btn btn-block btn-outline-danger btn-delete-submenu" style="display: none;"><span class="icon-bin"></span></a>
+                            </div>
+                        </div>
 
-            <div class="sub-menu-editor" style="display: none;">
-                <form id="edit-form-submenu" method="post">
-                    <input type="hidden" id="submenu-id" />
-                    <div class="form-group">
-                        <input id="submenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
-                    </div>
-                    <div class="form-group">
-                        <input id="submenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
-                    </div>
-                    <div class="form-group">
-                        <div class="custom-control custom-checkbox">
-                            <input id="submenu-isopeninnewtab" class="custom-control-input" type="checkbox">
-                            <label for="submenu-isopeninnewtab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input id="submenu-isopeninnewtab" class="custom-control-input" type="checkbox">
+                                <label for="submenu-isopeninnewtab" class="custom-control-label">@Localizer["Open in New Tab"]</label>
+                            </div>
                         </div>
                     </div>
-                    <hr />
-                    <button type="button" class="btn btn-success btn-submit-submenu">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary">@Localizer["Cancel"]</button>
 
-                    <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete-submenu" style="display: none;"><span class="icon-bin"></span></a>
+                    <hr />
+                    <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary">@Localizer["Cancel"]</button>
+
+                    <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><span class="icon-bin"></span></a>
                 </form>
             </div>
         </div>
