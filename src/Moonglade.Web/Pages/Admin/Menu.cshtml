@@ -153,7 +153,9 @@
                     },
                     (resp) => {
                         $("#edit-form")[0].reset();
-                        $("#editMenuModal").modal('hide');
+                        $("#edit-form-submenu")[0].reset();
+
+                        //notyf.success('Menu updated');
                         window.location.reload();
                     });
             }
