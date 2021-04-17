@@ -93,9 +93,7 @@
             var father = findTopMenu(topMenuId);
             currentSm = findSubMenu(father, subMenuId);
 
-            console.debug(currentSm);
             isNewSubMenu = false;
-
             $('#submenu-id').val(currentSm.Id);
             $('#submenu-title').val(currentSm.Title);
             $('#submenu-url').val(currentSm.Url);
@@ -186,8 +184,10 @@
                     (resp) => {
                         $("#edit-form")[0].reset();
 
-                        //notyf.success('Menu updated');
-                        window.location.reload();
+                        notyf.success('Menu updated');
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 800);
                     });
             }
         });
@@ -239,7 +239,7 @@
                     }
                 }
             </div>
-            <a class="btn btn-outline-success btn-block" href="javascript:initCreateMenu();">
+            <a class="btn btn-outline-accent btn-block" href="javascript:initCreateMenu();">
                 <span class="icon-plus"></span>
                 @Localizer["New"]
             </a>
@@ -250,7 +250,7 @@
             <div class="list-group submenu-list mb-2">
 
             </div>
-            <a class="btn btn-outline-success btn-block btn-create-submenu" style="display: none;" href="javascript:initCreateSubMenu();">
+            <a class="btn btn-outline-accent btn-block btn-create-submenu" style="display: none;" href="javascript:initCreateSubMenu();">
                 <span class="icon-plus"></span>
                 @Localizer["New"]
             </a>
@@ -327,7 +327,7 @@
                     </div>
 
                     <hr />
-                    <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-success btn-submit">@Localizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary">@Localizer["Cancel"]</button>
 
                     <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><span class="icon-bin"></span></a>
