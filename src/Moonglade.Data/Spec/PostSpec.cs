@@ -41,6 +41,16 @@ namespace Moonglade.Data.Spec
             ApplyOrderByDescending(p => p.PubDateUtc);
         }
 
+        public PostSpec(int hashCheckSum)
+            : base(p => p.HashCheckSum == hashCheckSum && p.IsPublished && !p.IsDeleted)
+        {
+            AddInclude(post => post
+                .Include(p => p.PostExtension)
+                .Include(p => p.Comments)
+                .Include(pt => pt.Tags)
+                .Include(p => p.PostCategory).ThenInclude(pc => pc.Category));
+        }
+
         public PostSpec(DateTime date, string slug)
             : base(p => p.Slug == slug &&
              p.IsPublished &&
