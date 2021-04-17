@@ -89,6 +89,11 @@ namespace Moonglade.Core
                 _logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
             }
 
+            // compute hash
+            var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
+            var checkSum = Helper.HashCheckSum(input);
+            post.HashCheckSum = checkSum;
+
             // add categories
             if (request.CategoryIds is { Length: > 0 })
             {
@@ -179,6 +184,11 @@ namespace Moonglade.Core
             post.IsFeedIncluded = request.IsFeedIncluded;
             post.ContentLanguageCode = request.ContentLanguageCode;
             post.IsFeatured = request.IsFeatured;
+
+            // compute hash
+            var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
+            var checkSum = Helper.HashCheckSum(input);
+            post.HashCheckSum = checkSum;
 
             // 1. Add new tags to tag lib
             foreach (var item in request.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
