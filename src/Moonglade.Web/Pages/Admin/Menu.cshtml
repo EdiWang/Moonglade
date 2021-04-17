@@ -88,7 +88,8 @@
         function loadSubMenuEditor(topMenuId, subMenuId) {
             $('.sub-menu-editor').show();
             $('.btn-delete-submenu').show();
-            $('.btn-delete-submenu').data('menuid', subMenuId);
+            $('.btn-delete-submenu').data('tmd', topMenuId);
+            $('.btn-delete-submenu').data('smd', subMenuId);
 
             var father = findTopMenu(topMenuId);
             currentSm = findSubMenu(father, subMenuId);
@@ -111,7 +112,20 @@
         });
 
         $('.btn-delete-submenu').click(function () {
-            notyf.error('Under construction');
+            var cfm = confirm("Delete Submenu?");
+            if (cfm) {
+                var tmd = $(this).data('tmd');
+                var smd = $(this).data('smd');
+
+                var father = findTopMenu(tmd);
+                var currentSms = father.SubMenus;
+                var newSms = currentSms.filter(function (sm) {
+                    return sm.Id != smd;
+                });
+
+                father.SubMenus = newSms;
+                updateMenus();
+            }
         });
 
         function initCreateMenu() {
@@ -145,6 +159,10 @@
         }
 
         $(".btn-submit").click(function() {
+            updateMenus();
+        });
+
+        function updateMenus() {
             if ($("#edit-form").valid()) {
                 var action = '';
                 var menuId = $("#topmenu-id").val();
@@ -190,7 +208,7 @@
                         }, 800);
                     });
             }
-        });
+        }
     </script>
 }
 
@@ -314,7 +332,7 @@
                                 </div>
                             </div>
                             <div class="col-2">
-                                <a href="javascript:;" data-menuid="" class="btn btn-block btn-outline-danger btn-delete-submenu" style="display: none;"><span class="icon-bin"></span></a>
+                                <a href="javascript:;" data-tmd="" data-smd="" class="btn btn-block btn-outline-danger btn-delete-submenu" style="display: none;"><span class="icon-bin"></span></a>
                             </div>
                         </div>
 
