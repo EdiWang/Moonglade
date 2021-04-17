@@ -78,7 +78,8 @@ CREATE TABLE [Post](
 [LastModifiedUtc] [datetime] NULL,
 [IsPublished] [bit] NOT NULL,
 [IsFeatured] [bit] NOT NULL,
-[IsDeleted] [bit] NOT NULL
+[IsDeleted] [bit] NOT NULL,
+[HashCheckSum] [int] NOT NULL,
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostCategory')
