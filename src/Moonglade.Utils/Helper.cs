@@ -43,6 +43,18 @@ namespace Moonglade.Utils
             }
         }
 
+        public static int HashCheckSum(string input, int modulo = 0)
+        {
+            var sha256 = SHA256.Create();
+
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+            var luckyBytes = new[] { bytes[1], bytes[0], bytes[2], bytes[4] };
+            var result = BitConverter.ToInt32(luckyBytes, 0);
+
+            if (modulo == 0) return result;
+            return Math.Abs(result) % modulo;
+        }
+
         public static string TryGetFullOSVersion()
         {
             var osVer = Environment.OSVersion;
