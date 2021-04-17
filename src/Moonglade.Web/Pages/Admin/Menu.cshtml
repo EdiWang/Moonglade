@@ -17,12 +17,13 @@
         };
 
         function expandSubMenu(topMenuId, subMenuEditViewModels) {
-            subMenuEditViewModels.forEach(function(sm) {
-                var h = '';
-                h += `<a id="menu-${sm.id}" href="javascript:loadSubMenuEditor('${topMenuId}', '${sm.id}');" class="list-group-item list-group-item-action">${sm.title}</a>`;
+            var h = '';
 
-                $('.submenu-list').html(h);
+            subMenuEditViewModels.forEach(function (sm) {
+                h += `<a id="menu-${sm.id}" href="javascript:loadSubMenuEditor('${topMenuId}', '${sm.id}');" class="list-group-item list-group-item-action">${sm.title}</a>`;
             });
+
+            $('.submenu-list').html(h);
         }
 
         function findTopMenu(topMenuId) {
@@ -155,14 +156,20 @@
                     action = "edit";
                 }
 
+                var father = findTopMenu(menuId);
                 if (!isNewSubMenu) {
                     currentSm.Id = $('#submenu-id').val();
                     currentSm.Title = $('#submenu-title').val();
                     currentSm.Url = $('#submenu-url').val();
                     currentSm.IsOpenInNewTab = $('#submenu-isopeninnewtab').prop('checked');
                 } else {
-                    // TODO: Find father menu, append a new submenu under it
-                    notyf.error('Under construction');
+                    var newSm = {
+                        Id: $('#submenu-id').val(),
+                        Title: $('#submenu-title').val(),
+                        Url: $('#submenu-url').val(),
+                        IsOpenInNewTab: $('#submenu-isopeninnewtab').prop('checked')
+                    };
+                    father.SubMenus.push(newSm);
                 }
 
                 callApi(`/api/menu/${action}`,
@@ -174,7 +181,7 @@
                         "Icon": $("#topmenu-iconcssclass").val(),
                         "DisplayOrder": parseInt($("#topmenu-displayorder").val()),
                         "IsOpenInNewTab": $('#topmenu-isopeninnewtab').prop('checked'),
-                        "SubMenus": findTopMenu(menuId).SubMenus
+                        "SubMenus": father ? father.SubMenus : null
                     },
                     (resp) => {
                         $("#edit-form")[0].reset();
