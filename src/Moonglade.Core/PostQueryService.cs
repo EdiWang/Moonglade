@@ -160,7 +160,7 @@ namespace Moonglade.Core
             {
                 // Post does not have a checksum, fall back to old method
                 spec = new PostSpec(date, slug.Slug);
-                pid = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Id);
+                pid = await _postRepo.SelectFirstOrDefaultAsync(spec, x => x.Id);
 
                 if (pid == Guid.Empty) return null;
 
