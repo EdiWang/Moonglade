@@ -27,6 +27,7 @@ namespace Moonglade.Data.Entities
         public bool IsPublished { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsFeatured { get; set; }
+        public int HashCheckSum { get; set; }
 
         public virtual PostExtensionEntity PostExtension { get; set; }
         public virtual ICollection<CommentEntity> Comments { get; set; }
