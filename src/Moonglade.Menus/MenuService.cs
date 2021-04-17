@@ -80,7 +80,7 @@ namespace Moonglade.Menus
                 IsOpenInNewTab = request.IsOpenInNewTab
             };
 
-            if (request.SubMenus is {Length: > 0})
+            if (request.SubMenus is { Length: > 0 })
             {
                 var sms = request.SubMenus.Select(p => new SubMenuEntity
                 {
