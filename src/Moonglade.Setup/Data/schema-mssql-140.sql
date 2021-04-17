@@ -79,7 +79,7 @@ CREATE TABLE [Post](
 [IsPublished] [bit] NOT NULL,
 [IsFeatured] [bit] NOT NULL,
 [IsDeleted] [bit] NOT NULL,
-[HashCheckSum] [int] NOT NULL,
+[HashCheckSum] [int] NOT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'PostCategory')
@@ -159,7 +159,6 @@ CREATE TABLE [SubMenu](
 	[Url] [nvarchar](256) NOT NULL,
 	[IsOpenInNewTab] [bit] NOT NULL,
 	[MenuId] [uniqueidentifier] NULL)
-GO
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = N'FK_Comment_Post')
 ALTER TABLE [Comment] WITH CHECK ADD CONSTRAINT [FK_Comment_Post] FOREIGN KEY([PostId])
