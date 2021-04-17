@@ -10,6 +10,7 @@ using Moonglade.Configuration.Settings;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
+using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
@@ -149,10 +150,26 @@ namespace Moonglade.Core
         public async Task<Post> GetAsync(PostSlug slug)
         {
             var date = new DateTime(slug.Year, slug.Month, slug.Day);
-            var spec = new PostSpec(date, slug.Slug);
+
+            // Try to find by checksum
+            var slugCheckSum = Helper.HashCheckSum($"{slug.Slug}#{date:yyyyMMdd}");
+            ISpecification<PostEntity> spec = new PostSpec(slugCheckSum);
 
             var pid = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Id);
-            if (pid == Guid.Empty) return null;
+            if (pid == Guid.Empty)
+            {
+                // Post does not have a checksum, fall back to old method
+                spec = new PostSpec(date, slug.Slug);
+                pid = await _postRepo.SelectFirstOrDefaultAsync(spec, x => x.Id);
+
+                if (pid == Guid.Empty) return null;
+
+                // Post is found, fill it's checksum so that next time the query can be run against checksum
+                var p = await _postRepo.GetAsync(pid);
+                p.HashCheckSum = slugCheckSum;
+
+                await _postRepo.UpdateAsync(p);
+            }
 
             var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
             {
