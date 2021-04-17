@@ -171,4 +171,10 @@
   <data name="Top Level" xml:space="preserve">
     <value>顶级菜单</value>
   </data>
+  <data name="Top Menu Properties" xml:space="preserve">
+    <value>顶级菜单属性</value>
+  </data>
+  <data name="Sub Menu Properties" xml:space="preserve">
+    <value>子菜单属性</value>
+  </data>
 </root>
