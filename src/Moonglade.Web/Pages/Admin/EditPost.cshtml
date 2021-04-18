@@ -3,6 +3,13 @@
 @{
     Layout = "_LayoutAdmin";
     ViewBag.Title = "Manage Posts";
+
+    var langList = new[] { "en-us", "zh-cn" }
+        .Select(t => new SelectListItem
+        {
+            Text = t,
+            Value = t
+        });
 }
 
 @section scripts{
@@ -90,9 +97,11 @@
                         </div>
                     </div>
                     <div class="col-2">
-                        <input type="text" asp-for="ViewModel.LanguageCode" class="form-control form-control-sm" placeholder="@Localizer["Language Code"]" />
-                        <div>
-                            <span asp-validation-for="ViewModel.LanguageCode" class="text-danger"></span>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
+                            </div>
+                            <select class="custom-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                         </div>
                     </div>
                 </div>
