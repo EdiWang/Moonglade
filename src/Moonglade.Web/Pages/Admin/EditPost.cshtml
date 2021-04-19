@@ -87,35 +87,17 @@
                 <span asp-validation-for="ViewModel.Title" class="text-danger"></span>
             </div>
             <div class="mt-1 mb-1">
-                <div class="form-row">
-                    <div class="col-10">
-                        <div class="input-group input-group-sm">
-                            <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" />
-                        </div>
-                        <div>
-                            <span asp-validation-for="ViewModel.Slug" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
-                            </div>
-                            <select class="custom-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
-                        </div>
-                    </div>
+                <div class="input-group input-group-sm">
+                    <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" />
                 </div>
-            </div>
-
-            <div class="mb-1">
-                <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
                 <div>
-                    <span asp-validation-for="ViewModel.EditorContent" class="text-danger"></span>
+                    <span asp-validation-for="ViewModel.Slug" class="text-danger"></span>
                 </div>
             </div>
 
-            <div class="form-group">
-                <input type="text" asp-for="ViewModel.Tags" class="form-control" placeholder="@Localizer["Tags"]" />
+            <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
+            <div>
+                <span asp-validation-for="ViewModel.EditorContent" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-3 col-xl-2">
@@ -147,12 +129,21 @@
                         </div>
                     </li>
                 </ul>
-                @if (Model.ViewModel.PostId != Guid.Empty)
-                {
-                    <div class="card-body">
-                        <a class="btn btn-light" data-toggle="modal" data-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
+                <div class="card-body">
+                    <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
+
+                    <div class="input-group input-group-sm mt-2 mb-2">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
+                        </div>
+                        <select class="custom-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                     </div>
-                }
+
+                    @if (Model.ViewModel.PostId != Guid.Empty)
+                    {
+                        <a class="btn btn-sm btn-block btn-outline-secondary" data-toggle="modal" data-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
+                    }
+                </div>
             </div>
             <div class="card">
                 <div class="card-header">@Localizer["Categories"]</div>

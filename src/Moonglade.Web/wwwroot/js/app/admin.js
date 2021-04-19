@@ -149,7 +149,7 @@ var postEditor = {
                 selector: textareaSelector,
                 themes: 'silver',
                 skin: 'oxide',
-                //height: 650,
+                // height: ,
                 relative_urls: false, // avoid image upload fuck up
                 browser_spellcheck: true,
                 branding: false,

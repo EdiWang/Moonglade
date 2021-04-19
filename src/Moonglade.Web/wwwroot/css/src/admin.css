@@ -257,6 +257,8 @@ div.mce-fullscreen {
         background: var(--accent-color1);
         padding: 2px 5px;
         border-radius: 3px;
+        margin-bottom: 3px;
+        display: inline-block;
     }
 
         .bootstrap-tagsinput .tag [data-role="remove"]:hover {
