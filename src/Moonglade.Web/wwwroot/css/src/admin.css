@@ -256,6 +256,7 @@ div.mce-fullscreen {
     .bootstrap-tagsinput .tag {
         background: var(--accent-color1);
         padding: 2px 5px;
+        border-radius: 3px;
     }
 
         .bootstrap-tagsinput .tag [data-role="remove"]:hover {
