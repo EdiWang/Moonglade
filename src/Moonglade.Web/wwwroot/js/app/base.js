@@ -26,11 +26,11 @@ $(function () {
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
 
-    if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        $('div.container').addClass('container-fluid').removeClass('container');
-    }
+    //if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    //    $('div.container').addClass('container-fluid').removeClass('container');
+    //}
 
-    $('input#search, #search-mobile')
+    $('input#term')
         .focus(function () {
             $(this).attr('placeholder', '');
         })

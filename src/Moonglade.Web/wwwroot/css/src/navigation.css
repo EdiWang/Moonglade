@@ -50,6 +50,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 .search-form {
     background: var(--transparent-light-20);
     border-radius: 3px;
+    max-width: 265px;
 }
 
 .btn-search {

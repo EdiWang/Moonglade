@@ -76,10 +76,6 @@
             transform: translate(0, 50%);
         }
 
-    .form-control#term {
-        width: 100% !important;
-    }
-
     .navbar .nav-item {
         margin: 0 !important;
     }
@@ -110,5 +106,16 @@
     .lightswitch {
         bottom: 100px;
         right: 10px;
+    }
+}
+
+/* iPad Pro 1024*1366 */
+@media (width: 1024px) {
+    .search-form {
+        max-width: 212px !important;
+    }
+
+    .form-control#term {
+        width: 173px !important;
     }
 }
