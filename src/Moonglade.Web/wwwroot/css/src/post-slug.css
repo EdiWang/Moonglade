@@ -138,6 +138,10 @@ h1.post-title, .post-content h1 {
     }
 
 
+pre, code {
+    font-family: "Cascadia Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
 @media (max-width: 767px) {
     h1.post-title, .post-content h1 {
         font-size: 1.4rem;
