@@ -43,16 +43,29 @@ namespace Moonglade.Utils
             }
         }
 
-        public static int HashCheckSum(string input, int modulo = 0)
+        public static int ComputeCheckSum(string input)
         {
-            var sha256 = SHA256.Create();
+            //using var md5 = MD5.Create();
+            //var bytes = md5.ComputeHash(Encoding.GetEncoding(1252).GetBytes(input));
+            //var luckyBytes = new[] { bytes[1], bytes[2], bytes[4], bytes[8] };
+            //var result = BitConverter.ToInt32(luckyBytes, 0);
+            //return result;
 
-            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-            var luckyBytes = new[] { bytes[1], bytes[0], bytes[2], bytes[4] };
-            var result = BitConverter.ToInt32(luckyBytes, 0);
+            // https://andrewlock.net/why-is-string-gethashcode-different-each-time-i-run-my-program-in-net-core/
+            unchecked
+            {
+                int hash1 = (5381 << 16) + 5381;
+                int hash2 = hash1;
 
-            if (modulo == 0) return result;
-            return Math.Abs(result) % modulo;
+                for (int i = 0; i < input.Length; i += 2)
+                {
+                    hash1 = ((hash1 << 5) + hash1) ^ input[i];
+                    if (i == input.Length - 1) break;
+                    hash2 = ((hash2 << 5) + hash2) ^ input[i + 1];
+                }
+
+                return hash1 + (hash2 * 1566083941);
+            }
         }
 
         public static string TryGetFullOSVersion()

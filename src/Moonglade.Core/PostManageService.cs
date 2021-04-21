@@ -91,7 +91,7 @@ namespace Moonglade.Core
 
             // compute hash
             var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
-            var checkSum = Helper.HashCheckSum(input);
+            var checkSum = Helper.ComputeCheckSum(input);
             post.HashCheckSum = checkSum;
 
             // add categories
@@ -187,7 +187,7 @@ namespace Moonglade.Core
 
             // compute hash
             var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
-            var checkSum = Helper.HashCheckSum(input);
+            var checkSum = Helper.ComputeCheckSum(input);
             post.HashCheckSum = checkSum;
 
             // 1. Add new tags to tag lib

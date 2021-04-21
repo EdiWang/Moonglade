@@ -203,10 +203,10 @@ namespace Moonglade.Utils.Tests
             Assert.IsTrue(osversion.StartsWith("Windows"));
         }
 
-        [TestCase("welcome-to-moonglade#20210101", ExpectedResult = 1843758956)]
-        public int HashCheckSum(string input)
+        [TestCase("welcome-to-moonglade#20210101", ExpectedResult = -1688639577)]
+        public int ComputeCheckSum(string input)
         {
-            return Helper.HashCheckSum(input);
+            return Helper.ComputeCheckSum(input);
         }
 
         [TestCase(null)]

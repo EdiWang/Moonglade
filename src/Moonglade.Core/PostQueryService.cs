@@ -152,7 +152,7 @@ namespace Moonglade.Core
             var date = new DateTime(slug.Year, slug.Month, slug.Day);
 
             // Try to find by checksum
-            var slugCheckSum = Helper.HashCheckSum($"{slug.Slug}#{date:yyyyMMdd}");
+            var slugCheckSum = Helper.ComputeCheckSum($"{slug.Slug}#{date:yyyyMMdd}");
             ISpecification<PostEntity> spec = new PostSpec(slugCheckSum);
 
             var pid = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Id);
