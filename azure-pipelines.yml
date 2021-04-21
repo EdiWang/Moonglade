@@ -22,13 +22,13 @@ jobs:
     inputs:
       command: test
       projects: '**/*Tests/*.csproj'
-      arguments: '--configuration Release --collect "Code coverage"'
+      arguments: '--configuration Release --no-build --collect "Code coverage"'
 
   - task: DotNetCoreCLI@2
     inputs:
       command: publish
       publishWebProjects: True
-      arguments: '--configuration Release -p:SourceRevisionId=$(Build.SourceVersion) --output $(Build.ArtifactStagingDirectory)'
+      arguments: '--configuration Release -p:SourceRevisionId=$(Build.SourceVersion) --no-build --output $(Build.ArtifactStagingDirectory)'
       zipAfterPublish: True
 
   - task: PublishBuildArtifacts@1
