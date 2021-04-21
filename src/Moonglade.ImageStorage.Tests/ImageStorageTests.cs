@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Moonglade.ImageStorage.Providers;
 using NUnit.Framework;
 
@@ -18,6 +19,8 @@ namespace Moonglade.ImageStorage.Tests
 
             var finalPath = FileSystemImageStorage.ResolveImageStoragePath(contentRootPath, path);
             Assert.IsTrue(finalPath == @"C:\MoongladeData\Uploads");
+
+            CleanUpTestDirectory(contentRootPath, @"C:\MoongladeData");
         }
 
         [Test]
@@ -28,6 +31,19 @@ namespace Moonglade.ImageStorage.Tests
 
             var finalPath = FileSystemImageStorage.ResolveImageStoragePath(contentRootPath, path);
             Assert.IsTrue(finalPath == @"C:\Moonglade\Uploads");
+
+            CleanUpTestDirectory(contentRootPath);
+        }
+
+        private void CleanUpTestDirectory(params string[] paths)
+        {
+            foreach (var path in paths)
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+            }
         }
 
         [Test]
