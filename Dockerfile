@@ -17,7 +17,7 @@ WORKDIR "/src/Moonglade.Web"
 RUN dotnet build "Moonglade.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Moonglade.Web.csproj" -c Release --no-build -o /app/publish
+RUN dotnet publish "Moonglade.Web.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
