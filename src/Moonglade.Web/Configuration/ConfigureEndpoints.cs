@@ -18,12 +18,12 @@ namespace Moonglade.Web.Configuration
             {
                 var obj = new
                 {
-                    MoongladeVersion = Helper.AppVersion,
+                    Helper.AppVersion,
                     DotNetVersion = Environment.Version.ToString(),
                     EnvironmentTags = Helper.GetEnvironmentTags()
                 };
 
-                await context.Response.WriteAsync(obj.ToJson(), Encoding.UTF8);
+                await context.Response.WriteAsJsonAsync(obj);
             });
             endpoints.MapControllerRoute(
                 "default",
