@@ -2,5 +2,5 @@
 
 @foreach (var item in Model)
 {
-    <a asp-controller="Home" asp-action="TagList" asp-route-normalizedName="@item.Key.NormalizedName" rel="@item.Value" class="d-inline-block btn btn-sm btn-accent mb-2">@item.Key.DisplayName</a>
+    <a asp-page="./TagList" asp-route-normalizedName="@item.Key.NormalizedName" rel="@item.Value" class="d-inline-block btn btn-sm btn-accent mb-2">@item.Key.DisplayName</a>
 }
