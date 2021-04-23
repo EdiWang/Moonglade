@@ -124,30 +124,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Index_View()
-        {
-            _mockPostService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
-                .Returns(Task.FromResult(_fakePosts));
-
-            _mockPostService.Setup(p => p.CountPublic()).Returns(996);
-
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.General, "postcount", It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(996);
-
-            var ctl = CreateHomeController();
-            var result = await ctl.Index();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<StaticPagedList<PostDigest>>(model);
-
-            var pagedList = (StaticPagedList<PostDigest>)model;
-            Assert.AreEqual(996, pagedList.TotalItemCount);
-        }
-
-        [Test]
         public async Task TagList_NullTag()
         {
             _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns((Tag)null);

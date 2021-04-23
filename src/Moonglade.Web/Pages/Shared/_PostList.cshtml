@@ -19,7 +19,7 @@ else
         <hr class="d-none d-md-block" />
     }
 
-    @Html.PagedListPager(Model, page => $"?page={page}", new PagedListRenderOptions
+    @Html.PagedListPager(Model, page => $"?p={page}", new PagedListRenderOptions
     {
         LiElementClasses = new[] { "page-item" },
         PageClasses = new[] { "page-link" },

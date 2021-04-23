@@ -43,16 +43,6 @@ namespace Moonglade.Web.Controllers
             _settings = settingsOptions.Value;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
-        {
-            var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.List(pagesize, page);
-            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postQueryService.CountPublic());
-
-            var list = new StaticPagedList<PostDigest>(posts, page, pagesize, count);
-            return View(list);
-        }
-
         [Route("page/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> Page(string slug)
         {
@@ -71,23 +61,23 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("tags/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> TagList(string normalizedName, int page = 1)
+        public async Task<IActionResult> TagList(string normalizedName, int p = 1)
         {
             var tagResponse = _tagService.Get(normalizedName);
             if (tagResponse is null) return NotFound();
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.ListByTag(tagResponse.Id, pagesize, page);
+            var posts = await _postQueryService.ListByTag(tagResponse.Id, pagesize, p);
             var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postQueryService.CountByTag(tagResponse.Id));
 
             ViewBag.TitlePrefix = tagResponse.DisplayName;
 
-            var list = new StaticPagedList<PostDigest>(posts, page, pagesize, count);
+            var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);
             return View(list);
         }
 
         [Route("category/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> CategoryList([FromServices] ICategoryService categoryService, string routeName, int page = 1)
+        public async Task<IActionResult> CategoryList([FromServices] ICategoryService categoryService, string routeName, int p = 1)
         {
             if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
 
@@ -103,9 +93,9 @@ namespace Moonglade.Web.Controllers
             var postCount = _cache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
                 _ => _postQueryService.CountByCategory(cat.Id));
 
-            var postList = await _postQueryService.List(pageSize, page, cat.Id);
+            var postList = await _postQueryService.List(pageSize, p, cat.Id);
 
-            var postsAsIPagedList = new StaticPagedList<PostDigest>(postList, page, pageSize, postCount);
+            var postsAsIPagedList = new StaticPagedList<PostDigest>(postList, p, pageSize, postCount);
             return View(postsAsIPagedList);
         }
 
@@ -134,13 +124,13 @@ namespace Moonglade.Web.Controllers
         }
 
         [Route("archive/featured")]
-        public async Task<IActionResult> Featured(int page = 1)
+        public async Task<IActionResult> Featured(int p = 1)
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.ListFeatured(pagesize, page);
+            var posts = await _postQueryService.ListFeatured(pagesize, p);
             var count = _cache.GetOrCreate(CacheDivision.PostCountFeatured, "featured", _ => _postQueryService.CountByFeatured());
 
-            var list = new StaticPagedList<PostDigest>(posts, page, pagesize, count);
+            var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);
             return View(list);
         }
 

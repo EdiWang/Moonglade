@@ -44,9 +44,8 @@ namespace Moonglade.Web.Controllers
             switch (_authenticationSettings.Provider)
             {
                 case AuthenticationProvider.AzureAD:
-                    var redirectUrl = Url.Action(nameof(HomeController.Index), "Home");
                     return Challenge(
-                        new AuthenticationProperties { RedirectUri = redirectUrl },
+                        new AuthenticationProperties { RedirectUri = "/" },
                         OpenIdConnectDefaults.AuthenticationScheme);
                 case AuthenticationProvider.Local:
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -137,14 +136,14 @@ namespace Moonglade.Web.Controllers
                     throw new ArgumentOutOfRangeException();
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToPage("Index");
         }
 
         [HttpGet("signedout")]
         [AllowAnonymous]
         public IActionResult SignedOut()
         {
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToPage("Index");
         }
 
         [AllowAnonymous]
