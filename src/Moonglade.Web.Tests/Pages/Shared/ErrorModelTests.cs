@@ -47,7 +47,7 @@ namespace Moonglade.Web.Tests.Pages.Shared
             };
 
             model.OnGet();
-            Assert.IsNotNull(model.ErrorViewModel.RequestId);
+            Assert.IsNotNull(model.RequestId);
         }
     }
 }
