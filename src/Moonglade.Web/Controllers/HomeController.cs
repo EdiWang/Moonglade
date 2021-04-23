@@ -19,7 +19,6 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IPostQueryService _postQueryService;
         private readonly IPageService _pageService;
-        private readonly ITagService _tagService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
         private readonly ILogger<HomeController> _logger;
@@ -28,7 +27,6 @@ namespace Moonglade.Web.Controllers
         public HomeController(
             IPostQueryService postQueryService,
             IPageService pageService,
-            ITagService tagService,
             IBlogCache cache,
             IBlogConfig blogConfig,
             ILogger<HomeController> logger,
@@ -36,7 +34,6 @@ namespace Moonglade.Web.Controllers
         {
             _postQueryService = postQueryService;
             _pageService = pageService;
-            _tagService = tagService;
             _cache = cache;
             _blogConfig = blogConfig;
             _logger = logger;
@@ -58,22 +55,6 @@ namespace Moonglade.Web.Controllers
 
             if (page is null || !page.IsPublished) return NotFound();
             return View(page);
-        }
-
-        [Route("tags/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> TagList(string normalizedName, int p = 1)
-        {
-            var tagResponse = _tagService.Get(normalizedName);
-            if (tagResponse is null) return NotFound();
-
-            var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.ListByTag(tagResponse.Id, pagesize, p);
-            var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postQueryService.CountByTag(tagResponse.Id));
-
-            ViewBag.TitlePrefix = tagResponse.DisplayName;
-
-            var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);
-            return View(list);
         }
 
         [Route("category/{routeName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]

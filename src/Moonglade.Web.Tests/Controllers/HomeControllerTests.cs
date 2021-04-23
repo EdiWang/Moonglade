@@ -26,7 +26,6 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IPostQueryService> _mockPostService;
         private Mock<IPageService> _mockPageService;
-        private Mock<ITagService> _mockTagService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ILogger<HomeController>> _mockLogger;
@@ -60,7 +59,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockPageService = _mockRepository.Create<IPageService>();
-            _mockTagService = _mockRepository.Create<ITagService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockLogger = _mockRepository.Create<ILogger<HomeController>>();
@@ -77,7 +75,6 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockPostService.Object,
                 _mockPageService.Object,
-                _mockTagService.Object,
                 _mockBlogCache.Object,
                 _mockBlogConfig.Object,
                 _mockLogger.Object,
@@ -121,46 +118,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Page("996");
 
             Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task TagList_NullTag()
-        {
-            _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns((Tag)null);
-
-            var ctl = CreateHomeController();
-            var result = await ctl.TagList("996", 1);
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task TagList_ValidTag()
-        {
-            _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns(new Tag
-            {
-                Id = 996,
-                DisplayName = "Fubao",
-                NormalizedName = "fu-bao"
-            });
-
-            _mockPostService.Setup(p => p.ListByTag(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(_fakePosts));
-
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(251);
-
-            var ctl = CreateHomeController();
-            var result = await ctl.TagList("fu-bao");
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<StaticPagedList<PostDigest>>(model);
-
-            var pagedList = (StaticPagedList<PostDigest>)model;
-            Assert.AreEqual(251, pagedList.TotalItemCount);
         }
 
         [TestCase(null)]
