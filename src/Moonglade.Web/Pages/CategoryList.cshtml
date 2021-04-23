@@ -1,7 +1,6 @@
 ﻿@page "/category/{routeName:regex(^(?!-)([a-zA-Z0-9-]+)$)}"
 @model Moonglade.Web.Pages.CategoryListModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.TitlePrefix = ViewBag.CategoryDisplayName;
     ViewBag.ActionName = "list";
 }

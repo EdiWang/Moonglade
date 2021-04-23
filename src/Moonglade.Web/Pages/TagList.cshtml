@@ -1,8 +1,5 @@
 ﻿@page "/tags/{normalizedName:regex(^(?!-)([a-zA-Z0-9-]+)$)}"
 @model Moonglade.Web.Pages.TagListModel
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
 <h3>
     @ViewBag.TitlePrefix
