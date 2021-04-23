@@ -31,16 +31,16 @@ namespace Moonglade.Web.Tests.ViewComponents
             return new(_mockMenuService.Object, _mockBlogCache.Object);
         }
 
-        [Test]
-        public async Task InvokeAsync_Exception()
-        {
-            _mockMenuService.Setup(p => p.GetAllAsync()).Throws(new("996"));
+        //[Test]
+        //public async Task InvokeAsync_Exception()
+        //{
+        //    _mockMenuService.Setup(p => p.GetAllAsync()).Throws(new("996"));
 
-            var component = CreateComponent();
-            var result = await component.InvokeAsync();
+        //    var component = CreateComponent();
+        //    var result = await component.InvokeAsync();
 
-            Assert.IsInstanceOf<ContentViewComponentResult>(result);
-        }
+        //    Assert.IsInstanceOf<ContentViewComponentResult>(result);
+        //}
 
         [Test]
         public async Task InvokeAsync_View()
