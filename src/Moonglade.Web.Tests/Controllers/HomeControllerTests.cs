@@ -167,25 +167,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Archive_Index()
-        {
-            var fakeArchives = new List<Archive>
-            {
-                new (996,9,6),
-                new (251,3,5)
-            };
-
-            _mockPostService.Setup(p => p.GetArchiveAsync())
-                .Returns(Task.FromResult((IReadOnlyList<Archive>)fakeArchives));
-
-            var ctl = CreateHomeController();
-            var result = await ctl.Archive();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-            Assert.AreEqual(fakeArchives, ((ViewResult)result).Model);
-        }
-
-        [Test]
         public async Task TagList_NullTag()
         {
             _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns((Tag)null);
