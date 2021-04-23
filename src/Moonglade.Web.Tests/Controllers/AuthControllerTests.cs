@@ -135,12 +135,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreateAuthController();
             var result = ctl.SignedOut();
-            Assert.IsInstanceOf(typeof(RedirectToActionResult), result);
-            if (result is RedirectToActionResult rdResult)
-            {
-                Assert.That(rdResult.ActionName, Is.EqualTo("Index"));
-                Assert.That(rdResult.ControllerName, Is.EqualTo("Home"));
-            }
+            Assert.IsInstanceOf(typeof(RedirectToPageResult), result);
         }
 
         [Test]
