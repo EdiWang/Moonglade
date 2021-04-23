@@ -28,9 +28,7 @@
                 {
                     <li>
                         <a class="btn btn-sm btn-outline-secondary mb-1"
-                           asp-controller="Home"
-                           asp-action="CategoryList"
-                           asp-route-routeName="@item.RouteName.ToLower()">
+                           href="/category/@item.RouteName.ToLower()">
                             <span class="icon-folder" aria-hidden="true"></span>
                             @item.DisplayName
                         </a>
@@ -42,9 +40,7 @@
                     @foreach (var item in Model.Tags)
                     {
                         <li>
-                            <a asp-controller="Home"
-                               asp-action="TagList"
-                               asp-route-normalizedName="@item.NormalizedName" class="btn btn-sm btn-outline-secondary mb-1">
+                            <a href="/tag/@item.NormalizedName" class="btn btn-sm btn-outline-secondary mb-1">
                                 <span class="icon-price-tag" aria-hidden="true"></span>
                                 @item.DisplayName
                             </a>

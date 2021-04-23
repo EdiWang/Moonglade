@@ -1,6 +1,7 @@
-﻿@model X.PagedList.StaticPagedList<Moonglade.Core.PostDigest>
-
+﻿@page "/category/{routeName:regex(^(?!-)([a-zA-Z0-9-]+)$)}"
+@model Moonglade.Web.Pages.CategoryListModel
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.TitlePrefix = ViewBag.CategoryDisplayName;
     ViewBag.ActionName = "list";
 }
@@ -17,9 +18,9 @@
     <small class="d-none d-md-inline text-muted">@ViewBag.CategoryDescription</small>
 </h3>
 <hr />
-@if (Model.Any())
+@if (Model.Posts.Any())
 {
-    <partial name="_PostList" />
+    <partial name="_PostList" model="Model.Posts" />
 }
 else
 {

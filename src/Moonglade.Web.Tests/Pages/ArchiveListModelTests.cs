@@ -50,7 +50,24 @@ namespace Moonglade.Web.Tests.Pages
 
         private ArchiveListModel CreateArchiveListModel()
         {
-            return new(_mockPostQueryService.Object);
+            var httpContext = new DefaultHttpContext();
+            var modelState = new ModelStateDictionary();
+            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+            var modelMetadataProvider = new EmptyModelMetadataProvider();
+            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            var pageContext = new PageContext(actionContext)
+            {
+                ViewData = viewData
+            };
+
+            var model = new ArchiveListModel(_mockPostQueryService.Object)
+            {
+                PageContext = pageContext,
+                TempData = tempData
+            };
+
+            return model;
         }
 
         [Test]
@@ -74,23 +91,7 @@ namespace Moonglade.Web.Tests.Pages
             _mockPostQueryService.Setup(p => p.ListArchive(It.IsAny<int>(), null))
                 .Returns(Task.FromResult(_fakePosts));
 
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            var pageContext = new PageContext(actionContext)
-            {
-                ViewData = viewData
-            };
-
-            var model = new ArchiveListModel(_mockPostQueryService.Object)
-            {
-                PageContext = pageContext,
-                TempData = tempData
-            };
-
+            var model = CreateArchiveListModel();
             var result = await model.OnGetAsync(2021, null);
 
             Assert.IsInstanceOf<PageResult>(result);
@@ -102,23 +103,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockPostQueryService.Setup(p => p.ListArchive(It.IsAny<int>(), It.IsAny<int?>())).Returns(Task.FromResult(_fakePosts));
 
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            var pageContext = new PageContext(actionContext)
-            {
-                ViewData = viewData
-            };
-
-            var model = new ArchiveListModel(_mockPostQueryService.Object)
-            {
-                PageContext = pageContext,
-                TempData = tempData
-            };
-
+            var model = CreateArchiveListModel();
             var result = await model.OnGetAsync(2021, 1);
             Assert.IsInstanceOf<PageResult>(result);
             Assert.AreEqual(_fakePosts, model.Posts);

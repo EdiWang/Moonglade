@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +8,10 @@ using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
 using Moonglade.Pages;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using X.PagedList;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -24,40 +21,17 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<IPostQueryService> _mockPostService;
         private Mock<IPageService> _mockPageService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ILogger<HomeController>> _mockLogger;
         private Mock<IOptions<AppSettings>> _mockAppSettingsOptions;
 
-
-        private readonly IReadOnlyList<PostDigest> _fakePosts = new List<PostDigest>
-        {
-            new()
-            {
-                Title = "“996”工作制，即每天早 9 点到岗，一直工作到晚上 9 点，每周工作 6 天。",
-                ContentAbstract = "中国大陆工时规管现况（标准工时）： 一天工作时间为 8 小时，平均每周工时不超过 40 小时；加班上限为一天 3 小时及一个月 36 小时，逾时工作薪金不低于平日工资的 150%。而一周最高工时则为 48 小时。平均每月计薪天数为 21.75 天。",
-                LangCode = "zh-CN",
-                PubDateUtc = new(996, 9, 6),
-                Slug = "996-icu",
-                Tags = new Tag[]{
-                    new ()
-                    {
-                        DisplayName = "996",
-                        Id = 996,
-                        NormalizedName = "icu"
-                    }
-                }
-            }
-        };
-
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockPageService = _mockRepository.Create<IPageService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -73,10 +47,8 @@ namespace Moonglade.Web.Tests.Controllers
         private HomeController CreateHomeController()
         {
             return new(
-                _mockPostService.Object,
                 _mockPageService.Object,
                 _mockBlogCache.Object,
-                _mockBlogConfig.Object,
                 _mockLogger.Object,
                 _mockAppSettingsOptions.Object);
         }
@@ -118,72 +90,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Page("996");
 
             Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public async Task CategoryList_EmptyRouteName(string routeName)
-        {
-            var mockCatService = new Mock<ICategoryService>();
-
-            var ctl = CreateHomeController();
-            var result = await ctl.CategoryList(mockCatService.Object, routeName);
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task CategoryList_NullCat()
-        {
-            var mockCatService = new Mock<ICategoryService>();
-            mockCatService
-                .Setup(p => p.Get(It.IsAny<string>()))
-                .Returns(Task.FromResult((Category)null));
-
-            var ctl = CreateHomeController();
-            var result = await ctl.CategoryList(mockCatService.Object, "996");
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task CategoryList_ValidCat()
-        {
-            var cat = new Category
-            {
-                Id = Guid.Empty,
-                DisplayName = "Work 996",
-                Note = "Get into ICU",
-                RouteName = "work-996"
-            };
-
-            var mockCatService = new Mock<ICategoryService>();
-            mockCatService
-                .Setup(p => p.Get(It.IsAny<string>()))
-                .Returns(Task.FromResult(cat));
-
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.PostCountCategory, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(35);
-
-            _mockPostService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
-                .Returns(Task.FromResult(_fakePosts));
-
-            var ctl = CreateHomeController();
-            var result = await ctl.CategoryList(mockCatService.Object, "work-996");
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<StaticPagedList<PostDigest>>(model);
-
-            var pagedList = (StaticPagedList<PostDigest>)model;
-            Assert.AreEqual(35, pagedList.TotalItemCount);
-
-            Assert.AreEqual(cat.DisplayName, ((ViewResult)result).ViewData["CategoryDisplayName"]);
-            Assert.AreEqual(cat.RouteName, ((ViewResult)result).ViewData["CategoryRouteName"]);
-            Assert.AreEqual(cat.Note, ((ViewResult)result).ViewData["CategoryDescription"]);
         }
 
         [TestCase(null)]
