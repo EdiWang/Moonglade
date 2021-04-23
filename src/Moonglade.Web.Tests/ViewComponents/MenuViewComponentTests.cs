@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Moonglade.Caching;
 using Moonglade.Menus;
 using Moonglade.Web.ViewComponents;
 using Moq;
@@ -15,18 +16,19 @@ namespace Moonglade.Web.Tests.ViewComponents
     {
         private MockRepository _mockRepository;
         private Mock<IMenuService> _mockMenuService;
+        private Mock<IBlogCache> _mockBlogCache;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
             _mockMenuService = _mockRepository.Create<IMenuService>();
+            _mockBlogCache = _mockRepository.Create<IBlogCache>();
         }
 
         private MenuViewComponent CreateComponent()
         {
-            return new(
-                _mockMenuService.Object);
+            return new(_mockMenuService.Object, _mockBlogCache.Object);
         }
 
         [Test]
