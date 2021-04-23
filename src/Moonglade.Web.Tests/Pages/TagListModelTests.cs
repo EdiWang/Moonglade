@@ -8,8 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Moonglade.Web.Tests.Pages
@@ -54,6 +58,11 @@ namespace Moonglade.Web.Tests.Pages
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
+
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
+            {
+                PostListPageSize = 10
+            });
         }
 
         private TagListModel CreateTagListModel()
@@ -96,14 +105,33 @@ namespace Moonglade.Web.Tests.Pages
                     p.GetOrCreate(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
                 .Returns(251);
 
-            // Arrange
-            var tagListModel = CreateTagListModel();
+            var httpContext = new DefaultHttpContext();
+            var modelState = new ModelStateDictionary();
+            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+            var modelMetadataProvider = new EmptyModelMetadataProvider();
+            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            var pageContext = new PageContext(actionContext)
+            {
+                ViewData = viewData
+            };
+
+            var model = new TagListModel(
+                _mockTagService.Object,
+                _mockBlogConfig.Object,
+                _mockPostQueryService.Object,
+                _mockBlogCache.Object)
+            {
+                PageContext = pageContext,
+                TempData = tempData
+            };
+
             string normalizedName = "fu-bao";
 
             // Act
-            var result = await tagListModel.OnGet(normalizedName);
+            var result = await model.OnGet(normalizedName);
             Assert.IsInstanceOf<PageResult>(result);
-            Assert.AreEqual(251, tagListModel.Posts.TotalItemCount);
+            Assert.AreEqual(251, model.Posts.TotalItemCount);
         }
     }
 }
