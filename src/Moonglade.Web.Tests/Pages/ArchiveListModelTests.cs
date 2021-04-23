@@ -1,9 +1,4 @@
-﻿using Moonglade.Core;
-using Moonglade.Web.Pages;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
+using Moonglade.Core;
+using Moonglade.Web.Pages;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Pages
 {

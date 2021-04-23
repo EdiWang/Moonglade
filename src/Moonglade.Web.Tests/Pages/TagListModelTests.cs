@@ -1,10 +1,4 @@
-﻿using Moonglade.Caching;
-using Moonglade.Configuration;
-using Moonglade.Core;
-using Moonglade.Web.Pages;
-using Moq;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
@@ -15,6 +9,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
+using Moonglade.Caching;
+using Moonglade.Configuration;
+using Moonglade.Core;
+using Moonglade.Web.Pages;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Pages
 {
