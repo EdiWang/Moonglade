@@ -163,28 +163,6 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.AreEqual(251, pagedList.TotalItemCount);
         }
 
-        [Test]
-        public async Task Featured_View()
-        {
-            _mockPostService.Setup(p => p.ListFeatured(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(_fakePosts));
-
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.PostCountFeatured, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(251);
-
-            var ctl = CreateHomeController();
-            var result = await ctl.Featured();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.IsInstanceOf<StaticPagedList<PostDigest>>(model);
-
-            var pagedList = (StaticPagedList<PostDigest>)model;
-            Assert.AreEqual(251, pagedList.TotalItemCount);
-        }
-
         [TestCase(null)]
         [TestCase("")]
         [TestCase(" ")]

@@ -1,0 +1,23 @@
+﻿@page "/archive/featured"
+@model Moonglade.Web.Pages.FeaturedModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>
+    @Localizer["Featured Posts"]
+</h3>
+<hr />
+
+@if (Model.Posts.Any())
+{
+    <partial name="_PostList" model="Model.Posts" />
+}
+else
+{
+    <div class="alert alert-info">
+        @Localizer["No Posts"]
+    </div>
+}
+
+<partial name="_LightSwitch" />

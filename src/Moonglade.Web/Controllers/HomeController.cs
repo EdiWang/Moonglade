@@ -123,17 +123,6 @@ namespace Moonglade.Web.Controllers
             return View(model);
         }
 
-        [Route("archive/featured")]
-        public async Task<IActionResult> Featured(int p = 1)
-        {
-            var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.ListFeatured(pagesize, p);
-            var count = _cache.GetOrCreate(CacheDivision.PostCountFeatured, "featured", _ => _postQueryService.CountByFeatured());
-
-            var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);
-            return View(list);
-        }
-
         [HttpGet("set-lang")]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
