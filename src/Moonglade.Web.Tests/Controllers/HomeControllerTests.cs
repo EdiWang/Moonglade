@@ -186,49 +186,6 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.AreEqual(cat.Note, ((ViewResult)result).ViewData["CategoryDescription"]);
         }
 
-        [Test]
-        public async Task ArchiveList_BadYear()
-        {
-            var ctl = CreateHomeController();
-            var result = await ctl.ArchiveList(9999, 1);
-
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
-
-        [Test]
-        public async Task ArchiveList_Year()
-        {
-            _mockPostService.Setup(p => p.ListArchive(It.IsAny<int>(), null))
-                .Returns(Task.FromResult(_fakePosts));
-
-            var ctl = CreateHomeController();
-            var result = await ctl.ArchiveList(2021, null);
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.AreEqual(_fakePosts, (IReadOnlyList<PostDigest>)model);
-
-            Assert.AreEqual("2021", ((ViewResult)result).ViewData["ArchiveInfo"]);
-        }
-
-        [Test]
-        public async Task ArchiveList_Year_Month()
-        {
-            _mockPostService.Setup(p => p.ListArchive(It.IsAny<int>(), It.IsAny<int?>()))
-                .Returns(Task.FromResult(_fakePosts));
-
-            var ctl = CreateHomeController();
-            var result = await ctl.ArchiveList(2021, 1);
-
-            Assert.IsInstanceOf<ViewResult>(result);
-
-            var model = ((ViewResult)result).Model;
-            Assert.AreEqual(_fakePosts, (IReadOnlyList<PostDigest>)model);
-
-            Assert.AreEqual("2021.1", ((ViewResult)result).ViewData["ArchiveInfo"]);
-        }
-
         [TestCase(null)]
         [TestCase("")]
         [TestCase(" ")]

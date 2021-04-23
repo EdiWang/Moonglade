@@ -80,30 +80,6 @@ namespace Moonglade.Web.Controllers
             return View(postsAsIPagedList);
         }
 
-        [Route("archive/{year:int:length(4)}")]
-        [Route("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
-        public async Task<IActionResult> ArchiveList(int year, int? month)
-        {
-            if (year > DateTime.UtcNow.Year) return BadRequest();
-
-            IReadOnlyList<PostDigest> model;
-
-            if (month is not null)
-            {
-                // {year}/{month}
-                ViewBag.ArchiveInfo = $"{year}.{month}";
-                model = await _postQueryService.ListArchive(year, month);
-            }
-            else
-            {
-                // {year}
-                ViewBag.ArchiveInfo = $"{year}";
-                model = await _postQueryService.ListArchive(year, null);
-            }
-
-            return View(model);
-        }
-
         [HttpGet("set-lang")]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {

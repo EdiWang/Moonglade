@@ -1,6 +1,7 @@
-﻿@model IReadOnlyList<Moonglade.Core.PostDigest>
-
+﻿@page "/archive/{year:int:length(4)}/{month:int:range(1,12)?}"
+@model Moonglade.Web.Pages.ArchiveListModel
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.TitlePrefix = $"All Posts in {ViewBag.ArchiveInfo}";
 }
 
@@ -9,7 +10,7 @@
 </h3>
 <hr />
 <div>
-    @if (!Model.Any())
+    @if (!Model.Posts.Any())
     {
         <div class="alert alert-warning">
             @Localizer["No Posts"]
@@ -17,7 +18,7 @@
     }
     else
     {
-        foreach (var item in Model.OrderByDescending(s => s.PubDateUtc))
+        foreach (var item in Model.Posts.OrderByDescending(s => s.PubDateUtc))
         {
             <partial name="_PostListEntry" model="item" />
             <div class="mb-4 d-none d-md-block"></div>
