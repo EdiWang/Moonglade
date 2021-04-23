@@ -6,7 +6,7 @@
         @foreach (var item in Model.OrderBy(c => c.DisplayName))
         {
             <a class="d-block mb-3 mt-2"
-               asp-page="./CategoryList"
+               asp-page="/CategoryList"
                asp-route-routeName="@item.RouteName.ToLower()"
                title="@item.Note">
                 <i class="icon-folder mr-1"></i>
@@ -15,7 +15,7 @@
         }
 
         <hr />
-        <a asp-page="./Featured" class="d-block">
+        <a asp-page="/Featured" class="d-block">
             <i class="icon-star-full mr-1 text-warning"></i>
             Featured
         </a>
