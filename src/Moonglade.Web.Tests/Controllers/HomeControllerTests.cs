@@ -148,25 +148,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Tags_Index()
-        {
-            var fakeTags = new List<KeyValuePair<Tag, int>>
-            {
-                new(new Tag { DisplayName = "Huawei", Id = 35, NormalizedName = "aiguo" }, 251),
-                new(new Tag { DisplayName = "Ali", Id = 35, NormalizedName = "fubao" }, 996)
-            };
-
-            _mockTagService.Setup(p => p.GetTagCountList())
-                .Returns(Task.FromResult((IReadOnlyList<KeyValuePair<Tag, int>>)fakeTags));
-
-            var ctl = CreateHomeController();
-            var result = await ctl.Tags();
-
-            Assert.IsInstanceOf<ViewResult>(result);
-            Assert.AreEqual(fakeTags, ((ViewResult)result).Model);
-        }
-
-        [Test]
         public async Task TagList_NullTag()
         {
             _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns((Tag)null);

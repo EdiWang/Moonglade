@@ -70,14 +70,6 @@ namespace Moonglade.Web.Controllers
             return View(page);
         }
 
-
-        [Route("tags")]
-        public async Task<IActionResult> Tags()
-        {
-            var tags = await _tagService.GetTagCountList();
-            return View(tags);
-        }
-
         [Route("tags/{normalizedName:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
         public async Task<IActionResult> TagList(string normalizedName, int page = 1)
         {

@@ -1,9 +1,10 @@
-﻿@{
+﻿@page "/tags"
+@using System.Web
+@model Moonglade.Web.Pages.TagsModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.TitlePrefix = "Tags";
 }
-
-@using System.Web
-@model IReadOnlyList<KeyValuePair<Moonglade.Core.Tag, int>>
 
 @functions {
     private static string Weight(double weightPercent)
@@ -25,12 +26,12 @@
 </h3>
 <hr />
 
-@if (Model.Any())
+@if (Model.Tags.Any())
 {
-    var tagMax = Model.Select(p => p.Value).Max();
+    var tagMax = Model.Tags.Select(p => p.Value).Max();
 
     <ul class="list-unstyled text-justify">
-        @foreach (var tag in Model.OrderBy(t => t.Key.DisplayName))
+        @foreach (var tag in Model.Tags.OrderBy(t => t.Key.DisplayName))
         {
             var weightPercent = tag.Value * 1.0 / tagMax * 100;
             var weight = Weight(weightPercent);
