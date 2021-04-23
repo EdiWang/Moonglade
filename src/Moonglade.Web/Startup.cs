@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
@@ -58,6 +59,10 @@ namespace Moonglade.Web
             services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
             services.AddApplicationInsightsTelemetry();
             services.AddAzureAppConfiguration();
+            services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) =>
+            {
+                module.EnableSqlCommandTextInstrumentation = true;
+            });
 
             services.AddSession(options =>
             {
