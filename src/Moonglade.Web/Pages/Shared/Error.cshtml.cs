@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Pages.Shared
 {
@@ -13,12 +12,13 @@ namespace Moonglade.Web.Pages.Shared
     {
         private readonly ILogger<ErrorModel> _logger;
 
-        public ErrorViewModel ErrorViewModel { get; set; }
+        public string RequestId { get; set; }
+
+        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
         public ErrorModel(ILogger<ErrorModel> logger)
         {
             _logger = logger;
-            ErrorViewModel = new();
         }
 
         public void OnGet()
@@ -37,7 +37,7 @@ namespace Moonglade.Web.Pages.Shared
                                  $"request id: {requestId}", exceptionThatOccurred);
             }
 
-            ErrorViewModel.RequestId = requestId;
+            RequestId = requestId;
         }
     }
 }
