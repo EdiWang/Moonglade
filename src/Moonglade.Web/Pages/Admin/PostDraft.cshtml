@@ -4,7 +4,7 @@
     Layout = "_LayoutAdmin";
     ViewBag.Title = "Drafts";
 }
-@inject ITimeZoneResolver TZoneResolver
+@inject ITimeZoneResolver _zoneResolver
 @section scripts{
     <script>
         $(function () {
@@ -45,7 +45,7 @@
                     @post.ContentAbstract
                 </p>
 
-                <small class="text-muted">@TZoneResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @TZoneResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
+                <small class="text-muted">@_zoneResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @_zoneResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
             </div>
             <div class="card-footer">
                 <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id">

@@ -5,16 +5,16 @@
 }
 @using Moonglade.Configuration
 @using Moonglade.Web.Models
-@inject ITimeZoneResolver TZoneResolver
-@inject IOptions<List<BlogTheme>> Themes
+@inject ITimeZoneResolver _zoneResolver
+@inject IOptions<List<BlogTheme>> _themes
 @{
-    var tzList = TZoneResolver.ListTimeZones().Select(t => new SelectListItem
+    var tzList = _zoneResolver.ListTimeZones().Select(t => new SelectListItem
     {
         Text = t.DisplayName,
         Value = t.Id
     });
 
-    var tmList = Themes.Value.Select(t => new SelectListItem
+    var tmList = _themes.Value.Select(t => new SelectListItem
     {
         Text = t.Name,
         Value = t.CssFile

@@ -1,7 +1,7 @@
 ﻿@page "/admin/about"
 @using System.Diagnostics
 @using Moonglade.Utils
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
 
 @{
     Layout = "_LayoutAdmin";
@@ -73,7 +73,7 @@
         </tr>
         <tr>
             <td>@Localizer["Environment"]</td>
-            <td>@WebHostEnvironment.EnvironmentName</td>
+            <td>@_webHostEnvironment.EnvironmentName</td>
         </tr>
         <tr>
             <td>@Localizer["Editor"]</td>
