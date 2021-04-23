@@ -99,9 +99,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{FE0F
 		..\.vscode\tasks.json = ..\.vscode\tasks.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Notification.Client.Tests", "Moonglade.Notification.Client.Tests\Moonglade.Notification.Client.Tests.csproj", "{6619E823-F493-468A-B011-55028AE77932}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Notification.Client.Tests", "Moonglade.Notification.Client.Tests\Moonglade.Notification.Client.Tests.csproj", "{6619E823-F493-468A-B011-55028AE77932}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.DataPorting.Tests", "Moonglade.DataPorting.Tests\Moonglade.DataPorting.Tests.csproj", "{3A0C2F63-9666-4545-98F8-D441AC9908C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.DataPorting.Tests", "Moonglade.DataPorting.Tests\Moonglade.DataPorting.Tests.csproj", "{3A0C2F63-9666-4545-98F8-D441AC9908C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

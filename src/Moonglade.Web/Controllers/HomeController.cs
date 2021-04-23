@@ -117,13 +117,6 @@ namespace Moonglade.Web.Controllers
             return View(postsAsIPagedList);
         }
 
-        [Route("archive")]
-        public async Task<IActionResult> Archive()
-        {
-            var archives = await _postQueryService.GetArchiveAsync();
-            return View(archives);
-        }
-
         [Route("archive/{year:int:length(4)}")]
         [Route("archive/{year:int:length(4)}/{month:int:range(1,12)}")]
         public async Task<IActionResult> ArchiveList(int year, int? month)
