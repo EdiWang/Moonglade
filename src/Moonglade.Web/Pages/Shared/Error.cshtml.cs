@@ -2,7 +2,6 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Pages.Shared
