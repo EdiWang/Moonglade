@@ -43,6 +43,27 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockLogger.Object);
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void SetLanguage_EmptyCulture(string culture)
+        {
+            var ctl = CreateSettingsController();
+            var result = ctl.SetLanguage(culture, null);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
+        public void SetLanguage_Cookie()
+        {
+            var ctl = CreateSettingsController();
+            var result = ctl.SetLanguage("en-US", "/996/icu");
+
+            Assert.IsInstanceOf<LocalRedirectResult>(result);
+        }
+
+
         [Test]
         public async Task General_Post()
         {

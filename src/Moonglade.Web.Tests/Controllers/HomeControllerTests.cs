@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
@@ -21,16 +20,13 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IPostQueryService> _mockPostService;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<ILogger<HomeController>> _mockLogger;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-
             _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockLogger = _mockRepository.Create<ILogger<HomeController>>();
 
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
@@ -40,27 +36,7 @@ namespace Moonglade.Web.Tests.Controllers
 
         private HomeController CreateHomeController()
         {
-            return new(_mockLogger.Object, _mockPostService.Object);
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public void SetLanguage_EmptyCulture(string culture)
-        {
-            var ctl = CreateHomeController();
-            var result = ctl.SetLanguage(culture, null);
-
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
-
-        [Test]
-        public void SetLanguage_Cookie()
-        {
-            var ctl = CreateHomeController();
-            var result = ctl.SetLanguage("en-US", "/996/icu");
-
-            Assert.IsInstanceOf<LocalRedirectResult>(result);
+            return new(_mockPostService.Object);
         }
 
         [Test]
