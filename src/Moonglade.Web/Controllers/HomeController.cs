@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Configuration.Settings;
@@ -19,13 +17,10 @@ namespace Moonglade.Web.Controllers
     public class HomeController : Controller
     {
         private readonly IPostQueryService _postQueryService;
-        private readonly ILogger<HomeController> _logger;
 
         public HomeController(
-            ILogger<HomeController> logger,
             IPostQueryService postQueryService)
         {
-            _logger = logger;
             _postQueryService = postQueryService;
         }
 
@@ -73,28 +68,6 @@ namespace Moonglade.Web.Controllers
             ViewBag.TitlePrefix = $"{post.Title}";
             ViewBag.IsDraftPreview = true;
             return View("Slug", post);
-        }
-
-        [HttpGet("set-lang")]
-        public IActionResult SetLanguage(string culture, string returnUrl)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(culture)) return BadRequest();
-
-                Response.Cookies.Append(
-                    CookieRequestCultureProvider.DefaultCookieName,
-                    CookieRequestCultureProvider.MakeCookieValue(new(culture)),
-                    new() { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-                );
-
-                return LocalRedirect(returnUrl);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message, culture, returnUrl);
-                return LocalRedirect(returnUrl);
-            }
         }
     }
 }

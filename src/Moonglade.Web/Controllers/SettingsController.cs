@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -44,6 +45,29 @@ namespace Moonglade.Web.Controllers
             _blogAudit = blogAudit;
 
             _logger = logger;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("set-lang")]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(culture)) return BadRequest();
+
+                Response.Cookies.Append(
+                    CookieRequestCultureProvider.DefaultCookieName,
+                    CookieRequestCultureProvider.MakeCookieValue(new(culture)),
+                    new() { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+                );
+
+                return LocalRedirect(returnUrl);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message, culture, returnUrl);
+                return LocalRedirect(returnUrl);
+            }
         }
 
         [HttpPost("general")]
