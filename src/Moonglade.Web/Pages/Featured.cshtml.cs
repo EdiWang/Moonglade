@@ -12,6 +12,7 @@ namespace Moonglade.Web.Pages
         private readonly IBlogConfig _blogConfig;
         private readonly IPostQueryService _postQueryService;
         private readonly IBlogCache _cache;
+        public StaticPagedList<PostDigest> Posts { get; set; }
 
         public FeaturedModel(
             IBlogConfig blogConfig, IPostQueryService postQueryService, IBlogCache cache)
@@ -20,8 +21,6 @@ namespace Moonglade.Web.Pages
             _postQueryService = postQueryService;
             _cache = cache;
         }
-
-        public StaticPagedList<PostDigest> Posts { get; set; }
 
         public async Task OnGet(int p = 1)
         {

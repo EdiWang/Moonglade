@@ -17,6 +17,7 @@ namespace Moonglade.Web.Pages
 
         [BindProperty(SupportsGet = true)]
         public int P { get; set; }
+        public StaticPagedList<PostDigest> Posts { get; set; }
 
         public TagListModel(
             ITagService tagService, IBlogConfig blogConfig, IPostQueryService postQueryService, IBlogCache cache)
@@ -28,8 +29,6 @@ namespace Moonglade.Web.Pages
 
             P = 1;
         }
-
-        public StaticPagedList<PostDigest> Posts { get; set; }
 
         public async Task<IActionResult> OnGet(string normalizedName)
         {
