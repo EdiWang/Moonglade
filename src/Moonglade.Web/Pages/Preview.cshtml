@@ -1,0 +1,148 @@
+﻿@page "post/preview/{postId:guid}"
+@model Moonglade.Web.Pages.PreviewModel
+@using Moonglade.Utils
+@inject ITimeZoneResolver _zoneResolver
+
+@{
+    ViewBag.BodyClass = "body-post-slug";
+    var ec = Settings.Value.Editor;
+    var content = ContentProcessor.AddLazyLoadToImgTag(Model.Post.RawPostContent);
+}
+
+@section keywords {
+    @if (Model.Post.Tags.Length > 0)
+    {
+        <meta name="keywords" content="@string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName))" />
+    }
+}
+
+@section meta {
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="title" content="@Model.Post.Title" />
+    <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
+    <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
+    <meta name="author" content="@BlogConfig.GeneralSettings.OwnerName" />
+}
+
+@if (BlogConfig.AdvancedSettings.EnableOpenGraph)
+{
+    @section opengraph{
+        <meta property="og:site_name" content="@BlogConfig.GeneralSettings.SiteTitle">
+        <meta property="og:title" content="@Model.Post.Title">
+        <meta property="og:type" content="article" />
+        <meta property="og:description" content="@Model.Post.ContentAbstract" />
+        @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
+        {
+            <meta property="og:url" content="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, HttpContext.Request.Path))" />
+        }
+    }
+}
+
+@section metadescription{
+    <metadesc description="@Model.Post.ContentAbstract" />
+}
+
+@section scripts {
+    <script src="~/js/3rd/highlight.pack.js"></script>
+    <script>
+        var fitImageToDevicePixelRatio = @BlogConfig.AdvancedSettings.FitImageToDevicePixelRatio.ToString().ToLower();
+        var pid = $("article").data("postid");
+        postSlug.resizeImages();
+        postSlug.applyImageZooming();
+        postSlug.renderCodeHighlighter();
+
+        @if (BlogConfig.AdvancedSettings.WarnExternalLink)
+        {
+            <text>
+                postSlug.warnExtLink();
+            </text>
+        }
+    </script>
+}
+
+<div class="alert alert-info">
+    @Localizer["This is a preview for draft content."]
+</div>
+
+<article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
+    @if (Model.Post.Featured)
+    {
+        <a asp-page="/Featured">
+            <img src="~/images/featured-post.svg" class="featured-post-banner position-absolute d-none d-md-block" title="@Localizer["Featured"]" alt="@Localizer["Featured"]" />
+        </a>
+    }
+
+    <header class="post-header">
+        <h1 class="post-title">
+            @Model.Post.Title
+        </h1>
+
+        <div class="d-block d-sm-none">
+            <div class="post-publish-info post-publish-info-mobile bg-light">
+                <span class="icon-calendar"></span>
+                <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
+                @BlogConfig.GeneralSettings.TimeZoneId
+            </div>
+        </div>
+
+        <div class="d-none d-md-block post-publish-info text-muted mb-2">
+            <span class="icon-calendar"></span>
+            <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
+            @BlogConfig.GeneralSettings.TimeZoneId
+        </div>
+
+        <hr class="d-none d-md-block" />
+    </header>
+    <section class="post-content clearfix">
+        @if (ec == EditorChoice.Markdown)
+        {
+            @Html.Raw(ContentProcessor.MarkdownToContent(content, ContentProcessor.MarkdownConvertType.Html, false))
+        }
+        else
+        {
+            @Html.Raw(content)
+        }
+    </section>
+    @if (BlogConfig.ContentSettings.ShowPostFooter)
+    {
+        <section class="post-footer clearfix">
+            @Html.Raw(BlogConfig.ContentSettings.PostFooterHtmlPitch)
+        </section>
+    }
+
+    <partial name="_PostActions" model="Model.Post" />
+</article>
+
+<partial name="_LightSwitch" />
+
+<div class="modal fade" id="imgzoomModal" tabindex="-1" role="dialog" aria-labelledby="imgzoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-imgzoom" role="document" style="max-width: 100%">
+        <div class="modal-content">
+            <img id="imgzoom" alt="imgzoom" class="img-fluid" />
+        </div>
+    </div>
+</div>
+
+@if (BlogConfig.AdvancedSettings.WarnExternalLink)
+{
+    <div class="modal fade" id="externalLinkModal" tabindex="-1" role="dialog" aria-labelledby="externalLinkModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-externalLink" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">External Link Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to leave this website and go to this external link. We are not responsible for any content or malicious behaviours of this link. Please confirm before continue browsing the link.</p>
+                    <p id="extlink-url"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <a id="extlink-continue" href="#" target="_blank" class="btn btn-primary">Continue</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
