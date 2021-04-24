@@ -1,16 +1,11 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -23,112 +18,18 @@ namespace Moonglade.Web.Tests.Controllers
         private MockRepository _mockRepository;
 
         private Mock<IOptions<AuthenticationSettings>> _mockOptions;
-        private Mock<ILocalAccountService> _mockLocalAccountService;
-        private Mock<IBlogAudit> _mockBlogAudit;
-        private Mock<ILogger<AuthController>> _mockLogger;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-
             _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
-            _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
-            _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-            _mockLogger = _mockRepository.Create<ILogger<AuthController>>();
         }
 
         private AuthController CreateAuthController()
         {
-            return new(
-                _mockOptions.Object,
-                _mockLocalAccountService.Object,
-                _mockBlogAudit.Object,
-                _mockLogger.Object);
+            return new(_mockOptions.Object);
         }
-
-        //[Test]
-        //public async Task SignIn_AAD()
-        //{
-        //    _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
-        //    {
-        //        Provider = AuthenticationProvider.AzureAD
-        //    });
-
-        //    var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
-        //    Expression<Func<IUrlHelper, string>> urlSetup
-        //        = url => url.Action(It.Is<UrlActionContext>(uac => uac.Action == "Index"));
-        //    mockUrlHelper.Setup(urlSetup).Returns("a/mock/url/for/testing").Verifiable();
-
-        //    var ctl = CreateAuthController();
-        //    ctl.Url = mockUrlHelper.Object;
-
-        //    var result = await ctl.SignIn();
-
-        //    Assert.IsInstanceOf<ChallengeResult>(result);
-        //}
-
-        //[Test]
-        //public async Task SignIn_Local()
-        //{
-        //    _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
-        //    {
-        //        Provider = AuthenticationProvider.Local
-        //    });
-
-        //    var ctl = CreateAuthController();
-        //    ctl.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
-
-        //    var result = await ctl.SignIn();
-        //    Assert.IsInstanceOf<ViewResult>(result);
-        //}
-
-        //[Test]
-        //public async Task SignIn_None()
-        //{
-        //    _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
-        //    {
-        //        Provider = AuthenticationProvider.None
-        //    });
-
-        //    var ctl = CreateAuthController();
-        //    ctl.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
-
-        //    var result = await ctl.SignIn();
-
-        //    Assert.IsInstanceOf<ContentResult>(result);
-        //    var statusCode = ctl.HttpContext.Response.StatusCode;
-
-        //    Assert.AreEqual(StatusCodes.Status501NotImplemented, statusCode);
-        //}
-
-        //[Test]
-        //public async Task SignIn_Post_Exception()
-        //{
-        //    _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>()))
-        //        .Throws(new Exception("996"));
-
-        //    var ctl = CreateAuthController();
-        //    var result = await ctl.SignIn(new SignInViewModel() { Username = "work", Password = "996" });
-
-        //    Assert.IsInstanceOf<ViewResult>(result);
-
-        //    var modelState = ((ViewResult)result).ViewData.ModelState;
-        //    Assert.IsFalse(modelState.IsValid);
-        //}
-
-        //[Test]
-        //public async Task SignIn_Post_BadModelState()
-        //{
-        //    var ctl = CreateAuthController();
-        //    var result = await ctl.SignIn(new SignInViewModel() { Username = "", Password = "996" });
-        //    ctl.ModelState.AddModelError("", "996");
-
-        //    Assert.IsInstanceOf<ViewResult>(result);
-
-        //    var modelState = ((ViewResult)result).ViewData.ModelState;
-        //    Assert.IsFalse(modelState.IsValid);
-        //}
 
         [Test]
         public void SignedOut()

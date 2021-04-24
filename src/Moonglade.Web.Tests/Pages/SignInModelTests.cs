@@ -1,0 +1,162 @@
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
+using Edi.Captcha;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
+using Moonglade.Auth;
+using Moonglade.Web.Pages;
+using Moq;
+using NUnit.Framework;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
+
+namespace Moonglade.Web.Tests.Pages
+{
+    [TestFixture]
+    [ExcludeFromCodeCoverage]
+    public class SignInModelTests
+    {
+        private MockRepository _mockRepository;
+
+        private Mock<IOptions<AuthenticationSettings>> _mockOptions;
+        private Mock<ILocalAccountService> _mockLocalAccountService;
+        private Mock<ILogger<SignInModel>> _mockLogger;
+        private Mock<IBlogAudit> _mockBlogAudit;
+        private Mock<ISessionBasedCaptcha> _mockSessionBasedCaptcha;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _mockRepository = new(MockBehavior.Default);
+
+            _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
+            _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
+            _mockLogger = _mockRepository.Create<ILogger<SignInModel>>();
+            _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
+            _mockSessionBasedCaptcha = _mockRepository.Create<ISessionBasedCaptcha>();
+        }
+
+        private SignInModel CreateSignInModel()
+        {
+            var httpContext = new DefaultHttpContext();
+            var modelState = new ModelStateDictionary();
+            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+            var modelMetadataProvider = new EmptyModelMetadataProvider();
+            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            var pageContext = new PageContext(actionContext)
+            {
+                ViewData = viewData
+            };
+
+            var model = new SignInModel(
+                _mockOptions.Object,
+                _mockLocalAccountService.Object,
+                _mockLogger.Object,
+                _mockBlogAudit.Object,
+                _mockSessionBasedCaptcha.Object)
+            {
+                PageContext = pageContext,
+                TempData = tempData
+            };
+
+            return model;
+        }
+
+        [Test]
+        public async Task OnGetAsync_AAD()
+        {
+            _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
+            {
+                Provider = AuthenticationProvider.AzureAD
+            });
+
+            var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
+            Expression<Func<IUrlHelper, string>> urlSetup
+                = url => url.Action(It.Is<UrlActionContext>(uac => uac.Action == "Index"));
+            mockUrlHelper.Setup(urlSetup).Returns("a/mock/url/for/testing").Verifiable();
+
+            // Arrange
+            var signInModel = CreateSignInModel();
+            signInModel.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await signInModel.OnGetAsync();
+            Assert.IsInstanceOf<ChallengeResult>(result);
+        }
+
+        //[Test]
+        //public async Task SignIn_Local()
+        //{
+        //    _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
+        //    {
+        //        Provider = AuthenticationProvider.Local
+        //    });
+
+        //    var signInModel = CreateSignInModel();
+        //    var result = await signInModel.OnGetAsync();
+        //    Assert.IsInstanceOf<PageResult>(result);
+        //}
+
+        [Test]
+        public async Task OnGetAsync_None()
+        {
+            _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
+            {
+                Provider = AuthenticationProvider.None
+            });
+
+            var signInModel = CreateSignInModel();
+            var result = await signInModel.OnGetAsync();
+
+            Assert.IsInstanceOf<ContentResult>(result);
+            var statusCode = signInModel.HttpContext.Response.StatusCode;
+
+            Assert.AreEqual(StatusCodes.Status501NotImplemented, statusCode);
+        }
+
+        [Test]
+        public async Task OnPostAsync_Exception()
+        {
+            _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws(new Exception("996"));
+
+            // Arrange
+            var signInModel = CreateSignInModel();
+            signInModel.Username = "work";
+            signInModel.Password = "996";
+
+            // Act
+            var result = await signInModel.OnPostAsync();
+
+            Assert.IsInstanceOf<PageResult>(result);
+
+            var modelState = signInModel.ViewData.ModelState;
+            Assert.IsFalse(modelState.IsValid);
+        }
+
+        [Test]
+        public async Task OnPostAsync_BadModelState()
+        {
+            var signInModel = CreateSignInModel();
+            signInModel.Username = "";
+            signInModel.Password = "996";
+
+            signInModel.ModelState.AddModelError("", "996");
+            var result = await signInModel.OnPostAsync();
+
+            Assert.IsInstanceOf<PageResult>(result);
+
+            var modelState = signInModel.ViewData.ModelState;
+            Assert.IsFalse(modelState.IsValid);
+        }
+    }
+}

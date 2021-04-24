@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
 using Moonglade.Auth;
 
 namespace Moonglade.Web.Controllers
@@ -18,10 +16,7 @@ namespace Moonglade.Web.Controllers
         private readonly AuthenticationSettings _authenticationSettings;
 
         public AuthController(
-            IOptions<AuthenticationSettings> authSettings,
-            ILocalAccountService localAccountService,
-            IBlogAudit blogAudit,
-            ILogger<AuthController> logger)
+            IOptions<AuthenticationSettings> authSettings)
         {
             _authenticationSettings = authSettings.Value;
         }
