@@ -8,13 +8,13 @@ using Moonglade.Core;
 namespace Moonglade.Web.Pages
 {
     [Authorize]
-    public class PreviewModel : PageModel
+    public class PostPreviewModel : PageModel
     {
         private readonly IPostQueryService _postQueryService;
 
         public Post Post { get; set; }
 
-        public PreviewModel(IPostQueryService postQueryService)
+        public PostPreviewModel(IPostQueryService postQueryService)
         {
             _postQueryService = postQueryService;
         }
