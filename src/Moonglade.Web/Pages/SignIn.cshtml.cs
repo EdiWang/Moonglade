@@ -26,9 +26,9 @@ namespace Moonglade.Web.Pages
         private readonly ISessionBasedCaptcha _captcha;
 
         public SignInModel(
-            IOptions<AuthenticationSettings> authSettings, 
-            ILocalAccountService localAccountService, 
-            ILogger<SignInModel> logger, 
+            IOptions<AuthenticationSettings> authSettings,
+            ILocalAccountService localAccountService,
+            ILogger<SignInModel> logger,
             IBlogAudit blogAudit, ISessionBasedCaptcha captcha)
         {
             _localAccountService = localAccountService;

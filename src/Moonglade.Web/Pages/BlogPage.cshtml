@@ -1,15 +1,16 @@
-﻿@using Moonglade.Pages
+﻿@page "/page/{slug:regex(^(?!-)([a-zA-Z0-9-]+)$)}"
+@model Moonglade.Web.Pages.BlogPageModel
+@using Moonglade.Pages
 @using NUglify
-@model BlogPage
 
 @{
-    ViewBag.TitlePrefix = Model.Title;
-    ViewBag.HideSideBar = Model.HideSidebar;
+    ViewBag.TitlePrefix = Model.BlogPage.Title;
+    ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
 
     string css = null;
-    if (!string.IsNullOrWhiteSpace(Model.CssContent))
+    if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssContent))
     {
-        var uglifyResult = Uglify.Css(Model.CssContent);
+        var uglifyResult = Uglify.Css(Model.BlogPage.CssContent);
         if (!uglifyResult.HasErrors)
         {
             css = uglifyResult.Code;
@@ -23,12 +24,12 @@
     {
         <style>
             @Html.Raw(css)
-        </style>
+            </style>
     }
 }
 
 @section metadescription{
-    <metadesc description="@Model.MetaDescription" />
+    <metadesc description="@Model.BlogPage.MetaDescription" />
 }
 
 @if (null != ViewBag.IsDraftPreview)
@@ -42,9 +43,9 @@
 
 @if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
 {
-    @Html.Raw(Model.RawHtmlContent)
+    @Html.Raw(Model.BlogPage.RawHtmlContent)
 }
 else
 {
-    @Html.Raw(BlogPageService.RemoveScriptTagFromHtml(Model.RawHtmlContent))
+    @Html.Raw(BlogPageService.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
 }

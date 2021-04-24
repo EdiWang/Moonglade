@@ -6,14 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
-using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
-using Moonglade.Pages;
 using Moonglade.Pingback.AspNetCore;
 
 namespace Moonglade.Web.Controllers
@@ -21,24 +18,15 @@ namespace Moonglade.Web.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : Controller
     {
-        private readonly IBlogPageService _blogPageService;
         private readonly IPostQueryService _postQueryService;
-        private readonly IBlogCache _cache;
         private readonly ILogger<HomeController> _logger;
-        private readonly AppSettings _settings;
 
         public HomeController(
-            IBlogPageService blogPageService,
-            IBlogCache cache,
             ILogger<HomeController> logger,
-            IOptions<AppSettings> settingsOptions, 
             IPostQueryService postQueryService)
         {
-            _blogPageService = blogPageService;
-            _cache = cache;
             _logger = logger;
             _postQueryService = postQueryService;
-            _settings = settingsOptions.Value;
         }
 
         [HttpGet("post/segment/published")]
@@ -58,23 +46,6 @@ namespace Moonglade.Web.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        [Route("page/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]
-        public async Task<IActionResult> Page(string slug)
-        {
-            if (string.IsNullOrWhiteSpace(slug)) return BadRequest();
-
-            var page = await _cache.GetOrCreateAsync(CacheDivision.Page, slug.ToLower(), async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Page"]);
-
-                var p = await _blogPageService.GetAsync(slug);
-                return p;
-            });
-
-            if (page is null || !page.IsPublished) return NotFound();
-            return View(page);
         }
 
         [Route("post/{year:int:min(1975):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([[a-zA-Z0-9-]]+)$)}")]

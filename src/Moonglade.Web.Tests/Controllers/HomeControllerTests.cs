@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
-using Moonglade.Pages;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -25,11 +20,8 @@ namespace Moonglade.Web.Tests.Controllers
         private MockRepository _mockRepository;
 
         private Mock<IPostQueryService> _mockPostService;
-        private Mock<IBlogPageService> _mockPageService;
-        private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ILogger<HomeController>> _mockLogger;
-        private Mock<IOptions<AppSettings>> _mockAppSettingsOptions;
 
         [SetUp]
         public void SetUp()
@@ -37,11 +29,8 @@ namespace Moonglade.Web.Tests.Controllers
             _mockRepository = new(MockBehavior.Default);
 
             _mockPostService = _mockRepository.Create<IPostQueryService>();
-            _mockPageService = _mockRepository.Create<IBlogPageService>();
-            _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockLogger = _mockRepository.Create<ILogger<HomeController>>();
-            _mockAppSettingsOptions = _mockRepository.Create<IOptions<AppSettings>>();
 
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
@@ -51,51 +40,7 @@ namespace Moonglade.Web.Tests.Controllers
 
         private HomeController CreateHomeController()
         {
-            return new(
-                _mockPageService.Object,
-                _mockBlogCache.Object,
-                _mockLogger.Object,
-                _mockAppSettingsOptions.Object,
-                _mockPostService.Object);
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public async Task Page_EmptySlug(string slug)
-        {
-            var ctl = CreateHomeController();
-            var result = await ctl.Page(slug);
-
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
-
-        [Test]
-        public async Task Page_NotFound_Null()
-        {
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, BlogPage>>()))
-                .Returns((BlogPage)null);
-
-            var ctl = CreateHomeController();
-            var result = await ctl.Page("996");
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task Page_NotFound_Unpublished()
-        {
-            var page = new BlogPage { IsPublished = false };
-
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, BlogPage>>()))
-                .Returns(page);
-
-            var ctl = CreateHomeController();
-            var result = await ctl.Page("996");
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
+            return new(_mockLogger.Object, _mockPostService.Object);
         }
 
         [TestCase(null)]

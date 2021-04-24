@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using Edi.Captcha;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
-using Moonglade.Auth;
-using Moonglade.Web.Pages;
-using Moq;
-using NUnit.Framework;
 using System.Threading.Tasks;
+using Edi.Captcha;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -17,6 +10,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moonglade.Auditing;
+using Moonglade.Auth;
+using Moonglade.Web.Pages;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Pages
 {
