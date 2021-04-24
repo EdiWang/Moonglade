@@ -27,7 +27,7 @@ namespace Moonglade.Core
     {
         private readonly IBlogAudit _audit;
         private readonly ILogger<PostManageService> _logger;
-        private readonly IOptions<IDictionary<string, string>> _tagNormalization;
+        private readonly IOptions<Dictionary<string, string>> _tagNormalization;
         private readonly AppSettings _settings;
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostEntity> _postRepo;
@@ -36,7 +36,7 @@ namespace Moonglade.Core
         public PostManageService(
             IBlogAudit audit,
             ILogger<PostManageService> logger,
-            IOptions<IDictionary<string, string>> tagNormalization,
+            IOptions<Dictionary<string, string>> tagNormalization,
             IOptions<AppSettings> settings,
             IRepository<TagEntity> tagRepo,
             IRepository<PostEntity> postRepo,

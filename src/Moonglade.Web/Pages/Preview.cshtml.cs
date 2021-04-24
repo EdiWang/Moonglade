@@ -27,6 +27,8 @@ namespace Moonglade.Web.Pages
             if (post is null) return NotFound();
 
             ViewData["TitlePrefix"] = $"{post.Title}";
+
+            Post = post;
             return Page();
         }
     }

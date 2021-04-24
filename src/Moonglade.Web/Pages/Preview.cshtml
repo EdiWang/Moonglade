@@ -1,4 +1,4 @@
-﻿@page "post/preview/{postId:guid}"
+﻿@page "/post/preview/{postId:guid}"
 @model Moonglade.Web.Pages.PreviewModel
 @using Moonglade.Utils
 @inject ITimeZoneResolver _zoneResolver
@@ -76,20 +76,6 @@
         <h1 class="post-title">
             @Model.Post.Title
         </h1>
-
-        <div class="d-block d-sm-none">
-            <div class="post-publish-info post-publish-info-mobile bg-light">
-                <span class="icon-calendar"></span>
-                <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
-                @BlogConfig.GeneralSettings.TimeZoneId
-            </div>
-        </div>
-
-        <div class="d-none d-md-block post-publish-info text-muted mb-2">
-            <span class="icon-calendar"></span>
-            <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
-            @BlogConfig.GeneralSettings.TimeZoneId
-        </div>
 
         <hr class="d-none d-md-block" />
     </header>
