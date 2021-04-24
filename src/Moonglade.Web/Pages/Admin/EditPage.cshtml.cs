@@ -9,13 +9,13 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class EditPageModel : PageModel
     {
-        private readonly IPageService _pageService;
+        private readonly IBlogPageService _blogPageService;
 
         public PageEditModel PageEditModel { get; set; }
 
-        public EditPageModel(IPageService pageService)
+        public EditPageModel(IBlogPageService blogPageService)
         {
-            _pageService = pageService;
+            _blogPageService = blogPageService;
             PageEditModel = new();
         }
 
@@ -23,7 +23,7 @@ namespace Moonglade.Web.Pages.Admin
         {
             if (id is null) return Page();
 
-            var page = await _pageService.GetAsync(id.Value);
+            var page = await _blogPageService.GetAsync(id.Value);
             if (page is null) return NotFound();
 
             PageEditModel = new()

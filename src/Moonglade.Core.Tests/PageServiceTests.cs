@@ -44,7 +44,7 @@ namespace Moonglade.Core.Tests
             Title = "PDD is Evil "
         };
 
-        private PageService CreatePageService()
+        private BlogPageService CreatePageService()
         {
             return new(
                 _mockPageRepository.Object,
@@ -118,7 +118,7 @@ namespace Moonglade.Core.Tests
         public void RemoveScriptTagFromHtml()
         {
             var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><script>console.info('hey');</script><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
-            var output = PageService.RemoveScriptTagFromHtml(html);
+            var output = BlogPageService.RemoveScriptTagFromHtml(html);
 
             Assert.IsTrue(output == @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>");
         }
@@ -128,7 +128,7 @@ namespace Moonglade.Core.Tests
         [TestCase(" ")]
         public void RemoveScriptTagFromHtml_Empty(string html)
         {
-            var output = PageService.RemoveScriptTagFromHtml(html);
+            var output = BlogPageService.RemoveScriptTagFromHtml(html);
             Assert.AreEqual(string.Empty, output);
         }
 

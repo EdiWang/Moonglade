@@ -15,13 +15,13 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class EditPageModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPageService> _mockPageService;
+        private Mock<IBlogPageService> _mockPageService;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPageService = _mockRepository.Create<IPageService>();
+            _mockPageService = _mockRepository.Create<IBlogPageService>();
         }
 
         private EditPageModel CreateEditPageModel()

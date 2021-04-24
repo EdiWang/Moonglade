@@ -7,18 +7,18 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class BlogPageModel : PageModel
     {
-        private readonly IPageService _pageService;
+        private readonly IBlogPageService _blogPageService;
 
         public IReadOnlyList<PageSegment> PageSegments { get; set; }
 
-        public BlogPageModel(IPageService pageService)
+        public BlogPageModel(IBlogPageService blogPageService)
         {
-            _pageService = pageService;
+            _blogPageService = blogPageService;
         }
 
         public async Task OnGet()
         {
-            PageSegments = await _pageService.ListSegment();
+            PageSegments = await _blogPageService.ListSegment();
         }
     }
 }

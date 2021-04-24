@@ -87,7 +87,7 @@ namespace Moonglade.Web.Configuration
             services.AddMetaWeblog<MetaWeblogService>();
 
             services.AddScoped<IMenuService, MenuService>();
-            services.AddScoped<IPageService, PageService>();
+            services.AddScoped<IBlogPageService, BlogPageService>();
             services.AddScoped<IFriendLinkService, FriendLinkService>();
             services.AddScoped<IBlogAudit, BlogAudit>();
             services.AddScoped<IFoafWriter, FoafWriter>();

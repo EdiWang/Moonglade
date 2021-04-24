@@ -17,16 +17,16 @@ namespace Moonglade.Web.Controllers
     public class AdminController : Controller
     {
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly IPageService _pageService;
+        private readonly IBlogPageService _blogPageService;
         private readonly IBlogAudit _blogAudit;
 
         public AdminController(
             IOptions<AuthenticationSettings> authSettings,
             IBlogAudit blogAudit,
-            IPageService pageService)
+            IBlogPageService blogPageService)
         {
             _authenticationSettings = authSettings.Value;
-            _pageService = pageService;
+            _blogPageService = blogPageService;
 
             _blogAudit = blogAudit;
         }
@@ -54,7 +54,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("/page/preview/{pageId:guid}")]
         public async Task<IActionResult> PreviewPage(Guid pageId)
         {
-            var page = await _pageService.GetAsync(pageId);
+            var page = await _blogPageService.GetAsync(pageId);
             if (page is null) return NotFound();
 
             ViewBag.IsDraftPreview = true;

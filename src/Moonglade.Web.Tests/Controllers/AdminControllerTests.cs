@@ -22,7 +22,7 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IOptions<AuthenticationSettings>> _mockAuthenticationSettings;
         private Mock<IBlogAudit> _mockAudit;
-        private Mock<IPageService> _mockPageService;
+        private Mock<IBlogPageService> _mockPageService;
 
         [SetUp]
         public void Setup()
@@ -31,7 +31,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockAuthenticationSettings = _mockRepository.Create<IOptions<AuthenticationSettings>>();
             _mockAudit = _mockRepository.Create<IBlogAudit>();
-            _mockPageService = _mockRepository.Create<IPageService>();
+            _mockPageService = _mockRepository.Create<IBlogPageService>();
         }
 
         private AdminController CreateAdminController()

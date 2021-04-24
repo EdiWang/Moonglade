@@ -30,7 +30,7 @@ namespace Moonglade.Web.Tests
         private Mock<ICategoryService> _mockCategoryService;
         private Mock<IPostQueryService> _mockPostService;
         private Mock<IPostManageService> _mockPostManageService;
-        private Mock<IPageService> _mockPageService;
+        private Mock<IBlogPageService> _mockPageService;
         private Mock<IBlogImageStorage> _mockBlogImageStorage;
         private Mock<IFileNameGenerator> _mockFileNameGenerator;
 
@@ -82,7 +82,7 @@ namespace Moonglade.Web.Tests
             _mockCategoryService = _mockRepository.Create<ICategoryService>();
             _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockPostManageService = _mockRepository.Create<IPostManageService>();
-            _mockPageService = _mockRepository.Create<IPageService>();
+            _mockPageService = _mockRepository.Create<IBlogPageService>();
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
 

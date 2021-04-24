@@ -24,16 +24,16 @@ namespace Moonglade.Web.Controllers
     public class PageController : Controller
     {
         private readonly IBlogCache _cache;
-        private readonly IPageService _pageService;
+        private readonly IBlogPageService _blogPageService;
         private readonly ILogger<PageController> _logger;
 
         public PageController(
             IBlogCache cache,
-            IPageService pageService,
+            IBlogPageService blogPageService,
             ILogger<PageController> logger)
         {
             _cache = cache;
-            _pageService = pageService;
+            _blogPageService = blogPageService;
             _logger = logger;
         }
 
@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Segment()
         {
-            var pageSegments = await _pageService.ListSegment();
+            var pageSegments = await _blogPageService.ListSegment();
             if (pageSegments is not null)
             {
                 // for security, only allow published pages to be listed to third party API calls
@@ -88,8 +88,8 @@ namespace Moonglade.Web.Controllers
                 };
 
                 var uid = model.Id == Guid.Empty ?
-                    await _pageService.CreateAsync(req) :
-                    await _pageService.UpdateAsync(model.Id, req);
+                    await _blogPageService.CreateAsync(req) :
+                    await _blogPageService.UpdateAsync(model.Id, req);
 
                 _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
 
@@ -106,7 +106,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(Guid pageId, string slug)
         {
-            await _pageService.DeleteAsync(pageId);
+            await _blogPageService.DeleteAsync(pageId);
 
             _cache.Remove(CacheDivision.Page, slug.ToLower());
             return Ok();

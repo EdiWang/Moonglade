@@ -10,7 +10,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Pages
 {
-    public interface IPageService
+    public interface IBlogPageService
     {
         Task<BlogPage> GetAsync(Guid pageId);
         Task<BlogPage> GetAsync(string slug);
@@ -21,12 +21,12 @@ namespace Moonglade.Pages
         Task DeleteAsync(Guid pageId);
     }
 
-    public class PageService : IPageService
+    public class BlogPageService : IBlogPageService
     {
         private readonly IRepository<PageEntity> _pageRepo;
         private readonly IBlogAudit _audit;
 
-        public PageService(
+        public BlogPageService(
             IRepository<PageEntity> pageRepo,
             IBlogAudit audit)
         {

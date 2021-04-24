@@ -24,7 +24,7 @@ namespace Moonglade.Web
         private readonly ICategoryService _categoryService;
         private readonly IPostQueryService _postQueryService;
         private readonly IPostManageService _postManageService;
-        private readonly IPageService _pageService;
+        private readonly IBlogPageService _blogPageService;
         private readonly IBlogImageStorage _blogImageStorage;
         private readonly IFileNameGenerator _fileNameGenerator;
 
@@ -36,7 +36,7 @@ namespace Moonglade.Web
             ICategoryService categoryService,
             IPostQueryService postQueryService,
             IPostManageService postManageService,
-            IPageService pageService,
+            IBlogPageService blogPageService,
             IBlogImageStorage blogImageStorage,
             IFileNameGenerator fileNameGenerator)
         {
@@ -46,7 +46,7 @@ namespace Moonglade.Web
             _tagService = tagService;
             _categoryService = categoryService;
             _postQueryService = postQueryService;
-            _pageService = pageService;
+            _blogPageService = blogPageService;
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
             _postManageService = postManageService;
@@ -343,7 +343,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(pageid));
                 }
 
-                var page = await _pageService.GetAsync(id);
+                var page = await _blogPageService.GetAsync(id);
                 return ToMetaWeblogPage(page);
             }
             catch (Exception e)
@@ -361,7 +361,7 @@ namespace Moonglade.Web
             {
                 if (numPages < 0) throw new ArgumentOutOfRangeException(nameof(numPages));
 
-                var pages = await _pageService.GetAsync(numPages);
+                var pages = await _blogPageService.GetAsync(numPages);
                 var mPages = pages.Select(ToMetaWeblogPage);
 
                 return mPages.ToArray();
@@ -413,7 +413,7 @@ namespace Moonglade.Web
                     Slug = ToSlug(page.title)
                 };
 
-                var uid = await _pageService.CreateAsync(pageRequest);
+                var uid = await _blogPageService.CreateAsync(pageRequest);
                 return uid.ToString();
             }
             catch (Exception e)
@@ -445,7 +445,7 @@ namespace Moonglade.Web
                     Slug = ToSlug(page.title)
                 };
 
-                await _pageService.UpdateAsync(id, pageRequest);
+                await _blogPageService.UpdateAsync(id, pageRequest);
                 return true;
             }
             catch (Exception e)
@@ -466,7 +466,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(pageid));
                 }
 
-                await _pageService.DeleteAsync(id);
+                await _blogPageService.DeleteAsync(id);
                 return true;
             }
             catch (Exception e)

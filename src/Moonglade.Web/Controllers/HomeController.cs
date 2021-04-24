@@ -21,20 +21,20 @@ namespace Moonglade.Web.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : Controller
     {
-        private readonly IPageService _pageService;
+        private readonly IBlogPageService _blogPageService;
         private readonly IPostQueryService _postQueryService;
         private readonly IBlogCache _cache;
         private readonly ILogger<HomeController> _logger;
         private readonly AppSettings _settings;
 
         public HomeController(
-            IPageService pageService,
+            IBlogPageService blogPageService,
             IBlogCache cache,
             ILogger<HomeController> logger,
             IOptions<AppSettings> settingsOptions, 
             IPostQueryService postQueryService)
         {
-            _pageService = pageService;
+            _blogPageService = blogPageService;
             _cache = cache;
             _logger = logger;
             _postQueryService = postQueryService;
@@ -69,7 +69,7 @@ namespace Moonglade.Web.Controllers
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Page"]);
 
-                var p = await _pageService.GetAsync(slug);
+                var p = await _blogPageService.GetAsync(slug);
                 return p;
             });
 
