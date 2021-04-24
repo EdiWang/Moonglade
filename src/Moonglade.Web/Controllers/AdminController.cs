@@ -51,6 +51,7 @@ namespace Moonglade.Web.Controllers
             return Redirect("/admin/auditlogs");
         }
 
+        // TODO: Migrate this
         [HttpGet("/page/preview/{pageId:guid}")]
         public async Task<IActionResult> PreviewPage(Guid pageId)
         {
@@ -59,7 +60,7 @@ namespace Moonglade.Web.Controllers
 
             ViewBag.IsDraftPreview = true;
 
-            return View("~/Views/Home/Page.cshtml", page);
+            return View("~/Pages/BlogPage.cshtml", page);
         }
 
         // Keep session from expire when writing a very long post

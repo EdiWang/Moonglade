@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Moonglade.Web.Pages.Shared;
+using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Pages.Shared
+namespace Moonglade.Web.Tests.Pages
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
