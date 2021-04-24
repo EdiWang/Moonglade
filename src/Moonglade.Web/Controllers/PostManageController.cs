@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -7,7 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement.Mvc;
+using Moonglade.Auth;
 using Moonglade.Configuration;
+using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.Pingback;
@@ -44,6 +48,25 @@ namespace Moonglade.Web.Controllers
             _timeZoneResolver = timeZoneResolver;
             _pingbackSender = pingbackSender;
             _logger = logger;
+        }
+
+        [HttpGet("/post/segment/published")]
+        [FeatureGate(FeatureFlags.EnableWebApi)]
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
+        [ProducesResponseType(typeof(IEnumerable<PostSegment>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Segment()
+        {
+            try
+            {
+                // for security, only allow published posts to be listed to third party API calls
+                var list = await _postQueryService.ListSegment(PostStatus.Published);
+                return Ok(list);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPost]

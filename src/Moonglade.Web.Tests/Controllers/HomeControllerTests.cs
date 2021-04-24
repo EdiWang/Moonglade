@@ -40,55 +40,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Slug_YearOutOfRange()
-        {
-            var ctl = CreateHomeController();
-            var result = await ctl.Slug(DateTime.UtcNow.Year + 1, 9, 9, "6");
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public async Task Slug_EmptySlug(string slug)
-        {
-            var ctl = CreateHomeController();
-            var result = await ctl.Slug(DateTime.UtcNow.Year + 1, 9, 9, slug);
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task Slug_NullPost()
-        {
-            _mockPostService.Setup(p => p.GetAsync(It.IsAny<PostSlug>()))
-                .Returns(Task.FromResult((Post)null));
-
-            var ctl = CreateHomeController();
-            var result = await ctl.Slug(DateTime.UtcNow.Year, 1, 9, "work-996");
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task Slug_View()
-        {
-            _mockPostService.Setup(p => p.GetAsync(It.IsAny<PostSlug>()))
-                .Returns(Task.FromResult(new Post
-                {
-                    Id = Guid.Empty,
-                    Slug = "work-996",
-                    Title = "Work 996"
-                }));
-
-            var ctl = CreateHomeController();
-            var result = await ctl.Slug(DateTime.UtcNow.Year, 1, 9, "work-996");
-
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
         public async Task Preview_NullPost()
         {
             _mockPostService.Setup(p => p.GetDraft(It.IsAny<Guid>()))
