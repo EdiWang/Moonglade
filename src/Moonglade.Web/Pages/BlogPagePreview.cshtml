@@ -1,4 +1,47 @@
-﻿@page
+﻿@page "/page/preview/{pageId:guid}"
 @model Moonglade.Web.Pages.BlogPagePreviewModel
+@using Moonglade.Pages
+@using NUglify
+
 @{
+    ViewBag.TitlePrefix = Model.BlogPage.Title;
+    ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
+
+    string css = null;
+    if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssContent))
+    {
+        var uglifyResult = Uglify.Css(Model.BlogPage.CssContent);
+        if (!uglifyResult.HasErrors)
+        {
+            css = uglifyResult.Code;
+        }
+    }
+}
+
+@section head{
+    @if (!string.IsNullOrWhiteSpace(css))
+    {
+        <style>
+            @Html.Raw(css)
+        </style>
+    }
+}
+
+@section metadescription{
+    <metadesc description="@Model.BlogPage.MetaDescription" />
+}
+
+<div class="container mt-3 mb-4">
+    <div class="alert alert-info">
+        @Localizer["This is a preview for draft content."]
+    </div>
+</div>
+
+@if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
+{
+    @Html.Raw(Model.BlogPage.RawHtmlContent)
+}
+else
+{
+    @Html.Raw(BlogPageService.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
 }

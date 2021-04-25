@@ -7,7 +7,6 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Configuration.Settings;
-using Moonglade.Pages;
 
 namespace Moonglade.Web.Controllers
 {
@@ -17,17 +16,13 @@ namespace Moonglade.Web.Controllers
     public class AdminController : Controller
     {
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly IBlogPageService _blogPageService;
         private readonly IBlogAudit _blogAudit;
 
         public AdminController(
             IOptions<AuthenticationSettings> authSettings,
-            IBlogAudit blogAudit,
-            IBlogPageService blogPageService)
+            IBlogAudit blogAudit)
         {
             _authenticationSettings = authSettings.Value;
-            _blogPageService = blogPageService;
-
             _blogAudit = blogAudit;
         }
 
@@ -49,18 +44,6 @@ namespace Moonglade.Web.Controllers
         {
             await _blogAudit.ClearAuditLog();
             return Redirect("/admin/auditlogs");
-        }
-
-        // TODO: Migrate this
-        [HttpGet("/page/preview/{pageId:guid}")]
-        public async Task<IActionResult> PreviewPage(Guid pageId)
-        {
-            var page = await _blogPageService.GetAsync(pageId);
-            if (page is null) return NotFound();
-
-            ViewBag.IsDraftPreview = true;
-
-            return View("~/Pages/BlogPage.cshtml", page);
         }
 
         // Keep session from expire when writing a very long post
