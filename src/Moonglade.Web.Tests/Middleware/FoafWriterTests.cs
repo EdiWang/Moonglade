@@ -34,7 +34,7 @@ namespace Moonglade.Web.Tests.Middleware
             FoafDoc doc = new FoafDoc
             {
                 Name = "996.icu",
-                BlogUrl = "https://996.icu",
+                BlogUrl = FakeData.Url1,
                 Email = "fubao@996.icu",
                 PhotoUrl = "https://996.icu/fubao.png"
             };

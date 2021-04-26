@@ -62,7 +62,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
-                CanonicalPrefix = "https://996.icu",
+                CanonicalPrefix = FakeData.Url1,
                 SiteTitle = "996 ICU"
             });
 

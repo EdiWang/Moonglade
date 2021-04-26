@@ -19,6 +19,7 @@ namespace Moonglade.Web.Tests
         public static string Slug2 => "work-996";
         public static string Content1 =>
             "中国大陆工时规管现况（标准工时）： 一天工作时间为 8 小时，平均每周工时不超过 40 小时；加班上限为一天 3 小时及一个月 36 小时，逾时工作薪金不低于平日工资的 150%。而一周最高工时则为 48 小时。平均每月计薪天数为 21.75 天。";
+        public static string Url1 => "https://996.icu";
 
         public static IReadOnlyList<PostDigest> FakePosts => new List<PostDigest>
         {

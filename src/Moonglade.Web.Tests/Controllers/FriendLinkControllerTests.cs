@@ -21,7 +21,7 @@ namespace Moonglade.Web.Tests.Controllers
         private FriendLinkEditModel _friendlinkEditViewModel = new()
         {
             Id = FakeData.Uid1,
-            LinkUrl = "https://996.icu",
+            LinkUrl = FakeData.Url1,
             Title = "996 ICU"
         };
 

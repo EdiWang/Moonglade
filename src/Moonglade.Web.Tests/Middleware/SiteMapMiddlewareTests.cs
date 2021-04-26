@@ -54,7 +54,7 @@ namespace Moonglade.Web.Tests.Middleware
         {
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
-                CanonicalPrefix = "https://996.icu"
+                CanonicalPrefix = FakeData.Url1
             });
 
             _mockBlogCache

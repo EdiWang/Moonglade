@@ -52,7 +52,7 @@ namespace Moonglade.Web.Tests.Middleware
             Mock<IBlogConfig> blogConfigMock = new();
             blogConfigMock.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
-                CanonicalPrefix = "https://996.icu",
+                CanonicalPrefix = FakeData.Url1,
                 SiteTitle = "996 ICU",
                 Description = FakeData.Title2
             });

@@ -90,7 +90,7 @@ namespace Moonglade.Web.Tests
             {
                 OwnerEmail = "fubao@996.icu",
                 OwnerName = "996 Worker",
-                CanonicalPrefix = "https://996.icu",
+                CanonicalPrefix = FakeData.Url1,
                 SiteTitle = "996 ICU"
             });
 
