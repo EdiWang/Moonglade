@@ -67,10 +67,7 @@ namespace Moonglade.Comments
             _commentModerator = commentModerator;
         }
 
-        public int Count()
-        {
-            return _commentRepo.Count(c => true);
-        }
+        public int Count() => _commentRepo.Count(c => true);
 
         public Task<IReadOnlyList<Comment>> GetApprovedCommentsAsync(Guid postId)
         {
