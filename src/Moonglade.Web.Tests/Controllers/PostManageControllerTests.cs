@@ -94,7 +94,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreatePostManageController();
             var result = ctl.KeepAlive("996.ICU");
-            Assert.IsInstanceOf(typeof(JsonResult), result);
+            Assert.IsInstanceOf(typeof(OkObjectResult), result);
         }
 
         [Test]
