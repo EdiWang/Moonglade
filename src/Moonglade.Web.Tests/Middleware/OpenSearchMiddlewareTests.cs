@@ -54,7 +54,7 @@ namespace Moonglade.Web.Tests.Middleware
             {
                 CanonicalPrefix = "https://996.icu",
                 SiteTitle = "996 ICU",
-                Description = "Work 996 and get into ICU"
+                Description = FakeData.Title2
             });
 
             blogConfigMock.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings

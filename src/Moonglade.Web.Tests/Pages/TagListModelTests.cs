@@ -29,26 +29,6 @@ namespace Moonglade.Web.Tests.Pages
         private Mock<IPostQueryService> _mockPostQueryService;
         private Mock<IBlogCache> _mockBlogCache;
 
-        private readonly IReadOnlyList<PostDigest> _fakePosts = new List<PostDigest>
-        {
-            new()
-            {
-                Title = "“996”工作制，即每天早 9 点到岗，一直工作到晚上 9 点，每周工作 6 天。",
-                ContentAbstract = "中国大陆工时规管现况（标准工时）： 一天工作时间为 8 小时，平均每周工时不超过 40 小时；加班上限为一天 3 小时及一个月 36 小时，逾时工作薪金不低于平日工资的 150%。而一周最高工时则为 48 小时。平均每月计薪天数为 21.75 天。",
-                LangCode = "zh-CN",
-                PubDateUtc = new(996, 9, 6),
-                Slug = "996-icu",
-                Tags = new Tag[]{
-                    new ()
-                    {
-                        DisplayName = "996",
-                        Id = 996,
-                        NormalizedName = "icu"
-                    }
-                }
-            }
-        };
-
         [SetUp]
         public void SetUp()
         {
@@ -99,7 +79,7 @@ namespace Moonglade.Web.Tests.Pages
             });
 
             _mockPostQueryService.Setup(p => p.ListByTag(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(_fakePosts));
+                .Returns(Task.FromResult(FakeData.FakePosts));
 
             _mockBlogCache.Setup(p =>
                     p.GetOrCreate(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))

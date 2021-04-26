@@ -72,7 +72,7 @@ namespace Moonglade.Web.Tests.TagHelpers
             var tagHelper = new RssTagHelper
             {
                 Href = "https://996.icu/rss",
-                Title = "Work 996 and get into ICU"
+                Title = FakeData.Title2
             };
 
             var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
@@ -126,7 +126,7 @@ namespace Moonglade.Web.Tests.TagHelpers
             var tagHelper = new OpenSearchTagHelper
             {
                 Href = "https://996.icu/opensearch",
-                Title = "Work 996 and get into ICU"
+                Title = FakeData.Title2
             };
 
             var context = TagHelperTestsHelpers.MakeTagHelperContext("link");

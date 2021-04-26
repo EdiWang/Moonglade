@@ -32,7 +32,6 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IPingbackSender> _mockPingbackSender;
         private Mock<ILogger<PostManageController>> _mockLogger;
 
-        private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
         private static readonly Category Cat = new()
         {
             DisplayName = "WTF",
@@ -43,8 +42,8 @@ namespace Moonglade.Web.Tests.Controllers
 
         private static readonly Post Post = new()
         {
-            Id = Uid,
-            Title = "Work 996 and Get into ICU",
+            Id = FakeData.Uid1,
+            Title = FakeData.Title2,
             Slug = "work-996-and-get-into-icu",
             ContentAbstract = "Get some fubao",
             RawPostContent = "<p>Get some fubao</p>",
@@ -225,7 +224,7 @@ namespace Moonglade.Web.Tests.Controllers
             Mock<LinkGenerator> mockLinkGenerator = new();
             _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Returns(Task.FromResult(new PostEntity
             {
-                Id = Uid
+                Id = FakeData.Uid1
             }));
 
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
@@ -285,7 +284,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Returns(Task.FromResult(new PostEntity
             {
-                Id = Uid,
+                Id = FakeData.Uid1,
                 PubDateUtc = new(1996, 7, 2, 5, 1, 0),
                 ContentAbstract = Post.ContentAbstract
             }));
@@ -312,7 +311,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Restore_OK()
         {
             var postManageController = CreatePostManageController();
-            var result = await postManageController.Restore(Uid);
+            var result = await postManageController.Restore(FakeData.Uid1);
             Assert.IsInstanceOf<OkResult>(result);
         }
 
@@ -328,7 +327,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Delete_OK()
         {
             var postManageController = CreatePostManageController();
-            var result = await postManageController.Delete(Uid);
+            var result = await postManageController.Delete(FakeData.Uid1);
             Assert.IsInstanceOf<OkResult>(result);
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
         }
@@ -345,7 +344,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task DeleteFromRecycleBin_OK()
         {
             var postManageController = CreatePostManageController();
-            var result = await postManageController.DeleteFromRecycleBin(Uid);
+            var result = await postManageController.DeleteFromRecycleBin(FakeData.Uid1);
             Assert.IsInstanceOf<OkResult>(result);
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), false));
         }

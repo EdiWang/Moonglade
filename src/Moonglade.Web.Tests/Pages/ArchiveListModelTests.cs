@@ -21,26 +21,6 @@ namespace Moonglade.Web.Tests.Pages
         private MockRepository _mockRepository;
         private Mock<IPostQueryService> _mockPostQueryService;
 
-        private readonly IReadOnlyList<PostDigest> _fakePosts = new List<PostDigest>
-        {
-            new()
-            {
-                Title = "“996”工作制，即每天早 9 点到岗，一直工作到晚上 9 点，每周工作 6 天。",
-                ContentAbstract = "中国大陆工时规管现况（标准工时）： 一天工作时间为 8 小时，平均每周工时不超过 40 小时；加班上限为一天 3 小时及一个月 36 小时，逾时工作薪金不低于平日工资的 150%。而一周最高工时则为 48 小时。平均每月计薪天数为 21.75 天。",
-                LangCode = "zh-CN",
-                PubDateUtc = new(996, 9, 6),
-                Slug = "996-icu",
-                Tags = new Tag[]{
-                    new ()
-                    {
-                        DisplayName = "996",
-                        Id = 996,
-                        NormalizedName = "icu"
-                    }
-                }
-            }
-        };
-
         [SetUp]
         public void SetUp()
         {
@@ -89,24 +69,24 @@ namespace Moonglade.Web.Tests.Pages
         public async Task OnGetAsync_Year()
         {
             _mockPostQueryService.Setup(p => p.ListArchive(It.IsAny<int>(), null))
-                .Returns(Task.FromResult(_fakePosts));
+                .Returns(Task.FromResult(FakeData.FakePosts));
 
             var model = CreateArchiveListModel();
             var result = await model.OnGetAsync(2021, null);
 
             Assert.IsInstanceOf<PageResult>(result);
-            Assert.AreEqual(_fakePosts, model.Posts);
+            Assert.IsNotNull(model.Posts);
         }
 
         [Test]
         public async Task OnGetAsync_Year_Month()
         {
-            _mockPostQueryService.Setup(p => p.ListArchive(It.IsAny<int>(), It.IsAny<int?>())).Returns(Task.FromResult(_fakePosts));
+            _mockPostQueryService.Setup(p => p.ListArchive(It.IsAny<int>(), It.IsAny<int?>())).Returns(Task.FromResult(FakeData.FakePosts));
 
             var model = CreateArchiveListModel();
             var result = await model.OnGetAsync(2021, 1);
             Assert.IsInstanceOf<PageResult>(result);
-            Assert.AreEqual(_fakePosts, model.Posts);
+            Assert.IsNotNull(model.Posts);
         }
     }
 }

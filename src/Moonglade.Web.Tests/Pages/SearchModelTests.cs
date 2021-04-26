@@ -51,7 +51,7 @@ namespace Moonglade.Web.Tests.Pages
             {
                 new()
                 {
-                    Title = "Work 996 and get into ICU",
+                    Title = FakeData.Title2,
                     ContentAbstract = "This is Jack Ma's fubao",
                     LangCode = "en-us",
                     PubDateUtc = new(996, 9, 6),

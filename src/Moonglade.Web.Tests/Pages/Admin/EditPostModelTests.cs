@@ -35,7 +35,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         private static readonly Post Post = new()
         {
             Id = Uid,
-            Title = "Work 996 and Get into ICU",
+            Title = FakeData.Title2,
             Slug = "work-996-and-get-into-icu",
             ContentAbstract = "Get some fubao",
             RawPostContent = "<p>Get some fubao</p>",

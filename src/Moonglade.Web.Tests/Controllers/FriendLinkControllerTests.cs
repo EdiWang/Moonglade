@@ -18,10 +18,9 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IFriendLinkService> _mockFriendLinkService;
 
-        private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
         private FriendLinkEditModel _friendlinkEditViewModel = new()
         {
-            Id = Uid,
+            Id = FakeData.Uid1,
             LinkUrl = "https://996.icu",
             Title = "996 ICU"
         };
@@ -75,9 +74,9 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Get_OK()
         {
-            _mockFriendLinkService.Setup(p => p.GetAsync(Uid)).Returns(Task.FromResult(new Link()));
+            _mockFriendLinkService.Setup(p => p.GetAsync(FakeData.Uid1)).Returns(Task.FromResult(new Link()));
             var ctl = CreateFriendLinkController();
-            var result = await ctl.Get(Uid);
+            var result = await ctl.Get(FakeData.Uid1);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
@@ -106,7 +105,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Delete_OK()
         {
             var ctl = CreateFriendLinkController();
-            var result = await ctl.Delete(Uid);
+            var result = await ctl.Delete(FakeData.Uid1);
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockFriendLinkService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
