@@ -21,7 +21,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         {
             new ()
             {
-                DisplayName = "Fubao", Id = Guid.Empty, Note = "Work 996", RouteName = "996"
+                DisplayName = "Fubao", Id = Guid.Empty, Note = FakeData.Title3, RouteName = "996"
             }
         };
 

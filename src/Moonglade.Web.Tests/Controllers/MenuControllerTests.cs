@@ -22,9 +22,9 @@ namespace Moonglade.Web.Tests.Controllers
         {
             Id = Guid.Empty,
             DisplayOrder = 996,
-            Icon = "work-996",
+            Icon = FakeData.Slug2,
             IsOpenInNewTab = true,
-            Title = "Work 996",
+            Title = FakeData.Title3,
             Url = "/work/996"
         };
 

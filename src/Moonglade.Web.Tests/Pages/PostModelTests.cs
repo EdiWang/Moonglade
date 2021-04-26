@@ -77,7 +77,7 @@ namespace Moonglade.Web.Tests.Pages
                 .Returns(Task.FromResult((Post)null));
 
             var postModel = CreatePostModel();
-            var result = await postModel.OnGetAsync(DateTime.UtcNow.Year, 1, 9, "work-996");
+            var result = await postModel.OnGetAsync(DateTime.UtcNow.Year, 1, 9, FakeData.Slug2);
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
@@ -89,12 +89,12 @@ namespace Moonglade.Web.Tests.Pages
                 .Returns(Task.FromResult(new Post
                 {
                     Id = Guid.Empty,
-                    Slug = "work-996",
-                    Title = "Work 996"
+                    Slug = FakeData.Slug2,
+                    Title = FakeData.Title3
                 }));
 
             var postModel = CreatePostModel();
-            var result = await postModel.OnGetAsync(DateTime.UtcNow.Year, 1, 9, "work-996");
+            var result = await postModel.OnGetAsync(DateTime.UtcNow.Year, 1, 9, FakeData.Slug2);
 
             Assert.IsInstanceOf<PageResult>(result);
         }

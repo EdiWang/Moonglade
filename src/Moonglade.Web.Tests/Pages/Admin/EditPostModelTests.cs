@@ -86,7 +86,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<Category> cats = new List<Category>
             {
-                new(){Id = Guid.Empty, DisplayName = "Work 996", Note = "Get into ICU", RouteName = "work-996"}
+                new(){Id = Guid.Empty, DisplayName = FakeData.Title3, Note = "Get into ICU", RouteName = FakeData.Slug2}
             };
 
             _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));

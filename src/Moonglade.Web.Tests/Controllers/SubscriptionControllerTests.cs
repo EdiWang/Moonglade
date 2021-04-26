@@ -55,7 +55,7 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 new()
                 {
-                    Id = Guid.Empty, DisplayName = "Work 996", Note = "This is fubao", RouteName = "work-996"
+                    Id = Guid.Empty, DisplayName = FakeData.Title3, Note = "This is fubao", RouteName = FakeData.Slug2
                 }
             };
 

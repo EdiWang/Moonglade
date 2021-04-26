@@ -52,7 +52,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         {
             IReadOnlyList<Category> cats = new List<Category>
             {
-                new() {DisplayName = "Fubao", Id = Guid.Empty, Note = "996", RouteName = "work-996"}
+                new() {DisplayName = "Fubao", Id = Guid.Empty, Note = "996", RouteName = FakeData.Slug2}
             };
 
             _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));

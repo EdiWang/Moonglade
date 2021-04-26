@@ -99,9 +99,9 @@ namespace Moonglade.Web.Tests.Pages
             var cat = new Category
             {
                 Id = Guid.Empty,
-                DisplayName = "Work 996",
+                DisplayName = FakeData.Title3,
                 Note = "Get into ICU",
-                RouteName = "work-996"
+                RouteName = FakeData.Slug2
             };
 
             _mockCategoryService
@@ -116,7 +116,7 @@ namespace Moonglade.Web.Tests.Pages
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             var categoryListModel = CreateCategoryListModel();
-            var result = await categoryListModel.OnGetAsync("work-996");
+            var result = await categoryListModel.OnGetAsync(FakeData.Slug2);
 
             Assert.IsInstanceOf<PageResult>(result);
             Assert.IsNotNull(categoryListModel.Posts);

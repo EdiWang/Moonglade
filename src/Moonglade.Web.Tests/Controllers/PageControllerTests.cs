@@ -42,8 +42,8 @@ namespace Moonglade.Web.Tests.Controllers
                 IsPublished = true,
                 MetaDescription = "This is Jack Ma's fubao",
                 RawHtmlContent = "<p>Work 996 and Get into ICU</p>",
-                Slug = "work-996",
-                Title = "Work 996"
+                Slug = FakeData.Slug2,
+                Title = FakeData.Title3
             };
         }
 
@@ -59,7 +59,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Delete_Success()
         {
             var ctl = CreatePageController();
-            var result = await ctl.Delete(Guid.Empty, "work-996");
+            var result = await ctl.Delete(Guid.Empty, FakeData.Slug2);
 
             Assert.IsInstanceOf<OkResult>(result);
         }
@@ -74,8 +74,8 @@ namespace Moonglade.Web.Tests.Controllers
                     Id = Guid.Empty,
                     CreateTimeUtc = new DateTime(1996,9,9,6,3,5),
                     IsPublished = true,
-                    Slug = "work-996",
-                    Title = "Work 996"
+                    Slug = FakeData.Slug2,
+                    Title = FakeData.Title3
                 }
             };
             _mockPageService.Setup(p => p.ListSegment()).Returns(Task.FromResult(ps));
