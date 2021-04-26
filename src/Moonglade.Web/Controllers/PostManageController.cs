@@ -227,7 +227,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postManageService.PurgeRecycledAsync();
-            return Redirect("/admin/post/recycle-bin");
+            return RedirectToPage("/Admin/RecycleBin");
         }
     }
 }

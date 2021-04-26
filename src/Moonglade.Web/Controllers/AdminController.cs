@@ -35,7 +35,7 @@ namespace Moonglade.Web.Controllers
                     $"Authentication success for Azure account '{User.Identity?.Name}'");
             }
 
-            return Redirect("/admin/post");
+            return RedirectToPage("/Admin/Post");
         }
 
         [HttpGet("clear-auditlogs")]
@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> ClearAuditLogs()
         {
             await _blogAudit.ClearAuditLog();
-            return Redirect("/admin/auditlogs");
+            return RedirectToPage("/Admin/AuditLogs");
         }
 
         // Keep session from expire when writing a very long post
