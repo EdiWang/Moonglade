@@ -44,7 +44,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             Id = FakeData.Uid1,
             Title = FakeData.Title2,
-            Slug = "work-996-and-get-into-icu",
+            Slug = FakeData.Slug1,
             ContentAbstract = "Get some fubao",
             RawPostContent = "<p>Get some fubao</p>",
             ContentLanguageCode = "en-us",
