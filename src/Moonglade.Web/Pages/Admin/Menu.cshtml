@@ -165,11 +165,13 @@
         function updateMenus() {
             if ($("#edit-form").valid()) {
                 var action = '';
+                var httpVerb = 'POST';
                 var menuId = $("#topmenu-id").val();
                 if (menuId == emptyGuid) {
-                    action = "create";
+                    action = 'create';
                 } else {
-                    action = "edit";
+                    action = 'edit';
+                    httpVerb = 'PUT';
                 }
 
                 var father = findTopMenu(menuId);
@@ -189,7 +191,7 @@
                 }
 
                 callApi(`/api/menu/${action}`,
-                    'POST',
+                    httpVerb,
                     {
                         "Id": $("#topmenu-id").val(),
                         "Title": $("#topmenu-title").val(),

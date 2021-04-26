@@ -97,7 +97,7 @@ namespace Moonglade.Web.Controllers
             return Ok(model);
         }
 
-        [HttpPost("edit")]
+        [HttpPut("edit")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
