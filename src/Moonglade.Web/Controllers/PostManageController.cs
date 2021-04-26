@@ -229,5 +229,17 @@ namespace Moonglade.Web.Controllers
             await _postManageService.PurgeRecycledAsync();
             return RedirectToPage("/Admin/RecycleBin");
         }
+
+        // Keep session from expire when writing a very long post
+        [IgnoreAntiforgeryToken]
+        [HttpPost("keep-alive")]
+        public IActionResult KeepAlive(string nonce)
+        {
+            return Ok(new
+            {
+                ServerTime = DateTime.UtcNow,
+                Nonce = nonce
+            });
+        }
     }
 }

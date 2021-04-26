@@ -304,7 +304,7 @@ var postEditor = {
         var tid = setInterval(postNonce, 60 * 1000);
         function postNonce() {
             var num = Math.random();
-            $.post('/admin/keep-alive', { nonce: num }, function (data) {
+            $.post('/api/postmanage/keep-alive', { nonce: num }, function (data) {
                 console.info(data);
             });
         }

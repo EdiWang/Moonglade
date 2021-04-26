@@ -45,17 +45,5 @@ namespace Moonglade.Web.Controllers
             await _blogAudit.ClearAuditLog();
             return RedirectToPage("/Admin/AuditLogs");
         }
-
-        // Keep session from expire when writing a very long post
-        [IgnoreAntiforgeryToken]
-        [HttpPost("keep-alive")]
-        public IActionResult KeepAlive(string nonce)
-        {
-            return Json(new
-            {
-                ServerTime = DateTime.UtcNow,
-                Nonce = nonce
-            });
-        }
     }
 }
