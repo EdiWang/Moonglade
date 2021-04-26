@@ -81,7 +81,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Delete_ValidId()
         {
             var ctl = CreateTagsController();
-            var result = await ctl.Delete(996);
+            var result = await ctl.Delete(FakeData.Int2);
 
             Assert.IsInstanceOf<OkResult>(result);
         }
@@ -94,7 +94,7 @@ namespace Moonglade.Web.Tests.Controllers
             var request = new EditTagRequest
             {
                 NewName = FakeData.ShortString1,
-                TagId = 996
+                TagId = FakeData.Int2
             };
             var result = await ctl.Update(request);
 

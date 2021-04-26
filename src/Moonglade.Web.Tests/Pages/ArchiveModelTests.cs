@@ -32,7 +32,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             var fakeArchives = new List<Archive>
             {
-                new (996,9,6),
+                new (FakeData.Int2,9,6),
                 new (FakeData.Int1,3,5)
             };
 

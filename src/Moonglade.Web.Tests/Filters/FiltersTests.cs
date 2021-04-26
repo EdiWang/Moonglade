@@ -26,7 +26,7 @@ namespace Moonglade.Web.Tests.Filters
 
             var mockedCache = Create.MockedMemoryCache();
             var blogCache = new BlogMemoryCache(mockedCache);
-            blogCache.GetOrCreate(CacheDivision.General, "postcount", _ => 996);
+            blogCache.GetOrCreate(CacheDivision.General, "postcount", _ => FakeData.Int2);
             blogCache.GetOrCreate(CacheDivision.General, "ali", _ => FakeData.ShortString1);
             blogCache.GetOrCreate(CacheDivision.PostCountCategory, "pdd", _ => 007);
             blogCache.GetOrCreate(CacheDivision.PostCountTag, "hw", _ => FakeData.Int1);

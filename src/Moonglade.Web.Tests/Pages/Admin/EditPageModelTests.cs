@@ -56,7 +56,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             var fakePage = new BlogPage
             {
                 Id = Guid.Empty,
-                CreateTimeUtc = new(996, 9, 6),
+                CreateTimeUtc = new(FakeData.Int2, 9, 6),
                 CssContent = ".jack-ma .heart {color: black !important;}",
                 HideSidebar = false,
                 IsPublished = false,

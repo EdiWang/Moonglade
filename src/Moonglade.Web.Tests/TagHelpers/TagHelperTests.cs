@@ -151,7 +151,7 @@ namespace Moonglade.Web.Tests.TagHelpers
         [Test]
         public void PubDateTagHelper_Process()
         {
-            var pubDateUtc = new DateTime(996, 9, 6);
+            var pubDateUtc = new DateTime(FakeData.Int2, 9, 6);
 
             var dateTimeResolverMock = new Mock<ITimeZoneResolver>();
             dateTimeResolverMock.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(pubDateUtc);

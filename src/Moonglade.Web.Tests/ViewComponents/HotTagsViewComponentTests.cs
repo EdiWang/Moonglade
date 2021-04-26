@@ -38,7 +38,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = 996 });
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = FakeData.Int2 });
             _mockTagService.Setup(p => p.GetHotTagsAsync(It.IsAny<int>())).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
@@ -52,7 +52,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         {
             IReadOnlyList<KeyValuePair<Tag, int>> tags = new List<KeyValuePair<Tag, int>>();
 
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = 996 });
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = FakeData.Int2 });
             _mockTagService.Setup(p => p.GetHotTagsAsync(It.IsAny<int>())).Returns(Task.FromResult(tags));
 
             var component = CreateComponent();

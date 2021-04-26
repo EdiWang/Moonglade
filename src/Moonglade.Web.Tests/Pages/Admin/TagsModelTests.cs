@@ -33,7 +33,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<Tag> tags = new List<Tag>
             {
-                new() { Id = 996, DisplayName = FakeData.Title3, NormalizedName = FakeData.Slug2 }
+                new() { Id = FakeData.Int2, DisplayName = FakeData.Title3, NormalizedName = FakeData.Slug2 }
             };
             _mockTagService.Setup(p => p.GetAll()).Returns(Task.FromResult(tags));
 

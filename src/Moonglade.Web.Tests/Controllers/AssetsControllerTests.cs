@@ -94,7 +94,7 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 CacheSlidingExpirationMinutes = new Dictionary<string, int>
                 {
-                    { "Image", 996 }
+                    { "Image", FakeData.Int2 }
                 }
             });
 
@@ -122,7 +122,7 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 CacheSlidingExpirationMinutes = new Dictionary<string, int>
                 {
-                    { "Image", 996 }
+                    { "Image", FakeData.Int2 }
                 }
             });
 
@@ -154,7 +154,7 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 CacheSlidingExpirationMinutes = new Dictionary<string, int>
                 {
-                    { "Image", 996 }
+                    { "Image", FakeData.Int2 }
                 }
             });
 

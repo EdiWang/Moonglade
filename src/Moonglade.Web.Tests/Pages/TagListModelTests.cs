@@ -71,7 +71,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns(new Tag
             {
-                Id = 996,
+                Id = FakeData.Int2,
                 DisplayName = "Fubao",
                 NormalizedName = "fu-bao"
             });

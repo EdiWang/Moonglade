@@ -20,6 +20,7 @@ namespace Moonglade.Web.Tests
         public static string ShortString1 => "fubao";
         public static string ShortString2 => "996";
         public static int Int1 => 251;
+        public static int Int2 => 996;
 
         public static IReadOnlyList<PostDigest> FakePosts => new List<PostDigest>
         {
@@ -28,13 +29,13 @@ namespace Moonglade.Web.Tests
                 Title = Title1,
                 ContentAbstract = Content1,
                 LangCode = "zh-CN",
-                PubDateUtc = new(996, 9, 6),
+                PubDateUtc = new(FakeData.Int2, 9, 6),
                 Slug = "996-icu",
                 Tags = new Tag[]{
                     new ()
                     {
                         DisplayName = FakeData.ShortString2,
-                        Id = 996,
+                        Id = FakeData.Int2,
                         NormalizedName = "icu"
                     }
                 }

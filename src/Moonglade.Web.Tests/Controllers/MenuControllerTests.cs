@@ -21,7 +21,7 @@ namespace Moonglade.Web.Tests.Controllers
         private readonly MenuEditViewModel _menuEditViewModel = new()
         {
             Id = Guid.Empty,
-            DisplayOrder = 996,
+            DisplayOrder = FakeData.Int2,
             Icon = FakeData.Slug2,
             IsOpenInNewTab = true,
             Title = FakeData.Title3,

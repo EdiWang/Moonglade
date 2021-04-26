@@ -36,7 +36,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
 
             _mockCommentService.Setup(p => p.GetCommentsAsync(It.IsAny<int>(), 1))
                 .Returns(Task.FromResult(comments));
-            _mockCommentService.Setup(p => p.Count()).Returns(996);
+            _mockCommentService.Setup(p => p.Count()).Returns(FakeData.Int2);
 
             var commentsModel = CreateCommentsModel();
             int pageIndex = 1;

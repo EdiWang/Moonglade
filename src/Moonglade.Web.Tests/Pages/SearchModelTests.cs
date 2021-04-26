@@ -53,11 +53,11 @@ namespace Moonglade.Web.Tests.Pages
                     Title = FakeData.Title2,
                     ContentAbstract = "This is Jack Ma's fubao",
                     LangCode = "en-us",
-                    PubDateUtc = new(996, 9, 6),
+                    PubDateUtc = new(FakeData.Int2, 9, 6),
                     Slug = "fuck-jack-ma",
                     Tags = new Tag[] {new()
                     {
-                        DisplayName = "Fubao", NormalizedName = FakeData.ShortString1, Id = 996
+                        DisplayName = "Fubao", NormalizedName = FakeData.ShortString1, Id = FakeData.Int2
                     }}
                 }
             };

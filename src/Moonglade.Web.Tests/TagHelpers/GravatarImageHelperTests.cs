@@ -38,7 +38,7 @@ namespace Moonglade.Web.Tests.TagHelpers
             var tagHelper = new GravatarImageHelper
             {
                 Email = "996@icu.com",
-                Size = 996
+                Size = FakeData.Int2
             };
 
             var outputAttributes = new TagHelperAttributeList();

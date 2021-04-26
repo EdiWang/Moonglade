@@ -50,11 +50,11 @@ namespace Moonglade.Web.Tests.Pages
             _mockPostQueryService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
-            _mockPostQueryService.Setup(p => p.CountPublic()).Returns(996);
+            _mockPostQueryService.Setup(p => p.CountPublic()).Returns(FakeData.Int2);
 
             _mockBlogCache.Setup(p =>
                     p.GetOrCreate(CacheDivision.General, "postcount", It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(996);
+                .Returns(FakeData.Int2);
 
             var indexModel = CreateIndexModel();
             int p = 1;
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Tests.Pages
             await indexModel.OnGet(p);
 
             Assert.IsNotNull(indexModel.Posts);
-            Assert.AreEqual(996, indexModel.Posts.TotalItemCount);
+            Assert.AreEqual(FakeData.Int2, indexModel.Posts.TotalItemCount);
         }
     }
 }
