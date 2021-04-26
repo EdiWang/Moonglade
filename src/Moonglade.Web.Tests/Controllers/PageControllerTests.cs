@@ -72,7 +72,7 @@ namespace Moonglade.Web.Tests.Controllers
                 new()
                 {
                     Id = Guid.Empty,
-                    CreateTimeUtc = new DateTime(1996,9,9,6,3,5),
+                    CreateTimeUtc = new(1996,9,9,6,3,5),
                     IsPublished = true,
                     Slug = FakeData.Slug2,
                     Title = FakeData.Title3
@@ -101,7 +101,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task CreateOrEdit_Exception()
         {
             _mockPageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()))
-                .Throws(new Exception("Too much fubao"));
+                .Throws(new("Too much fubao"));
             var ctl = CreatePageController();
 
             _pageEditModel.Id = Guid.Empty;

@@ -19,7 +19,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new MockRepository(MockBehavior.Default);
+            _mockRepository = new(MockBehavior.Default);
             _mockTagService = _mockRepository.Create<ITagService>();
         }
 

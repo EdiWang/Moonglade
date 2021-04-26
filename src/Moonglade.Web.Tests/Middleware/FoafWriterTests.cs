@@ -19,7 +19,7 @@ namespace Moonglade.Web.Tests.Middleware
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new MockRepository(MockBehavior.Default);
+            _mockRepository = new(MockBehavior.Default);
         }
 
         private FoafWriter CreateFoafWriter()

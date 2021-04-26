@@ -29,7 +29,7 @@ namespace Moonglade.Web.Tests.Controllers
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new MockRepository(MockBehavior.Default);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockSyndicationService = _mockRepository.Create<ISyndicationService>();
             _mockCategoryService = _mockRepository.Create<ICategoryService>();
@@ -67,7 +67,7 @@ namespace Moonglade.Web.Tests.Controllers
             });
 
             var ctl = CreateSubscriptionController();
-            ctl.ControllerContext = new ControllerContext
+            ctl.ControllerContext = new()
             {
                 HttpContext = new DefaultHttpContext()
             };

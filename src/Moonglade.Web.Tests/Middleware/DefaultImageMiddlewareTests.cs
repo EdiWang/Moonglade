@@ -121,7 +121,7 @@ namespace Moonglade.Web.Tests.Middleware
                 UseFriendlyNotFoundImage = true
             });
 
-            DefaultImageMiddleware.Options = new DefaultImageMiddlewareOptions
+            DefaultImageMiddleware.Options = new()
             {
                 AllowedExtensions = new[] { ".png" },
                 DefaultImagePath = "/fuck996.png"

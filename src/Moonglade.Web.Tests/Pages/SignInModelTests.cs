@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -48,7 +47,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             var httpContext = new DefaultHttpContext();
             var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+            var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
             var modelMetadataProvider = new EmptyModelMetadataProvider();
             var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
@@ -127,7 +126,7 @@ namespace Moonglade.Web.Tests.Pages
         public async Task OnPostAsync_Exception()
         {
             _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .Throws(new Exception("996"));
+                .Throws(new("996"));
 
             // Arrange
             var signInModel = CreateSignInModel();
