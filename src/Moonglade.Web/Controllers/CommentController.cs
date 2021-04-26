@@ -92,7 +92,7 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("set-approval-status/{commentId:guid}")]
+        [HttpPut("set-approval-status/{commentId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SetApprovalStatus(Guid commentId)

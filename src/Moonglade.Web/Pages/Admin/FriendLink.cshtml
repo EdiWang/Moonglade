@@ -23,15 +23,17 @@
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
                 var action = '';
+                var httpVerb = 'POST';
                 var friendlinkId = $("#FriendLinkEditViewModel_Id").val();
                 if (friendlinkId == emptyGuid) {
                     action = "create";
                 }
                 else {
                     action = "edit";
+                    httpVerb = 'PUT';
                 }
 
-                callApi(`/api/friendlink/${action}`, 'POST',
+                callApi(`/api/friendlink/${action}`, httpVerb,
                     {
                         "Id": $("#FriendLinkEditViewModel_Id").val(),
                         "Title": $("#FriendLinkEditViewModel_Title").val(),

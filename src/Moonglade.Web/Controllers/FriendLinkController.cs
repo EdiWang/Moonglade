@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [HttpPost("edit")]
+        [HttpPut("edit")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(FriendLinkEditModel viewModel)
