@@ -79,6 +79,7 @@ namespace Moonglade.Web
                     .AddDataAnnotationsLocalization().AddRazorPagesOptions(options =>
                     {
                         options.Conventions.AuthorizeFolder("/Admin");
+                        options.Conventions.AuthorizeFolder("/Settings");
                     });
 
             services.Configure<RequestLocalizationOptions>(options =>
