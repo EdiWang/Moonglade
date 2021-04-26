@@ -33,7 +33,7 @@ namespace Moonglade.Web.Tests.Pages
             var fakeArchives = new List<Archive>
             {
                 new (996,9,6),
-                new (251,3,5)
+                new (FakeData.Int1,3,5)
             };
 
             _mockPostQueryService.Setup(p => p.GetArchiveAsync())

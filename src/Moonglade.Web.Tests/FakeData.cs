@@ -19,6 +19,7 @@ namespace Moonglade.Web.Tests
         public static string Url1 => "https://996.icu";
         public static string ShortString1 => "fubao";
         public static string ShortString2 => "996";
+        public static int Int1 => 251;
 
         public static IReadOnlyList<PostDigest> FakePosts => new List<PostDigest>
         {

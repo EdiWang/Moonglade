@@ -59,7 +59,7 @@ namespace Moonglade.Web.Tests.Controllers
             Tags = new[]
             {
                 new Tag { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
-                new Tag { DisplayName = FakeData.ShortString2, Id = 251, NormalizedName = FakeData.ShortString2 }
+                new Tag { DisplayName = FakeData.ShortString2, Id = FakeData.Int1, NormalizedName = FakeData.ShortString2 }
             },
             Categories = new[] { Cat }
         };
@@ -130,7 +130,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostManageController();
             var model = new DataTableRequest
             {
-                Draw = 251,
+                Draw = FakeData.Int1,
                 Length = 35,
                 Start = 7,
                 Search = new() { Value = FakeData.ShortString2 }

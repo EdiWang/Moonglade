@@ -52,7 +52,7 @@ namespace Moonglade.Web.Tests.Pages
 
             _mockBlogCache.Setup(p =>
                     p.GetOrCreate(CacheDivision.PostCountFeatured, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(251);
+                .Returns(FakeData.Int1);
 
 
             // Arrange
@@ -64,7 +64,7 @@ namespace Moonglade.Web.Tests.Pages
 
             // Assert
             Assert.IsNotNull(featuredModel.Posts);
-            Assert.AreEqual(251, featuredModel.Posts.TotalItemCount);
+            Assert.AreEqual(FakeData.Int1, featuredModel.Posts.TotalItemCount);
         }
     }
 }

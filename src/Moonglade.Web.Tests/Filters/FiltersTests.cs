@@ -29,7 +29,7 @@ namespace Moonglade.Web.Tests.Filters
             blogCache.GetOrCreate(CacheDivision.General, "postcount", _ => 996);
             blogCache.GetOrCreate(CacheDivision.General, "ali", _ => FakeData.ShortString1);
             blogCache.GetOrCreate(CacheDivision.PostCountCategory, "pdd", _ => 007);
-            blogCache.GetOrCreate(CacheDivision.PostCountTag, "hw", _ => 251);
+            blogCache.GetOrCreate(CacheDivision.PostCountTag, "hw", _ => FakeData.Int1);
 
             var att = new ClearPagingCountCache(blogCache);
             att.OnActionExecuted(ctx);

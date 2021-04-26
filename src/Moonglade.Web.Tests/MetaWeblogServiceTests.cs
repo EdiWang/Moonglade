@@ -65,7 +65,7 @@ namespace Moonglade.Web.Tests
             Tags = new[]
             {
                 new Tag {DisplayName = "Fubao", Id = 996, NormalizedName = FakeData.ShortString1},
-                new Tag {DisplayName = FakeData.ShortString2, Id = 251, NormalizedName = FakeData.ShortString2}
+                new Tag {DisplayName = FakeData.ShortString2, Id = FakeData.Int1, NormalizedName = FakeData.ShortString2}
             },
             Categories = new[] { Cat }
         };

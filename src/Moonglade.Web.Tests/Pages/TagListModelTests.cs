@@ -81,7 +81,7 @@ namespace Moonglade.Web.Tests.Pages
 
             _mockBlogCache.Setup(p =>
                     p.GetOrCreate(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(251);
+                .Returns(FakeData.Int1);
 
             var httpContext = new DefaultHttpContext();
             var modelState = new ModelStateDictionary();
@@ -109,7 +109,7 @@ namespace Moonglade.Web.Tests.Pages
             // Act
             var result = await model.OnGet(normalizedName);
             Assert.IsInstanceOf<PageResult>(result);
-            Assert.AreEqual(251, model.Posts.TotalItemCount);
+            Assert.AreEqual(FakeData.Int1, model.Posts.TotalItemCount);
         }
     }
 }
