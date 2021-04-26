@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Web.Controllers;
@@ -16,7 +19,6 @@ namespace Moonglade.Web.Tests.Controllers
     public class AuthControllerTests
     {
         private MockRepository _mockRepository;
-
         private Mock<IOptions<AuthenticationSettings>> _mockOptions;
 
         [SetUp]
@@ -29,14 +31,6 @@ namespace Moonglade.Web.Tests.Controllers
         private AuthController CreateAuthController()
         {
             return new(_mockOptions.Object);
-        }
-
-        [Test]
-        public void SignedOut()
-        {
-            var ctl = CreateAuthController();
-            var result = ctl.SignedOut();
-            Assert.IsInstanceOf(typeof(RedirectToPageResult), result);
         }
 
         [Test]
@@ -59,10 +53,9 @@ namespace Moonglade.Web.Tests.Controllers
                 Provider = AuthenticationProvider.AzureAD
             });
 
-            var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
-            mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>()))
-                .Returns("callbackUrl")
-                .Verifiable();
+            var mockUrlHelper = CreateMockUrlHelper();
+            mockUrlHelper.Setup(h => h.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns("callbackUrl");
 
             var ctx = new DefaultHttpContext();
             var ctl = CreateAuthController();
@@ -73,5 +66,35 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf(typeof(SignOutResult), result);
         }
 
+        private static Mock<IUrlHelper> CreateMockUrlHelper(ActionContext context = null)
+        {
+            context ??= GetActionContextForPage("/Page");
+
+            var urlHelper = new Mock<IUrlHelper>();
+            urlHelper.SetupGet(h => h.ActionContext)
+                .Returns(context);
+            return urlHelper;
+        }
+
+        private static ActionContext GetActionContextForPage(string page)
+        {
+            return new()
+            {
+                ActionDescriptor = new()
+                {
+                    RouteValues = new Dictionary<string, string>
+                    {
+                        { "page", page },
+                    }
+                },
+                RouteData = new()
+                {
+                    Values =
+                    {
+                        [ "page" ] = page
+                    }
+                }
+            };
+        }
     }
 }

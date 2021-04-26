@@ -11,7 +11,7 @@ using Moonglade.Auth;
 namespace Moonglade.Web.Controllers
 {
     [Route("auth")]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly AuthenticationSettings _authenticationSettings;
 
@@ -27,30 +27,17 @@ namespace Moonglade.Web.Controllers
             switch (_authenticationSettings.Provider)
             {
                 case AuthenticationProvider.AzureAD:
-                    {
-                        var callbackUrl = Url.Action(nameof(SignedOut), "Admin", null, Request.Scheme);
-                        return SignOut(
-                            new AuthenticationProperties { RedirectUri = callbackUrl },
-                            CookieAuthenticationDefaults.AuthenticationScheme,
-                            OpenIdConnectDefaults.AuthenticationScheme);
-                    }
+                    var callbackUrl = Url.Page("/Index", null, null, Request.Scheme);
+                    return SignOut(
+                        new AuthenticationProperties { RedirectUri = callbackUrl },
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        OpenIdConnectDefaults.AuthenticationScheme);
                 case AuthenticationProvider.Local:
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                    break;
-                case AuthenticationProvider.None:
-                    break;
+                    return RedirectToPage("/Index");
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    return RedirectToPage("/Index");
             }
-
-            return RedirectToPage("/Index");
-        }
-
-        [HttpGet("signedout")]
-        [AllowAnonymous]
-        public IActionResult SignedOut()
-        {
-            return RedirectToPage("/Index");
         }
 
         [AllowAnonymous]
