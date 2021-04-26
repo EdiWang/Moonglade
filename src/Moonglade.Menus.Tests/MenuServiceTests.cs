@@ -19,7 +19,6 @@ namespace Moonglade.Menus.Tests
 
         private Mock<ILogger<MenuService>> _mockLogger;
         private Mock<IRepository<MenuEntity>> _mockMenuRepository;
-        private Mock<IRepository<SubMenuEntity>> _mockSubMenuRepository;
         private Mock<IBlogAudit> _mockBlogAudit;
 
         private readonly MenuEntity _menu = new()
@@ -39,7 +38,6 @@ namespace Moonglade.Menus.Tests
 
             _mockLogger = _mockRepository.Create<ILogger<MenuService>>();
             _mockMenuRepository = _mockRepository.Create<IRepository<MenuEntity>>();
-            _mockSubMenuRepository = _mockRepository.Create<IRepository<SubMenuEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         }
 
@@ -48,7 +46,6 @@ namespace Moonglade.Menus.Tests
             return new(
                 _mockLogger.Object,
                 _mockMenuRepository.Object,
-                _mockSubMenuRepository.Object,
                 _mockBlogAudit.Object);
         }
 

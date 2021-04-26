@@ -23,18 +23,15 @@ namespace Moonglade.Menus
     {
         private readonly ILogger<MenuService> _logger;
         private readonly IRepository<MenuEntity> _menuRepo;
-        private readonly IRepository<SubMenuEntity> _subMenuRepo;
         private readonly IBlogAudit _audit;
 
         public MenuService(
             ILogger<MenuService> logger,
             IRepository<MenuEntity> menuRepo,
-            IRepository<SubMenuEntity> subMenuRepo,
             IBlogAudit audit)
         {
             _logger = logger;
             _menuRepo = menuRepo;
-            _subMenuRepo = subMenuRepo;
             _audit = audit;
         }
 
