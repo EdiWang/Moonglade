@@ -19,15 +19,17 @@
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
                 var action = '';
+                var httpVerb = 'POST';
                 var catId = $("#CategoryEditViewModel_Id").val();
                 if (catId == emptyGuid) {
-                    action = "create";
+                    action = 'create';
                 }
                 else {
                     action = "edit";
+                    httpVerb = 'PUT';
                 }
 
-                callApi(`/api/category/${action}`, 'POST',
+                callApi(`/api/category/${action}`, httpVerb,
                     {
                         "Id": $("#CategoryEditViewModel_Id").val(),
                         "RouteName": $("#CategoryEditViewModel_RouteName").val(),

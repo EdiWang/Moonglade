@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
             };
 
             await _catService.CreateAsync(request);
-            return Ok(model);
+            return Created(string.Empty, model);
         }
 
         [HttpGet("edit/{id:guid}")]
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Controllers
             return Ok(model);
         }
 
-        [HttpPost("edit")]
+        [HttpPut("edit")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(CategoryEditModel model)

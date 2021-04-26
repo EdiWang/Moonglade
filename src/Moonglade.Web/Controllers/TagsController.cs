@@ -58,7 +58,7 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         [TypeFilter(typeof(ClearPagingCountCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
