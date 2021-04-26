@@ -61,7 +61,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Create_OK()
         {
             var ctl = CreateTagsController();
-            var result = await ctl.Create("996");
+            var result = await ctl.Create(FakeData.ShortString2);
 
             _mockTagService.Verify(p => p.Create(It.IsAny<string>()));
             Assert.IsInstanceOf<OkResult>(result);

@@ -87,7 +87,7 @@ namespace Moonglade.Web.Tests.Pages
                 .Returns(Task.FromResult((Category)null));
 
             var categoryListModel = CreateCategoryListModel();
-            var result = await categoryListModel.OnGetAsync("996");
+            var result = await categoryListModel.OnGetAsync(FakeData.ShortString2);
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 

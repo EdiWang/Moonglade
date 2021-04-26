@@ -35,8 +35,8 @@ namespace Moonglade.Web.Tests.Controllers
             var categoryController = CreateCategoryController();
             var model = new CategoryEditModel
             {
-                DisplayName = "996",
-                RouteName = "996",
+                DisplayName = FakeData.ShortString2,
+                RouteName = FakeData.ShortString2,
                 Note = FakeData.ShortString1
             };
 
@@ -74,8 +74,8 @@ namespace Moonglade.Web.Tests.Controllers
             var categoryController = CreateCategoryController();
             var model = new CategoryEditModel
             {
-                DisplayName = "996",
-                RouteName = "996",
+                DisplayName = FakeData.ShortString2,
+                RouteName = FakeData.ShortString2,
                 Note = FakeData.ShortString1
             };
 

@@ -21,7 +21,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         {
             new ()
             {
-                DisplayName = "Fubao", Id = Guid.Empty, Note = FakeData.Title3, RouteName = "996"
+                DisplayName = "Fubao", Id = Guid.Empty, Note = FakeData.Title3, RouteName = FakeData.ShortString2
             }
         };
 
@@ -40,7 +40,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockCategoryService.Setup(p => p.GetAll()).Throws(new("996"));
+            _mockCategoryService.Setup(p => p.GetAll()).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(false);

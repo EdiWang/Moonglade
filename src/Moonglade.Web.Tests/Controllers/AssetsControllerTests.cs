@@ -160,7 +160,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var memCacheMock = Create.MockedMemoryCache();
             _mockAsyncImageStorageProvider.Setup(p => p.GetAsync(It.IsAny<string>()))
-                .Throws(new ArgumentException("996"));
+                .Throws(new ArgumentException(FakeData.ShortString2));
 
             var ctl = CreateAssetsController();
 

@@ -34,7 +34,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         //[Test]
         //public async Task InvokeAsync_Exception()
         //{
-        //    _mockMenuService.Setup(p => p.GetAllAsync()).Throws(new("996"));
+        //    _mockMenuService.Setup(p => p.GetAllAsync()).Throws(new(FakeData.ShortString2));
 
         //    var component = CreateComponent();
         //    var result = await component.InvokeAsync();

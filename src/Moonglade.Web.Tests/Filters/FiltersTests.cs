@@ -171,7 +171,7 @@ namespace Moonglade.Web.Tests.Filters
 
             var ctx = CreateActionExecutingContext(null, new Dictionary<string, object>
             {
-                {"996", mockCaptchable.Object}
+                {FakeData.ShortString2, mockCaptchable.Object}
             });
 
             var att = new ValidateCaptcha(mockCaptcha.Object);
@@ -193,7 +193,7 @@ namespace Moonglade.Web.Tests.Filters
 
             var ctx = CreateActionExecutingContext(null, new Dictionary<string, object>
             {
-                {"996", mockCaptchable.Object}
+                {FakeData.ShortString2, mockCaptchable.Object}
             });
 
             var att = new ValidateCaptcha(mockCaptcha.Object);

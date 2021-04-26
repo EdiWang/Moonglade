@@ -82,7 +82,7 @@ namespace Moonglade.Web.Tests.Pages
                 TempData = tempData
             };
 
-            var result = await searchModel.OnGetAsync("996");
+            var result = await searchModel.OnGetAsync(FakeData.ShortString2);
 
             Assert.IsNotNull(searchModel.Posts);
         }

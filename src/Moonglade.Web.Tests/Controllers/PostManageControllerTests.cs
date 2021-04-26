@@ -59,7 +59,7 @@ namespace Moonglade.Web.Tests.Controllers
             Tags = new[]
             {
                 new Tag { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
-                new Tag { DisplayName = "996", Id = 251, NormalizedName = "996" }
+                new Tag { DisplayName = FakeData.ShortString2, Id = 251, NormalizedName = FakeData.ShortString2 }
             },
             Categories = new[] { Cat }
         };
@@ -112,7 +112,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Segment_Error()
         {
             IReadOnlyList<PostSegment> ps = new List<PostSegment>();
-            _mockPostService.Setup(p => p.ListSegment(PostStatus.Published)).Throws(new ArgumentOutOfRangeException("996"));
+            _mockPostService.Setup(p => p.ListSegment(PostStatus.Published)).Throws(new ArgumentOutOfRangeException(FakeData.ShortString2));
 
             var ctl = CreatePostManageController();
             var result = await ctl.Segment();
@@ -133,7 +133,7 @@ namespace Moonglade.Web.Tests.Controllers
                 Draw = 251,
                 Length = 35,
                 Start = 7,
-                Search = new() { Value = "996" }
+                Search = new() { Value = FakeData.ShortString2 }
             };
 
             var result = await postManageController.ListPublished(model);
@@ -144,7 +144,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task CreateOrEdit_BadModelState()
         {
             var postManageController = CreatePostManageController();
-            postManageController.ModelState.AddModelError("", "996");
+            postManageController.ModelState.AddModelError("", FakeData.ShortString2);
 
             MagicWrapper<PostEditModel> model = new();
             Mock<LinkGenerator> mockLinkGenerator = new();

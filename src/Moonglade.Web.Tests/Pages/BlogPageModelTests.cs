@@ -55,11 +55,11 @@ namespace Moonglade.Web.Tests.Pages
         public async Task OnGetAsync_NotFound_Null()
         {
             _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, BlogPage>>()))
+                    p.GetOrCreate(CacheDivision.Page, FakeData.ShortString2, It.IsAny<Func<ICacheEntry, BlogPage>>()))
                 .Returns((BlogPage)null);
 
             var blogPageModel = CreateBlogPageModel();
-            var result = await blogPageModel.OnGetAsync("996");
+            var result = await blogPageModel.OnGetAsync(FakeData.ShortString2);
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
@@ -70,11 +70,11 @@ namespace Moonglade.Web.Tests.Pages
             var page = new BlogPage { IsPublished = false };
 
             _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.Page, "996", It.IsAny<Func<ICacheEntry, BlogPage>>()))
+                    p.GetOrCreate(CacheDivision.Page, FakeData.ShortString2, It.IsAny<Func<ICacheEntry, BlogPage>>()))
                 .Returns(page);
 
             var blogPageModel = CreateBlogPageModel();
-            var result = await blogPageModel.OnGetAsync("996");
+            var result = await blogPageModel.OnGetAsync(FakeData.ShortString2);
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }

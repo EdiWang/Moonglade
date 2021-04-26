@@ -39,7 +39,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         public async Task InvokeAsync_Exception()
         {
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = 996 });
-            _mockTagService.Setup(p => p.GetHotTagsAsync(It.IsAny<int>())).Throws(new("996"));
+            _mockTagService.Setup(p => p.GetHotTagsAsync(It.IsAny<int>())).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync();

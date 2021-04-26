@@ -59,7 +59,7 @@ namespace Moonglade.Web.Tests.Pages
 
             // Arrange
             var tagListModel = CreateTagListModel();
-            string normalizedName = "996";
+            string normalizedName = FakeData.ShortString2;
 
             // Act
             var result = await tagListModel.OnGet(normalizedName);

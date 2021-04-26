@@ -39,7 +39,7 @@ namespace Moonglade.Web.Tests.Middleware
             var blogConfigMock = new Mock<IBlogConfig>();
             blogConfigMock.Setup(c => c.AdvancedSettings).Returns(new AdvancedSettings
             {
-                RobotsTxtContent = "996"
+                RobotsTxtContent = FakeData.ShortString2
             });
 
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;

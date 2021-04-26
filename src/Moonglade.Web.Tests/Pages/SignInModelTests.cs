@@ -126,12 +126,12 @@ namespace Moonglade.Web.Tests.Pages
         public async Task OnPostAsync_Exception()
         {
             _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .Throws(new("996"));
+                .Throws(new(FakeData.ShortString2));
 
             // Arrange
             var signInModel = CreateSignInModel();
             signInModel.Username = "work";
-            signInModel.Password = "996";
+            signInModel.Password = FakeData.ShortString2;
 
             // Act
             var result = await signInModel.OnPostAsync();
@@ -147,9 +147,9 @@ namespace Moonglade.Web.Tests.Pages
         {
             var signInModel = CreateSignInModel();
             signInModel.Username = "";
-            signInModel.Password = "996";
+            signInModel.Password = FakeData.ShortString2;
 
-            signInModel.ModelState.AddModelError("", "996");
+            signInModel.ModelState.AddModelError("", FakeData.ShortString2);
             var result = await signInModel.OnPostAsync();
 
             Assert.IsInstanceOf<PageResult>(result);

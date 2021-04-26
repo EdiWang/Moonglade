@@ -41,7 +41,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateLocalAccountController();
             var result = await ctl.Create(new()
             {
-                Username = "996",
+                Username = FakeData.ShortString2,
                 Password = "icu"
             });
 
@@ -56,7 +56,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateLocalAccountController();
             var result = await ctl.Create(new()
             {
-                Username = "996",
+                Username = FakeData.ShortString2,
                 Password = "icu"
             });
 
@@ -116,7 +116,7 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 HttpContext = new DefaultHttpContext
                 {
-                    User = GetClaimsPrincipal("996")
+                    User = GetClaimsPrincipal(FakeData.ShortString2)
                 }
             };
 
@@ -133,7 +133,7 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 HttpContext = new DefaultHttpContext
                 {
-                    User = GetClaimsPrincipal("996")
+                    User = GetClaimsPrincipal(FakeData.ShortString2)
                 }
             };
 

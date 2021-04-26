@@ -39,7 +39,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockCommentService.Setup(p => p.GetApprovedCommentsAsync(It.IsAny<Guid>())).Throws(new("996"));
+            _mockCommentService.Setup(p => p.GetApprovedCommentsAsync(It.IsAny<Guid>())).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));
