@@ -3,9 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Web.Controllers;
@@ -66,11 +64,11 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf(typeof(SignOutResult), result);
         }
 
-        private static Mock<IUrlHelper> CreateMockUrlHelper(ActionContext context = null)
+        private Mock<IUrlHelper> CreateMockUrlHelper(ActionContext context = null)
         {
             context ??= GetActionContextForPage("/Page");
 
-            var urlHelper = new Mock<IUrlHelper>();
+            var urlHelper = _mockRepository.Create<IUrlHelper>();
             urlHelper.SetupGet(h => h.ActionContext)
                 .Returns(context);
             return urlHelper;
