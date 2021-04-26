@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Core
 {
-    public class Archive
+    public readonly struct Archive
     {
         public int Year { get; }
         public int Month { get; }
