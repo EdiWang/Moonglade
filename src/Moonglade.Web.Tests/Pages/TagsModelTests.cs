@@ -34,7 +34,7 @@ namespace Moonglade.Web.Tests.Pages
             var fakeTags = new List<KeyValuePair<Tag, int>>
             {
                 new(new() { DisplayName = "Huawei", Id = 35, NormalizedName = "aiguo" }, 251),
-                new(new() { DisplayName = "Ali", Id = 35, NormalizedName = "fubao" }, 996)
+                new(new() { DisplayName = "Ali", Id = 35, NormalizedName = FakeData.ShortString1 }, 996)
             };
 
             _mockTagService.Setup(p => p.GetTagCountList())

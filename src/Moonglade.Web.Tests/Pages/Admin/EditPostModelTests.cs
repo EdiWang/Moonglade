@@ -50,7 +50,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             CreateTimeUtc = new(2018, 9, 6, 6, 35, 7),
             Tags = new[]
             {
-                new Tag { DisplayName = "Fubao", Id = 996, NormalizedName = "fubao" },
+                new Tag { DisplayName = "Fubao", Id = 996, NormalizedName = FakeData.ShortString1 },
                 new Tag { DisplayName = "996", Id = 251, NormalizedName = "996" }
             },
             Categories = new[] { Cat }

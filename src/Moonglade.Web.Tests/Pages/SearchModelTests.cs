@@ -57,7 +57,7 @@ namespace Moonglade.Web.Tests.Pages
                     Slug = "fuck-jack-ma",
                     Tags = new Tag[] {new()
                     {
-                        DisplayName = "Fubao", NormalizedName = "fubao", Id = 996
+                        DisplayName = "Fubao", NormalizedName = FakeData.ShortString1, Id = 996
                     }}
                 }
             };

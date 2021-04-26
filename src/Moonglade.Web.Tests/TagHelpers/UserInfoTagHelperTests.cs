@@ -57,7 +57,7 @@ namespace Moonglade.Web.Tests.TagHelpers
                 UserInfoDisplay = UserInfoDisplay.PreferName,
                 User = GetClaimsPrincipal(new Claim[]
                 {
-                    new(claimType, "fubao")
+                    new(claimType, FakeData.ShortString1)
                 })
             };
 
@@ -73,7 +73,7 @@ namespace Moonglade.Web.Tests.TagHelpers
             };
 
             Assert.AreEqual(expectedAttributeList, output.Attributes);
-            Assert.AreEqual("fubao", output.Content.GetContent());
+            Assert.AreEqual(FakeData.ShortString1, output.Content.GetContent());
         }
 
         [TestCase("email")]
@@ -140,7 +140,7 @@ namespace Moonglade.Web.Tests.TagHelpers
                 UserInfoDisplay = UserInfoDisplay.PreferEmail,
                 User = GetClaimsPrincipal(new Claim[]
                 {
-                    new(ClaimTypes.Name, "fubao")
+                    new(ClaimTypes.Name, FakeData.ShortString1)
                 })
             };
 
@@ -156,7 +156,7 @@ namespace Moonglade.Web.Tests.TagHelpers
             };
 
             Assert.AreEqual(expectedAttributeList, output.Attributes);
-            Assert.AreEqual("fubao", output.Content.GetContent());
+            Assert.AreEqual(FakeData.ShortString1, output.Content.GetContent());
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace Moonglade.Web.Tests.TagHelpers
                 UserInfoDisplay = UserInfoDisplay.Both,
                 User = GetClaimsPrincipal(new Claim[]
                 {
-                    new(ClaimTypes.Name, "fubao"),
+                    new(ClaimTypes.Name, FakeData.ShortString1),
                     new(ClaimTypes.Email, "996@icu.com")
                 })
             };

@@ -93,7 +93,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var request = new EditTagRequest
             {
-                NewName = "fubao",
+                NewName = FakeData.ShortString1,
                 TagId = 996
             };
             var result = await ctl.Update(request);

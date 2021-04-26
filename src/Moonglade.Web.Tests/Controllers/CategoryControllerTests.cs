@@ -37,7 +37,7 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 DisplayName = "996",
                 RouteName = "996",
-                Note = "fubao"
+                Note = FakeData.ShortString1
             };
 
             var result = await categoryController.Create(model);
@@ -76,7 +76,7 @@ namespace Moonglade.Web.Tests.Controllers
             {
                 DisplayName = "996",
                 RouteName = "996",
-                Note = "fubao"
+                Note = FakeData.ShortString1
             };
 
             var result = await categoryController.Edit(model);

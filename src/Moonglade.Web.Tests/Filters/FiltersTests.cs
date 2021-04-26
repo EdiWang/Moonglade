@@ -27,7 +27,7 @@ namespace Moonglade.Web.Tests.Filters
             var mockedCache = Create.MockedMemoryCache();
             var blogCache = new BlogMemoryCache(mockedCache);
             blogCache.GetOrCreate(CacheDivision.General, "postcount", _ => 996);
-            blogCache.GetOrCreate(CacheDivision.General, "ali", _ => "fubao");
+            blogCache.GetOrCreate(CacheDivision.General, "ali", _ => FakeData.ShortString1);
             blogCache.GetOrCreate(CacheDivision.PostCountCategory, "pdd", _ => 007);
             blogCache.GetOrCreate(CacheDivision.PostCountTag, "hw", _ => 251);
 
@@ -40,7 +40,7 @@ namespace Moonglade.Web.Tests.Filters
             var hw = mockedCache.Get<int>("PostCountTag-hw");
 
             Assert.AreEqual(0, postcount);
-            Assert.AreEqual("fubao", ali);
+            Assert.AreEqual(FakeData.ShortString1, ali);
             Assert.AreEqual(0, pdd);
             Assert.AreEqual(0, hw);
         }
