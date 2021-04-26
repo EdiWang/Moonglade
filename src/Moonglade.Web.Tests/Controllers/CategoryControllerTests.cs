@@ -41,7 +41,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await categoryController.Create(model);
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<CreatedResult>(result);
         }
 
         [Test]
