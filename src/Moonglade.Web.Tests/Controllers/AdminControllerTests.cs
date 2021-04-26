@@ -46,7 +46,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateAdminController();
             var result = await ctl.Index();
-            Assert.IsInstanceOf(typeof(RedirectResult), result);
+            Assert.IsInstanceOf(typeof(RedirectToPageResult), result);
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await ctl.Index();
-            Assert.IsInstanceOf(typeof(RedirectResult), result);
+            Assert.IsInstanceOf(typeof(RedirectToPageResult), result);
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockAudit.Verify();
 
-            Assert.IsInstanceOf<RedirectResult>(result);
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
         }
     }
 }
