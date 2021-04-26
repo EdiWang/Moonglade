@@ -72,14 +72,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void KeepAlive()
-        {
-            var ctl = CreateAdminController();
-            var result = ctl.KeepAlive("996.ICU");
-            Assert.IsInstanceOf(typeof(JsonResult), result);
-        }
-
-        [Test]
         public async Task ClearAuditLogs_Redirect()
         {
             var ctl = CreateAdminController();
