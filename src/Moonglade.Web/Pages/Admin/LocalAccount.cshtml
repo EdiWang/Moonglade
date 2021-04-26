@@ -1,7 +1,6 @@
 ﻿@page "/admin/account"
 @model Moonglade.Web.Pages.Admin.LocalAccountModel
 @{
-    Layout = "_LayoutAdmin";
     ViewBag.Title = "Manage Accounts";
     var currentUidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
 }
