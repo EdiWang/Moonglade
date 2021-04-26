@@ -72,9 +72,10 @@ namespace Moonglade.Web
             services.AddSessionBasedCaptcha();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-            services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-                    .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior)
-                    .AddViewLocalization()
+
+            services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+                    .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
+            services.AddRazorPages().AddViewLocalization()
                     .AddDataAnnotationsLocalization().AddRazorPagesOptions(options =>
                     {
                         options.Conventions.AuthorizeFolder("/Admin");

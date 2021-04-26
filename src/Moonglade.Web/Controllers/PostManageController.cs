@@ -149,7 +149,7 @@ namespace Moonglade.Web.Controllers
 
                     var pubDate = postEntity.PubDateUtc.GetValueOrDefault();
 
-                    var link = linkGenerator.GetUriByAction(HttpContext, "Slug", "Post",
+                    var link = linkGenerator.GetUriByPage(HttpContext, "/Post", null,
                                new
                                {
                                    year = pubDate.Year,

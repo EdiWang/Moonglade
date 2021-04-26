@@ -23,9 +23,8 @@ namespace Moonglade.Web.Configuration
 
                 await context.Response.WriteAsJsonAsync(obj);
             });
-            endpoints.MapControllerRoute(
-                "default",
-                "{controller=Home}/{action=Index}/{id?}");
+
+            endpoints.MapControllers();
             endpoints.MapRazorPages();
         };
     }

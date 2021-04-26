@@ -155,7 +155,7 @@ namespace Moonglade.Web.Controllers
 
         private string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)
         {
-            var link = linkGenerator.GetUriByAction(HttpContext, "Slug", "Post",
+            var link = linkGenerator.GetUriByPage(HttpContext, "/Post", null,
                 new
                 {
                     year = pubDate.Year,
