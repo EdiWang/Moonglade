@@ -50,7 +50,7 @@ namespace Moonglade.Web.Controllers
             _logger = logger;
         }
 
-        [HttpGet("/post/segment/published")]
+        [HttpGet("segment/published")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(typeof(IEnumerable<PostSegment>), StatusCodes.Status200OK)]
