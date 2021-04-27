@@ -24,7 +24,7 @@
                     {
                         <tr id="tr-@post.Id">
                             <td>
-                                <a asp-controller="Home" asp-action="Slug"
+                                <a asp-page="/Post"
                                    asp-route-year="@post.PubDateUtc.Value.Year"
                                    asp-route-month="@post.PubDateUtc.Value.Month"
                                    asp-route-day="@post.PubDateUtc.Value.Day"
@@ -55,7 +55,7 @@
                     {
                         <tr id="tr-@post.Id">
                             <td>
-                                <a asp-controller="Home" asp-action="Slug"
+                                <a asp-page="/Post"
                                    asp-route-year="@post.PubDateUtc.Value.Year"
                                    asp-route-month="@post.PubDateUtc.Value.Month"
                                    asp-route-day="@post.PubDateUtc.Value.Day"
