@@ -80,7 +80,7 @@
     @if (BlogConfig.AdvancedSettings.ShowAdminLoginButton)
     {
         <div class="text-center">
-            <a asp-action="Index" asp-controller="Admin" class="btn btn-sm btn-light">@Localizer["Admin Login"]</a>
+            <a asp-page="/SignIn" class="btn btn-sm btn-light">@Localizer["Admin Login"]</a>
         </div>
     }
 </aside>
