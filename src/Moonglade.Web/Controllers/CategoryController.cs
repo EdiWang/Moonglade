@@ -79,7 +79,7 @@ namespace Moonglade.Web.Controllers
             return Ok(model);
         }
 
-        [HttpDelete("delete/{id:guid}")]
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(Guid id)

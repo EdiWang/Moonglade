@@ -27,7 +27,7 @@
         function deleteCat(catid) {
             $(`#span-processing-${catid}`).show();
 
-            callApi(`/api/category/delete/${catid}`, 'DELETE', {},
+            callApi(`/api/category/${catid}`, 'DELETE', {},
                 (resp) => {
                     $(`#card-${catid}`).hide();
                     notyf.success('Category deleted');
