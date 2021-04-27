@@ -7,29 +7,39 @@
 @section scripts{
     <script>
         $(function () {
-            $(".btn-delete").click(function () {
-                var cfm = confirm("Delete Confirmation?");
+            $('.btn-delete').click(function () {
+                var cfm = confirm('Delete Confirmation?');
                 if (cfm) {
-                    deletePost($(this).data("postid"));
+                    deletePost($(this).data('postid'));
                 }
             });
 
-            $(".btn-restore").click(function () {
+            $('.btn-restore').click(function () {
                 restorePost($(this).data("postid"));
+            });
+
+            $('.btn-empty-recbin').click(function () {
+                callApi(`/api/post/empty-recycle-bin`, 'DELETE', {},
+                    (resp) => {
+                        notyf.success('Cleared');
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 800);
+                    });
             });
         });
     </script>
 }
+@Html.AntiForgeryToken()
 <partial name="_PostManageHeader" />
 
-<a asp-controller="Post" asp-action="EmptyRecycleBin" class="btn btn-sm btn-outline-danger">
+<a href="#" class="btn btn-sm btn-outline-danger btn-empty-recbin">
     <span class="icon-bin"></span>
     @Localizer["Empty Recycle Bin"]
 </a>
 
 @if (Model.Posts.Any())
 {
-    @Html.AntiForgeryToken()
     <table class="table table-bordered mt-3">
         <thead>
             <tr>

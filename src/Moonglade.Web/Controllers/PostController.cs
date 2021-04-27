@@ -223,11 +223,11 @@ namespace Moonglade.Web.Controllers
 
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [ServiceFilter(typeof(ClearSiteMapCache))]
-        [HttpGet("empty-recycle-bin")]
+        [HttpDelete("empty-recycle-bin")]
         public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postManageService.PurgeRecycledAsync();
-            return RedirectToPage("/Admin/RecycleBin");
+            return Ok();
         }
 
         // Keep session from expire when writing a very long post

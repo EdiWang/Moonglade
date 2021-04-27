@@ -355,7 +355,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostController();
             var result = await postManageController.EmptyRecycleBin();
 
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.IsInstanceOf<OkResult>(result);
         }
     }
 }
