@@ -24,7 +24,7 @@ namespace Moonglade.Web.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class PostManageController : ControllerBase
+    public class PostController : ControllerBase
     {
         private readonly IPostQueryService _postQueryService;
         private readonly IPostManageService _postManageService;
@@ -32,15 +32,15 @@ namespace Moonglade.Web.Controllers
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly IPingbackSender _pingbackSender;
-        private readonly ILogger<PostManageController> _logger;
+        private readonly ILogger<PostController> _logger;
 
-        public PostManageController(
+        public PostController(
             IPostQueryService postQueryService,
             IPostManageService postManageService,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IPingbackSender pingbackSender,
-            ILogger<PostManageController> logger)
+            ILogger<PostController> logger)
         {
             _postQueryService = postQueryService;
             _postManageService = postManageService;

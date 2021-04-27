@@ -21,7 +21,7 @@ namespace Moonglade.Web.Tests.Controllers
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
-    public class PostManageControllerTests
+    public class PostControllerTests
     {
         private MockRepository _mockRepository;
 
@@ -30,7 +30,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<IPingbackSender> _mockPingbackSender;
-        private Mock<ILogger<PostManageController>> _mockLogger;
+        private Mock<ILogger<PostController>> _mockLogger;
 
         private static readonly Category Cat = new()
         {
@@ -74,10 +74,10 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockPingbackSender = _mockRepository.Create<IPingbackSender>();
-            _mockLogger = _mockRepository.Create<ILogger<PostManageController>>();
+            _mockLogger = _mockRepository.Create<ILogger<PostController>>();
         }
 
-        private PostManageController CreatePostManageController()
+        private PostController CreatePostController()
         {
             return new(
                 _mockPostService.Object,
@@ -91,7 +91,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public void KeepAlive()
         {
-            var ctl = CreatePostManageController();
+            var ctl = CreatePostController();
             var result = ctl.KeepAlive("996.ICU");
             Assert.IsInstanceOf(typeof(OkObjectResult), result);
         }
@@ -102,7 +102,7 @@ namespace Moonglade.Web.Tests.Controllers
             IReadOnlyList<PostSegment> ps = new List<PostSegment>();
             _mockPostService.Setup(p => p.ListSegment(PostStatus.Published)).Returns(Task.FromResult(ps));
 
-            var ctl = CreatePostManageController();
+            var ctl = CreatePostController();
             var result = await ctl.Segment();
 
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -114,7 +114,7 @@ namespace Moonglade.Web.Tests.Controllers
             IReadOnlyList<PostSegment> ps = new List<PostSegment>();
             _mockPostService.Setup(p => p.ListSegment(PostStatus.Published)).Throws(new ArgumentOutOfRangeException(FakeData.ShortString2));
 
-            var ctl = CreatePostManageController();
+            var ctl = CreatePostController();
             var result = await ctl.Segment();
 
             Assert.IsInstanceOf<StatusCodeResult>(result);
@@ -127,7 +127,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
 
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             var model = new DataTableRequest
             {
                 Draw = FakeData.Int1,
@@ -143,7 +143,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task CreateOrEdit_BadModelState()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             postManageController.ModelState.AddModelError("", FakeData.ShortString2);
 
             MagicWrapper<PostEditModel> model = new();
@@ -156,7 +156,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task CreateOrEdit_Exception()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             postManageController.ControllerContext = new()
             {
                 HttpContext = new DefaultHttpContext()
@@ -199,7 +199,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task CreateOrEdit_Create_Draft()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             MagicWrapper<PostEditModel> model = new()
             {
                 ViewModel = new()
@@ -235,7 +235,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task CreateOrEdit_Create_Publish_EnablePingback()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             postManageController.ControllerContext = new()
             {
                 HttpContext = new DefaultHttpContext()
@@ -302,7 +302,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Restore_EmptyId()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             var result = await postManageController.Restore(Guid.Empty);
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -310,7 +310,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Restore_OK()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             var result = await postManageController.Restore(FakeData.Uid1);
             Assert.IsInstanceOf<OkResult>(result);
         }
@@ -318,7 +318,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_EmptyId()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             var result = await postManageController.Delete(Guid.Empty);
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -326,7 +326,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_OK()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             var result = await postManageController.Delete(FakeData.Uid1);
             Assert.IsInstanceOf<OkResult>(result);
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
@@ -335,15 +335,15 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task DeleteFromRecycleBin_EmptyId()
         {
-            var postManageController = CreatePostManageController();
-            var result = await postManageController.DeleteFromRecycleBin(Guid.Empty);
+            var postController = CreatePostController();
+            var result = await postController.DeleteFromRecycleBin(Guid.Empty);
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
         public async Task DeleteFromRecycleBin_OK()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             var result = await postManageController.DeleteFromRecycleBin(FakeData.Uid1);
             Assert.IsInstanceOf<OkResult>(result);
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), false));
@@ -352,7 +352,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task EmptyRecycleBin_View()
         {
-            var postManageController = CreatePostManageController();
+            var postManageController = CreatePostController();
             var result = await postManageController.EmptyRecycleBin();
 
             Assert.IsInstanceOf<RedirectToPageResult>(result);

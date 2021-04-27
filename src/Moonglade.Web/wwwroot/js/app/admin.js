@@ -304,7 +304,7 @@ var postEditor = {
         var tid = setInterval(postNonce, 60 * 1000);
         function postNonce() {
             var num = Math.random();
-            $.post('/api/postmanage/keep-alive', { nonce: num }, function (data) {
+            $.post('/api/post/keep-alive', { nonce: num }, function (data) {
                 console.info(data);
             });
         }
@@ -360,7 +360,7 @@ var onPageCreateEditFailed = function (context) {
 
 function deletePost(postid) {
     $(`#span-processing-${postid}`).show();
-    callApi(`/api/postmanage/${postid}/destroy`, 'DELETE', {},
+    callApi(`/api/post/${postid}/destroy`, 'DELETE', {},
         (resp) => {
             $(`#tr-${postid}`).hide();
             notyf.success('Post deleted');
@@ -369,7 +369,7 @@ function deletePost(postid) {
 
 function restorePost(postid) {
     $(`#span-processing-${postid}`).show();
-    callApi(`/api/postmanage/${postid}/restore`, 'POST', {},
+    callApi(`/api/post/${postid}/restore`, 'POST', {},
         (resp) => {
             $(`#tr-${postid}`).hide();
             notyf.success('Post restored');
