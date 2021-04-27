@@ -70,16 +70,5 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Index();
             Assert.IsInstanceOf(typeof(RedirectToPageResult), result);
         }
-
-        [Test]
-        public async Task ClearAuditLogs_Redirect()
-        {
-            var ctl = CreateAdminController();
-            var result = await ctl.ClearAuditLogs();
-
-            _mockAudit.Verify();
-
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
-        }
     }
 }

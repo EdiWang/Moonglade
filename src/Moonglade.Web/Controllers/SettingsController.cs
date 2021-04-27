@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Configuration;
+using Moonglade.Configuration.Settings;
 using Moonglade.Notification.Client;
 using Moonglade.Setup;
 using Moonglade.Utils;
@@ -423,6 +425,14 @@ namespace Moonglade.Web.Controllers
                 ServerTimeUtc = DateTime.UtcNow,
                 Password = password
             });
+        }
+
+        [HttpDelete("auditlogs/clear")]
+        [FeatureGate(FeatureFlags.EnableAudit)]
+        public async Task<IActionResult> ClearAuditLogs()
+        {
+            await _blogAudit.ClearAuditLog();
+            return Ok();
         }
     }
 }

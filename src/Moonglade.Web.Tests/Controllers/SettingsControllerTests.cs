@@ -335,6 +335,17 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
+        [Test]
+        public async Task ClearAuditLogs_Redirect()
+        {
+            var ctl = CreateSettingsController();
+            var result = await ctl.ClearAuditLogs();
+
+            _mockBlogAudit.Verify();
+
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
         //[Test]
         //public void ClearDataCache_StateUnderTest_ExpectedBehavior()
         //{

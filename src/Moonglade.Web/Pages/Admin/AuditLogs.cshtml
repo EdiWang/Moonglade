@@ -2,6 +2,20 @@
 @using X.PagedList.Mvc.Core.Common
 @using X.PagedList.Mvc.Core
 @model Moonglade.Web.Pages.Admin.AuditLogsModel
+@section scripts {
+    <script>
+        $('.btn-clear').click(function () {
+            callApi(`/api/settings/auditlogs/clear`, 'DELETE', { },
+                (resp) => {
+                    notyf.success('Audit logs are cleared');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 800);
+                });
+        });
+    </script>
+}
+@Html.AntiForgeryToken()
 
 <partial name="_DiagnosisHeader" />
 
@@ -90,7 +104,7 @@ else
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
-                <a asp-action="ClearAuditLogs" class="btn btn-danger btn-clear">@Localizer["Clear Now"]</a>
+                <a href="#" class="btn btn-danger btn-clear">@Localizer["Clear Now"]</a>
             </div>
         </div>
     </div>

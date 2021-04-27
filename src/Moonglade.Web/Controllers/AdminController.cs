@@ -2,17 +2,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Auth;
-using Moonglade.Configuration.Settings;
 
 namespace Moonglade.Web.Controllers
 {
     [Authorize]
     [ApiExplorerSettings(IgnoreApi = true)]
     [Route("admin")]
-    public class AdminController : Controller
+    public class AdminController : ControllerBase
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IBlogAudit _blogAudit;
@@ -35,14 +33,6 @@ namespace Moonglade.Web.Controllers
             }
 
             return RedirectToPage("/Admin/Post");
-        }
-
-        [HttpGet("clear-auditlogs")]
-        [FeatureGate(FeatureFlags.EnableAudit)]
-        public async Task<IActionResult> ClearAuditLogs()
-        {
-            await _blogAudit.ClearAuditLog();
-            return RedirectToPage("/Admin/AuditLogs");
         }
     }
 }
