@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -207,6 +208,9 @@ namespace Moonglade.Web
                 options.AllowedExtensions = _configuration.GetSection("ImageStorage:AllowedExtensions").Get<string[]>();
                 options.DefaultImagePath = _configuration["ImageStorage:DefaultImagePath"];
             });
+
+            var rewriteOptions = new RewriteOptions().AddRedirect("^admin$", "admin/post");
+            app.UseRewriter(rewriteOptions);
 
             app.UseStaticFiles();
             app.UseSession().UseCaptchaImage(options =>

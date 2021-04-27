@@ -24,12 +24,6 @@ namespace Moonglade.Web.Configuration
                 await context.Response.WriteAsJsonAsync(obj);
             });
 
-            endpoints.MapGet("/admin", async context =>
-            {
-                await context.Response.CompleteAsync();
-                context.Response.Redirect("/admin/post", false);
-            }).RequireAuthorization();
-
             endpoints.MapControllers();
             endpoints.MapRazorPages();
         };
