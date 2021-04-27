@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.DataPorting;
 using Moonglade.Utils;
@@ -21,6 +22,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("export/{type}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ExportDownload(ExportDataType type)
         {
             var exportResult = await _expman.ExportData(type);

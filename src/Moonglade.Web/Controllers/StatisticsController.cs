@@ -44,6 +44,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [DisallowSpiderUA]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post(StatisticsRequest request)
         {

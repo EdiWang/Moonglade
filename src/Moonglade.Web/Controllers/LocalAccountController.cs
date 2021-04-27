@@ -25,6 +25,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Create(AccountEditViewModel model)
         {
             if (_accountService.Exist(model.Username))
@@ -38,6 +40,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (id == Guid.Empty)
@@ -68,6 +73,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPut("{id:guid}/password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> ResetPassword(Guid id, ResetPasswordRequest request)
         {
             if (id == Guid.Empty)

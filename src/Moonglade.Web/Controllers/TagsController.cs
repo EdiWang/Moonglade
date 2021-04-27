@@ -29,7 +29,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("list")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
-        [ProducesResponseType(typeof(IEnumerable<Tag>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyList<Tag>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> List()
         {
@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("names")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Names()
         {
             var tagNames = await _tagService.GetAllNames();

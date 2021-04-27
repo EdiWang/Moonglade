@@ -211,6 +211,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("set-blogger-avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "avatar" })]
         public async Task<IActionResult> SetBloggerAvatar([FromForm] string base64Img)
         {
@@ -251,6 +252,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("set-siteicon")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> SetSiteIcon([FromForm] string base64Img)
         {
             try
@@ -364,6 +366,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("custom-css")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;

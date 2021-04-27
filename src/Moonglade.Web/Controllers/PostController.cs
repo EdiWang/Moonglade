@@ -53,7 +53,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("segment/published")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
-        [ProducesResponseType(typeof(IEnumerable<PostSegment>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyList<PostSegment>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Segment()
         {
@@ -101,6 +101,8 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [TypeFilter(typeof(ClearPagingCountCache))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> CreateOrEdit(
             [FromForm] MagicWrapper<PostEditModel> temp, [FromServices] LinkGenerator linkGenerator)
         {
@@ -178,6 +180,8 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [TypeFilter(typeof(ClearPagingCountCache))]
         [HttpPost("{postId:guid}/restore")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Restore(Guid postId)
         {
             if (postId == Guid.Empty)
@@ -194,6 +198,8 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [TypeFilter(typeof(ClearPagingCountCache))]
         [HttpDelete("{postId:guid}/recycle")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(Guid postId)
         {
             if (postId == Guid.Empty)
@@ -209,6 +215,8 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [HttpDelete("{postId:guid}/destroy")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
         {
             if (postId == Guid.Empty)
@@ -224,15 +232,16 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSubscriptionCache))]
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [HttpDelete("empty-recycle-bin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postManageService.PurgeRecycledAsync();
             return Ok();
         }
 
-        // Keep session from expire when writing a very long post
         [IgnoreAntiforgeryToken]
         [HttpPost("keep-alive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult KeepAlive(string nonce)
         {
             return Ok(new

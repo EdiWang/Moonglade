@@ -37,6 +37,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Process()
         {
             if (!_blogConfig.AdvancedSettings.EnablePingBackReceive)
