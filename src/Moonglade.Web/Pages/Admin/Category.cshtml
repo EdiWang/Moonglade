@@ -6,6 +6,34 @@
 
 @section scripts{
     <script>
+        function initCreateCategory() {
+            $('#CategoryEditViewModel_Id').val(emptyGuid);
+            $('#edit-form')[0].reset();
+            $('#editCatModal').modal();
+        }
+
+        function editCat(id) {
+            callApi(`/api/category/${id}`, 'GET', {},
+                async (resp) => {
+                    var data = await resp.json();
+                    $('#CategoryEditViewModel_Id').val(data.id);
+                    $('#CategoryEditViewModel_RouteName').val(data.routeName);
+                    $('#CategoryEditViewModel_DisplayName').val(data.displayName);
+                    $('#CategoryEditViewModel_Note').val(data.note);
+                    $('#editCatModal').modal();
+                });
+        }
+
+        function deleteCat(catid) {
+            $(`#span-processing-${catid}`).show();
+
+            callApi(`/api/category/delete/${catid}`, 'DELETE', {},
+                (resp) => {
+                    $(`#card-${catid}`).hide();
+                    notyf.success('Category deleted');
+                });
+        }
+
         $(".btn-delete").click(function () {
             var cfm = confirm("Delete Confirmation?");
             if (cfm) deleteCat($(this).data("catid"));
@@ -24,7 +52,7 @@
                     action = 'create';
                 }
                 else {
-                    action = "edit";
+                    action = 'update';
                     httpVerb = 'PUT';
                 }
 

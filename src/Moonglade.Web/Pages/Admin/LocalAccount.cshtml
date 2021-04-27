@@ -46,8 +46,8 @@
 
         $(".btn-resetpwd").click(function () {
             if ($("#resetpassword-form").valid()) {
-                callApi(`/api/localaccount/${cid}/reset-password`,
-                    'POST',
+                callApi(`/api/localaccount/${cid}/password`,
+                    'PUT',
                     {
                         "newPassword": $("#NewPassword").val()
                     },

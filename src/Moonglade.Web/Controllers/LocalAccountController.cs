@@ -67,7 +67,7 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("{id:guid}/reset-password")]
+        [HttpPut("{id:guid}/password")]
         public async Task<IActionResult> ResetPassword(Guid id, ResetPasswordRequest request)
         {
             if (id == Guid.Empty)

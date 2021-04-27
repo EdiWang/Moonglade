@@ -428,34 +428,6 @@ function initCreateTag() {
     $('#editTagModal').modal();
 }
 
-function initCreateCategory() {
-    $('#CategoryEditViewModel_Id').val(emptyGuid);
-    $('#edit-form')[0].reset();
-    $('#editCatModal').modal();
-}
-
-function editCat(id) {
-    callApi(`/api/category/edit/${id}`, 'GET', {},
-        async (resp) => {
-            var data = await resp.json();
-            $('#CategoryEditViewModel_Id').val(data.id);
-            $('#CategoryEditViewModel_RouteName').val(data.routeName);
-            $('#CategoryEditViewModel_DisplayName').val(data.displayName);
-            $('#CategoryEditViewModel_Note').val(data.note);
-            $('#editCatModal').modal();
-        });
-}
-
-function deleteCat(catid) {
-    $(`#span-processing-${catid}`).show();
-
-    callApi(`/api/category/delete/${catid}`, 'DELETE', {},
-        (resp) => {
-            $(`#card-${catid}`).hide();
-            notyf.success('Category deleted');
-        });
-}
-
 function deletePage(pageid, slug) {
     $(`#span-processing-${pageid}`).show();
 

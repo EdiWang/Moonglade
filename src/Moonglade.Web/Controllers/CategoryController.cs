@@ -25,6 +25,17 @@ namespace Moonglade.Web.Controllers
             _catService = catService;
         }
 
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var cat = await _catService.Get(id);
+            if (null == cat) return NotFound();
+
+            return Ok(cat);
+        }
+
         [HttpGet("list")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
@@ -52,29 +63,10 @@ namespace Moonglade.Web.Controllers
             return Created(string.Empty, model);
         }
 
-        [HttpGet("edit/{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Edit(Guid id)
-        {
-            var cat = await _catService.Get(id);
-            if (null == cat) return NotFound();
-
-            var model = new CategoryEditModel
-            {
-                Id = cat.Id,
-                DisplayName = cat.DisplayName,
-                RouteName = cat.RouteName,
-                Note = cat.Note
-            };
-
-            return Ok(model);
-        }
-
-        [HttpPut("edit")]
+        [HttpPut("update")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Edit(CategoryEditModel model)
+        public async Task<IActionResult> Update(CategoryEditModel model)
         {
             var request = new UpdateCatRequest
             {

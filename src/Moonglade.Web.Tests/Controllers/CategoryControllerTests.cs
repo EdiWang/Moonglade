@@ -45,31 +45,31 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Edit_Get_NonExists()
+        public async Task Get_NonExists()
         {
             _mockCategoryService.Setup(c => c.Get(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((Category)null));
 
             var categoryController = CreateCategoryController();
-            var result = await categoryController.Edit(Guid.Empty);
+            var result = await categoryController.Get(Guid.Empty);
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
-        public async Task Edit_Get_Exists()
+        public async Task Get_Exists()
         {
             _mockCategoryService.Setup(c => c.Get(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(new Category()));
 
             var categoryController = CreateCategoryController();
-            var result = await categoryController.Edit(Guid.Empty);
+            var result = await categoryController.Get(Guid.Empty);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
         [Test]
-        public async Task Edit_ValidModel()
+        public async Task Update_ValidModel()
         {
             var categoryController = CreateCategoryController();
             var model = new CategoryEditModel
@@ -79,7 +79,7 @@ namespace Moonglade.Web.Tests.Controllers
                 Note = FakeData.ShortString1
             };
 
-            var result = await categoryController.Edit(model);
+            var result = await categoryController.Update(model);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
