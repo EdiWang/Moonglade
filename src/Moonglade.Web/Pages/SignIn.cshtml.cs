@@ -111,7 +111,7 @@ namespace Moonglade.Web.Pages
                         _logger.LogInformation(successMessage);
                         await _blogAudit.AddAuditEntry(EventType.Authentication, AuditEventId.LoginSuccessLocal, successMessage);
 
-                        return RedirectToAction("Index", "Admin");
+                        return RedirectToPage("/Admin/Post");
                     }
                     ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
                     return Page();
