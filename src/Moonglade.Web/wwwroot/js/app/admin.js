@@ -329,7 +329,7 @@ var onPostCreateEditComplete = function () {
 
 var onPostCreateEditSuccess = function (data) {
     if (data.postId) {
-        $('input[name="PostId"]').val(data.postId);
+        $('input[name="ViewModel.PostId"]').val(data.postId);
         notyf.success('Post saved successfully.');
 
         if (isPreviewRequired) {
