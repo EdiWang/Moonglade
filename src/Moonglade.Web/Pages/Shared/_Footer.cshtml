@@ -54,7 +54,7 @@
                     @foreach (var item in cultureItems)
                     {
                         <li>
-                            <a asp-controller="Settings" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" asp-route-culture="@item.Value">@item.NativeName</a>
+                            <a asp-controller="Settings" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" asp-route-culture="@item.Value" rel="nofollow">@item.NativeName</a>
                         </li>
                     }
                 </ul>
