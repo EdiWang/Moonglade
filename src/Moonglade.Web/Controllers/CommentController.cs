@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.FeatureManagement.Mvc;
+using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Configuration;
+using Moonglade.Configuration.Settings;
 using Moonglade.Notification.Client;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
@@ -40,7 +43,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("list/{postId:guid}")]
-        [AllowAnonymous]
+        [FeatureGate(FeatureFlags.EnableWebApi)]
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> List(Guid postId, [FromServices] ITimeZoneResolver timeZoneResolver)
