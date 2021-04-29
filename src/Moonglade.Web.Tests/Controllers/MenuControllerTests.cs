@@ -20,12 +20,19 @@ namespace Moonglade.Web.Tests.Controllers
 
         private readonly MenuEditViewModel _menuEditViewModel = new()
         {
-            Id = Guid.Empty,
+            Id = FakeData.Uid1,
             DisplayOrder = FakeData.Int2,
             Icon = FakeData.Slug2,
             IsOpenInNewTab = true,
             Title = FakeData.Title3,
-            Url = "/work/996"
+            Url = "/work/996",
+            SubMenus = new SubMenuEditViewModel[]
+            {
+                new ()
+                {
+                    Id = FakeData.Uid2, IsOpenInNewTab = true, Title = "SM", Url = "https://996.icu"
+                }
+            }
         };
 
         [SetUp]

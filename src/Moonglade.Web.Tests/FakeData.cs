@@ -9,6 +9,7 @@ namespace Moonglade.Web.Tests
     internal class FakeData
     {
         public static readonly Guid Uid1 = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
+        public static readonly Guid Uid2 = Guid.Parse("87359ad7-075f-4d9c-8e45-ebbd69bc50d6");
         public static string Title1 => "“996”工作制，即每天早 9 点到岗，一直工作到晚上 9 点，每周工作 6 天。";
         public static string Title2 => "Work 996 and Get into ICU";
         public static string Title3 => "Work 996";
