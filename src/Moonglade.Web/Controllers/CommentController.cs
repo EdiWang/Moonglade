@@ -46,7 +46,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> NewComment(Guid postId, NewCommentModel model)
+        public async Task<IActionResult> Create(Guid postId, NewCommentModel model)
         {
             if (!string.IsNullOrWhiteSpace(model.Email) && !Helper.IsValidEmailAddress(model.Email))
             {
@@ -92,7 +92,7 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpPut("set-approval-status/{commentId:guid}")]
+        [HttpPut("{commentId:guid}/approval/toggle")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SetApprovalStatus(Guid commentId)

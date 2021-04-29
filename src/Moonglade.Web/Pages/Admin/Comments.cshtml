@@ -44,7 +44,7 @@
             });
 
             $(".btn-approve").click(function () {
-                callApi(`/api/comment/set-approval-status/${$(this).data("commentid")}`, 'PUT', {},
+                callApi(`/api/comment/${$(this).data("commentid")}/approval/toggle`, 'PUT', {},
                     async (resp) => {
                         var data = await resp.json();
                         $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-outline-success');
