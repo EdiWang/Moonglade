@@ -43,7 +43,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task SetApprovalStatus_EmptyId()
         {
             var ctl = CreateCommentController();
-            var result = await ctl.SetApprovalStatus(Guid.Empty);
+            var result = await ctl.Approval(Guid.Empty);
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -55,7 +55,7 @@ namespace Moonglade.Web.Tests.Controllers
             var id = Guid.NewGuid();
 
             var ctl = CreateCommentController();
-            var result = await ctl.SetApprovalStatus(id);
+            var result = await ctl.Approval(id);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.AreEqual(id, ((OkObjectResult)result).Value);

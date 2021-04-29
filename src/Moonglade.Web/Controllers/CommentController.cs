@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -36,6 +37,27 @@ namespace Moonglade.Web.Controllers
 
             _commentService = commentService;
             _notificationClient = notificationClient;
+        }
+
+        [HttpGet("list/{postId:guid}")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> List(Guid postId, [FromServices] ITimeZoneResolver timeZoneResolver)
+        {
+            if (postId == Guid.Empty) return BadRequest();
+
+            var comments = await _commentService.GetApprovedCommentsAsync(postId);
+            var resp = comments.Select(p => new
+            {
+                p.Username,
+                Content = p.CommentContent,
+                p.CreateTimeUtc,
+                CreateTimeLocal = timeZoneResolver.ToTimeZone(p.CreateTimeUtc),
+                Replies = p.CommentReplies
+            });
+
+            return Ok(resp);
         }
 
         [HttpPost("{postId:guid}")]
@@ -95,7 +117,7 @@ namespace Moonglade.Web.Controllers
         [HttpPut("{commentId:guid}/approval/toggle")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SetApprovalStatus(Guid commentId)
+        public async Task<IActionResult> Approval(Guid commentId)
         {
             if (commentId == Guid.Empty)
             {
