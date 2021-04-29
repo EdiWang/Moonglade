@@ -36,12 +36,12 @@ namespace Moonglade.DataPorting.Exporters
             string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
             foreach (var item in list)
             {
-                var json = JsonConvert.SerializeObject(item, Formatting.Indented); // JsonSerializer.Serialize(item);
-                await SaveJsonToDirectory(json, Path.Join(exportDirectory, tempId), $"{Guid.NewGuid()}.json");
+                var json = JsonConvert.SerializeObject(item, Formatting.Indented);
+                await SaveJsonToDirectory(json, exportDirectory, $"{Guid.NewGuid()}.json");
             }
 
-            var distPath = Path.Join(exportDirectory, $"{_fileNamePrefix}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.zip");
-            ZipFile.CreateFromDirectory(Path.Join(exportDirectory, tempId), distPath);
+            var distPath = Path.Join(_directory, "export", $"{_fileNamePrefix}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.zip");
+            ZipFile.CreateFromDirectory(exportDirectory, distPath);
 
             return new()
             {
