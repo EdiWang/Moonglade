@@ -40,7 +40,7 @@ namespace Moonglade.DataPorting.Tests.Exporters
             _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, string>>>(), true)).Returns(Task.FromResult(data));
             var jsonExporter = CreateJsonExporter();
 
-            var result = await jsonExporter.ExportData(p => 1);
+            var result = await jsonExporter.ExportData(p => "251");
 
             Assert.IsNotNull(result);
             Assert.AreEqual(ExportFormat.SingleJsonFile, result.ExportFormat);
