@@ -54,6 +54,13 @@
         "simplemde.min.js",
         "simplemde.min.css"
       ]
+    },
+    {
+      "library": "jquery-validation-unobtrusive@3.2.12",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
+      "files": [
+        "jquery.validate.unobtrusive.min.js"
+      ]
     }
   ]
 }

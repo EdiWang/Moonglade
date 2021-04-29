@@ -25,7 +25,7 @@
     "outputFileName": "wwwroot/js/dist/admin-bundle.js",
     "inputFiles": [
       "wwwroot/js/3rd/jquery.validate.min.js",
-      "wwwroot/js/3rd/jquery.validate.unobtrusive.min.js",
+      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
       "wwwroot/js/3rd/jquery.unobtrusive-ajax.min.js",
       "wwwroot/js/3rd/bootstrap-tagsinput.min.js",
       "wwwroot/js/3rd/jquery.are-you-sure.min.js",
