@@ -229,7 +229,7 @@ namespace Moonglade.Web.Controllers
         #region Site Icon
 
         [ResponseCache(Duration = 3600)]
-        [Route(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
+        [HttpGet(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
         public IActionResult SiteIcon(string filename)
         {
             var iconBytes = MemoryStreamIconGenerator.GetIcon(filename);
