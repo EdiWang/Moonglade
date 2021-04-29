@@ -42,7 +42,7 @@ namespace Moonglade.DataPorting.Exporters
 
             return new()
             {
-                ExportFormat = ExportFormat.ZippedJsonFiles,
+                ExportFormat = ExportFormat.SingleCSVFile,
                 FilePath = distPath
             };
         }
