@@ -36,7 +36,6 @@ namespace Moonglade.Web.Tests
         private readonly string _key = "work996andgetintoicu";
         private readonly string _username = "moonglade";
         private readonly string _password = "work996";
-        private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
         private static readonly Category Cat = new()
         {
             DisplayName = "WTF",
@@ -47,7 +46,7 @@ namespace Moonglade.Web.Tests
 
         private static readonly Post Post = new()
         {
-            Id = Uid,
+            Id = FakeData.Uid1,
             Title = FakeData.Title2,
             Slug = FakeData.Slug1,
             ContentAbstract = "Get some fubao",
@@ -137,7 +136,7 @@ namespace Moonglade.Web.Tests
             _mockPostService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(Post));
 
             var service = CreateService();
-            var result = await service.GetPostAsync(Uid.ToString(), _username, _password);
+            var result = await service.GetPostAsync(FakeData.Uid1.ToString(), _username, _password);
             Assert.IsNotNull(result);
         }
 
@@ -169,7 +168,7 @@ namespace Moonglade.Web.Tests
 
             _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
             _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()))
-                .Returns(Task.FromResult(new PostEntity { Id = Uid }));
+                .Returns(Task.FromResult(new PostEntity { Id = FakeData.Uid1 }));
 
             var service = CreateService();
             await service.AddPostAsync("996.icu", _username, _password, new()
@@ -188,9 +187,29 @@ namespace Moonglade.Web.Tests
         public async Task DeletePostAsync_OK()
         {
             var service = CreateService();
-            await service.DeletePostAsync("996.icu", Uid.ToString(), _username, _password, true);
+            await service.DeletePostAsync("996.icu", FakeData.Uid1.ToString(), _username, _password, true);
 
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+        }
+
+        [Test]
+        public async Task GetAuthorsAsync_OK()
+        {
+            var service = CreateService();
+            var result = await service.GetAuthorsAsync("996.icu", _username, _password);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Length == 1);
+        }
+
+        [Test]
+        public async Task DeletePageAsync_OK()
+        {
+            var service = CreateService();
+            var result = await service.DeletePageAsync("996.icu", _username, _password, FakeData.Uid2.ToString());
+
+            Assert.IsTrue(result);
+            _mockPageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
         }
     }
 }
