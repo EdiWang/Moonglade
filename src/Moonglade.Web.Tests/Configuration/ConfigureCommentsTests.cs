@@ -60,7 +60,9 @@ namespace Moonglade.Web.Tests.Configuration
         {
             var myConfiguration = new Dictionary<string, string>
             {
-                {"CommentModerator:Provider", provider}
+                { "CommentModerator:Provider", provider },
+                { "CommentModerator:AzureContentModeratorSettings:Endpoint", "https://996.icu" },
+                { "CommentModerator:AzureContentModeratorSettings:OcpApimSubscriptionKey", "996" }
             };
 
             var configuration = new ConfigurationBuilder()
