@@ -1,6 +1,10 @@
 # Moonglade Blog System
 
-[![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Edi-GitHub/_build/latest?definitionId=68&branchName=master) ![Docker Build and Push](https://github.com/EdiWang/Moonglade/workflows/Docker%20Build%20and%20Push/badge.svg) ![.NET Build Linux](https://github.com/EdiWang/Moonglade/workflows/.NET%20Build%20Linux/badge.svg) ![ACR Build and Push](https://github.com/EdiWang/Moonglade/workflows/ACR%20Build%20and%20Push/badge.svg)
+[![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Moonglade%20DevOps/_build/latest?definitionId=68&branchName=master) 
+![Docker Build and Push](https://github.com/EdiWang/Moonglade/workflows/Docker%20Build%20and%20Push/badge.svg) 
+![.NET Build Linux](https://github.com/EdiWang/Moonglade/workflows/.NET%20Build%20Linux/badge.svg) 
+![ACR Build and Push](https://github.com/EdiWang/Moonglade/workflows/ACR%20Build%20and%20Push/badge.svg) 
+![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/ediwang/Moonglade%20DevOps/68?label=Unit%20Test%20Coverage)
 
 The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enabling most common blogging features including posts, comments, categories, archive, tags and pages.
 
