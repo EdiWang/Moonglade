@@ -22,9 +22,10 @@ jobs:
     inputs:
       command: test
       projects: '**/*Tests/*Tests.csproj'
-      arguments: '--configuration Release --no-build --collect "Code coverage" -- RunConfiguration.DisableAppDomain=true'
+      arguments: '--configuration Release --no-build --settings /src/moonglade.runsettings --collect "Code coverage" -- RunConfiguration.DisableAppDomain=true'
 
   - task: DotNetCoreCLI@2
+    displayName: Publish
     inputs:
       command: publish
       publishWebProjects: True
@@ -32,6 +33,7 @@ jobs:
       zipAfterPublish: True
 
   - task: PublishBuildArtifacts@1
+    displayName: Copy to Drop
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
       artifactName: 'Drop'
