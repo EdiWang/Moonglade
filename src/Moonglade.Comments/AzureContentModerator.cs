@@ -6,28 +6,13 @@ using Microsoft.Azure.CognitiveServices.ContentModerator;
 
 namespace Moonglade.Comments
 {
-    public class AzureContentModeratorSettings
-    {
-        public string OcpApimSubscriptionKey { get; set; }
-        public string Endpoint { get; set; }
-    }
-
     public class AzureContentModerator : ICommentModerator, IDisposable
     {
         private readonly IContentModeratorClient _client;
 
-        public AzureContentModerator(AzureContentModeratorSettings settings)
+        public AzureContentModerator(IContentModeratorClient client)
         {
-            _client = Authenticate(settings.OcpApimSubscriptionKey, settings.Endpoint);
-        }
-
-        private static IContentModeratorClient Authenticate(string key, string endpoint)
-        {
-            var client = new ContentModeratorClient(new ApiKeyServiceClientCredentials(key))
-            {
-                Endpoint = endpoint
-            };
-            return client;
+            _client = client;
         }
 
         public async Task<string> ModerateContent(string input)

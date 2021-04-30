@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Azure.CognitiveServices.ContentModerator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Comments;
@@ -29,7 +30,13 @@ namespace Moonglade.Web.Configuration
                     services.AddScoped<ICommentModerator, LocalWordFilterModerator>();
                     break;
                 case "azure":
-                    services.AddScoped<ICommentModerator>(_ => new AzureContentModerator(settings.AzureContentModeratorSettings));
+                    var cred = new ApiKeyServiceClientCredentials(settings.AzureContentModeratorSettings.OcpApimSubscriptionKey);
+                    services.AddTransient<IContentModeratorClient>(_ => new ContentModeratorClient(cred)
+                    {
+                        Endpoint = settings.AzureContentModeratorSettings.Endpoint
+                    });
+
+                    services.AddScoped<ICommentModerator, AzureContentModerator>();
                     break;
                 default:
                     var msg = $"Provider {provider} is not supported.";
