@@ -68,6 +68,20 @@
       "files": [
         "jquery.are-you-sure.min.js"
       ]
+    },
+    {
+      "library": "jquery-ajax-unobtrusive@3.2.6",
+      "destination": "wwwroot/lib/jquery-ajax-unobtrusive/",
+      "files": [
+        "jquery.unobtrusive-ajax.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validate@1.19.2",
+      "destination": "wwwroot/lib/jquery-validate/",
+      "files": [
+        "jquery.validate.min.js"
+      ]
     }
   ]
 }
