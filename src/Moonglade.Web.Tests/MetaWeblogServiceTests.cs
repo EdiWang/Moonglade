@@ -184,6 +184,44 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public async Task EditPostAsync_OK()
+        {
+            IReadOnlyList<Category> cats = new List<Category>
+            {
+                Cat
+            };
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+
+            var service = CreateService();
+            var result = await service.EditPostAsync(FakeData.Uid1.ToString(), _username, _password, new()
+            {
+                title = Post.Title,
+                categories = new[] { Cat.DisplayName },
+                wp_slug = Post.Slug,
+                description = Post.RawPostContent,
+                mt_keywords = "996,icu"
+            }, true);
+
+            Assert.IsTrue(result);
+            _mockPostManageService.Verify(p => p.UpdateAsync(FakeData.Uid1, It.IsAny<UpdatePostRequest>()));
+        }
+
+        [Test]
+        public async Task GetCategoriesAsync_OK()
+        {
+            IReadOnlyList<Category> cats = new List<Category>
+            {
+                Cat
+            };
+            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+
+            var service = CreateService();
+            var result = await service.GetCategoriesAsync("996.icu", _username, _password);
+
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
         public async Task DeletePostAsync_OK()
         {
             var service = CreateService();
