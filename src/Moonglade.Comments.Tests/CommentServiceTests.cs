@@ -80,6 +80,34 @@ namespace Moonglade.Comments.Tests
         }
 
         [Test]
+        public async Task ToggleApprovalAsync_OK()
+        {
+            CommentEntity cmt = new()
+            {
+                Id = Guid.Empty,
+                CreateTimeUtc = new(996, 9, 9, 6, 3, 5),
+                CommentContent = "work 996 and get into icu",
+                Email = "fubao@996.icu",
+                IPAddress = "251.251.251.251",
+                IsApproved = false,
+                Username = "Jack Ma"
+            };
+
+            IReadOnlyList<CommentEntity> fakeComments = new List<CommentEntity>
+            {
+                cmt
+            };
+
+            _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<CommentSpec>(), true)).Returns(Task.FromResult(fakeComments));
+
+            var service = CreateCommentService();
+            await service.ToggleApprovalAsync(new[] { Guid.Empty });
+
+            Assert.IsTrue(cmt.IsApproved);
+            _mockCommentEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<CommentEntity>()));
+        }
+
+        [Test]
         public void DeleteAsync_EmptyIds()
         {
             var service = CreateCommentService();
