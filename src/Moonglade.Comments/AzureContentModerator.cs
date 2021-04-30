@@ -40,7 +40,7 @@ namespace Moonglade.Comments
                 byte[] textBytes = Encoding.UTF8.GetBytes(s);
                 var stream = new MemoryStream(textBytes);
                 var screenResult = await _client.TextModeration.ScreenTextAsync("text/plain", stream);
-                if (screenResult.Terms is not null)
+                if (screenResult.Terms is not null && screenResult.Terms.Count > 0)
                 {
                     return true;
                 }
