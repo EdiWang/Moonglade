@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
@@ -9,7 +8,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Controllers
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class TagsControllerTests
     {
         private MockRepository _mockRepository;

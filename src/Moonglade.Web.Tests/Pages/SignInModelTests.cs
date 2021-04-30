@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Edi.Captcha;
@@ -20,7 +19,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class SignInModelTests
     {
         private MockRepository _mockRepository;

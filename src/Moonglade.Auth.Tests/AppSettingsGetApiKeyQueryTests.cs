@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -7,7 +6,6 @@ using NUnit.Framework;
 namespace Moonglade.Auth.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class AppSettingsGetApiKeyQueryTests
     {
         private MockRepository _mockRepository;

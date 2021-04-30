@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
@@ -8,7 +7,6 @@ using NUnit.Framework;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class SearchServiceTests
     {
         private MockRepository _mockRepository;

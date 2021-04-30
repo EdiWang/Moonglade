@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.Core;
 using Moonglade.Web.Pages;
@@ -9,7 +8,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class ArchiveModelTests
     {
         private MockRepository _mockRepository;

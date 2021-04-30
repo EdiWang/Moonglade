@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
@@ -12,7 +11,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class IndexModelTests
     {
         private MockRepository _mockRepository;

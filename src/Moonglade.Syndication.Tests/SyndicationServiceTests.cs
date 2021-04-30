@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -17,7 +16,6 @@ using NUnit.Framework;
 namespace Moonglade.Syndication.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class SyndicationServiceTests
     {
         private MockRepository _mockRepository;

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,7 +12,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages.Admin
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class AuditLogsModelTests
     {
         private MockRepository _mockRepository;

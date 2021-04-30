@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moonglade.Auditing;
@@ -13,7 +12,6 @@ using NUnit.Framework;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class CategoryServiceTests
     {
         private MockRepository _mockRepository;

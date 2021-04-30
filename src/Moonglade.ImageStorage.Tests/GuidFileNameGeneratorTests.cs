@@ -1,11 +1,9 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 
 namespace Moonglade.ImageStorage.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class GuidFileNameGeneratorTests
     {
         [Test]

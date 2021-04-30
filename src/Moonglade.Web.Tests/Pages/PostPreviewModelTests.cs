@@ -1,20 +1,19 @@
-﻿using Moonglade.Core;
-using Moonglade.Web.Pages;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Moonglade.Core;
+using Moonglade.Web.Pages;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Pages
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class PostPreviewModelTests
     {
         private MockRepository _mockRepository;

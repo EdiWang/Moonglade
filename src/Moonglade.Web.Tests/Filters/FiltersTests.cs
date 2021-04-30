@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Edi.Captcha;
 using MemoryCache.Testing.Moq;
@@ -16,7 +15,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Filters
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class FiltersTests
     {
         [Test]

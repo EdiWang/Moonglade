@@ -1,12 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moonglade.Web.Configuration;
 using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Configuration
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class ConfigureApiBehaviorTests
     {
         [Test]

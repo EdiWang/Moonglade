@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,7 +13,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Controllers
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class LocalAccountControllerTests
     {
         private MockRepository _mockRepository;

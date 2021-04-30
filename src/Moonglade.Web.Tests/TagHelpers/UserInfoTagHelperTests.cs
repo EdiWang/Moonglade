@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -9,7 +8,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.TagHelpers
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class UserInfoTagHelperTests
     {
         [Test]

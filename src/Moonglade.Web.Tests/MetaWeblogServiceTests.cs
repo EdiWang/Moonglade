@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -18,7 +17,7 @@ using Tag = Moonglade.Core.Tag;
 namespace Moonglade.Web.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class MetaWeblogServiceTests
     {
         private MockRepository _mockRepository;

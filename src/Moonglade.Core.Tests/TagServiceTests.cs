@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -14,7 +13,6 @@ using NUnit.Framework;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class TagServiceTests
     {
         private MockRepository _mockRepository;

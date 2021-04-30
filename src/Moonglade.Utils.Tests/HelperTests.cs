@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -8,7 +7,6 @@ using NUnit.Framework;
 namespace Moonglade.Utils.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class HelperTests
     {
         [Test]

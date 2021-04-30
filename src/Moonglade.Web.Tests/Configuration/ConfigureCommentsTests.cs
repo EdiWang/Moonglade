@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Configuration
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class ConfigureCommentsTests
     {
         [TestCase(null)]

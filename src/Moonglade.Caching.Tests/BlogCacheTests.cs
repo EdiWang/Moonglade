@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using MemoryCache.Testing.Moq;
 using Microsoft.Extensions.Caching.Memory;
@@ -8,7 +7,6 @@ using NUnit.Framework;
 namespace Moonglade.Caching.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class BlogCacheTests
     {
         private IMemoryCache _memoryCache;

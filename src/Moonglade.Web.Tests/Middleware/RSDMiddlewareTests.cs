@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
@@ -10,7 +9,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class RSDMiddlewareTests
     {
         [Test]

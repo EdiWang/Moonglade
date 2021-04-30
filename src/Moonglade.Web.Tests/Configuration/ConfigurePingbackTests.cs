@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Pingback;
@@ -8,7 +7,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Configuration
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class ConfigurePingbackTests
     {
         [Test]

@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -12,7 +11,6 @@ using NUnit.Framework;
 namespace Moonglade.Menus.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class MenuServiceTests
     {
         private MockRepository _mockRepository;

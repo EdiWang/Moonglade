@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.IO;
+﻿using System.IO;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
@@ -8,7 +7,6 @@ using NUnit.Framework;
 namespace Moonglade.DataPorting.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class ExportManagerTests
     {
         private MockRepository _mockRepository;

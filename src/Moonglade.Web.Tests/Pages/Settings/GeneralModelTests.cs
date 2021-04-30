@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Moonglade.Configuration;
 using Moonglade.Web.Pages.Settings;
 using Moq;
@@ -7,7 +6,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages.Settings
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class GeneralModelTests
     {
         private MockRepository _mockRepository;

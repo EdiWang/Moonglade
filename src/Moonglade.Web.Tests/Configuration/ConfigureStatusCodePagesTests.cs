@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Web.Configuration;
@@ -8,7 +7,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Configuration
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class ConfigureStatusCodePagesTests
     {
         [Test]

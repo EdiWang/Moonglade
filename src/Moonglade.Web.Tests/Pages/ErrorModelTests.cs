@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -19,7 +18,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class ErrorModelTests
     {
         private MockRepository _mockRepository;
@@ -44,7 +43,7 @@ namespace Moonglade.Web.Tests.Pages
                     Error = new("Too much fubao")
                 });
             httpContextMock.Setup(p => p.Features).Returns(mockIFeatureCollection.Object);
-            
+
             var fc = new FakeConnectionInfo { RemoteIpAddress = IPAddress.Parse("251.251.251.251") };
             httpContextMock.Setup(p => p.Connection).Returns(fc);
             httpContextMock.Setup(p => p.TraceIdentifier).Returns(FakeData.ShortString2);
@@ -70,7 +69,7 @@ namespace Moonglade.Web.Tests.Pages
         }
     }
 
-    [ExcludeFromCodeCoverage]
+
     internal class FakeConnectionInfo : ConnectionInfo
     {
         public override async Task<X509Certificate2> GetClientCertificateAsync(CancellationToken cancellationToken = new())

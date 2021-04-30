@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -13,7 +12,6 @@ using NUnit.Framework;
 namespace Moonglade.Notification.Client.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class NotificationClientTests
     {
         private MockRepository _mockRepository;

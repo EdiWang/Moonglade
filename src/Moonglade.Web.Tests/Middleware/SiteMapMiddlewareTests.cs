@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +14,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class SiteMapMiddlewareTests
     {
         private MockRepository _mockRepository;

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.Configuration;
 using Moonglade.FriendLink;
@@ -10,7 +9,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages.Admin
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class FriendLinkModelTests
     {
         private MockRepository _mockRepository;

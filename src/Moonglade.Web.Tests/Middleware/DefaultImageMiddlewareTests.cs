@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +11,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class DefaultImageMiddlewareTests
     {
         private MockRepository _mockRepository;

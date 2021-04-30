@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +19,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Controllers
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class PostControllerTests
     {
         private MockRepository _mockRepository;

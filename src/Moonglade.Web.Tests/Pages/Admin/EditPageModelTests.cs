@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,7 +10,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages.Admin
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class EditPageModelTests
     {
         private MockRepository _mockRepository;

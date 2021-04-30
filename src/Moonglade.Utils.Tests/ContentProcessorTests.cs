@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 
 namespace Moonglade.Utils.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class ContentProcessorTests
     {
         [TestCase('A', ExpectedResult = true)]

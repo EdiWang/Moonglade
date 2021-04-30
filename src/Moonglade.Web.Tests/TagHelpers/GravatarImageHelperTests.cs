@@ -1,12 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Moonglade.Web.TagHelpers;
 using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.TagHelpers
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class GravatarImageHelperTests
     {
         [Test]

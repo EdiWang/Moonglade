@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moonglade.Auditing;
@@ -11,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Auth.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class LocalAccountServiceTests
     {
         private MockRepository _mockRepository;

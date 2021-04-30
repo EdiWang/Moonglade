@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -9,7 +8,6 @@ using NUnit.Framework;
 namespace Moonglade.Pingback.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class PingbackServiceTests
     {
         private MockRepository _mockRepository;

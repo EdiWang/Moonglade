@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Controllers
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class DataPortingControllerTests
     {
         private MockRepository _mockRepository;

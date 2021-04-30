@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using Dapper;
 using Moonglade.Setup;
 using Moq;
@@ -9,7 +8,6 @@ using NUnit.Framework;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class SetupHelperTests
     {
         private MockRepository _mockRepository;

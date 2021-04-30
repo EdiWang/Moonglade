@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -6,7 +5,6 @@ using NUnit.Framework;
 namespace Moonglade.Pingback.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class PingSourceInspectorTests
     {
         private MockRepository _mockRepository;

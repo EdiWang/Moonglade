@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 
 namespace Moonglade.Web.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class DateTimeResolverTests
     {
         [Test]

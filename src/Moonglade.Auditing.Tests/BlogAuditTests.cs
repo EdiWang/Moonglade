@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Auditing.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class BlogAuditTests
     {
         private MockRepository _mockRepository;

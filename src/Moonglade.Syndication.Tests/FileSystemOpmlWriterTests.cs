@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Moonglade.Syndication.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class FileSystemOpmlWriterTests
     {
         [Test]

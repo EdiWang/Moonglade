@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moonglade.Auditing;
@@ -14,7 +13,6 @@ using NUnit.Framework;
 namespace Moonglade.Comments.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class CommentServiceTests
     {
         private MockRepository _mockRepository;

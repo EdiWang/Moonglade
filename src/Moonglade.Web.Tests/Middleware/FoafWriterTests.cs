@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.FriendLink;
 using Moonglade.Web.Middleware;
@@ -11,7 +10,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class FoafWriterTests
     {
         private MockRepository _mockRepository;

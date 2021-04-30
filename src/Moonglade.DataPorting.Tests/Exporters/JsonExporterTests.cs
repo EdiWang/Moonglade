@@ -1,17 +1,15 @@
-﻿using Moonglade.Data.Infrastructure;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting.Exporters;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Moonglade.DataPorting.Tests.Exporters
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class JsonExporterTests
     {
         private MockRepository _mockRepository;

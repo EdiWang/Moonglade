@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Moonglade.ImageStorage.Providers;
 using NUnit.Framework;
@@ -8,7 +7,6 @@ namespace Moonglade.ImageStorage.Tests
 {
     [TestFixture]
     [Platform(Include = "Win")]
-    [ExcludeFromCodeCoverage]
     public class ImageStorageTests
     {
         [Test]

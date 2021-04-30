@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -7,7 +6,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class MemoryStreamIconGeneratorTests
     {
         private MockRepository _mockRepository;

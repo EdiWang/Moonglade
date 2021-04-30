@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Moonglade.Configuration;
 using Moq;
@@ -7,7 +6,6 @@ using NUnit.Framework;
 namespace Moonglade.Comments.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class LocalWordFilterModeratorTests
     {
         private MockRepository _mockRepository;

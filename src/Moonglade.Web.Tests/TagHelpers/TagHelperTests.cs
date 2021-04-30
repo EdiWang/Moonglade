@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Moonglade.Web.Middleware;
@@ -10,7 +9,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.TagHelpers
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
+
     public class TagHelperTests
     {
         [Test]
