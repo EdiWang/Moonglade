@@ -22,7 +22,7 @@ jobs:
     inputs:
       command: test
       projects: '**/*Tests/*.csproj'
-      arguments: '--configuration Release --no-build --collect "Code coverage"'
+      arguments: '--configuration Release --no-build --collect "Code coverage" -- RunConfiguration.DisableAppDomain=true'
 
   - task: DotNetCoreCLI@2
     inputs:
