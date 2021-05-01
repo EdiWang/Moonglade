@@ -63,10 +63,10 @@ namespace Moonglade.Web.Controllers
             return Created(string.Empty, model);
         }
 
-        [HttpPut("update")]
+        [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(CategoryEditModel model)
+        public async Task<IActionResult> Update(Guid id, CategoryEditModel model)
         {
             var request = new UpdateCatRequest
             {
@@ -75,7 +75,7 @@ namespace Moonglade.Web.Controllers
                 DisplayName = model.DisplayName
             };
 
-            await _catService.UpdateAsync(model.Id, request);
+            await _catService.UpdateAsync(id, request);
             return Ok(model);
         }
 

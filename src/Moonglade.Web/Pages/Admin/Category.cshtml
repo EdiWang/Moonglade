@@ -6,8 +6,9 @@
 
 @section scripts{
     <script>
+        var catId = emptyGuid;
         function initCreateCategory() {
-            $('#CategoryEditViewModel_Id').val(emptyGuid);
+            catId = emptyGuid;
             $('#edit-form')[0].reset();
             $('#editCatModal').modal();
         }
@@ -16,7 +17,7 @@
             callApi(`/api/category/${id}`, 'GET', {},
                 async (resp) => {
                     var data = await resp.json();
-                    $('#CategoryEditViewModel_Id').val(data.id);
+                    catId = data.id;
                     $('#CategoryEditViewModel_RouteName').val(data.routeName);
                     $('#CategoryEditViewModel_DisplayName').val(data.displayName);
                     $('#CategoryEditViewModel_Note').val(data.note);
@@ -45,20 +46,20 @@
 
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
-                var action = '';
-                var httpVerb = 'POST';
-                var catId = $("#CategoryEditViewModel_Id").val();
+                var apiAddress = '';
+                var verb = '';
+
                 if (catId == emptyGuid) {
-                    action = 'create';
+                    apiAddress = '/api/category/create';
+                    verb = 'POST';
                 }
                 else {
-                    action = 'update';
-                    httpVerb = 'PUT';
+                    apiAddress = `/api/category/${catId}`;
+                    verb = 'PUT';
                 }
 
-                callApi(`/api/category/${action}`, httpVerb,
+                callApi(apiAddress, verb,
                     {
-                        "Id": $("#CategoryEditViewModel_Id").val(),
                         "RouteName": $("#CategoryEditViewModel_RouteName").val(),
                         "DisplayName": $("#CategoryEditViewModel_DisplayName").val(),
                         "Note": $("#CategoryEditViewModel_Note").val()
@@ -70,6 +71,7 @@
                     });
             }
         });
+
     </script>
 }
 
@@ -125,7 +127,6 @@
             <form id="edit-form" method="post">
                 <div class="modal-body">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <input type="hidden" asp-for="CategoryEditViewModel.Id" />
                     <div class="form-group">
                         <label asp-for="CategoryEditViewModel.DisplayName"></label>
                         <input asp-for="CategoryEditViewModel.DisplayName" class="form-control" />

@@ -1,14 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Models
 {
     public class CategoryEditModel
     {
-        [HiddenInput]
-        public Guid Id { get; set; }
-
         [Required]
         [Display(Name = "Display Name")]
         [MaxLength(64)]
@@ -24,10 +19,5 @@ namespace Moonglade.Web.Models
         [Display(Name = "Description")]
         [MaxLength(128)]
         public string Note { get; set; }
-
-        public CategoryEditModel()
-        {
-            Id = Guid.Empty;
-        }
     }
 }
