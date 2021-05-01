@@ -77,7 +77,7 @@ namespace Moonglade.Web.Tests.Controllers
                 Note = FakeData.ShortString1
             };
 
-            var result = await categoryController.Update(model);
+            var result = await categoryController.Update(FakeData.Uid1, model);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 

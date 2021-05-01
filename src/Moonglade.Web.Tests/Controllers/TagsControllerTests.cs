@@ -91,10 +91,9 @@ namespace Moonglade.Web.Tests.Controllers
 
             var request = new EditTagRequest
             {
-                NewName = FakeData.ShortString1,
-                TagId = FakeData.Int2
+                NewName = FakeData.ShortString1
             };
-            var result = await ctl.Update(request);
+            var result = await ctl.Update(FakeData.Int2, request);
 
             Assert.IsInstanceOf<OkResult>(result);
         }

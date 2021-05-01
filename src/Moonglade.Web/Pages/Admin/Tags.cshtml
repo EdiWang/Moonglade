@@ -23,8 +23,7 @@
             var tagId = $(this).data("tagid");
             var newTagName = $(this).text().trim();
 
-            callApi(`/api/tags/update`, 'PUT', {
-                tagId: tagId,
+            callApi(`/api/tags/${tagId}`, 'PUT', {
                 newName: newTagName
             }, (resp) => {
                 notyf.success('Tag updated');

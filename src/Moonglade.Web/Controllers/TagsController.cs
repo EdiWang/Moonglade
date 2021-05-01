@@ -58,17 +58,17 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpPut("update")]
+        [HttpPut("{id:int}")]
         [TypeFilter(typeof(ClearPagingCountCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(EditTagRequest request)
+        public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, EditTagRequest request)
         {
-            await _tagService.UpdateAsync(request.TagId, request.NewName);
+            await _tagService.UpdateAsync(id, request.NewName);
             return Ok();
         }
 
-        [HttpDelete("{tagId}")]
+        [HttpDelete("{tagId:int}")]
         [TypeFilter(typeof(ClearPagingCountCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -87,9 +87,6 @@ namespace Moonglade.Web.Controllers
 
     public class EditTagRequest
     {
-        [Range(1, int.MaxValue)]
-        public int TagId { get; set; }
-
         [Required]
         public string NewName { get; set; }
     }
