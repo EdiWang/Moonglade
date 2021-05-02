@@ -133,8 +133,8 @@ namespace Moonglade.Web.Controllers
             return Ok(commentId);
         }
 
-        [HttpDelete("delete")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpDelete]
+        [ProducesResponseType(typeof(Guid[]), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromBody] Guid[] commentIds)
         {
@@ -148,21 +148,21 @@ namespace Moonglade.Web.Controllers
             return Ok(commentIds);
         }
 
-        [HttpPost("reply")]
+        [HttpPost("{commentId:guid}/reply")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Reply(ReplyRequest request, [FromServices] LinkGenerator linkGenerator)
+        public async Task<IActionResult> Reply(Guid commentId, [Required][FromBody] string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
-            if (request.CommentId == Guid.Empty)
+            if (commentId == Guid.Empty)
             {
-                ModelState.AddModelError(nameof(request.CommentId), "value is empty");
+                ModelState.AddModelError(nameof(commentId), "value is empty");
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            var reply = await _commentService.AddReply(request.CommentId, request.ReplyContent);
+            var reply = await _commentService.AddReply(commentId, replyContent);
             if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
             {
                 var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
@@ -191,13 +191,5 @@ namespace Moonglade.Web.Controllers
                 });
             return link;
         }
-    }
-
-    public class ReplyRequest
-    {
-        public Guid CommentId { get; set; }
-
-        [Required]
-        public string ReplyContent { get; set; }
     }
 }

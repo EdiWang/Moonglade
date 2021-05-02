@@ -14,7 +14,7 @@
         $(function () {
             $(".btn-delete").click(function () {
                 var cid = $(this).data("commentid");
-                callApi('/api/comment/delete', 'DELETE', [cid],
+                callApi('/api/comment', 'DELETE', [cid],
                     (success) => {
                         $(`#panel-comment-${cid}`).slideUp();
                     });
@@ -29,11 +29,7 @@
                 var cid = $(this).data("commentid");
                 var replyContent = $(`#replycontent-${cid}`).val();
 
-                callApi('/api/comment/reply', 'POST',
-                    {
-                        commentId: cid,
-                        replyContent: replyContent
-                    },
+                callApi(`/api/comment/${cid}/reply`, 'POST', replyContent,
                     async (resp) => {
                         var data = await resp.json();
                         $(`#panel-comment-${data.commentId} .reply-ui`).slideUp();
