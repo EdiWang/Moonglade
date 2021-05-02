@@ -49,7 +49,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create([FromBody] string name)
+        public async Task<IActionResult> Create([Required][FromBody] string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return BadRequest();
             if (!TagService.ValidateTagName(name)) return Conflict();
@@ -62,9 +62,9 @@ namespace Moonglade.Web.Controllers
         [TypeFilter(typeof(ClearPagingCountCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, EditTagRequest request)
+        public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
         {
-            await _tagService.UpdateAsync(id, request.NewName);
+            await _tagService.UpdateAsync(id, name);
             return Ok();
         }
 
@@ -83,11 +83,5 @@ namespace Moonglade.Web.Controllers
             await _tagService.DeleteAsync(id);
             return Ok();
         }
-    }
-
-    public class EditTagRequest
-    {
-        [Required]
-        public string NewName { get; set; }
     }
 }
