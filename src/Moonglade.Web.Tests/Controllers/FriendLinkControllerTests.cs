@@ -43,7 +43,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await ctl.Create(_friendlinkEditViewModel);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<CreatedResult>(result);
             _mockFriendLinkService.Verify(p => p.AddAsync(It.IsAny<string>(), It.IsAny<string>()));
         }
 

@@ -21,13 +21,13 @@ namespace Moonglade.Web.Controllers
             _friendLinkService = friendLinkService;
         }
 
-        [HttpPost("create")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(FriendLinkEditModel viewModel)
         {
             await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
-            return Ok(viewModel);
+            return Created(string.Empty, viewModel);
         }
 
         [HttpGet("{id:guid}")]
@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [HttpPut("edit")]
+        [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(FriendLinkEditModel viewModel)

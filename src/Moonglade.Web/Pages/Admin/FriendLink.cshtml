@@ -21,20 +21,12 @@
 
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
-                var action = '';
-                var httpVerb = 'POST';
                 var friendlinkId = $("#FriendLinkEditViewModel_Id").val();
-                if (friendlinkId == emptyGuid) {
-                    action = "create";
-                }
-                else {
-                    action = "edit";
-                    httpVerb = 'PUT';
-                }
+                var httpVerb = friendlinkId == emptyGuid ? 'POST' : 'PUT';
 
-                callApi(`/api/friendlink/${action}`, httpVerb,
+                callApi(`/api/friendlink`, httpVerb,
                     {
-                        "Id": $("#FriendLinkEditViewModel_Id").val(),
+                        "Id": friendlinkId,
                         "Title": $("#FriendLinkEditViewModel_Title").val(),
                         "LinkUrl": $("#FriendLinkEditViewModel_LinkUrl").val()
                     },
