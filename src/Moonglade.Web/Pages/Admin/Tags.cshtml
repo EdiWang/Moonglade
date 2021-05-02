@@ -31,7 +31,7 @@
         });
 
         $(".btn-submit").click(function () {
-            callApi(`/api/tags/create`, 'POST', $("#input-tag-name").val(),
+            callApi(`/api/tags`, 'POST', $("#input-tag-name").val(),
                 (resp) => {
                     $("#edit-form")[0].reset();
                     $("#editTagModal").modal('hide');

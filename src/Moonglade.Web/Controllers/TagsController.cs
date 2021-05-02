@@ -45,7 +45,7 @@ namespace Moonglade.Web.Controllers
             return Ok(tagNames);
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -68,19 +68,19 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpDelete("{tagId:int}")]
+        [HttpDelete("{id:int}")]
         [TypeFilter(typeof(ClearPagingCountCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(int tagId)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (tagId <= 0)
+            if (id <= 0)
             {
-                ModelState.AddModelError(nameof(tagId), "Value out of range");
+                ModelState.AddModelError(nameof(id), "Value out of range");
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            await _tagService.DeleteAsync(tagId);
+            await _tagService.DeleteAsync(id);
             return Ok();
         }
     }
