@@ -30,6 +30,8 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(Guid id)
         {
+            if (id == Guid.Empty) return NotFound();
+
             var cat = await _catService.Get(id);
             if (null == cat) return NotFound();
 
@@ -47,7 +49,7 @@ namespace Moonglade.Web.Controllers
             return Ok(cats);
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CategoryEditModel model)
@@ -64,10 +66,16 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CategoryEditModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(Guid id, CategoryEditModel model)
         {
+            if (id == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(id), "value is empty");
+                return BadRequest(ModelState.CombineErrorMessages());
+            }
+
             var request = new UpdateCatRequest
             {
                 RouteName = model.RouteName,

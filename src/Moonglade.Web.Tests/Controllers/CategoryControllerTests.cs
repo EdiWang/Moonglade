@@ -61,7 +61,7 @@ namespace Moonglade.Web.Tests.Controllers
                 .Returns(Task.FromResult(new Category()));
 
             var categoryController = CreateCategoryController();
-            var result = await categoryController.Get(Guid.Empty);
+            var result = await categoryController.Get(FakeData.Uid2);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
