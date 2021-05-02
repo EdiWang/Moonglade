@@ -28,13 +28,17 @@ namespace Moonglade.Notification.Client
                 if (Uri.IsWellFormedUriString(_blogConfig.NotificationSettings.AzureFunctionEndpoint, UriKind.Absolute))
                 {
                     httpClient.BaseAddress = new(_blogConfig.NotificationSettings.AzureFunctionEndpoint);
+                    httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+                    httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Helper.AppVersion}");
+                    _httpClient = httpClient;
+
+                    _isEnabled = true;
                 }
-
-                httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-                httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Helper.AppVersion}");
-                _httpClient = httpClient;
-
-                _isEnabled = true;
+                else
+                {
+                    _isEnabled = false;
+                    _logger.LogError($"'{_blogConfig.NotificationSettings.AzureFunctionEndpoint}' is not a valid URI for notification endpoint, email sending has been disabled.");
+                }
             }
         }
 
