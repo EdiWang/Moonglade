@@ -83,13 +83,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Reply_EmptyId()
         {
-            var request = new ReplyRequest
-            {
-                CommentId = Guid.Empty
-            };
-
             var ctl = CreateCommentController();
-            var result = await ctl.Reply(request, null);
+            var result = await ctl.Reply(Guid.Empty, "996", null);
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -97,18 +92,13 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Reply_CommentDisabled()
         {
-            var request = new ReplyRequest
-            {
-                CommentId = Guid.NewGuid()
-            };
-
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
                 EnableComments = false
             });
 
             var ctl = CreateCommentController();
-            var result = await ctl.Reply(request, null);
+            var result = await ctl.Reply(Guid.NewGuid(), "996", null);
 
             Assert.IsInstanceOf<ForbidResult>(result);
         }

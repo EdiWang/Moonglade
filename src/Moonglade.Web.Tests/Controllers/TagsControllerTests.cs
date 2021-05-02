@@ -88,12 +88,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Update_OK()
         {
             var ctl = CreateTagsController();
-
-            var request = new EditTagRequest
-            {
-                NewName = FakeData.ShortString1
-            };
-            var result = await ctl.Update(FakeData.Int2, request);
+            var result = await ctl.Update(FakeData.Int2, FakeData.ShortString1);
 
             Assert.IsInstanceOf<OkResult>(result);
         }
