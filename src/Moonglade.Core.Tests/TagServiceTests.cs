@@ -96,6 +96,22 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
+        public async Task Create_InvalidName()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                { " ", "-" }
+            };
+            _mockOptions.Setup(p => p.Value).Returns(dic);
+            var ctl = CreateService();
+            
+            var result = await ctl.Create("ます");
+            
+            Assert.IsNull(result);
+            _mockRepositoryTagEntity.Verify(p => p.AddAsync(It.IsAny<TagEntity>()), Times.Never);
+        }
+
+        [Test]
         public async Task Create_New()
         {
             var dic = new Dictionary<string, string>
@@ -177,6 +193,26 @@ namespace Moonglade.Core.Tests
             var result = await svc.GetHotTagsAsync(35);
 
             Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public async Task GetHotTagsAsync_OK()
+        {
+            _mockRepositoryTagEntity.Setup(p => p.Any((Expression<Func<TagEntity, bool>>)null)).Returns(true);
+
+            var svc = CreateService();
+            await svc.GetHotTagsAsync(35);
+
+            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, KeyValuePair<Tag, int>>>>(), true));
+        }
+
+        [Test]
+        public async Task GetTagCountList_OK()
+        {
+            var svc = CreateService();
+            await svc.GetTagCountList();
+
+            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, KeyValuePair<Tag, int>>>>(), true));
         }
 
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]
