@@ -122,15 +122,15 @@ namespace Moonglade.Web.Controllers
             return Ok(new { PageId = uid });
         }
 
-        [HttpDelete("{pageId:guid}")]
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(Guid pageId)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var page = await _blogPageService.GetAsync(pageId);
+            var page = await _blogPageService.GetAsync(id);
             if (page == null) return NotFound();
 
-            await _blogPageService.DeleteAsync(pageId);
+            await _blogPageService.DeleteAsync(id);
 
             _cache.Remove(CacheDivision.Page, page.Slug);
             return Ok();
