@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
@@ -21,6 +22,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("signout")]
+        [ProducesResponseType(StatusCodes.Status302Found)]
         public async Task<IActionResult> SignOut(int nounce = 1055)
         {
             switch (_authenticationSettings.Provider)
@@ -41,6 +43,7 @@ namespace Moonglade.Web.Controllers
 
         [AllowAnonymous]
         [HttpGet("accessdenied")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public IActionResult AccessDenied()
         {
             return Forbid();
