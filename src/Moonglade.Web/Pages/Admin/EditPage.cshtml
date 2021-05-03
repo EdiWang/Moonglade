@@ -14,6 +14,8 @@
     <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
     <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
     <script>
+        var pageId = '@Model.PageId.ToString()';
+
         $("#Title").change(function () {
             $("#Slug").val(slugify($(this).val()));
         });
@@ -89,9 +91,12 @@
 
         function postCreateOrEdit() {
             onPageCreateEditBegin();
-            callApi(`/api/page/createoredit`, 'POST',
+
+            var apiAddress = pageId == emptyGuid ? `/api/page` : `/api/page/${pageId}`;
+            var verb = pageId == emptyGuid ? 'POST' : 'PUT';
+
+            callApi(apiAddress, verb,
                 {
-                    "Id": $("#PageEditModel_Id").val(),
                     "Title": $("#PageEditModel_Title").val(),
                     "Slug": $("#PageEditModel_Slug").val(),
                     "MetaDescription": $("#PageEditModel_MetaDescription").val(),
@@ -105,7 +110,7 @@
                     var data = await resp.json();
 
                     if (data.pageId) {
-                        $('input[name="Id"]').val(data.pageId);
+                        pageId = data.pageId;
                         notyf.success('Page saved successfully.');
 
                         if ($('input[name="IsPublished"]:checked').val() === 'true') {
@@ -139,6 +144,7 @@
                 });
         });
 
+
     </script>
 }
 
@@ -156,7 +162,6 @@
 
 <form id="page-edit-form" method="post">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-    <input type="hidden" asp-for="PageEditModel.Id" />
     <div class="row">
         <div class="col-md-9 col-xl-10">
             <input type="text" asp-for="PageEditModel.Title" class="form-control form-control-lg mb-1" placeholder="Title" />

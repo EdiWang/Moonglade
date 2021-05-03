@@ -7,9 +7,6 @@ namespace Moonglade.Web.Models
 {
     public class PageEditModel
     {
-        [HiddenInput]
-        public Guid Id { get; set; }
-
         [Required(ErrorMessage = "Please enter a title.")]
         [MaxLength(128)]
         public string Title { get; set; }
@@ -41,7 +38,6 @@ namespace Moonglade.Web.Models
 
         public PageEditModel()
         {
-            Id = Guid.Empty;
             HideSidebar = true;
         }
     }

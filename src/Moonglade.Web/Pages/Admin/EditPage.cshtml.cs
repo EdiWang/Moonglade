@@ -11,6 +11,8 @@ namespace Moonglade.Web.Pages.Admin
     {
         private readonly IBlogPageService _blogPageService;
 
+        public Guid PageId { get; set; }
+
         public PageEditModel PageEditModel { get; set; }
 
         public EditPageModel(IBlogPageService blogPageService)
@@ -26,9 +28,10 @@ namespace Moonglade.Web.Pages.Admin
             var page = await _blogPageService.GetAsync(id.Value);
             if (page is null) return NotFound();
 
+            PageId = page.Id;
+
             PageEditModel = new()
             {
-                Id = page.Id,
                 Title = page.Title,
                 Slug = page.Slug,
                 MetaDescription = page.MetaDescription,

@@ -54,52 +54,72 @@ namespace Moonglade.Web.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [HttpPost("createoredit")]
+        [HttpPost]
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateOrEdit(PageEditModel model)
+        public async Task<IActionResult> Create(PageEditModel model)
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(model.CssContent))
-                {
-                    var uglifyTest = Uglify.Css(model.CssContent);
-                    if (uglifyTest.HasErrors)
-                    {
-                        foreach (var err in uglifyTest.Errors)
-                        {
-                            ModelState.AddModelError(model.CssContent, err.ToString());
-                        }
-                        return BadRequest(ModelState.CombineErrorMessages());
-                    }
-                }
-
-                var req = new UpdatePageRequest
-                {
-                    HtmlContent = model.RawHtmlContent,
-                    CssContent = model.CssContent,
-                    HideSidebar = model.HideSidebar,
-                    Slug = model.Slug,
-                    MetaDescription = model.MetaDescription,
-                    Title = model.Title,
-                    IsPublished = model.IsPublished
-                };
-
-                var uid = model.Id == Guid.Empty ?
-                    await _blogPageService.CreateAsync(req) :
-                    await _blogPageService.UpdateAsync(model.Id, req);
-
-                _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
-
-                return Ok(new { PageId = uid });
+                return await CreateOrEdit(model, async request => await _blogPageService.CreateAsync(request));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error Create or Edit CustomPage.");
+                _logger.LogError(e, "Error Create CustomPage.");
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ClearSiteMapCache))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Edit(Guid id, PageEditModel model)
+        {
+            try
+            {
+                return await CreateOrEdit(model, async request => await _blogPageService.UpdateAsync(id, request));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error Edit CustomPage.");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        private async Task<IActionResult> CreateOrEdit(PageEditModel model, Func<UpdatePageRequest, Task<Guid>> pageServiceAction)
+        {
+            if (!string.IsNullOrWhiteSpace(model.CssContent))
+            {
+                var uglifyTest = Uglify.Css(model.CssContent);
+                if (uglifyTest.HasErrors)
+                {
+                    foreach (var err in uglifyTest.Errors)
+                    {
+                        ModelState.AddModelError(model.CssContent, err.ToString());
+                    }
+                    return BadRequest(ModelState.CombineErrorMessages());
+                }
+            }
+
+            var req = new UpdatePageRequest
+            {
+                HtmlContent = model.RawHtmlContent,
+                CssContent = model.CssContent,
+                HideSidebar = model.HideSidebar,
+                Slug = model.Slug,
+                MetaDescription = model.MetaDescription,
+                Title = model.Title,
+                IsPublished = model.IsPublished
+            };
+
+            var uid = await pageServiceAction(req);
+
+            _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
+            return Ok(new { PageId = uid });
         }
 
         [HttpDelete("{pageId:guid}")]
