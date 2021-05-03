@@ -18,7 +18,6 @@ namespace Moonglade.Web.Tests.Controllers
 
         private FriendLinkEditModel _friendlinkEditViewModel = new()
         {
-            Id = FakeData.Uid1,
             LinkUrl = FakeData.Url1,
             Title = "996 ICU"
         };
@@ -84,7 +83,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreateFriendLinkController();
 
-            var result = await ctl.Edit(_friendlinkEditViewModel);
+            var result = await ctl.Edit(FakeData.Uid1, _friendlinkEditViewModel);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             _mockFriendLinkService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()));
