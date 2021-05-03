@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using Moonglade.Configuration;
 
 namespace Moonglade.Core.Tests
 {
@@ -66,22 +67,52 @@ namespace Moonglade.Core.Tests
             _mockPostExtensionRepo.Verify(p => p.UpdateAsync(It.IsAny<PostExtensionEntity>()), Times.Never);
         }
 
-        //[Test]
-        //public async Task UpdateStatisticAsync_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var blogStatistics = CreateBlogStatistics();
-        //    Guid postId = default(Guid);
-        //    int likes = 0;
+        [Test]
+        public async Task UpdateStatisticAsync_Like()
+        {
+            // Arrange
+            var ett = new PostExtensionEntity
+            {
+                Hits = 996,
+                Likes = 251
+            };
 
-        //    // Act
-        //    await blogStatistics.UpdateStatisticAsync(
-        //        postId,
-        //        likes);
+            _mockPostExtensionRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult(ett));
+            var blogStatistics = CreateBlogStatistics();
+            Guid postId = Guid.Empty;
+            int likes = 35;
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            // Act
+            await blogStatistics.UpdateStatisticAsync(postId, likes);
+
+            // Assert
+            Assert.AreEqual(251 + 35, ett.Likes);
+            _mockPostExtensionRepo.Verify(p => p.UpdateAsync(It.IsAny<PostExtensionEntity>()), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateStatisticAsync_Hit()
+        {
+            // Arrange
+            var ett = new PostExtensionEntity
+            {
+                Hits = 996,
+                Likes = 251
+            };
+
+            _mockPostExtensionRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult(ett));
+            var blogStatistics = CreateBlogStatistics();
+            Guid postId = Guid.Empty;
+            int likes = 0;
+
+            // Act
+            await blogStatistics.UpdateStatisticAsync(postId, likes);
+
+            // Assert
+            Assert.AreEqual(996 + 1, ett.Hits);
+            _mockPostExtensionRepo.Verify(p => p.UpdateAsync(It.IsAny<PostExtensionEntity>()), Times.Once);
+        }
     }
 }
