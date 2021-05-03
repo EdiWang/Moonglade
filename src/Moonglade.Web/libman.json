@@ -82,6 +82,13 @@
       "files": [
         "jquery.validate.min.js"
       ]
+    },
+    {
+      "library": "typeahead.js@0.11.1",
+      "destination": "wwwroot/lib/typeahead.js/",
+      "files": [
+        "typeahead.bundle.min.js"
+      ]
     }
   ]
 }
