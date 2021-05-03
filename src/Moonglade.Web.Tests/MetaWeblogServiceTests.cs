@@ -222,6 +222,23 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public async Task AddCategoryAsync_OK()
+        {
+            var cat = new NewCategory
+            {
+                name = "996",
+                description = "work 996",
+                slug = "work-996"
+            };
+
+            var service = CreateService();
+            var result = await service.AddCategoryAsync("996.icu", _username, _password, cat);
+
+            Assert.AreEqual(996, result);
+            _mockCategoryService.Verify(p => p.CreateAsync(It.IsAny<UpdateCatRequest>()));
+        }
+
+        [Test]
         public async Task DeletePostAsync_OK()
         {
             var service = CreateService();
