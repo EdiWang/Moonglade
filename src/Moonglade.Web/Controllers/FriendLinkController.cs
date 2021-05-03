@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Link), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -40,14 +40,7 @@ namespace Moonglade.Web.Controllers
                 var link = await _friendLinkService.GetAsync(id);
                 if (null == link) return NotFound();
 
-                var obj = new FriendLinkEditModel
-                {
-                    Id = link.Id,
-                    LinkUrl = link.LinkUrl,
-                    Title = link.Title
-                };
-
-                return Ok(obj);
+                return Ok(link);
             }
             catch (Exception e)
             {
@@ -56,12 +49,12 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Edit(FriendLinkEditModel viewModel)
+        public async Task<IActionResult> Edit(Guid id, FriendLinkEditModel viewModel)
         {
-            await _friendLinkService.UpdateAsync(viewModel.Id, viewModel.Title, viewModel.LinkUrl);
+            await _friendLinkService.UpdateAsync(id, viewModel.Title, viewModel.LinkUrl);
             return Ok(viewModel);
         }
 

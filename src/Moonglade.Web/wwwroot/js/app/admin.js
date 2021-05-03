@@ -376,30 +376,6 @@ function restorePost(postid) {
         });
 }
 
-function deleteFriendLink(friendlinkid) {
-    $(`#span-processing-${friendlinkid}`).show();
-
-    callApi(`/api/friendlink/${friendlinkid}`, 'DELETE', {},
-        (resp) => {
-            $(`#tr-${friendlinkid}`).hide();
-        });
-}
-
-function initCreateFriendLink() {
-    $('#FriendLinkEditViewModel_Id').val(emptyGuid);
-    $('#edit-form')[0].reset();
-    $('#editFriendlinkModal').modal();
-}
-
-function editFriendLink(id) {
-    $.get(`/api/friendlink/${id}`, function (data) {
-        $('#FriendLinkEditViewModel_Id').val(data.id);
-        $('#FriendLinkEditViewModel_Title').val(data.title);
-        $('#FriendLinkEditViewModel_LinkUrl').val(data.linkUrl);
-        $('#editFriendlinkModal').modal();
-    });
-}
-
 function deleteAccount(accountid) {
     $(`#span-processing-${accountid}`).show();
 

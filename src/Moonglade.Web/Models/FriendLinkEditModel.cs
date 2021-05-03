@@ -6,9 +6,6 @@ namespace Moonglade.Web.Models
 {
     public class FriendLinkEditModel
     {
-        [HiddenInput]
-        public Guid Id { get; set; }
-
         [Required]
         [Display(Name = "Title")]
         [MaxLength(64)]
@@ -19,10 +16,5 @@ namespace Moonglade.Web.Models
         [DataType(DataType.Url)]
         [MaxLength(256)]
         public string LinkUrl { get; set; }
-
-        public FriendLinkEditModel()
-        {
-            Id = Guid.Empty;
-        }
     }
 }
