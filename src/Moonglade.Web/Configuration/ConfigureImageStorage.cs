@@ -22,47 +22,42 @@ namespace Moonglade.Web.Configuration
             options(Options);
 
             var section = configuration.GetSection(nameof(ImageStorage));
-            var imageStorage = section.Get<ImageStorageSettings>();
+            var settings = section.Get<ImageStorageSettings>();
 
             services.Configure<ImageStorageSettings>(section);
             services.AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
 
-            if (null == imageStorage.Provider)
-            {
-                throw new ArgumentNullException("Provider", "Provider can not be null.");
-            }
-
-            var imageStorageProvider = imageStorage.Provider.ToLower();
-            if (string.IsNullOrWhiteSpace(imageStorageProvider))
+            var provider = settings.Provider?.ToLower();
+            if (string.IsNullOrWhiteSpace(provider))
             {
                 throw new ArgumentNullException("Provider", "Provider can not be empty.");
             }
 
-            switch (imageStorageProvider)
+            switch (provider)
             {
                 case "azurestorage":
-                    var conn = imageStorage.AzureStorageSettings.ConnectionString;
-                    var container = imageStorage.AzureStorageSettings.ContainerName;
+                    var conn = settings.AzureStorageSettings.ConnectionString;
+                    var container = settings.AzureStorageSettings.ContainerName;
                     services.AddSingleton(_ => new AzureBlobConfiguration(conn, container));
                     services.AddSingleton<IBlogImageStorage, AzureBlobImageStorage>();
                     break;
                 case "filesystem":
-                    var path = imageStorage.FileSystemSettings.Path;
+                    var path = settings.FileSystemSettings.Path;
                     var fullPath = FileSystemImageStorage.ResolveImageStoragePath(Options.ContentRootPath, path);
                     services.AddSingleton(_ => new FileSystemImageConfiguration(fullPath));
                     services.AddSingleton<IBlogImageStorage, FileSystemImageStorage>();
                     break;
                 case "miniostorage":
-                    var endPoint = imageStorage.MinioStorageSettings.EndPoint;
-                    var accessKey = imageStorage.MinioStorageSettings.AccessKey;
-                    var secretKey = imageStorage.MinioStorageSettings.SecretKey;
-                    var bucketName = imageStorage.MinioStorageSettings.BucketName;
-                    var withSSL = imageStorage.MinioStorageSettings.WithSSL;
+                    var endPoint = settings.MinioStorageSettings.EndPoint;
+                    var accessKey = settings.MinioStorageSettings.AccessKey;
+                    var secretKey = settings.MinioStorageSettings.SecretKey;
+                    var bucketName = settings.MinioStorageSettings.BucketName;
+                    var withSSL = settings.MinioStorageSettings.WithSSL;
                     services.AddSingleton(_ => new MinioBlobConfiguration(endPoint, accessKey, secretKey, bucketName, withSSL));
                     services.AddSingleton<IBlogImageStorage, MinioBlobImageStorage>();
                     break;
                 default:
-                    var msg = $"Provider {imageStorageProvider} is not supported.";
+                    var msg = $"Provider {provider} is not supported.";
                     throw new NotSupportedException(msg);
             }
         }
