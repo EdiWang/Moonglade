@@ -48,6 +48,24 @@ namespace Moonglade.Core.Tests
             Assert.AreEqual(251, result.Likes);
         }
 
+        [Test]
+        public async Task UpdateStatisticAsync_Null()
+        {
+            // Arrange
+            _mockPostExtensionRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((PostExtensionEntity)null));
+
+            var blogStatistics = CreateBlogStatistics();
+            Guid postId = Guid.Empty;
+            int likes = 996;
+
+            // Act
+            await blogStatistics.UpdateStatisticAsync(postId, likes);
+
+            // Assert
+            _mockPostExtensionRepo.Verify(p => p.UpdateAsync(It.IsAny<PostExtensionEntity>()), Times.Never);
+        }
+
         //[Test]
         //public async Task UpdateStatisticAsync_StateUnderTest_ExpectedBehavior()
         //{
