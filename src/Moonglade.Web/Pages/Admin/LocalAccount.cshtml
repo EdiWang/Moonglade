@@ -30,7 +30,7 @@
 
         $(".btn-submit").click(function () {
             if ($("#edit-form").valid()) {
-                callApi(`/api/localaccount/create`,
+                callApi(`/api/localaccount`,
                     'POST',
                     {
                         "Username": $("#AccountEditViewModel_Username").val(),

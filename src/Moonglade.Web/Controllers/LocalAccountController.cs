@@ -24,7 +24,7 @@ namespace Moonglade.Web.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Create(AccountEditViewModel model)
