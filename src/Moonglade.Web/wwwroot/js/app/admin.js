@@ -404,18 +404,6 @@ function initCreateTag() {
     $('#editTagModal').modal();
 }
 
-function deletePage(pageid, slug) {
-    $(`#span-processing-${pageid}`).show();
-
-    callApi(`/api/page/${pageid}/${slug}`,
-        'DELETE',
-        {},
-        (resp) => {
-            $(`#card-${pageid}`).hide();
-            notyf.success('Page deleted');
-        });
-}
-
 function deletePingback(pingbackId) {
     $(`#span-processing-${pingbackId}`).show();
 
