@@ -56,10 +56,13 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_Success()
         {
+            _mockPageService.Setup(p => p.GetAsync(Guid.Empty)).Returns(Task.FromResult(new BlogPage() { Slug = "996" }));
+
             var ctl = CreatePageController();
-            var result = await ctl.Delete(Guid.Empty, FakeData.Slug2);
+            var result = await ctl.Delete(Guid.Empty);
 
             Assert.IsInstanceOf<OkResult>(result);
+            _mockBlogCache.Verify(p => p.Remove(CacheDivision.Page, It.IsAny<string>()));
         }
 
         [Test]

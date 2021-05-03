@@ -6,11 +6,21 @@
 
 @section scripts{
     <script>
-        $(function () {
-            $(".btn-delete").click(function () {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) deletePage($(this).data("pageid"), $(this).data("slug"));
-            });
+        function deletePage(pageid) {
+            $(`#span-processing-${pageid}`).show();
+
+            callApi(`/api/page/${pageid}`,
+                'DELETE',
+                {},
+                (resp) => {
+                    $(`#card-${pageid}`).hide();
+                    notyf.success('Page deleted');
+                });
+        }
+
+        $(".btn-delete").click(function () {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) deletePage($(this).data("pageid"));
         });
     </script>
 }
@@ -46,7 +56,7 @@
                     <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPage" asp-route-id="@item.Id">
                         <span class="icon-pencil"></span>
                     </a>
-                    <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" data-slug="@item.Slug" href="javascript:;">
+                    <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" href="javascript:;">
                         <span class="icon-bin"></span>
                     </a>
 

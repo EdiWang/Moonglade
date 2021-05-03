@@ -9,10 +9,10 @@
         "jquery.min.js"
       ]
     },
-    {
-      "library": "tinymce@5.7.1",
-      "destination": "wwwroot/lib/tinymce"
-    },
+    //{
+    //  "library": "tinymce@5.7.1",
+    //  "destination": "wwwroot/lib/tinymce"
+    //},
     {
       "library": "monaco-editor@0.23.0",
       "destination": "wwwroot/lib/monaco-editor/",
