@@ -64,6 +64,18 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
+        public async Task GetAsync_PageId_Null()
+        {
+            _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+                .Returns(ValueTask.FromResult((PageEntity)null));
+
+            var svc = CreatePageService();
+            var page = await svc.GetAsync(Guid.Empty);
+
+            Assert.IsNull(page);
+        }
+
+        [Test]
         public async Task GetAsync_PageSlug()
         {
             _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Expression<Func<PageEntity, bool>>>()))
