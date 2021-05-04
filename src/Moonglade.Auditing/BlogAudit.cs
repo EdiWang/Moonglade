@@ -41,16 +41,10 @@ namespace Moonglade.Auditing
                 var (username, ipv4) = GetUsernameAndIp();
 
                 // Truncate data so that SQL won't blow up
-                if (message.Length > 256)
-                {
-                    message = message.Substring(0, 256);
-                }
+                if (message.Length > 256) message = message[..256];
 
                 var machineName = Environment.MachineName;
-                if (machineName.Length > 32)
-                {
-                    machineName = machineName.Substring(0, 32);
-                }
+                if (machineName.Length > 32) machineName = machineName[..32];
 
                 var auditEntry = new AuditEntry(eventType, auditEventId, username, ipv4, machineName, message);
 

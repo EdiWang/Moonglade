@@ -141,7 +141,7 @@ namespace Moonglade.Utils
                 characterCount = backup;
             }
 
-            var trimmed = text.Substring(0, characterCount);
+            var trimmed = text[..characterCount];
             return trimmed + ellipsis;
         }
 

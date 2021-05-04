@@ -1,11 +1,9 @@
-﻿using Moonglade.Core;
+﻿using System;
+using System.Threading.Tasks;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
-using Moonglade.Configuration;
 
 namespace Moonglade.Core.Tests
 {

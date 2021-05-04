@@ -104,9 +104,9 @@ namespace Moonglade.Core.Tests
             };
             _mockOptions.Setup(p => p.Value).Returns(dic);
             var ctl = CreateService();
-            
+
             var result = await ctl.Create("ます");
-            
+
             Assert.IsNull(result);
             _mockRepositoryTagEntity.Verify(p => p.AddAsync(It.IsAny<TagEntity>()), Times.Never);
         }

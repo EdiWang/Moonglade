@@ -85,7 +85,7 @@ namespace Moonglade.Core
             if (_postRepo.Any(new PostSpec(post.Slug, todayUtc)))
             {
                 var uid = Guid.NewGuid();
-                post.Slug += $"-{uid.ToString().ToLower().Substring(0, 8)}";
+                post.Slug += $"-{uid.ToString().ToLower()[..8]}";
                 _logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
             }
 
