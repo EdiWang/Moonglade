@@ -156,5 +156,23 @@ namespace Moonglade.Web.Tests.Pages
             var modelState = signInModel.ViewData.ModelState;
             Assert.IsFalse(modelState.IsValid);
         }
+
+
+        [Test]
+        public async Task OnPostAsync_InvalidCaptcha()
+        {
+            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), new MockHttpSession(), true, true)).Returns(false);
+
+            var signInModel = CreateSignInModel();
+            signInModel.Username = FakeData.ShortString1;
+            signInModel.Password = FakeData.ShortString2;
+
+            var result = await signInModel.OnPostAsync();
+
+            Assert.IsInstanceOf<PageResult>(result);
+
+            var modelState = signInModel.ViewData.ModelState;
+            Assert.IsFalse(modelState.IsValid);
+        }
     }
 }
