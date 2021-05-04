@@ -322,7 +322,7 @@ namespace Moonglade.Web
 
                 var imageUrl = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}image/{filename}";
 
-                MediaObjectInfo objectInfo = new MediaObjectInfo { url = imageUrl };
+                var objectInfo = new MediaObjectInfo { url = imageUrl };
                 return objectInfo;
             }
             catch (Exception e)

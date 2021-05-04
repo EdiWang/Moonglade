@@ -252,6 +252,29 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public async Task NewMediaObjectAsync_OK()
+        {
+            _mockFileNameGenerator.Setup(p => p.GetFileName(It.IsAny<string>(), string.Empty))
+                .Returns("img-425c62b3-4ecc-49ca-95d1-9ddef6e21725.png");
+
+            _mockBlogImageStorage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+                .Returns(Task.FromResult("img-425c62b3-4ecc-49ca-95d1-9ddef6e21725.png"));
+
+            var mo = new MediaObject
+            {
+                name = "996.png",
+                type = "image/png",
+                bits = FakeData.ImageBase64
+            };
+
+            var service = CreateService();
+            var result = await service.NewMediaObjectAsync("996.icu", _username, _password, mo);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual($"https://996.icu/image/img-425c62b3-4ecc-49ca-95d1-9ddef6e21725.png", result.url);
+        }
+
+        [Test]
         public async Task DeletePostAsync_OK()
         {
             var service = CreateService();
