@@ -239,6 +239,19 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public async Task GetTagsAsync_OK()
+        {
+            IReadOnlyList<string> names = new[] { "996", "icu" };
+            _mockTagService.Setup(p => p.GetAllNames()).Returns(Task.FromResult(names));
+
+            var service = CreateService();
+            var result = await service.GetTagsAsync("996.icu", _username, _password);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Length);
+        }
+
+        [Test]
         public async Task DeletePostAsync_OK()
         {
             var service = CreateService();
