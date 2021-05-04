@@ -204,5 +204,25 @@ namespace Moonglade.Web.Tests.Pages
             var modelState = signInModel.ViewData.ModelState;
             Assert.IsFalse(modelState.IsValid);
         }
+
+        //    [Test]
+        //    public async Task OnPostAsync_ValidCredential()
+        //    {
+        //        _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
+
+        //        _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(FakeData.Uid1));
+
+        //        var signInModel = CreateSignInModel();
+        //        signInModel.Username = FakeData.ShortString1;
+        //        signInModel.Password = FakeData.ShortString2;
+
+        //        var result = await signInModel.OnPostAsync();
+
+        //        Assert.IsInstanceOf<RedirectToPageResult>(result);
+        //        var modelState = signInModel.ViewData.ModelState;
+        //        Assert.IsTrue(modelState.IsValid);
+        //        _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Authentication, AuditEventId.LoginSuccessLocal, It.IsAny<string>()));
+        //        _mockLocalAccountService.Verify(p => p.LogSuccessLoginAsync(FakeData.Uid1, It.IsAny<string>()));
+        //    }
     }
 }
