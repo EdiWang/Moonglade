@@ -89,11 +89,11 @@ namespace Moonglade.Web
             });
         }
 
-        public async Task<Post> GetPostAsync(string postid, string username, string password)
+        public Task<Post> GetPostAsync(string postid, string username, string password)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 if (!Guid.TryParse(postid.Trim(), out var id))
                 {
@@ -102,12 +102,7 @@ namespace Moonglade.Web
 
                 var post = await _postQueryService.GetAsync(id);
                 return ToMetaWeblogPost(post);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
         public async Task<Post[]> GetRecentPostsAsync(string blogid, string username, string password, int numberOfPosts)
@@ -124,11 +119,11 @@ namespace Moonglade.Web
             });
         }
 
-        public async Task<string> AddPostAsync(string blogid, string username, string password, Post post, bool publish)
+        public Task<string> AddPostAsync(string blogid, string username, string password, Post post, bool publish)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 var cids = await GetCatIds(post.categories);
                 if (cids.Length == 0)
@@ -153,19 +148,14 @@ namespace Moonglade.Web
 
                 var p = await _postManageService.CreateAsync(req);
                 return p.Id.ToString();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<bool> DeletePostAsync(string key, string postid, string username, string password, bool publish)
+        public Task<bool> DeletePostAsync(string key, string postid, string username, string password, bool publish)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 if (!Guid.TryParse(postid.Trim(), out var id))
                 {
@@ -174,19 +164,14 @@ namespace Moonglade.Web
 
                 await _postManageService.DeleteAsync(id, publish);
                 return true;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<bool> EditPostAsync(string postid, string username, string password, Post post, bool publish)
+        public Task<bool> EditPostAsync(string postid, string username, string password, Post post, bool publish)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 if (!Guid.TryParse(postid.Trim(), out var id))
                 {
@@ -216,19 +201,14 @@ namespace Moonglade.Web
 
                 await _postManageService.UpdateAsync(id, req);
                 return true;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<CategoryInfo[]> GetCategoriesAsync(string blogid, string username, string password)
+        public Task<CategoryInfo[]> GetCategoriesAsync(string blogid, string username, string password)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 var cats = await _categoryService.GetAll();
                 var catInfos = cats.Select(p => new CategoryInfo
@@ -241,19 +221,14 @@ namespace Moonglade.Web
                 }).ToArray();
 
                 return catInfos;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<int> AddCategoryAsync(string key, string username, string password, NewCategory category)
+        public Task<int> AddCategoryAsync(string key, string username, string password, NewCategory category)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 await _categoryService.CreateAsync(new()
                 {
@@ -263,19 +238,14 @@ namespace Moonglade.Web
                 });
 
                 return 996;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<Tag[]> GetTagsAsync(string blogid, string username, string password)
+        public Task<Tag[]> GetTagsAsync(string blogid, string username, string password)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 var names = await _tagService.GetAllNames();
                 var tags = names.Select(p => new Tag
@@ -284,19 +254,14 @@ namespace Moonglade.Web
                 }).ToArray();
 
                 return tags;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<MediaObjectInfo> NewMediaObjectAsync(string blogid, string username, string password, MediaObject mediaObject)
+        public Task<MediaObjectInfo> NewMediaObjectAsync(string blogid, string username, string password, MediaObject mediaObject)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 // TODO: Check extension names
 
@@ -309,19 +274,14 @@ namespace Moonglade.Web
 
                 var objectInfo = new MediaObjectInfo { url = imageUrl };
                 return objectInfo;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<Page> GetPageAsync(string blogid, string pageid, string username, string password)
+        public Task<Page> GetPageAsync(string blogid, string pageid, string username, string password)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 if (!Guid.TryParse(pageid, out var id))
                 {
@@ -330,19 +290,14 @@ namespace Moonglade.Web
 
                 var page = await _blogPageService.GetAsync(id);
                 return ToMetaWeblogPage(page);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<Page[]> GetPagesAsync(string blogid, string username, string password, int numPages)
+        public Task<Page[]> GetPagesAsync(string blogid, string username, string password, int numPages)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 if (numPages < 0) throw new ArgumentOutOfRangeException(nameof(numPages));
 
@@ -350,12 +305,7 @@ namespace Moonglade.Web
                 var mPages = pages.Select(ToMetaWeblogPage);
 
                 return mPages.ToArray();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
         public async Task<Author[]> GetAuthorsAsync(string blogid, string username, string password)
@@ -375,11 +325,11 @@ namespace Moonglade.Web
             });
         }
 
-        public async Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
+        public Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 var pageRequest = new UpdatePageRequest
                 {
@@ -394,19 +344,14 @@ namespace Moonglade.Web
 
                 var uid = await _blogPageService.CreateAsync(pageRequest);
                 return uid.ToString();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
+        public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 if (!Guid.TryParse(pageid, out var id))
                 {
@@ -426,19 +371,14 @@ namespace Moonglade.Web
 
                 await _blogPageService.UpdateAsync(id, pageRequest);
                 return true;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
-        public async Task<bool> DeletePageAsync(string blogid, string username, string password, string pageid)
+        public Task<bool> DeletePageAsync(string blogid, string username, string password, string pageid)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecuteAsync(async () =>
             {
                 if (!Guid.TryParse(pageid, out var id))
                 {
@@ -447,12 +387,7 @@ namespace Moonglade.Web
 
                 await _blogPageService.DeleteAsync(id);
                 return true;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
         private void EnsureUser(string username, string password)
@@ -539,6 +474,19 @@ namespace Moonglade.Web
             try
             {
                 return action();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
+        }
+
+        private async Task<T> TryExecuteAsync<T>(Func<Task<T>> func)
+        {
+            try
+            {
+                return await func();
             }
             catch (Exception e)
             {
