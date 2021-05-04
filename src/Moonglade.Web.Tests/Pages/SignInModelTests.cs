@@ -55,6 +55,8 @@ namespace Moonglade.Web.Tests.Pages
                 ViewData = viewData
             };
 
+            httpContext.Session = new MockHttpSession();
+
             var model = new SignInModel(
                 _mockOptions.Object,
                 _mockLocalAccountService.Object,
@@ -124,6 +126,8 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnPostAsync_Exception()
         {
+            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
+
             _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(new(FakeData.ShortString2));
 
@@ -144,6 +148,8 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnPostAsync_BadModelState()
         {
+            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
+
             var signInModel = CreateSignInModel();
             signInModel.Username = "";
             signInModel.Password = FakeData.ShortString2;
@@ -155,13 +161,37 @@ namespace Moonglade.Web.Tests.Pages
 
             var modelState = signInModel.ViewData.ModelState;
             Assert.IsFalse(modelState.IsValid);
+
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Authentication, AuditEventId.LoginFailedLocal, It.IsAny<string>()));
         }
 
 
         [Test]
         public async Task OnPostAsync_InvalidCaptcha()
         {
-            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), new MockHttpSession(), true, true)).Returns(false);
+            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), new MockHttpSession(), true, true))
+                .Returns(false);
+
+            var signInModel = CreateSignInModel();
+            signInModel.Username = FakeData.ShortString1;
+            signInModel.Password = FakeData.ShortString2;
+
+            var result = await signInModel.OnPostAsync();
+
+            Assert.IsInstanceOf<PageResult>(result);
+
+            var modelState = signInModel.ViewData.ModelState;
+            Assert.IsFalse(modelState.IsValid);
+
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Authentication, AuditEventId.LoginFailedLocal, It.IsAny<string>()));
+        }
+
+        [Test]
+        public async Task OnPostAsync_InvalidCredential()
+        {
+            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), new MockHttpSession(), true, true)).Returns(true);
+
+            _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(Guid.Empty));
 
             var signInModel = CreateSignInModel();
             signInModel.Username = FakeData.ShortString1;
