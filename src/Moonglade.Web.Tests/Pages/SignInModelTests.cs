@@ -169,7 +169,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnPostAsync_InvalidCaptcha()
         {
-            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), new MockHttpSession(), true, true))
+            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true))
                 .Returns(false);
 
             var signInModel = CreateSignInModel();
@@ -189,7 +189,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnPostAsync_InvalidCredential()
         {
-            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), new MockHttpSession(), true, true)).Returns(true);
+            _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
 
             _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(Guid.Empty));
 
