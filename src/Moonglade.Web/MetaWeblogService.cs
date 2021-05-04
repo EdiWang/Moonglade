@@ -56,7 +56,7 @@ namespace Moonglade.Web
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecute(() =>
             {
                 var user = new UserInfo
                 {
@@ -69,19 +69,14 @@ namespace Moonglade.Web
                 };
 
                 return Task.FromResult(user);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
         public Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
         {
             EnsureUser(username, password);
 
-            try
+            return TryExecute(() =>
             {
                 var blog = new BlogInfo
                 {
@@ -91,12 +86,7 @@ namespace Moonglade.Web
                 };
 
                 return Task.FromResult(new[] { blog });
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
         public async Task<Post> GetPostAsync(string postid, string username, string password)
@@ -123,20 +113,15 @@ namespace Moonglade.Web
         public async Task<Post[]> GetRecentPostsAsync(string blogid, string username, string password, int numberOfPosts)
         {
             EnsureUser(username, password);
+            await Task.CompletedTask;
 
-            try
+            return TryExecute(() =>
             {
-                await Task.CompletedTask;
                 if (numberOfPosts < 0) throw new ArgumentOutOfRangeException(nameof(numberOfPosts));
 
                 // TODO: Get recent posts
                 return Array.Empty<Post>();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
         public async Task<string> AddPostAsync(string blogid, string username, string password, Post post, bool publish)
@@ -376,11 +361,10 @@ namespace Moonglade.Web
         public async Task<Author[]> GetAuthorsAsync(string blogid, string username, string password)
         {
             EnsureUser(username, password);
+            await Task.CompletedTask;
 
-            try
+            return TryExecute(() =>
             {
-                await Task.CompletedTask;
-
                 return new[]
                 {
                     new Author
@@ -388,12 +372,7 @@ namespace Moonglade.Web
                         display_name = _blogConfig.GeneralSettings.OwnerName
                     }
                 };
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw new MetaWeblogException(e.Message);
-            }
+            });
         }
 
         public async Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
@@ -553,6 +532,19 @@ namespace Moonglade.Web
                         select cat.Id).ToArray();
 
             return cids;
+        }
+
+        private T TryExecute<T>(Func<T> action)
+        {
+            try
+            {
+                return action();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new MetaWeblogException(e.Message);
+            }
         }
     }
 }
