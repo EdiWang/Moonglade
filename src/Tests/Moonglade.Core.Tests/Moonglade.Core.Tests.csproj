@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Common.props" />
+  <Import Project="..\..\Common.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -19,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
-    <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
-    <ProjectReference Include="..\Moonglade.Pages\Moonglade.Pages.csproj" />
-    <ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
+    <ProjectReference Include="..\..\Moonglade.Core\Moonglade.Core.csproj" />
+    <ProjectReference Include="..\..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
+    <ProjectReference Include="..\..\Moonglade.Pages\Moonglade.Pages.csproj" />
+    <ProjectReference Include="..\..\Moonglade.Setup\Moonglade.Setup.csproj" />
   </ItemGroup>
 
 </Project>
