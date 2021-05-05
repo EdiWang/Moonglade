@@ -87,7 +87,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Menus.Tests", "Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Pingback.Tests", "Tests\Moonglade.Pingback.Tests\Moonglade.Pingback.Tests.csproj", "{9F7F7A06-1BA0-4716-8FF9-C47492048DCF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auth.Tests", "Moonglade.Auth.Tests\Moonglade.Auth.Tests.csproj", "{5A02F702-451F-4B0B-9505-F3DD663E1E90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auth.Tests", "Tests\Moonglade.Auth.Tests\Moonglade.Auth.Tests.csproj", "{5A02F702-451F-4B0B-9505-F3DD663E1E90}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing.Tests", "Moonglade.Auditing.Tests\Moonglade.Auditing.Tests.csproj", "{EBDCC076-8966-4E1C-8804-D942C401DC6F}"
 EndProject
