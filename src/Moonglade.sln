@@ -79,7 +79,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.ImageStorage.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Comments.Tests", "Tests\Moonglade.Comments.Tests\Moonglade.Comments.Tests.csproj", "{BB69BE47-AE3F-4214-900D-AA7A02493EB0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Caching.Tests", "Moonglade.Caching.Tests\Moonglade.Caching.Tests.csproj", "{7B0CDF51-AF36-4E52-9CBF-7962529030F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Caching.Tests", "Tests\Moonglade.Caching.Tests\Moonglade.Caching.Tests.csproj", "{7B0CDF51-AF36-4E52-9CBF-7962529030F9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Syndication.Tests", "Tests\Moonglade.Syndication.Tests\Moonglade.Syndication.Tests.csproj", "{EEFBA2D5-661F-41FA-B540-8FD3E8FAE847}"
 EndProject
