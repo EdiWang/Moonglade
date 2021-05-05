@@ -89,7 +89,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Pingback.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auth.Tests", "Tests\Moonglade.Auth.Tests\Moonglade.Auth.Tests.csproj", "{5A02F702-451F-4B0B-9505-F3DD663E1E90}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing.Tests", "Moonglade.Auditing.Tests\Moonglade.Auditing.Tests.csproj", "{EBDCC076-8966-4E1C-8804-D942C401DC6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auditing.Tests", "Tests\Moonglade.Auditing.Tests\Moonglade.Auditing.Tests.csproj", "{EBDCC076-8966-4E1C-8804-D942C401DC6F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{FE0F6EA1-5520-4DD9-9CD4-7A2365A03C8C}"
 	ProjectSection(SolutionItems) = preProject

@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Common.props" />
+  <Import Project="..\..\Common.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Auditing\Moonglade.Auditing.csproj" />
-    <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+    <ProjectReference Include="..\..\Moonglade.Auditing\Moonglade.Auditing.csproj" />
+    <ProjectReference Include="..\..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
   </ItemGroup>
 
 </Project>
