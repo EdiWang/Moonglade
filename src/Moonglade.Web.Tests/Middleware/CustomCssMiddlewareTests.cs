@@ -11,7 +11,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
-
     public class CustomCssMiddlewareTests
     {
         private MockRepository _mockRepository;

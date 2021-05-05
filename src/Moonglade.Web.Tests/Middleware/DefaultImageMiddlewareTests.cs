@@ -11,7 +11,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
-
     public class DefaultImageMiddlewareTests
     {
         private MockRepository _mockRepository;

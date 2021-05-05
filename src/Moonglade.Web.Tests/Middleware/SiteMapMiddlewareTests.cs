@@ -14,7 +14,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
-
     public class SiteMapMiddlewareTests
     {
         private MockRepository _mockRepository;

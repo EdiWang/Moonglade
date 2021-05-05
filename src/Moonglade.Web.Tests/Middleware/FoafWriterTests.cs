@@ -10,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Middleware
 {
     [TestFixture]
-
     public class FoafWriterTests
     {
         private MockRepository _mockRepository;
