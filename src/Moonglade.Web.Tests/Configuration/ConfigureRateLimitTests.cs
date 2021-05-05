@@ -25,6 +25,12 @@ namespace Moonglade.Web.Tests.Configuration
 
             var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IRateLimitConfiguration));
             Assert.IsNotNull(obj1);
+
+            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IRateLimitCounterStore));
+            Assert.IsNotNull(obj2);
+
+            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(IIpPolicyStore));
+            Assert.IsNotNull(obj3);
         }
     }
 }
