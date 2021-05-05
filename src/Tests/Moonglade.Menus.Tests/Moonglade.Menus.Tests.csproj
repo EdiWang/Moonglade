@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Common.props" />
+  <Import Project="..\..\Common.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -14,7 +14,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="Moq" Version="4.16.1" />
-    <ProjectReference Include="..\Moonglade.Menus\Moonglade.Menus.csproj" />
+    <ProjectReference Include="..\..\Moonglade.Menus\Moonglade.Menus.csproj" />
   </ItemGroup>
 
 </Project>

@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Caching.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Syndication.Tests", "Moonglade.Syndication.Tests\Moonglade.Syndication.Tests.csproj", "{EEFBA2D5-661F-41FA-B540-8FD3E8FAE847}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Menus.Tests", "Moonglade.Menus.Tests\Moonglade.Menus.Tests.csproj", "{99791D1B-7E9B-4CF9-997C-873CF1BFF889}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Menus.Tests", "Tests\Moonglade.Menus.Tests\Moonglade.Menus.Tests.csproj", "{99791D1B-7E9B-4CF9-997C-873CF1BFF889}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Pingback.Tests", "Moonglade.Pingback.Tests\Moonglade.Pingback.Tests.csproj", "{9F7F7A06-1BA0-4716-8FF9-C47492048DCF}"
 EndProject
