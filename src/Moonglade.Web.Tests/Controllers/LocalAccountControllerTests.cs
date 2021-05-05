@@ -143,11 +143,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task ResetPassword_EmptyId()
         {
             var ctl = CreateLocalAccountController();
-
-            var result = await ctl.ResetPassword(Guid.Empty, new()
-            {
-                NewPassword = "996007251404"
-            });
+            var result = await ctl.ResetPassword(Guid.Empty, "996007251404");
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -156,11 +152,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task ResetPassword_WeakPassword()
         {
             var ctl = CreateLocalAccountController();
-
-            var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), new()
-            {
-                NewPassword = "996007251404"
-            });
+            var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), "996007251404");
 
             Assert.IsInstanceOf<ConflictObjectResult>(result);
         }
@@ -169,11 +161,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task ResetPassword_OK()
         {
             var ctl = CreateLocalAccountController();
-
-            var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), new()
-            {
-                NewPassword = "Admin@1234"
-            });
+            var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), "Admin@1234");
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockLocalAccountService.Verify(p => p.UpdatePasswordAsync(It.IsAny<Guid>(), It.IsAny<string>()));

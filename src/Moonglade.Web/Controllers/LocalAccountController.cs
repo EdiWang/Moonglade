@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -76,7 +77,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> ResetPassword(Guid id, ResetPasswordRequest request)
+        public async Task<IActionResult> ResetPassword(Guid id, [FromBody][Required] string newPassword)
         {
             if (id == Guid.Empty)
             {
@@ -84,12 +85,12 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            if (!Regex.IsMatch(request.NewPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))
+            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))
             {
                 return Conflict("Password must be minimum eight characters, at least one letter and one number");
             }
 
-            await _accountService.UpdatePasswordAsync(id, request.NewPassword);
+            await _accountService.UpdatePasswordAsync(id, newPassword);
             return Ok();
         }
     }

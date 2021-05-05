@@ -47,16 +47,13 @@
         $(".btn-resetpwd").click(function () {
             if ($("#resetpassword-form").valid()) {
                 callApi(`/api/localaccount/${cid}/password`,
-                    'PUT',
-                    {
-                        "newPassword": $("#NewPassword").val()
-                    },
+                    'PUT', $("#NewPassword").val(),
                     (resp) => {
                         $("#resetpassword-form")[0].reset();
                         $("#resetPasswordModal").modal('hide');
                         notyf.success('Password updated.');
+                        cid = '';
                     });
-                cid = '';
             }
         });
     </script>
