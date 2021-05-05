@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.Providers;
-using Moonglade.Pingback;
 using Moonglade.Web.Configuration;
 using NUnit.Framework;
 
@@ -81,6 +80,33 @@ namespace Moonglade.Web.Tests.Configuration
             Assert.IsNotNull(obj1);
 
             var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(FileSystemImageConfiguration));
+            Assert.IsNotNull(obj2);
+        }
+
+        [Test]
+        public void AddImageStorage_MinioStorage()
+        {
+            var myConfiguration = new Dictionary<string, string>
+            {
+                { "ImageStorage:Provider", "miniostorage" },
+                { "ImageStorage:MinioStorageSettings:EndPoint", "" },
+                { "ImageStorage:MinioStorageSettings:AccessKey", "" },
+                { "ImageStorage:MinioStorageSettings:SecretKey", "" },
+                { "ImageStorage:MinioStorageSettings:BucketName", "" },
+                { "ImageStorage:MinioStorageSettings:WithSSL", "true" }
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(myConfiguration)
+                .Build();
+
+            IServiceCollection services = new ServiceCollection();
+            services.AddImageStorage(configuration, options => { });
+
+            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogImageStorage));
+            Assert.IsNotNull(obj1);
+
+            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(MinioBlobConfiguration));
             Assert.IsNotNull(obj2);
         }
     }
