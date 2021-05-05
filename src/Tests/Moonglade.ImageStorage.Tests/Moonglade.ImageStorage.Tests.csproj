@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Common.props" />
+  <Import Project="..\..\Common.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
+    <ProjectReference Include="..\..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
   </ItemGroup>
 
 </Project>
