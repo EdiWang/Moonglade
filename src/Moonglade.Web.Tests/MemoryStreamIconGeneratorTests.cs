@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -6,13 +7,10 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests
 {
     [TestFixture]
-
     public class MemoryStreamIconGeneratorTests
     {
         private MockRepository _mockRepository;
-
         private Mock<ILogger> _mockLogger;
-        private Mock<IWebHostEnvironment> _mockWebHostEnvironment;
 
         #region Curry
 
@@ -26,7 +24,6 @@ namespace Moonglade.Web.Tests
             _mockRepository = new(MockBehavior.Default);
 
             _mockLogger = _mockRepository.Create<ILogger>();
-            _mockWebHostEnvironment = _mockRepository.Create<IWebHostEnvironment>();
         }
 
         [Test]
@@ -34,7 +31,7 @@ namespace Moonglade.Web.Tests
         {
             Assert.DoesNotThrow(() =>
             {
-                MemoryStreamIconGenerator.GenerateIcons(_iconData, _mockWebHostEnvironment.Object, _mockLogger.Object);
+                MemoryStreamIconGenerator.GenerateIcons(_iconData, Path.GetTempPath(), _mockLogger.Object);
             });
         }
 
@@ -43,7 +40,7 @@ namespace Moonglade.Web.Tests
         [TestCase("android-icon-144x144.png")]
         public void GetIcon_StateUnderTest_ExpectedBehavior(string fileName)
         {
-            MemoryStreamIconGenerator.GenerateIcons(_iconData, _mockWebHostEnvironment.Object, _mockLogger.Object);
+            MemoryStreamIconGenerator.GenerateIcons(_iconData, Path.GetTempPath(), _mockLogger.Object);
             var result = MemoryStreamIconGenerator.GetIcon(fileName);
 
             Assert.IsNotNull(result);

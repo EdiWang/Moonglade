@@ -34,7 +34,9 @@ namespace Moonglade.Web
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var env = services.GetRequiredService<IWebHostEnvironment>();
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var blogConfig = services.GetRequiredService<IBlogConfig>();
                 var logger = loggerFactory.CreateLogger<Program>();
 
                 try
@@ -45,7 +47,7 @@ namespace Moonglade.Web
 
                     var dbConnection = services.GetRequiredService<IDbConnection>();
                     TryInitFirstRun(dbConnection, logger);
-                    TryInitSiteIcons(services, logger);
+                    TryInitSiteIcons(blogConfig, env.WebRootPath, logger);
                 }
                 catch (Exception ex)
                 {
@@ -90,17 +92,14 @@ namespace Moonglade.Web
                               });
                 });
 
-        private static void TryInitSiteIcons(IServiceProvider services, ILogger logger)
+        private static void TryInitSiteIcons(IBlogConfig blogConfig, string webRootPath, ILogger logger)
         {
             try
             {
                 logger.LogInformation("Generating site icons");
 
-                var blogConfig = services.GetRequiredService<IBlogConfig>();
-                var env = services.GetRequiredService<IWebHostEnvironment>();
-
                 var iconData = blogConfig.GetAssetData(AssetId.SiteIconBase64);
-                MemoryStreamIconGenerator.GenerateIcons(iconData, env, logger);
+                MemoryStreamIconGenerator.GenerateIcons(iconData, webRootPath, logger);
 
                 logger.LogInformation($"Generated {IconRepository.SiteIconDictionary.Count} icon(s).");
             }

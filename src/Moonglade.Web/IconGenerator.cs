@@ -17,7 +17,7 @@ namespace Moonglade.Web
 
     public static class MemoryStreamIconGenerator
     {
-        public static void GenerateIcons(string base64Data, IWebHostEnvironment env, ILogger logger)
+        public static void GenerateIcons(string base64Data, string webRootPath, ILogger logger)
         {
             byte[] buffer;
 
@@ -26,7 +26,7 @@ namespace Moonglade.Web
             {
                 logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
 
-                var defaultImagePath = Path.Join($"{env.WebRootPath}", "images", "siteicon-default.png");
+                var defaultImagePath = Path.Join($"{webRootPath}", "images", "siteicon-default.png");
                 if (!File.Exists(defaultImagePath))
                 {
                     throw new FileNotFoundException("Can not find source image for generating favicons.", defaultImagePath);
