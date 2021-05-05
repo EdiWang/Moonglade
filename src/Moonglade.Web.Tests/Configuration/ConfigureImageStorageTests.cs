@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moonglade.ImageStorage;
+using Moonglade.ImageStorage.Providers;
+using Moonglade.Pingback;
 using Moonglade.Web.Configuration;
 using NUnit.Framework;
 
@@ -17,7 +21,7 @@ namespace Moonglade.Web.Tests.Configuration
         {
             var myConfiguration = new Dictionary<string, string>
             {
-                {"ImageStorage:Provider", provider}
+                { "ImageStorage:Provider", provider }
             };
 
             var configuration = new ConfigurationBuilder()
@@ -30,6 +34,30 @@ namespace Moonglade.Web.Tests.Configuration
             {
                 services.AddImageStorage(configuration, options => { });
             });
+        }
+
+        [Test]
+        public void AddImageStorage_AzureStorage()
+        {
+            var myConfiguration = new Dictionary<string, string>
+            {
+                { "ImageStorage:Provider", "azurestorage" },
+                { "ImageStorage:AzureStorageSettings:ConnectionString", "DefaultEndpointsProtocol=https;AccountName=ediwangstorage;AccountKey=996;EndpointSuffix=core.windows.net" },
+                { "ImageStorage:ContainerName", "ediwang-images" },
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(myConfiguration)
+                .Build();
+
+            IServiceCollection services = new ServiceCollection();
+            services.AddImageStorage(configuration, options => { });
+
+            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogImageStorage));
+            Assert.IsNotNull(obj1);
+
+            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(AzureBlobConfiguration));
+            Assert.IsNotNull(obj2);
         }
     }
 }
