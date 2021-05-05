@@ -109,5 +109,25 @@ namespace Moonglade.Web.Tests.Configuration
             var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(MinioBlobConfiguration));
             Assert.IsNotNull(obj2);
         }
+
+        [Test]
+        public void AddImageStorage_UnknownProvider()
+        {
+            var myConfiguration = new Dictionary<string, string>
+            {
+                { "ImageStorage:Provider", "fubao" }
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(myConfiguration)
+                .Build();
+
+            IServiceCollection services = new ServiceCollection();
+
+            Assert.Throws<NotSupportedException>(() =>
+            {
+                services.AddImageStorage(configuration, options => { });
+            });
+        }
     }
 }
