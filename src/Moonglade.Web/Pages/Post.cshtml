@@ -1,4 +1,4 @@
-﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]+)$)}"
+﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.PostModel
 @using Moonglade.Utils
 
