@@ -275,6 +275,16 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public void GetPageAsync_InvalidId()
+        {
+            var service = CreateService();
+            Assert.ThrowsAsync<MetaWeblogException>(async () =>
+            {
+                await service.GetPageAsync("996.icu", "996", _username, _password);
+            });
+        }
+
+        [Test]
         public async Task DeletePostAsync_OK()
         {
             var service = CreateService();
