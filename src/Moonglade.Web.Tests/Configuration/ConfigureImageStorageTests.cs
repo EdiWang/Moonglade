@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +58,29 @@ namespace Moonglade.Web.Tests.Configuration
             Assert.IsNotNull(obj1);
 
             var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(AzureBlobConfiguration));
+            Assert.IsNotNull(obj2);
+        }
+
+        [Test]
+        public void AddImageStorage_FileSystem()
+        {
+            var myConfiguration = new Dictionary<string, string>
+            {
+                { "ImageStorage:Provider", "filesystem" },
+                { "ImageStorage:FileSystemSettings:Path", Path.Combine(Path.GetTempPath(), "images") }
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(myConfiguration)
+                .Build();
+
+            IServiceCollection services = new ServiceCollection();
+            services.AddImageStorage(configuration, options => { });
+
+            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogImageStorage));
+            Assert.IsNotNull(obj1);
+
+            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(FileSystemImageConfiguration));
             Assert.IsNotNull(obj2);
         }
     }
