@@ -3,29 +3,29 @@
 var isDarkMode = false;
 var supportLightSwitch = false;
 
-$(function () {
-    notyf = new Notyf({
-        position: {
-            x: 'center',
-            y: 'bottom',
+notyf = new Notyf({
+    position: {
+        x: 'center',
+        y: 'bottom',
+    },
+    types: [
+        {
+            type: 'success',
+            background: 'var(--bs-success)',
+            duration: 2000
         },
-        types: [
-            {
-                type: 'success',
-                background: 'var(--success)',
-                duration: 2000
-            },
-            {
-                type: 'error',
-                background: 'var(--danger)',
-                duration: 3000
-            }
-        ]
-    });
+        {
+            type: 'error',
+            background: 'var(--bs-danger)',
+            duration: 3000
+        }
+    ]
+});
 
-    $('[data-toggle="popover"]').popover();
-    $('[data-toggle="tooltip"]').tooltip();
+$('[data-toggle="popover"]').popover();
+$('[data-toggle="tooltip"]').tooltip();
 
+$(function () {
     //if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
     //    $('div.container').addClass('container-fluid').removeClass('container');
     //}
