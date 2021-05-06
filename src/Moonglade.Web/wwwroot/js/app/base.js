@@ -22,8 +22,10 @@ notyf = new Notyf({
     ]
 });
 
-$('[data-toggle="popover"]').popover();
-$('[data-toggle="tooltip"]').tooltip();
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+})
 
 $(function () {
     //if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
