@@ -135,7 +135,7 @@
         });
 
         $(function () {
-            $('a[data-toggle="tab"]').on('shown.bs.tab',
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
                 function (e) {
                     var isCSSTab = e.target.id === "csscontent-tab";
                     if (isCSSTab && !hasCssEditorInitialized) {
@@ -188,10 +188,10 @@
 
             <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html" aria-selected="false">HTML</a>
+                    <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html" aria-selected="false">HTML</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="csscontent-tab" data-toggle="tab" href="#csscontent-editor-box" role="tab" aria-controls="css" aria-selected="true">CSS</a>
+                    <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box" role="tab" aria-controls="css" aria-selected="true">CSS</a>
                 </li>
             </ul>
 
