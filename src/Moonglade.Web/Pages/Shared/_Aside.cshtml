@@ -91,19 +91,19 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h6 class="modal-title" id="subscriptionmodalLabel">RSS / Atom Feed</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-4">
                         <div class="col-6">
-                            <a asp-controller="Subscription" asp-action="rss" class="btn btn-block btn-outline-success">
+                            <a asp-controller="Subscription" asp-action="rss" class="btn w-100 btn-outline-success">
                                 @Localizer["Latest Posts"] (RSS)
                             </a>
                         </div>
                         <div class="col-6">
-                            <a asp-controller="Subscription" asp-action="Atom" class="btn btn-block btn-outline-success">
+                            <a asp-controller="Subscription" asp-action="Atom" class="btn w-100 btn-outline-success">
                                 @Localizer["Latest Posts"] (Atom)
                             </a>
                         </div>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
                 </div>
             </div>
         </div>
