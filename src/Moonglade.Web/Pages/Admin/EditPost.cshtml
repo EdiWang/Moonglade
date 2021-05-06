@@ -132,9 +132,7 @@
                     <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
 
                     <div class="input-group input-group-sm mt-2 mb-2">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
-                        </div>
+                        <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
                         <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                     </div>
 
@@ -194,7 +192,6 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="resetModalLabel">@Localizer["Change Publish Date"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        
                     </button>
                 </div>
                 <div class="modal-body">

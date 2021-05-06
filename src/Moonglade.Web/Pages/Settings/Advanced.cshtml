@@ -85,9 +85,7 @@
                 </ul>
                 <div class="card-body">
                     <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">@Localizer["Endpoint"]</div>
-                        </div>
+                        <div class="input-group-text">@Localizer["Endpoint"]</div>
                         <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
                     </div>
                     <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
@@ -125,10 +123,8 @@
                     <div class="form-row">
                         <div class="col-7">
                             <div class="input-group mb-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        @Localizer["Password"]
-                                    </div>
+                                <div class="input-group-text">
+                                    @Localizer["Password"]
                                 </div>
                                 <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" />
                             </div>
@@ -258,7 +254,6 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="resetModalLabel">@Localizer["System Reset"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    
                 </button>
             </div>
             <div class="modal-body">
