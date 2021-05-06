@@ -35,7 +35,7 @@
             var weightPercent = tag.Value * 1.0 / tagMax * 100;
             var weight = Weight(weightPercent);
 
-            <li class="d-inline-block mb-2 mr-2">
+            <li class="d-inline-block mb-2 me-2">
                 <a asp-page="/TagList"
                    asp-route-normalizedName="@HttpUtility.UrlDecode(tag.Key.NormalizedName.ToLower())"
                    class="btn btn-sm btn-@weight" title="@(tag.Value)">
