@@ -9,7 +9,7 @@ namespace Moonglade.Core
     {
         Task<(int Hits, int Likes)> GetStatisticAsync(Guid postId);
 
-        Task UpdateStatisticAsync(Guid postId, int likes = 0);
+        Task UpdateStatisticAsync(Guid postId, bool isLike);
     }
 
     public class BlogStatistics : IBlogStatistics
@@ -27,17 +27,19 @@ namespace Moonglade.Core
             return (pp.Hits, pp.Likes);
         }
 
-        public async Task UpdateStatisticAsync(Guid postId, int likes = 0)
+        public async Task UpdateStatisticAsync(Guid postId, bool isLike)
         {
             var pp = await _postExtensionRepo.GetAsync(postId);
             if (pp is null) return;
 
-            if (likes > 0)
+            if (isLike)
             {
-                pp.Likes += likes;
+                if (pp.Likes >= int.MaxValue) return;
+                pp.Likes += 1;
             }
             else
             {
+                if (pp.Hits >= int.MaxValue) return;
                 pp.Hits += 1;
             }
 

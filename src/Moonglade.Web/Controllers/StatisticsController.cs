@@ -65,7 +65,7 @@ namespace Moonglade.Web.Controllers
                 if (HasCookie(CookieNames.Hit, request.PostId.ToString())) return Ok();
             }
 
-            await _statistics.UpdateStatisticAsync(request.PostId, request.IsLike ? 1 : 0);
+            await _statistics.UpdateStatisticAsync(request.PostId, request.IsLike);
             SetPostTrackingCookie(request.IsLike ? CookieNames.Liked : CookieNames.Hit, request.PostId.ToString());
 
             return Ok();
