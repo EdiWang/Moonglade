@@ -1,7 +1,5 @@
 ﻿var notyf;
-
 var isDarkMode = false;
-var supportLightSwitch = false;
 
 notyf = new Notyf({
     position: {

@@ -3,7 +3,6 @@
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet _javaScriptSnippet
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,7 +46,7 @@
     }
 
     @if (BlogConfig.AdvancedSettings.EnableCDNRedirect &&
-      !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
+!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
     }
@@ -233,12 +232,10 @@
         <script src="~/js/app/darklighttheme.js"></script>
     </environment>
 
-    @await RenderSectionAsync("scripts", false)
-    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
+    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme && ViewBag.DisableLightSwitch == null || !ViewBag.DisableLightSwitch)
     {
         <script>
-            'use strict';
-            if (window.matchMedia && window.themeModeSwitcher && supportLightSwitch) {
+            if (window.matchMedia && window.themeModeSwitcher) {
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     themeModeSwitcher.useDarkMode();
                 }
@@ -248,5 +245,8 @@
             }
         </script>
     }
+    @await RenderSectionAsync("scripts", false)
+
+
 </body>
 </html>
