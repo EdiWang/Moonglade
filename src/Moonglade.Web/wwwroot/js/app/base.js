@@ -1,31 +1,31 @@
 ﻿var notyf;
-
 var isDarkMode = false;
-var supportLightSwitch = false;
+
+notyf = new Notyf({
+    position: {
+        x: 'center',
+        y: 'bottom',
+    },
+    types: [
+        {
+            type: 'success',
+            background: 'var(--bs-success)',
+            duration: 2000
+        },
+        {
+            type: 'error',
+            background: 'var(--bs-danger)',
+            duration: 3000
+        }
+    ]
+});
+
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+})
 
 $(function () {
-    notyf = new Notyf({
-        position: {
-            x: 'center',
-            y: 'bottom',
-        },
-        types: [
-            {
-                type: 'success',
-                background: 'var(--success)',
-                duration: 2000
-            },
-            {
-                type: 'error',
-                background: 'var(--danger)',
-                duration: 3000
-            }
-        ]
-    });
-
-    $('[data-toggle="popover"]').popover();
-    $('[data-toggle="tooltip"]').tooltip();
-
     //if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
     //    $('div.container').addClass('container-fluid').removeClass('container');
     //}

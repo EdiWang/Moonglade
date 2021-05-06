@@ -7,11 +7,11 @@
 @Html.AntiForgeryToken()
 
 @section head{
-    <link href="~/css/3rd/datatables.min.css" rel="stylesheet" />
-    <script src="~/js/3rd/datatables.min.js"></script>
+    <link href="~/css/3rd/dataTables.bootstrap5.min.css" rel="stylesheet" />
 }
 
 @section scripts{
+    <script src="~/js/3rd/datatables.min.js"></script>
     <script>
         $(".btn-delete").click(function () {
             deletePingback($(this).data("pingbackid"));

@@ -6,6 +6,7 @@
 @{
     ViewBag.TitlePrefix = Model.BlogPage.Title;
     ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
+    ViewBag.DisableLightSwitch = true;
 
     string css = null;
     if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssContent))

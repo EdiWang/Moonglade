@@ -3,7 +3,6 @@
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet _javaScriptSnippet
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,8 +45,8 @@
         <metadesc description="@BlogConfig.GeneralSettings.MetaDescription" />
     }
 
-    @if (BlogConfig.AdvancedSettings.EnableCDNRedirect && 
-         !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
+    @if (BlogConfig.AdvancedSettings.EnableCDNRedirect &&
+!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
     }
@@ -87,20 +86,6 @@
         <link href="~/css/src/darkmode.css" rel="stylesheet" />
         <link href="~/css/src/highlighter-custom.css" rel="stylesheet" />
     </environment>
-    <environment exclude="Development">
-        <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
-    </environment>
-    <environment include="Development">
-        <script src="~/lib/jquery/jquery.min.js"></script>
-        <script src="~/js/3rd/bootstrap.bundle.min.js"></script>
-        <script src="~/js/3rd/jquery.qrcode.min.js"></script>
-        <script src="~/js/3rd/notyf.min.js"></script>
-        <script src="~/js/app/base.js"></script>
-        <script src="~/js/app/postslug.js"></script>
-        <script src="~/js/app/httpService.js"></script>
-        <script src="~/js/app/comments.js"></script>
-        <script src="~/js/app/darklighttheme.js"></script>
-    </environment>
     @await RenderSectionAsync("head", false)
     <environment include="Production">
         @if (!(bool)Context.Items["DNT"])
@@ -115,7 +100,7 @@
     }
 </head>
 <body class="@ViewBag.BodyClass">
-    <header class="sticky-top">
+    <header class="sticky-top d-print-none">
         <nav id="blog-nav" class="navbar navbar-expand-lg navbar-dark bg-accent1">
             <div class="container">
                 <div class="animbrand">
@@ -123,15 +108,15 @@
                         @BlogConfig.GeneralSettings.LogoText
                     </a>
                 </div>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#blog-navbar-content" aria-controls="blog-navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#blog-navbar-content" aria-controls="blog-navbar-content" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="blog-navbar-content">
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav me-auto">
                         <!-- System Nav Menu -->
                         <feature name="Menu_Categories">
                             <li id="navbar-dropdown-post" class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
                                     <span class="icon-book"></span>
                                     <strong>@Localizer["Categories"]</strong>
                                 </a>
@@ -159,9 +144,9 @@
 
                         @await Component.InvokeAsync("Menu")
                     </ul>
-                    <form class="form-inline search-form my-2 my-lg-0" action="/search" method="get">
+                    <form class="d-flex search-form my-2 my-lg-0" action="/search" method="get">
                         <input id="term"
-                               class="form-control bg-transparent mr-sm-2"
+                               class="form-control bg-transparent me-sm-2"
                                type="search"
                                value=""
                                title="@Localizer["Search"]"
@@ -169,7 +154,7 @@
                                placeholder="@Localizer["Search"]"
                                name="term"
                                maxlength="30">
-                        <button class="btn btn-outline-light btn-search my-2 my-sm-0" type="submit"><span class="icon-search"></span></button>
+                        <button class="btn btn-outline-light btn-search my-sm-0" type="submit"><span class="icon-search"></span></button>
                     </form>
                 </div>
             </div>
@@ -190,7 +175,7 @@
         }
         else
         {
-            <section class="blogger-intro-mobile d-block d-sm-none">
+            <section class="blogger-intro-mobile d-block d-sm-none d-print-none">
                 <div class="card-bkimg-container">
                     <img class="card-bkimg" alt="" src="@Url.Action("Avatar", "Assets")" />
                 </div>
@@ -232,12 +217,25 @@
     <partial name="_Footer" />
     <partial name="_EnvInfo" />
 
-    @await RenderSectionAsync("scripts", false)
-    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
+    <script src="~/js/3rd/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <environment exclude="Development">
+        <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
+    </environment>
+    <environment include="Development">
+        <script src="~/lib/jquery/jquery.min.js"></script>
+        <script src="~/js/3rd/jquery.qrcode.min.js"></script>
+        <script src="~/js/3rd/notyf.min.js"></script>
+        <script src="~/js/app/base.js"></script>
+        <script src="~/js/app/postslug.js"></script>
+        <script src="~/js/app/httpService.js"></script>
+        <script src="~/js/app/comments.js"></script>
+        <script src="~/js/app/darklighttheme.js"></script>
+    </environment>
+
+    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme && ViewBag.DisableLightSwitch == null || !ViewBag.DisableLightSwitch)
     {
         <script>
-            'use strict';
-            if (window.matchMedia && window.themeModeSwitcher && supportLightSwitch) {
+            if (window.matchMedia && window.themeModeSwitcher) {
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     themeModeSwitcher.useDarkMode();
                 }
@@ -247,5 +245,8 @@
             }
         </script>
     }
+    @await RenderSectionAsync("scripts", false)
+
+
 </body>
 </html>

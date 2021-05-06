@@ -12,7 +12,7 @@
                     <h3 class="mt-3 text-white font-sairas">
                         @BlogConfig.GeneralSettings.OwnerName
                     </h3>
-                    <p class="mr-3 ml-3">
+                    <p class="me-3 ms-3">
                         @BlogConfig.GeneralSettings.Description
                     </p>
                 </div>
@@ -35,7 +35,7 @@
                     </cache>
                     <hr />
                     <a asp-page="/Tags" class="card-link">
-                        <i class="icon-price-tag mr-1"></i>
+                        <i class="icon-price-tag me-1"></i>
                         @Localizer["All Tags"]
                     </a>
                 </div>
@@ -63,7 +63,7 @@
 
     <feature name="Widgets_SubscriptionButtons">
         <section id="aside-subscription" class="text-center mb-4">
-            <a class="btn btn-sm btn-round btn-outline-secondary mr-2" href="#" data-toggle="modal" data-target="#subscriptionmodal">
+            <a class="btn btn-sm btn-round btn-outline-secondary me-2" href="#" data-bs-toggle="modal" data-bs-target="#subscriptionmodal">
                 <span class="icon-rss"></span>
                 RSS / Atom
             </a>
@@ -91,19 +91,17 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h6 class="modal-title" id="subscriptionmodalLabel">RSS / Atom Feed</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-4">
                         <div class="col-6">
-                            <a asp-controller="Subscription" asp-action="rss" class="btn btn-block btn-outline-success">
+                            <a asp-controller="Subscription" asp-action="rss" class="btn w-100 btn-outline-success">
                                 @Localizer["Latest Posts"] (RSS)
                             </a>
                         </div>
                         <div class="col-6">
-                            <a asp-controller="Subscription" asp-action="Atom" class="btn btn-block btn-outline-success">
+                            <a asp-controller="Subscription" asp-action="Atom" class="btn w-100 btn-outline-success">
                                 @Localizer["Latest Posts"] (Atom)
                             </a>
                         </div>
@@ -113,7 +111,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
                 </div>
             </div>
         </div>

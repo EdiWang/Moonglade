@@ -6,6 +6,7 @@
 
 @section scripts{
     <script>
+        var modal = new bootstrap.Modal('#editFriendlinkModal');
         var fid = emptyGuid;
 
         function deleteFriendLink(friendlinkid) {
@@ -20,7 +21,7 @@
         function initCreateFriendLink() {
             fid = emptyGuid;
             $('#edit-form')[0].reset();
-            $('#editFriendlinkModal').modal();
+            modal.show();
         }
 
         function editFriendLink(id) {
@@ -28,7 +29,7 @@
                 fid = data.id;
                 $('#FriendLinkEditViewModel_Title').val(data.title);
                 $('#FriendLinkEditViewModel_LinkUrl').val(data.linkUrl);
-                $('#editFriendlinkModal').modal();
+                modal.show();
             });
         }
 
@@ -63,6 +64,7 @@
                     });
             }
         });
+    
     </script>
 }
 
@@ -70,7 +72,7 @@
 <h3>
     <span class="icon-link icon-admin-title"></span>
     @Localizer["Friend Links"]
-    <a class="btn btn-outline-success float-right" href="javascript:initCreateFriendLink();">
+    <a class="btn btn-outline-success float-end" href="javascript:initCreateFriendLink();">
         <span class="icon-plus"></span>
         @Localizer["New"]
     </a>
@@ -126,9 +128,9 @@
                 <div class="card-header">@Localizer["Friend Link Options"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="FriendLinkSettingsViewModel.ShowFriendLinksSection" class="custom-control-input">
-                            <label asp-for="FriendLinkSettingsViewModel.ShowFriendLinksSection" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="FriendLinkSettingsViewModel.ShowFriendLinksSection" class="form-check-input">
+                            <label asp-for="FriendLinkSettingsViewModel.ShowFriendLinksSection" class="form-check-label"></label>
                         </div>
                     </li>
                 </ul>
@@ -149,20 +151,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editFriendlinkModalLabel">@Localizer["Friend Link Information"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
 
             <form id="edit-form" method="post">
                 <div class="modal-body">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="form-group">
+                    <div class="mb-2">
                         <label asp-for="FriendLinkEditViewModel.Title"></label>
                         <input asp-for="FriendLinkEditViewModel.Title" class="form-control" />
                         <span asp-validation-for="FriendLinkEditViewModel.Title" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-2">
                         <label asp-for="FriendLinkEditViewModel.LinkUrl"></label>
                         <input asp-for="FriendLinkEditViewModel.LinkUrl" class="form-control" />
                         <span asp-validation-for="FriendLinkEditViewModel.LinkUrl" class="text-danger"></span>
@@ -170,7 +172,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>
         </div>

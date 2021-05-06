@@ -50,7 +50,7 @@
     }
 
 .darkmode .timeline-title a {
-    color: var(--white);
+    color: var(--bs-white);
 }
 
 .darkmode .timeline-body a {
@@ -71,7 +71,7 @@
 }
 
 .darkmode .post-summary-title a {
-    color: var(--white);
+    color: var(--bs-white);
 }
 
 .darkmode .page-link {
@@ -82,7 +82,7 @@
     .darkmode .page-link:hover {
         background-color: var(--gray-7);
         border: 1px solid var(--gray-7);
-        color: var(--white);
+        color: var(--bs-white);
     }
 
 .darkmode .navbar .dropdown-menu {
@@ -91,7 +91,7 @@
 
 .darkmode .navbar .dropdown-item.active, .darkmode .dropdown-item:hover {
     background-color: var(--gray-7);
-    color: var(--white);
+    color: var(--bs-white);
     text-decoration: none;
 }
 

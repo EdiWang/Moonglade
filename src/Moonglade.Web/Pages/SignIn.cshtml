@@ -17,21 +17,11 @@
     <partial name="_Favicons" />
     <environment include="Development">
         <link href="~/css/bundle.css" rel="stylesheet" asp-append-version="true" />
-        <script src="~/js/dist/app-bundle.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
-        <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
         @Html.Raw(_javaScriptSnippet.FullScript)
     </environment>
-    <script>
-        $(function () {
-            $("#img-captcha").click(function () {
-                d = new Date();
-                $('#img-captcha').attr('src', `/captcha-image?${d.getTime()}`);
-            });
-        });
-    </script>
 </head>
 <body class="pt-5">
     <div class="container">
@@ -42,19 +32,17 @@
                     <div class="card-body">
                         <form method="post">
                             <div asp-validation-summary="All" class="text-danger"></div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="Username"></label>
                                 <input asp-for="Username" class="form-control" required />
                             </div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="Password"></label>
                                 <input asp-for="Password" class="form-control" required />
                             </div>
-                            <div clas="form-group">
+                            <div clas="mb-2">
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <img id="img-captcha" src="~/captcha-image" data-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
-                                    </div>
+                                    <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
                                     <input asp-for="CaptchaCode"
                                            minlength="4"
                                            maxlength="4"
@@ -76,5 +64,19 @@
             </div>
         </div>
     </div>
+
+    <script src="~/js/3rd/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <environment include="Development">
+        <script src="~/js/dist/app-bundle.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
+    </environment>
+    <script>
+        $("#img-captcha").click(function () {
+            d = new Date();
+            $('#img-captcha').attr('src', `/captcha-image?${d.getTime()}`);
+        });
+    </script>
 </body>
 </html>

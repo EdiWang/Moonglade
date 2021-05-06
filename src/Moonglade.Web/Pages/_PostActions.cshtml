@@ -4,19 +4,19 @@
 }
 
 <hr />
-<div class="post-slug-actions clearfix mb-4">
+<div class="post-slug-actions clearfix mb-4 d-print-none">
     @if (null == ViewBag.IsDraftPreview)
     {
-        <div class="float-right">
+        <div class="float-end">
             @if (!isDNT)
             {
-                <a href="javascript:;" class="btn-ratings text-muted d-inline-block mr-3">
+                <a href="javascript:;" class="btn-ratings text-muted d-inline-block me-3">
                     <span class="icon-heart"></span>
                     <span class="likehits-num"></span>
                 </a>
             }
 
-            <a href="javascript:;" class="text-muted d-inline-block" data-toggle="modal" data-target="#qrcode-window">
+            <a href="javascript:;" class="text-muted d-inline-block" data-bs-toggle="modal" data-bs-target="#qrcode-window">
                 <span class="icon-qrcode"></span>
             </a>
         </div>
@@ -59,8 +59,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title" id="qrcodewindowLabel">@Model.Title</div>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
             <div class="modal-body">
@@ -68,12 +68,12 @@
                     <p class="text-center">
                         @Localizer["Scan QR Code on your phone"]
                     </p>
-                    <div id="post-qrcode">
+                    <div class="post-qrcode">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
             </div>
         </div>
     </div>

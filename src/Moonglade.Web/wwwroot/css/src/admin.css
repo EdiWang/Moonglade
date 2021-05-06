@@ -1,5 +1,5 @@
 ﻿.field-validation-error {
-    color: var(--danger);
+    color: var(--bs-danger);
 }
 
 .field-validation-valid {
@@ -7,7 +7,7 @@
 }
 
 .input-validation-error {
-    border: 1px solid var(--danger);
+    border: 1px solid var(--bs-danger);
 }
 
 .validation-summary-valid {
@@ -15,7 +15,7 @@
 }
 
 .validation-summary-errors {
-    color: var(--danger);
+    color: var(--bs-danger);
     font-weight: bold;
 }
 
@@ -181,7 +181,7 @@ div.mce-fullscreen {
     }
 
         .ul-tag-mgr li.updated {
-            border: 1px solid var(--green);
+            border: 1px solid var(--bs-green);
         }
 
         .ul-tag-mgr li span {
@@ -201,8 +201,8 @@ div.mce-fullscreen {
         }
 
             .ul-tag-mgr li a:hover {
-                background-color: var(--red);
-                color: var(--white);
+                background-color: var(--bs-red);
+                color: var(--bs-white);
             }
 
 .table .table-item-w10 {
@@ -273,4 +273,9 @@ div.mce-fullscreen {
 
 .admin-nav-section .list-group-item {
     padding: .6rem 1rem;
+}
+
+table.dataTable {
+    border-collapse: inherit !important;
+    border-spacing: inherit !important;
 }

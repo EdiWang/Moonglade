@@ -23,7 +23,7 @@
     }
 
     body.body-post-slug {
-        background-color: var(--white);
+        background-color: var(--bs-white);
     }
 
     body.darkmode.body-post-slug {
@@ -59,7 +59,7 @@
     }
 
     .blogger-intro-content {
-        color: var(--white);
+        color: var(--bs-white);
         padding: 15px;
         position: absolute;
         top: 0;
@@ -69,7 +69,7 @@
         .blogger-intro-content h4 {
             background-color: var(--transparent-light-20);
             border-radius: 5px;
-            color: var(--white);
+            color: var(--bs-white);
             font-size: 1rem;
             padding: 5px;
             text-shadow: 2px 0 2px #000;

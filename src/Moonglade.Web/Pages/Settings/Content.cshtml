@@ -19,32 +19,32 @@
                 <div class="card-header">@Localizer["Comments"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableComments" class="custom-control-input">
-                            <label asp-for="ViewModel.EnableComments" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.EnableComments" class="form-check-input">
+                            <label asp-for="ViewModel.EnableComments" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="custom-control-input">
-                            <label asp-for="ViewModel.RequireCommentReview" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="form-check-input">
+                            <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="custom-control-input">
-                            <label asp-for="ViewModel.EnableGravatar" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="form-check-input">
+                            <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="custom-control-input">
-                            <label asp-for="ViewModel.EnableWordFilter" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="form-check-input">
+                            <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
-                    <div class="form-group">
+                    <div class="mb-2">
                         <label asp-for="ViewModel.DisharmonyWords"></label>
                         <textarea asp-for="ViewModel.DisharmonyWords" class="form-control h-200px" spellcheck="false"></textarea>
                         <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
@@ -52,15 +52,15 @@
                     </div>
                     <hr />
                     <div>
-                        <label asp-for="ViewModel.WordFilterMode" class="mr-4"></label>
+                        <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
 
-                        <div class="custom-control custom-radio custom-control-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "custom-control-input" })
-                            <label class="custom-control-label" for="@WordFilterMode.Mask.ToString()">@Localizer["Mask Word"]</label>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@WordFilterMode.Mask.ToString()">@Localizer["Mask Word"]</label>
                         </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "custom-control-input" })
-                            <label class="custom-control-label" for="@WordFilterMode.Block.ToString()">@Localizer["Block Comment"]</label>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@WordFilterMode.Block.ToString()">@Localizer["Block Comment"]</label>
                         </div>
                     </div>
                 </div>
@@ -71,23 +71,23 @@
                 <div class="card-header">@Localizer["Blog posts"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="custom-control-input">
-                            <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-input">
+                            <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="ViewModel.PostListPageSize"></label>
                                 <input asp-for="ViewModel.PostListPageSize" class="form-control" />
                                 <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col">
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="ViewModel.HotTagAmount"></label>
                                 <input asp-for="ViewModel.HotTagAmount" class="form-control" />
                                 <span asp-validation-for="ViewModel.HotTagAmount" class="text-danger"></span>
@@ -102,9 +102,9 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="custom-control-input">
-                            <label asp-for="ViewModel.ShowPostFooter" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="form-check-input">
+                            <label asp-for="ViewModel.ShowPostFooter" class="form-check-label"></label>
                         </div>
                     </li>
                 </ul>
@@ -124,9 +124,9 @@
                 <div class="card-header">@Localizer["Call-out"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.ShowCalloutSection" class="custom-control-input">
-                            <label asp-for="ViewModel.ShowCalloutSection" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.ShowCalloutSection" class="form-check-input">
+                            <label asp-for="ViewModel.ShowCalloutSection" class="form-check-label"></label>
                         </div>
                     </li>
                 </ul>
@@ -143,7 +143,7 @@
     </div>
 
     <hr />
-    <div class="form-group">
+    <div class="mb-2">
         <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
     </div>
 </form>

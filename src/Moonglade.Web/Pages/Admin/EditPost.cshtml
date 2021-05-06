@@ -104,27 +104,27 @@
                 <div class="card-header">@Localizer["Options"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableComment" class="custom-control-input">
-                            <label asp-for="ViewModel.EnableComment" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.EnableComment" class="form-check-input">
+                            <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.Featured" class="custom-control-input">
-                            <label asp-for="ViewModel.Featured" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.Featured" class="form-check-input">
+                            <label asp-for="ViewModel.Featured" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.FeedIncluded" class="custom-control-input">
-                            <label asp-for="ViewModel.FeedIncluded" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.FeedIncluded" class="form-check-input">
+                            <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.ExposedToSiteMap" class="custom-control-input">
-                            <label asp-for="ViewModel.ExposedToSiteMap" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.ExposedToSiteMap" class="form-check-input">
+                            <label asp-for="ViewModel.ExposedToSiteMap" class="form-check-label"></label>
                         </div>
                     </li>
                 </ul>
@@ -132,15 +132,13 @@
                     <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
 
                     <div class="input-group input-group-sm mt-2 mb-2">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
-                        </div>
-                        <select class="custom-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
+                        <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
+                        <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                     </div>
 
                     @if (Model.ViewModel.PostId != Guid.Empty)
                     {
-                        <a class="btn btn-sm btn-block btn-outline-secondary" data-toggle="modal" data-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
+                        <a class="btn btn-sm w-100 btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
                     }
                 </div>
             </div>
@@ -154,10 +152,10 @@
                                 @foreach (var item in Model.ViewModel.CategoryList)
                                 {
                                     <li>
-                                        <div class="custom-control custom-checkbox">
-                                            <input id="cat-@item.Value" name="ViewModel.SelectedCategoryIds" class="custom-control-input" type="checkbox" value="@item.Value"
+                                        <div class="form-check">
+                                            <input id="cat-@item.Value" name="ViewModel.SelectedCategoryIds" class="form-check-input" type="checkbox" value="@item.Value"
                                                    @(item.IsChecked ? "checked=\"checked\"" : null)>
-                                            <label for="cat-@item.Value" class="custom-control-label">@item.DisplayText</label>
+                                            <label for="cat-@item.Value" class="form-check-label">@item.DisplayText</label>
                                         </div>
                                     </li>
                                 }
@@ -166,7 +164,7 @@
                     }
 
                     <hr />
-                    <a asp-page="./Category" class="btn btn-block btn-sm btn-outline-secondary">@Localizer["Manage Categories"]</a>
+                    <a asp-page="./Category" class="btn w-100 btn-sm btn-outline-secondary">@Localizer["Manage Categories"]</a>
                 </div>
             </div>
         </div>
@@ -193,26 +191,25 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="resetModalLabel">@Localizer["Change Publish Date"]</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-warning">@Localizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
-                    <div class="form-group">
+                    <div class="mb-2">
                         <input asp-for="ViewModel.ChangePublishDate" type="checkbox" />
-                        <label asp-for="ViewModel.ChangePublishDate" class="control-label"></label>
+                        <label asp-for="ViewModel.ChangePublishDate"></label>
                     </div>
 
-                    <div class="form-group">
-                        <label asp-for="ViewModel.PublishDate" class="control-label"></label>
+                    <div class="mb-2">
+                        <label asp-for="ViewModel.PublishDate"></label>
                         <input asp-for="ViewModel.PublishDate" class="form-control" />
                         <span asp-validation-for="ViewModel.PublishDate" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Continue"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@Localizer["Continue"]</button>
                 </div>
             </div>
         </div>

@@ -7,6 +7,13 @@
 
 @section scripts{
     <script>
+        var modal = new bootstrap.Modal('#editTagModal');
+
+        function initCreateTag() {
+            $('#edit-form')[0].reset();
+            modal.show();
+        }
+
         $(".btn-delete").click(function () {
             var tagid = $(this).data("tagid");
             var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
@@ -36,13 +43,15 @@
                     window.location.reload();
                 });
         });
+    
+    
     </script>
 }
 
 <h3>
     <span class="icon-price-tag icon-admin-title"></span>
     @Localizer["Tags"]
-    <a class="btn btn-outline-success float-right" href="javascript:initCreateTag();">
+    <a class="btn btn-outline-success float-end" href="javascript:initCreateTag();">
         <span class="icon-plus"></span>
         @Localizer["New"]
     </a>
@@ -67,21 +76,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editTagModalLabel">@Localizer["Create Tag"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
 
             <form id="edit-form" method="post">
                 <div class="modal-body">
-                    <div class="form-group">
+                    <div class="mb-2">
                         <label>@Localizer["Name"]</label>
                         <input type="text" id="input-tag-name" class="form-control" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>
         </div>

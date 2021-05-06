@@ -27,7 +27,7 @@
 
 @if (Model is not null && Model.Entries.Any())
 {
-    <a href="javascript:;" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#clearauditModal">
+    <a href="javascript:;" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#clearauditModal">
         <span class="icon-bin"></span>
         @Localizer["Clear Audit Logs"]
     </a>
@@ -95,15 +95,14 @@ else
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="clearauditModalLabel">@Localizer["Clear Audit Logs"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
                 @Localizer["Are you ABSOLUTELY sure? ALL audit logs will be erased!"]
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 <a href="#" class="btn btn-danger btn-clear">@Localizer["Clear Now"]</a>
             </div>
         </div>

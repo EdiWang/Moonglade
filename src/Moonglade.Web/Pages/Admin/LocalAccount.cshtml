@@ -7,7 +7,11 @@
 
 @section scripts{
     <script>
+        var editAccountModal = new bootstrap.Modal('#editAccountModal');
+        var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
+
         var cid = '';
+
         $(function () {
             $(".btn-delete").click(function () {
                 var cfm = confirm("Delete Confirmation?");
@@ -18,14 +22,14 @@
 
             $(".btn-updatepwd").click(function () {
                 $("#resetpassword-form")[0].reset();
-                $('#resetPasswordModal').modal();
+                resetPasswordModal.show();
                 cid = $(this).data("accountid");
             });
         });
 
         function initCreateAccount() {
             $("#edit-form")[0].reset();
-            $('#editAccountModal').modal();
+            editAccountModal.show();
         }
 
         $(".btn-submit").click(function () {
@@ -56,13 +60,14 @@
                     });
             }
         });
+    
     </script>
 }
 
 <h3>
     <span class="icon-user icon-admin-title"></span>
     @Localizer["User Account"]
-    <a class="btn btn-outline-success float-right" href="javascript:initCreateAccount();">
+    <a class="btn btn-outline-success float-end" href="javascript:initCreateAccount();">
         <span class="icon-plus"></span>
         @Localizer["Create"]
     </a>
@@ -118,28 +123,28 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editAccountModalLabel">@Localizer["Account Information"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
 
             <form id="edit-form" method="post">
                 <div class="modal-body">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="AccountEditViewModel.Username" class="control-label"></label>
+                    <div class="mb-2">
+                        <label asp-for="AccountEditViewModel.Username"></label>
                         <input asp-for="AccountEditViewModel.Username" class="form-control" />
                         <span asp-validation-for="AccountEditViewModel.Username" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="AccountEditViewModel.Password" class="control-label"></label>
+                    <div class="mb-2">
+                        <label asp-for="AccountEditViewModel.Password"></label>
                         <input asp-for="AccountEditViewModel.Password" class="form-control" />
                         <span asp-validation-for="AccountEditViewModel.Password" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>
         </div>
@@ -151,15 +156,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="resetPasswordModalLabel">@Localizer["Reset Password"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
 
             <form id="resetpassword-form" method="post">
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label class="control-label" for="NewPassword">New Password</label>
+                    <div class="mb-2">
+                        <label for="NewPassword">New Password</label>
                         <input class="form-control" type="password"
                                data-val="true"
                                data-val-regex="Password must be minimum eight characters, at least one letter and one number"
@@ -175,7 +180,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success btn-resetpwd">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>
         </div>

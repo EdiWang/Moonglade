@@ -399,11 +399,6 @@ function deleteSelectedComments() {
         });
 }
 
-function initCreateTag() {
-    $('#edit-form')[0].reset();
-    $('#editTagModal').modal();
-}
-
 function deletePingback(pingbackId) {
     $(`#span-processing-${pingbackId}`).show();
 

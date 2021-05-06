@@ -59,7 +59,8 @@
                     }, 100);
                 }
 
-                $('#imgzoomModal').modal();
+                var imgzoomModal = new bootstrap.Modal('#imgzoomModal');
+                imgzoomModal.show();
             });
         }
     },

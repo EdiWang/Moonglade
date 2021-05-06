@@ -31,15 +31,19 @@
 }
 
 ::selection {
-    background-color: var(--primary);
-    color: var(--white);
+    background-color: var(--bs-primary);
+    color: var(--bs-white);
     text-shadow: none;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei";
     font-size: 0.9rem;
-    background-color: var(--white);
+    background-color: var(--bs-white);
+}
+
+hr {
+    background-color: var(--bs-secondary);
 }
 
 a {
@@ -58,7 +62,7 @@ a {
     }
 
         a.link-transparent:hover {
-            color: var(--white);
+            color: var(--bs-white);
         }
 
 footer {
@@ -78,7 +82,7 @@ footer {
     }
 
         footer a:hover {
-            color: var(--white);
+            color: var(--bs-white);
         }
 
 label {
@@ -105,7 +109,7 @@ label {
     }
 
 .box {
-    background-color: var(--white);
+    background-color: var(--bs-white);
     border: 1px solid var(--gray-2);
     padding: 1.8rem;
     box-shadow: 0 1.6px 3.6px 0 var(--transparent-dark-3),0 .3px .9px 0 var(--transparent-dark-1);
@@ -150,7 +154,7 @@ label {
 }
 
 .label-success {
-    background-color: var(--green);
+    background-color: var(--bs-green);
 }
 
 .list-group-item.active, .page-item.active .page-link {
@@ -178,9 +182,9 @@ label {
 }
 
 .user-avatar-char {
-    background-color: var(--purple);
+    background-color: var(--bs-purple);
     border-radius: 55px;
-    color: var(--white);
+    color: var(--bs-white);
     font-size: 30px;
     font-weight: 100;
     height: 55px;
@@ -314,7 +318,7 @@ label {
 }
 
     .qrcode-link a:hover {
-        color: var(--white);
+        color: var(--bs-white);
     }
 
 .moonglade-logo {
@@ -396,14 +400,13 @@ label {
             box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
         }
 
-.custom-control-input:checked ~ .custom-control-label::before {
-    color: #fff;
+.form-check-input:checked {
     border-color: var(--accent-color1) !important;
     background-color: var(--accent-color1) !important;
 }
 
 .lightswitch {
-    background: var(--white);
+    background: var(--bs-white);
     bottom: 20px;
     cursor: pointer;
     height: 32px;
@@ -422,4 +425,12 @@ label {
 
 .font-125rem {
     font-size: 1.25rem;
+}
+
+.ul-tags {
+    text-align: justify !important;
+}
+
+.nav-link {
+    color: var(--accent-color1);
 }
