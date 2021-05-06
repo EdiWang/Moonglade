@@ -50,7 +50,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 .search-form {
     background: var(--transparent-light-20);
     border-radius: 3px;
-    max-width: 265px;
+    max-width: 268px;
 }
 
 .btn-search {
@@ -105,7 +105,7 @@ div.animbrand a:focus, div.animbrand a:hover {
     box-shadow: none;
     color: var(--bs-white);
     margin-right: 0 !important;
-    width: 226px;
+    width: 230px;
 }
 
     .form-control#term::-webkit-input-placeholder {
