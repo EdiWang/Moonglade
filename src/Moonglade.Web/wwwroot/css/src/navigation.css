@@ -14,7 +14,7 @@
     .animbrand a::after, .animbrand a::before {
         -moz-transition: -moz-transform .3s, opacity .2s;
         -webkit-transition: -webkit-transform .3s, opacity .2s;
-        color: var(--white);
+        color: var(--bs-white);
         display: inline-block;
         font-size: 22px;
         line-height: 16px;
@@ -64,18 +64,18 @@ div.animbrand a:focus, div.animbrand a:hover {
 .navbar .dropdown-menu {
     background-color: var(--accent-color1);
     border: 0;
-    color: var(--white);
+    color: var(--bs-white);
     font-size: 0.9rem;
 }
 
     .navbar .dropdown-menu .dropdown-item {
-        color: var(--white);
+        color: var(--bs-white);
         line-height: 1.7rem;
     }
 
 .navbar .dropdown-item.active, .dropdown-item:hover {
     background-color: var(--accent-color3);
-    color: var(--white);
+    color: var(--bs-white);
     text-decoration: none;
 }
 
@@ -84,7 +84,7 @@ div.animbrand a:focus, div.animbrand a:hover {
 }
 
     .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
-        color: var(--white);
+        color: var(--bs-white);
     }
 
 .nav-link strong {
@@ -103,25 +103,25 @@ div.animbrand a:focus, div.animbrand a:hover {
 .form-control#term {
     border-width: 0;
     box-shadow: none;
-    color: var(--white);
+    color: var(--bs-white);
     margin-right: 0 !important;
     width: 226px;
 }
 
     .form-control#term::-webkit-input-placeholder {
-        color: var(--white) !important;
+        color: var(--bs-white) !important;
     }
 
     .form-control#term:-moz-placeholder { /* Firefox 18- */
-        color: var(--white) !important;
+        color: var(--bs-white) !important;
     }
 
     .form-control#term::-moz-placeholder { /* Firefox 19+ */
-        color: var(--white) !important;
+        color: var(--bs-white) !important;
     }
 
     .form-control#term:-ms-input-placeholder {
-        color: var(--white) !important;
+        color: var(--bs-white) !important;
     }
 
 .form-control#search:focus {
