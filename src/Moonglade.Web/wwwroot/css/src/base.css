@@ -400,8 +400,7 @@ label {
             box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
         }
 
-.custom-control-input:checked ~ .custom-control-label::before {
-    color: #fff;
+.form-check-input:checked {
     border-color: var(--accent-color1) !important;
     background-color: var(--accent-color1) !important;
 }

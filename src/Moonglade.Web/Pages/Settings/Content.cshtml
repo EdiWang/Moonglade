@@ -54,13 +54,13 @@
                     <div>
                         <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
 
-                        <div class="custom-control custom-radio custom-control-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "custom-control-input" })
-                            <label class="custom-control-label" for="@WordFilterMode.Mask.ToString()">@Localizer["Mask Word"]</label>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@WordFilterMode.Mask.ToString()">@Localizer["Mask Word"]</label>
                         </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "custom-control-input" })
-                            <label class="custom-control-label" for="@WordFilterMode.Block.ToString()">@Localizer["Block Comment"]</label>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@WordFilterMode.Block.ToString()">@Localizer["Block Comment"]</label>
                         </div>
                     </div>
                 </div>

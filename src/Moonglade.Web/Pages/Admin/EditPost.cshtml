@@ -135,7 +135,7 @@
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
                         </div>
-                        <select class="custom-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
+                        <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                     </div>
 
                     @if (Model.ViewModel.PostId != Guid.Empty)
