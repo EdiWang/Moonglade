@@ -42,6 +42,10 @@ body {
     background-color: var(--bs-white);
 }
 
+hr {
+    background-color: var(--bs-secondary);
+}
+
 a {
     color: var(--accent-color1);
     text-decoration: none;
