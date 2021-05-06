@@ -29,7 +29,7 @@
 {
     var tagMax = Model.Tags.Select(p => p.Value).Max();
 
-    <ul class="list-unstyled text-justify">
+    <ul class="list-unstyled ul-tags">
         @foreach (var tag in Model.Tags.OrderBy(t => t.Key.DisplayName))
         {
             var weightPercent = tag.Value * 1.0 / tagMax * 100;
