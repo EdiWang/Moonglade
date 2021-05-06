@@ -128,6 +128,7 @@ hr.admin-nav-divider {
     .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
         background-color: var(--gray-3);
+        border-right: 4px solid var(--accent-color2);
     }
 
 .admin-nav-link:active {
@@ -268,4 +269,8 @@ div.mce-fullscreen {
 .icon-admin-title {
     font-size: 1.4rem;
     color: var(--accent-color2);
+}
+
+.admin-nav-section .list-group-item {
+    padding: .6rem 1rem;
 }
