@@ -7,7 +7,11 @@
 
 @section scripts{
     <script>
+        var editAccountModal = new bootstrap.Modal('#editAccountModal');
+        var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
+
         var cid = '';
+
         $(function () {
             $(".btn-delete").click(function () {
                 var cfm = confirm("Delete Confirmation?");
@@ -18,14 +22,14 @@
 
             $(".btn-updatepwd").click(function () {
                 $("#resetpassword-form")[0].reset();
-                $('#resetPasswordModal').modal();
+                resetPasswordModal.show();
                 cid = $(this).data("accountid");
             });
         });
 
         function initCreateAccount() {
             $("#edit-form")[0].reset();
-            $('#editAccountModal').modal();
+            editAccountModal.show();
         }
 
         $(".btn-submit").click(function () {
@@ -56,6 +60,7 @@
                     });
             }
         });
+    
     </script>
 }
 

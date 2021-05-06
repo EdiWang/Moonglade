@@ -6,6 +6,7 @@
 
 @section scripts{
     <script>
+        var modal = new bootstrap.Modal('#editFriendlinkModal');
         var fid = emptyGuid;
 
         function deleteFriendLink(friendlinkid) {
@@ -20,7 +21,7 @@
         function initCreateFriendLink() {
             fid = emptyGuid;
             $('#edit-form')[0].reset();
-            $('#editFriendlinkModal').modal();
+            modal.show();
         }
 
         function editFriendLink(id) {
@@ -28,7 +29,7 @@
                 fid = data.id;
                 $('#FriendLinkEditViewModel_Title').val(data.title);
                 $('#FriendLinkEditViewModel_LinkUrl').val(data.linkUrl);
-                $('#editFriendlinkModal').modal();
+                modal.show();
             });
         }
 
@@ -63,6 +64,7 @@
                     });
             }
         });
+    
     </script>
 }
 

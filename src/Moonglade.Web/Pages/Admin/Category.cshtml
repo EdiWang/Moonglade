@@ -6,11 +6,13 @@
 
 @section scripts{
     <script>
+        var modal = new bootstrap.Modal('#editCatModal');
         var catId = emptyGuid;
+
         function initCreateCategory() {
             catId = emptyGuid;
             $('#edit-form')[0].reset();
-            $('#editCatModal').modal();
+            modal.show();
         }
 
         function editCat(id) {
@@ -21,7 +23,7 @@
                     $('#CategoryEditViewModel_RouteName').val(data.routeName);
                     $('#CategoryEditViewModel_DisplayName').val(data.displayName);
                     $('#CategoryEditViewModel_Note').val(data.note);
-                    $('#editCatModal').modal();
+                    modal.show();
                 });
         }
 
@@ -72,6 +74,7 @@
             }
         });
 
+    
     </script>
 }
 

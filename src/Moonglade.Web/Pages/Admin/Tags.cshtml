@@ -7,6 +7,13 @@
 
 @section scripts{
     <script>
+        var modal = new bootstrap.Modal('#editTagModal');
+
+        function initCreateTag() {
+            $('#edit-form')[0].reset();
+            modal.show();
+        }
+
         $(".btn-delete").click(function () {
             var tagid = $(this).data("tagid");
             var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
@@ -36,6 +43,8 @@
                     window.location.reload();
                 });
         });
+    
+    
     </script>
 }
 
