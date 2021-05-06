@@ -67,7 +67,7 @@
 <h3>
     <span class="icon-bubbles3 icon-admin-title"></span>
     @Localizer["Comments"]
-    <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected float-right">
+    <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected float-end">
         <span class="icon-bin"></span> @Localizer["Delete Selected"]
     </a>
 </h3>
@@ -85,7 +85,7 @@ else
     {
         <div id="panel-comment-@item.Id" class="card mb-4">
             <div class="card-body">
-                <div class="float-right">
+                <div class="float-end">
                     <div class="custom-control custom-checkbox mb-2 text-right">
                         <input type="checkbox" class="custom-control-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
                         <label class="custom-control-label" for="comment-item-chk-@item.Id"></label>
