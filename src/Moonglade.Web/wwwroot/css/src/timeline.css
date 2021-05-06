@@ -78,8 +78,8 @@
 
             .timeline > li > .timeline-panel:after {
                 border-bottom: 14px solid transparent;
-                border-left: 14px solid var(--white);
-                border-right: 0 solid var(--white);
+                border-left: 14px solid var(--bs-white);
+                border-right: 0 solid var(--bs-white);
                 border-top: 14px solid transparent;
                 content: " ";
                 display: inline-block;
@@ -93,7 +93,7 @@
             border-bottom-right-radius: 50%;
             border-top-left-radius: 50%;
             border-top-right-radius: 50%;
-            color: var(--white);
+            color: var(--bs-white);
             font-size: 1.4em;
             height: 50px;
             left: 50%;
@@ -125,23 +125,23 @@
             }
 
 .timeline-badge.primary {
-    background-color: var(--blue) !important;
+    background-color: var(--bs-blue) !important;
 }
 
 .timeline-badge.success {
-    background-color: var(--green) !important;
+    background-color: var(--bs-green) !important;
 }
 
 .timeline-badge.warning {
-    background-color: var(--yellow) !important;
+    background-color: var(--bs-yellow) !important;
 }
 
 .timeline-badge.danger {
-    background-color: var(--red) !important;
+    background-color: var(--bs-red) !important;
 }
 
 .timeline-badge.info {
-    background-color: var(--info) !important;
+    background-color: var(--bs-info) !important;
 }
 
 .timeline-title {

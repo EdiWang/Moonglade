@@ -23,7 +23,7 @@
     }
 
     body.body-post-slug {
-        background-color: var(--white);
+        background-color: var(--bs-white);
     }
 
     body.darkmode.body-post-slug {
