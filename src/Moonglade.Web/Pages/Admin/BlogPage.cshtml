@@ -40,28 +40,30 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="card-columns card-columns-pages">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         @foreach (var item in Model.PageSegments.OrderByDescending(p => p.CreateTimeUtc))
         {
-            <div class="card mb-4" id="card-@item.Id">
-                <div class="card-body">
-                    <h6 class="card-title">
-                        @item.Title
-                    </h6>
-                    <p class="mt-2 h-30px">@item.Slug</p>
-                    <small class="text-muted">
-                        @item.CreateTimeUtc
-                    </small>
-                </div>
-                <div class="card-footer">
-                    <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPage" asp-route-id="@item.Id">
-                        <span class="icon-pencil"></span>
-                    </a>
-                    <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" href="javascript:;">
-                        <span class="icon-bin"></span>
-                    </a>
+            <div class="col">
+                <div class="card mb-4" id="card-@item.Id">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            @item.Title
+                        </h6>
+                        <p class="mt-2 h-30px">@item.Slug</p>
+                        <small class="text-muted">
+                            @item.CreateTimeUtc
+                        </small>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPage" asp-route-id="@item.Id">
+                            <span class="icon-pencil"></span>
+                        </a>
+                        <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" href="javascript:;">
+                            <span class="icon-bin"></span>
+                        </a>
 
-                    <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                    </div>
                 </div>
             </div>
         }

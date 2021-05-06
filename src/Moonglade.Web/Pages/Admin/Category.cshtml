@@ -88,28 +88,30 @@
 
 @Html.AntiForgeryToken()
 
-<div class="card-columns card-columns-categories">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
     @foreach (var cat in Model.Categories.OrderBy(m => m.DisplayName))
     {
-        <div class="card mb-4" id="card-@cat.Id">
-            <div class="card-body">
-                <h6 class="card-title">
-                    <a asp-page="/CategoryList" asp-route-routeName="@cat.RouteName" target="_blank">
-                        @cat.DisplayName
-                    </a>
-                </h6>
+        <div class="col">
+            <div class="card" id="card-@cat.Id">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a asp-page="/CategoryList" asp-route-routeName="@cat.RouteName" target="_blank">
+                            @cat.DisplayName
+                        </a>
+                    </h6>
 
-                <p class="mt-2 h-30px">
-                    @cat.Note
-                </p>
+                    <p class="mt-2 h-30px">
+                        @cat.Note
+                    </p>
 
-                <small class="text-muted">@cat.RouteName</small>
-            </div>
-            <div class="card-footer">
-                <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-accent btn-edit"><span class="icon-pencil"></span></a>
-                <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
+                    <small class="text-muted">@cat.RouteName</small>
+                </div>
+                <div class="card-footer">
+                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-accent btn-edit"><span class="icon-pencil"></span></a>
+                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
 
-                <span id="span-processing-@cat.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                    <span id="span-processing-@cat.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                </div>
             </div>
         </div>
     }
@@ -121,7 +123,6 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="editCatModalLabel">@Localizer["Category Information"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    
                 </button>
             </div>
 
