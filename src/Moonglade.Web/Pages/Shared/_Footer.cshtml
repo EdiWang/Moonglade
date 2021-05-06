@@ -22,7 +22,7 @@
 
             @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
 
-            <section id="footer-language" class="col d-none d-sm-block text-right">
+            <section id="footer-language" class="col d-none d-sm-block text-end">
                 <ul class="list-unstyled">
                     @foreach (var item in cultureItems)
                     {
@@ -33,7 +33,7 @@
                 </ul>
             </section>
 
-            <section id="footer-language-mobile" class="col-3 d-block d-md-none text-right font-125rem">
+            <section id="footer-language-mobile" class="col-3 d-block d-md-none text-end font-125rem">
                 <a href="#" data-bs-toggle="modal" data-bs-target="#langselectormodal"><span class="icon-earth"></span></a>
             </section>
         </div>

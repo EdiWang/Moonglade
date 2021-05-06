@@ -274,3 +274,8 @@ div.mce-fullscreen {
 .admin-nav-section .list-group-item {
     padding: .6rem 1rem;
 }
+
+table.dataTable {
+    border-collapse: inherit !important;
+    border-spacing: inherit !important;
+}
