@@ -430,3 +430,7 @@ label {
 .ul-tags {
     text-align: justify !important;
 }
+
+.nav-link {
+    color: var(--accent-color1);
+}

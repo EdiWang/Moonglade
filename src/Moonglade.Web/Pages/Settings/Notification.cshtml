@@ -36,21 +36,21 @@
                 <div class="card-header">@Localizer["Notification Options"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableEmailSending" class="custom-control-input">
-                            <label asp-for="ViewModel.EnableEmailSending" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.EnableEmailSending" class="form-check-input">
+                            <label asp-for="ViewModel.EnableEmailSending" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.SendEmailOnCommentReply" class="custom-control-input">
-                            <label asp-for="ViewModel.SendEmailOnCommentReply" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.SendEmailOnCommentReply" class="form-check-input">
+                            <label asp-for="ViewModel.SendEmailOnCommentReply" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" asp-for="ViewModel.SendEmailOnNewComment" class="custom-control-input">
-                            <label asp-for="ViewModel.SendEmailOnNewComment" class="custom-control-label"></label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.SendEmailOnNewComment" class="form-check-input">
+                            <label asp-for="ViewModel.SendEmailOnNewComment" class="form-check-label"></label>
                         </div>
                     </li>
                 </ul>

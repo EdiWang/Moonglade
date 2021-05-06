@@ -86,9 +86,9 @@ else
         <div id="panel-comment-@item.Id" class="card mb-4">
             <div class="card-body">
                 <div class="float-end">
-                    <div class="custom-control custom-checkbox mb-2 text-right">
-                        <input type="checkbox" class="custom-control-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
-                        <label class="custom-control-label" for="comment-item-chk-@item.Id"></label>
+                    <div class="form-check mb-2 text-right">
+                        <input type="checkbox" class="form-check-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
+                        <label class="form-check-label" for="comment-item-chk-@item.Id"></label>
                     </div>
 
                     <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
