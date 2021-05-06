@@ -140,7 +140,7 @@
 
                     @if (Model.ViewModel.PostId != Guid.Empty)
                     {
-                        <a class="btn btn-sm btn-block btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
+                        <a class="btn btn-sm w-100 btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
                     }
                 </div>
             </div>
@@ -166,7 +166,7 @@
                     }
 
                     <hr />
-                    <a asp-page="./Category" class="btn btn-block btn-sm btn-outline-secondary">@Localizer["Manage Categories"]</a>
+                    <a asp-page="./Category" class="btn w-100 btn-sm btn-outline-secondary">@Localizer["Manage Categories"]</a>
                 </div>
             </div>
         </div>
@@ -201,11 +201,11 @@
                     <div class="alert alert-warning">@Localizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
                     <div class="mb-2">
                         <input asp-for="ViewModel.ChangePublishDate" type="checkbox" />
-                        <label asp-for="ViewModel.ChangePublishDate" class="control-label"></label>
+                        <label asp-for="ViewModel.ChangePublishDate"></label>
                     </div>
 
                     <div class="mb-2">
-                        <label asp-for="ViewModel.PublishDate" class="control-label"></label>
+                        <label asp-for="ViewModel.PublishDate"></label>
                         <input asp-for="ViewModel.PublishDate" class="form-control" />
                         <span asp-validation-for="ViewModel.PublishDate" class="text-danger"></span>
                     </div>

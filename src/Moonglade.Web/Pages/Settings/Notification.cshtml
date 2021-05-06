@@ -21,7 +21,7 @@
                 <div class="card-header">@Localizer["Email Options"]</div>
                 <div class="card-body">
                     <div class="mb-2">
-                        <label asp-for="ViewModel.EmailDisplayName" class="control-label"></label>
+                        <label asp-for="ViewModel.EmailDisplayName"></label>
                         <input asp-for="ViewModel.EmailDisplayName" class="form-control" />
                         <span asp-validation-for="ViewModel.EmailDisplayName" class="text-danger"></span>
                     </div>
@@ -56,7 +56,7 @@
                 </ul>
                 <div class="card-body">
                     <div class="mb-2">
-                        <label asp-for="ViewModel.AzureFunctionEndpoint" class="control-label"></label>
+                        <label asp-for="ViewModel.AzureFunctionEndpoint"></label>
                         <input asp-for="ViewModel.AzureFunctionEndpoint" class="form-control" />
                         <span asp-validation-for="ViewModel.AzureFunctionEndpoint" class="text-danger"></span>
                     </div>

@@ -132,12 +132,12 @@
                 <div class="modal-body">
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="mb-2">
-                        <label asp-for="AccountEditViewModel.Username" class="control-label"></label>
+                        <label asp-for="AccountEditViewModel.Username"></label>
                         <input asp-for="AccountEditViewModel.Username" class="form-control" />
                         <span asp-validation-for="AccountEditViewModel.Username" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="AccountEditViewModel.Password" class="control-label"></label>
+                        <label asp-for="AccountEditViewModel.Password"></label>
                         <input asp-for="AccountEditViewModel.Password" class="form-control" />
                         <span asp-validation-for="AccountEditViewModel.Password" class="text-danger"></span>
                     </div>
@@ -164,7 +164,7 @@
             <form id="resetpassword-form" method="post">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label class="control-label" for="NewPassword">New Password</label>
+                        <label for="NewPassword">New Password</label>
                         <input class="form-control" type="password"
                                data-val="true"
                                data-val-regex="Password must be minimum eight characters, at least one letter and one number"
