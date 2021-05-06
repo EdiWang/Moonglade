@@ -101,7 +101,7 @@
     }
 </head>
 <body class="@ViewBag.BodyClass">
-    <header class="sticky-top">
+    <header class="sticky-top d-print-none">
         <nav id="blog-nav" class="navbar navbar-expand-lg navbar-dark bg-accent1">
             <div class="container">
                 <div class="animbrand">
@@ -176,7 +176,7 @@
         }
         else
         {
-            <section class="blogger-intro-mobile d-block d-sm-none">
+            <section class="blogger-intro-mobile d-block d-sm-none d-print-none">
                 <div class="card-bkimg-container">
                     <img class="card-bkimg" alt="" src="@Url.Action("Avatar", "Assets")" />
                 </div>
