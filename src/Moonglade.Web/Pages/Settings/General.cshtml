@@ -64,37 +64,37 @@
                         <div class="col-10">
                             <div class="row">
                                 <div class="col">
-                                    <div class="form-group">
+                                    <div class="mb-2">
                                         <label asp-for="ViewModel.SiteTitle" class="control-label"></label>
                                         <input asp-for="ViewModel.SiteTitle" class="form-control" />
                                         <span asp-validation-for="ViewModel.SiteTitle" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-group">
+                                    <div class="mb-2">
                                         <label asp-for="ViewModel.LogoText" class="control-label"></label>
                                         <input asp-for="ViewModel.LogoText" class="form-control" />
                                         <span asp-validation-for="ViewModel.LogoText" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="ViewModel.MetaKeyword" class="control-label"></label>
                                 <input asp-for="ViewModel.MetaKeyword" class="form-control" />
                                 <span asp-validation-for="ViewModel.MetaKeyword" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="ViewModel.MetaDescription" class="control-label"></label>
                                 <input asp-for="ViewModel.MetaDescription" class="form-control" />
                                 <span asp-validation-for="ViewModel.MetaDescription" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="ViewModel.CanonicalPrefix" class="control-label"></label>
                                 <input asp-for="ViewModel.CanonicalPrefix" class="form-control" />
                                 <span asp-validation-for="ViewModel.CanonicalPrefix" class="text-danger"></span>
                                 <small class="form-text text-muted">@Localizer["Set a primary domain if your website binds to multiple domian names."]</small>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="SelectedThemeFileName">@Localizer["Theme"]</label>
@@ -102,7 +102,7 @@
                                     <select class="custom-select" asp-for="ViewModel.SelectedThemeFileName" asp-items="@tmList"></select>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <div class="custom-control custom-checkbox">
                                     <input asp-for="ViewModel.AutoDarkLightTheme" class="custom-control-input" type="checkbox">
                                     <label asp-for="ViewModel.AutoDarkLightTheme" class="custom-control-label">@Localizer["Auto Light / Dark theme regarding client system settings"]</label>
@@ -128,18 +128,18 @@
                             <a class="btn btn-block btn-sm btn-secondary" href="#" data-toggle="modal" data-target="#avatarmodal">@Localizer["New Avatar"]</a>
                         </div>
                         <div class="col-md-10 col-sm-8">
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="ViewModel.OwnerName" class="control-label"></label>
                                 <input asp-for="ViewModel.OwnerName" class="form-control" />
                                 <span asp-validation-for="ViewModel.OwnerName" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="ViewModel.OwnerEmail" class="control-label"></label>
                                 <input asp-for="ViewModel.OwnerEmail" class="form-control" />
                                 <span asp-validation-for="ViewModel.OwnerEmail" class="text-danger"></span>
                                 <small class="form-text text-muted">@Localizer["Email address to receive notifications from this blog."]</small>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-2">
                                 <label asp-for="ViewModel.OwnerDescription" class="control-label"></label>
                                 <textarea asp-for="ViewModel.OwnerDescription" class="form-control"></textarea>
                                 <span asp-validation-for="ViewModel.OwnerDescription" class="text-danger"></span>
@@ -159,18 +159,18 @@
             <div class="card mb-3">
                 <div class="card-header">@Localizer["HTML Pitch"]</div>
                 <div class="card-body">
-                    <div class="form-group">
+                    <div class="mb-2">
                         <label asp-for="ViewModel.Copyright" class="control-label"></label>
                         <input asp-for="ViewModel.Copyright" class="form-control" />
                         <p class="text-muted">@Localizer["Use [c] for copyright mark: &copy;, [year] for current year."]</p>
                         <span asp-validation-for="ViewModel.Copyright" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-2">
                         <label asp-for="ViewModel.FooterCustomizedHtmlPitch" class="control-label"></label>
                         <textarea asp-for="ViewModel.FooterCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" rows="10" cols="10"></textarea>
                         <span asp-validation-for="ViewModel.FooterCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-2">
                         <label asp-for="ViewModel.SideBarCustomizedHtmlPitch" class="control-label"></label>
                         <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" cols="10" rows="10"></textarea>
                         <span asp-validation-for="ViewModel.SideBarCustomizedHtmlPitch" class="text-danger"></span>
@@ -197,7 +197,7 @@
     </div>
 
     <hr />
-    <div class="form-group">
+    <div class="mb-2">
         <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
     </div>
 </form>
@@ -213,7 +213,7 @@
             </div>
             <div class="modal-body">
 
-                <div class="form-group">
+                <div class="mb-2">
                     <div id="avatarDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
                         @Localizer["Drag and drop image file here"]
                     </div>
@@ -246,7 +246,7 @@
             </div>
             <div class="modal-body">
 
-                <div class="form-group">
+                <div class="mb-2">
                     <div id="siteiconDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
                         @Localizer["Drag and drop image file here"]
                     </div>
