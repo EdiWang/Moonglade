@@ -100,7 +100,7 @@
                     Robots.txt
                 </div>
                 <div class="card-body">
-                    <div class="form-group">
+                    <div class="mb-2">
                         <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                         <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
                     </div>
@@ -194,7 +194,7 @@
         </div>
     </div>
     <hr />
-    <div class="form-group">
+    <div class="mb-2">
         <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
     </div>
 </form>
