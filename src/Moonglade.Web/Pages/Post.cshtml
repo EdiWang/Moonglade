@@ -131,7 +131,7 @@
     <partial name="_PostActions" model="Model.Post" />
 </article>
 
-<div class="hidden-print">
+<div class="d-print-none">
     @if (BlogConfig.ContentSettings.EnableComments)
     {
         if (Model.Post.CommentEnabled)
