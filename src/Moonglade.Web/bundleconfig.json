@@ -12,7 +12,6 @@
     "inputFiles": [
       "wwwroot/lib/jquery/jquery.min.js",
       "wwwroot/js/3rd/jquery.qrcode.min.js",
-      "wwwroot/js/3rd/notyf.min.js",
       "wwwroot/js/app/base.js",
       "wwwroot/js/app/postslug.js",
       "wwwroot/js/app/httpService.js",
@@ -36,7 +35,6 @@
     "outputFileName": "wwwroot/css/bundle.css",
     "inputFiles": [
       "wwwroot/css/3rd/bootstrap.min.css",
-      "wwwroot/css/3rd/notyf.min.css",
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/base.css",
       "wwwroot/css/src/rwd.css",

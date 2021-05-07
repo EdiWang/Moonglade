@@ -23,7 +23,7 @@ function callApi(uri, method, request, funcSuccess, funcAlways) {
             funcAlways(response);
         }
     }).catch(err => {
-        notyf.error(err);
+        blogToast.error(err);
         console.error(err);
     });
 }
@@ -32,23 +32,23 @@ async function handleHttpError(response) {
     switch (response.status) {
         case 400:
         case 409:
-            notyf.error(await buildErrorMessage2(response));
+            blogToast.error(await buildErrorMessage2(response));
             break;
         case 401:
-            notyf.error('Unauthorized');
+            blogToast.error('Unauthorized');
             break;
         case 404:
-            notyf.error('Endpoint not found');
+            blogToast.error('Endpoint not found');
             break;
         case 429:
-            notyf.error('Too many requests');
+            blogToast.error('Too many requests');
             break;
         case 500:
         case 503:
-            notyf.error('Server went boom');
+            blogToast.error('Server went boom');
             break;
         default:
-            notyf.error(`Error ${response.status}`);
+            blogToast.error(`Error ${response.status}`);
             break;
     }
 }

@@ -47,7 +47,7 @@
 
                     // Test for Chinese
                     if (!/(\p{Script=Hani})+/gu.test(event.item)) {
-                        notyf.error(`Invalid tag name: ${event.item}`);
+                        blogToast.error(`Invalid tag name: ${event.item}`);
                         event.cancel = true;
                     }
                 }

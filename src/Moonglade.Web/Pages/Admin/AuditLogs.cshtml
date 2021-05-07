@@ -7,7 +7,7 @@
         $('.btn-clear').click(function () {
             callApi(`/api/settings/auditlogs/clear`, 'DELETE', { },
                 (resp) => {
-                    notyf.success('Audit logs are cleared');
+                    blogToast.success('Audit logs are cleared');
                     setTimeout(function () {
                         window.location.reload();
                     }, 800);

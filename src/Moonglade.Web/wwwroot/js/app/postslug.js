@@ -10,7 +10,7 @@
                 }
             })
             .catch(err => {
-                notyf.error(err);
+                blogToast.error(err);
                 console.error(err);
             });
     },

@@ -21,7 +21,7 @@
             $('.btn-empty-recbin').click(function () {
                 callApi(`/api/post/empty-recycle-bin`, 'DELETE', {},
                     (resp) => {
-                        notyf.success('Cleared');
+                        blogToast.success('Cleared');
                         setTimeout(function () {
                             window.location.reload();
                         }, 800);

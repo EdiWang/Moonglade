@@ -71,7 +71,7 @@
 
             $(".btn-refresh").click(function () {
                 table.ajax.reload();
-                notyf.success("Data Refreshed");
+                blogToast.success("Data Refreshed");
             });
 
             $('#posts-table tbody').on('click', 'button', function () {

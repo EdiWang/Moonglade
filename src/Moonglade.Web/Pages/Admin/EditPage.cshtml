@@ -111,7 +111,7 @@
 
                     if (data.pageId) {
                         pageId = data.pageId;
-                        notyf.success('Page saved successfully.');
+                        blogToast.success('Page saved successfully.');
 
                         if ($('input[name="IsPublished"]:checked').val() === 'true') {
                             $('#btn-preview').hide();

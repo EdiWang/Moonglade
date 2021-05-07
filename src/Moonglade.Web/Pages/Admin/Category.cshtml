@@ -33,7 +33,7 @@
             callApi(`/api/category/${catid}`, 'DELETE', {},
                 (resp) => {
                     $(`#card-${catid}`).hide();
-                    notyf.success('Category deleted');
+                    blogToast.success('Category deleted');
                 });
         }
 

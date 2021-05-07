@@ -6,14 +6,14 @@
     $.post('/api/settings/send-test-email',
         function (data) {
             if (data.isSuccess) {
-                notyf.success('Email is sent.');
+                blogToast.success('Email is sent.');
             } else {
-                notyf.error(data.message);
+                blogToast.error(data.message);
             }
         })
         .fail(function (xhr, status, error) {
             var responseJson = $.parseJSON(xhr.responseText);
-            notyf.error(responseJson.message);
+            blogToast.error(responseJson.message);
         })
         .always(function () {
             $('#a-send-test-mail').text('Send Test Email');
@@ -36,8 +36,8 @@ var onUpdateSettingsComplete = function () {
 };
 
 var onUpdateSettingsSuccess = function (context) {
-    if (notyf) {
-        notyf.success('Settings Updated');
+    if (blogToast) {
+        blogToast.success('Settings Updated');
     } else {
         alert('Settings Updated');
     }
@@ -46,8 +46,8 @@ var onUpdateSettingsSuccess = function (context) {
 var onUpdateSettingsFailed = function (context) {
     var message = buildErrorMessage(context);
 
-    if (notyf) {
-        notyf.error(message);
+    if (blogToast) {
+        blogToast.error(message);
     } else {
         alert(message);
     }
@@ -68,8 +68,8 @@ var onClearCacheComplete = function () {
 
 var onClearCacheSuccess = function (context) {
     $('#cacheModal').modal('hide');
-    if (notyf) {
-        notyf.success('Cleared Cache');
+    if (blogToast) {
+        blogToast.success('Cleared Cache');
     } else {
         alert('Cleared Cache');
     }
@@ -77,8 +77,8 @@ var onClearCacheSuccess = function (context) {
 
 var onClearCacheFailed = function (context) {
     var msg = buildErrorMessage(context);
-    if (notyf) {
-        notyf.error(`Server Error: ${msg}`);
+    if (blogToast) {
+        blogToast.error(`Server Error: ${msg}`);
     } else {
         alert(`Error Code: ${msg}`);
     }

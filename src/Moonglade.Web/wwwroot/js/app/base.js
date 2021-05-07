@@ -1,24 +1,4 @@
-﻿var notyf;
-var isDarkMode = false;
-
-notyf = new Notyf({
-    position: {
-        x: 'center',
-        y: 'bottom',
-    },
-    types: [
-        {
-            type: 'success',
-            background: 'var(--bs-success)',
-            duration: 2000
-        },
-        {
-            type: 'error',
-            background: 'var(--bs-danger)',
-            duration: 3000
-        }
-    ]
-});
+﻿var isDarkMode = false;
 
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

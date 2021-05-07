@@ -28,30 +28,30 @@ function ImageUploader(targetName, hw, imgMimeType) {
                 success: function (data) {
                     console.info(data);
                     $(`#${targetName}modal`).modal('hide');
-                    notyf.success('Updated');
+                    blogToast.success('Updated');
                     d = new Date();
                     $(`.blogadmin-${targetName}`).attr('src', `/${targetName}?${d.getTime()}`);
                 },
                 statusCode: {
                     400: function (responseObject, textStatus, jqXHR) {
                         var message = buildErrorMessage(responseObject);
-                        notyf.error(message);
+                        blogToast.error(message);
                     },
                     401: function (responseObject, textStatus, jqXHR) {
-                        notyf.error('Unauthorized');
+                        blogToast.error('Unauthorized');
                     },
                     404: function (responseObject, textStatus, jqXHR) {
-                        notyf.error('Endpoint not found');
+                        blogToast.error('Endpoint not found');
                     },
                     409: function (responseObject, textStatus, jqXHR) {
                         var message = buildErrorMessage(responseObject);
-                        notyf.error(message);
+                        blogToast.error(message);
                     },
                     500: function (responseObject, textStatus, jqXHR) {
-                        notyf.error('Server went boom');
+                        blogToast.error('Server went boom');
                     },
                     503: function (responseObject, textStatus, jqXHR) {
-                        notyf.error('Server went boom boom');
+                        blogToast.error('Server went boom boom');
                     }
                 },
                 error: function (xhr, status, err) {
@@ -60,7 +60,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
                 }
             });
         } else {
-            notyf.error('Please select an image');
+            blogToast.error('Please select an image');
         }
     }
 
@@ -78,7 +78,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
             }
 
             if (!file.type.match('image.*')) {
-                notyf.error('Please select an image file.');
+                blogToast.error('Please select an image file.');
                 return;
             }
 
@@ -118,7 +118,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
             }
             reader.readAsDataURL(file);
         } else {
-            notyf.error('The File APIs are not fully supported in this browser.');
+            blogToast.error('The File APIs are not fully supported in this browser.');
         }
     }
 
@@ -284,7 +284,7 @@ var postEditor = {
 
             if ($('.post-edit-form').valid() && selectCatCount === 0) {
                 e.preventDefault();
-                notyf.error('Please select at least one category');
+                blogToast.error('Please select at least one category');
             }
             else {
                 if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
@@ -330,7 +330,7 @@ var onPostCreateEditComplete = function () {
 var onPostCreateEditSuccess = function (data) {
     if (data.postId) {
         $('input[name="ViewModel.PostId"]').val(data.postId);
-        notyf.success('Post saved successfully.');
+        blogToast.success('Post saved successfully.');
 
         if (isPreviewRequired) {
             isPreviewRequired = false;
@@ -341,8 +341,8 @@ var onPostCreateEditSuccess = function (data) {
 
 var onPostCreateEditFailed = function (context) {
     var message = buildErrorMessage(context);
-    if (notyf) {
-        notyf.error(message);
+    if (blogToast) {
+        blogToast.error(message);
     } else {
         alert(`Error: ${message}`);
     }
@@ -351,8 +351,8 @@ var onPostCreateEditFailed = function (context) {
 var onPageCreateEditFailed = function (context) {
     var message = buildErrorMessage(context);
 
-    if (notyf) {
-        notyf.error(message);
+    if (blogToast) {
+        blogToast.error(message);
     } else {
         alert(`Error: ${message}`);
     }
@@ -363,7 +363,7 @@ function deletePost(postid) {
     callApi(`/api/post/${postid}/destroy`, 'DELETE', {},
         (resp) => {
             $(`#tr-${postid}`).hide();
-            notyf.success('Post deleted');
+            blogToast.success('Post deleted');
         });
 }
 
@@ -372,7 +372,7 @@ function restorePost(postid) {
     callApi(`/api/post/${postid}/restore`, 'POST', {},
         (resp) => {
             $(`#tr-${postid}`).hide();
-            notyf.success('Post restored');
+            blogToast.success('Post restored');
         });
 }
 
