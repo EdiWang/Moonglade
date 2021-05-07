@@ -51,17 +51,17 @@
 
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Settings/General">
-                        <span class="icon-cog"></span>
+                        <i class="bi-tools"></i>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Admin/About">
-                        <span class="icon-info"></span>
+                        <i class="bi-info-circle"></i>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Index" target="_blank">
-                        <span class="icon-home"></span>
+                        <i class="bi-house"></i>
                     </a>
                 </li>
             </ul>
@@ -74,7 +74,7 @@
             </span>
 
             <a class="navbar-text d-inline-block" asp-controller="Auth" asp-action="SignOut" title="Sign Out">
-                <span class="icon-enter"></span>
+                <i class="bi-box-arrow-right"></i>
             </a>
         </div>
     </nav>
@@ -83,41 +83,41 @@
             <section class="admin-nav-section mt-4 mb-3">
                 <div class="list-group list-group-flush">
                     <a asp-page="/Admin/Post" class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/PostDraft" or "/Admin/PostInsights" or "/Admin/RecycleBin" ? "active" : null)">
-                        <span class="icon-file-text2"></span>
+                        <i class="bi-file-earmark-richtext admin-nav-icon"></i>
                         @Localizer["Posts"]
                     </a>
                     <a asp-page="/Admin/BlogPage" class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)">
-                        <span class="icon-file-empty"></span>
+                        <i class="bi-file-earmark-post admin-nav-icon"></i>
                         @Localizer["Pages"]
                     </a>
                     <a asp-page="/Admin/Category" class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)">
-                        <span class="icon-folder"></span>
+                        <i class="bi-folder2 admin-nav-icon"></i>
                         @Localizer["Categories"]
                     </a>
                     <a asp-page="/Admin/Comments" class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
-                        <span class="icon-bubbles3"></span>
+                        <i class="bi-chat-left-text admin-nav-icon"></i>
                         @Localizer["Comments"]
                     </a>
                     <a asp-page="/Admin/Tags" class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
-                        <span class="icon-price-tag"></span>
+                        <i class="bi-tag admin-nav-icon"></i>
                         @Localizer["Tags"]
                     </a>
                     <a asp-page="/Admin/Pingback" class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
-                        <span class="icon-earth"></span>
+                        <i class="bi-arrow-left-right admin-nav-icon"></i>
                         @Localizer["Pingbacks"]
                     </a>
                     <a asp-page="/Admin/Menu" class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
-                        <span class="icon-list"></span>
+                        <i class="bi-menu-button-wide admin-nav-icon"></i>
                         @Localizer["Menus"]
                     </a>
                     <a asp-page="/Admin/FriendLink" class="list-group-item list-group-item-action @(currentPage is "/Admin/FriendLink" ? "active" : null)">
-                        <span class="icon-link"></span>
+                        <i class="bi-link-45deg admin-nav-icon"></i>
                         @Localizer["Friend Links"]
                     </a>
                     @if (_authOptions.Value.Provider == AuthenticationProvider.Local)
                     {
                         <a asp-page="/Admin/LocalAccount" class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
-                            <span class="icon-user"></span>
+                            <i class="bi-people admin-nav-icon"></i>
                             @Localizer["Account"]
                         </a>
                     }

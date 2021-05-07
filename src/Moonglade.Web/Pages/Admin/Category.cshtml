@@ -79,10 +79,10 @@
 }
 
 <h3>
-    <span class="icon-folder icon-admin-title"></span>
+    <i class="bi-folder2 icon-admin-title"></i>
     @Localizer["Categories"]
     <a class="btn btn-outline-success float-end" href="javascript:initCreateCategory();">
-        <span class="icon-plus"></span>
+        <i class="bi-plus-circle"></i>
         @Localizer["New"]
     </a>
 </h3>
@@ -110,8 +110,8 @@
                     <small class="text-muted">@cat.RouteName</small>
                 </div>
                 <div class="card-footer">
-                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-accent btn-edit"><span class="icon-pencil"></span></a>
-                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
+                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
+                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
 
                     <span id="span-processing-@cat.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                 </div>

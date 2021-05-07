@@ -70,10 +70,10 @@
 
 
 <h3>
-    <span class="icon-link icon-admin-title"></span>
+    <i class="bi-link-45deg icon-admin-title"></i>
     @Localizer["Friend Links"]
     <a class="btn btn-outline-success float-end" href="javascript:initCreateFriendLink();">
-        <span class="icon-plus"></span>
+        <i class="bi-plus-circle"></i>
         @Localizer["New"]
     </a>
 </h3>
@@ -106,8 +106,8 @@
                             <a href="@item.LinkUrl" target="_blank">@item.LinkUrl</a>
                         </td>
                         <td>
-                            <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-primary btn-edit"><span class="icon-pencil"></span></a>
-                            <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
+                            <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-primary btn-edit"><i class="bi-pen"></i></a>
+                            <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
                             <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                         </td>
                     </tr>

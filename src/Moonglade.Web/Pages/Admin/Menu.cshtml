@@ -214,7 +214,7 @@
 }
 
 <h3>
-    <span class="icon-list icon-admin-title"></span>
+    <i class="bi-menu-button-wide icon-admin-title"></i>
     @Localizer["Navigation Menus"]
 </h3>
 <hr />
@@ -241,7 +241,7 @@
                     {
                         <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
                            href="javascript:loadMenuEditor('@menu.Id');">
-                            <span class="icon-list me-2"></span>
+                            <i class="bi-menu-app me-2"></i>
                             @menu.Title
 
                             <span class="text-muted float-end">
@@ -253,14 +253,14 @@
                     {
                         <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
                            href="javascript:loadMenuEditor('@menu.Id');">
-                            <span class="@menu.Icon me-2"></span>
+                            <i class="@menu.Icon me-2"></i>
                             @menu.Title
                         </a>
                     }
                 }
             </div>
             <a class="btn btn-outline-accent w-100" href="javascript:initCreateMenu();">
-                <span class="icon-plus"></span>
+                <i class="bi-plus-circle"></i>
                 @Localizer["New"]
             </a>
         </div>
@@ -271,7 +271,7 @@
 
             </div>
             <a class="btn btn-outline-accent w-100 btn-create-submenu" style="display: none;" href="javascript:initCreateSubMenu();">
-                <span class="icon-plus"></span>
+                <i class="bi-plus-circle"></i>
                 @Localizer["New"]
             </a>
         </div>
@@ -297,7 +297,7 @@
                             </div>
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-outline-secondary w-100" href="https://github.com/EdiWang/Moonglade-Icons" target="_blank">Icons</a>
+                            <a class="btn btn-outline-secondary w-100" href="https://icons.getbootstrap.com/" target="_blank">All Icons</a>
                         </div>
                     </div>
 
@@ -332,7 +332,7 @@
                                 </div>
                             </div>
                             <div class="col-2">
-                                <a href="javascript:;" data-tmd="" data-smd="" class="btn w-100 btn-outline-danger btn-delete-submenu" style="display: none;"><span class="icon-bin"></span></a>
+                                <a href="javascript:;" data-tmd="" data-smd="" class="btn w-100 btn-outline-danger btn-delete-submenu" style="display: none;"><i class="bi-trash"></i></a>
                             </div>
                         </div>
 
@@ -348,7 +348,7 @@
                     <button type="button" class="btn btn-outline-success btn-submit">@Localizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary">@Localizer["Cancel"]</button>
 
-                    <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><span class="icon-bin"></span></a>
+                    <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><i class="bi-trash"></i></a>
                 </form>
             </div>
         </div>

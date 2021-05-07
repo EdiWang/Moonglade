@@ -11,13 +11,13 @@
             @if (!isDNT)
             {
                 <a href="javascript:;" class="btn-ratings text-muted d-inline-block me-3">
-                    <span class="icon-heart"></span>
+                    <i class="bi-heart-fill"></i>
                     <span class="likehits-num"></span>
                 </a>
             }
 
             <a href="javascript:;" class="text-muted d-inline-block" data-bs-toggle="modal" data-bs-target="#qrcode-window">
-                <span class="icon-qrcode"></span>
+                <i class="bi-upc-scan"></i>
             </a>
         </div>
     }
@@ -30,7 +30,7 @@
                         <a class="btn btn-sm btn-outline-secondary mb-1"
                            asp-page="/CategoryList"
                            asp-route-routeName="@item.RouteName.ToLower()">
-                            <span class="icon-folder" aria-hidden="true"></span>
+                            <i class="bi-folder-fill" aria-hidden="true"></i>
                             @item.DisplayName
                         </a>
                     </li>
@@ -43,7 +43,7 @@
                         <li>
                             <a asp-page="/TagList"
                                asp-route-normalizedName="@item.NormalizedName" class="btn btn-sm btn-outline-secondary mb-1">
-                                <span class="icon-price-tag" aria-hidden="true"></span>
+                                <i class="bi-tag-fill" aria-hidden="true"></i>
                                 @item.DisplayName
                             </a>
                         </li>

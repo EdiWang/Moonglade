@@ -26,10 +26,10 @@
 }
 
 <h3>
-    <span class="icon-file-empty icon-admin-title"></span>
+    <i class="bi-file-earmark-post icon-admin-title"></i>
     @Localizer["Pages"]
     <a class="btn btn-outline-success float-end" asp-page="./EditPage">
-        <span class="icon-plus"></span>
+        <i class="bi-plus-circle"></i>
         @Localizer["New"]
     </a>
 </h3>
@@ -56,10 +56,10 @@
                     </div>
                     <div class="card-footer">
                         <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPage" asp-route-id="@item.Id">
-                            <span class="icon-pencil"></span>
+                            <i class="bi-pen"></i>
                         </a>
                         <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" href="javascript:;">
-                            <span class="icon-bin"></span>
+                            <i class="bi-trash"></i>
                         </a>
 
                         <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>

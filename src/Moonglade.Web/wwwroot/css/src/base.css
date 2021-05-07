@@ -85,6 +85,12 @@ footer {
             color: var(--bs-white);
         }
 
+.nav-item-icon {
+    width: 16px;
+    display: inline-block;
+    text-align: center;
+}
+
 .bg-lightgray-1 {
     background-color: var(--gray-1);
 }

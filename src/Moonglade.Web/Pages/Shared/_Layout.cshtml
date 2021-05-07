@@ -76,6 +76,7 @@
     </environment>
     <environment include="Development">
         <link href="~/css/3rd/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/css/3rd/bootstrap-icons.css" rel="stylesheet" />
         <link href="~/css/src/fonts.css" rel="stylesheet" />
         <link href="~/css/src/base.css" rel="stylesheet" />
         <link href="~/css/src/rwd.css" rel="stylesheet" />
@@ -116,7 +117,7 @@
                         <feature name="Menu_Categories">
                             <li id="navbar-dropdown-post" class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
-                                    <span class="icon-book"></span>
+                                    <i class="bi-folder2 nav-item-icon"></i>
                                     <strong>@Localizer["Categories"]</strong>
                                 </a>
                                 @await Component.InvokeAsync("CategoryList", new { isMenu = true })
@@ -126,7 +127,7 @@
                         <feature name="Menu_Tags">
                             <li class="nav-item">
                                 <a asp-page="/Tags" class="nav-link">
-                                    <span class="icon-price-tag"></span>
+                                    <i class="bi-tag nav-item-icon"></i>
                                     <strong>@Localizer["Tags"]</strong>
                                 </a>
                             </li>
@@ -135,7 +136,7 @@
                         <feature name="Menu_Archive">
                             <li class="nav-item">
                                 <a asp-page="/Archive" class="nav-link">
-                                    <span class="icon-folder"></span>
+                                    <i class="bi-calendar3 nav-item-icon"></i>
                                     <strong>@Localizer["Archive"]</strong>
                                 </a>
                             </li>
@@ -153,7 +154,7 @@
                                placeholder="@Localizer["Search"]"
                                name="term"
                                maxlength="30">
-                        <button class="btn btn-outline-light btn-search my-sm-0" type="submit"><span class="icon-search"></span></button>
+                        <button class="btn btn-outline-light btn-search my-sm-0" type="submit"><i class="bi-search"></i></button>
                     </form>
                 </div>
             </div>

@@ -65,10 +65,10 @@
 }
 
 <h3>
-    <span class="icon-user icon-admin-title"></span>
+    <i class="bi-people icon-admin-title"></i>
     @Localizer["User Account"]
     <a class="btn btn-outline-success float-end" href="javascript:initCreateAccount();">
-        <span class="icon-plus"></span>
+        <i class="bi-plus-circle"></i>
         @Localizer["Create"]
     </a>
 </h3>
@@ -100,12 +100,12 @@
                     <td>@item.CreateTimeUtc</td>
                     <td>
                         <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-accent btn-updatepwd">
-                            <span class="icon-key"></span>
+                            <i class="bi-key-fill"></i>
                         </a>
 
                         @if (null != currentUidClaim && currentUidClaim.Value != item.Id.ToString())
                         {
-                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
+                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
                             <span id="span-processing-@item.Id" style="display: none">...</span>
                         }
                     </td>

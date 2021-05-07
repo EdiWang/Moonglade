@@ -48,10 +48,10 @@
             </div>
             <div class="card-footer">
                 <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id">
-                    <span class="icon-pencil"></span>
+                    <i class="bi-pen"></i>
                 </a>
                 <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                    <span class="icon-bin"></span>
+                    <i class="bi-trash"></i>
                 </a>
 
                 <span id="span-processing-@post.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
