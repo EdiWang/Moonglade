@@ -85,13 +85,6 @@ footer {
             color: var(--bs-white);
         }
 
-label {
-    display: inline-block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    max-width: 100%;
-}
-
 .bg-lightgray-1 {
     background-color: var(--gray-1);
 }
