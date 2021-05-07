@@ -20,10 +20,38 @@ notyf = new Notyf({
     ]
 });
 
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-})
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+
+var mgToastObj = new bootstrap.Toast(document.getElementById('liveToast'));
+var mgToast = {
+    success: function (message) {
+        $('#liveToast').removeClass('bg-success,bg-warning,bg-danger,bg-info,bg-primary,bg-secondary');
+        $('#liveToast').addClass('bg-success');
+        $('#mgtoast-message').html(message);
+        mgToastObj.show();
+    },
+    info: function (message) {
+        $('#liveToast').removeClass('bg-success,bg-warning,bg-danger,bg-info,bg-primary,bg-secondary');
+        $('#liveToast').addClass('bg-info');
+        $('#mgtoast-message').html(message);
+        mgToastObj.show();
+    },
+    warning: function (message) {
+        $('#liveToast').removeClass('bg-success,bg-warning,bg-danger,bg-info,bg-primary,bg-secondary');
+        $('#liveToast').addClass('bg-warning');
+        $('#mgtoast-message').html(message);
+        mgToastObj.show();
+    },
+    error: function (message) {
+        $('#liveToast').removeClass('bg-success,bg-warning,bg-danger,bg-info,bg-primary,bg-secondary');
+        $('#liveToast').addClass('bg-danger');
+        $('#mgtoast-message').html(message);
+        mgToastObj.show();
+    }
+};
 
 $(function () {
     //if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
