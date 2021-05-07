@@ -85,7 +85,7 @@ var onClearCacheFailed = function (context) {
 };
 
 function tryRestartWebsite() {
-    callApi(`shutdown`, 'POST', {}, () => { });
+    callApi(`/api/settings/shutdown`, 'POST', {}, () => { });
     $('.btn-restart').text('Wait...');
     $('.btn-restart').addClass('disabled');
     $('.btn-restart').attr('disabled', 'disabled');
@@ -96,7 +96,7 @@ function tryRestartWebsite() {
 }
 
 function tryResetWebsite() {
-    callApi(`reset`, 'POST', {}, () => { });
+    callApi(`/api/settings/reset`, 'POST', {}, () => { });
     $('.btn-reset').text('Wait...');
     $('.btn-reset').addClass('disabled');
     $('.btn-reset').attr('disabled', 'disabled');

@@ -398,7 +398,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("clear-data-cache")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult ClearDataCache(string[] cachedObjectValues, [FromServices] IBlogCache cache)
+        public IActionResult ClearDataCache([FromForm] string[] cachedObjectValues, [FromServices] IBlogCache cache)
         {
             try
             {
