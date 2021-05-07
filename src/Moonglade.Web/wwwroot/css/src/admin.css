@@ -19,6 +19,12 @@
     font-weight: bold;
 }
 
+.admin-nav-icon {
+    font-size: 16px;
+    display: inline-block;
+    width: 24px;
+}
+
 .admin-body {
     padding-top: 0 !important;
 }
