@@ -105,7 +105,7 @@
 
                         @if (null != currentUidClaim && currentUidClaim.Value != item.Id.ToString())
                         {
-                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><span class="icon-bin"></span></a>
+                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
                             <span id="span-processing-@item.Id" style="display: none">...</span>
                         }
                     </td>
