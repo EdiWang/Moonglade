@@ -65,7 +65,7 @@
 }
 
 <h3>
-    <span class="icon-bubbles3 icon-admin-title"></span>
+    <i class="bi-chat-left-text icon-admin-title"></i>
     @Localizer["Comments"]
     <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected float-end">
         <i class="bi-trash"></i> @Localizer["Delete Selected"]
@@ -92,10 +92,10 @@ else
                     </div>
 
                     <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
-                        <span class="icon-star-full"></span>
+                        <i class="bi-star-fill"></i>
                     </a>
                     <button class="btn btn-sm btn-outline-accent btn-reply" data-commentid="@item.Id">
-                        <span class="icon-undo2"></span>
+                        <i class="bi-reply-fill"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-danger btn-delete" data-commentid="@item.Id">
                         <i class="bi-trash"></i>
