@@ -128,18 +128,18 @@
     <div class="offcanvas-body">
         <form id="edit-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-2">
-                <label asp-for="CategoryEditViewModel.DisplayName"></label>
+            <div class="mb-3">
+                <label class="form-label" asp-for="CategoryEditViewModel.DisplayName"></label>
                 <input asp-for="CategoryEditViewModel.DisplayName" class="form-control" />
                 <span asp-validation-for="CategoryEditViewModel.DisplayName" class="text-danger"></span>
             </div>
-            <div class="mb-2">
-                <label asp-for="CategoryEditViewModel.RouteName"></label>
+            <div class="mb-3">
+                <label class="form-label" asp-for="CategoryEditViewModel.RouteName"></label>
                 <input asp-for="CategoryEditViewModel.RouteName" class="form-control" />
                 <span asp-validation-for="CategoryEditViewModel.RouteName" class="text-danger"></span>
             </div>
-            <div class="mb-2">
-                <label asp-for="CategoryEditViewModel.Note"></label>
+            <div class="mb-3">
+                <label class="form-label" asp-for="CategoryEditViewModel.Note"></label>
                 <input asp-for="CategoryEditViewModel.Note" class="form-control" />
                 <span asp-validation-for="CategoryEditViewModel.Note" class="text-danger"></span>
             </div>

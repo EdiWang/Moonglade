@@ -154,13 +154,13 @@
     <div class="offcanvas-body">
         <form id="edit-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-2">
-                <label asp-for="FriendLinkEditViewModel.Title"></label>
+            <div class="mb-3">
+                <label class="form-label" asp-for="FriendLinkEditViewModel.Title"></label>
                 <input asp-for="FriendLinkEditViewModel.Title" class="form-control" />
                 <span asp-validation-for="FriendLinkEditViewModel.Title" class="text-danger"></span>
             </div>
-            <div class="mb-2">
-                <label asp-for="FriendLinkEditViewModel.LinkUrl"></label>
+            <div class="mb-3">
+                <label class="form-label" asp-for="FriendLinkEditViewModel.LinkUrl"></label>
                 <input asp-for="FriendLinkEditViewModel.LinkUrl" class="form-control" />
                 <span asp-validation-for="FriendLinkEditViewModel.LinkUrl" class="text-danger"></span>
             </div>
