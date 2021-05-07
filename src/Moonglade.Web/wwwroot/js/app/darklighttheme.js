@@ -26,8 +26,8 @@
         isDarkMode = true;
         $('.lightswitch').addClass('bg-dark text-light border-secondary');
         $('hr').addClass('hr-dark');
-        $('#lighticon').removeClass('icon-sun-o');
-        $('#lighticon').addClass('icon-moon-o');
+        $('#lighticon').removeClass('bi-brightness-high');
+        $('#lighticon').addClass('bi-moon');
     },
     useLightMode: function () {
         $('#blog-nav').addClass('bg-accent1');
@@ -54,7 +54,7 @@
         isDarkMode = false;
         $('.lightswitch').removeClass('bg-dark text-light border-secondary');
         $('hr').removeClass('hr-dark');
-        $('#lighticon').addClass('icon-sun-o');
-        $('#lighticon').removeClass('icon-moon-o');
+        $('#lighticon').addClass('bi-brightness-high');
+        $('#lighticon').removeClass('bi-moon');
     }
 }
