@@ -10,7 +10,7 @@
             @foreach (var item in Model.OrderBy(c => c.Title))
             {
                 <a href="@Helper.SterilizeLink(item.LinkUrl)" target="_blank" class="d-block mb-3 mt-2">
-                    <i class="icon-link me-1"></i>
+                    <i class="bi-link-45deg me-1"></i>
                     @item.Title
                 </a>
             }
