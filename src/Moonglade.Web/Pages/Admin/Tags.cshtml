@@ -36,15 +36,15 @@
         });
 
         $(".btn-submit").click(function () {
-            callApi(`/api/tags`, 'POST', $("#input-tag-name").val(),
-                (resp) => {
-                    $("#edit-form")[0].reset();
-                    $("#editTagModal").modal('hide');
-                    window.location.reload();
-                });
+            if ($("#edit-form").valid()) {
+                callApi(`/api/tags`, 'POST', $("#input-tag-name").val(),
+                    (resp) => {
+                        $("#edit-form")[0].reset();
+                        $("#editTagModal").modal('hide');
+                        window.location.reload();
+                    });
+            }
         });
-
-
     </script>
 }
 
@@ -80,7 +80,7 @@
         <form id="edit-form" method="post">
             <div class="mb-2">
                 <label class="form-label">@Localizer["Name"]</label>
-                <input type="text" id="input-tag-name" class="form-control" />
+                <input type="text" id="input-tag-name" class="form-control" required />
             </div>
         </form>
         <div class="mt-3">
