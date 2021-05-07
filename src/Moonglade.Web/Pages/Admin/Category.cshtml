@@ -6,13 +6,13 @@
 
 @section scripts{
     <script>
-        var modal = new bootstrap.Modal('#editCatModal');
+        var editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
         var catId = emptyGuid;
 
         function initCreateCategory() {
             catId = emptyGuid;
             $('#edit-form')[0].reset();
-            modal.show();
+            editCanvas.show();
         }
 
         function editCat(id) {
@@ -23,7 +23,7 @@
                     $('#CategoryEditViewModel_RouteName').val(data.routeName);
                     $('#CategoryEditViewModel_DisplayName').val(data.displayName);
                     $('#CategoryEditViewModel_Note').val(data.note);
-                    modal.show();
+                    editCanvas.show();
                 });
         }
 
@@ -74,7 +74,7 @@
             }
         });
 
-    
+
     </script>
 }
 
@@ -120,39 +120,33 @@
     }
 </div>
 
-<div class="modal fade" id="editCatModal" tabindex="-1" role="dialog" aria-labelledby="editCatModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editCatModalLabel">@Localizer["Category Information"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="editCatCanvas" aria-labelledby="editCatCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="editCatCanvasLabel">@Localizer["Category Information"]</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="edit-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-2">
+                <label asp-for="CategoryEditViewModel.DisplayName"></label>
+                <input asp-for="CategoryEditViewModel.DisplayName" class="form-control" />
+                <span asp-validation-for="CategoryEditViewModel.DisplayName" class="text-danger"></span>
             </div>
-
-            <form id="edit-form" method="post">
-                <div class="modal-body">
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="mb-2">
-                        <label asp-for="CategoryEditViewModel.DisplayName"></label>
-                        <input asp-for="CategoryEditViewModel.DisplayName" class="form-control" />
-                        <span asp-validation-for="CategoryEditViewModel.DisplayName" class="text-danger"></span>
-                    </div>
-                    <div class="mb-2">
-                        <label asp-for="CategoryEditViewModel.RouteName"></label>
-                        <input asp-for="CategoryEditViewModel.RouteName" class="form-control" />
-                        <span asp-validation-for="CategoryEditViewModel.RouteName" class="text-danger"></span>
-                    </div>
-                    <div class="mb-2">
-                        <label asp-for="CategoryEditViewModel.Note"></label>
-                        <input asp-for="CategoryEditViewModel.Note" class="form-control" />
-                        <span asp-validation-for="CategoryEditViewModel.Note" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
-                </div>
-            </form>
+            <div class="mb-2">
+                <label asp-for="CategoryEditViewModel.RouteName"></label>
+                <input asp-for="CategoryEditViewModel.RouteName" class="form-control" />
+                <span asp-validation-for="CategoryEditViewModel.RouteName" class="text-danger"></span>
+            </div>
+            <div class="mb-2">
+                <label asp-for="CategoryEditViewModel.Note"></label>
+                <input asp-for="CategoryEditViewModel.Note" class="form-control" />
+                <span asp-validation-for="CategoryEditViewModel.Note" class="text-danger"></span>
+            </div>
+        </form>
+        <div class="mt-3">
+            <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@Localizer["Cancel"]</button>
         </div>
     </div>
 </div>
