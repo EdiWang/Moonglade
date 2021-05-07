@@ -214,7 +214,7 @@
 }
 
 <h3>
-    <span class="icon-list icon-admin-title"></span>
+    <i class="bi-menu-button-wide icon-admin-title"></i>
     @Localizer["Navigation Menus"]
 </h3>
 <hr />
@@ -241,7 +241,7 @@
                     {
                         <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
                            href="javascript:loadMenuEditor('@menu.Id');">
-                            <span class="icon-list me-2"></span>
+                            <i class="bi-menu-app me-2"></i>
                             @menu.Title
 
                             <span class="text-muted float-end">
@@ -253,7 +253,7 @@
                     {
                         <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
                            href="javascript:loadMenuEditor('@menu.Id');">
-                            <span class="@menu.Icon me-2"></span>
+                            <i class="@menu.Icon me-2"></i>
                             @menu.Title
                         </a>
                     }
