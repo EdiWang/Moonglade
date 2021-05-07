@@ -64,6 +64,7 @@ namespace Moonglade.Core
                 PostContent = request.EditorContent,
                 ContentAbstract = abs,
                 CreateTimeUtc = DateTime.UtcNow,
+                LastModifiedUtc = DateTime.UtcNow, // Fix draft orders
                 Slug = request.Slug.ToLower().Trim(),
                 Title = request.Title.Trim(),
                 ContentLanguageCode = request.ContentLanguageCode,
