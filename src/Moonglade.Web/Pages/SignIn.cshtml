@@ -23,7 +23,7 @@
         @Html.Raw(_javaScriptSnippet.FullScript)
     </environment>
 </head>
-<body class="pt-5">
+<body class="bg-gray-1 pt-5">
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-4">
@@ -32,14 +32,15 @@
                     <div class="card-body">
                         <form method="post">
                             <div asp-validation-summary="All" class="text-danger"></div>
-                            <div class="mb-2">
+                            <div class="form-floating mb-3">
+                                <input asp-for="Username" class="form-control" placeholder="@Html.DisplayNameFor(m => m.Username)" required />
                                 <label asp-for="Username"></label>
-                                <input asp-for="Username" class="form-control" required />
                             </div>
-                            <div class="mb-2">
+                            <div class="form-floating mb-3">
+                                <input asp-for="Password" class="form-control" required placeholder="@Html.DisplayNameFor(m => m.Password)" />
                                 <label asp-for="Password"></label>
-                                <input asp-for="Password" class="form-control" required />
                             </div>
+
                             <div clas="mb-2">
                                 <div class="input-group">
                                     <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
