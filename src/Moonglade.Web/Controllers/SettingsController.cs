@@ -52,6 +52,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("release/check")]
+        [ProducesResponseType(typeof(CheckNewReleaseResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckNewRelease([FromServices] IReleaseCheckerClient releaseCheckerClient)
         {
             var info = await releaseCheckerClient.CheckNewReleaseAsync();
