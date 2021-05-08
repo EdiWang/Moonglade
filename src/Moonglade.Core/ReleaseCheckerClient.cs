@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +19,7 @@ namespace Moonglade.Core
     {
         public static void AddReleaseCheckerClient(this IServiceCollection services)
         {
-            services.AddHttpClient<IReleaseCheckerClient, IReleaseCheckerClient>()
+            services.AddHttpClient<IReleaseCheckerClient, ReleaseCheckerClient>()
                 .AddTransientHttpErrorPolicy(builder =>
                     builder.WaitAndRetryAsync(3, retryCount => TimeSpan.FromSeconds(Math.Pow(2, retryCount))));
         }
@@ -77,14 +78,19 @@ namespace Moonglade.Core
 
     public class ReleaseInfo
     {
+        [JsonPropertyName("html_url")]
         public string HtmlUrl { get; set; }
 
+        [JsonPropertyName("tag_name")]
         public string TagName { get; set; }
 
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
+        [JsonPropertyName("prerelease")]
         public bool PreRelease { get; set; }
 
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
     }
 }
