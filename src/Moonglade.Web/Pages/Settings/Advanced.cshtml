@@ -167,24 +167,45 @@
                     @Localizer["Options"]
                 </div>
                 <div class="card-body">
-                    <h6>@Localizer["Clear Data Cache"]</h6>
-                    <hr />
-                    <p>@Localizer["Delete cached objects both in memory and on disk"]</p>
-                    <a href="javascript:;" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cacheModal">@Localizer["Clear"]</a>
+                    <div class="row row-cols-2 g-3">
+                        <div class="col">
+                            <h6>@Localizer["Clear Data Cache"]</h6>
+                            <hr />
+                            <p>@Localizer["Delete cached objects both in memory and on disk"]</p>
+                            <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#cacheModal">@Localizer["Clear"]</a>
+                        </div>
+                        <div class="col">
+                            <h6>@Localizer["Update"]</h6>
+                            <hr />
 
-                    <h6 class="mt-4">@Localizer["Restart Website"]</h6>
-                    <hr />
+                            <p>@Localizer["Check online for new Moonglade release."]</p>
 
-                    <p>@Localizer["Try to shutdown and restart the website, this will terminate all current requests."]</p>
+                            <a href="javascript:;" class="btn btn-sm btn-outline-accent">
+                                @Localizer["Check Now"]
+                            </a>
+                        </div>
+                        <div class="col">
+                            <h6>@Localizer["Restart Website"]</h6>
+                            <hr />
 
-                    <a href="javascript:;" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#restartModal">@Localizer["Restart"]</a>
+                            <p>@Localizer["Try to shutdown and restart the website, this will terminate all current requests."]</p>
 
-                    <h6 class="mt-4">@Localizer["System Reset"]</h6>
-                    <hr />
+                            <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#restartModal">
+                                @Localizer["Restart"]
+                            </a>
+                        </div>
+                        <div class="col">
+                            <h6>@Localizer["System Reset"]</h6>
+                            <hr />
 
-                    <p>@Localizer["Erase all data and configuration."]</p>
+                            <p>@Localizer["Erase all data and configuration."]</p>
 
-                    <a href="javascript:;" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">@Localizer["Reset"]</a>
+                            <a href="javascript:;" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
+                                <i class="bi-exclamation-triangle-fill"></i>
+                                @Localizer["Reset"]
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
