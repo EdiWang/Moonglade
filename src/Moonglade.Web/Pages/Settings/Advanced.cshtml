@@ -4,13 +4,41 @@
 
 @section scripts{
     <script>
-        $(function () {
-            $(".btn-restart").click(function () {
-                tryRestartWebsite();
-            });
+        $('.btn-restart').click(function () {
+            tryRestartWebsite();
+        });
 
-            $(".btn-reset").click(function () {
-                tryResetWebsite();
+        $('.btn-reset').click(function () {
+            tryResetWebsite();
+        });
+
+        $('.btn-check-update').click(function () {
+            $('.spinner-border').show();
+            $('.alert-has-new-release').hide();
+            $('.alert-no-new-release').hide();
+            $('.btn-get-update').addClass('disabled');
+            $('.btn-get-update').attr('href', '#');
+
+            var updateCheckCanvas = new bootstrap.Offcanvas(document.getElementById('updateCheckCanvas'));
+            updateCheckCanvas.show();
+
+            callApi('/api/settings/release/check', 'GET', {}, async (resp) => {
+                var data = await resp.json();
+                $('.spinner-border').hide();
+
+                $('#currentAssemblyFileVersion').val(data.latestReleaseInfo.currentAssemblyFileVersion);
+                $('#releaseName').val(data.latestReleaseInfo.name);
+                $('#releaseTagName').val(data.latestReleaseInfo.tag_name);
+                $('#releaseCreatedAt').val(data.latestReleaseInfo.created_at);
+
+                if (data.hasNewRelease) {
+                    $('.alert-has-new-release').show();
+                    $('.btn-get-update').removeClass('disabled');
+                    $('.btn-get-update').attr('href', data.latestReleaseInfo.html_url);
+                }
+                else {
+                    $('.alert-no-new-release').show();
+                }
             });
         });
 
@@ -167,24 +195,45 @@
                     @Localizer["Options"]
                 </div>
                 <div class="card-body">
-                    <h6>@Localizer["Clear Data Cache"]</h6>
-                    <hr />
-                    <p>@Localizer["Delete cached objects both in memory and on disk"]</p>
-                    <a href="javascript:;" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cacheModal">@Localizer["Clear"]</a>
+                    <div class="row row-cols-2 g-3">
+                        <div class="col">
+                            <h6>@Localizer["Clear Data Cache"]</h6>
+                            <hr />
+                            <p>@Localizer["Delete cached objects both in memory and on disk"]</p>
+                            <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#cacheModal">@Localizer["Clear"]</a>
+                        </div>
+                        <div class="col">
+                            <h6>@Localizer["Update"]</h6>
+                            <hr />
 
-                    <h6 class="mt-4">@Localizer["Restart Website"]</h6>
-                    <hr />
+                            <p>@Localizer["Check online for new Moonglade release."]</p>
 
-                    <p>@Localizer["Try to shutdown and restart the website, this will terminate all current requests."]</p>
+                            <a href="#" class="btn btn-sm btn-outline-accent btn-check-update">
+                                @Localizer["Check Now"]
+                            </a>
+                        </div>
+                        <div class="col">
+                            <h6>@Localizer["Restart Website"]</h6>
+                            <hr />
 
-                    <a href="javascript:;" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#restartModal">@Localizer["Restart"]</a>
+                            <p>@Localizer["Try to shutdown and restart the website, this will terminate all current requests."]</p>
 
-                    <h6 class="mt-4">@Localizer["System Reset"]</h6>
-                    <hr />
+                            <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#restartModal">
+                                @Localizer["Restart"]
+                            </a>
+                        </div>
+                        <div class="col">
+                            <h6>@Localizer["System Reset"]</h6>
+                            <hr />
 
-                    <p>@Localizer["Erase all data and configuration."]</p>
+                            <p>@Localizer["Erase all data and configuration."]</p>
 
-                    <a href="javascript:;" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">@Localizer["Reset"]</a>
+                            <a href="javascript:;" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
+                                <i class="bi-exclamation-triangle-fill"></i>
+                                @Localizer["Reset"]
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -263,6 +312,68 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger btn-reset">@Localizer["Reset"]</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="updateCheckCanvas" aria-labelledby="updateCheckCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="updateCheckCanvasLabel">@Localizer["Moonglade Update"]</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="spinner-border" role="status" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        
+        <div class="alert alert-info alert-no-new-release">
+            <i class="bi-info-circle"></i>
+            You are running the latest version already.
+        </div>
+
+        <div class="alert alert-success alert-has-new-release">
+            <i class="bi-lightbulb"></i>
+            There is a new version of Moonglade available!
+        </div>
+
+        <div class="release-info">
+            <h6>
+                <i class="bi-box-seam"></i>
+                Latest Release
+            </h6>
+            <hr />
+            <div class="mb-1 row">
+                <label for="releaseName" class="col-4 col-form-label">
+                    <strong>@Localizer["Name"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseName" value="...">
+                </div>
+            </div>
+            <div class="mb-1 row">
+                <label for="releaseTagName" class="col-4 col-form-label">
+                    <strong>@Localizer["Tag Name"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseTagName" value="...">
+                </div>
+            </div>
+            <div class="mb-1 row">
+                <label for="releaseCreatedAt" class="col-4 col-form-label">
+                    <strong>@Localizer["Release Time"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseCreatedAt" value="...">
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="mt-3">
+            <a href="#" target="_blank" class="btn btn-success disabled btn-get-update">
+                <i class="bi-download"></i>
+                @Localizer["Get Update"]
+            </a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@Localizer["Cancel"]</button>
         </div>
     </div>
 </div>

@@ -3,6 +3,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,7 @@ using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
+using Moonglade.Core;
 using Moonglade.Notification.Client;
 using Moonglade.Setup;
 using Moonglade.Utils;
@@ -47,6 +49,28 @@ namespace Moonglade.Web.Controllers
             _blogAudit = blogAudit;
 
             _logger = logger;
+        }
+
+        [HttpGet("release/check")]
+        [ProducesResponseType(typeof(CheckNewReleaseResult), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CheckNewRelease([FromServices] IReleaseCheckerClient releaseCheckerClient)
+        {
+            var info = await releaseCheckerClient.CheckNewReleaseAsync();
+
+            var asm = Assembly.GetEntryAssembly();
+            var currentVersion = new Version(asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version);
+            var latestVersion = new Version(info.TagName.Replace("v", string.Empty));
+
+            var hasNewVersion = latestVersion > currentVersion && !info.PreRelease;
+
+            var result = new CheckNewReleaseResult
+            {
+                HasNewRelease = hasNewVersion,
+                CurrentAssemblyFileVersion = currentVersion.ToString(),
+                LatestReleaseInfo = info
+            };
+
+            return Ok(result);
         }
 
         [AllowAnonymous]
