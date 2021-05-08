@@ -6,7 +6,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Caching;
@@ -18,12 +17,10 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.FriendLink;
 using Moonglade.Menus;
-using Moonglade.Notification.Client;
 using Moonglade.Pages;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
-using Polly;
 using WilderMinds.MetaWeblog;
 
 namespace Moonglade.Web.Configuration
@@ -54,17 +51,6 @@ namespace Moonglade.Web.Configuration
                             TimeSpan.FromSeconds(30),
                             null);
                     }));
-        }
-
-        public static void AddNotificationClient(this IServiceCollection services, ILogger logger)
-        {
-            services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
-                    .AddTransientHttpErrorPolicy(builder =>
-                        builder.WaitAndRetryAsync(3,
-                            retryCount => TimeSpan.FromSeconds(Math.Pow(2, retryCount)), (result, span, retryCount, _) =>
-                        {
-                            logger?.LogWarning($"Request failed with {result.Result.StatusCode}. Waiting {span} before next retry. Retry attempt {retryCount}/3.");
-                        }));
         }
 
         public static void AddBlogServices(this IServiceCollection services)

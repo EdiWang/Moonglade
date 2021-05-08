@@ -25,6 +25,7 @@ using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Notification.Client;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Models;
@@ -117,7 +118,7 @@ namespace Moonglade.Web
             services.AddBlogConfiguration(_appSettings);
             services.AddBlogAuthenticaton(_configuration);
             services.AddComments(_configuration);
-            services.AddNotificationClient(_logger);
+            services.AddNotificationClient();
             services.AddReleaseCheckerClient();
             services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));
             services.AddImageStorage(_configuration, options =>

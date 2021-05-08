@@ -2,10 +2,12 @@
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration;
 using Moonglade.Utils;
+using Polly;
 
 namespace Moonglade.Notification.Client
 {
@@ -155,6 +157,17 @@ namespace Moonglade.Notification.Client
                 Content = new NotificationContent<T>(nf)
             };
             return req;
+        }
+    }
+
+    public static class ServiceCollectionExtension
+    {
+        public static void AddNotificationClient(this IServiceCollection services)
+        {
+            services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
+                .AddTransientHttpErrorPolicy(builder =>
+                    builder.WaitAndRetryAsync(3,
+                        retryCount => TimeSpan.FromSeconds(Math.Pow(2, retryCount))));
         }
     }
 }
