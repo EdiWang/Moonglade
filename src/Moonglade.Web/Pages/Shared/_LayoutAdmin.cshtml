@@ -41,7 +41,9 @@
 </head>
 <body class="admin-body">
     <nav class="admin-navbar navbar sticky-top navbar-expand-lg navbar-dark bg-accent2">
-        <a class="navbar-brand font-sairas" asp-page="/Admin/Post">@BlogConfig.GeneralSettings.SiteTitle</a>
+        <a class="navbar-brand font-sairas" asp-page="/Admin/Post">
+            @BlogConfig.GeneralSettings.SiteTitle
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -51,7 +53,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Settings/General">
-                        <i class="bi-tools"></i>
+                        <i class="bi-gear"></i>
                     </a>
                 </li>
                 <li class="nav-item">

@@ -105,7 +105,7 @@
             <i class="bi-calendar-event"></i>
             <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
             @BlogConfig.GeneralSettings.TimeZoneId
-            -
+            <i class="bi-eye"></i>
             <span class="post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
         </div>
 
@@ -138,6 +138,7 @@
         {
             <div class="card bg-light comment-form-containter mb-4">
                 <div class="card-header">
+                    <i class="bi-chat-left-text"></i>
                     @Localizer["Comments"]
                 </div>
                 <form id="comment-form">

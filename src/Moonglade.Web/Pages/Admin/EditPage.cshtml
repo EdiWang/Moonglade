@@ -243,7 +243,10 @@
         </button>
         @if (!Model.PageEditModel.IsPublished)
         {
-            <button type="button" class="btn btn-outline-primary" id="btn-preview">@Localizer["Preview"]</button>
+            <button type="button" class="btn btn-outline-success" id="btn-preview">
+                <i class="bi-eye"></i>
+                @Localizer["Preview"]
+            </button>
         }
         <a asp-page="./BlogPage" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>

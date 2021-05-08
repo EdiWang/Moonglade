@@ -155,7 +155,9 @@
                                         <div class="form-check">
                                             <input id="cat-@item.Value" name="ViewModel.SelectedCategoryIds" class="form-check-input" type="checkbox" value="@item.Value"
                                                    @(item.IsChecked ? "checked=\"checked\"" : null)>
-                                            <label for="cat-@item.Value" class="form-check-label">@item.DisplayText</label>
+                                            <label for="cat-@item.Value" class="form-check-label">
+                                                @item.DisplayText
+                                            </label>
                                         </div>
                                     </li>
                                 }
@@ -164,7 +166,10 @@
                     }
 
                     <hr />
-                    <a asp-page="./Category" class="btn w-100 btn-sm btn-outline-secondary">@Localizer["Manage Categories"]</a>
+                    <a asp-page="./Category" class="btn w-100 btn-sm btn-outline-secondary">
+                        <i class="bi-box-arrow-up-right"></i>
+                        @Localizer["Manage Categories"]
+                    </a>
                 </div>
             </div>
         </div>
@@ -181,7 +186,10 @@
             <button type="submit" class="btn btn-accent ediblogeditor-publish" id="btn-publish">
                 @Localizer["Publish"]
             </button>
-            <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">@Localizer["Preview"]</button>
+            <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">
+                <i class="bi-eye"></i>
+                @Localizer["Preview"]
+            </button>
         }
         <a asp-page="./Post" class="btn btn-light">@Localizer["Cancel"]</a>
     </div>
