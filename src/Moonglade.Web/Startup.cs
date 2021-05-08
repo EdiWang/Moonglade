@@ -25,6 +25,7 @@ using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
+using Moonglade.Data;
 using Moonglade.ImageStorage;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;

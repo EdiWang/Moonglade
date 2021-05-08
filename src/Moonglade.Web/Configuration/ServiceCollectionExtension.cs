@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
@@ -13,8 +11,6 @@ using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
-using Moonglade.Data;
-using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting;
 using Moonglade.FriendLink;
 using Moonglade.Menus;
@@ -46,21 +42,6 @@ namespace Moonglade.Web.Configuration
             services.AddSingleton<IBlogConfig, BlogConfig>();
             services.AddScoped<ITimeZoneResolver>(c =>
                 new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
-        }
-
-        public static void AddDataStorage(this IServiceCollection services, string connectionString)
-        {
-            services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
-            services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
-            services.AddDbContext<BlogDbContext>(options =>
-                options.UseLazyLoadingProxies()
-                    .UseSqlServer(connectionString, sqlOptions =>
-                    {
-                        sqlOptions.EnableRetryOnFailure(
-                            3,
-                            TimeSpan.FromSeconds(30),
-                            null);
-                    }));
         }
 
         public static void AddBlogServices(this IServiceCollection services)
