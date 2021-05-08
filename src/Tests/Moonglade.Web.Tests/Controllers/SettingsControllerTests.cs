@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Configuration;
+using Moonglade.Core;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
@@ -39,6 +40,28 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockBlogConfig.Object,
                 _mockBlogAudit.Object,
                 _mockLogger.Object);
+        }
+
+        [Test]
+        public async Task CheckNewRelease_HasNewVersion_NotPreRelease()
+        {
+            var mockReleaseCheckerClient = _mockRepository.Create<IReleaseCheckerClient>();
+            mockReleaseCheckerClient.Setup(p => p.CheckNewReleaseAsync()).Returns(Task.FromResult(new ReleaseInfo
+            {
+                TagName = "v996.007.251.404",
+                PreRelease = false,
+                CreatedAt = DateTime.MaxValue,
+                HtmlUrl = "https://996.icu",
+                Name = "The 996 Involution Release"
+            }));
+            var ctl = CreateSettingsController();
+
+            var result = await ctl.CheckNewRelease(mockReleaseCheckerClient.Object);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+
+            var model = ((OkObjectResult)result).Value as CheckNewReleaseResult;
+            Assert.IsTrue(model.HasNewRelease);
+            Assert.IsNotNull(model.LatestReleaseInfo);
         }
 
         [TestCase(null)]
