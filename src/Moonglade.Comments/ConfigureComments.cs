@@ -2,9 +2,8 @@
 using Microsoft.Azure.CognitiveServices.ContentModerator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Comments;
 
-namespace Moonglade.Web.Configuration
+namespace Moonglade.Comments
 {
     public static class ConfigureComments
     {

@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Comments;
-using Moonglade.Web.Configuration;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Configuration
+namespace Moonglade.Comments.Tests
 {
     [TestFixture]
     public class ConfigureCommentsTests
