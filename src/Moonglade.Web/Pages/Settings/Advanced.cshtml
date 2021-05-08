@@ -13,8 +13,33 @@
         });
 
         $('.btn-check-update').click(function () {
+            $('.spinner-border').show();
+            $('.alert-has-new-release').hide();
+            $('.alert-no-new-release').hide();
+            $('.btn-get-update').addClass('disabled');
+            $('.btn-get-update').attr('href', '#');
+
             var updateCheckCanvas = new bootstrap.Offcanvas(document.getElementById('updateCheckCanvas'));
             updateCheckCanvas.show();
+
+            callApi('/api/settings/release/check', 'GET', {}, async (resp) => {
+                var data = await resp.json();
+                $('.spinner-border').hide();
+
+                $('#currentAssemblyFileVersion').val(data.latestReleaseInfo.currentAssemblyFileVersion);
+                $('#releaseName').val(data.latestReleaseInfo.name);
+                $('#releaseTagName').val(data.latestReleaseInfo.tag_name);
+                $('#releaseCreatedAt').val(data.latestReleaseInfo.created_at);
+
+                if (data.hasNewRelease) {
+                    $('.alert-has-new-release').show();
+                    $('.btn-get-update').removeClass('disabled');
+                    $('.btn-get-update').attr('href', data.latestReleaseInfo.html_url);
+                }
+                else {
+                    $('.alert-no-new-release').show();
+                }
+            });
         });
 
         function generateMetaWeblogPassword() {
@@ -297,9 +322,57 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
+        <div class="spinner-border" role="status" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        
+        <div class="alert alert-info alert-no-new-release">
+            <i class="bi-info-circle"></i>
+            You are running the latest version already.
+        </div>
 
+        <div class="alert alert-success alert-has-new-release">
+            <i class="bi-lightbulb"></i>
+            There is a new version of Moonglade available!
+        </div>
+
+        <div class="release-info">
+            <h6>
+                <i class="bi-box-seam"></i>
+                Latest Release
+            </h6>
+            <hr />
+            <div class="mb-1 row">
+                <label for="releaseName" class="col-4 col-form-label">
+                    <strong>@Localizer["Name"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseName" value="...">
+                </div>
+            </div>
+            <div class="mb-1 row">
+                <label for="releaseTagName" class="col-4 col-form-label">
+                    <strong>@Localizer["Tag Name"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseTagName" value="...">
+                </div>
+            </div>
+            <div class="mb-1 row">
+                <label for="releaseCreatedAt" class="col-4 col-form-label">
+                    <strong>@Localizer["Release Time"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseCreatedAt" value="...">
+                </div>
+            </div>
+        </div>
+        <hr />
         <div class="mt-3">
-            <button type="button" class="btn btn-success btn-submit">@Localizer["Get Update"]</button>
+            <a href="#" target="_blank" class="btn btn-success disabled btn-get-update">
+                <i class="bi-download"></i>
+                @Localizer["Get Update"]
+            </a>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@Localizer["Cancel"]</button>
         </div>
     </div>
