@@ -18,6 +18,7 @@ using Moonglade.DataPorting;
 using Moonglade.FriendLink;
 using Moonglade.Menus;
 using Moonglade.Pages;
+using Moonglade.Pingback;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;

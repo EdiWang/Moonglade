@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Pingback;
 
-namespace Moonglade.Web.Configuration
+namespace Moonglade.Pingback
 {
     public static class ConfigurePingback
     {

@@ -1,10 +1,8 @@
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Pingback;
-using Moonglade.Web.Configuration;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Configuration
+namespace Moonglade.Pingback.Tests
 {
     [TestFixture]
     public class ConfigurePingbackTests
