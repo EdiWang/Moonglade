@@ -25,12 +25,9 @@ using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
 using Moonglade.ImageStorage;
-using Moonglade.Notification.Client;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
-using Moonglade.Web.Models;
 using WilderMinds.MetaWeblog;
 
 #endregion
@@ -40,7 +37,6 @@ namespace Moonglade.Web
     public class Startup
     {
         private ILogger<Startup> _logger;
-        private readonly IConfigurationSection _appSettings;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
         private readonly IList<CultureInfo> _supportedCultures;
@@ -49,7 +45,6 @@ namespace Moonglade.Web
         {
             _configuration = configuration;
             _environment = env;
-            _appSettings = _configuration.GetSection(nameof(AppSettings));
 
             // Workaround stupid ASP.NET "by design" issue
             // https://github.com/aspnet/Configuration/issues/451
@@ -113,15 +108,9 @@ namespace Moonglade.Web
 
             // Blog Services
             services.AddBlogServices();
-            services.Configure<SiteMapSettings>(_configuration.GetSection("SiteMap"));
-            services.Configure<List<BlogTheme>>(_configuration.GetSection("Themes"));
-            services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
-            services.Configure<Dictionary<string, string>>(_configuration.GetSection("TagNormalization"));
-            services.AddBlogConfiguration(_appSettings);
+            services.AddBlogConfiguration(_configuration);
             services.AddBlogAuthenticaton(_configuration);
             services.AddComments(_configuration);
-            services.AddNotificationClient();
-            services.AddReleaseCheckerClient();
             services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));
             services.AddImageStorage(_configuration, options =>
             {
