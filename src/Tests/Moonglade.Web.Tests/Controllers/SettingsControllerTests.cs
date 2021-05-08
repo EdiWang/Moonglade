@@ -64,6 +64,28 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsNotNull(model.LatestReleaseInfo);
         }
 
+        [Test]
+        public async Task CheckNewRelease_HasNewVersion_PreRelease()
+        {
+            var mockReleaseCheckerClient = _mockRepository.Create<IReleaseCheckerClient>();
+            mockReleaseCheckerClient.Setup(p => p.CheckNewReleaseAsync()).Returns(Task.FromResult(new ReleaseInfo
+            {
+                TagName = "v996.007.251.404",
+                PreRelease = true,
+                CreatedAt = DateTime.MaxValue,
+                HtmlUrl = "https://996.icu",
+                Name = "The 996 Involution Release"
+            }));
+            var ctl = CreateSettingsController();
+
+            var result = await ctl.CheckNewRelease(mockReleaseCheckerClient.Object);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+
+            var model = ((OkObjectResult)result).Value as CheckNewReleaseResult;
+            Assert.IsFalse(model.HasNewRelease);
+            Assert.IsNotNull(model.LatestReleaseInfo);
+        }
+
         [TestCase(null)]
         [TestCase("")]
         [TestCase(" ")]
