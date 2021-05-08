@@ -60,7 +60,7 @@ namespace Moonglade.Web.Controllers
             var currentVersion = new Version(asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version);
             var latestVersion = new Version(info.TagName.Replace("v", string.Empty));
 
-            var hasNewVersion = latestVersion > currentVersion;
+            var hasNewVersion = latestVersion > currentVersion && !info.PreRelease;
 
             var result = new CheckNewReleaseResult
             {
