@@ -24,6 +24,7 @@ using Microsoft.FeatureManagement;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
+using Moonglade.Core;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Models;
@@ -122,6 +123,8 @@ namespace Moonglade.Web
             {
                 options.ContentRootPath = _environment.ContentRootPath;
             });
+
+            services.AddReleaseCheckerClient();
         }
 
         public void Configure(
