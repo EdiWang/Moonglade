@@ -118,13 +118,12 @@ namespace Moonglade.Web
             services.AddBlogAuthenticaton(_configuration);
             services.AddComments(_configuration);
             services.AddNotificationClient(_logger);
+            services.AddReleaseCheckerClient();
             services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));
             services.AddImageStorage(_configuration, options =>
             {
                 options.ContentRootPath = _environment.ContentRootPath;
             });
-
-            services.AddReleaseCheckerClient();
         }
 
         public void Configure(
