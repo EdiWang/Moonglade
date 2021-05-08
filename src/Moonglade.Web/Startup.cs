@@ -25,6 +25,7 @@ using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.ImageStorage;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Middleware;

@@ -4,12 +4,10 @@ using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.Providers;
-using Moonglade.Web.Configuration;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Configuration
+namespace Moonglade.ImageStorage.Tests
 {
     [TestFixture]
     public class ConfigureImageStorageTests
