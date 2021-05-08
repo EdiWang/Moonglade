@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
@@ -42,6 +43,17 @@ namespace Moonglade.Core.Tests
         public void CheckNewReleaseAsync_EmptyApiAddress(string apiAddress)
         {
             _mockConfiguration.Setup(p => p["ReleaseCheckApiAddress"]).Returns(apiAddress);
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var releaseCheckerClient = CreateReleaseCheckerClient();
+            });
+        }
+
+        [Test]
+        public void CheckNewReleaseAsync_BadApiAddress()
+        {
+            _mockConfiguration.Setup(p => p["ReleaseCheckApiAddress"]).Returns("!@$#@%^$#996");
 
             Assert.Throws<InvalidOperationException>(() =>
             {
