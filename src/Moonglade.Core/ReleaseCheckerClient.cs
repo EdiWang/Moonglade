@@ -53,4 +53,17 @@ namespace Moonglade.Core
 
         }
     }
+
+    public class ReleaseInfo
+    {
+        public string HtmlUrl { get; set; }
+
+        public string TagName { get; set; }
+
+        public string Name { get; set; }
+
+        public bool PreRelease { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+    }
 }
