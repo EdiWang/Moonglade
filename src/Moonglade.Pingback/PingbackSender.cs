@@ -13,10 +13,14 @@ namespace Moonglade.Pingback
 {
     public class PingbackSender : IPingbackSender
     {
+        private readonly HttpClient _httpClient;
+
         public ILogger<PingbackSender> Logger { get; set; }
 
-        public PingbackSender(ILogger<PingbackSender> logger = null)
+        public PingbackSender(
+            HttpClient httpClient, ILogger<PingbackSender> logger = null)
         {
+            _httpClient = httpClient;
             Logger = logger;
         }
 
@@ -59,12 +63,9 @@ namespace Moonglade.Pingback
 
             try
             {
-                // TODO: Shit code, need to use HttpClientFactory if possible
-                using var handler = new HttpClientHandler { Credentials = CredentialCache.DefaultNetworkCredentials };
-                using var httpClient = new HttpClient(handler);
-                var response = await httpClient.GetAsync(targetUrl);
+                var response = await _httpClient.GetAsync(targetUrl);
 
-                (string key, IEnumerable<string> value) = response.Headers.FirstOrDefault(
+                var (key, value) = response.Headers.FirstOrDefault(
                     h => h.Key.ToLower() == "x-pingback" || h.Key.ToLower() == "pingback");
 
                 if (key is null || value is null)
