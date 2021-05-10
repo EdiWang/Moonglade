@@ -109,6 +109,9 @@ namespace Moonglade.Core
             })
         };
 
+        private readonly Expression<Func<IGrouping<(int Year, int Month), PostEntity>, Archive>> _archiveSelector =
+            p => new(p.Key.Year, p.Key.Month, p.Count());
+
         #endregion
 
         public PostQueryService(
@@ -275,14 +278,10 @@ namespace Moonglade.Core
             }
 
             var spec = new PostSpec(PostStatus.Published);
-            var list = await _postRepo.SelectAsync(spec, post => new
-            {
-                post.PubDateUtc.Value.Year,
-                post.PubDateUtc.Value.Month
-            }, monthList => new Archive(
-                monthList.Key.Year,
-                monthList.Key.Month,
-                monthList.Count()));
+            var list = await _postRepo.SelectAsync(
+                spec, 
+                post => new(post.PubDateUtc.Value.Year, post.PubDateUtc.Value.Month),
+                _archiveSelector);
 
             return list;
         }
