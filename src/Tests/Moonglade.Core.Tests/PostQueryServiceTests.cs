@@ -200,6 +200,29 @@ namespace Moonglade.Core.Tests
             });
         }
 
+        [TestCase(-35)]
+        [TestCase(251)]
+        public void ListArchive_InvalidMonth(int month)
+        {
+            var svc = CreateService();
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await svc.ListArchive(996, month);
+            });
+        }
+
+        [Test]
+        public async Task ListArchive_OK()
+        {
+            var svc = CreateService();
+            await svc.ListArchive(996, 9);
+
+            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true
+            ));
+
+            Assert.Pass();
+        }
+
         [Test]
         public async Task ListByTag_OK()
         {
