@@ -19,7 +19,7 @@ namespace Moonglade.Web.Models
         public string Icon { get; set; }
 
         [Display(Name = "Display Order")]
-        public int DisplayOrder { get; set; }
+        public int? DisplayOrder { get; set; }
 
         [Display(Name = "Open in New Tab")]
         public bool IsOpenInNewTab { get; set; }

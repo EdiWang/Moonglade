@@ -167,7 +167,7 @@
                 var httpVerb = 'POST';
                 var menuId = $("#topmenu-id").val();
                 if (menuId == emptyGuid) {
-                    action = 'create';
+                    action = '';
                 } else {
                     action = 'edit';
                     httpVerb = 'PUT';
@@ -210,6 +210,10 @@
                     });
             }
         }
+
+        $(function() {
+            initCreateMenu();
+        });
     </script>
 }
 

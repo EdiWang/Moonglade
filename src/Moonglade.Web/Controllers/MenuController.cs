@@ -23,7 +23,7 @@ namespace Moonglade.Web.Controllers
             _menuService = menuService;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -31,7 +31,7 @@ namespace Moonglade.Web.Controllers
         {
             var request = new UpdateMenuRequest
             {
-                DisplayOrder = model.DisplayOrder,
+                DisplayOrder = model.DisplayOrder.GetValueOrDefault(),
                 Icon = model.Icon,
                 Title = model.Title,
                 Url = model.Url,
@@ -106,7 +106,7 @@ namespace Moonglade.Web.Controllers
             var request = new UpdateMenuRequest
             {
                 Title = model.Title,
-                DisplayOrder = model.DisplayOrder,
+                DisplayOrder = model.DisplayOrder.GetValueOrDefault(),
                 Icon = model.Icon,
                 Url = model.Url,
                 IsOpenInNewTab = model.IsOpenInNewTab
