@@ -3,16 +3,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Pingback
 {
     public class PingbackResult : IActionResult
     {
         public PingbackResponse PingbackResponse { get; }
-
-        private ILogger<PingbackResult> _logger;
 
         public PingbackResult(PingbackResponse pingbackResponse)
         {
@@ -25,9 +21,6 @@ namespace Moonglade.Pingback
             {
                 throw new ArgumentNullException(nameof(context));
             }
-
-            _logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<PingbackResult>>();
-            _logger.LogInformation($"Executing PingbackResult for '{PingbackResponse}'");
 
             string content = null;
             int statusCode = StatusCodes.Status201Created;
@@ -59,7 +52,6 @@ namespace Moonglade.Pingback
                     actionResult = new BadRequestResult();
                     break;
                 default:
-                    _logger.LogError($"Error Executing PingbackResult, invalid PingbackResponse '{PingbackResponse}'");
                     throw new ArgumentOutOfRangeException();
             }
 
