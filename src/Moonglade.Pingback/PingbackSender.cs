@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Pingback
@@ -14,14 +11,17 @@ namespace Moonglade.Pingback
     public class PingbackSender : IPingbackSender
     {
         private readonly HttpClient _httpClient;
-
-        public ILogger<PingbackSender> Logger { get; set; }
+        private readonly IPingbackWebRequest _pingbackWebRequest;
+        private readonly ILogger<PingbackSender> _logger;
 
         public PingbackSender(
-            HttpClient httpClient, ILogger<PingbackSender> logger = null)
+            HttpClient httpClient, 
+            IPingbackWebRequest pingbackWebRequest,
+            ILogger<PingbackSender> logger = null)
         {
             _httpClient = httpClient;
-            Logger = logger;
+            _pingbackWebRequest = pingbackWebRequest;
+            _logger = logger;
         }
 
         public async Task TrySendPingAsync(string postUrl, string postContent)
@@ -32,25 +32,25 @@ namespace Moonglade.Pingback
                 var content = postContent.ToUpperInvariant();
                 if (content.Contains("HTTP://") || content.Contains("HTTPS://"))
                 {
-                    Logger?.LogInformation("URL is detected in post content, trying to send ping requests.");
+                    _logger?.LogInformation("URL is detected in post content, trying to send ping requests.");
 
                     foreach (var url in GetUrlsFromContent(postContent))
                     {
-                        Logger?.LogInformation("Pinging URL: " + url);
+                        _logger?.LogInformation("Pinging URL: " + url);
                         try
                         {
                             await SendAsync(uri, url);
                         }
                         catch (Exception e)
                         {
-                            Logger?.LogError(e, "SendAsync Ping Error.");
+                            _logger?.LogError(e, "SendAsync Ping Error.");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, $"{nameof(TrySendPingAsync)}({postUrl})");
+                _logger?.LogError(ex, $"{nameof(TrySendPingAsync)}({postUrl})");
             }
         }
 
@@ -64,70 +64,36 @@ namespace Moonglade.Pingback
             try
             {
                 var response = await _httpClient.GetAsync(targetUrl);
-
                 var (key, value) = response.Headers.FirstOrDefault(
                     h => h.Key.ToLower() == "x-pingback" || h.Key.ToLower() == "pingback");
 
                 if (key is null || value is null)
                 {
-                    Logger?.LogInformation($"Pingback endpoint is not found for URL '{targetUrl}', ping request is terminated.");
+                    _logger?.LogInformation($"Pingback endpoint is not found for URL '{targetUrl}', ping request is terminated.");
                     return;
                 }
 
                 var pingUrl = value.FirstOrDefault();
                 if (pingUrl is not null)
                 {
-                    Logger?.LogInformation($"Found Ping service URL '{pingUrl}' on target '{sourceUrl}'");
+                    _logger?.LogInformation($"Found Ping service URL '{pingUrl}' on target '{sourceUrl}'");
 
                     bool successUrlCreation = Uri.TryCreate(pingUrl, UriKind.Absolute, out var url);
                     if (successUrlCreation)
                     {
-                        var request = (HttpWebRequest)WebRequest.Create(url);
-                        request.Method = "POST";
-
-                        // request.Timeout = 10000;
-                        request.ContentType = "text/xml";
-                        request.ProtocolVersion = HttpVersion.Version11;
-                        request.Headers["Accept-Language"] = "en-us";
-                        AddXmlToRequest(sourceUrl, targetUrl, request);
-                        var response2 = (HttpWebResponse)request.GetResponse();
-                        response2.Close();
+                        var httpWebRequest = _pingbackWebRequest.BuildHttpWebRequest(sourceUrl, targetUrl, url);
+                        _pingbackWebRequest.GetReponse(httpWebRequest);
                     }
                     else
                     {
-                        Logger?.LogInformation($"Invliad Ping service URL '{pingUrl}'");
+                        _logger?.LogInformation($"Invliad Ping service URL '{pingUrl}'");
                     }
                 }
             }
             catch (Exception e)
             {
-                Logger?.LogError(e, $"{nameof(SendAsync)}({sourceUrl},{targetUrl})");
+                _logger?.LogError(e, $"{nameof(SendAsync)}({sourceUrl},{targetUrl})");
             }
-        }
-
-        private static void AddXmlToRequest(Uri sourceUrl, Uri targetUrl, WebRequest webreqPing)
-        {
-            var stream = webreqPing.GetRequestStream();
-            using var writer = new XmlTextWriter(stream, Encoding.ASCII);
-            writer.WriteStartDocument(true);
-            writer.WriteStartElement("methodCall");
-            writer.WriteElementString("methodName", "pingback.ping");
-            writer.WriteStartElement("params");
-
-            writer.WriteStartElement("param");
-            writer.WriteStartElement("value");
-            writer.WriteElementString("string", sourceUrl.ToString());
-            writer.WriteEndElement();
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("param");
-            writer.WriteStartElement("value");
-            writer.WriteElementString("string", targetUrl.ToString());
-            writer.WriteEndElement();
-            writer.WriteEndElement();
-
-            writer.WriteEndElement();
-            writer.WriteEndElement();
         }
 
         private static readonly Regex UrlsRegex = new(

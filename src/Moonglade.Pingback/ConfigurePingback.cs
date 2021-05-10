@@ -10,6 +10,7 @@ namespace Moonglade.Pingback
         {
             services.AddScoped<IPingSourceInspector, PingSourceInspector>();
             services.AddScoped<IPingbackRepository, PingbackRepository>();
+            services.AddScoped<IPingbackWebRequest, PingbackWebRequest>();
             services.AddHttpClient<IPingbackSender, PingbackSender>()
                     .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { Credentials = CredentialCache.DefaultNetworkCredentials });
             services.AddScoped<IPingbackService, PingbackService>();
