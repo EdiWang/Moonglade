@@ -46,6 +46,21 @@ namespace Moonglade.Pingback.Tests
             Assert.AreEqual(201, context.HttpContext.Response.StatusCode);
         }
 
+        [Test]
+        public async Task ExecuteResultAsync_Error17SourceNotContainTargetUri()
+        {
+            // Arrange
+            var pingbackResult = new PingbackResult(PingbackResponse.Error17SourceNotContainTargetUri);
+            var httpContext = GetHttpContext();
+            ActionContext context = GetActionContext(httpContext);
+
+            // Act
+            await pingbackResult.ExecuteResultAsync(context);
+
+            Assert.AreEqual("text/xml", context.HttpContext.Response.ContentType);
+            Assert.AreEqual(201, context.HttpContext.Response.StatusCode);
+        }
+
         // https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core.Test/ContentResultTest.cs
         private static ActionContext GetActionContext(HttpContext httpContext)
         {
