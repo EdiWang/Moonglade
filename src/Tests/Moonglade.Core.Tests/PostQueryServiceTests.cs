@@ -158,12 +158,45 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
+        public void List_InvalidPageSize()
+        {
+            var svc = CreateService();
+
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await svc.List(-1, 7, Uid);
+            });
+        }
+
+        [Test]
+        public void List_InvalidPageIndex()
+        {
+            var svc = CreateService();
+
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await svc.List(10, -1, Uid);
+            });
+        }
+
+        [Test]
         public void ListByTag_TagIdOutOfRange()
         {
             var svc = CreateService();
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
                 await svc.ListByTag(-35, 996, 251);
+            });
+        }
+
+        [TestCase(-996)]
+        [TestCase(12306)]
+        public void ListArchive_InvalidYear(int year)
+        {
+            var svc = CreateService();
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await svc.ListArchive(year, 1);
             });
         }
 
