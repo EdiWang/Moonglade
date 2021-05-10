@@ -10,7 +10,6 @@ using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
-using Moonglade.Pingback.AspNetCore;
 
 namespace Moonglade.Web.Controllers
 {

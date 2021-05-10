@@ -15,7 +15,7 @@ namespace Moonglade.Pingback
         private readonly ILogger<PingbackSender> _logger;
 
         public PingbackSender(
-            HttpClient httpClient, 
+            HttpClient httpClient,
             IPingbackWebRequest pingbackWebRequest,
             ILogger<PingbackSender> logger = null)
         {

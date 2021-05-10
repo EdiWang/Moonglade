@@ -7,7 +7,6 @@ using Moonglade.Auditing;
 using Moonglade.Configuration;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
-using Moonglade.Pingback.AspNetCore;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;

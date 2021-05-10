@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
-using Moonglade.Pingback.AspNetCore;
+using Moonglade.Pingback;
 
 namespace Moonglade.Web.Pages
 {

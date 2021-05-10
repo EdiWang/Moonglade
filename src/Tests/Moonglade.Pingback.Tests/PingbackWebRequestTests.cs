@@ -1,8 +1,6 @@
-﻿using Moonglade.Pingback;
+﻿using System;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Net;
 
 namespace Moonglade.Pingback.Tests
 {

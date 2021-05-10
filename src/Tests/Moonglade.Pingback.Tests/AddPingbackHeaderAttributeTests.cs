@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Moonglade.Pingback.AspNetCore;
 using NUnit.Framework;
 
 namespace Moonglade.Pingback.Tests
