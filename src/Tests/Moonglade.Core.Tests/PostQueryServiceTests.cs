@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
@@ -242,18 +243,32 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
-        public async Task ListArchiveAsync_NoPosts()
+        public async Task GetArchiveAsync_NoPosts()
         {
             _mockPostEntityRepo.Setup(p => p.Any(p => p.IsPublished && !p.IsDeleted)).Returns(false);
-
-            // Arrange
             var service = CreateService();
 
-            // Act
             var result = await service.GetArchiveAsync();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
+        }
+
+        [Test]
+        public async Task GetArchiveAsync_HasPosts()
+        {
+            _mockPostEntityRepo.Setup(p => p.Any(p => p.IsPublished && !p.IsDeleted)).Returns(true);
+            var service = CreateService();
+
+            await service.GetArchiveAsync();
+
+            _mockPostEntityRepo.Verify(p => p.SelectAsync(
+                It.IsAny<PostSpec>(), 
+                It.IsAny<Expression<Func<PostEntity, (int Year, int Month)>>>(),
+                It.IsAny<Expression<Func<IGrouping<(int Year, int Month), PostEntity>, Archive>>>(),
+                true));
+
+            Assert.Pass();
         }
     }
 }
