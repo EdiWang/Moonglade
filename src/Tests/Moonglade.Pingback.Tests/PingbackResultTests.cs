@@ -91,6 +91,21 @@ namespace Moonglade.Pingback.Tests
             Assert.AreEqual(201, context.HttpContext.Response.StatusCode);
         }
 
+
+        [Test]
+        public async Task ExecuteResultAsync_SpamDetectedFakeNotFound()
+        {
+            // Arrange
+            var pingbackResult = new PingbackResult(PingbackResponse.SpamDetectedFakeNotFound);
+            var httpContext = GetHttpContext();
+            ActionContext context = GetActionContext(httpContext);
+
+            // Act
+            await pingbackResult.ExecuteResultAsync(context);
+
+            Assert.AreEqual(404, context.HttpContext.Response.StatusCode);
+        }
+
         // https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core.Test/ContentResultTest.cs
         private static ActionContext GetActionContext(HttpContext httpContext)
         {
@@ -113,6 +128,7 @@ namespace Moonglade.Pingback.Tests
                 .Returns(new char[DefaultCharacterChunkSize]);
 
             var services = new ServiceCollection();
+            services.AddTransient<ILoggerFactory, NullLoggerFactory>();
             services.AddSingleton<IActionResultExecutor<ContentResult>>(new ContentResultExecutor(
                 new Logger<ContentResultExecutor>(NullLoggerFactory.Instance),
                 new MemoryPoolHttpResponseStreamWriterFactory(ArrayPool<byte>.Shared, charArrayPool.Object)));
