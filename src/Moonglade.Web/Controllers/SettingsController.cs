@@ -424,22 +424,14 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult ClearDataCache([FromForm] string[] cachedObjectValues, [FromServices] IBlogCache cache)
         {
-            try
+            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
+
+            if (cachedObjectValues.Contains("MCO_IMEM"))
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
-
-                if (cachedObjectValues.Contains("MCO_IMEM"))
-                {
-                    cache.RemoveAllCache();
-                }
-
-                return Ok();
-
+                cache.RemoveAllCache();
             }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
+
+            return Ok();
         }
 
         [HttpGet("generate-password")]
