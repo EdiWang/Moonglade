@@ -294,6 +294,33 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public async Task GetPagesAsync_OK()
+        {
+            var fakePage = new BlogPage
+            {
+                Id = Guid.Empty,
+                CreateTimeUtc = new(FakeData.Int2, 9, 6),
+                CssContent = ".jack-ma .heart {color: black !important;}",
+                HideSidebar = false,
+                IsPublished = false,
+                MetaDescription = "Fuck Jack Ma",
+                RawHtmlContent = "<p>Fuck 996</p>",
+                Slug = "fuck-jack-ma",
+                Title = "Fuck Jack Ma 1000 years!",
+                UpdateTimeUtc = new DateTime(1996, 9, 6)
+            };
+            IReadOnlyList<BlogPage> pages = new List<BlogPage> { fakePage };
+
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(pages));
+
+            var service = CreateService();
+            var result = await service.GetPagesAsync("996.icu", _username, _password, 996);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Length);
+        }
+
+        [Test]
         public async Task GetAuthorsAsync_OK()
         {
             var service = CreateService();
