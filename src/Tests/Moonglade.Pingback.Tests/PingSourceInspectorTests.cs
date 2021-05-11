@@ -1,6 +1,10 @@
+using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Moq.Protected;
 using NUnit.Framework;
 
 namespace Moonglade.Pingback.Tests
@@ -28,24 +32,38 @@ namespace Moonglade.Pingback.Tests
             return new(_mockLogger.Object, _magicHttpClient);
         }
 
-        //[Test]
-        //public async Task ExamineSourceAsync_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var pingSourceInspector = this.CreatePingSourceInspector();
-        //    string sourceUrl = null;
-        //    string targetUrl = null;
-        //    int timeoutSeconds = 0;
+        [Test]
+        public async Task ExamineSourceAsync_StateUnderTest_ExpectedBehavior()
+        {
+            string sourceUrl = "https://996.icu/work-996-sick-icu";
+            string targetUrl = "https://greenhat.today/programmers-special-gift";
 
-        //    // Act
-        //    var result = await pingSourceInspector.ExamineSourceAsync(
-        //        sourceUrl,
-        //        targetUrl,
-        //        timeoutSeconds);
+            _handlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent($"<html>" +
+                                                $"<head>" +
+                                                $"<title>Programmer's Gift</title>" +
+                                                $"</head>" +
+                                                $"<body>Work 996 and have a <a href=\"{targetUrl}\">green hat</a>!</body>" +
+                                                $"</html>")
+                })
+                .Verifiable();
+            var pingSourceInspector = CreatePingSourceInspector();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    this.mockRepository.VerifyAll();
-        //}
+            var result = await pingSourceInspector.ExamineSourceAsync(sourceUrl, targetUrl);
+            Assert.IsFalse(result.ContainsHtml);
+            Assert.IsTrue(result.SourceHasLink);
+            Assert.AreEqual("Programmer's Gift", result.Title);
+            Assert.AreEqual(targetUrl, result.TargetUrl);
+            Assert.AreEqual(sourceUrl, result.SourceUrl);
+        }
     }
 }
