@@ -36,7 +36,7 @@ namespace Moonglade.Utils.Tests
         }
 
         [TestCase("A 996 programmer went to heaven.", ExpectedResult = "A 996" + "\u00A0\u2026")]
-        [TestCase("Fu bao", ExpectedResult = "Fu bao")]
+        [TestCase("Fu bao", ExpectedResult = "Fu bao" + "\u00A0\u2026")]
         [TestCase("", ExpectedResult = "")]
         public string Ellipsize(string str)
         {
