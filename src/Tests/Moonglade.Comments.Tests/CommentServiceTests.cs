@@ -115,6 +115,48 @@ namespace Moonglade.Comments.Tests
             Assert.ThrowsAsync<ArgumentNullException>(async () => { await service.DeleteAsync(Array.Empty<Guid>()); });
         }
 
+        [Test]
+        public async Task DeleteAsync_OK()
+        {
+            IReadOnlyList<CommentEntity> comments = new List<CommentEntity>
+            {
+                new()
+                {
+                    Id = Guid.Empty,
+                    CommentContent = "Work 996",
+                    CreateTimeUtc = DateTime.MinValue,
+                    Email = "worker@996.icu",
+                    IPAddress = "9.9.6.35",
+                    IsApproved = true,
+                    Username = "996 Worker"
+                }
+            };
+            _mockCommentEntityRepo
+                .Setup(p => p.GetAsync(It.IsAny<CommentSpec>(), true))
+                .Returns(Task.FromResult(comments));
+
+            IReadOnlyList<CommentReplyEntity> replyEntities = new List<CommentReplyEntity>()
+            {
+                new()
+                {
+                    Id = Guid.Parse("29979c8b-9184-4422-94a8-e35022f9c8c5"),
+                    CommentId = Guid.Empty,
+                    ReplyContent = "And wear green hat",
+                    CreateTimeUtc = DateTime.MinValue.AddDays(1)
+                }
+            };
+            _mockCommentReplyEntityRepo
+                .Setup(p => p.GetAsync(It.IsAny<CommentReplySpec>(), true))
+                .Returns(Task.FromResult(replyEntities));
+
+            var service = CreateCommentService();
+
+            await service.DeleteAsync(new[] { Guid.Empty });
+
+            _mockCommentReplyEntityRepo.Verify(p => p.Delete(It.IsAny<IEnumerable<CommentReplyEntity>>()));
+            _mockCommentEntityRepo.Verify(p => p.Delete(It.IsAny<CommentEntity>()));
+        }
+
         [TestCase(0)]
         [TestCase(-1)]
         public void GetCommentsAsync_InvalidPageSize(int pageSize)
