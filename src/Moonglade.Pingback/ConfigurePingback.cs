@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +9,8 @@ namespace Moonglade.Pingback
     {
         public static void AddPingback(this IServiceCollection services)
         {
-            services.AddScoped<IPingSourceInspector, PingSourceInspector>();
+            services.AddHttpClient<IPingSourceInspector, PingSourceInspector>()
+                .ConfigureHttpClient(p => p.Timeout = TimeSpan.FromSeconds(30));
             services.AddScoped<IPingbackRepository, PingbackRepository>();
             services.AddScoped<IPingbackWebRequest, PingbackWebRequest>();
             services.AddHttpClient<IPingbackSender, PingbackSender>()

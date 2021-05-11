@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -9,19 +8,21 @@ namespace Moonglade.Pingback
 {
     public interface IPingSourceInspector
     {
-        Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl, int timeoutSeconds = 30);
+        Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
     }
 
     public class PingSourceInspector : IPingSourceInspector
     {
         private readonly ILogger<PingSourceInspector> _logger;
+        private readonly HttpClient _httpClient;
 
-        public PingSourceInspector(ILogger<PingSourceInspector> logger)
+        public PingSourceInspector(ILogger<PingSourceInspector> logger, HttpClient httpClient)
         {
             _logger = logger;
+            _httpClient = httpClient;
         }
 
-        public async Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl, int timeoutSeconds = 30)
+        public async Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
         {
             try
             {
@@ -32,8 +33,7 @@ namespace Moonglade.Pingback
                 var regexTitle = new Regex(
                     @"(?<=<title.*>)([\s\S]*)(?=</title>)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-                using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(timeoutSeconds) };
-                var html = await httpClient.GetStringAsync(sourceUrl);
+                var html = await _httpClient.GetStringAsync(sourceUrl);
                 var title = regexTitle.Match(html).Value.Trim();
                 var containsHtml = regexHtml.IsMatch(title);
                 var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.ToUpperInvariant());

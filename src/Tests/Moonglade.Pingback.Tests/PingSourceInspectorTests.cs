@@ -1,3 +1,4 @@
+using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -10,18 +11,21 @@ namespace Moonglade.Pingback.Tests
         private MockRepository _mockRepository;
 
         private Mock<ILogger<PingSourceInspector>> _mockLogger;
+        private Mock<HttpMessageHandler> _handlerMock;
+        private HttpClient _magicHttpClient;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
             _mockLogger = _mockRepository.Create<ILogger<PingSourceInspector>>();
+            _handlerMock = _mockRepository.Create<HttpMessageHandler>();
         }
 
         private PingSourceInspector CreatePingSourceInspector()
         {
-            return new(
-                _mockLogger.Object);
+            _magicHttpClient = new(_handlerMock.Object);
+            return new(_mockLogger.Object, _magicHttpClient);
         }
 
         //[Test]

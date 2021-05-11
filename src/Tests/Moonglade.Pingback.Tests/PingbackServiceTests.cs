@@ -73,7 +73,7 @@ namespace Moonglade.Pingback.Tests
             tcs.SetResult(null);
 
             _mockPingSourceInspector
-                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(tcs.Task);
 
             var pingbackService = CreateService();
 
@@ -91,7 +91,7 @@ namespace Moonglade.Pingback.Tests
             });
 
             _mockPingSourceInspector
-                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(tcs.Task);
 
             var pingbackService = CreateService();
 
@@ -110,7 +110,7 @@ namespace Moonglade.Pingback.Tests
             });
 
             _mockPingSourceInspector
-                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcs.Task);
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(tcs.Task);
 
             var pingbackService = CreateService();
 
@@ -132,7 +132,7 @@ namespace Moonglade.Pingback.Tests
             tcsPt.SetResult((Guid.Empty, string.Empty));
 
             _mockPingSourceInspector
-                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(tcsPr.Task);
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(tcsPr.Task);
             _mockPingTargetFinder.Setup(p => p.GetPostIdTitle(It.IsAny<string>(), It.IsAny<IDbConnection>())).Returns(tcsPt.Task);
 
             var pingbackService = CreateService();
@@ -152,7 +152,7 @@ namespace Moonglade.Pingback.Tests
             });
 
             _mockPingSourceInspector
-                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(tcsPr.Task);
 
             var tcsPt = new TaskCompletionSource<(Guid Id, string Title)>();
