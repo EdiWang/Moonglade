@@ -285,39 +285,37 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public async Task GetPageAsync_OK()
+        {
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(FakeData.FakePage));
+            var service = CreateService();
+
+            var result = await service.GetPageAsync("996.icu", FakeData.Uid2.ToString(), _username, _password);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(FakeData.FakePage.Title, result.title);
+        }
+
+        [Test]
+        public async Task GetPagesAsync_OK()
+        {
+            IReadOnlyList<BlogPage> pages = new List<BlogPage> { FakeData.FakePage };
+            _mockPageService.Setup(p => p.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(pages));
+            var service = CreateService();
+
+            var result = await service.GetPagesAsync("996.icu", _username, _password, 996);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Length);
+        }
+
+        [Test]
         public async Task DeletePostAsync_OK()
         {
             var service = CreateService();
             await service.DeletePostAsync("996.icu", FakeData.Uid1.ToString(), _username, _password, true);
 
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
-        }
-
-        [Test]
-        public async Task GetPagesAsync_OK()
-        {
-            var fakePage = new BlogPage
-            {
-                Id = Guid.Empty,
-                CreateTimeUtc = new(FakeData.Int2, 9, 6),
-                CssContent = ".jack-ma .heart {color: black !important;}",
-                HideSidebar = false,
-                IsPublished = false,
-                MetaDescription = "Fuck Jack Ma",
-                RawHtmlContent = "<p>Fuck 996</p>",
-                Slug = "fuck-jack-ma",
-                Title = "Fuck Jack Ma 1000 years!",
-                UpdateTimeUtc = new DateTime(1996, 9, 6)
-            };
-            IReadOnlyList<BlogPage> pages = new List<BlogPage> { fakePage };
-
-            _mockPageService.Setup(p => p.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(pages));
-
-            var service = CreateService();
-            var result = await service.GetPagesAsync("996.icu", _username, _password, 996);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Length);
         }
 
         [Test]
