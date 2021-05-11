@@ -85,5 +85,15 @@ namespace Moonglade.Comments.Tests
             var result = await azureContentModerator.HasBadWord(input);
             Assert.IsFalse(result);
         }
+
+        [Test]
+        public void Dispose_OK()
+        {
+            var azureContentModerator = CreateAzureContentModerator();
+            azureContentModerator.Dispose();
+
+            _mockContentModeratorClient.Verify(p => p.Dispose());
+            Assert.Pass();
+        }
     }
 }
