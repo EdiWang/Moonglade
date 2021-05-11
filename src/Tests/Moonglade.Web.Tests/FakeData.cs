@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Moonglade.Core;
+using Moonglade.Pages;
 
 namespace Moonglade.Web.Tests
 {
@@ -44,6 +45,20 @@ namespace Moonglade.Web.Tests
                     }
                 }
             }
+        };
+
+        public static BlogPage FakePage => new()
+        {
+            Id = Guid.Empty,
+            CreateTimeUtc = new(Int2, 9, 6),
+            CssContent = ".jack-ma .heart {color: black !important;}",
+            HideSidebar = false,
+            IsPublished = false,
+            MetaDescription = "Fuck Jack Ma",
+            RawHtmlContent = "<p>Fuck 996</p>",
+            Slug = "fuck-jack-ma",
+            Title = "Fuck Jack Ma 1000 years!",
+            UpdateTimeUtc = new DateTime(1996, 9, 6)
         };
     }
 }
