@@ -54,8 +54,9 @@ namespace Moonglade.Core
         public async Task<PostEntity> CreateAsync(UpdatePostRequest request)
         {
             var abs = ContentProcessor.GetPostAbstract(
-                request.EditorContent, _settings.PostAbstractWords,
-                _settings.Editor == EditorChoice.Markdown);
+                    string.IsNullOrEmpty(request.Abstract) ? request.EditorContent : request.Abstract.Trim(),
+                    _settings.PostAbstractWords, 
+                    _settings.Editor == EditorChoice.Markdown);
 
             var post = new PostEntity
             {
@@ -154,9 +155,9 @@ namespace Moonglade.Core
             post.CommentEnabled = request.EnableComment;
             post.PostContent = request.EditorContent;
             post.ContentAbstract = ContentProcessor.GetPostAbstract(
-                                        request.EditorContent,
-                                        _settings.PostAbstractWords,
-                                        _settings.Editor == EditorChoice.Markdown);
+                string.IsNullOrEmpty(request.Abstract) ? request.EditorContent : request.Abstract.Trim(),
+                _settings.PostAbstractWords,
+                _settings.Editor == EditorChoice.Markdown);
 
             // Address #221: Do not allow published posts back to draft status
             // postModel.IsPublished = request.IsPublished;

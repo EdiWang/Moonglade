@@ -126,6 +126,7 @@ namespace Moonglade.Web.Controllers
                     ExposedToSiteMap = model.ExposedToSiteMap,
                     IsFeedIncluded = model.FeedIncluded,
                     ContentLanguageCode = model.LanguageCode,
+                    Abstract = model.Abstract,
                     IsPublished = model.IsPublished,
                     IsFeatured = model.Featured,
                     Tags = tags,

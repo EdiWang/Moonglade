@@ -95,12 +95,24 @@
             </div>
 
             <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
-            <div>
+            <div class="mb-2">
                 <span asp-validation-for="ViewModel.EditorContent" class="text-danger"></span>
             </div>
+            
+            <div class="form-floating">
+                <textarea asp-for="ViewModel.Abstract"
+                                  placeholder="@Localizer["Abstract"]"
+                                  class="form-control form-control-sm"
+                                  style="height: 90px"></textarea>
+                <label for="ViewModel_Abstract">@Localizer["Abstract"]</label>
+            </div>
+            <div class="small text-muted mt-1 mb-1">
+                @Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", Settings.Value.PostAbstractWords]
+            </div>
+            <span asp-validation-for="ViewModel.Abstract" class="text-danger"></span>
         </div>
         <div class="col-md-3 col-xl-2">
-            <div class="card mb-4">
+            <div class="card mb-3">
                 <div class="card-header">@Localizer["Options"]</div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">

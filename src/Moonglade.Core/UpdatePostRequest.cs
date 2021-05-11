@@ -13,6 +13,7 @@ namespace Moonglade.Core
         public bool IsFeedIncluded { get; set; }
         public bool IsFeatured { get; set; }
         public string ContentLanguageCode { get; set; }
+        public string Abstract { get; set; }
 
         public string[] Tags { get; set; }
         public Guid[] CategoryIds { get; set; }

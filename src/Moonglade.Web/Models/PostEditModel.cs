@@ -58,6 +58,10 @@ namespace Moonglade.Web.Models
         [RegularExpression("^[a-z]{2}-[a-zA-Z]{2}$", ErrorMessage = "Incorrect language code format. e.g. en-us")]
         public string LanguageCode { get; set; }
 
+        [DataType(DataType.MultilineText)]
+        [MaxLength(400)]
+        public string Abstract { get; set; }
+
         [Display(Name = "Publish Date")]
         [DataType(DataType.Date)]
         public DateTime? PublishDate { get; set; }

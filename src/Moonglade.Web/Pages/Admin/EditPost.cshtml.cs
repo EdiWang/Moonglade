@@ -66,6 +66,7 @@ namespace Moonglade.Web.Pages.Admin
                 ExposedToSiteMap = post.ExposedToSiteMap,
                 FeedIncluded = post.IsFeedIncluded,
                 LanguageCode = post.ContentLanguageCode,
+                Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),
                 Featured = post.Featured
             };
 

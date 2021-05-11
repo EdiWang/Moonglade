@@ -120,7 +120,7 @@ namespace Moonglade.Utils
                 return "";
 
             if (characterCount < 0 || text.Length <= characterCount)
-                return text;
+                return text + ellipsis;
 
             // search beginning of word
             var backup = characterCount;
