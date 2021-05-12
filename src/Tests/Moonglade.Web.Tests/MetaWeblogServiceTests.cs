@@ -170,6 +170,16 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public void GetPostAsync_InvliadId()
+        {
+            var service = CreateService();
+            Assert.ThrowsAsync<MetaWeblogException>(async () =>
+            {
+                await service.GetPostAsync("996", _username, _password);
+            });
+        }
+
+        [Test]
         public async Task GetRecentPostsAsync_ExpectedBehavior()
         {
             var service = CreateService();
@@ -386,6 +396,17 @@ namespace Moonglade.Web.Tests
 
             Assert.IsTrue(result);
             _mockPageService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()));
+        }
+
+        [Test]
+        public void EditPageAsync_InvliadId()
+        {
+            var service = CreateService();
+
+            Assert.ThrowsAsync<MetaWeblogException>(async () =>
+            {
+                await service.EditPageAsync("996.icu", Guid.Empty.ToString(), _username, _password, null, true);
+            });
         }
 
         [Test]
