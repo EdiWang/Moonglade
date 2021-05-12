@@ -323,12 +323,32 @@ namespace Moonglade.Web.Tests
                 description = "fubao"
             };
             var service = CreateService();
-            
+
             var result = await service.AddPageAsync("996.icu", _username, _password, page, true);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(Guid.Empty.ToString(), result);
             _mockPageService.Verify(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()));
+        }
+
+        [Test]
+        public async Task EditPageAsync_OK()
+        {
+            _mockPageService
+                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()))
+                .Returns(Task.FromResult(Guid.Empty));
+            var page = new WilderMinds.MetaWeblog.Page
+            {
+                page_id = Guid.Empty.ToString(),
+                title = FakeData.FakePage.Title,
+                description = "fubao"
+            };
+            var service = CreateService();
+
+            var result = await service.EditPageAsync("996.icu", Guid.Empty.ToString(), _username, _password, page, true);
+
+            Assert.IsTrue(result);
+            _mockPageService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()));
         }
 
         [Test]
