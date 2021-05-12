@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -71,6 +72,7 @@ namespace Moonglade.Web.Tests
         [SetUp]
         public void SetUp()
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             _mockRepository = new(MockBehavior.Default);
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -307,6 +309,26 @@ namespace Moonglade.Web.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Length);
+        }
+
+        [Test]
+        public async Task AddPageAsync_OK()
+        {
+            _mockPageService
+                .Setup(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()))
+                .Returns(Task.FromResult(Guid.Empty));
+            var page = new WilderMinds.MetaWeblog.Page
+            {
+                title = FakeData.FakePage.Title,
+                description = "fubao"
+            };
+            var service = CreateService();
+            
+            var result = await service.AddPageAsync("996.icu", _username, _password, page, true);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(Guid.Empty.ToString(), result);
+            _mockPageService.Verify(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()));
         }
 
         [Test]
