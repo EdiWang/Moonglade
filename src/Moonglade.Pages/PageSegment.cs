@@ -2,7 +2,7 @@
 
 namespace Moonglade.Page
 {
-    public class PageSegment
+    public struct PageSegment
     {
         public Guid Id { get; set; }
 
