@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
-using Moonglade.Pages;
+using Moonglade.Page;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;

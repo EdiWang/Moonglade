@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Moonglade.Pages;
+using Moonglade.Page;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;

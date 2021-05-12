@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
-using Moonglade.Pages;
+using Moonglade.Page;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;

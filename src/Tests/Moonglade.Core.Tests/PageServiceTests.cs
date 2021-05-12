@@ -6,7 +6,7 @@ using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Pages;
+using Moonglade.Page;
 using Moq;
 using NUnit.Framework;
 

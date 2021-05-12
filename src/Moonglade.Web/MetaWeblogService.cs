@@ -6,10 +6,9 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.ImageStorage;
-using Moonglade.Pages;
+using Moonglade.Page;
 using Moonglade.Utils;
 using WilderMinds.MetaWeblog;
-using Page = WilderMinds.MetaWeblog.Page;
 using Post = WilderMinds.MetaWeblog.Post;
 using Tag = WilderMinds.MetaWeblog.Tag;
 
@@ -277,7 +276,7 @@ namespace Moonglade.Web
             });
         }
 
-        public Task<Page> GetPageAsync(string blogid, string pageid, string username, string password)
+        public Task<WilderMinds.MetaWeblog.Page> GetPageAsync(string blogid, string pageid, string username, string password)
         {
             EnsureUser(username, password);
 
@@ -293,7 +292,7 @@ namespace Moonglade.Web
             });
         }
 
-        public Task<Page[]> GetPagesAsync(string blogid, string username, string password, int numPages)
+        public Task<WilderMinds.MetaWeblog.Page[]> GetPagesAsync(string blogid, string username, string password, int numPages)
         {
             EnsureUser(username, password);
 
@@ -325,7 +324,7 @@ namespace Moonglade.Web
             });
         }
 
-        public Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
+        public Task<string> AddPageAsync(string blogid, string username, string password, WilderMinds.MetaWeblog.Page page, bool publish)
         {
             EnsureUser(username, password);
 
@@ -347,7 +346,7 @@ namespace Moonglade.Web
             });
         }
 
-        public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
+        public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, WilderMinds.MetaWeblog.Page page, bool publish)
         {
             EnsureUser(username, password);
 
@@ -442,9 +441,9 @@ namespace Moonglade.Web
             return mPost;
         }
 
-        private Page ToMetaWeblogPage(BlogPage blogPage)
+        private WilderMinds.MetaWeblog.Page ToMetaWeblogPage(BlogPage blogPage)
         {
-            var mPage = new Page
+            var mPage = new WilderMinds.MetaWeblog.Page
             {
                 title = blogPage.Title,
                 description = blogPage.RawHtmlContent,

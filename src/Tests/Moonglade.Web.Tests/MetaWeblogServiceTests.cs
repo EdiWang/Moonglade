@@ -6,7 +6,7 @@ using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data.Entities;
 using Moonglade.ImageStorage;
-using Moonglade.Pages;
+using Moonglade.Page;
 using Moonglade.Utils;
 using Moq;
 using NUnit.Framework;

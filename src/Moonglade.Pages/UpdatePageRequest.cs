@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Pages
+﻿namespace Moonglade.Page
 {
     public class UpdatePageRequest
     {

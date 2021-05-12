@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Moonglade.Core;
-using Moonglade.Pages;
+using Moonglade.Page;
 
 namespace Moonglade.Web.Tests
 {

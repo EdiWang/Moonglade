@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Moonglade.Pages
+namespace Moonglade.Page
 {
     public class BlogPage
     {
