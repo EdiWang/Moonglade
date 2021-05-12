@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Common.props" />
 
   <PropertyGroup>
@@ -17,11 +17,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\..\Moonglade.Core\Moonglade.Core.csproj" />
-    <ProjectReference Include="..\..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
-    <ProjectReference Include="..\..\Moonglade.Setup\Moonglade.Setup.csproj" />
+    <ProjectReference Include="..\..\Moonglade.Page\Moonglade.Page.csproj" />
   </ItemGroup>
-
 </Project>

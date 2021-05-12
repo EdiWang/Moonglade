@@ -55,7 +55,7 @@ namespace Moonglade.Core
         {
             var abs = ContentProcessor.GetPostAbstract(
                     string.IsNullOrEmpty(request.Abstract) ? request.EditorContent : request.Abstract.Trim(),
-                    _settings.PostAbstractWords, 
+                    _settings.PostAbstractWords,
                     _settings.Editor == EditorChoice.Markdown);
 
             var post = new PostEntity

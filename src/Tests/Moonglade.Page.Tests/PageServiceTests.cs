@@ -6,11 +6,10 @@ using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Page;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Core.Tests
+namespace Moonglade.Page.Tests
 {
     [TestFixture]
     public class PageServiceTests

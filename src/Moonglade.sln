@@ -111,6 +111,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Page.Tests", "Tests\Moonglade.Page.Tests\Moonglade.Page.Tests.csproj", "{953D17D1-A4D4-414A-B3A2-BC1955E6A2A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -241,6 +243,10 @@ Global
 		{3A0C2F63-9666-4545-98F8-D441AC9908C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A0C2F63-9666-4545-98F8-D441AC9908C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A0C2F63-9666-4545-98F8-D441AC9908C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{953D17D1-A4D4-414A-B3A2-BC1955E6A2A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{953D17D1-A4D4-414A-B3A2-BC1955E6A2A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{953D17D1-A4D4-414A-B3A2-BC1955E6A2A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{953D17D1-A4D4-414A-B3A2-BC1955E6A2A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -281,6 +287,7 @@ Global
 		{3A0C2F63-9666-4545-98F8-D441AC9908C8} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 		{9505BDE6-E5CB-43E1-A2F0-07E67BEF6948} = {BE685106-CE96-4A43-A161-3425565C6A9D}
 		{2C27F5AF-7A99-4B49-A053-8E3486319F2B} = {9505BDE6-E5CB-43E1-A2F0-07E67BEF6948}
+		{953D17D1-A4D4-414A-B3A2-BC1955E6A2A0} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
