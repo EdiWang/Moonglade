@@ -417,5 +417,16 @@ namespace Moonglade.Web.Tests
             Assert.IsTrue(result);
             _mockPageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
         }
+
+        [Test]
+        public void DeletePageAsync_BadId()
+        {
+            var service = CreateService();
+
+            Assert.ThrowsAsync<MetaWeblogException>(async () =>
+            {
+                await service.DeletePageAsync("996.icu", _username, _password, "35");
+            });
+        }
     }
 }
