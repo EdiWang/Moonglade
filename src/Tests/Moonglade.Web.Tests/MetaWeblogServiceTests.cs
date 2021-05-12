@@ -115,6 +115,33 @@ namespace Moonglade.Web.Tests
                 _mockFileNameGenerator.Object);
         }
 
+        [TestCase(null, null)]
+        [TestCase(null, "")]
+        [TestCase(null, " ")]
+        [TestCase("", null)]
+        [TestCase(" ", null)]
+        public void EnsureUser_EmptyParameters(string username, string password)
+        {
+            var service = CreateService();
+
+            Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await service.GetUserInfoAsync(_key, username, password);
+            });
+        }
+
+        [TestCase("admin", "123456")]
+        [TestCase("moonglade", "123456")]
+        public void EnsureUser_BadCredential(string username, string password)
+        {
+            var service = CreateService();
+
+            Assert.ThrowsAsync<MetaWeblogException>(async () =>
+            {
+                await service.GetUserInfoAsync(_key, username, password);
+            });
+        }
+
         [Test]
         public async Task GetUserInfoAsync_ExpectedBehavior()
         {
@@ -332,26 +359,6 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
-        public async Task AddPageAsync_Chs_OK()
-        {
-            _mockPageService
-                .Setup(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()))
-                .Returns(Task.FromResult(Guid.Empty));
-            var page = new WilderMinds.MetaWeblog.Page
-            {
-                title = "996ÊÇ¸£±¨",
-                description = "fubao"
-            };
-            var service = CreateService();
-
-            var result = await service.AddPageAsync("996.icu", _username, _password, page, true);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(Guid.Empty.ToString(), result);
-            _mockPageService.Verify(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()));
-        }
-
-        [Test]
         public async Task EditPageAsync_OK()
         {
             _mockPageService
@@ -378,6 +385,17 @@ namespace Moonglade.Web.Tests
             await service.DeletePostAsync("996.icu", FakeData.Uid1.ToString(), _username, _password, true);
 
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+        }
+
+        [Test]
+        public void DeletePostAsync_BadId()
+        {
+            var service = CreateService();
+
+            Assert.ThrowsAsync<MetaWeblogException>(async () =>
+            {
+                await service.DeletePostAsync("996.icu", "007", _username, _password, true);
+            });
         }
 
         [Test]
