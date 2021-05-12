@@ -339,6 +339,16 @@ namespace Moonglade.Web.Tests
         }
 
         [Test]
+        public void GetPagesAsync_InvlaidNumPages()
+        {
+            var service = CreateService();
+            Assert.ThrowsAsync<MetaWeblogException>(async () =>
+            {
+                await service.GetPagesAsync("996.icu", _username, _password, -1);
+            });
+        }
+
+        [Test]
         public async Task AddPageAsync_OK()
         {
             _mockPageService
