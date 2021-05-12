@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.FriendLink", "Moo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Notification.Client", "Moonglade.Notification.Client\Moonglade.Notification.Client.csproj", "{DF0D2D74-B9B7-4EB8-956D-E9CBDDF3390E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Page", "Moonglade.Pages\Moonglade.Page.csproj", "{18EC351C-286B-4434-9107-06D761948DFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Page", "Moonglade.Page\Moonglade.Page.csproj", "{18EC351C-286B-4434-9107-06D761948DFA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auth", "Moonglade.Auth\Moonglade.Auth.csproj", "{5B888FFB-8BF0-4AED-9D1E-91396290BC05}"
 EndProject
