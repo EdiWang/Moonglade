@@ -23,7 +23,7 @@ namespace Moonglade.Web.Middleware
         public async Task Invoke(
             HttpContext context, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons)
         {
-            if (context.Request.Path == "/manifest.json")
+            if (context.Request.Path == "/manifest.webmanifest")
             {
                 var model = new ManifestModel
                 {

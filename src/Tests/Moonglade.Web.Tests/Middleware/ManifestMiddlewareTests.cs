@@ -54,7 +54,7 @@ namespace Moonglade.Web.Tests.Middleware
         {
             var ctx = new DefaultHttpContext();
             ctx.Response.Body = new MemoryStream();
-            ctx.Request.Path = "/manifest.json";
+            ctx.Request.Path = "/manifest.webmanifest";
 
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new ManifestMiddleware(RequestDelegate);
