@@ -6,11 +6,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>
-        @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
-    </title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     @if (IsSectionDefined("keywords"))
     {
         @await RenderSectionAsync("keywords", false)
@@ -45,8 +42,12 @@
         <metadesc description="@BlogConfig.GeneralSettings.MetaDescription" />
     }
 
+    <title>
+        @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
+    </title>
+
     @if (BlogConfig.AdvancedSettings.EnableCDNRedirect &&
-!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
+      !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
     }
