@@ -47,7 +47,7 @@
                 <div class="card mb-4" id="card-@item.Id">
                     <div class="card-body">
                         <h6 class="card-title">
-                            @item.Title
+                            <a asp-page="/BlogPage" asp-route-slug="@item.Slug" target="_blank">@item.Title</a>
                         </h6>
                         <p class="mt-2 h-30px">@item.Slug</p>
                         <small class="text-muted">
