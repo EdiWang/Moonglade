@@ -153,3 +153,13 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 - [AllenMasters](https://allenmasters.com)
 
 *Just Submit PR or issue if you want your blog to be listed here*
+
+## 💰 Donate
+
+- BTC: 1JaPGHK3SjDTirTedyBVf5APG1ibC1YXUq
+- BTC(ERC20): 0xe9cb050c62631f9ed8a1d504532dfe9593192c39
+- USDT(ERC20): 0xe9cb050c62631f9ed8a1d504532dfe9593192c39
+- USDT(TRC20): TR6yDNh6yYgasdJPsFp3HUXTbqGoK3RPLN
+- ETH: 0xe9cb050c62631f9ed8a1d504532dfe9593192c39
+- DOGE: DC8ngV41D97CXk8nxo9yxeMqU1UN52jt6Y
+- SHIB(ERC20): 0xe9cb050c62631f9ed8a1d504532dfe9593192c39
