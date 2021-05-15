@@ -47,7 +47,7 @@
     </title>
 
     @if (BlogConfig.AdvancedSettings.EnableCDNRedirect &&
-      !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
+    !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
     }
@@ -88,17 +88,18 @@
         <link href="~/css/src/highlighter-custom.css" rel="stylesheet" />
     </environment>
     @await RenderSectionAsync("head", false)
+    <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
+    @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
+    {
+        <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
+    }
     <environment include="Production">
         @if (!(bool)Context.Items["DNT"])
         {
             @Html.Raw(_javaScriptSnippet.FullScript)
         }
     </environment>
-    <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
-    @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
-    {
-        <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
-    }
+    <script src="~/lib/jquery/jquery.min.js"></script>
 </head>
 <body class="@ViewBag.BodyClass">
     <header class="sticky-top d-print-none">
@@ -224,7 +225,6 @@
         <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
     </environment>
     <environment include="Development">
-        <script src="~/lib/jquery/jquery.min.js"></script>
         <script src="~/js/3rd/jquery.qrcode.min.js"></script>
         <script src="~/js/app/base.js"></script>
         <script src="~/js/app/postslug.js"></script>
@@ -247,7 +247,5 @@
         </script>
     }
     @await RenderSectionAsync("scripts", false)
-
-
 </body>
 </html>
