@@ -42,21 +42,19 @@ namespace Moonglade.ImageStorage.Tests.Providers
             Assert.IsNull(result);
         }
 
-        //[Test]
-        //public async Task DeleteAsync_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var fileSystemImageStorage = CreateFileSystemImageStorage();
-        //    string fileName = null;
+        [Test]
+        public void DeleteAsync_NotExists()
+        {
+            // Arrange
+            var fileSystemImageStorage = CreateFileSystemImageStorage();
+            string fileName = "251.jpg";
 
-        //    // Act
-        //    await fileSystemImageStorage.DeleteAsync(
-        //        fileName);
-
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            // Act
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                await fileSystemImageStorage.DeleteAsync(fileName);
+            });
+        }
 
         //[Test]
         //public async Task InsertAsync_StateUnderTest_ExpectedBehavior()
