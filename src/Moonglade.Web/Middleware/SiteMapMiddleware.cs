@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
@@ -29,7 +29,7 @@ namespace Moonglade.Web.Middleware
             HttpContext httpContext,
             IBlogConfig blogConfig,
             IBlogCache cache,
-            IOptions<SiteMapSettings> settings,
+            IConfiguration configuration,
             IRepository<PostEntity> postRepo,
             IRepository<PageEntity> pageRepo)
         {
@@ -38,7 +38,7 @@ namespace Moonglade.Web.Middleware
                 var xml = await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
                 {
                     var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-                    var data = await GetSiteMapData(url, settings.Value, postRepo, pageRepo);
+                    var data = await GetSiteMapData(url, configuration.GetSection("SiteMap").Get<SiteMapSettings>(), postRepo, pageRepo);
                     return data;
                 });
 
