@@ -1,7 +1,8 @@
 ﻿@page "/admin/settings/general"
+@using Microsoft.Extensions.Configuration
 @model Moonglade.Web.Pages.Settings.GeneralModel
 @inject ITimeZoneResolver _zoneResolver
-@inject IOptions<List<BlogTheme>> _themes
+@inject IConfiguration _configuration
 @{
     var tzList = _zoneResolver.ListTimeZones().Select(t => new SelectListItem
     {
@@ -9,11 +10,13 @@
         Value = t.Id
     });
 
-    var tmList = _themes.Value.Select(t => new SelectListItem
-    {
-        Text = t.Name,
-        Value = t.CssFile
-    });
+    var tmList = _configuration.GetSection("Themes")
+        .Get<Dictionary<string, string>>()
+        .Select(t => new SelectListItem
+        {
+            Text = t.Key,
+            Value = t.Value
+        });
 }
 
 @section scripts{

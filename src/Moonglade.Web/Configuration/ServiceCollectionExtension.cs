@@ -31,7 +31,6 @@ namespace Moonglade.Web.Configuration
         public static void AddBlogConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<SiteMapSettings>(configuration.GetSection("SiteMap"));
-            services.Configure<List<BlogTheme>>(configuration.GetSection("Themes"));
             services.Configure<List<ManifestIcon>>(configuration.GetSection("ManifestIcons"));
             services.Configure<Dictionary<string, string>>(configuration.GetSection("TagNormalization"));
 
