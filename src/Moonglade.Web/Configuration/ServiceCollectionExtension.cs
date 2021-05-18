@@ -30,7 +30,6 @@ namespace Moonglade.Web.Configuration
         public static void AddBlogConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<List<ManifestIcon>>(configuration.GetSection("ManifestIcons"));
-            services.Configure<Dictionary<string, string>>(configuration.GetSection("TagNormalization"));
 
             services.AddFeatureManagement();
             services.AddOptions();

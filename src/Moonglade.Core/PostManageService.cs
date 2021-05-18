@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -27,16 +28,17 @@ namespace Moonglade.Core
     {
         private readonly IBlogAudit _audit;
         private readonly ILogger<PostManageService> _logger;
-        private readonly IOptions<Dictionary<string, string>> _tagNormalization;
         private readonly AppSettings _settings;
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostEntity> _postRepo;
         private readonly IBlogCache _cache;
 
+        private readonly IDictionary<string, string> _tagNormalizationDictionary;
+
         public PostManageService(
             IBlogAudit audit,
             ILogger<PostManageService> logger,
-            IOptions<Dictionary<string, string>> tagNormalization,
+            IConfiguration configuration,
             IOptions<AppSettings> settings,
             IRepository<TagEntity> tagRepo,
             IRepository<PostEntity> postRepo,
@@ -44,11 +46,13 @@ namespace Moonglade.Core
         {
             _audit = audit;
             _logger = logger;
-            _tagNormalization = tagNormalization;
             _tagRepo = tagRepo;
             _postRepo = postRepo;
             _cache = cache;
             _settings = settings.Value;
+
+            _tagNormalizationDictionary =
+                configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
         }
 
         public async Task<PostEntity> CreateAsync(UpdatePostRequest request)
@@ -135,7 +139,7 @@ namespace Moonglade.Core
             var newTag = new TagEntity
             {
                 DisplayName = item,
-                NormalizedName = TagService.NormalizeTagName(item, _tagNormalization.Value)
+                NormalizedName = TagService.NormalizeTagName(item, _tagNormalizationDictionary)
             };
 
             var tag = await _tagRepo.AddAsync(newTag);
@@ -198,7 +202,7 @@ namespace Moonglade.Core
                 await _tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
-                    NormalizedName = TagService.NormalizeTagName(item, _tagNormalization.Value)
+                    NormalizedName = TagService.NormalizeTagName(item, _tagNormalizationDictionary)
                 });
 
                 await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,

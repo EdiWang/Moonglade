@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -30,7 +30,7 @@ namespace Moonglade.Core
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IBlogAudit _audit;
-        private readonly IOptions<Dictionary<string, string>> _tagNormalization;
+        private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
         private readonly Expression<Func<TagEntity, Tag>> _tagSelector = t => new()
         {
@@ -42,13 +42,15 @@ namespace Moonglade.Core
         public TagService(
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
-            IBlogAudit audit,
-            IOptions<Dictionary<string, string>> tagNormalization)
+            IBlogAudit audit, 
+            IConfiguration configuration)
         {
             _tagRepo = tagRepo;
             _postTagRepo = postTagRepo;
             _audit = audit;
-            _tagNormalization = tagNormalization;
+
+            _tagNormalizationDictionary =
+                configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
         }
 
         public Task<IReadOnlyList<Tag>> GetAll()
@@ -65,7 +67,7 @@ namespace Moonglade.Core
         {
             if (!ValidateTagName(name)) return null;
 
-            var normalizedName = NormalizeTagName(name, _tagNormalization.Value);
+            var normalizedName = NormalizeTagName(name, _tagNormalizationDictionary);
             if (_tagRepo.Any(t => t.NormalizedName == normalizedName))
             {
                 return Get(normalizedName);
@@ -94,7 +96,7 @@ namespace Moonglade.Core
             if (null == tag) return;
 
             tag.DisplayName = newName;
-            tag.NormalizedName = NormalizeTagName(newName, _tagNormalization.Value);
+            tag.NormalizedName = NormalizeTagName(newName, _tagNormalizationDictionary);
             await _tagRepo.UpdateAsync(tag);
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
         }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
@@ -25,7 +28,7 @@ namespace Moonglade.Core.Tests
         private Mock<ILogger<PostManageService>> _mockLogger;
         private Mock<IRepository<TagEntity>> _mockTagEntityRepo;
         private Mock<IBlogAudit> _mockBlogAudit;
-        private Mock<IOptions<Dictionary<string, string>>> _mockOptionsTagNormalization;
+        private Mock<IConfiguration> _mockConfiguration;
         private Mock<IBlogCache> _mockBlogCache;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
@@ -61,16 +64,21 @@ namespace Moonglade.Core.Tests
             _mockLogger = _mockRepository.Create<ILogger<PostManageService>>();
             _mockTagEntityRepo = _mockRepository.Create<IRepository<TagEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-            _mockOptionsTagNormalization = _mockRepository.Create<IOptions<Dictionary<string, string>>>();
+            _mockConfiguration = _mockRepository.Create<IConfiguration>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
         }
 
         private PostManageService CreateService()
         {
+            var config = @"{""TagNormalization"":{""."": ""dot""}}";
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(config)));
+            var configuration = builder.Build();
+
             return new(
                 _mockBlogAudit.Object,
                 _mockLogger.Object,
-                _mockOptionsTagNormalization.Object,
+                configuration,
                 _mockOptionsAppSettings.Object,
                 _mockTagEntityRepo.Object,
                 _mockPostEntityRepo.Object,
@@ -86,7 +94,6 @@ namespace Moonglade.Core.Tests
                 Editor = EditorChoice.Html
             });
 
-            _mockOptionsTagNormalization.Setup(p => p.Value).Returns(new Dictionary<string, string>());
             _mockPostEntityRepo.Setup(p => p.Any(It.IsAny<PostSpec>())).Returns(false);
             _mockTagEntityRepo.Setup(p => p.GetAsync(It.IsAny<Expression<Func<TagEntity, bool>>>()))
                 .Returns(Task.FromResult((TagEntity)null));
@@ -130,7 +137,6 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task UpdateAsync_HTMLEditor_HappyPath()
         {
-            _mockOptionsTagNormalization.Setup(p => p.Value).Returns(new Dictionary<string, string>());
             _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(_postEntity));
             _mockTagEntityRepo.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(false);
             _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));

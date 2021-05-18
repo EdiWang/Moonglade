@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Data.Entities;
@@ -20,7 +23,7 @@ namespace Moonglade.Core.Tests
         private Mock<IRepository<TagEntity>> _mockRepositoryTagEntity;
         private Mock<IRepository<PostTagEntity>> _mockRepositoryPostTagEntity;
         private Mock<IBlogAudit> _mockBlogAudit;
-        private Mock<IOptions<Dictionary<string, string>>> _mockOptions;
+        private Mock<IConfiguration> _mockConfiguration;
 
         [SetUp]
         public void SetUp()
@@ -30,16 +33,21 @@ namespace Moonglade.Core.Tests
             _mockRepositoryTagEntity = _mockRepository.Create<IRepository<TagEntity>>();
             _mockRepositoryPostTagEntity = _mockRepository.Create<IRepository<PostTagEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-            _mockOptions = _mockRepository.Create<IOptions<Dictionary<string, string>>>();
+            _mockConfiguration = _mockRepository.Create<IConfiguration>();
         }
 
         private TagService CreateService()
         {
+            var config = @"{""TagNormalization"":{"" "": ""-""}}";
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(config)));
+            var configuration = builder.Build();
+
             return new(
                 _mockRepositoryTagEntity.Object,
                 _mockRepositoryPostTagEntity.Object,
                 _mockBlogAudit.Object,
-                _mockOptions.Object);
+                configuration);
         }
 
         [Test]
@@ -79,11 +87,6 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task Create_Exists()
         {
-            var dic = new Dictionary<string, string>
-            {
-                { " ", "-" }
-            };
-            _mockOptions.Setup(p => p.Value).Returns(dic);
             _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(true);
             _mockRepositoryTagEntity.Setup(p =>
                     p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>(), true))
@@ -98,11 +101,6 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task Create_InvalidName()
         {
-            var dic = new Dictionary<string, string>
-            {
-                { " ", "-" }
-            };
-            _mockOptions.Setup(p => p.Value).Returns(dic);
             var ctl = CreateService();
 
             var result = await ctl.Create("ます");
@@ -114,11 +112,6 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task Create_New()
         {
-            var dic = new Dictionary<string, string>
-            {
-                { " ", "-" }
-            };
-            _mockOptions.Setup(p => p.Value).Returns(dic);
             _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(false);
             _mockRepositoryTagEntity.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(
                 new TagEntity
@@ -156,8 +149,6 @@ namespace Moonglade.Core.Tests
                     DisplayName = "Ma Yun",
                     NormalizedName = "ma-yun"
                 }));
-
-            _mockOptions.Setup(p => p.Value).Returns(new Dictionary<string, string>());
 
             var svc = CreateService();
             await svc.UpdateAsync(996, "fubao");
