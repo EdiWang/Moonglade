@@ -11,7 +11,7 @@
     });
 
     var tmList = _configuration.GetSection("Themes")
-        .Get<Dictionary<string, string>>()
+        .GetChildren().AsEnumerable()
         .Select(t => new SelectListItem
         {
             Text = t.Key,
