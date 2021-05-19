@@ -6,12 +6,12 @@ namespace Moonglade.Data.Spec
 {
     public class CategorySpec : BaseSpecification<CategoryEntity>
     {
-        public CategorySpec(string categoryName) : base(c => c.RouteName == categoryName)
+        public CategorySpec(string routeName) : base(c => c.RouteName == routeName)
         {
 
         }
 
-        public CategorySpec(Guid categoryId) : base(c => c.Id == categoryId)
+        public CategorySpec(Guid id) : base(c => c.Id == id)
         {
 
         }

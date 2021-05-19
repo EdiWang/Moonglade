@@ -26,7 +26,7 @@ namespace Moonglade.Core
         Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus);
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
-        Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null);
+        Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? catId = null);
         Task<IReadOnlyList<PostDigest>> ListArchive(int year, int? month);
         Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
         Task<IReadOnlyList<PostDigest>> ListFeatured(int pageSize, int pageIndex);
@@ -245,11 +245,11 @@ namespace Moonglade.Core
             return _postRepo.SelectAsync(spec, _postSegmentSelector);
         }
 
-        public Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? categoryId = null)
+        public Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? catId = null)
         {
             ValidatePagingParameters(pageSize, pageIndex);
 
-            var spec = new PostPagingSpec(pageSize, pageIndex, categoryId);
+            var spec = new PostPagingSpec(pageSize, pageIndex, catId);
             return _postRepo.SelectAsync(spec, SharedSelectors.PostDigestSelector);
         }
 
