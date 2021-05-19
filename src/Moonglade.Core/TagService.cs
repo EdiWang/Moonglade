@@ -151,9 +151,9 @@ namespace Moonglade.Core
             if (isEnglishName)
             {
                 var result = new StringBuilder(orgTagName);
-                foreach (var item in normalizations)
+                foreach (var (key, value) in normalizations)
                 {
-                    result.Replace(item.Key, item.Value);
+                    result.Replace(key, value);
                 }
                 return result.ToString().ToLower();
             }
