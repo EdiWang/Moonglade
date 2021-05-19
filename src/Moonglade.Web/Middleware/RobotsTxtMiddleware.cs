@@ -37,7 +37,7 @@ namespace Moonglade.Web.Middleware
         }
     }
 
-    public static class RobotsTxtMiddlewareExtensions
+    public static partial class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseRobotsTxt(this IApplicationBuilder builder)
         {

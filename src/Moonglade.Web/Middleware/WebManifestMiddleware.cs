@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Middleware
 {
-    public class ManifestMiddleware
+    public class WebManifestMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public static ManifestMiddlewareOptions Options { get; set; } = new();
+        public static WebManifestMiddlewareOptions Options { get; set; } = new();
 
-        public ManifestMiddleware(RequestDelegate next)
+        public WebManifestMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -51,20 +51,59 @@ namespace Moonglade.Web.Middleware
         }
     }
 
-    public static class ManifestMiddlewareOptionsExtensions
+    // Credits: https://github.com/Anduin2017/Blog
+    public class ManifestModel
     {
-        public static IApplicationBuilder UseManifest(this IApplicationBuilder app, Action<ManifestMiddlewareOptions> options)
+        [JsonPropertyName("short_name")]
+        public string ShortName { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        [JsonPropertyName("start_url")]
+        public string StartUrl { get; set; }
+
+        public IEnumerable<ManifestIcon> Icons { get; set; }
+
+        [JsonPropertyName("background_color")]
+        public string BackgroundColor { get; set; }
+
+        [JsonPropertyName("theme_color")]
+        public string ThemeColor { get; set; }
+
+        public string Display { get; set; }
+        public string Orientation { get; set; }
+    }
+
+    public class ManifestIcon
+    {
+        public string Src => "/" + string.Format(SrcTemplate ?? string.Empty, Sizes);
+        public string Sizes => $"{Pixel}x{Pixel}";
+        public string Type { get; set; }
+        public string Density { get; set; }
+
+        [JsonIgnore]
+        public string SrcTemplate { get; set; }
+
+        [JsonIgnore]
+        public int Pixel { get; set; }
+    }
+
+    public static partial class ApplicationBuilderExtensions
+    {
+        public static IApplicationBuilder UseManifest(this IApplicationBuilder app, Action<WebManifestMiddlewareOptions> options)
         {
-            options(ManifestMiddleware.Options);
-            return app.UseMiddleware<ManifestMiddleware>();
+            options(WebManifestMiddleware.Options);
+            return app.UseMiddleware<WebManifestMiddleware>();
         }
     }
 
-    public class ManifestMiddlewareOptions
+    public class WebManifestMiddlewareOptions
     {
         public string ThemeColor { get; set; }
 
-        public ManifestMiddlewareOptions()
+        public WebManifestMiddlewareOptions()
         {
             ThemeColor = "#333333";
         }

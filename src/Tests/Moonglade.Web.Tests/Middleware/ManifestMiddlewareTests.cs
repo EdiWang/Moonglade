@@ -57,7 +57,7 @@ namespace Moonglade.Web.Tests.Middleware
             ctx.Request.Path = "/manifest.webmanifest";
 
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
-            var middleware = new ManifestMiddleware(RequestDelegate);
+            var middleware = new WebManifestMiddleware(RequestDelegate);
 
             await middleware.Invoke(ctx, _mockBlogConfig.Object, _mockManifestIcons.Object);
             Assert.AreEqual(200, ctx.Response.StatusCode);

@@ -69,7 +69,7 @@ namespace Moonglade.Web.Middleware
         }
     }
 
-    public static class OpenSearchMiddlewareOptionsExtensions
+    public static partial class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseOpenSearch(this IApplicationBuilder app, Action<OpenSearchMiddlewareOptions> options)
         {

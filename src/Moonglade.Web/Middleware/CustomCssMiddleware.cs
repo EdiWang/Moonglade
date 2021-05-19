@@ -53,7 +53,7 @@ namespace Moonglade.Web.Middleware
         }
     }
 
-    public static class CustomCssMiddlewareOptionsExtensions
+    public static partial class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<CustomCssMiddlewareOptions> options)
         {

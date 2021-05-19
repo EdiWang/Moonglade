@@ -67,7 +67,7 @@ namespace Moonglade.Web.Middleware
         }
     }
 
-    public static class DefaultImageMiddlewareExtensions
+    public static partial class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseDefaultImage(this IApplicationBuilder app, Action<DefaultImageMiddlewareOptions> options)
         {
