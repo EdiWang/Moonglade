@@ -53,6 +53,9 @@ namespace Moonglade.Web.Middleware
                 {
                     await StreamCopyOperation.CopyToAsync(
                         fs, context.Response.Body, null, 64 * 1024, context.RequestAborted);
+
+                    //this header is use for browser cache, format like: "Mon, 15 May 2017 07:03:37 GMT".
+                    context.Response.Headers.Append("Last-Modified", $"{File.GetLastWriteTimeUtc(path):ddd, dd MMM yyyy HH:mm:ss} GMT");
                 }
                 catch (OperationCanceledException)
                 {
@@ -61,9 +64,6 @@ namespace Moonglade.Web.Middleware
                     context.Abort();
                 }
             }
-
-            //this header is use for browser cache, format like: "Mon, 15 May 2017 07:03:37 GMT".
-            context.Response.Headers.Append("Last-Modified", $"{File.GetLastWriteTimeUtc(path):ddd, dd MMM yyyy HH:mm:ss} GMT");
         }
     }
 
