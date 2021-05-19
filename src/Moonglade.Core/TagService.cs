@@ -42,7 +42,7 @@ namespace Moonglade.Core
         public TagService(
             IRepository<TagEntity> tagRepo,
             IRepository<PostTagEntity> postTagRepo,
-            IBlogAudit audit, 
+            IBlogAudit audit,
             IConfiguration configuration)
         {
             _tagRepo = tagRepo;
