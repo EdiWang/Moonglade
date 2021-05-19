@@ -65,18 +65,18 @@ namespace Moonglade.Web.Controllers
                     return Redirect(imageUrl);
                 }
 
-                var imageEntry = await cache.GetOrCreateAsync(filename, async entry =>
+                var image = await cache.GetOrCreateAsync(filename, async entry =>
                 {
                     _logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
                     entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Image"]);
-                    var imgBytesResponse = await _imageStorage.GetAsync(filename);
-                    return imgBytesResponse;
+                    var imageInfo = await _imageStorage.GetAsync(filename);
+                    return imageInfo;
                 });
 
-                if (null == imageEntry) return NotFound();
+                if (null == image) return NotFound();
 
-                return File(imageEntry.ImageBytes, imageEntry.ImageContentType);
+                return File(image.ImageBytes, image.ImageContentType);
             }
             catch (Exception e)
             {
@@ -105,14 +105,14 @@ namespace Moonglade.Web.Controllers
                 var name = Path.GetFileName(file.FileName);
 
                 var ext = Path.GetExtension(name).ToLower();
-                var allowedImageFormats = _imageStorageSettings.AllowedExtensions;
+                var allowedExtensions = _imageStorageSettings.AllowedExtensions;
 
-                if (null == allowedImageFormats || !allowedImageFormats.Any())
+                if (null == allowedExtensions || !allowedExtensions.Any())
                 {
                     throw new InvalidDataException($"{nameof(ImageStorageSettings.AllowedExtensions)} is empty.");
                 }
 
-                if (!allowedImageFormats.Contains(ext))
+                if (!allowedExtensions.Contains(ext))
                 {
                     _logger.LogError($"Invalid file extension: {ext}");
                     return BadRequest();
