@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Middleware
 {
@@ -121,5 +121,12 @@ namespace Moonglade.Web.Middleware
             var xml = sb.ToString();
             return xml;
         }
+    }
+
+    public class SiteMapSettings
+    {
+        public string UrlSetNamespace { get; set; }
+
+        public IDictionary<string, string> ChangeFreq { get; set; }
     }
 }
