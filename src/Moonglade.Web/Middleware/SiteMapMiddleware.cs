@@ -38,7 +38,7 @@ namespace Moonglade.Web.Middleware
                 var xml = await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
                 {
                     var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-                    var data = await GetSiteMapData(url, configuration.GetSection("SiteMap").Get<SiteMapSettings>(), postRepo, pageRepo);
+                    var data = await GetSiteMapData(url, configuration.GetSection("SiteMap"), postRepo, pageRepo);
                     return data;
                 });
 
@@ -53,7 +53,7 @@ namespace Moonglade.Web.Middleware
 
         private static async Task<string> GetSiteMapData(
             string siteRootUrl,
-            SiteMapSettings settings,
+            IConfigurationSection siteMapSection,
             IRepository<PostEntity> postRepo,
             IRepository<PageEntity> pageRepo)
         {
@@ -63,7 +63,7 @@ namespace Moonglade.Web.Middleware
             await using (var writer = XmlWriter.Create(sb, writerSettings))
             {
                 await writer.WriteStartDocumentAsync();
-                writer.WriteStartElement("urlset", settings.UrlSetNamespace);
+                writer.WriteStartElement("urlset", siteMapSection["UrlSetNamespace"]);
 
                 // Posts
                 var spec = new PostSitePageSpec();
@@ -80,7 +80,7 @@ namespace Moonglade.Web.Middleware
                     writer.WriteStartElement("url");
                     writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{item.Slug.ToLower()}");
                     writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                    writer.WriteElementString("changefreq", settings.ChangeFreq["Posts"]);
+                    writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Posts"]);
                     await writer.WriteEndElementAsync();
                 }
 
@@ -97,7 +97,7 @@ namespace Moonglade.Web.Middleware
                     writer.WriteStartElement("url");
                     writer.WriteElementString("loc", $"{siteRootUrl}/page/{item.Slug.ToLower()}");
                     writer.WriteElementString("lastmod", item.CreateTimeUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                    writer.WriteElementString("changefreq", settings.ChangeFreq["Pages"]);
+                    writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Pages"]);
                     await writer.WriteEndElementAsync();
                 }
 
@@ -105,14 +105,14 @@ namespace Moonglade.Web.Middleware
                 writer.WriteStartElement("url");
                 writer.WriteElementString("loc", $"{siteRootUrl}/tags");
                 writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                writer.WriteElementString("changefreq", settings.ChangeFreq["Default"]);
+                writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Default"]);
                 await writer.WriteEndElementAsync();
 
                 // Archive
                 writer.WriteStartElement("url");
                 writer.WriteElementString("loc", $"{siteRootUrl}/archive");
                 writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                writer.WriteElementString("changefreq", settings.ChangeFreq["Default"]);
+                writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Default"]);
                 await writer.WriteEndElementAsync();
 
                 await writer.WriteEndElementAsync();
@@ -121,12 +121,5 @@ namespace Moonglade.Web.Middleware
             var xml = sb.ToString();
             return xml;
         }
-    }
-
-    public class SiteMapSettings
-    {
-        public string UrlSetNamespace { get; set; }
-
-        public IDictionary<string, string> ChangeFreq { get; set; }
     }
 }
