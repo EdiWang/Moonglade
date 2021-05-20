@@ -134,6 +134,17 @@
             }
         });
 
+        $(window).bind('keydown', function (event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                    case 's':
+                        event.preventDefault();
+                        $("#btn-submit").trigger('click');
+                        break;
+                }
+            }
+        });
+
         $(function () {
             $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
                 function (e) {
