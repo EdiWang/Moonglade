@@ -21,7 +21,6 @@ using Moonglade.Core;
 using Moonglade.Notification.Client;
 using Moonglade.Setup;
 using Moonglade.Utils;
-using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
 using NUglify;

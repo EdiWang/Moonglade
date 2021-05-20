@@ -1,9 +1,6 @@
-﻿using Moonglade.Syndication;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 
 namespace Moonglade.Syndication.Tests
 {

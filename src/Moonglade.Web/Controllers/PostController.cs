@@ -17,7 +17,6 @@ using Moonglade.Core;
 using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Utils;
-using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers

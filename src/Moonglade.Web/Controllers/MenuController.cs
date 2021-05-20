@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Menus;
-using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers

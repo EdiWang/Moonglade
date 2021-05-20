@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Caching;
-using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
@@ -20,7 +19,6 @@ using Moonglade.Pingback;
 using Moonglade.Syndication;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
-using Moonglade.Web.Models;
 using WilderMinds.MetaWeblog;
 
 namespace Moonglade.Web.Configuration

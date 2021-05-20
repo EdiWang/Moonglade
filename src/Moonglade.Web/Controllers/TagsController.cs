@@ -11,7 +11,6 @@ using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Utils;
-using Moonglade.Web.Filters;
 
 namespace Moonglade.Web.Controllers
 {

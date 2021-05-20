@@ -13,7 +13,6 @@ using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
 using Moonglade.Page;
 using Moonglade.Utils;
-using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using NUglify;
 
