@@ -109,7 +109,12 @@ namespace Moonglade.Web
 
             // Blog Services
             services.AddBlogServices();
-            services.AddBlogConfiguration(_configuration);
+            services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
+            services.AddFeatureManagement();
+            services.AddOptions();
+            services.AddBlogConfig(_configuration);
+            services.AddScoped<ITimeZoneResolver>(
+                c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
             services.AddBlogAuthenticaton(_configuration);
             services.AddComments(_configuration);
             services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));

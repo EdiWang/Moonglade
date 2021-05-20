@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Caching;
-using Moonglade.Configuration;
-using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.DataPorting;
 using Moonglade.FriendLink;
@@ -26,19 +21,6 @@ namespace Moonglade.Web.Configuration
     [ExcludeFromCodeCoverage]
     public static class ServiceCollectionExtension
     {
-        public static void AddBlogConfiguration(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<List<ManifestIcon>>(configuration.GetSection("ManifestIcons"));
-
-            services.AddFeatureManagement();
-            services.AddOptions();
-            var appSettings = configuration.GetSection(nameof(AppSettings));
-            services.Configure<AppSettings>(appSettings);
-            services.AddSingleton<IBlogConfig, BlogConfig>();
-            services.AddScoped<ITimeZoneResolver>(c =>
-                new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
-        }
-
         public static void AddBlogServices(this IServiceCollection services)
         {
             var asms = AppDomain.CurrentDomain.GetAssemblies();
