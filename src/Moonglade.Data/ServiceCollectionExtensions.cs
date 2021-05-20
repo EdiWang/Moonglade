@@ -7,7 +7,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data
 {
-    public static class ConfigureDataStorage
+    public static class ServiceCollectionExtensions
     {
         public static void AddDataStorage(this IServiceCollection services, string connectionString)
         {

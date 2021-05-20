@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Moonglade.Comments
 {
-    public static class ConfigureComments
+    public static class ServiceCollectionExtensions
     {
         public static void AddComments(this IServiceCollection services, IConfiguration configuration)
         {

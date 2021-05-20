@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Moonglade.Pingback
 {
-    public static class ConfigurePingback
+    public static class ServiceCollectionExtensions
     {
         public static void AddPingback(this IServiceCollection services)
         {

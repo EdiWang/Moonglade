@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Moonglade.Auth
 {
-    public static class AuthenticationServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
         public static void AddBlogAuthenticaton(this IServiceCollection services, IConfiguration configuration)
         {

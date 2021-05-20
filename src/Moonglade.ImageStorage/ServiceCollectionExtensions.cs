@@ -11,7 +11,7 @@ namespace Moonglade.ImageStorage
         public string ContentRootPath { get; set; } = Directory.GetCurrentDirectory();
     }
 
-    public static class ConfigureImageStorage
+    public static class ServiceCollectionExtensions
     {
         private static readonly ImageStorageOptions Options = new();
 
