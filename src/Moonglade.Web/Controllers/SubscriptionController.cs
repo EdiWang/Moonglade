@@ -17,20 +17,20 @@ namespace Moonglade.Web.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly ISyndicationService _syndicationService;
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryService _catService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogCache _cache;
         private readonly IOpmlWriter _opmlWriter;
 
         public SubscriptionController(
             ISyndicationService syndicationService,
-            ICategoryService categoryService,
+            ICategoryService catService,
             IBlogConfig blogConfig,
             IBlogCache cache,
             IOpmlWriter opmlWriter)
         {
             _syndicationService = syndicationService;
-            _categoryService = categoryService;
+            _catService = catService;
             _blogConfig = blogConfig;
             _cache = cache;
             _opmlWriter = opmlWriter;
@@ -40,7 +40,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("opml")]
         public async Task<IActionResult> Opml()
         {
-            var cats = await _categoryService.GetAll();
+            var cats = await _catService.GetAll();
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
             var rootUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix);
 
