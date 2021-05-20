@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
+using Moonglade.Caching.Filters;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 using Moq;

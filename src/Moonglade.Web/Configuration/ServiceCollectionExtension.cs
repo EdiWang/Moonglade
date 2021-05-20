@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Caching;
+using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;

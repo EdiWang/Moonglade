@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Caching;
+using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
 using Moonglade.Page;
 using Moonglade.Utils;

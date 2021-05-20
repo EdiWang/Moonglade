@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Moonglade.Caching;
 
-namespace Moonglade.Web.Filters
+namespace Moonglade.Caching.Filters
 {
     public class ClearPagingCountCache : ActionFilterAttribute
     {
