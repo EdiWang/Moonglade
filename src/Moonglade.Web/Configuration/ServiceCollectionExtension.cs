@@ -66,8 +66,7 @@ namespace Moonglade.Web.Configuration
             services.AddScoped<IFoafWriter, FoafWriter>();
             services.AddScoped<IExportManager, ExportManager>();
             services.AddScoped<IBlogStatistics, BlogStatistics>();
-            services.AddScoped<ISyndicationService, SyndicationService>();
-            services.AddScoped<IOpmlWriter, StringOpmlWriter>();
+            services.AddSyndication();
             services.AddScoped<ValidateCaptcha>();
 
             services.AddBlogCache();
