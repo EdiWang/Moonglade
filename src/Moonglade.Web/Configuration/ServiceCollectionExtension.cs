@@ -75,13 +75,5 @@ namespace Moonglade.Web.Configuration
             services.AddNotificationClient();
             services.AddReleaseCheckerClient();
         }
-
-        private static void AddBlogCache(this IServiceCollection services)
-        {
-            services.AddMemoryCache();
-            services.AddSingleton<IBlogCache, BlogMemoryCache>();
-            services.AddScoped<ClearSubscriptionCache>();
-            services.AddScoped<ClearSiteMapCache>();
-        }
     }
 }
