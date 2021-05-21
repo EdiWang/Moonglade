@@ -21,13 +21,24 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
+using Moonglade.Auditing;
 using Moonglade.Auth;
+using Moonglade.Caching;
 using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
+using Moonglade.Core;
 using Moonglade.Data;
+using Moonglade.DataPorting;
+using Moonglade.FriendLink;
 using Moonglade.ImageStorage;
+using Moonglade.Menus;
+using Moonglade.Notification.Client;
+using Moonglade.Page;
+using Moonglade.Pingback;
+using Moonglade.Syndication;
 using Moonglade.Web.Configuration;
+using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
 using WilderMinds.MetaWeblog;
 
@@ -57,7 +68,9 @@ namespace Moonglade.Web
         public void ConfigureServices(IServiceCollection services)
         {
             // ASP.NET Setup
+            services.AddOptions();
             services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
+            services.AddFeatureManagement();
             services.AddApplicationInsightsTelemetry();
             services.AddAzureAppConfiguration();
             services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) =>
@@ -108,10 +121,21 @@ namespace Moonglade.Web
             services.AddSwaggerGen();
 
             // Blog Services
-            services.AddBlogServices();
+            services.AddCoreBloggingServices();
+            services.AddBlogPage();
+            services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IFriendLinkService, FriendLinkService>();
+            services.AddScoped<IBlogAudit, BlogAudit>();
+            services.AddScoped<IFoafWriter, FoafWriter>();
+            services.AddScoped<IExportManager, ExportManager>();
+            services.AddSyndication();
+            services.AddScoped<ValidateCaptcha>();
+            services.AddMetaWeblog<MetaWeblogService>();
+            services.AddBlogCache();
+            services.AddPingback();
+            services.AddNotificationClient();
+            services.AddReleaseCheckerClient();
             services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
-            services.AddFeatureManagement();
-            services.AddOptions();
             services.AddBlogConfig(_configuration);
             services.AddScoped<ITimeZoneResolver>(
                 c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));

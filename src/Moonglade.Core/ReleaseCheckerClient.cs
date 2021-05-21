@@ -4,11 +4,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Utils;
-using Polly;
 
 namespace Moonglade.Core
 {
@@ -60,16 +58,6 @@ namespace Moonglade.Core
                 _logger.LogError(e, e.Message);
                 throw;
             }
-        }
-    }
-
-    public static class ServiceCollectionExtensions
-    {
-        public static void AddReleaseCheckerClient(this IServiceCollection services)
-        {
-            services.AddHttpClient<IReleaseCheckerClient, ReleaseCheckerClient>()
-                .AddTransientHttpErrorPolicy(builder =>
-                    builder.WaitAndRetryAsync(3, retryCount => TimeSpan.FromSeconds(Math.Pow(2, retryCount))));
         }
     }
 
