@@ -1,4 +1,5 @@
-﻿var postSlug = {
+﻿var hasLiked = false;
+var postSlug = {
     getStatistics: function (pid) {
         const uri = `/api/statistics/${pid}`;
         fetch(uri)
@@ -31,7 +32,10 @@
     },
     registerRatingButtons: function (pid) {
         $('.btn-ratings').click(function () {
-            postSlug.postStatistics(pid, true);
+            if (!hasLiked) {
+                postSlug.postStatistics(pid, true);
+                hasLiked = true;
+            }
         });
     },
     resetCaptchaImage: function () {

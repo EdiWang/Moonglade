@@ -12,12 +12,6 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class StatisticsController : ControllerBase
     {
-        private enum CookieNames
-        {
-            Hit,
-            Liked
-        }
-
         private readonly IBlogStatistics _statistics;
         private bool DNT => (bool)HttpContext.Items["DNT"];
 
@@ -56,42 +50,8 @@ namespace Moonglade.Web.Controllers
 
             if (DNT) return Ok();
 
-            if (request.IsLike)
-            {
-                if (HasCookie(CookieNames.Liked, request.PostId.ToString())) return Conflict();
-            }
-            else
-            {
-                if (HasCookie(CookieNames.Hit, request.PostId.ToString())) return Ok();
-            }
-
             await _statistics.UpdateStatisticAsync(request.PostId, request.IsLike);
-            SetPostTrackingCookie(request.IsLike ? CookieNames.Liked : CookieNames.Hit, request.PostId.ToString());
-
             return Ok();
-        }
-
-        private bool HasCookie(CookieNames cookieName, string id)
-        {
-            var viewCookie = HttpContext.Request.Cookies[cookieName.ToString()];
-            if (viewCookie is not null) return viewCookie == id;
-            return false;
-        }
-
-        private void SetPostTrackingCookie(CookieNames cookieName, string id)
-        {
-            var options = new CookieOptions
-            {
-                Expires = DateTime.UtcNow.AddDays(1),
-                SameSite = SameSiteMode.Strict,
-                Secure = Request.IsHttps,
-
-                // Mark as essential to pass GDPR
-                // https://docs.microsoft.com/en-us/aspnet/core/security/gdpr?view=aspnetcore-2.1
-                IsEssential = true
-            };
-
-            Response.Cookies.Append(cookieName.ToString(), id, options);
         }
     }
 
