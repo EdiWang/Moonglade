@@ -188,7 +188,7 @@ var postEditor = {
                 fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
                 plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools emoticons',
                 toolbar: 'formatselect | fontsizeselect | bold italic underline strikethrough | forecolor backcolor | removeformat | emoticons link hr image table codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
-                save_onsavecallback: function() {
+                save_onsavecallback: function () {
                     $('#btn-save').trigger('click');
                 },
                 paste_data_images: true,
@@ -306,22 +306,9 @@ var postEditor = {
                 window.tinyMCE.triggerSave();
             }
 
-            var selectCatCount = 0;
-            $('input[name="ViewModel.SelectedCategoryIds"]').each(function () {
-                if ($(this).prop('checked') === true) {
-                    ++selectCatCount;
-                }
-            });
-
-            if ($('.post-edit-form').valid() && selectCatCount === 0) {
-                e.preventDefault();
-                blogToast.error('Please select at least one category');
-            }
-            else {
-                if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
-                    $('#btn-publish').hide();
-                    $('#btn-preview').hide();
-                }
+            if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
+                $('#btn-publish').hide();
+                $('#btn-preview').hide();
             }
         }
 

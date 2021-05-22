@@ -108,6 +108,11 @@ namespace Moonglade.Web.Controllers
         {
             try
             {
+                if (temp.ViewModel.CategoryList.All(p => !p.IsChecked))
+                {
+                    ModelState.AddModelError(nameof(temp.ViewModel.CategoryList), "Please select at least one category.");
+                }
+
                 if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
                 // temp solution
@@ -116,6 +121,8 @@ namespace Moonglade.Web.Controllers
                 var tags = string.IsNullOrWhiteSpace(model.Tags)
                     ? Array.Empty<string>()
                     : model.Tags.Split(',').ToArray();
+
+                var catIds = model.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
 
                 var request = new UpdatePostRequest
                 {
@@ -130,7 +137,7 @@ namespace Moonglade.Web.Controllers
                     IsPublished = model.IsPublished,
                     IsFeatured = model.Featured,
                     Tags = tags,
-                    CategoryIds = model.SelectedCategoryIds
+                    CategoryIds = catIds
                 };
 
                 var tzDate = _timeZoneResolver.NowOfTimeZone;

@@ -144,7 +144,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostController();
             postManageController.ModelState.AddModelError("", FakeData.ShortString2);
 
-            MagicWrapper<PostEditModel> model = new();
+            MagicWrapper<PostEditModel> model = new() { ViewModel = new() };
             Mock<LinkGenerator> mockLinkGenerator = new();
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
 
@@ -176,8 +176,10 @@ namespace Moonglade.Web.Tests.Controllers
                     EnableComment = true,
                     FeedIncluded = true,
                     Tags = "996,icu",
-                    CategoryList = new List<CheckBoxViewModel>(),
-                    SelectedCategoryIds = new[] { Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d") }
+                    CategoryList = new()
+                    {
+                        new() { Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"), DisplayText = "996", IsChecked = true }
+                    }
                 }
             };
 
@@ -214,8 +216,10 @@ namespace Moonglade.Web.Tests.Controllers
                     EnableComment = true,
                     FeedIncluded = true,
                     Tags = "996,icu",
-                    CategoryList = new List<CheckBoxViewModel>(),
-                    SelectedCategoryIds = new[] { Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d") }
+                    CategoryList = new()
+                    {
+                        new() { Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"), DisplayText = "996", IsChecked = true }
+                    }
                 }
             };
 
@@ -255,8 +259,10 @@ namespace Moonglade.Web.Tests.Controllers
                     EnableComment = true,
                     FeedIncluded = true,
                     Tags = "996,icu",
-                    CategoryList = new List<CheckBoxViewModel>(),
-                    SelectedCategoryIds = new[] { Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d") }
+                    CategoryList = new()
+                    {
+                        new() { Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"), DisplayText = "996", IsChecked = true }
+                    }
                 }
             };
 

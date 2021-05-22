@@ -45,8 +45,14 @@ namespace Moonglade.Web.Pages.Admin
                 if (cats1.Count > 0)
                 {
                     var cbCatList = cats1.Select(p =>
-                        new CheckBoxViewModel(p.DisplayName, p.Id.ToString(), false));
-                    ViewModel.CategoryList = cbCatList;
+                        new CategoryCheckBox
+                        {
+                            Id = p.Id,
+                            DisplayText = p.DisplayName,
+                            IsChecked = false
+                        });
+
+                    ViewModel.CategoryList = cbCatList.ToList();
                 }
 
                 return Page();
@@ -86,11 +92,13 @@ namespace Moonglade.Web.Pages.Admin
             if (cats2.Count > 0)
             {
                 var cbCatList = cats2.Select(p =>
-                    new CheckBoxViewModel(
-                        p.DisplayName,
-                        p.Id.ToString(),
-                        post.Categories.Any(q => q.Id == p.Id)));
-                ViewModel.CategoryList = cbCatList;
+                    new CategoryCheckBox
+                    {
+                        Id = p.Id,
+                        DisplayText = p.DisplayName,
+                        IsChecked = post.Categories.Any(q => q.Id == p.Id)
+                    });
+                ViewModel.CategoryList = cbCatList.ToList();
             }
 
             return Page();

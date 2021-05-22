@@ -161,16 +161,17 @@
                     {
                         <div class="catlist">
                             <ul>
-                                @foreach (var item in Model.ViewModel.CategoryList)
+                                @for (int i = 0; i < Model.ViewModel.CategoryList.Count; i++)
                                 {
                                     <li>
                                         <div class="form-check">
-                                            <input id="cat-@item.Value" name="ViewModel.SelectedCategoryIds" class="form-check-input" type="checkbox" value="@item.Value"
-                                                   @(item.IsChecked ? "checked=\"checked\"" : null)>
-                                            <label for="cat-@item.Value" class="form-check-label">
-                                                @item.DisplayText
+                                            <input type="checkbox" asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-input" />
+                                            <label asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-label">
+                                                @Model.ViewModel.CategoryList[i].DisplayText
                                             </label>
                                         </div>
+                                        <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].Id"/>
+                                        <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].DisplayText"/>
                                     </li>
                                 }
                             </ul>

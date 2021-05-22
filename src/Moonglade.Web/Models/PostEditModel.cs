@@ -20,11 +20,8 @@ namespace Moonglade.Web.Models
         [MaxLength(128)]
         public string Slug { get; set; }
 
-        [JsonIgnore]
-        public IEnumerable<CheckBoxViewModel> CategoryList { get; set; }
-
-        [Required(ErrorMessage = "Please select at least one category.")]
-        public Guid[] SelectedCategoryIds { get; set; }
+        [Required]
+        public List<CategoryCheckBox> CategoryList { get; set; }
 
         [Required]
         [Display(Name = "Enable Comment")]
@@ -72,6 +69,14 @@ namespace Moonglade.Web.Models
         public PostEditModel()
         {
             PostId = Guid.Empty;
+            CategoryList = new();
         }
+    }
+
+    public class CategoryCheckBox
+    {
+        public Guid Id { get; set; }
+        public string DisplayText { get; set; }
+        public bool IsChecked { get; set; }
     }
 }
