@@ -23,8 +23,8 @@ namespace Moonglade.Core
         Task<Post> GetAsync(Guid id);
         Task<Post> GetAsync(PostSlug slug);
         Task<Post> GetDraft(Guid postId);
-        Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus);
-        Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus postStatus, int offset, int pageSize, string keyword = null);
+        Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus status);
+        Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus status, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
         Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? catId = null);
         Task<IReadOnlyList<PostDigest>> ListArchive(int year, int? month);
@@ -192,14 +192,14 @@ namespace Moonglade.Core
             return post;
         }
 
-        public Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus postStatus)
+        public Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus status)
         {
-            var spec = new PostSpec(postStatus);
+            var spec = new PostSpec(status);
             return _postRepo.SelectAsync(spec, _postSegmentSelector);
         }
 
         public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(
-            PostStatus postStatus, int offset, int pageSize, string keyword = null)
+            PostStatus status, int offset, int pageSize, string keyword = null)
         {
             if (pageSize < 1)
             {
@@ -212,30 +212,30 @@ namespace Moonglade.Core
                     $"{nameof(offset)} can not be less than 0, current value: {offset}.");
             }
 
-            var spec = new PostPagingSpec(postStatus, keyword, pageSize, offset);
+            var spec = new PostPagingSpec(status, keyword, pageSize, offset);
             var posts = await _postRepo.SelectAsync(spec, _postSegmentSelector);
 
-            Expression<Func<PostEntity, bool>> countExpression = p => null == keyword || p.Title.Contains(keyword);
+            Expression<Func<PostEntity, bool>> countExp = p => null == keyword || p.Title.Contains(keyword);
 
-            switch (postStatus)
+            switch (status)
             {
                 case PostStatus.Draft:
-                    countExpression.AndAlso(p => !p.IsPublished && !p.IsDeleted);
+                    countExp.AndAlso(p => !p.IsPublished && !p.IsDeleted);
                     break;
                 case PostStatus.Published:
-                    countExpression.AndAlso(p => p.IsPublished && !p.IsDeleted);
+                    countExp.AndAlso(p => p.IsPublished && !p.IsDeleted);
                     break;
                 case PostStatus.Deleted:
-                    countExpression.AndAlso(p => p.IsDeleted);
+                    countExp.AndAlso(p => p.IsDeleted);
                     break;
                 case PostStatus.NotSet:
-                    countExpression.AndAlso(p => true);
+                    countExp.AndAlso(p => true);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(postStatus), postStatus, null);
+                    throw new ArgumentOutOfRangeException(nameof(status), status, null);
             }
 
-            var totalRows = _postRepo.Count(countExpression);
+            var totalRows = _postRepo.Count(countExp);
             return (posts, totalRows);
         }
 
