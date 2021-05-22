@@ -33,7 +33,7 @@
   {
     "outputFileName": "wwwroot/css/bundle.css",
     "inputFiles": [
-      "wwwroot/css/3rd/bootstrap.min.css",
+      "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
       "wwwroot/css/3rd/bootstrap-icons.css",
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/base.css",
