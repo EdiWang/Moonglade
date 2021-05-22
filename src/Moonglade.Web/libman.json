@@ -89,6 +89,14 @@
       "files": [
         "typeahead.bundle.min.js"
       ]
+    },
+    {
+      "library": "twitter-bootstrap@5.0.1",
+      "destination": "wwwroot/lib/twitter-bootstrap/",
+      "files": [
+        "css/bootstrap.min.css",
+        "js/bootstrap.bundle.min.js"
+      ]
     }
   ]
 }
