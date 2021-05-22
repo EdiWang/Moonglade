@@ -51,7 +51,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var post in Model.TopCommentedList.OrderByDescending(p => p.PubDateUtc))
+                    @foreach (var post in Model.TopCommentedList)
                     {
                         <tr id="tr-@post.Id">
                             <td>

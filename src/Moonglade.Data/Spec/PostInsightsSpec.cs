@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
@@ -17,6 +18,7 @@ namespace Moonglade.Data.Spec
                     ApplyOrderByDescending(p => p.PostExtension.Hits);
                     break;
                 case PostInsightsType.TopCommented:
+                    AddCriteria(p => p.Comments.Any(c => c.IsApproved));
                     ApplyOrderByDescending(p => p.Comments.Count);
                     break;
                 default:
