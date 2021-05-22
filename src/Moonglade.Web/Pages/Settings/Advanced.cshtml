@@ -4,12 +4,43 @@
 
 @section scripts{
     <script>
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+
+                display.text(minutes + ':' + seconds);
+
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000);
+        }
+
         $('.btn-restart').click(function () {
-            tryRestartWebsite();
+            callApi(`/api/settings/shutdown`, 'POST', {}, () => { });
+            $('.btn-restart').text('Wait...');
+            $('.btn-restart').addClass('disabled');
+            $('.btn-restart').attr('disabled', 'disabled');
+            startTimer(30, $('.btn-restart'));
+            setTimeout(function () {
+                location.href = '/admin/settings';
+            }, 30000);
         });
 
         $('.btn-reset').click(function () {
-            tryResetWebsite();
+            callApi(`/api/settings/reset`, 'POST', {}, () => { });
+            $('.btn-reset').text('Wait...');
+            $('.btn-reset').addClass('disabled');
+            $('.btn-reset').attr('disabled', 'disabled');
+            startTimer(30, $('.btn-reset'));
+            setTimeout(function () {
+                location.href = '/';
+            }, 30000);
         });
 
         $('.btn-check-update').click(function () {
@@ -41,6 +72,37 @@
                 }
             });
         });
+
+        var btnClearCache = '.btn-clearcache';
+        var onClearCacheBegin = function () {
+            $(btnClearCache).text('Processing...');
+            $(btnClearCache).addClass('disabled');
+            $(btnClearCache).attr('disabled', 'disabled');
+        };
+
+        var onClearCacheComplete = function () {
+            $(btnClearCache).text('Clear');
+            $(btnClearCache).removeClass('disabled');
+            $(btnClearCache).removeAttr('disabled');
+        };
+
+        var onClearCacheSuccess = function (context) {
+            $('#cacheModal').modal('hide');
+            if (blogToast) {
+                blogToast.success('Cleared Cache');
+            } else {
+                alert('Cleared Cache');
+            }
+        };
+
+        var onClearCacheFailed = function (context) {
+            var msg = buildErrorMessage(context);
+            if (blogToast) {
+                blogToast.error(`Server Error: ${msg}`);
+            } else {
+                alert(`Error Code: ${msg}`);
+            }
+        };
 
         function generateMetaWeblogPassword() {
             callApi('/api/settings/generate-password', 'GET', {}, async (resp) => {
@@ -325,7 +387,7 @@
         <div class="spinner-border" role="status" style="display: none;">
             <span class="visually-hidden">Loading...</span>
         </div>
-        
+
         <div class="alert alert-info alert-no-new-release">
             <i class="bi-info-circle"></i>
             You are running the latest version already.

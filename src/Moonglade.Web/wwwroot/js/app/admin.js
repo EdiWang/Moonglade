@@ -2,6 +2,37 @@
     ignore: []
 });
 
+var btnSaveSettings = '#btn-save-settings';
+var onUpdateSettingsBegin = function () {
+    $(btnSaveSettings).text('Processing...');
+    $(btnSaveSettings).addClass('disabled');
+    $(btnSaveSettings).attr('disabled', 'disabled');
+};
+
+var onUpdateSettingsComplete = function () {
+    $(btnSaveSettings).text('Save');
+    $(btnSaveSettings).removeClass('disabled');
+    $(btnSaveSettings).removeAttr('disabled');
+};
+
+var onUpdateSettingsSuccess = function (context) {
+    if (blogToast) {
+        blogToast.success('Settings Updated');
+    } else {
+        alert('Settings Updated');
+    }
+};
+
+var onUpdateSettingsFailed = function (context) {
+    var message = buildErrorMessage(context);
+
+    if (blogToast) {
+        blogToast.error(message);
+    } else {
+        alert(message);
+    }
+};
+
 var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
 function slugify(text) {
