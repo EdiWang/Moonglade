@@ -87,6 +87,26 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task Create_CommentDisabled()
+        {
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            {
+                EnableComments = false
+            });
+
+            var ctl = CreateCommentController();
+            var result = await ctl.Create(FakeData.Uid1, new()
+            {
+                Email = "work996@996.icu",
+                CaptchaCode = "0996",
+                Content = "Get your fubao",
+                Username = "Jack Ma"
+            });
+
+            Assert.IsInstanceOf<ForbidResult>(result);
+        }
+
+        [Test]
         public async Task SetApprovalStatus_EmptyId()
         {
             var ctl = CreateCommentController();
