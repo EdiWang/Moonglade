@@ -66,36 +66,31 @@ namespace Moonglade.Web.Middleware
 
                 // Posts
                 var spec = new PostSitePageSpec();
-                var posts = await postRepo.SelectAsync(spec, p => new
-                {
-                    p.Slug,
-                    p.PubDateUtc
-                });
+                var posts = await postRepo.SelectAsync(spec, p => new Tuple<string, DateTime?>(p.Slug, p.PubDateUtc));
 
-                foreach (var item in posts.OrderByDescending(p => p.PubDateUtc))
+                foreach (var (slug, pubDateUtc) in posts.OrderByDescending(p => p.Item2))
                 {
-                    var pubDate = item.PubDateUtc.GetValueOrDefault();
+                    var pubDate = pubDateUtc.GetValueOrDefault();
 
                     writer.WriteStartElement("url");
-                    writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{item.Slug.ToLower()}");
+                    writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{slug.ToLower()}");
                     writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
                     writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Posts"]);
                     await writer.WriteEndElementAsync();
                 }
 
                 // Pages
-                var pages = await pageRepo.SelectAsync(page => new
-                {
+                var pages = await pageRepo.SelectAsync(page => new Tuple<DateTime, string, bool>(
                     page.CreateTimeUtc,
                     page.Slug,
-                    page.IsPublished
-                });
+                    page.IsPublished)
+                );
 
-                foreach (var item in pages.Where(p => p.IsPublished))
+                foreach (var (createdTimeUtc, slug, isPublished) in pages.Where(p => p.Item3))
                 {
                     writer.WriteStartElement("url");
-                    writer.WriteElementString("loc", $"{siteRootUrl}/page/{item.Slug.ToLower()}");
-                    writer.WriteElementString("lastmod", item.CreateTimeUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                    writer.WriteElementString("loc", $"{siteRootUrl}/page/{slug.ToLower()}");
+                    writer.WriteElementString("lastmod", createdTimeUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
                     writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Pages"]);
                     await writer.WriteEndElementAsync();
                 }
