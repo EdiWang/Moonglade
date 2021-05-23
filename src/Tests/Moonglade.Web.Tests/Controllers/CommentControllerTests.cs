@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Comments;
@@ -44,6 +45,29 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.List(Guid.Empty, null);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
+        public async Task List_OK()
+        {
+            IReadOnlyList<Comment> comments = new List<Comment>
+            {
+                new()
+                {
+                    Username = "Jack Ma", Email = "fubao@996.icu", CommentContent = "996 is fubao", CreateTimeUtc = DateTime.Today
+                }
+            };
+
+            _mockCommentService.Setup(p => p.GetApprovedCommentsAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(comments));
+
+            var mockTz = _mockRepository.Create<ITimeZoneResolver>();
+            mockTz.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(DateTime.Today);
+
+            var ctl = CreateCommentController();
+            var result = await ctl.List(FakeData.Uid2, mockTz.Object);
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
         [Test]
