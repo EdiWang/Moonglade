@@ -1,6 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using MemoryCache.Testing.Moq;
 using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Data.Entities;
@@ -32,13 +33,26 @@ namespace Moonglade.Core.Tests
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
         }
 
-        private CategoryService CreateService()
+        private CategoryService CreateService(IBlogCache cache = null)
         {
             return new(
                 _mockCatRepo.Object,
                 _mockRepositoryPostCategoryEntity.Object,
                 _mockBlogAudit.Object,
-                _mockBlogCache.Object);
+                cache ?? _mockBlogCache.Object);
+        }
+
+        [Test]
+        public async Task GetAll_OK()
+        {
+            var mockedCache = Create.MockedMemoryCache();
+            var memBc = new BlogMemoryCache(mockedCache);
+            
+            var svc = CreateService(memBc);
+
+            var result = await svc.GetAll();
+
+            _mockCatRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
         }
 
         [Test]
