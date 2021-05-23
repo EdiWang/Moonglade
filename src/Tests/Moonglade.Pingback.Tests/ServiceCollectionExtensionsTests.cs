@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Moonglade.Pingback.Tests
 {
     [TestFixture]
-    public class ConfigurePingbackTests
+    public class ServiceCollectionExtensionsTests
     {
         [Test]
         public void AddPingback_OK()
