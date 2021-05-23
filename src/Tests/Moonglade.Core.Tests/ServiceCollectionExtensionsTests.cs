@@ -1,7 +1,5 @@
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Caching;
-using Moonglade.Caching.Filters;
 using NUnit.Framework;
 
 namespace Moonglade.Core.Tests
