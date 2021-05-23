@@ -38,6 +38,15 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task List_Empty_PostId()
+        {
+            var ctl = CreateCommentController();
+            var result = await ctl.List(Guid.Empty, null);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
         public async Task SetApprovalStatus_EmptyId()
         {
             var ctl = CreateCommentController();
