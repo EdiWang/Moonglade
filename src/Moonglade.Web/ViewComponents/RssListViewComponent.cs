@@ -12,19 +12,19 @@ namespace Moonglade.Web.ViewComponents
     {
         private readonly ILogger<RssListViewComponent> _logger;
 
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryService _catService;
 
-        public RssListViewComponent(ILogger<RssListViewComponent> logger, ICategoryService categoryService)
+        public RssListViewComponent(ILogger<RssListViewComponent> logger, ICategoryService catService)
         {
             _logger = logger;
-            _categoryService = categoryService;
+            _catService = catService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             try
             {
-                var cats = await _categoryService.GetAll();
+                var cats = await _catService.GetAll();
                 var items = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
 
                 return View(items);
