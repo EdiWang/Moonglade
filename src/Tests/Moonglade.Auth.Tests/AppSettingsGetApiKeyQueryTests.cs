@@ -31,9 +31,9 @@ namespace Moonglade.Auth.Tests
                 Provider = AuthenticationProvider.AzureAD,
                 ApiKeys = new ApiKey[]
                 {
-                    new () { Id = 1, Key = "fuck996", Owner = "996fucker" },
-                    new () { Id = 2, Key = "pdd007", Owner = "gotoicu" },
-                    new () { Id = 3, Key = "251", Owner = "hwaiguo" }
+                    new () { Key = "fuck996", Owner = "996fucker" },
+                    new () { Key = "pdd007", Owner = "gotoicu" },
+                    new () { Key = "251", Owner = "hwaiguo" }
                 }
             });
 
