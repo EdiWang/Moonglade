@@ -25,7 +25,7 @@ namespace Moonglade.Core.Tests
         private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
         private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
         private Mock<IRepository<PostTagEntity>> _mockPostTagEntityRepo;
-        private Mock<IRepository<PostCategoryEntity>> _mockRepositoryPostCategoryEntity;
+        private Mock<IRepository<PostCategoryEntity>> _mockPostCategoryRepo;
         private Mock<IBlogCache> _mockBlogCache;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
@@ -39,7 +39,7 @@ namespace Moonglade.Core.Tests
             _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
             _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
             _mockPostTagEntityRepo = _mockRepository.Create<IRepository<PostTagEntity>>();
-            _mockRepositoryPostCategoryEntity = _mockRepository.Create<IRepository<PostCategoryEntity>>();
+            _mockPostCategoryRepo = _mockRepository.Create<IRepository<PostCategoryEntity>>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
         }
 
@@ -50,8 +50,44 @@ namespace Moonglade.Core.Tests
                 _mockOptionsAppSettings.Object,
                 _mockPostEntityRepo.Object,
                 _mockPostTagEntityRepo.Object,
-                _mockRepositoryPostCategoryEntity.Object,
+                _mockPostCategoryRepo.Object,
                 _mockBlogCache.Object);
+        }
+
+        [Test]
+        public void CountPublic_OK()
+        {
+            var svc = CreateService();
+            svc.CountPublic();
+
+            _mockPostEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>()));
+        }
+
+        [Test]
+        public void CountByCategory_OK()
+        {
+            var svc = CreateService();
+            svc.CountByCategory(Uid);
+
+            _mockPostCategoryRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostCategoryEntity, bool>>>()));
+        }
+
+        [Test]
+        public void CountByTag_OK()
+        {
+            var svc = CreateService();
+            svc.CountByTag(996);
+
+            _mockPostTagEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostTagEntity, bool>>>()));
+        }
+
+        [Test]
+        public void CountByFeatured_OK()
+        {
+            var svc = CreateService();
+            svc.CountByFeatured();
+
+            _mockPostEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>()));
         }
 
         [Test]
