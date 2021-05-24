@@ -16,12 +16,9 @@
 
     static string GetMonthNameByNumber(int number)
     {
-        if (number > 12 || number < 1)
-        {
-            return string.Empty;
-        }
-
-        return CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
+        return number is > 12 or < 1 ? 
+            string.Empty : 
+            CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
     }
 }
 

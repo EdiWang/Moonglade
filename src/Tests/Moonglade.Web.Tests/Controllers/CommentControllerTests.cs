@@ -6,7 +6,6 @@ using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -75,7 +74,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Create_InvalidEmail()
         {
             var ctl = CreateCommentController();
-            var result = await ctl.Create(FakeData.Uid1, new ()
+            var result = await ctl.Create(FakeData.Uid1, new()
             {
                 Email = "work996",
                 CaptchaCode = "0996",

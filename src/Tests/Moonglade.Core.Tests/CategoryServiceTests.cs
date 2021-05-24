@@ -47,7 +47,7 @@ namespace Moonglade.Core.Tests
         {
             var mockedCache = Create.MockedMemoryCache();
             var memBc = new BlogMemoryCache(mockedCache);
-            
+
             var svc = CreateService(memBc);
 
             var result = await svc.GetAll();
