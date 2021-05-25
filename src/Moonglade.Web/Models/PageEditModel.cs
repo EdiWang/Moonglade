@@ -23,7 +23,6 @@ namespace Moonglade.Web.Models
         [DataType(DataType.MultilineText)]
         public string RawHtmlContent { get; set; }
 
-        [JsonIgnore]
         [DataType(DataType.MultilineText)]
         public string CssContent { get; set; }
 
