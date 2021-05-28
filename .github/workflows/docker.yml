@@ -2,9 +2,7 @@ name: Docker Build and Push
 
 on:
   push:
-    branches: [ release ]
-  # pull_request:
-  #   branches: [ master ]
+    branches: [ v11.4 ]
 
 jobs:
 
