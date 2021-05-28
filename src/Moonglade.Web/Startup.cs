@@ -11,6 +11,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
@@ -69,6 +70,7 @@ namespace Moonglade.Web
         {
             // ASP.NET Setup
             services.AddOptions();
+            services.AddHttpContextAccessor();
             services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
             services.AddFeatureManagement();
             services.AddApplicationInsightsTelemetry();
