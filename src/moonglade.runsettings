@@ -12,6 +12,7 @@
                 <ModulePath>.*dapper.dll</ModulePath>
                 <ModulePath>.*edi.captcha.dll</ModulePath>
                 <ModulePath>.*nunit3.testadapter.dll</ModulePath>
+                <ModulePath>.*aspnetcoreratelimit.dll</ModulePath>
               </Exclude>
             </ModulePaths>
 
