@@ -2,7 +2,7 @@ name: ACR Build and Push
 
 on:
   push:
-    branches: [ v11.4 ]
+    branches: [ v11.5 ]
 
 jobs:
 
