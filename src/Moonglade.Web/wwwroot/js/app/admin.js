@@ -207,10 +207,12 @@ var postEditor = {
                     { text: 'JavaScript', value: 'javascript' },
                     { text: 'Json', value: 'json' },
                     { text: 'PowerShell', value: 'powershell' },
+                    { text: 'Plain Text', value: 'plaintext' },
                     { text: 'Python', value: 'python' },
                     { text: 'PHP', value: 'php' },
                     { text: 'Ruby', value: 'ruby' },
                     { text: 'SQL', value: 'sql' },
+                    { text: 'TypeScript', value: 'typescript' },
                     { text: 'Visual Basic', value: 'vb' }
                 ],
                 setup: function (editor) {
