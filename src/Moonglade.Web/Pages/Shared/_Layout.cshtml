@@ -233,7 +233,7 @@
         <script src="~/js/app/darklighttheme.js"></script>
     </environment>
 
-    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme && ViewBag.DisableLightSwitch == null || !ViewBag.DisableLightSwitch)
+    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme && (ViewBag.DisableLightSwitch == null || !ViewBag.DisableLightSwitch))
     {
         <script>
             if (window.matchMedia && window.themeModeSwitcher) {

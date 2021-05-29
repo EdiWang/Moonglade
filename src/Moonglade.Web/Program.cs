@@ -36,7 +36,6 @@ namespace Moonglade.Web
                 var services = scope.ServiceProvider;
                 var env = services.GetRequiredService<IWebHostEnvironment>();
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-                var blogConfig = services.GetRequiredService<IBlogConfig>();
                 var logger = loggerFactory.CreateLogger<Program>();
 
                 try
@@ -47,6 +46,8 @@ namespace Moonglade.Web
 
                     var dbConnection = services.GetRequiredService<IDbConnection>();
                     TryInitFirstRun(dbConnection, logger);
+
+                    var blogConfig = services.GetRequiredService<IBlogConfig>();
                     TryInitSiteIcons(blogConfig, env.WebRootPath, logger);
                 }
                 catch (Exception ex)
