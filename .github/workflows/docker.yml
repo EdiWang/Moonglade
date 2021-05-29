@@ -2,7 +2,7 @@ name: Docker Build and Push
 
 on:
   push:
-    branches: [ v11.5 ]
+    branches: [ master ]
 
 jobs:
 
@@ -20,4 +20,4 @@ jobs:
         name: ediwang/moonglade
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        tags: "latest,v11.5"
+        tags: "latest,v11.4"
