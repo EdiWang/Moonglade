@@ -58,7 +58,7 @@ namespace Moonglade.Web.Middleware
 
                 writer.WriteStartElement("Url");
                 writer.WriteAttributeString("type", "text/html");
-                writer.WriteAttributeString("template", $"{siteRootUrl.TrimEnd('/')}/search/{{searchTerms}}");
+                writer.WriteAttributeString("template", $"{siteRootUrl.TrimEnd('/')}/search?term={{searchTerms}}");
                 await writer.WriteEndElementAsync();
 
                 await writer.WriteEndElementAsync();
