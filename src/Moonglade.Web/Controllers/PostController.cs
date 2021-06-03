@@ -113,6 +113,11 @@ namespace Moonglade.Web.Controllers
                     ModelState.AddModelError(nameof(temp.ViewModel.CategoryList), "Please select at least one category.");
                 }
 
+                if (!temp.ViewModel.IsOriginal && string.IsNullOrWhiteSpace(temp.ViewModel.OriginLink))
+                {
+                    ModelState.AddModelError(nameof(temp.ViewModel.OriginLink), "Please enter the origin link.");
+                }
+
                 if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
                 // temp solution
@@ -136,6 +141,8 @@ namespace Moonglade.Web.Controllers
                     Abstract = model.Abstract,
                     IsPublished = model.IsPublished,
                     IsFeatured = model.Featured,
+                    IsOriginal = model.IsOriginal,
+                    OriginLink = model.OriginLink,
                     Tags = tags,
                     CategoryIds = catIds
                 };

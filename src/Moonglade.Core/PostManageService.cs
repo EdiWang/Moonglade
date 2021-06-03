@@ -79,6 +79,8 @@ namespace Moonglade.Core
                 IsDeleted = false,
                 IsPublished = request.IsPublished,
                 IsFeatured = request.IsFeatured,
+                IsOriginal = request.IsOriginal,
+                OriginLink = Helper.SterilizeLink(request.OriginLink),
                 PostExtension = new()
                 {
                     Hits = 0,
@@ -190,6 +192,8 @@ namespace Moonglade.Core
             post.IsFeedIncluded = request.IsFeedIncluded;
             post.ContentLanguageCode = request.ContentLanguageCode;
             post.IsFeatured = request.IsFeatured;
+            post.IsOriginal = request.IsOriginal;
+            post.OriginLink = Helper.SterilizeLink(request.OriginLink);
 
             // compute hash
             var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";

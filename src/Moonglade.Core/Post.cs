@@ -16,6 +16,8 @@ namespace Moonglade.Core
         public bool IsFeedIncluded { get; set; }
         public bool Featured { get; set; }
         public string ContentLanguageCode { get; set; }
+        public bool IsOriginal { get; set; }
+        public string OriginLink { get; set; }
         public Tag[] Tags { get; set; }
         public Category[] Categories { get; set; }
         public DateTime? PubDateUtc { get; set; }

@@ -66,10 +66,18 @@ namespace Moonglade.Web.Models
         [Display(Name = "Change Publish Date")]
         public bool ChangePublishDate { get; set; }
 
+        [Display(Name = "Original")]
+        public bool IsOriginal { get; set; }
+
+        [Display(Name = "Origin Link")]
+        [DataType(DataType.Url)]
+        public string OriginLink { get; set; }
+
         public PostEditModel()
         {
             PostId = Guid.Empty;
             CategoryList = new();
+            IsOriginal = true;
         }
     }
 

@@ -19,6 +19,8 @@ namespace Moonglade.Core
         public Guid[] CategoryIds { get; set; }
 
         public DateTime? PublishDate { get; set; }
+        public bool IsOriginal { get; set; }
+        public string OriginLink { get; set; }
 
         public UpdatePostRequest()
         {

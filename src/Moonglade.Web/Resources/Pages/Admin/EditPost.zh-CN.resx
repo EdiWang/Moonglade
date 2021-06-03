@@ -162,4 +162,7 @@
   <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
     <value>留空自动选取文章前 {0} 字符作为摘要</value>
   </data>
+  <data name="Origin Link" xml:space="preserve">
+    <value>原文链接</value>
+  </data>
 </root>

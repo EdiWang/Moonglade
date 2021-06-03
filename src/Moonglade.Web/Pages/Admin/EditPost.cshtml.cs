@@ -73,7 +73,9 @@ namespace Moonglade.Web.Pages.Admin
                 FeedIncluded = post.IsFeedIncluded,
                 LanguageCode = post.ContentLanguageCode,
                 Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),
-                Featured = post.Featured
+                Featured = post.Featured,
+                IsOriginal = post.IsOriginal,
+                OriginLink = post.OriginLink
             };
 
             if (post.PubDateUtc is not null)

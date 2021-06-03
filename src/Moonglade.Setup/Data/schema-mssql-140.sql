@@ -78,6 +78,8 @@ CREATE TABLE [Post](
 [LastModifiedUtc] [datetime] NULL,
 [IsPublished] [bit] NOT NULL,
 [IsFeatured] [bit] NOT NULL,
+[IsOriginal] [bit] NOT NULL,
+[OriginLink] [nvarchar](256) NULL,
 [IsDeleted] [bit] NOT NULL,
 [HashCheckSum] [int] NOT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
