@@ -35,7 +35,7 @@ namespace Moonglade.Utils
                     if (gitHash.Length <= 6) return version;
 
                     // consider valid hash
-                    var gitHashShort = gitHash.Substring(gitHash.Length - 6, 6);
+                    var gitHashShort = gitHash[..8];
                     return !string.IsNullOrWhiteSpace(gitHashShort) ? $"{prefix} ({gitHashShort})" : fileVersion;
                 }
 
