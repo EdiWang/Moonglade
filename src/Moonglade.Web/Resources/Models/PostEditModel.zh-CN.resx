@@ -135,6 +135,12 @@
   <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
     <value>必须为小写英文字符或中划线</value>
   </data>
+  <data name="Origin Link" xml:space="preserve">
+    <value>原文链接</value>
+  </data>
+  <data name="Original" xml:space="preserve">
+    <value>原创</value>
+  </data>
   <data name="Please enter a title." xml:space="preserve">
     <value>请输入标题</value>
   </data>
