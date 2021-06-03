@@ -64,6 +64,8 @@ namespace Moonglade.Core
             ExposedToSiteMap = p.ExposedToSiteMap,
             IsFeedIncluded = p.IsFeedIncluded,
             Featured = p.IsFeatured,
+            IsOriginal = p.IsOriginal,
+            OriginLink = p.OriginLink,
             ContentLanguageCode = p.ContentLanguageCode,
             Tags = p.Tags.Select(pt => new Tag
             {
