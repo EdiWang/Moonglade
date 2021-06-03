@@ -2,7 +2,7 @@ name: ACR Build and Push
 
 on:
   push:
-    branches: [ master ]
+    branches: [ release ]
 
 jobs:
 
