@@ -102,6 +102,11 @@
         </div>
 
         <div class="d-none d-md-block post-publish-info text-muted mb-2">
+            @if (Model.Post.IsOriginal)
+            {
+                <span class="badge bg-secondary me-2">@Localizer["Original"]</span>
+            }
+
             <i class="bi-calendar-event"></i>
             <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
             @BlogConfig.GeneralSettings.TimeZoneId
@@ -121,6 +126,7 @@
             @Html.Raw(content)
         }
     </section>
+
     @if (BlogConfig.ContentSettings.ShowPostFooter)
     {
         <section class="post-footer clearfix">
@@ -129,6 +135,14 @@
     }
 
     <partial name="_PostActions" model="Model.Post" />
+
+    @if (!string.IsNullOrWhiteSpace(Model.Post.OriginLink))
+    {
+        <a href="@Helper.SterilizeLink(Model.Post.OriginLink)" target="_blank">
+            <i class="bi-link"></i>
+            @Localizer["Read origin article"]
+        </a>
+    }
 </article>
 
 <div class="d-print-none">
