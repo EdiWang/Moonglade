@@ -6,7 +6,7 @@
 ![ACR Build and Push](https://github.com/EdiWang/Moonglade/workflows/ACR%20Build%20and%20Push/badge.svg) 
 ![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/ediwang/Moonglade%20DevOps/68?label=Unit%20Test%20Coverage)
 
-The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Enabling most common blogging features including posts, comments, categories, archive, tags and pages.
+The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Designed for developers, enabling most common blogging features including posts, comments, categories, archive, tags and pages.
 
 ## 📦 Deployment
 
