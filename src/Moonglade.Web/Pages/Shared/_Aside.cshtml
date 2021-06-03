@@ -52,14 +52,13 @@
         </section>
     </feature>
 
-    @if (BlogConfig.FriendLinksSettings.ShowFriendLinksSection)
-    {
+    <feature name="Widgets_FriendLink">
         <section id="aside-friendlink" class="mb-4">
             <cache expires-after="@TimeSpan.FromMinutes(60)">
                 @await Component.InvokeAsync("FriendLink")
             </cache>
         </section>
-    }
+    </feature>
 
     <feature name="Widgets_SubscriptionButtons">
         <section id="aside-subscription" class="text-center mb-4">
