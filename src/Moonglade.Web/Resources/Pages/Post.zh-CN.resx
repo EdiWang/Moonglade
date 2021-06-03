@@ -165,4 +165,10 @@
   <data name="Your comments (Markdown supported)" xml:space="preserve">
     <value>您的评论（支持Markdown）</value>
   </data>
+  <data name="Original" xml:space="preserve">
+    <value>原创</value>
+  </data>
+  <data name="Read origin article" xml:space="preserve">
+    <value>阅读原文</value>
+  </data>
 </root>
