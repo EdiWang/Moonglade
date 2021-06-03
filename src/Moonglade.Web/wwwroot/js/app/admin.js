@@ -197,7 +197,6 @@ var postEditor = {
                 body_class: 'post-content',
                 content_css: '/css/tinymce-bs-bundle.min.css',
                 codesample_languages: [
-                    { text: 'Text', value: 'text' },
                     { text: 'Bash', value: 'bash' },
                     { text: 'C#', value: 'csharp' },
                     { text: 'C', value: 'c' },
