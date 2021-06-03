@@ -186,7 +186,7 @@ var postEditor = {
                 branding: false,
                 block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
                 fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
-                plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools emoticons',
+                plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars fullscreen insertdatetime media nonbreaking save table directionality template codesample imagetools emoticons formatpainter code',
                 toolbar: 'formatselect | fontsizeselect | bold italic underline strikethrough | forecolor backcolor | removeformat | emoticons link hr image table codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
                 save_onsavecallback: function () {
                     $('#btn-save').trigger('click');
@@ -202,18 +202,23 @@ var postEditor = {
                     { text: 'C', value: 'c' },
                     { text: 'C++', value: 'cpp' },
                     { text: 'CSS', value: 'css' },
+                    { text: 'Dart', value: 'dart' },
                     { text: 'F#', value: 'fsharp' },
+                    { text: 'Go', value: 'go' },
                     { text: 'HTML/XML', value: 'markup' },
                     { text: 'JavaScript', value: 'javascript' },
                     { text: 'Json', value: 'json' },
+                    { text: 'Markdown', value: 'markdown' },
                     { text: 'PowerShell', value: 'powershell' },
                     { text: 'Plain Text', value: 'plaintext' },
                     { text: 'Python', value: 'python' },
                     { text: 'PHP', value: 'php' },
                     { text: 'Ruby', value: 'ruby' },
+                    { text: 'Rust', value: 'rust' },
                     { text: 'SQL', value: 'sql' },
                     { text: 'TypeScript', value: 'typescript' },
-                    { text: 'Visual Basic', value: 'vb' }
+                    { text: 'Visual Basic', value: 'vb' },
+                    { text: 'YAML', value: 'yaml' }
                 ],
                 setup: function (editor) {
                     editor.on('NodeChange', function (e) {
