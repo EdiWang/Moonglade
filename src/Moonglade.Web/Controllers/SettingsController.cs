@@ -222,17 +222,6 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("friendlink")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> FriendLink([FromForm] FriendLinksSettings model)
-        {
-            var fs = _blogConfig.FriendLinksSettings;
-            fs.ShowFriendLinksSection = model.ShowFriendLinksSection;
-
-            await _blogConfig.SaveAsync(fs);
-            return Ok();
-        }
-
         [HttpPost("set-blogger-avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]

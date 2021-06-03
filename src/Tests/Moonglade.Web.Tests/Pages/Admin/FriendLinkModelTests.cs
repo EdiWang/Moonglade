@@ -28,9 +28,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
 
         private FriendLinkModel CreateFriendLinkModel()
         {
-            return new(
-                _mockFriendLinkService.Object,
-                _mockBlogConfig.Object);
+            return new(_mockFriendLinkService.Object);
         }
 
         [Test]

@@ -193,19 +193,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task FriendLink_Post()
-        {
-            _mockBlogConfig.Setup(p => p.FriendLinksSettings).Returns(new FriendLinksSettings());
-            var settingsController = CreateSettingsController();
-            FriendLinksSettings model = new();
-
-            var result = await settingsController.FriendLink(model);
-
-            Assert.IsInstanceOf<OkResult>(result);
-            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FriendLinksSettings>()));
-        }
-
-        [Test]
         public async Task SetBloggerAvatar_Post_BadData()
         {
             var settingsController = CreateSettingsController();

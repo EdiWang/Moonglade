@@ -79,68 +79,39 @@
 </h3>
 <hr />
 
-<div class="row">
-    <div class="col-md-8">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>
-                        @Localizer["Title"]
-                    </th>
-                    <th>
-                        @Localizer["Link"]
-                    </th>
-                    <th class="table-item-w20">
-                        @Localizer["Action"]
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
-                {
-                    <tr id="tr-@item.Id">
-                        <td>
-                            @item.Title
-                        </td>
-                        <td>
-                            <a href="@item.LinkUrl" target="_blank">@item.LinkUrl</a>
-                        </td>
-                        <td>
-                            <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-primary btn-edit"><i class="bi-pen"></i></a>
-                            <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
-                            <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="col-md-4">
-        <form id="form-settings" asp-controller="Settings" asp-action="FriendLink"
-              data-ajax-begin="onUpdateSettingsBegin"
-              data-ajax-complete="onUpdateSettingsComplete"
-              data-ajax-failure="onUpdateSettingsFailed"
-              data-ajax-success="onUpdateSettingsSuccess"
-              data-ajax="true"
-              data-ajax-method="POST">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="card mb-4">
-                <div class="card-header">@Localizer["Friend Link Options"]</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="FriendLinkSettingsViewModel.ShowFriendLinksSection" class="form-check-input">
-                            <label asp-for="FriendLinkSettingsViewModel.ShowFriendLinksSection" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
-                <div class="card-footer">
-                    <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Localizer["Title"]
+            </th>
+            <th>
+                @Localizer["Link"]
+            </th>
+            <th class="table-item-w20">
+                @Localizer["Action"]
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
+        {
+            <tr id="tr-@item.Id">
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    <a href="@item.LinkUrl" target="_blank">@item.LinkUrl</a>
+                </td>
+                <td>
+                    <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-primary btn-edit"><i class="bi-pen"></i></a>
+                    <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
+                    <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @Html.AntiForgeryToken()
 
