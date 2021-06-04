@@ -132,8 +132,8 @@
   <data name="Continue" xml:space="preserve">
     <value>继续</value>
   </data>
-  <data name="Language Code" xml:space="preserve">
-    <value>语言代码</value>
+  <data name="Language" xml:space="preserve">
+    <value>语言</value>
   </data>
   <data name="Manage" xml:space="preserve">
     <value>管理</value>

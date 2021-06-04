@@ -1,14 +1,19 @@
 ﻿@page "/admin/post/edit/{id:guid?}"
+@using Microsoft.AspNetCore.Builder
 @model Moonglade.Web.Pages.Admin.EditPostModel
+@inject IOptions<RequestLocalizationOptions> _locOptions
 @{
     ViewBag.Title = "Manage Posts";
 
-    var langList = new[] { "en-us", "zh-cn" }
-        .Select(t => new SelectListItem
-        {
-            Text = t,
-            Value = t
-        });
+    var cultureItems = _locOptions.Value.SupportedUICultures
+        .Select(c => new { Value = c.Name, c.NativeName });
+
+    var langList = cultureItems
+    .Select(t => new SelectListItem
+    {
+        Text = t.NativeName,
+        Value = t.Value.ToLower()
+    });
 }
 
 @section scripts{
@@ -158,7 +163,7 @@
                 </ul>
                 <div class="card-body">
                     <div class="input-group input-group-sm mb-2">
-                        <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
+                        <label class="input-group-text" for="LanguageCode">@Localizer["Language"]</label>
                         <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                     </div>
                     <div class="form-floating">
