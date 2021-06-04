@@ -99,21 +99,31 @@
                 <span asp-validation-for="ViewModel.EditorContent" class="text-danger"></span>
             </div>
 
-            <div class="form-floating">
-                <textarea asp-for="ViewModel.Abstract"
-                          placeholder="@Localizer["Abstract"]"
-                          class="form-control form-control-sm"
-                          style="height: 90px"></textarea>
-                <label for="ViewModel_Abstract">@Localizer["Abstract"]</label>
+            <div class="row g-1">
+                <div class="col-8">
+                    <div class="form-floating">
+                        <textarea asp-for="ViewModel.Abstract"
+                                  placeholder="@Localizer["Abstract"]"
+                                  class="form-control form-control-sm"
+                                  data-bs-toggle="tooltip"
+                                  data-placement="top"
+                                  title="@Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", Settings.Value.PostAbstractWords]"
+                                  style="height: 90px"></textarea>
+                        <label for="ViewModel_Abstract">@Localizer["Abstract"]</label>
+                    </div>
+                    <span asp-validation-for="ViewModel.Abstract" class="text-danger"></span>
+                </div>
+                <div class="col-4">
+                    <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
+                </div>
             </div>
-            <div class="small text-muted mt-1 mb-1">
-                @Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", Settings.Value.PostAbstractWords]
-            </div>
-            <span asp-validation-for="ViewModel.Abstract" class="text-danger"></span>
         </div>
         <div class="col-md-3 col-xl-2">
             <div class="card mb-3">
-                <div class="card-header">@Localizer["Options"]</div>
+                <div class="card-header">
+                    <i class="bi-clipboard-check me-1"></i>
+                    @Localizer["Options"]
+                </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="form-check form-switch">
@@ -139,18 +149,6 @@
                             <label asp-for="ViewModel.ExposedToSiteMap" class="form-check-label"></label>
                         </div>
                     </li>
-                </ul>
-                <div class="card-body">
-                    <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
-
-                    <div class="input-group input-group-sm mt-2 mb-2">
-                        <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
-                        <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
-                    </div>
-                </div>
-            </div>
-            <div class="card mb-3">
-                <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="form-check form-switch">
                             <input type="checkbox" asp-for="ViewModel.IsOriginal" class="form-check-input">
@@ -159,15 +157,37 @@
                     </li>
                 </ul>
                 <div class="card-body">
+                    <div class="input-group input-group-sm mb-2">
+                        <label class="input-group-text" for="LanguageCode">@Localizer["Language Code"]</label>
+                        <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
+                    </div>
                     <div class="form-floating">
                         <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
                         <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
                     </div>
+
+                    @if (Model.ViewModel.PostId != Guid.Empty)
+                    {
+                        <div class="mt-2">
+                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
+                                <i class="bi-clock-history"></i>
+                                @Localizer["Change Publish Date"]
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
 
             <div class="card mb-3">
-                <div class="card-header">@Localizer["Categories"]</div>
+                <div class="card-header">
+                    <i class="bi-folder2 me-1"></i>
+                    @Localizer["Categories"]
+
+                    <a asp-page="./Category" class="float-end">
+                        <i class="bi-box-arrow-up-right"></i>
+                        @Localizer["Manage"]
+                    </a>
+                </div>
                 <div class="card-body">
                     @if (null != Model.ViewModel.CategoryList && Model.ViewModel.CategoryList.Any())
                     {
@@ -189,21 +209,8 @@
                             </ul>
                         </div>
                     }
-
-                    <hr />
-                    <a asp-page="./Category" class="btn w-100 btn-sm btn-outline-secondary">
-                        <i class="bi-box-arrow-up-right"></i>
-                        @Localizer["Manage Categories"]
-                    </a>
                 </div>
             </div>
-
-            @if (Model.ViewModel.PostId != Guid.Empty)
-            {
-                <div>
-                    <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">@Localizer["Change Publish Date"]</a>
-                </div>
-            }
         </div>
     </div>
 
@@ -223,7 +230,7 @@
                 @Localizer["Preview"]
             </button>
         }
-        <a asp-page="./Post" class="btn btn-light">@Localizer["Cancel"]</a>
+        <a asp-page="./Post" class="btn btn-outline-secondary">@Localizer["Cancel"]</a>
     </div>
 
     <div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">

@@ -135,8 +135,8 @@
   <data name="Language Code" xml:space="preserve">
     <value>语言代码</value>
   </data>
-  <data name="Manage Categories" xml:space="preserve">
-    <value>管理分类</value>
+  <data name="Manage" xml:space="preserve">
+    <value>管理</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>选项</value>
