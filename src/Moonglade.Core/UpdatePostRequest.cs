@@ -21,6 +21,7 @@ namespace Moonglade.Core
         public DateTime? PublishDate { get; set; }
         public bool IsOriginal { get; set; }
         public string OriginLink { get; set; }
+        public string HeroImageUrl { get; set; }
 
         public UpdatePostRequest()
         {

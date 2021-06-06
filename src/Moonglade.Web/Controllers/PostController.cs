@@ -143,6 +143,7 @@ namespace Moonglade.Web.Controllers
                     IsFeatured = model.Featured,
                     IsOriginal = model.IsOriginal,
                     OriginLink = model.OriginLink,
+                    HeroImageUrl = model.HeroImageUrl,
                     Tags = tags,
                     CategoryIds = catIds
                 };

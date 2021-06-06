@@ -166,9 +166,16 @@
                         <label class="input-group-text" for="LanguageCode">@Localizer["Language"]</label>
                         <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                     </div>
-                    <div class="form-floating">
+                    <div class="form-floating mb-2">
                         <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
                         <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
+                    </div>
+                    <div class="form-floating">
+                        <textarea asp-for="ViewModel.HeroImageUrl" class="form-control form-control-sm" placeholder="@Localizer["Hero Image Url"]"></textarea>
+                        <label for="ViewModel_HeroImageUrl">@Localizer["Hero Image Url"]</label>
+                    </div>
+                    <div class="text-muted">
+                        <small>* Image uploader coming soon...</small>
                     </div>
 
                     @if (Model.ViewModel.PostId != Guid.Empty)
