@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -9,11 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Web
 {
-    public static class IconRepository
-    {
-        public static ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; } = new();
-    }
-
     public static class MemoryStreamIconGenerator
     {
         public static void GenerateIcons(string base64Data, string webRootPath, ILogger logger)
@@ -65,27 +59,27 @@ namespace Moonglade.Web
                     var fileName = $"{key}{size}x{size}.png";
                     var bytes = ResizeImage(ms, size, size, ImageFormat.Png);
 
-                    IconRepository.SiteIconDictionary.TryAdd(fileName, bytes);
+                    Program.SiteIconDictionary.TryAdd(fileName, bytes);
                 }
             }
 
             var icon1Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
-            IconRepository.SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
+            Program.SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
 
             var icon2Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
-            IconRepository.SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
+            Program.SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
 
-            if (IconRepository.SiteIconDictionary.ContainsKey("favicon-16x16.png"))
+            if (Program.SiteIconDictionary.ContainsKey("favicon-16x16.png"))
             {
-                var icoBytes = GenerateIco(IconRepository.SiteIconDictionary["favicon-16x16.png"]);
-                IconRepository.SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
+                var icoBytes = GenerateIco(Program.SiteIconDictionary["favicon-16x16.png"]);
+                Program.SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
             }
         }
 
         public static byte[] GetIcon(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return null;
-            return IconRepository.SiteIconDictionary.ContainsKey(fileName) ? IconRepository.SiteIconDictionary[fileName] : null;
+            return Program.SiteIconDictionary.ContainsKey(fileName) ? Program.SiteIconDictionary[fileName] : null;
         }
 
         private static byte[] GenerateIco(byte[] fromBytes)

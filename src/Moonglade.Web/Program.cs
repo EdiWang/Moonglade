@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -16,6 +17,8 @@ namespace Moonglade.Web
 {
     public class Program
     {
+        public static ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; } = new();
+
         public static void Main(string[] args)
         {
             var info = $"App:\tMoonglade {Helper.AppVersion}\n" +
@@ -102,7 +105,7 @@ namespace Moonglade.Web
                 var iconData = blogConfig.GetAssetData(AssetId.SiteIconBase64);
                 MemoryStreamIconGenerator.GenerateIcons(iconData, webRootPath, logger);
 
-                logger.LogInformation($"Generated {IconRepository.SiteIconDictionary.Count} icon(s).");
+                logger.LogInformation($"Generated {SiteIconDictionary.Count} icon(s).");
             }
             catch (Exception e)
             {
