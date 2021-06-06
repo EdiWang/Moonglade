@@ -32,10 +32,10 @@ namespace Moonglade.Utils
                     var gitHash = version[(version.IndexOf('+') + 1)..]; // e57ab0321ae44bd778c117646273a77123b6983f
                     var prefix = version[..version.IndexOf('+')]; // 11.2-preview
 
-                    if (gitHash.Length <= 8) return version;
+                    if (gitHash.Length <= 6) return version;
 
                     // consider valid hash
-                    var gitHashShort = gitHash[..8];
+                    var gitHashShort = gitHash[..6];
                     return !string.IsNullOrWhiteSpace(gitHashShort) ? $"{prefix} ({gitHashShort})" : fileVersion;
                 }
 
