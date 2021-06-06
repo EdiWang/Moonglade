@@ -73,6 +73,10 @@ namespace Moonglade.Web.Models
         [DataType(DataType.Url)]
         public string OriginLink { get; set; }
 
+        [Display(Name = "Hero Image")]
+        [DataType(DataType.Url)]
+        public string HeroImageUrl { get; set; }
+
         public PostEditModel()
         {
             PostId = Guid.Empty;

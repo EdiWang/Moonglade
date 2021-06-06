@@ -75,7 +75,8 @@ namespace Moonglade.Web.Pages.Admin
                 Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),
                 Featured = post.Featured,
                 IsOriginal = post.IsOriginal,
-                OriginLink = post.OriginLink
+                OriginLink = post.OriginLink,
+                HeroImageUrl = post.HeroImageUrl
             };
 
             if (post.PubDateUtc is not null)

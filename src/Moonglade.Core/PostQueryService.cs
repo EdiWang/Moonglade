@@ -66,6 +66,7 @@ namespace Moonglade.Core
             Featured = p.IsFeatured,
             IsOriginal = p.IsOriginal,
             OriginLink = p.OriginLink,
+            HeroImageUrl = p.HeroImageUrl,
             ContentLanguageCode = p.ContentLanguageCode,
             Tags = p.Tags.Select(pt => new Tag
             {
