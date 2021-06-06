@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
