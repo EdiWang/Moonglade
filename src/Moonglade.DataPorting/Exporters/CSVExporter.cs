@@ -26,11 +26,11 @@ namespace Moonglade.DataPorting.Exporters
         public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken)
         {
             var data = await _repository.SelectAsync(selector);
-            var result = await ToCSVResult(data);
+            var result = await ToCSVResult(data, cancellationToken);
             return result;
         }
 
-        private async Task<ExportResult> ToCSVResult<TResult>(IEnumerable<TResult> data)
+        private async Task<ExportResult> ToCSVResult<TResult>(IEnumerable<TResult> data, CancellationToken cancellationToken)
         {
             var tempId = Guid.NewGuid().ToString();
             string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
@@ -39,7 +39,7 @@ namespace Moonglade.DataPorting.Exporters
 
             await using var writer = new StreamWriter(distPath);
             await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-            await csv.WriteRecordsAsync(data);
+            await csv.WriteRecordsAsync(data, cancellationToken);
 
             return new()
             {
