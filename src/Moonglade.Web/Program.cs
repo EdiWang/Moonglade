@@ -3,7 +3,9 @@ using System.Collections.Concurrent;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -105,7 +107,7 @@ namespace Moonglade.Web
                 var iconData = blogConfig.GetAssetData(AssetId.SiteIconBase64);
                 MemoryStreamIconGenerator.GenerateIcons(iconData, webRootPath, logger);
 
-                logger.LogInformation($"Generated {SiteIconDictionary.Count} icon(s).");
+                logger.LogInformation($"Generated {SiteIconDictionary.Count} icon(s). \n{JsonSerializer.Serialize(SiteIconDictionary.Select(p => p.Key).OrderBy(x => x))}");
             }
             catch (Exception e)
             {
