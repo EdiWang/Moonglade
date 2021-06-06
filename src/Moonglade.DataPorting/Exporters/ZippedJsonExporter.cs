@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
 using Newtonsoft.Json;
@@ -23,21 +24,21 @@ namespace Moonglade.DataPorting.Exporters
             _directory = directory;
         }
 
-        public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector)
+        public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken)
         {
             var data = await _repository.SelectAsync(selector);
-            var result = await ToZippedJsonResult(data);
+            var result = await ToZippedJsonResult(data, cancellationToken);
             return result;
         }
 
-        private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list)
+        private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list, CancellationToken cancellationToken)
         {
             var tempId = Guid.NewGuid().ToString();
             string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
             foreach (var item in list)
             {
                 var json = JsonConvert.SerializeObject(item, Formatting.Indented);
-                await SaveJsonToDirectory(json, exportDirectory, $"{Guid.NewGuid()}.json");
+                await SaveJsonToDirectory(json, exportDirectory, $"{Guid.NewGuid()}.json", cancellationToken);
             }
 
             var distPath = Path.Join(_directory, "export", $"{_fileNamePrefix}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.zip");
@@ -50,10 +51,10 @@ namespace Moonglade.DataPorting.Exporters
             };
         }
 
-        private static async Task SaveJsonToDirectory(string json, string directory, string filename)
+        private static async Task SaveJsonToDirectory(string json, string directory, string filename, CancellationToken cancellationToken)
         {
             var path = Path.Join(directory, filename);
-            await File.WriteAllTextAsync(path, json, Encoding.UTF8);
+            await File.WriteAllTextAsync(path, json, Encoding.UTF8, cancellationToken);
         }
     }
 }

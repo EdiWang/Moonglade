@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
 using Moonglade.Data.Infrastructure;
@@ -22,7 +23,7 @@ namespace Moonglade.DataPorting.Exporters
             _directory = directory;
         }
 
-        public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector)
+        public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken)
         {
             var data = await _repository.SelectAsync(selector);
             var result = await ToCSVResult(data);

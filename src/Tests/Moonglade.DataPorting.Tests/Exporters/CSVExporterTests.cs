@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
 using Moonglade.DataPorting.Exporters;
@@ -41,7 +42,7 @@ namespace Moonglade.DataPorting.Tests.Exporters
             _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), true)).Returns(Task.FromResult(data));
 
             var csvExporter = CreateCSVExporter();
-            var result = await csvExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>());
+            var result = await csvExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), CancellationToken.None);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(ExportFormat.SingleCSVFile, result.ExportFormat);

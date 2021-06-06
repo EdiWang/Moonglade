@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,9 +24,9 @@ namespace Moonglade.Web.Controllers
 
         [HttpGet("export/{type}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExportDownload(ExportDataType type)
+        public async Task<IActionResult> ExportDownload(ExportDataType type, CancellationToken cancellationToken)
         {
-            var exportResult = await _expman.ExportData(type);
+            var exportResult = await _expman.ExportData(type, cancellationToken);
             switch (exportResult.ExportFormat)
             {
                 case ExportFormat.SingleJsonFile:

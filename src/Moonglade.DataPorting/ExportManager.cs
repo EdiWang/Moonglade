@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -46,7 +47,7 @@ namespace Moonglade.DataPorting
             return path;
         }
 
-        public async Task<ExportResult> ExportData(ExportDataType dataType)
+        public async Task<ExportResult> ExportData(ExportDataType dataType, CancellationToken cancellationToken)
         {
             switch (dataType)
             {
@@ -57,7 +58,7 @@ namespace Moonglade.DataPorting
                         p.Id,
                         p.NormalizedName,
                         p.DisplayName
-                    });
+                    }, cancellationToken);
                     return tagExportData;
 
                 case ExportDataType.Categories:
@@ -68,12 +69,12 @@ namespace Moonglade.DataPorting
                         p.DisplayName,
                         p.RouteName,
                         p.Note
-                    });
+                    }, cancellationToken);
                     return catExportData;
 
                 case ExportDataType.FriendLinks:
                     var fdExp = new CSVExporter<FriendLinkEntity>(_friendlinkRepository, "moonglade-friendlinks", _dataDir);
-                    var fdExportData = await fdExp.ExportData(p => p);
+                    var fdExportData = await fdExp.ExportData(p => p, cancellationToken);
                     return fdExportData;
 
                 case ExportDataType.Pages:
@@ -90,7 +91,7 @@ namespace Moonglade.DataPorting
                         p.IsPublished,
                         p.CreateTimeUtc,
                         p.UpdateTimeUtc
-                    });
+                    }, cancellationToken);
 
                     return pgExportData;
                 case ExportDataType.Posts:
@@ -113,7 +114,7 @@ namespace Moonglade.DataPorting
                         p.IsPublished,
                         Categories = p.PostCategory.Select(pc => pc.Category.DisplayName),
                         Tags = p.Tags.Select(pt => pt.DisplayName)
-                    });
+                    }, cancellationToken);
 
                     return poExportData;
                 default:
