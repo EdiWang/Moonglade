@@ -28,6 +28,7 @@ namespace Moonglade.Data.Entities
         public bool IsDeleted { get; set; }
         public bool IsOriginal { get; set; }
         public string OriginLink { get; set; }
+        public string HeroImageUrl { get; set; }
         public bool IsFeatured { get; set; }
         public int HashCheckSum { get; set; }
 
