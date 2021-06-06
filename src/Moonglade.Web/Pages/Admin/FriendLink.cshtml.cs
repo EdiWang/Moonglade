@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Configuration;
 using Moonglade.FriendLink;
 using Moonglade.Web.Models;
-using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Pages.Admin
 {
