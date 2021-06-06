@@ -90,12 +90,23 @@
             <div>
                 <span asp-validation-for="ViewModel.Title" class="text-danger"></span>
             </div>
-            <div class="mt-1 mb-1">
-                <div class="input-group input-group-sm">
-                    <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" />
-                </div>
-                <div>
-                    <span asp-validation-for="ViewModel.Slug" class="text-danger"></span>
+            <div class="mt-1">
+                <div class="row g-1">
+                    <div class="col">
+                        <div class="input-group input-group-sm">
+                            <label class="input-group-text" asp-for="ViewModel.Slug">Slug</label>
+                            <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false"/>
+                        </div>
+                        <div>
+                            <span asp-validation-for="ViewModel.Slug" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-auto">
+                        <div class="input-group input-group-sm mb-2">
+                            <label class="input-group-text" for="LanguageCode">@Localizer["Language"]</label>
+                            <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -162,13 +173,16 @@
                     </li>
                 </ul>
                 <div class="card-body">
-                    <div class="input-group input-group-sm mb-2">
-                        <label class="input-group-text" for="LanguageCode">@Localizer["Language"]</label>
-                        <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
-                    </div>
-                    <div class="form-floating">
+                    <div class="form-floating mb-2">
                         <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
                         <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
+                    </div>
+                    <div class="form-floating">
+                        <textarea asp-for="ViewModel.HeroImageUrl" class="form-control form-control-sm" placeholder="@Localizer["Hero Image Url"]"></textarea>
+                        <label for="ViewModel_HeroImageUrl">@Localizer["Hero Image Url"]</label>
+                    </div>
+                    <div class="text-muted">
+                        <small>* Image uploader coming soon...</small>
                     </div>
 
                     @if (Model.ViewModel.PostId != Guid.Empty)
@@ -181,39 +195,37 @@
                         </div>
                     }
                 </div>
-            </div>
+                <div class="card-body border-top">
+                    <h6 class="card-subtitle mb-3 text-muted">
+                        <i class="bi-folder2 me-1"></i>
+                        @Localizer["Categories"]
+                    </h6>
 
-            <div class="card mb-3">
-                <div class="card-header">
-                    <i class="bi-folder2 me-1"></i>
-                    @Localizer["Categories"]
-
-                    <a asp-page="./Category" class="float-end">
-                        <i class="bi-box-arrow-up-right"></i>
-                        @Localizer["Manage"]
-                    </a>
-                </div>
-                <div class="card-body">
                     @if (null != Model.ViewModel.CategoryList && Model.ViewModel.CategoryList.Any())
                     {
-                        <div class="catlist">
+                        <div class="catlist mb-2">
                             <ul>
                                 @for (int i = 0; i < Model.ViewModel.CategoryList.Count; i++)
                                 {
                                     <li>
                                         <div class="form-check">
-                                            <input type="checkbox" asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-input" />
+                                            <input type="checkbox" asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-input"/>
                                             <label asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-label">
                                                 @Model.ViewModel.CategoryList[i].DisplayText
                                             </label>
                                         </div>
-                                        <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].Id" />
-                                        <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].DisplayText" />
+                                        <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].Id"/>
+                                        <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].DisplayText"/>
                                     </li>
                                 }
                             </ul>
                         </div>
                     }
+                    
+                    <a asp-page="./Category" class="btn btn-sm btn-outline-secondary w-100">
+                        <i class="bi-box-arrow-up-right"></i>
+                        @Localizer["Manage"]
+                    </a>
                 </div>
             </div>
         </div>

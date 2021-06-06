@@ -116,6 +116,14 @@
 
         <hr class="d-none d-md-block" />
     </header>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Post.HeroImageUrl))
+    {
+        <div class="post-hero-image-container text-center mb-3">
+            <img src="@Helper.SterilizeLink(Model.Post.HeroImageUrl)" class="post-hero-image img-fluid rounded-3 shadow-sm" />
+        </div>
+    }
+
     <section class="post-content clearfix">
         @if (ec == EditorChoice.Markdown)
         {
