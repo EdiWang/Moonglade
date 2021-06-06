@@ -18,6 +18,7 @@ namespace Moonglade.Core
         public string ContentLanguageCode { get; set; }
         public bool IsOriginal { get; set; }
         public string OriginLink { get; set; }
+        public string HeroImageUrl { get; set; }
         public Tag[] Tags { get; set; }
         public Category[] Categories { get; set; }
         public DateTime? PubDateUtc { get; set; }
