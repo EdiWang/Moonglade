@@ -1,6 +1,5 @@
 ﻿@page "/admin/settings/content"
 @model Moonglade.Web.Pages.Settings.ContentModel
-@using Moonglade.Configuration
 
 <partial name="_SettingsHeader" />
 
@@ -45,8 +44,14 @@
                 </ul>
                 <div class="card-body">
                     <div class="mb-2">
-                        <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
-                        <textarea asp-for="ViewModel.DisharmonyWords" class="form-control h-200px" spellcheck="false"></textarea>
+                        <div class="form-floating">
+                            <textarea asp-for="ViewModel.DisharmonyWords"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
+                                      class="form-control form-control-sm h-200px"
+                                      spellcheck="false"></textarea>
+                            <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
+                        </div>
+
                         <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                     </div>
@@ -78,7 +83,7 @@
                     </li>
                 </ul>
                 <div class="card-body">
-                    <div class="row mb-3">
+                    <div class="row g-2 mb-3">
                         <div class="col">
                             <label class="form-label" asp-for="ViewModel.PostListPageSize"></label>
                             <input asp-for="ViewModel.PostListPageSize" class="form-control" />
@@ -106,12 +111,15 @@
                 </ul>
                 <div class="card-body">
                     <div>
-                        <label class="form-label" asp-for="ViewModel.PostFooterHtmlPitch"></label>
-                        <textarea asp-for="ViewModel.PostFooterHtmlPitch"
-                                  class="form-control h-100px"
-                                  style="font-size: 12px; font-family: 'Consolas'"
-                                  spellcheck="false"></textarea>
+                        <div class="form-floating">
+                            <textarea asp-for="ViewModel.PostFooterHtmlPitch"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.PostFooterHtmlPitch)"
+                                      class="form-control form-control-sm h-100px"
+                                      spellcheck="false"></textarea>
+                            <label class="form-label" asp-for="ViewModel.PostFooterHtmlPitch"></label>
+                        </div>
                         <span asp-validation-for="ViewModel.PostFooterHtmlPitch" class="text-danger"></span>
+
                         <small class="form-text text-muted">@Localizer["e.g. Your blog post license information."]</small>
                     </div>
                 </div>
@@ -128,8 +136,13 @@
                 </ul>
                 <div class="card-body">
                     <div>
-                        <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
-                        <textarea asp-for="ViewModel.CalloutSectionHtmlPitch" class="form-control h-100px" style="font-size: 12px; font-family: 'Consolas'" spellcheck="false"></textarea>
+                        <div class="form-floating">
+                            <textarea asp-for="ViewModel.CalloutSectionHtmlPitch"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.CalloutSectionHtmlPitch)"
+                                      class="form-control form-control-sm h-100px"
+                                      spellcheck="false"></textarea>
+                            <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
+                        </div>
                         <span asp-validation-for="ViewModel.CalloutSectionHtmlPitch" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["The call-out section will display on top of every page in the website."]</small>
                     </div>

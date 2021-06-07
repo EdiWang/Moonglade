@@ -178,8 +178,10 @@
                         <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
                     </div>
                     <div class="form-floating">
-                        <textarea asp-for="ViewModel.HeroImageUrl" class="form-control form-control-sm" placeholder="@Localizer["Hero Image Url"]"></textarea>
-                        <label for="ViewModel_HeroImageUrl">@Localizer["Hero Image Url"]</label>
+                        <textarea asp-for="ViewModel.HeroImageUrl" 
+                                  class="form-control form-control-sm" 
+                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.HeroImageUrl)"></textarea>
+                        <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
                     </div>
                     <div class="text-muted">
                         <small>* Image uploader coming soon...</small>

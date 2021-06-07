@@ -238,8 +238,13 @@
                     </li>
                 </ul>
                 <div class="card-body">
-                    <label class="form-label" asp-for="PageEditModel.MetaDescription"></label>
-                    <textarea asp-for="PageEditModel.MetaDescription" class="form-control"></textarea>
+                    <div class="form-floating">
+                        <textarea asp-for="PageEditModel.MetaDescription"
+                                      placeholder="@Html.DisplayNameFor(m => m.PageEditModel.MetaDescription)"
+                                      class="form-control form-control-sm h-200px"
+                                      spellcheck="false"></textarea>
+                        <label class="form-label" asp-for="PageEditModel.MetaDescription"></label>
+                    </div>
                     <span asp-validation-for="PageEditModel.MetaDescription" class="text-danger"></span>
                 </div>
             </div>
