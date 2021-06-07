@@ -98,7 +98,7 @@ namespace Moonglade.Web.Controllers
             {
                 _logger.LogError(e, e.Message, culture, returnUrl);
 
-                // We shall not respect his return URL now, because the returnUrl might be hacking.
+                // We shall not respect the return URL now, because the returnUrl might be hacking.
                 return LocalRedirect("~/");
             }
         }
