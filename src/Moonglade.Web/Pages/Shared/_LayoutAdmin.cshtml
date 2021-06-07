@@ -104,10 +104,6 @@
                         <i class="bi-tag admin-nav-icon"></i>
                         @Localizer["Tags"]
                     </a>
-                    <a asp-page="/Admin/Pingback" class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
-                        <i class="bi-arrow-left-right admin-nav-icon"></i>
-                        @Localizer["Pingbacks"]
-                    </a>
                     <a asp-page="/Admin/Menu" class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
                         <i class="bi-menu-button-wide admin-nav-icon"></i>
                         @Localizer["Menus"]
@@ -115,6 +111,10 @@
                     <a asp-page="/Admin/FriendLink" class="list-group-item list-group-item-action @(currentPage is "/Admin/FriendLink" ? "active" : null)">
                         <i class="bi-link-45deg admin-nav-icon"></i>
                         @Localizer["Friend Links"]
+                    </a>
+                    <a asp-page="/Admin/Pingback" class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
+                        <i class="bi-arrow-left-right admin-nav-icon"></i>
+                        @Localizer["Pingbacks"]
                     </a>
                     @if (_authOptions.Value.Provider == AuthenticationProvider.Local)
                     {
