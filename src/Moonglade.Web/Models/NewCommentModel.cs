@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Edi.Captcha;
 
 namespace Moonglade.Web.Models
 {
@@ -19,10 +20,5 @@ namespace Moonglade.Web.Models
         [Required]
         [StringLength(4)]
         public string CaptchaCode { get; set; }
-    }
-
-    public interface ICaptchable
-    {
-        string CaptchaCode { get; set; }
     }
 }

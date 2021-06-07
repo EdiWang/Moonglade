@@ -2,7 +2,6 @@
 using Edi.Captcha;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Filters
 {
