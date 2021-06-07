@@ -19,6 +19,10 @@
     font-weight: bold;
 }
 
+.icon-diag-large {
+    font-size: 64px;
+}
+
 .admin-nav-icon {
     font-size: 16px;
     display: inline-block;
