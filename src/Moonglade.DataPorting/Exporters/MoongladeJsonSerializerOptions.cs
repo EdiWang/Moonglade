@@ -18,7 +18,8 @@ namespace Moonglade.DataPorting.Exporters
                 UnicodeRanges.CjkStrokes,
                 UnicodeRanges.CjkUnifiedIdeographs,
                 UnicodeRanges.CjkUnifiedIdeographsExtensionA,
-                UnicodeRanges.CjkSymbolsandPunctuation),
+                UnicodeRanges.CjkSymbolsandPunctuation,
+                UnicodeRanges.HalfwidthandFullwidthForms),
             PropertyNameCaseInsensitive = true,
             WriteIndented = true
         };

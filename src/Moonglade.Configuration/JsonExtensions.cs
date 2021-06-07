@@ -18,7 +18,8 @@ namespace Moonglade.Configuration
                 UnicodeRanges.CjkStrokes,
                 UnicodeRanges.CjkUnifiedIdeographs,
                 UnicodeRanges.CjkUnifiedIdeographsExtensionA,
-                UnicodeRanges.CjkSymbolsandPunctuation),
+                UnicodeRanges.CjkSymbolsandPunctuation,
+                UnicodeRanges.HalfwidthandFullwidthForms),
             PropertyNameCaseInsensitive = true
         };
 

@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
 using Microsoft.ApplicationInsights.DependencyCollector;
@@ -96,6 +98,25 @@ namespace Moonglade.Web
                         options.Conventions.AuthorizeFolder("/Admin");
                         options.Conventions.AuthorizeFolder("/Settings");
                     });
+
+            // Fix Chinese character being encoded in HTML output
+            services.AddSingleton(HtmlEncoder.Create(
+                new []
+                {
+                    UnicodeRanges.BasicLatin,
+                    UnicodeRanges.CjkCompatibility,
+                    UnicodeRanges.CjkCompatibilityForms,
+                    UnicodeRanges.CjkCompatibilityIdeographs,
+                    UnicodeRanges.CjkRadicalsSupplement,
+                    UnicodeRanges.CjkStrokes,
+                    UnicodeRanges.CjkUnifiedIdeographs,
+                    UnicodeRanges.CjkUnifiedIdeographsExtensionA,
+                    UnicodeRanges.CjkSymbolsandPunctuation,
+                    UnicodeRanges.EnclosedCjkLettersandMonths,
+                    UnicodeRanges.MiscellaneousSymbols,
+                    UnicodeRanges.HalfwidthandFullwidthForms
+                }
+            ));
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
