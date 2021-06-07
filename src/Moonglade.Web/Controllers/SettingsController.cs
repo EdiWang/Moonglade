@@ -87,12 +87,7 @@ namespace Moonglade.Web.Controllers
                     new() { Expires = DateTimeOffset.UtcNow.AddYears(1) }
                 );
 
-                if (string.IsNullOrWhiteSpace(returnUrl))
-                {
-                    return LocalRedirect("~/");
-                }
-
-                return LocalRedirect(returnUrl);
+                return LocalRedirect(string.IsNullOrWhiteSpace(returnUrl) ? "~/" : returnUrl);
             }
             catch (Exception e)
             {
