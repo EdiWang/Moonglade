@@ -100,6 +100,7 @@ namespace Moonglade.Web.Tests.Controllers
         [TestCase(null)]
         [TestCase("")]
         [TestCase(" ")]
+        [TestCase(" \"<script>bad();<script>")]
         public void SetLanguage_EmptyUrl(string url)
         {
             var ctl = CreateSettingsController();
