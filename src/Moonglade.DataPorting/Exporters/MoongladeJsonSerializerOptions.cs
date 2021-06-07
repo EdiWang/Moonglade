@@ -2,11 +2,11 @@
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace Moonglade.Configuration
+namespace Moonglade.DataPorting.Exporters
 {
-    public static class JsonExtensions
+    public static class MoongladeJsonSerializerOptions
     {
-        private static readonly JsonSerializerOptions JsonOptions = new()
+        public static JsonSerializerOptions Default => new()
         {
             // https://en.wikipedia.org/wiki/CJK_Unified_Ideographs_(Unicode_block)
             Encoder = JavaScriptEncoder.Create(
@@ -19,11 +19,8 @@ namespace Moonglade.Configuration
                 UnicodeRanges.CjkUnifiedIdeographs,
                 UnicodeRanges.CjkUnifiedIdeographsExtensionA,
                 UnicodeRanges.CjkSymbolsandPunctuation),
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true
         };
-
-        public static T FromJson<T>(this string json) => JsonSerializer.Deserialize<T>(json, JsonOptions);
-
-        public static string ToJson<T>(this T obj) => JsonSerializer.Serialize(obj, JsonOptions);
     }
 }

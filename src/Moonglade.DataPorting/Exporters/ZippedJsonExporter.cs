@@ -4,10 +4,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
-using Newtonsoft.Json;
 
 namespace Moonglade.DataPorting.Exporters
 {
@@ -37,7 +37,7 @@ namespace Moonglade.DataPorting.Exporters
             string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
             foreach (var item in list)
             {
-                var json = JsonConvert.SerializeObject(item, Formatting.Indented);
+                var json = JsonSerializer.Serialize(item, MoongladeJsonSerializerOptions.Default);
                 await SaveJsonToDirectory(json, exportDirectory, $"{Guid.NewGuid()}.json", cancellationToken);
             }
 
