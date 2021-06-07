@@ -97,6 +97,18 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void SetLanguage_EmptyUrl(string url)
+        {
+            var ctl = CreateSettingsController();
+            var result = ctl.SetLanguage("en-US", url);
+
+            Assert.IsInstanceOf<LocalRedirectResult>(result);
+            Assert.AreEqual("~/", (result as LocalRedirectResult).Url);
+        }
+
         [Test]
         public void SetLanguage_Cookie()
         {

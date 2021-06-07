@@ -87,12 +87,19 @@ namespace Moonglade.Web.Controllers
                     new() { Expires = DateTimeOffset.UtcNow.AddYears(1) }
                 );
 
+                if (string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    return LocalRedirect("~/");
+                }
+
                 return LocalRedirect(returnUrl);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message, culture, returnUrl);
-                return LocalRedirect(returnUrl);
+
+                // We shall not respect his return URL now, because the returnUrl might be hacking.
+                return LocalRedirect("~/");
             }
         }
 
