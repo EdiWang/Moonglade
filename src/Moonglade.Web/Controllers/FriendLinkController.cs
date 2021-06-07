@@ -35,18 +35,10 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(Guid id)
         {
-            try
-            {
-                var link = await _friendLinkService.GetAsync(id);
-                if (null == link) return NotFound();
+            var link = await _friendLinkService.GetAsync(id);
+            if (null == link) return NotFound();
 
-                return Ok(link);
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError(string.Empty, e.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(link);
         }
 
         [HttpPut("{id:guid}")]
