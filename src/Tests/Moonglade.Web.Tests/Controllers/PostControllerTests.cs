@@ -107,18 +107,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Segment_Error()
-        {
-            IReadOnlyList<PostSegment> ps = new List<PostSegment>();
-            _mockPostService.Setup(p => p.ListSegment(PostStatus.Published)).Throws(new ArgumentOutOfRangeException(FakeData.ShortString2));
-
-            var ctl = CreatePostController();
-            var result = await ctl.Segment();
-
-            Assert.IsInstanceOf<StatusCodeResult>(result);
-        }
-
-        [Test]
         public async Task ListPublished_Json()
         {
             (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);

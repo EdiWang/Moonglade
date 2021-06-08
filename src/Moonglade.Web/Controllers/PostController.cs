@@ -54,19 +54,11 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(typeof(IReadOnlyList<PostSegment>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Segment()
         {
-            try
-            {
-                // for security, only allow published posts to be listed to third party API calls
-                var list = await _postQueryService.ListSegment(PostStatus.Published);
-                return Ok(list);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            // for security, only allow published posts to be listed to third party API calls
+            var list = await _postQueryService.ListSegment(PostStatus.Published);
+            return Ok(list);
         }
 
         [HttpPost]
@@ -187,7 +179,6 @@ namespace Moonglade.Web.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error Creating New Post.");
-                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Conflict(ex.Message);
             }
         }
