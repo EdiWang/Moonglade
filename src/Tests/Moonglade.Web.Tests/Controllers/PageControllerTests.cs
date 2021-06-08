@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
@@ -96,19 +95,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Segment();
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-        }
-
-        [Test]
-        public async Task Edit_Exception()
-        {
-            _mockPageService.Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()))
-                .Throws(new("Too much fubao"));
-            var ctl = CreatePageController();
-
-            var result = await ctl.Edit(Guid.Empty, _pageEditModel);
-            Assert.IsInstanceOf<StatusCodeResult>(result);
-
-            Assert.AreEqual(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
         }
 
         [Test]
