@@ -14,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auditing;
 using Moonglade.Caching;
-using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
@@ -222,47 +221,6 @@ namespace Moonglade.Web.Controllers
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
             return Ok();
-        }
-
-        [HttpPost("set-blogger-avatar")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "avatar" })]
-        public async Task<IActionResult> SetBloggerAvatar([FromForm] string base64Img)
-        {
-            try
-            {
-                base64Img = base64Img.Trim();
-                if (!Helper.TryParseBase64(base64Img, out var base64Chars))
-                {
-                    _logger.LogWarning("Bad base64 is used when setting avatar.");
-                    return Conflict("Bad base64 data");
-                }
-
-                try
-                {
-                    using var bmp = new Bitmap(new MemoryStream(base64Chars));
-                    if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
-                    {
-                        return Conflict("Image size must be 300x300.");
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Invalid base64img Image", e);
-                    return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-                }
-
-                await _blogConfig.SaveAssetAsync(AssetId.AvatarBase64, base64Img);
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Avatar updated.");
-
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error uploading avatar image.");
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
         }
 
         [HttpPost("set-siteicon")]

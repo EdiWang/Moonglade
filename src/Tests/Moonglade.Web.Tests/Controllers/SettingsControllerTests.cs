@@ -205,16 +205,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, It.IsAny<string>()));
         }
 
-        [Test]
-        public async Task SetBloggerAvatar_Post_BadData()
-        {
-            var settingsController = CreateSettingsController();
-            string base64Img = "996.icu";
-
-            var result = await settingsController.SetBloggerAvatar(base64Img);
-            Assert.IsInstanceOf<ConflictObjectResult>(result);
-        }
-
         //[Test]
         //public async Task SetSiteIcon_StateUnderTest_ExpectedBehavior()
         //{

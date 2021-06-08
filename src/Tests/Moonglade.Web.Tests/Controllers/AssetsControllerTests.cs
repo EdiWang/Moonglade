@@ -240,6 +240,16 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
 
+        [Test]
+        public async Task Avatar_Post_BadData()
+        {
+            var settingsController = CreateAssetsController();
+            string base64Img = "996.icu";
+
+            var result = await settingsController.Avatar(base64Img);
+            Assert.IsInstanceOf<ConflictObjectResult>(result);
+        }
+
         //[Test]
         //public void CustomCss_ValidCss()
         //{
