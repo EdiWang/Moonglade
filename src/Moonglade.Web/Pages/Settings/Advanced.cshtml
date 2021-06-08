@@ -105,7 +105,7 @@
         };
 
         function generateMetaWeblogPassword() {
-            callApi('/api/settings/generate-password', 'GET', {}, async (resp) => {
+            callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
                 var data = await resp.json();
                 $('#ViewModel_MetaWeblogPassword').val(data.password);
             });

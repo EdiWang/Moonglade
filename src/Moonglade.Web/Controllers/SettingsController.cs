@@ -383,7 +383,7 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [HttpGet("generate-password")]
+        [HttpGet("password/generate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GeneratePassword()
         {
