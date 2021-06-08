@@ -101,7 +101,7 @@ namespace Moonglade.Web
 
             // Fix Chinese character being encoded in HTML output
             services.AddSingleton(HtmlEncoder.Create(
-                new []
+                new[]
                 {
                     UnicodeRanges.BasicLatin,
                     UnicodeRanges.CjkCompatibility,
