@@ -142,8 +142,8 @@ namespace Moonglade.Web.Controllers
                     IsPublished = model.IsPublished,
                     IsFeatured = model.Featured,
                     IsOriginal = model.IsOriginal,
-                    OriginLink = model.OriginLink,
-                    HeroImageUrl = model.HeroImageUrl,
+                    OriginLink = string.IsNullOrWhiteSpace(model.OriginLink) ? null : model.OriginLink,
+                    HeroImageUrl = string.IsNullOrWhiteSpace(model.HeroImageUrl) ? null : model.HeroImageUrl,
                     Tags = tags,
                     CategoryIds = catIds
                 };

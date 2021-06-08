@@ -80,8 +80,8 @@ namespace Moonglade.Core
                 IsPublished = request.IsPublished,
                 IsFeatured = request.IsFeatured,
                 IsOriginal = request.IsOriginal,
-                OriginLink = Helper.SterilizeLink(request.OriginLink),
-                HeroImageUrl = Helper.SterilizeLink(request.HeroImageUrl),
+                OriginLink = string.IsNullOrWhiteSpace(request.OriginLink) ? null : Helper.SterilizeLink(request.OriginLink),
+                HeroImageUrl = string.IsNullOrWhiteSpace(request.HeroImageUrl) ? null : Helper.SterilizeLink(request.HeroImageUrl),
                 PostExtension = new()
                 {
                     Hits = 0,
@@ -194,8 +194,8 @@ namespace Moonglade.Core
             post.ContentLanguageCode = request.ContentLanguageCode;
             post.IsFeatured = request.IsFeatured;
             post.IsOriginal = request.IsOriginal;
-            post.OriginLink = Helper.SterilizeLink(request.OriginLink);
-            post.HeroImageUrl = Helper.SterilizeLink(request.HeroImageUrl);
+            post.OriginLink = string.IsNullOrWhiteSpace(request.OriginLink) ? null : Helper.SterilizeLink(request.OriginLink);
+            post.HeroImageUrl = string.IsNullOrWhiteSpace(request.HeroImageUrl) ? null : Helper.SterilizeLink(request.HeroImageUrl);
 
             // compute hash
             var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
