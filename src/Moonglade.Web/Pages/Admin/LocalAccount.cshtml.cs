@@ -10,14 +10,14 @@ namespace Moonglade.Web.Pages.Admin
     {
         private readonly ILocalAccountService _accountService;
 
-        public AccountEditViewModel AccountEditViewModel { get; set; }
+        public AccountEditModel AccountEditModel { get; set; }
 
         public IReadOnlyList<Account> Accounts { get; set; }
 
         public LocalAccountModel(ILocalAccountService accountService)
         {
             _accountService = accountService;
-            AccountEditViewModel = new();
+            AccountEditModel = new();
         }
 
         public async Task OnGet()
