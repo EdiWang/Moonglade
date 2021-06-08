@@ -24,10 +24,10 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(FriendLinkEditModel viewModel)
+        public async Task<IActionResult> Create(FriendLinkEditModel model)
         {
-            await _friendLinkService.AddAsync(viewModel.Title, viewModel.LinkUrl);
-            return Created(string.Empty, viewModel);
+            await _friendLinkService.AddAsync(model.Title, model.LinkUrl);
+            return Created(string.Empty, model);
         }
 
         [HttpGet("{id:guid}")]
@@ -44,10 +44,10 @@ namespace Moonglade.Web.Controllers
         [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Edit(Guid id, FriendLinkEditModel viewModel)
+        public async Task<IActionResult> Edit(Guid id, FriendLinkEditModel model)
         {
-            await _friendLinkService.UpdateAsync(id, viewModel.Title, viewModel.LinkUrl);
-            return Ok(viewModel);
+            await _friendLinkService.UpdateAsync(id, model.Title, model.LinkUrl);
+            return Ok(model);
         }
 
         [HttpDelete("{id:guid}")]
