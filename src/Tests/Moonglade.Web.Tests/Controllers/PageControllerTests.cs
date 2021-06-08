@@ -99,19 +99,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Create_Exception()
-        {
-            _mockPageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()))
-                .Throws(new("Too much fubao"));
-            var ctl = CreatePageController();
-
-            var result = await ctl.Create(_pageEditModel);
-            Assert.IsInstanceOf<StatusCodeResult>(result);
-
-            Assert.AreEqual(StatusCodes.Status500InternalServerError, ((StatusCodeResult)result).StatusCode);
-        }
-
-        [Test]
         public async Task Edit_Exception()
         {
             _mockPageService.Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()))

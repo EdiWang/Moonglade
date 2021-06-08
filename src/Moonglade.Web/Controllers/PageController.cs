@@ -55,18 +55,9 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create(PageEditModel model)
+        public Task<IActionResult> Create(PageEditModel model)
         {
-            try
-            {
-                return await CreateOrEdit(model, async request => await _blogPageService.CreateAsync(request));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error Create CustomPage.");
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
+            return CreateOrEdit(model, async request => await _blogPageService.CreateAsync(request));
         }
 
         [HttpPut("{id:guid}")]
