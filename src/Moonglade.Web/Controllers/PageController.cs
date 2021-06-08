@@ -41,17 +41,14 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(typeof(IEnumerable<PageSegment>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Segment()
         {
             var pageSegments = await _blogPageService.ListSegment();
-            if (pageSegments is not null)
-            {
-                // for security, only allow published pages to be listed to third party API calls
-                var published = pageSegments.Where(p => p.IsPublished);
-                return Ok(published);
-            }
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            if (pageSegments is null) return Ok(Array.Empty<PageSegment>());
+
+            // for security, only allow published pages to be listed to third party API calls
+            var published = pageSegments.Where(p => p.IsPublished);
+            return Ok(published);
         }
 
         [HttpPost]

@@ -88,14 +88,14 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Segment_Error()
+        public async Task Segment_Null()
         {
             _mockPageService.Setup(p => p.ListSegment()).Returns(Task.FromResult((IReadOnlyList<PageSegment>)null));
 
             var ctl = CreatePageController();
             var result = await ctl.Segment();
 
-            Assert.IsInstanceOf<StatusCodeResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
         [Test]
