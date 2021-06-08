@@ -178,9 +178,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
             Assert.IsInstanceOf<ConflictObjectResult>(result);
 
-            var statusCode = postManageController.HttpContext.Response.StatusCode;
-            Assert.AreEqual(500, statusCode);
-
             _mockPingbackSender.Verify(p => p.TrySendPingAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
