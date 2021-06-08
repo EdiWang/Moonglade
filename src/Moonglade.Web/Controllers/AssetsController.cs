@@ -252,7 +252,7 @@ namespace Moonglade.Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError("Invalid base64img Image", e);
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                return Conflict(e.Message);
             }
 
             await _blogConfig.SaveAssetAsync(AssetId.AvatarBase64, base64Img);
