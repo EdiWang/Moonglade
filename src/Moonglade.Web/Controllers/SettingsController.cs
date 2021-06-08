@@ -228,36 +228,28 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> SetSiteIcon([FromForm] string base64Img)
         {
+            base64Img = base64Img.Trim();
+            if (!Helper.TryParseBase64(base64Img, out var base64Chars))
+            {
+                _logger.LogWarning("Bad base64 is used when setting site icon.");
+                return Conflict("Bad base64 data");
+            }
+
             try
             {
-                base64Img = base64Img.Trim();
-                if (!Helper.TryParseBase64(base64Img, out var base64Chars))
-                {
-                    _logger.LogWarning("Bad base64 is used when setting site icon.");
-                    return Conflict("Bad base64 data");
-                }
-
-                try
-                {
-                    using var bmp = new Bitmap(new MemoryStream(base64Chars));
-                    if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e.Message, e);
-                    return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-                }
-
-                await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
-                await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
-
-                return Ok();
+                using var bmp = new Bitmap(new MemoryStream(base64Chars));
+                if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error uploading avatar image.");
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                _logger.LogError(e.Message, e);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
+
+            await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
+            await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");
+
+            return Ok();
         }
 
         [HttpPost("advanced")]
