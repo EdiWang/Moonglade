@@ -177,7 +177,7 @@ namespace Moonglade.Comments
             await _commentRepo.AddAsync(model);
 
             var spec = new PostSpec(request.PostId, false);
-            var postTitle = _postRepo.SelectFirstOrDefault(spec, p => p.Title);
+            var postTitle = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Title);
 
             var item = new CommentDetailedItem
             {
