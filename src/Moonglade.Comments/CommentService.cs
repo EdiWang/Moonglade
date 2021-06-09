@@ -133,11 +133,11 @@ namespace Moonglade.Comments
                 var cReplies = await _commentReplyRepo.GetAsync(new CommentReplySpec(cmt.Id));
                 if (cReplies.Any())
                 {
-                    _commentReplyRepo.Delete(cReplies);
+                    await _commentReplyRepo.DeleteAsync(cReplies);
                 }
 
                 // 2. Delete comment itself
-                _commentRepo.Delete(cmt);
+                await _commentRepo.DeleteAsync(cmt);
                 await _audit.AddAuditEntry(EventType.Content, AuditEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
             }
         }

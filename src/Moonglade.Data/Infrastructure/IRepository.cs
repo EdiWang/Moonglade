@@ -17,10 +17,6 @@ namespace Moonglade.Data.Infrastructure
             Expression<Func<T, TResult>> selector,
             bool asNoTracking = true);
 
-        void Delete(T entity);
-
-        int Delete(IEnumerable<T> entities);
-
         Task DeleteAsync(T entity);
 
         Task DeleteAsync(IEnumerable<T> entities);

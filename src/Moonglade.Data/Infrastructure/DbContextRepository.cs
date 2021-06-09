@@ -34,18 +34,6 @@ namespace Moonglade.Data.Infrastructure
                 ApplySpecification(spec).Select(selector).FirstOrDefault();
         }
 
-        public void Delete(T entity)
-        {
-            DbContext.Set<T>().Remove(entity);
-            DbContext.SaveChanges();
-        }
-
-        public int Delete(IEnumerable<T> entities)
-        {
-            DbContext.Set<T>().RemoveRange(entities);
-            return DbContext.SaveChanges();
-        }
-
         public async Task DeleteAsync(T entity)
         {
             DbContext.Set<T>().Remove(entity);

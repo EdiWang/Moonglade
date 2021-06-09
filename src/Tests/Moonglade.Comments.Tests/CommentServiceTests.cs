@@ -153,8 +153,8 @@ namespace Moonglade.Comments.Tests
 
             await service.DeleteAsync(new[] { Guid.Empty });
 
-            _mockCommentReplyEntityRepo.Verify(p => p.Delete(It.IsAny<IEnumerable<CommentReplyEntity>>()));
-            _mockCommentEntityRepo.Verify(p => p.Delete(It.IsAny<CommentEntity>()));
+            _mockCommentReplyEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<CommentReplyEntity>>()));
+            _mockCommentEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<CommentEntity>()));
         }
 
         [Test]
