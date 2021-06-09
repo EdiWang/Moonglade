@@ -33,16 +33,6 @@ namespace Moonglade.Data.Infrastructure
                 ApplySpecification(spec).Select(selector).FirstOrDefault();
         }
 
-        public IReadOnlyList<TResult> Select<TGroup, TResult>(
-            Expression<Func<T, TGroup>> groupExpression,
-            Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
-            bool asNoTracking = true)
-        {
-            return asNoTracking ?
-                DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToList() :
-                DbContext.Set<T>().GroupBy(groupExpression).Select(selector).ToList();
-        }
-
         public void Delete(T entity)
         {
             DbContext.Set<T>().Remove(entity);

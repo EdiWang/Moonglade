@@ -14,11 +14,6 @@ namespace Moonglade.Data.Infrastructure
 
         TResult SelectFirstOrDefault<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true);
 
-        IReadOnlyList<TResult> Select<TGroup, TResult>(
-            Expression<Func<T, TGroup>> groupExpression,
-            Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
-            bool asNoTracking = true);
-
         void Delete(T entity);
 
         int Delete(IEnumerable<T> entities);
