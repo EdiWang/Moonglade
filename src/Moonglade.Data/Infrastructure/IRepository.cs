@@ -12,10 +12,6 @@ namespace Moonglade.Data.Infrastructure
 
         IQueryable<T> GetAsQueryable();
 
-        T GetFirstOrDefault(ISpecification<T> spec, bool asNoTracking = true);
-
-        IReadOnlyList<TResult> Select<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true);
-
         TResult SelectFirstOrDefault<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true);
 
         IReadOnlyList<TResult> Select<TGroup, TResult>(

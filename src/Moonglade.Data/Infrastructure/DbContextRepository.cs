@@ -26,13 +26,6 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.Set<T>();
         }
 
-        public T GetFirstOrDefault(ISpecification<T> spec, bool asNoTracking = true)
-        {
-            return asNoTracking ?
-                ApplySpecification(spec).AsNoTracking().FirstOrDefault() :
-                ApplySpecification(spec).FirstOrDefault();
-        }
-
         public TResult SelectFirstOrDefault<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
         {
             return asNoTracking ?
@@ -48,13 +41,6 @@ namespace Moonglade.Data.Infrastructure
             return asNoTracking ?
                 DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToList() :
                 DbContext.Set<T>().GroupBy(groupExpression).Select(selector).ToList();
-        }
-
-        public IReadOnlyList<TResult> Select<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
-        {
-            return asNoTracking ?
-                ApplySpecification(spec).AsNoTracking().Select(selector).ToList() :
-                ApplySpecification(spec).Select(selector).ToList();
         }
 
         public void Delete(T entity)
