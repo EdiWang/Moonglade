@@ -32,6 +32,8 @@ namespace Moonglade.Data.Infrastructure
 
         int Count(Expression<Func<T, bool>> condition);
 
+        Task<int> CountAsync(ISpecification<T> spec);
+
         bool Any(ISpecification<T> spec);
 
         bool Any(Expression<Func<T, bool>> condition = null);
@@ -49,17 +51,11 @@ namespace Moonglade.Data.Infrastructure
 
         Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
             Expression<Func<T, TGroup>> groupExpression,
-            Expression<Func<IGrouping<TGroup, T>, TResult>> selector);
-
-        Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
-            ISpecification<T> spec,
-            Expression<Func<T, TGroup>> groupExpression,
-            Expression<Func<IGrouping<TGroup, T>, TResult>> selector);
+            Expression<Func<IGrouping<TGroup, T>, TResult>> selector, 
+            ISpecification<T> spec = null);
 
         Task<T> AddAsync(T entity);
 
         Task UpdateAsync(T entity);
-
-        Task<int> CountAsync(ISpecification<T> spec);
     }
 }

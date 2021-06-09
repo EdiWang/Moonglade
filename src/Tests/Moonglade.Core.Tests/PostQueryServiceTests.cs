@@ -299,9 +299,9 @@ namespace Moonglade.Core.Tests
             await service.GetArchiveAsync();
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(
-                It.IsAny<PostSpec>(),
                 It.IsAny<Expression<Func<PostEntity, (int Year, int Month)>>>(),
-                It.IsAny<Expression<Func<IGrouping<(int Year, int Month), PostEntity>, Archive>>>()));
+                It.IsAny<Expression<Func<IGrouping<(int Year, int Month), PostEntity>, Archive>>>(), 
+                It.IsAny<PostSpec>()));
 
             Assert.Pass();
         }

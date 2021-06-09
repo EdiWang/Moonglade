@@ -104,15 +104,12 @@ namespace Moonglade.Data.Infrastructure
 
         public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
             Expression<Func<T, TGroup>> groupExpression,
-            Expression<Func<IGrouping<TGroup, T>, TResult>> selector)
+            Expression<Func<IGrouping<TGroup, T>, TResult>> selector, 
+            ISpecification<T> spec = null)
         {
-            return await DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
-        }
-
-        public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
-            ISpecification<T> spec, Expression<Func<T, TGroup>> groupExpression, Expression<Func<IGrouping<TGroup, T>, TResult>> selector)
-        {
-            return await ApplySpecification(spec).AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
+            return null != spec ? 
+                await ApplySpecification(spec).AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync() : 
+                await DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync(); 
         }
 
         public async Task<T> AddAsync(T entity)
