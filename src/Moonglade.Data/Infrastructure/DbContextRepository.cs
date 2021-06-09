@@ -26,13 +26,6 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.Set<T>();
         }
 
-        public IReadOnlyList<T> Get(ISpecification<T> spec, bool asNoTracking = true)
-        {
-            return asNoTracking ?
-                ApplySpecification(spec).AsNoTracking().ToList() :
-                ApplySpecification(spec).ToList();
-        }
-
         public T GetFirstOrDefault(ISpecification<T> spec, bool asNoTracking = true)
         {
             return asNoTracking ?
