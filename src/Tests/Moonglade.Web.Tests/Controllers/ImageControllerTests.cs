@@ -1,12 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
-using Moonglade.Configuration.Settings;
-using Moonglade.ImageStorage;
-using Moonglade.Web.Controllers;
-using Moq;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -14,7 +6,15 @@ using MemoryCache.Testing.Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moonglade.Configuration;
+using Moonglade.Configuration.Settings;
+using Moonglade.ImageStorage;
 using Moonglade.Utils;
+using Moonglade.Web.Controllers;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Controllers
 {

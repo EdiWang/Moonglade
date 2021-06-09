@@ -13,7 +13,7 @@ namespace Moonglade.Data.Infrastructure
         IQueryable<T> GetAsQueryable();
 
         TResult SelectFirstOrDefault<TResult>(
-            ISpecification<T> spec, 
+            ISpecification<T> spec,
             Expression<Func<T, TResult>> selector,
             bool asNoTracking = true);
 

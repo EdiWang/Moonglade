@@ -35,7 +35,7 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockBlogConfig.Object,
                 _mockWebHostEnv.Object);
         }
-        
+
         [Test]
         public async Task Avatar_Post_BadData()
         {
