@@ -24,8 +24,6 @@ namespace Moonglade.Configuration
 
         public WatermarkSettings WatermarkSettings { get; set; }
 
-        public FriendLinksSettings FriendLinksSettings { get; set; }
-
         public AdvancedSettings AdvancedSettings { get; set; }
 
         public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
@@ -44,7 +42,6 @@ namespace Moonglade.Configuration
             NotificationSettings = new();
             FeedSettings = new();
             WatermarkSettings = new();
-            FriendLinksSettings = new();
             AdvancedSettings = new();
             CustomStyleSheetSettings = new();
 
@@ -62,7 +59,6 @@ namespace Moonglade.Configuration
             NotificationSettings = cfgDic[nameof(NotificationSettings)].FromJson<NotificationSettings>();
             FeedSettings = cfgDic[nameof(FeedSettings)].FromJson<FeedSettings>();
             WatermarkSettings = cfgDic[nameof(WatermarkSettings)].FromJson<WatermarkSettings>();
-            FriendLinksSettings = cfgDic[nameof(FriendLinksSettings)].FromJson<FriendLinksSettings>();
             AdvancedSettings = cfgDic[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
             CustomStyleSheetSettings = cfgDic[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
 
