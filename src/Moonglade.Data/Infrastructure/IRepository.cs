@@ -10,11 +10,7 @@ namespace Moonglade.Data.Infrastructure
     {
         T Get(object key);
 
-        T Get(Expression<Func<T, bool>> condition);
-
         IQueryable<T> GetAsQueryable();
-
-        IReadOnlyList<T> Get(bool asNoTracking = true);
 
         IReadOnlyList<T> Get(ISpecification<T> spec, bool asNoTracking = true);
 

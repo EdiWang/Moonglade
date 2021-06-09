@@ -21,21 +21,9 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.Set<T>().Find(key);
         }
 
-        public T Get(Expression<Func<T, bool>> condition)
-        {
-            return DbContext.Set<T>().FirstOrDefault(condition);
-        }
-
         public IQueryable<T> GetAsQueryable()
         {
             return DbContext.Set<T>();
-        }
-
-        public IReadOnlyList<T> Get(bool asNoTracking = true)
-        {
-            return asNoTracking ?
-                DbContext.Set<T>().AsNoTracking().ToList() :
-                DbContext.Set<T>().ToList();
         }
 
         public IReadOnlyList<T> Get(ISpecification<T> spec, bool asNoTracking = true)
