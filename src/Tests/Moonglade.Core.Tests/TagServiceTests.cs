@@ -72,7 +72,7 @@ namespace Moonglade.Core.Tests
         {
             var svc = CreateService();
             await svc.GetAll();
-            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, Tag>>>(), true));
+            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, Tag>>>()));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace Moonglade.Core.Tests
         {
             var svc = CreateService();
             await svc.GetAllNames();
-            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, string>>>(), true));
+            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, string>>>()));
         }
 
         [Test]
@@ -193,7 +193,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.GetHotTagsAsync(35);
 
-            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, KeyValuePair<Tag, int>>>>(), true));
+            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, KeyValuePair<Tag, int>>>>()));
         }
 
         [Test]
@@ -202,7 +202,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.GetTagCountList();
 
-            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, KeyValuePair<Tag, int>>>>(), true));
+            _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, KeyValuePair<Tag, int>>>>()));
         }
 
         [TestCase(".NET Core", ExpectedResult = "dotnet-core")]

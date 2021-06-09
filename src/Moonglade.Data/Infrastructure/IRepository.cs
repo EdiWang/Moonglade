@@ -39,20 +39,18 @@ namespace Moonglade.Data.Infrastructure
 
         Task<T> GetAsync(Expression<Func<T, bool>> condition);
 
-        Task<IReadOnlyList<T>> GetAsync(bool asNoTracking = true);
+        Task<IReadOnlyList<T>> GetAsync();
 
-        Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec, bool asNoTracking = true);
+        Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec);
 
         Task<T> GetFirstOrDefaultAsync(ISpecification<T> spec, bool asNoTracking = true);
 
         Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
-            Expression<Func<T, TResult>> selector,
-            bool asNoTracking = true);
+            Expression<Func<T, TResult>> selector);
 
         Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
             ISpecification<T> spec,
-            Expression<Func<T, TResult>> selector,
-            bool asNoTracking = true);
+            Expression<Func<T, TResult>> selector);
 
         Task<TResult> SelectFirstOrDefaultAsync<TResult>(
             ISpecification<T> spec,
@@ -61,8 +59,7 @@ namespace Moonglade.Data.Infrastructure
 
         Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
             Expression<Func<T, TGroup>> groupExpression,
-            Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
-            bool asNoTracking = true);
+            Expression<Func<IGrouping<TGroup, T>, TResult>> selector);
 
         Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
             ISpecification<T> spec,

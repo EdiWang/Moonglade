@@ -76,7 +76,7 @@ namespace Moonglade.Syndication.Tests
         {
             _mockRepositoryPostEntity.Setup(p =>
                     p.SelectAsync(It.IsAny<ISpecification<PostEntity>>(),
-                        It.IsAny<Expression<Func<PostEntity, FeedEntry>>>(), true))
+                        It.IsAny<Expression<Func<PostEntity, FeedEntry>>>()))
                 .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)entries));
         }
 

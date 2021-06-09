@@ -133,7 +133,7 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectAsync(
-                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true));
+                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>()));
         }
 
         [TestCase(-1, 0)]
@@ -164,7 +164,7 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo
                 .Setup(p => p.SelectAsync(It.IsAny<PostPagingSpec>(),
-                    It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true)).Returns(Task.FromResult(segments));
+                    It.IsAny<Expression<Func<PostEntity, PostSegment>>>())).Returns(Task.FromResult(segments));
 
             _mockPostEntityRepo.Setup(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>())).Returns(996);
 
@@ -182,7 +182,7 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectAsync(
-                    It.IsAny<PostInsightsSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>(), true));
+                    It.IsAny<PostInsightsSpec>(), It.IsAny<Expression<Func<PostEntity, PostSegment>>>()));
         }
 
         [Test]
@@ -191,7 +191,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.List(35, 7, Uid);
 
-            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostPagingSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
+            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostPagingSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()));
         }
 
         [Test]
@@ -254,7 +254,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.ListArchive(996, 9);
 
-            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true
+            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()
             ));
 
             Assert.Pass();
@@ -266,7 +266,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             var result = await svc.ListByTag(35, 996, 251);
 
-            _mockPostTagEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>(), true));
+            _mockPostTagEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>()));
         }
 
         [Test]
@@ -275,7 +275,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             var result = await svc.ListFeatured(7, 404);
 
-            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<FeaturedPostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>(), true));
+            _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<FeaturedPostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()));
         }
 
         [Test]

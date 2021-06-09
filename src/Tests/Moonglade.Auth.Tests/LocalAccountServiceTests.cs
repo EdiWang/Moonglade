@@ -66,7 +66,7 @@ namespace Moonglade.Auth.Tests
             var svc = CreateService();
             var account = await svc.GetAllAsync();
 
-            _mockLocalAccountRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<LocalAccountEntity, Account>>>(), true));
+            _mockLocalAccountRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<LocalAccountEntity, Account>>>()));
         }
 
         [TestCase(null, null)]

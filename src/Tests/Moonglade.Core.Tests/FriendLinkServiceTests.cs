@@ -47,7 +47,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.GetAllAsync();
 
-            _mockFriendlinkRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<FriendLinkEntity, Link>>>(), true));
+            _mockFriendlinkRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<FriendLinkEntity, Link>>>()));
         }
 
         [Test]

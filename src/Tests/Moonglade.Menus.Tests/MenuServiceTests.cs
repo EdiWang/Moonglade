@@ -77,7 +77,7 @@ namespace Moonglade.Menus.Tests
             var ctl = CreateService();
             await ctl.GetAllAsync();
 
-            _mockMenuRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<MenuEntity, Menu>>>(), true));
+            _mockMenuRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<MenuEntity, Menu>>>()));
         }
 
         [Test]

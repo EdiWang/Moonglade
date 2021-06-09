@@ -249,7 +249,7 @@ namespace Moonglade.Core.Tests
         {
             IReadOnlyList<PostEntity> entities = new List<PostEntity> { _postEntity };
 
-            _mockPostEntityRepo.Setup(p => p.GetAsync(It.IsAny<ISpecification<PostEntity>>(), true))
+            _mockPostEntityRepo.Setup(p => p.GetAsync(It.IsAny<ISpecification<PostEntity>>()))
                 .Returns(Task.FromResult(entities));
 
             var svc = CreateService();

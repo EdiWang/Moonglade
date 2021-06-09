@@ -39,7 +39,7 @@ namespace Moonglade.DataPorting.Tests.Exporters
                 new("251", "404")
             };
 
-            _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), true)).Returns(Task.FromResult(data));
+            _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>())).Returns(Task.FromResult(data));
 
             var csvExporter = CreateCSVExporter();
             var result = await csvExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), CancellationToken.None);

@@ -65,7 +65,7 @@ namespace Moonglade.Comments.Tests
             await service.GetApprovedCommentsAsync(Guid.Empty);
 
             _mockCommentEntityRepo.Verify(p => p.SelectAsync(It.IsAny<ISpecification<CommentEntity>>(),
-                It.IsAny<Expression<Func<CommentEntity, Comment>>>(), true));
+                It.IsAny<Expression<Func<CommentEntity, Comment>>>()));
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace Moonglade.Comments.Tests
                 cmt
             };
 
-            _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<CommentSpec>(), true)).Returns(Task.FromResult(fakeComments));
+            _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<CommentSpec>())).Returns(Task.FromResult(fakeComments));
 
             var service = CreateCommentService();
             await service.ToggleApprovalAsync(new[] { Guid.Empty });
@@ -132,7 +132,7 @@ namespace Moonglade.Comments.Tests
                 }
             };
             _mockCommentEntityRepo
-                .Setup(p => p.GetAsync(It.IsAny<CommentSpec>(), true))
+                .Setup(p => p.GetAsync(It.IsAny<CommentSpec>()))
                 .Returns(Task.FromResult(comments));
 
             IReadOnlyList<CommentReplyEntity> replyEntities = new List<CommentReplyEntity>()
@@ -146,7 +146,7 @@ namespace Moonglade.Comments.Tests
                 }
             };
             _mockCommentReplyEntityRepo
-                .Setup(p => p.GetAsync(It.IsAny<CommentReplySpec>(), true))
+                .Setup(p => p.GetAsync(It.IsAny<CommentReplySpec>()))
                 .Returns(Task.FromResult(replyEntities));
 
             var service = CreateCommentService();
@@ -207,7 +207,7 @@ namespace Moonglade.Comments.Tests
             IReadOnlyList<CommentDetailedItem> details = new List<CommentDetailedItem>();
 
             _mockCommentEntityRepo.Setup(p => p.SelectAsync(It.IsAny<CommentSpec>(),
-                It.IsAny<Expression<Func<CommentEntity, CommentDetailedItem>>>(), true))
+                It.IsAny<Expression<Func<CommentEntity, CommentDetailedItem>>>()))
                 .Returns(Task.FromResult(details));
 
             var service = CreateCommentService();
@@ -215,7 +215,7 @@ namespace Moonglade.Comments.Tests
 
             Assert.IsNotNull(result);
             _mockCommentEntityRepo.Verify(p => p.SelectAsync(It.IsAny<CommentSpec>(),
-                It.IsAny<Expression<Func<CommentEntity, CommentDetailedItem>>>(), true));
+                It.IsAny<Expression<Func<CommentEntity, CommentDetailedItem>>>()));
         }
     }
 }

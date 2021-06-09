@@ -108,7 +108,7 @@ namespace Moonglade.Web.Tests.Middleware
 
             var mockPostRepo = _mockRepository.Create<IRepository<PostEntity>>();
             mockPostRepo.Setup(p =>
-                p.SelectAsync(It.IsAny<PostSitePageSpec>(), p => new Tuple<string, DateTime?>(p.Slug, p.PubDateUtc), true))
+                p.SelectAsync(It.IsAny<PostSitePageSpec>(), p => new Tuple<string, DateTime?>(p.Slug, p.PubDateUtc)))
                 .Returns(Task.FromResult(posts));
 
             // setup pages
@@ -121,7 +121,7 @@ namespace Moonglade.Web.Tests.Middleware
             mockPageRepo.Setup(p =>
                     p.SelectAsync(p => new Tuple<DateTime, string, bool>(p.CreateTimeUtc,
                         p.Slug,
-                        p.IsPublished), true))
+                        p.IsPublished)))
                 .Returns(Task.FromResult(pages));
 
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;

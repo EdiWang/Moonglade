@@ -105,7 +105,7 @@ namespace Moonglade.Page.Tests
             var svc = CreatePageService();
             await svc.ListSegment();
 
-            _mockPageRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<PageEntity, PageSegment>>>(), true));
+            _mockPageRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<PageEntity, PageSegment>>>()));
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Moonglade.Page.Tests
         {
             IReadOnlyList<PageEntity> pageEntities = new List<PageEntity> { _fakePageEntity };
 
-            _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<PageSpec>(), true))
+            _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<PageSpec>()))
                 .Returns(Task.FromResult(pageEntities));
 
             var svc = CreatePageService();

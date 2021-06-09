@@ -52,7 +52,7 @@ namespace Moonglade.Core.Tests
 
             var result = await svc.GetAll();
 
-            _mockCatRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
+            _mockCatRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
         }
 
         [Test]

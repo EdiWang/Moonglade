@@ -36,7 +36,7 @@ namespace Moonglade.DataPorting.Tests.Exporters
                 "996", "ICU"
             };
 
-            _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, string>>>(), true)).Returns(Task.FromResult(data));
+            _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, string>>>())).Returns(Task.FromResult(data));
             var jsonExporter = CreateJsonExporter();
 
             var result = await jsonExporter.ExportData(p => "251", CancellationToken.None);
