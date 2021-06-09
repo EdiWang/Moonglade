@@ -91,24 +91,22 @@ namespace Moonglade.Data.Infrastructure
             return entity;
         }
 
-        public int Update(T entity)
+        public void Update(T entity)
         {
             DbContext.Entry(entity).State = EntityState.Modified;
-            return DbContext.SaveChanges();
+            DbContext.SaveChanges();
         }
 
-        public int Delete(T entity)
+        public void Delete(T entity)
         {
             DbContext.Set<T>().Remove(entity);
-            return DbContext.SaveChanges();
+            DbContext.SaveChanges();
         }
 
-        public int Delete(object key)
+        public void Delete(object key)
         {
             var entity = Get(key);
-            if (entity is not null) return Delete(entity);
-
-            return -1;
+            if (entity is not null) Delete(entity);
         }
 
         public int Delete(IEnumerable<T> entities)

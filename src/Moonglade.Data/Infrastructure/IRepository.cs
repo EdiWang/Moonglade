@@ -33,11 +33,11 @@ namespace Moonglade.Data.Infrastructure
 
         T Add(T entity);
 
-        int Update(T entity);
+        void Update(T entity);
 
-        int Delete(T entity);
+        void Delete(T entity);
 
-        int Delete(object key);
+        void Delete(object key);
 
         int Delete(IEnumerable<T> entities);
 
