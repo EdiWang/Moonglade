@@ -40,13 +40,6 @@ namespace Moonglade.Data.Infrastructure
                 ApplySpecification(spec).FirstOrDefault();
         }
 
-        public IReadOnlyList<TResult> Select<TResult>(Expression<Func<T, TResult>> selector, bool asNoTracking = true)
-        {
-            return asNoTracking ?
-                DbContext.Set<T>().AsNoTracking().Select(selector).ToList() :
-                DbContext.Set<T>().Select(selector).ToList();
-        }
-
         public TResult SelectFirstOrDefault<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
         {
             return asNoTracking ?
