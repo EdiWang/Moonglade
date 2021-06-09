@@ -125,7 +125,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.DeleteAsync(Guid.Empty);
 
-            _mockCatRepo.Verify(p => p.Delete(It.IsAny<Guid>()));
+            _mockCatRepo.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
             _mockBlogCache.Verify(p => p.Remove(CacheDivision.General, "allcats"));
         }
 

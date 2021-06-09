@@ -21,9 +21,13 @@ namespace Moonglade.Data.Infrastructure
 
         void Delete(T entity);
 
-        void Delete(object key);
-
         int Delete(IEnumerable<T> entities);
+
+        Task DeleteAsync(T entity);
+
+        Task DeleteAsync(IEnumerable<T> entities);
+
+        Task DeleteAsync(object key);
 
         int Count(ISpecification<T> spec = null);
 
@@ -63,12 +67,6 @@ namespace Moonglade.Data.Infrastructure
         Task<T> AddAsync(T entity);
 
         Task UpdateAsync(T entity);
-
-        Task DeleteAsync(T entity);
-
-        Task DeleteAsync(IEnumerable<T> entities);
-
-        Task DeleteAsync(object key);
 
         Task<int> CountAsync(ISpecification<T> spec);
     }

@@ -141,7 +141,7 @@ namespace Moonglade.Menus
                 throw new InvalidOperationException($"MenuEntity with Id '{id}' not found.");
             }
 
-            _menuRepo.Delete(id);
+            await _menuRepo.DeleteAsync(id);
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Menu '{id}' deleted.");
         }
 

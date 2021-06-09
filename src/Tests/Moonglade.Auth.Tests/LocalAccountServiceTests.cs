@@ -240,7 +240,7 @@ namespace Moonglade.Auth.Tests
             var svc = CreateService();
             await svc.DeleteAsync(Uid);
 
-            _mockLocalAccountRepository.Verify(p => p.Delete(It.IsAny<Guid>()));
+            _mockLocalAccountRepository.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
             _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsDeleteAccount, It.IsAny<string>()));
         }
     }

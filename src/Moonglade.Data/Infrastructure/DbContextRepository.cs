@@ -49,16 +49,28 @@ namespace Moonglade.Data.Infrastructure
             DbContext.SaveChanges();
         }
 
-        public void Delete(object key)
-        {
-            var entity = Get(key);
-            if (entity is not null) Delete(entity);
-        }
-
         public int Delete(IEnumerable<T> entities)
         {
             DbContext.Set<T>().RemoveRange(entities);
             return DbContext.SaveChanges();
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            DbContext.Set<T>().Remove(entity);
+            await DbContext.SaveChangesAsync();
+        }
+
+        public Task DeleteAsync(IEnumerable<T> entities)
+        {
+            DbContext.Set<T>().RemoveRange(entities);
+            return DbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(object key)
+        {
+            var entity = await GetAsync(key);
+            if (entity is not null) await DeleteAsync(entity);
         }
 
         public int Count(ISpecification<T> spec = null)
@@ -175,24 +187,6 @@ namespace Moonglade.Data.Infrastructure
         {
             DbContext.Entry(entity).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(T entity)
-        {
-            DbContext.Set<T>().Remove(entity);
-            await DbContext.SaveChangesAsync();
-        }
-
-        public Task DeleteAsync(IEnumerable<T> entities)
-        {
-            DbContext.Set<T>().RemoveRange(entities);
-            return DbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(object key)
-        {
-            var entity = await GetAsync(key);
-            if (entity is not null) await DeleteAsync(entity);
         }
 
         public Task<int> CountAsync(ISpecification<T> spec)

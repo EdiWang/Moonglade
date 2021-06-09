@@ -94,7 +94,7 @@ namespace Moonglade.Core
             var pcs = await _postCatRepo.GetAsync(pc => pc.CategoryId == id);
             if (pcs is not null) await _postCatRepo.DeleteAsync(pcs);
 
-            _catRepo.Delete(id);
+            await _catRepo.DeleteAsync(id);
             _cache.Remove(CacheDivision.General, "allcats");
 
             await _audit.AddAuditEntry(EventType.Content, AuditEventId.CategoryDeleted, $"Category '{id}' deleted.");

@@ -150,7 +150,7 @@ namespace Moonglade.Auth
                 throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
             }
 
-            _accountRepo.Delete(id);
+            await _accountRepo.DeleteAsync(id);
             await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsDeleteAccount, $"Account '{id}' deleted.");
         }
 
