@@ -32,7 +32,7 @@ namespace Moonglade.Web.Tests.Controllers
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockLogger = _mockRepository.Create<ILogger<ImageController>>();
