@@ -61,7 +61,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.Get("work996");
 
-            _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
+            _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             await svc.Get(Guid.Empty);
 
-            _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>(), true));
+            _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
         }
 
         [Test]

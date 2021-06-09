@@ -20,8 +20,7 @@ namespace Moonglade.Data.Infrastructure
 
         TResult SelectFirstOrDefault<TResult>(
             ISpecification<T> spec,
-            Expression<Func<T, TResult>> selector,
-            bool asNoTracking = true);
+            Expression<Func<T, TResult>> selector);
 
         Task DeleteAsync(T entity);
 
@@ -46,8 +45,7 @@ namespace Moonglade.Data.Infrastructure
 
         Task<TResult> SelectFirstOrDefaultAsync<TResult>(
             ISpecification<T> spec,
-            Expression<Func<T, TResult>> selector,
-            bool asNoTracking = true);
+            Expression<Func<T, TResult>> selector);
 
         Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
             Expression<Func<T, TGroup>> groupExpression,

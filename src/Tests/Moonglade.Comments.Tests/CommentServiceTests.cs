@@ -168,7 +168,7 @@ namespace Moonglade.Comments.Tests
             });
 
             _mockPostEntityRepo
-                .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(), p => p.Title, true))
+                .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(), p => p.Title))
                 .Returns(Task.FromResult("996 is Fubao"));
 
             CommentRequest req = new CommentRequest(Guid.Empty)

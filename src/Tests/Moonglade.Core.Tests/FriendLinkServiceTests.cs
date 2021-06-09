@@ -38,7 +38,7 @@ namespace Moonglade.Core.Tests
 
             _mockFriendlinkRepo.Verify(p =>
                 p.SelectFirstOrDefaultAsync(It.IsAny<ISpecification<FriendLinkEntity>>(),
-                    It.IsAny<Expression<Func<FriendLinkEntity, Link>>>(), true));
+                    It.IsAny<Expression<Func<FriendLinkEntity, Link>>>()));
         }
 
         [Test]

@@ -53,7 +53,7 @@ namespace Moonglade.Core.Tests
         public void Get_OK()
         {
             _mockRepositoryTagEntity.Setup(p =>
-                    p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>(), true))
+                    p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>()))
                 .Returns(new Tag()
                 {
                     DisplayName = "Work 996",
@@ -88,7 +88,7 @@ namespace Moonglade.Core.Tests
         {
             _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(true);
             _mockRepositoryTagEntity.Setup(p =>
-                    p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>(), true))
+                    p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>()))
                 .Returns(new Tag());
 
             var svc = CreateService();

@@ -98,7 +98,7 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectFirstOrDefaultAsync(
-                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>(), true));
+                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>()));
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace Moonglade.Core.Tests
         {
             _mockPostEntityRepo
                 .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(),
-                    It.IsAny<Expression<Func<PostEntity, Guid>>>(), true)).Returns(Task.FromResult(Uid));
+                    It.IsAny<Expression<Func<PostEntity, Guid>>>())).Returns(Task.FromResult(Uid));
 
             var svc = CreateService();
             var result = await svc.GetAsync(new PostSlug(996, 3, 5, "work-996-junk-35"));
@@ -122,7 +122,7 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectFirstOrDefaultAsync(
-                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>(), true));
+                    It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, Post>>>()));
         }
 
         [Test]

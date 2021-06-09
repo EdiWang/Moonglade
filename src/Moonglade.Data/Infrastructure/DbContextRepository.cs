@@ -42,11 +42,9 @@ namespace Moonglade.Data.Infrastructure
         }
 
         public TResult SelectFirstOrDefault<TResult>(
-            ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+            ISpecification<T> spec, Expression<Func<T, TResult>> selector)
         {
-            return asNoTracking ?
-                ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefault() :
-                ApplySpecification(spec).Select(selector).FirstOrDefault();
+            return ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefault();
         }
 
         public async Task DeleteAsync(T entity)
@@ -99,11 +97,9 @@ namespace Moonglade.Data.Infrastructure
         }
 
         public Task<TResult> SelectFirstOrDefaultAsync<TResult>(
-            ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+            ISpecification<T> spec, Expression<Func<T, TResult>> selector)
         {
-            return asNoTracking ?
-                ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync() :
-                ApplySpecification(spec).Select(selector).FirstOrDefaultAsync();
+            return ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync();
         }
 
         public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
