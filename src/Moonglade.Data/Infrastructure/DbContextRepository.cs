@@ -117,9 +117,9 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.SaveChanges();
         }
 
-        public int Count(ISpecification<T> spec)
+        public int Count(ISpecification<T> spec = null)
         {
-            return ApplySpecification(spec).Count();
+            return null != spec ? ApplySpecification(spec).Count() : DbContext.Set<T>().Count();
         }
 
         public int Count(Expression<Func<T, bool>> condition)

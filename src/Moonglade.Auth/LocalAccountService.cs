@@ -36,7 +36,7 @@ namespace Moonglade.Auth
 
         public int Count()
         {
-            return _accountRepo.Count(p => true);
+            return _accountRepo.Count();
         }
 
         public async Task<Account> GetAsync(Guid id)

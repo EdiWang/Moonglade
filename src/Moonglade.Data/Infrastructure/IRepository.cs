@@ -41,7 +41,7 @@ namespace Moonglade.Data.Infrastructure
 
         int Delete(IEnumerable<T> entities);
 
-        int Count(ISpecification<T> spec);
+        int Count(ISpecification<T> spec = null);
 
         int Count(Expression<Func<T, bool>> condition);
 
