@@ -31,10 +31,6 @@ namespace Moonglade.Data.Infrastructure
             Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
             bool asNoTracking = true);
 
-        T Add(T entity);
-
-        void Update(T entity);
-
         void Delete(T entity);
 
         void Delete(object key);
