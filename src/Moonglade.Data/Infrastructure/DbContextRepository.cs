@@ -16,9 +16,24 @@ namespace Moonglade.Data.Infrastructure
             DbContext = dbContext;
         }
 
-        public T Get(object key)
+        public Task<T> GetAsync(Expression<Func<T, bool>> condition)
         {
-            return DbContext.Set<T>().Find(key);
+            return DbContext.Set<T>().FirstOrDefaultAsync(condition);
+        }
+
+        public virtual ValueTask<T> GetAsync(object key)
+        {
+            return DbContext.Set<T>().FindAsync(key);
+        }
+
+        public async Task<IReadOnlyList<T>> GetAsync()
+        {
+            return await DbContext.Set<T>().AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).AsNoTracking().ToListAsync();
         }
 
         public IQueryable<T> GetAsQueryable()
@@ -70,33 +85,6 @@ namespace Moonglade.Data.Infrastructure
         public bool Any(Expression<Func<T, bool>> condition = null)
         {
             return null != condition ? DbContext.Set<T>().Any(condition) : DbContext.Set<T>().Any();
-        }
-
-        public virtual ValueTask<T> GetAsync(object key)
-        {
-            return DbContext.Set<T>().FindAsync(key);
-        }
-
-        public Task<T> GetAsync(Expression<Func<T, bool>> condition)
-        {
-            return DbContext.Set<T>().FirstOrDefaultAsync(condition);
-        }
-
-        public async Task<IReadOnlyList<T>> GetAsync()
-        {
-            return await DbContext.Set<T>().AsNoTracking().ToListAsync();
-        }
-
-        public async Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec)
-        {
-            return await ApplySpecification(spec).AsNoTracking().ToListAsync();
-        }
-
-        public Task<T> GetFirstOrDefaultAsync(ISpecification<T> spec, bool asNoTracking = true)
-        {
-            return asNoTracking ?
-                ApplySpecification(spec).AsNoTracking().FirstOrDefaultAsync() :
-                ApplySpecification(spec).FirstOrDefaultAsync();
         }
 
         public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector)

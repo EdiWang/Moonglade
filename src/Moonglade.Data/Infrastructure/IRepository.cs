@@ -8,7 +8,13 @@ namespace Moonglade.Data.Infrastructure
 {
     public interface IRepository<T> //where T : class
     {
-        T Get(object key);
+        ValueTask<T> GetAsync(object key);
+
+        Task<T> GetAsync(Expression<Func<T, bool>> condition);
+
+        Task<IReadOnlyList<T>> GetAsync();
+
+        Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec);
 
         IQueryable<T> GetAsQueryable();
 
@@ -30,16 +36,6 @@ namespace Moonglade.Data.Infrastructure
         bool Any(ISpecification<T> spec);
 
         bool Any(Expression<Func<T, bool>> condition = null);
-
-        ValueTask<T> GetAsync(object key);
-
-        Task<T> GetAsync(Expression<Func<T, bool>> condition);
-
-        Task<IReadOnlyList<T>> GetAsync();
-
-        Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec);
-
-        Task<T> GetFirstOrDefaultAsync(ISpecification<T> spec, bool asNoTracking = true);
 
         Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
             Expression<Func<T, TResult>> selector);
