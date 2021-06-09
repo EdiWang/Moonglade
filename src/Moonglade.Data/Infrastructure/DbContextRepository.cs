@@ -26,7 +26,8 @@ namespace Moonglade.Data.Infrastructure
             return DbContext.Set<T>();
         }
 
-        public TResult SelectFirstOrDefault<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+        public TResult SelectFirstOrDefault<TResult>(
+            ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
         {
             return asNoTracking ?
                 ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefault() :
@@ -115,12 +116,14 @@ namespace Moonglade.Data.Infrastructure
             return await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector)
+        public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
+            ISpecification<T> spec, Expression<Func<T, TResult>> selector)
         {
             return await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync();
         }
 
-        public Task<TResult> SelectFirstOrDefaultAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
+        public Task<TResult> SelectFirstOrDefaultAsync<TResult>(
+            ISpecification<T> spec, Expression<Func<T, TResult>> selector, bool asNoTracking = true)
         {
             return asNoTracking ?
                 ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync() :
@@ -134,7 +137,8 @@ namespace Moonglade.Data.Infrastructure
             return await DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(ISpecification<T> spec, Expression<Func<T, TGroup>> groupExpression, Expression<Func<IGrouping<TGroup, T>, TResult>> selector)
+        public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
+            ISpecification<T> spec, Expression<Func<T, TGroup>> groupExpression, Expression<Func<IGrouping<TGroup, T>, TResult>> selector)
         {
             return await ApplySpecification(spec).AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
         }
