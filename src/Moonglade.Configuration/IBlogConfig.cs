@@ -14,7 +14,6 @@ namespace Moonglade.Configuration
         NotificationSettings NotificationSettings { get; set; }
         FeedSettings FeedSettings { get; set; }
         WatermarkSettings WatermarkSettings { get; set; }
-        FriendLinksSettings FriendLinksSettings { get; set; }
         AdvancedSettings AdvancedSettings { get; set; }
         CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
