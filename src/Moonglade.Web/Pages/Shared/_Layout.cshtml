@@ -47,7 +47,7 @@
     </title>
 
     @if (BlogConfig.AdvancedSettings.EnableCDNRedirect &&
-   !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
+  !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
     }
@@ -102,6 +102,13 @@
     <script src="~/lib/jquery/jquery.min.js"></script>
 </head>
 <body class="@ViewBag.BodyClass">
+    @if (BlogConfig.ContentSettings.ShowCalloutSection)
+    {
+        <section class="call-out">
+            @Html.Raw(BlogConfig.ContentSettings.CalloutSectionHtmlPitch)
+        </section>
+    }
+
     <header class="sticky-top d-print-none">
         <nav id="blog-nav" class="navbar navbar-expand-lg navbar-dark bg-accent1">
             <div class="container">
@@ -163,12 +170,7 @@
         </nav>
     </header>
 
-    @if (BlogConfig.ContentSettings.ShowCalloutSection)
-    {
-        <section class="call-out">
-            @Html.Raw(BlogConfig.ContentSettings.CalloutSectionHtmlPitch)
-        </section>
-    }
+
 
     <div id="page-content" class="content">
         @if (null != ViewBag.HideSideBar && ViewBag.HideSideBar)
@@ -203,7 +205,7 @@
                         <partial name="_Aside" />
                     }
 
-                    <section class="col-md-12 @(BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Disabled ? null: "col-lg-9")">
+                    <section class="col-md-12 @(BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Disabled ? null : "col-lg-9")">
                         @RenderBody()
                     </section>
 
@@ -239,8 +241,7 @@
             if (window.matchMedia && window.themeModeSwitcher) {
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     themeModeSwitcher.useDarkMode();
-                }
-                else {
+                } else {
                     themeModeSwitcher.useLightMode();
                 }
             }
