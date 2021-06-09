@@ -67,8 +67,7 @@ namespace Moonglade.Data.Infrastructure
         Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
             ISpecification<T> spec,
             Expression<Func<T, TGroup>> groupExpression,
-            Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
-            bool asNoTracking = true);
+            Expression<Func<IGrouping<TGroup, T>, TResult>> selector);
 
         Task<T> AddAsync(T entity);
 

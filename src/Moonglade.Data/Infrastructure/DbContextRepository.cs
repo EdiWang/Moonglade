@@ -155,14 +155,9 @@ namespace Moonglade.Data.Infrastructure
             return await DbContext.Set<T>().GroupBy(groupExpression).Select(selector).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(ISpecification<T> spec, Expression<Func<T, TGroup>> groupExpression, Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
-            bool asNoTracking = true)
+        public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(ISpecification<T> spec, Expression<Func<T, TGroup>> groupExpression, Expression<Func<IGrouping<TGroup, T>, TResult>> selector)
         {
-            if (asNoTracking)
-            {
-                return await ApplySpecification(spec).AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
-            }
-            return await ApplySpecification(spec).GroupBy(groupExpression).Select(selector).ToListAsync();
+            return await ApplySpecification(spec).AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
         }
 
         public async Task<T> AddAsync(T entity)
