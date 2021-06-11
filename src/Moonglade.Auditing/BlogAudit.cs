@@ -116,11 +116,7 @@ namespace Moonglade.Auditing
         {
             if (!await IsAuditLogEnabled()) return;
 
-            var connStr = _configuration.GetConnectionString(_dbName);
-            await using var conn = new SqlConnection(connStr);
-
-            const string sql = "DELETE FROM AuditLog";
-            await conn.ExecuteAsync(sql);
+            await _auditLogRepo.ExecuteSqlRawAsync("DELETE FROM AuditLog");
 
             // Make sure who ever doing this can't get away with it
             var (username, ipv4) = GetUsernameAndIp();
