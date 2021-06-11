@@ -70,7 +70,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
                 .Returns(Task.FromResult(true));
             (IReadOnlyList<AuditEntry> Entries, int Count) data = new(new List<AuditEntry>(), 996);
 
-            _mockBlogAudit.Setup(p => p.GetAuditEntries(It.IsAny<int>(), It.IsAny<int>(), null, null)).Returns(Task.FromResult(data));
+            _mockBlogAudit.Setup(p => p.GetAuditEntries(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(data));
 
             var auditLogsModel = CreateAuditLogsModel();
             var result = await auditLogsModel.OnGetAsync(1);

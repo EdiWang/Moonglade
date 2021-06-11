@@ -2,36 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 
 namespace Moonglade.Auditing
 {
     public class BlogAudit : IBlogAudit
     {
         private readonly ILogger<BlogAudit> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IFeatureManager _featureManager;
         private readonly IRepository<AuditLogEntity> _auditLogRepo;
 
-        private readonly string _dbName = "MoongladeDatabase";
-
         public BlogAudit(
             ILogger<BlogAudit> logger,
-            IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor,
             IFeatureManager featureManager,
             IRepository<AuditLogEntity> auditLogRepo)
         {
             _logger = logger;
-            _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _featureManager = featureManager;
             _auditLogRepo = auditLogRepo;
@@ -69,34 +62,18 @@ namespace Moonglade.Auditing
             }
         }
 
-        public async Task<(IReadOnlyList<AuditEntry> Entries, int Count)> GetAuditEntries(
-            int skip, int take, EventType? eventType = null, AuditEventId? eventId = null)
+        public async Task<(IReadOnlyList<AuditEntry> Entries, int Count)> GetAuditEntries(int skip, int take)
         {
-            var connStr = _configuration.GetConnectionString(_dbName);
-            await using var conn = new SqlConnection(connStr);
-
-            const string sql = @"SELECT al.EventId, 
-                                   al.EventType, 
-                                   al.EventTimeUtc, 
-                                   al.[Message],
-                                   al.WebUsername as [Username], 
-                                   al.IpAddressV4, 
-                                   al.MachineName
-                            FROM AuditLog al 
-                            WITH(NOLOCK)
-                            WHERE 1 = 1 
-                            AND (@EventType IS NULL OR al.EventType = @EventType)
-                            AND (@EventId IS NULL OR al.EventId = @EventId)
-                            ORDER BY al.EventTimeUtc DESC
-                            OFFSET @Skip ROWS
-                            FETCH NEXT @Take ROWS ONLY";
-
-            var entries = await conn.QueryAsync<AuditEntry>(sql, new
+            var spec = new AuditPagingSpec(take, skip);
+            var entries = await _auditLogRepo.SelectAsync(spec, p => new AuditEntry
             {
-                eventType,
-                eventId,
-                skip,
-                take
+                EventType = (EventType)p.EventType,
+                EventId = (AuditEventId)p.EventId,
+                IpAddressV4 = p.IpAddressV4,
+                EventTimeUtc = p.EventTimeUtc,
+                MachineName = p.MachineName,
+                Message = p.Message,
+                Username = p.WebUsername
             });
 
             var totalRows = _auditLogRepo.Count();

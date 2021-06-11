@@ -17,7 +17,6 @@ namespace Moonglade.Auditing.Tests
         private MockRepository _mockRepository;
 
         private Mock<ILogger<BlogAudit>> _mockLogger;
-        private Mock<IConfiguration> _mockConfiguration;
         private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private Mock<IFeatureManager> _mockFeatureManager;
         private Mock<IRepository<AuditLogEntity>> _mockAuditLogRepo;
@@ -29,7 +28,6 @@ namespace Moonglade.Auditing.Tests
             _mockRepository = new(MockBehavior.Default);
 
             _mockLogger = _mockRepository.Create<ILogger<BlogAudit>>();
-            _mockConfiguration = _mockRepository.Create<IConfiguration>();
             _mockHttpContextAccessor = _mockRepository.Create<IHttpContextAccessor>();
             _mockFeatureManager = _mockRepository.Create<IFeatureManager>();
             _mockAuditLogRepo = _mockRepository.Create<IRepository<AuditLogEntity>>();
@@ -39,7 +37,6 @@ namespace Moonglade.Auditing.Tests
         {
             return new BlogAudit(
                 _mockLogger.Object,
-                _mockConfiguration.Object,
                 _mockHttpContextAccessor.Object,
                 _mockFeatureManager.Object, 
                 _mockAuditLogRepo.Object);
