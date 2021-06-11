@@ -61,11 +61,6 @@ namespace Moonglade.Web.Controllers
                 _logger.LogError($"Error {nameof(Avatar)}(), Invalid Base64 string", e);
                 return PhysicalFile(fallbackImageFile, "image/png");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error {nameof(Avatar)}()", ex);
-                return new EmptyResult();
-            }
         }
 
         [Authorize]
