@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Configuration.Settings;
@@ -38,7 +37,7 @@ namespace Moonglade.Auditing.Tests
             return new BlogAudit(
                 _mockLogger.Object,
                 _mockHttpContextAccessor.Object,
-                _mockFeatureManager.Object, 
+                _mockFeatureManager.Object,
                 _mockAuditLogRepo.Object);
         }
 
