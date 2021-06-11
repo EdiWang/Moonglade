@@ -235,16 +235,8 @@ namespace Moonglade.Web.Controllers
                 return Conflict("Bad base64 data");
             }
 
-            try
-            {
-                using var bmp = new Bitmap(new MemoryStream(base64Chars));
-                if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message, e);
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
+            using var bmp = new Bitmap(new MemoryStream(base64Chars));
+            if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
 
             await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
             await _blogAudit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, "Site icon updated.");

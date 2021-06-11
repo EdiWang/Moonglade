@@ -148,36 +148,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Image_Exception()
-        {
-            const string filename = "test.png";
-
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
-            {
-                EnableCDNRedirect = false,
-            });
-
-            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
-            {
-                CacheSlidingExpirationMinutes = new Dictionary<string, int>
-                {
-                    { "Image", FakeData.Int2 }
-                }
-            });
-
-            var memCacheMock = Create.MockedMemoryCache();
-            _mockBlogImageStorage.Setup(p => p.GetAsync(It.IsAny<string>()))
-                .Throws(new ArgumentException(FakeData.ShortString2));
-
-            var ctl = CreateImageController();
-
-            var result = await ctl.Image(filename, memCacheMock);
-
-            Assert.IsInstanceOf<StatusCodeResult>(result);
-            Assert.AreEqual(500, ((StatusCodeResult)result).StatusCode);
-        }
-
-        [Test]
         public async Task Image_Upload_NullFile()
         {
             var ctl = CreateImageController();
@@ -200,40 +170,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Image(file, null);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
-        }
-
-        [Test]
-        public async Task Image_Upload_EmptyAllowedExtensions()
-        {
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
-            {
-                AllowedExtensions = Array.Empty<string>()
-            });
-
-            IFormFile file = new FormFile(new MemoryStream(), 0, 1024, "996.jpg", "996.jpg");
-
-            var ctl = CreateImageController();
-            var result = await ctl.Image(file, null);
-
-            Assert.IsInstanceOf<StatusCodeResult>(result);
-            Assert.AreEqual(500, ((StatusCodeResult)result).StatusCode);
-        }
-
-        [Test]
-        public async Task Image_Upload_NullAllowedExtensions()
-        {
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
-            {
-                AllowedExtensions = null
-            });
-
-            IFormFile file = new FormFile(new MemoryStream(), 0, 1024, "996.jpg", "996.jpg");
-
-            var ctl = CreateImageController();
-            var result = await ctl.Image(file, null);
-
-            Assert.IsInstanceOf<StatusCodeResult>(result);
-            Assert.AreEqual(500, ((StatusCodeResult)result).StatusCode);
         }
     }
 }
