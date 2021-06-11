@@ -100,6 +100,14 @@
         }
     </environment>
     <script src="~/lib/jquery/jquery.min.js"></script>
+    @if (Settings.Value.Pride)
+    {
+        <style>
+            body {
+                cursor: url('/images/pride-heart-24.svg'), auto;
+            }
+        </style>
+    }
 </head>
 <body class="@ViewBag.BodyClass">
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
@@ -169,8 +177,6 @@
             </div>
         </nav>
     </header>
-
-
 
     <div id="page-content" class="content">
         @if (null != ViewBag.HideSideBar && ViewBag.HideSideBar)
