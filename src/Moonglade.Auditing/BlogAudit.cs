@@ -27,7 +27,7 @@ namespace Moonglade.Auditing
             ILogger<BlogAudit> logger,
             IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor,
-            IFeatureManager featureManager, 
+            IFeatureManager featureManager,
             IRepository<AuditLogEntity> auditLogRepo)
         {
             _logger = logger;
@@ -51,15 +51,17 @@ namespace Moonglade.Auditing
                 var machineName = Environment.MachineName;
                 if (machineName.Length > 32) machineName = machineName[..32];
 
-                var auditEntry = new AuditEntry(eventType, auditEventId, username, ipv4, machineName, message);
-
-                var connStr = _configuration.GetConnectionString(_dbName);
-                await using var conn = new SqlConnection(connStr);
-
-                const string sql = @"INSERT INTO AuditLog([EventId],[EventType],[EventTimeUtc],[WebUsername],[IpAddressV4],[MachineName],[Message])
-                            VALUES(@EventId, @EventType, @EventTimeUtc, @Username, @IpAddressV4, @MachineName, @Message)";
-
-                await conn.ExecuteAsync(sql, auditEntry);
+                var entity = new AuditLogEntity
+                {
+                    EventId = (int)auditEventId,
+                    EventType = (int)eventType,
+                    EventTimeUtc = DateTime.UtcNow,
+                    IpAddressV4 = ipv4,
+                    MachineName = machineName,
+                    Message = message,
+                    WebUsername = username
+                };
+                await _auditLogRepo.AddAsync(entity);
             }
             catch (Exception e)
             {
