@@ -8,6 +8,8 @@ namespace Moonglade.Data.Infrastructure
 {
     public interface IRepository<T> //where T : class
     {
+        Task ExecuteSqlRawAsync(string sql);
+
         ValueTask<T> GetAsync(object key);
 
         Task<T> GetAsync(Expression<Func<T, bool>> condition);

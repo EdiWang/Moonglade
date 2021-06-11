@@ -16,6 +16,11 @@ namespace Moonglade.Data.Infrastructure
             DbContext = dbContext;
         }
 
+        public async Task ExecuteSqlRawAsync(string sql)
+        {
+            await DbContext.Database.ExecuteSqlRawAsync(sql);
+        }
+
         public Task<T> GetAsync(Expression<Func<T, bool>> condition)
         {
             return DbContext.Set<T>().FirstOrDefaultAsync(condition);

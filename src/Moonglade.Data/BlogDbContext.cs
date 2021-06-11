@@ -28,6 +28,7 @@ namespace Moonglade.Data
         public virtual DbSet<MenuEntity> Menu { get; set; }
         public virtual DbSet<SubMenuEntity> SubMenu { get; set; }
         public virtual DbSet<LocalAccountEntity> LocalAccount { get; set; }
+        public virtual DbSet<AuditLogEntity> AuditLog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +46,7 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new MenuConfiguration());
             modelBuilder.ApplyConfiguration(new SubMenuConfiguration());
             modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
+            modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
 
             modelBuilder
                 .Entity<PostEntity>()
