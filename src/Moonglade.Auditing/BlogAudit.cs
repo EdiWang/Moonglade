@@ -89,15 +89,9 @@ namespace Moonglade.Auditing
                             AND (@EventId IS NULL OR al.EventId = @EventId)
                             ORDER BY al.EventTimeUtc DESC
                             OFFSET @Skip ROWS
-                            FETCH NEXT @Take ROWS ONLY
+                            FETCH NEXT @Take ROWS ONLY";
 
-                            SELECT COUNT(al.Id)
-                            FROM AuditLog al
-                            WHERE 1 = 1
-                            AND(@EventType IS NULL OR al.EventType = @EventType)
-                            AND(@EventId IS NULL OR al.EventId = @EventId);";
-
-            using var multi = await conn.QueryMultipleAsync(sql, new
+            var entries = await conn.QueryAsync<AuditEntry>(sql, new
             {
                 eventType,
                 eventId,
@@ -105,9 +99,8 @@ namespace Moonglade.Auditing
                 take
             });
 
-            var entries = multi.Read<AuditEntry>().ToList();
-            var count = multi.ReadFirstOrDefault<int>();
-            var returnType = (entries, count);
+            var totalRows = _auditLogRepo.Count();
+            var returnType = (entries.ToList(), totalRows);
 
             return returnType;
         }
