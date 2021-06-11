@@ -137,11 +137,6 @@ namespace Moonglade.Web.Controllers
                 _logger.LogError($"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string", e);
                 return PhysicalFile(fallbackImageFile, "image/png");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error {nameof(SiteIconOrigin)}()", ex);
-                return new EmptyResult();
-            }
         }
 
         #endregion
