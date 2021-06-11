@@ -8,6 +8,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auditing
 {
@@ -17,6 +19,7 @@ namespace Moonglade.Auditing
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IFeatureManager _featureManager;
+        private readonly IRepository<AuditLogEntity> _auditLogRepo;
 
         private readonly string _dbName = "MoongladeDatabase";
 
@@ -24,12 +27,14 @@ namespace Moonglade.Auditing
             ILogger<BlogAudit> logger,
             IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor,
-            IFeatureManager featureManager)
+            IFeatureManager featureManager, 
+            IRepository<AuditLogEntity> auditLogRepo)
         {
             _logger = logger;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _featureManager = featureManager;
+            _auditLogRepo = auditLogRepo;
         }
 
         public async Task AddAuditEntry(EventType eventType, AuditEventId auditEventId, string message)

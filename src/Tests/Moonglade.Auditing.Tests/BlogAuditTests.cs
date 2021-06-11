@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Configuration.Settings;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
 
@@ -18,16 +20,19 @@ namespace Moonglade.Auditing.Tests
         private Mock<IConfiguration> _mockConfiguration;
         private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private Mock<IFeatureManager> _mockFeatureManager;
+        private Mock<IRepository<AuditLogEntity>> _mockAuditLogRepo;
+
 
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new(MockBehavior.Strict);
+            _mockRepository = new(MockBehavior.Default);
 
             _mockLogger = _mockRepository.Create<ILogger<BlogAudit>>();
             _mockConfiguration = _mockRepository.Create<IConfiguration>();
             _mockHttpContextAccessor = _mockRepository.Create<IHttpContextAccessor>();
             _mockFeatureManager = _mockRepository.Create<IFeatureManager>();
+            _mockAuditLogRepo = _mockRepository.Create<IRepository<AuditLogEntity>>();
         }
 
         private BlogAudit CreateBlogAudit()
@@ -36,7 +41,8 @@ namespace Moonglade.Auditing.Tests
                 _mockLogger.Object,
                 _mockConfiguration.Object,
                 _mockHttpContextAccessor.Object,
-                _mockFeatureManager.Object);
+                _mockFeatureManager.Object, 
+                _mockAuditLogRepo.Object);
         }
 
         [Test]
