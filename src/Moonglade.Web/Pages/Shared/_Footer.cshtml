@@ -18,15 +18,6 @@
                 <small>
                     Powered by <a href="https://moonglade.blog" target="_blank">Moonglade</a> @Helper.AppVersion
                 </small>
-
-                @if (Settings.Value.Pride)
-                {
-                    <div class="mt-2">
-                        <a href="https://en.wikipedia.org/wiki/WorldPride" target="_blank">
-                            <img src="~/images/rainbow-flag.svg" alt="Pride" width="24" />
-                        </a>
-                    </div>
-                }
             </section>
 
             @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
@@ -55,6 +46,7 @@
             <div class="modal-header">
                 <h6 class="modal-title" id="langselectorLabel">Languages</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
             <div class="modal-body">
