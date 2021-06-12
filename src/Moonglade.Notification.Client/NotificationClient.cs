@@ -46,26 +46,18 @@ namespace Moonglade.Notification.Client
 
         public async Task TestNotificationAsync()
         {
-            try
-            {
-                var req = BuildRequest(() =>
-                    new NotificationRequest<EmptyPayload>(MailMesageTypes.TestMail, EmptyPayload.Default));
-                var response = await _httpClient.SendAsync(req);
+            var req = BuildRequest(() =>
+                new NotificationRequest<EmptyPayload>(MailMesageTypes.TestMail, EmptyPayload.Default));
+            var response = await _httpClient.SendAsync(req);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var dataStr = await response.Content.ReadAsStringAsync();
-                    _logger.LogInformation($"Test email is sent, server response: '{dataStr}'");
-                }
-                else
-                {
-                    throw new($"Test email sending failed, response code: '{response.StatusCode}'");
-                }
-            }
-            catch (Exception e)
+            if (response.IsSuccessStatusCode)
             {
-                _logger.LogError(e, e.Message);
-                throw;
+                var dataStr = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation($"Test email is sent, server response: '{dataStr}'");
+            }
+            else
+            {
+                throw new($"Test email sending failed, response code: '{response.StatusCode}'");
             }
         }
 
