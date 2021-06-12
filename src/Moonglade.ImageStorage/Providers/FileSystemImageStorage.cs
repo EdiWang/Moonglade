@@ -22,53 +22,37 @@ namespace Moonglade.ImageStorage.Providers
 
         public async Task<ImageInfo> GetAsync(string fileName)
         {
-            try
+            var imagePath = Path.Join(_path, fileName);
+
+            if (!File.Exists(imagePath))
             {
-                var imagePath = Path.Join(_path, fileName);
-
-                if (!File.Exists(imagePath))
-                {
-                    // Can not throw FileNotFoundException,
-                    // because hackers may request a large number of 404 images
-                    // to flood .NET runtime with exceptions and take out the server
-                    return null;
-                }
-
-                var extension = Path.GetExtension(imagePath);
-
-                var fileType = extension.Replace(".", string.Empty);
-                var imageBytes = await ReadFileAsync(imagePath);
-
-                var imageInfo = new ImageInfo
-                {
-                    ImageBytes = imageBytes,
-                    ImageExtensionName = fileType
-                };
-
-                return imageInfo;
+                // Can not throw FileNotFoundException,
+                // because hackers may request a large number of 404 images
+                // to flood .NET runtime with exceptions and take out the server
+                return null;
             }
-            catch (Exception e)
+
+            var extension = Path.GetExtension(imagePath);
+
+            var fileType = extension.Replace(".", string.Empty);
+            var imageBytes = await ReadFileAsync(imagePath);
+
+            var imageInfo = new ImageInfo
             {
-                _logger.LogError(e, $"Error getting image file {fileName}");
-                throw;
-            }
+                ImageBytes = imageBytes,
+                ImageExtensionName = fileType
+            };
+
+            return imageInfo;
         }
 
         public async Task DeleteAsync(string fileName)
         {
-            try
+            await Task.CompletedTask;
+            var imagePath = Path.Join(_path, fileName);
+            if (File.Exists(imagePath))
             {
-                await Task.CompletedTask;
-                var imagePath = Path.Join(_path, fileName);
-                if (File.Exists(imagePath))
-                {
-                    File.Delete(imagePath);
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error deleting image file {fileName}");
-                throw;
+                File.Delete(imagePath);
             }
         }
 
@@ -82,21 +66,13 @@ namespace Moonglade.ImageStorage.Providers
 
         public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
         {
-            try
-            {
-                var fullPath = Path.Join(_path, fileName);
+            var fullPath = Path.Join(_path, fileName);
 
-                await using var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
-                    4096, true);
-                await sourceStream.WriteAsync(imageBytes.AsMemory(0, imageBytes.Length));
+            await using var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
+                4096, true);
+            await sourceStream.WriteAsync(imageBytes.AsMemory(0, imageBytes.Length));
 
-                return fileName;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error writing image file {fileName}");
-                throw;
-            }
+            return fileName;
         }
 
         public static string ResolveImageStoragePath(string contentRootPath, string path)
