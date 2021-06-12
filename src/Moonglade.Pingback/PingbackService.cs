@@ -24,7 +24,7 @@ namespace Moonglade.Pingback
             ILogger<PingbackService> logger,
             IDbConnection dbConnection,
             IPingSourceInspector pingSourceInspector,
-            IPingbackRepository pingbackRepository, 
+            IPingbackRepository pingbackRepository,
             IRepository<PingbackEntity> pingbackRepo)
         {
             _logger = logger;
@@ -34,7 +34,7 @@ namespace Moonglade.Pingback
             _dbConnection = dbConnection;
         }
 
-        public async Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackRecord> pingSuccessAction)
+        public async Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackEntity> pingSuccessAction)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Moonglade.Pingback
                 _logger.LogInformation("Adding received pingback...");
 
                 var uri = new Uri(_sourceUrl);
-                var obj = new PingbackRecord
+                var obj = new PingbackEntity
                 {
                     Id = Guid.NewGuid(),
                     PingTimeUtc = DateTime.UtcNow,
@@ -88,7 +88,7 @@ namespace Moonglade.Pingback
                     SourceIp = ip
                 };
 
-                await _pingbackRepository.SavePingbackRecordAsync(obj, _dbConnection);
+                await _pingbackRepo.AddAsync(obj);
                 pingSuccessAction?.Invoke(obj);
 
                 return PingbackResponse.Success;
@@ -118,7 +118,7 @@ namespace Moonglade.Pingback
         {
             try
             {
-                await _pingbackRepository.DeletePingbackHistory(id, _dbConnection);
+                await _pingbackRepo.DeleteAsync(id);
             }
             catch (Exception e)
             {
