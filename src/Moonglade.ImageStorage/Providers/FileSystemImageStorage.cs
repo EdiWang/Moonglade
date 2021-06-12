@@ -83,16 +83,14 @@ namespace Moonglade.ImageStorage.Providers
             }
 
             const string basedirStr = "${basedir}"; // Do not use "." because there could be "." in path.
-            if (path.IndexOf(basedirStr, StringComparison.Ordinal) > 0)
+
+            path = path.IndexOf(basedirStr, StringComparison.Ordinal) switch
             {
-                throw new NotSupportedException($"{basedirStr} can only be at the beginning.");
-            }
-            if (path.IndexOf(basedirStr, StringComparison.Ordinal) == 0)
-            {
-                // Use relative path
                 // Warning: Write data under application directory may blow up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.
-                path = path.Replace(basedirStr, contentRootPath);
-            }
+                > 0 => throw new NotSupportedException($"{basedirStr} can only be at the beginning."),
+                0 => path.Replace(basedirStr, contentRootPath),
+                _ => path
+            };
 
             // Handle Path for non-Windows environment #412
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || Path.DirectorySeparatorChar != '\\')
