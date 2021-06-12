@@ -106,29 +106,14 @@ namespace Moonglade.Pingback
 
         public async Task<IReadOnlyList<PingbackEntity>> GetPingbackHistoryAsync()
         {
-            try
-            {
-                var list = await _pingbackRepo.GetAsync();
-                return list;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error {nameof(GetPingbackHistoryAsync)}");
-                throw;
-            }
+            var list = await _pingbackRepo.GetAsync();
+            return list;
+
         }
 
         public async Task DeletePingbackHistory(Guid id)
         {
-            try
-            {
-                await _pingbackRepo.DeleteAsync(id);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error {nameof(DeletePingbackHistory)}");
-                throw;
-            }
+            await _pingbackRepo.DeleteAsync(id);
         }
 
         private bool ValidatePingRequest(string requestBody)
