@@ -74,12 +74,12 @@ namespace Moonglade.Web
             services.AddHttpContextAccessor();
             services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
             services.AddFeatureManagement();
-            services.AddApplicationInsightsTelemetry();
             services.AddAzureAppConfiguration();
-            services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) =>
-            {
-                module.EnableSqlCommandTextInstrumentation = true;
-            });
+            services.AddApplicationInsightsTelemetry()
+                    .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
+                    {
+                        module.EnableSqlCommandTextInstrumentation = true;
+                    });
 
             services.AddSession(options =>
             {
