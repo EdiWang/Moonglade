@@ -8,7 +8,6 @@ namespace Moonglade.Configuration
     {
         public static void AddBlogConfig(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddOptions();
             var appSettings = configuration.GetSection(nameof(AppSettings));
             services.Configure<AppSettings>(appSettings);
             services.AddSingleton<IBlogConfig, BlogConfig>();
