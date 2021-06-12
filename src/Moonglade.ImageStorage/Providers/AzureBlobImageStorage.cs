@@ -17,74 +17,48 @@ namespace Moonglade.ImageStorage.Providers
 
         public AzureBlobImageStorage(ILogger<AzureBlobImageStorage> logger, AzureBlobConfiguration blobConfiguration)
         {
-            try
-            {
-                _logger = logger;
+            _logger = logger;
 
-                _container = new(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
+            _container = new(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
 
-                logger.LogInformation($"Created {nameof(AzureBlobImageStorage)} for account {_container.AccountName} on container {_container.Name}");
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, $"Failed to create {nameof(AzureBlobImageStorage)}");
-                throw;
-            }
+            logger.LogInformation($"Created {nameof(AzureBlobImageStorage)} for account {_container.AccountName} on container {_container.Name}");
         }
 
         public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
         {
-            try
+            if (string.IsNullOrWhiteSpace(fileName))
             {
-                if (string.IsNullOrWhiteSpace(fileName))
-                {
-                    throw new ArgumentNullException(nameof(fileName));
-                }
-
-                _logger.LogInformation($"Uploading {fileName} to Azure Blob Storage.");
-
-
-                var blob = _container.GetBlobClient(fileName);
-
-                // Why .NET doesn't have MimeMapping.GetMimeMapping()
-                var blobHttpHeader = new BlobHttpHeaders();
-                var extension = Path.GetExtension(blob.Uri.AbsoluteUri);
-                blobHttpHeader.ContentType = extension.ToLower() switch
-                {
-                    ".jpg" => "image/jpeg",
-                    ".jpeg" => "image/jpeg",
-                    ".png" => "image/png",
-                    ".gif" => "image/gif",
-                    _ => blobHttpHeader.ContentType
-                };
-
-                await using var fileStream = new MemoryStream(imageBytes);
-                var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader);
-
-                _logger.LogInformation($"Uploaded image file '{fileName}' to Azure Blob Storage, ETag '{uploadedBlob.Value.ETag}'. Yeah, the best cloud!");
-
-                return fileName;
+                throw new ArgumentNullException(nameof(fileName));
             }
-            catch (Exception e)
+
+            _logger.LogInformation($"Uploading {fileName} to Azure Blob Storage.");
+
+
+            var blob = _container.GetBlobClient(fileName);
+
+            // Why .NET doesn't have MimeMapping.GetMimeMapping()
+            var blobHttpHeader = new BlobHttpHeaders();
+            var extension = Path.GetExtension(blob.Uri.AbsoluteUri);
+            blobHttpHeader.ContentType = extension.ToLower() switch
             {
-                _logger.LogError(e, $"Error uploading file {fileName} to Azure, it must be my problem, not Microsoft.");
-                throw;
-            }
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                _ => blobHttpHeader.ContentType
+            };
+
+            await using var fileStream = new MemoryStream(imageBytes);
+            var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader);
+
+            _logger.LogInformation($"Uploaded image file '{fileName}' to Azure Blob Storage, ETag '{uploadedBlob.Value.ETag}'. Yeah, the best cloud!");
+
+            return fileName;
         }
 
         public async Task DeleteAsync(string fileName)
         {
-            var task = _container.DeleteBlobIfExistsAsync(fileName);
-
-            try
-            {
-                await task;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error deleting file {fileName} on Azure, it must be my problem, not Microsoft.");
-                throw;
-            }
+            await _container.DeleteBlobIfExistsAsync(fileName);
         }
 
         public async Task<ImageInfo> GetAsync(string fileName)
@@ -100,36 +74,28 @@ namespace Moonglade.ImageStorage.Providers
             var existsTask = blobClient.ExistsAsync();
             var downloadTask = blobClient.DownloadToAsync(memoryStream);
 
-            try
+            var exists = await existsTask;
+            if (!exists)
             {
-                var exists = await existsTask;
-                if (!exists)
-                {
-                    _logger.LogWarning($"Blob {fileName} not exist.");
+                _logger.LogWarning($"Blob {fileName} not exist.");
 
-                    // Can not throw FileNotFoundException,
-                    // because hackers may request a large number of 404 images
-                    // to flood .NET runtime with exceptions and take out the server
-                    return null;
-                }
-
-                await downloadTask;
-                var arr = memoryStream.ToArray();
-
-                var fileType = extension.Replace(".", string.Empty);
-                var imageInfo = new ImageInfo
-                {
-                    ImageBytes = arr,
-                    ImageExtensionName = fileType
-                };
-
-                return imageInfo;
+                // Can not throw FileNotFoundException,
+                // because hackers may request a large number of 404 images
+                // to flood .NET runtime with exceptions and take out the server
+                return null;
             }
-            catch (Azure.RequestFailedException e)
+
+            await downloadTask;
+            var arr = memoryStream.ToArray();
+
+            var fileType = extension.Replace(".", string.Empty);
+            var imageInfo = new ImageInfo
             {
-                _logger.LogError(e, $"Error getting image '{fileName}' in blob container '{_container.Name}'");
-                throw;
-            }
+                ImageBytes = arr,
+                ImageExtensionName = fileType
+            };
+
+            return imageInfo;
         }
     }
 }

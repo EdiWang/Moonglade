@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -18,7 +17,6 @@ namespace Moonglade.Core.Tests
 
         private Mock<IConfiguration> _mockConfiguration;
         private Mock<HttpMessageHandler> _handlerMock;
-        private Mock<ILogger<ReleaseCheckerClient>> _mockLogger;
         private HttpClient _magicHttpClient;
 
         [SetUp]
@@ -28,13 +26,12 @@ namespace Moonglade.Core.Tests
 
             _mockConfiguration = _mockRepository.Create<IConfiguration>();
             _handlerMock = _mockRepository.Create<HttpMessageHandler>();
-            _mockLogger = _mockRepository.Create<ILogger<ReleaseCheckerClient>>();
         }
 
         private ReleaseCheckerClient CreateReleaseCheckerClient()
         {
             _magicHttpClient = new(_handlerMock.Object);
-            return new(_mockConfiguration.Object, _magicHttpClient, _mockLogger.Object);
+            return new(_mockConfiguration.Object, _magicHttpClient);
         }
 
         [TestCase(null)]
