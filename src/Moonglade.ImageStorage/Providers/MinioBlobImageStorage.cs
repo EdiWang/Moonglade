@@ -18,24 +18,16 @@ namespace Moonglade.ImageStorage.Providers
 
         public MinioBlobImageStorage(ILogger<MinioBlobImageStorage> logger, MinioBlobConfiguration blobConfiguration)
         {
-            try
-            {
-                _logger = logger;
+            _logger = logger;
 
-                _client = new(blobConfiguration.EndPoint, blobConfiguration.AccessKey, blobConfiguration.SecretKey);
-                if (blobConfiguration.WithSSL)
-                {
-                    _client = _client.WithSSL();
-                }
-                _bucketName = blobConfiguration.BucketName;
-
-                logger.LogInformation($"Created {nameof(MinioBlobImageStorage)} at {blobConfiguration.EndPoint}");
-            }
-            catch (Exception e)
+            _client = new(blobConfiguration.EndPoint, blobConfiguration.AccessKey, blobConfiguration.SecretKey);
+            if (blobConfiguration.WithSSL)
             {
-                logger.LogError(e, $"Failed to create {nameof(MinioBlobImageStorage)}");
-                throw;
+                _client = _client.WithSSL();
             }
+            _bucketName = blobConfiguration.BucketName;
+
+            logger.LogInformation($"Created {nameof(MinioBlobImageStorage)} at {blobConfiguration.EndPoint}");
         }
 
         protected virtual async Task CreateBucketIfNotExists()
@@ -48,44 +40,28 @@ namespace Moonglade.ImageStorage.Providers
 
         public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
         {
-            try
+            if (string.IsNullOrWhiteSpace(fileName))
             {
-                if (string.IsNullOrWhiteSpace(fileName))
-                {
-                    throw new ArgumentNullException(nameof(fileName));
-                }
-
-                _logger.LogInformation($"Uploading {fileName} to Minio Blob Storage.");
-
-                await CreateBucketIfNotExists();
-
-                await using var fileStream = new MemoryStream(imageBytes);
-                await _client.PutObjectAsync(_bucketName, fileName, fileStream, fileStream.Length);
-
-                _logger.LogInformation($"Uploaded image file '{fileName}' to Minio Blob Storage.");
-
-                return fileName;
+                throw new ArgumentNullException(nameof(fileName));
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error uploading file {fileName} to Minio.");
-                throw;
-            }
+
+            _logger.LogInformation($"Uploading {fileName} to Minio Blob Storage.");
+
+            await CreateBucketIfNotExists();
+
+            await using var fileStream = new MemoryStream(imageBytes);
+            await _client.PutObjectAsync(_bucketName, fileName, fileStream, fileStream.Length);
+
+            _logger.LogInformation($"Uploaded image file '{fileName}' to Minio Blob Storage.");
+
+            return fileName;
         }
 
         public async Task DeleteAsync(string fileName)
         {
-            try
+            if (await BlobExistsAsync(fileName))
             {
-                if (await BlobExistsAsync(fileName))
-                {
-                    await _client.RemoveObjectAsync(_bucketName, fileName);
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error deleting file {fileName} on Minio, it must be my problem, not Microsoft.");
-                throw;
+                await _client.RemoveObjectAsync(_bucketName, fileName);
             }
         }
 
@@ -118,35 +94,27 @@ namespace Moonglade.ImageStorage.Providers
                 throw new ArgumentException("File extension is empty");
             }
 
-            try
+            var exists = await BlobExistsAsync(fileName);
+            if (!exists)
             {
-                var exists = await BlobExistsAsync(fileName);
-                if (!exists)
-                {
-                    _logger.LogWarning($"Blob {fileName} not exist.");
-                    return null;
-                }
-
-                await _client.GetObjectAsync(_bucketName, fileName, stream =>
-                {
-                    stream?.CopyTo(memoryStream);
-                });
-                var arr = memoryStream.ToArray();
-
-                var fileType = extension.Replace(".", string.Empty);
-                var imageInfo = new ImageInfo
-                {
-                    ImageBytes = arr,
-                    ImageExtensionName = fileType
-                };
-
-                return imageInfo;
+                _logger.LogWarning($"Blob {fileName} not exist.");
+                return null;
             }
-            catch (Exception e)
+
+            await _client.GetObjectAsync(_bucketName, fileName, stream =>
             {
-                _logger.LogError(e, $"Error getting image '{fileName}' in minio.");
-                throw;
-            }
+                stream?.CopyTo(memoryStream);
+            });
+            var arr = memoryStream.ToArray();
+
+            var fileType = extension.Replace(".", string.Empty);
+            var imageInfo = new ImageInfo
+            {
+                ImageBytes = arr,
+                ImageExtensionName = fileType
+            };
+
+            return imageInfo;
         }
     }
 }
