@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
@@ -165,11 +166,8 @@ namespace Moonglade.Pingback.Tests
             tcsPt.SetResult((Guid.NewGuid(), "Pingback Unit Test"));
             _mockPingTargetFinder.Setup(p => p.GetPostIdTitle(It.IsAny<string>(), It.IsAny<IDbConnection>())).Returns(tcsPt.Task);
 
-            var tcsAp = new TaskCompletionSource<bool>();
-            tcsAp.SetResult(true);
-            _mockPingTargetFinder.Setup(p => p.HasAlreadyBeenPinged(
-                It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDbConnection>()))
-                .Returns(tcsAp.Task);
+            _mockPingbackRepo.Setup(p => p.Any(It.IsAny<Expression<Func<PingbackEntity, bool>>>()))
+                .Returns(true);
 
             var pingbackService = CreateService();
 

@@ -70,7 +70,11 @@ namespace Moonglade.Pingback
                 }
                 _logger.LogInformation($"Post '{id}:{title}' is found for ping.");
 
-                var pinged = await _pingbackRepository.HasAlreadyBeenPinged(id, pingRequest.SourceUrl, ip, _dbConnection);
+                var pinged = _pingbackRepo.Any(p =>
+                    p.TargetPostId == id &&
+                    p.SourceUrl == pingRequest.SourceUrl &&
+                    p.SourceIp.Trim() == ip);
+
                 if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
                 _logger.LogInformation("Adding received pingback...");

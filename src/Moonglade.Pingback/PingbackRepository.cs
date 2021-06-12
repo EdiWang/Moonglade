@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ namespace Moonglade.Pingback
     public interface IPingbackRepository
     {
         Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn);
-        Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn);
     }
 
     public class PingbackRepository : IPingbackRepository
@@ -33,16 +31,6 @@ namespace Moonglade.Pingback
                 day = pubDate.Day
             });
             return p;
-        }
-
-        public async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
-        {
-            var sql = "SELECT TOP 1 1 FROM Pingback p " +
-                          "WHERE p.TargetPostId = @postId " +
-                          "AND p.SourceUrl = @sourceUrl " +
-                          "AND p.SourceIp = @sourceIp";
-            var result = await conn.ExecuteScalarAsync<int>(sql, new { postId, sourceUrl, sourceIp });
-            return result == 1;
         }
 
         private static (string Slug, DateTime PubDate) GetSlugInfoFromPostUrl(string url)
