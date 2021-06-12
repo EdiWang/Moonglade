@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 
 namespace Moonglade.Pingback
 {
@@ -13,25 +14,22 @@ namespace Moonglade.Pingback
     {
         private readonly ILogger<PingbackService> _logger;
         private readonly IPingSourceInspector _pingSourceInspector;
-        private readonly IPingbackRepository _pingbackRepository;
         private readonly IRepository<PingbackEntity> _pingbackRepo;
+        private readonly IRepository<PostEntity> _postRepo;
 
-        private readonly IDbConnection _dbConnection;
         private string _sourceUrl;
         private string _targetUrl;
 
         public PingbackService(
             ILogger<PingbackService> logger,
-            IDbConnection dbConnection,
             IPingSourceInspector pingSourceInspector,
-            IPingbackRepository pingbackRepository,
-            IRepository<PingbackEntity> pingbackRepo)
+            IRepository<PingbackEntity> pingbackRepo,
+            IRepository<PostEntity> postRepo)
         {
             _logger = logger;
             _pingSourceInspector = pingSourceInspector;
-            _pingbackRepository = pingbackRepository;
             _pingbackRepo = pingbackRepo;
-            _dbConnection = dbConnection;
+            _postRepo = postRepo;
         }
 
         public async Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackEntity> pingSuccessAction)
@@ -62,12 +60,15 @@ namespace Moonglade.Pingback
                     return PingbackResponse.SpamDetectedFakeNotFound;
                 }
 
-                var (id, title) = await _pingbackRepository.GetPostIdTitle(pingRequest.TargetUrl, _dbConnection);
+                var (slug, pubDate) = GetSlugInfoFromPostUrl(pingRequest.TargetUrl);
+                var spec = new PostSpec(pubDate, slug);
+                var (id, title) = await _postRepo.SelectFirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
                 if (id == Guid.Empty)
                 {
                     _logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
                     return PingbackResponse.Error32TargetUriNotExist;
                 }
+
                 _logger.LogInformation($"Post '{id}:{title}' is found for ping.");
 
                 var pinged = _pingbackRepo.Any(p =>
@@ -102,6 +103,24 @@ namespace Moonglade.Pingback
                 _logger.LogError(e, nameof(ReceivePingAsync));
                 return PingbackResponse.GenericError;
             }
+        }
+
+        private static (string Slug, DateTime PubDate) GetSlugInfoFromPostUrl(string url)
+        {
+            var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
+            Match match = blogSlugRegex.Match(url);
+            if (!match.Success)
+            {
+                throw new FormatException("Invalid Slug Format");
+            }
+
+            int year = int.Parse(match.Groups["yyyy"].Value);
+            int month = int.Parse(match.Groups["MM"].Value);
+            int day = int.Parse(match.Groups["dd"].Value);
+            string slug = match.Groups["slug"].Value;
+            var date = new DateTime(year, month, day);
+
+            return (slug, date);
         }
 
         public async Task<IReadOnlyList<PingbackEntity>> GetPingbackHistoryAsync()

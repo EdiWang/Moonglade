@@ -16,9 +16,6 @@ namespace Moonglade.Pingback.Tests
             var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IPingSourceInspector));
             Assert.IsNotNull(obj1);
 
-            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IPingbackRepository));
-            Assert.IsNotNull(obj2);
-
             var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(IPingbackSender));
             Assert.IsNotNull(obj3);
 
