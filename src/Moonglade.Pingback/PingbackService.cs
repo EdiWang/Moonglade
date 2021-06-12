@@ -100,11 +100,11 @@ namespace Moonglade.Pingback
             }
         }
 
-        public async Task<IEnumerable<PingbackRecord>> GetPingbackHistoryAsync()
+        public async Task<IReadOnlyList<PingbackEntity>> GetPingbackHistoryAsync()
         {
             try
             {
-                var list = await _pingbackRepository.GetPingbackHistoryAsync(_dbConnection);
+                var list = await _pingbackRepo.GetAsync();
                 return list;
             }
             catch (Exception e)

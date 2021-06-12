@@ -10,7 +10,6 @@ namespace Moonglade.Pingback
     public interface IPingbackRepository
     {
         Task<(Guid Id, string Title)> GetPostIdTitle(string url, IDbConnection conn);
-        Task<IEnumerable<PingbackRecord>> GetPingbackHistoryAsync(IDbConnection conn);
         Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn);
     }
 
@@ -34,21 +33,6 @@ namespace Moonglade.Pingback
                 day = pubDate.Day
             });
             return p;
-        }
-
-        public async Task<IEnumerable<PingbackRecord>> GetPingbackHistoryAsync(IDbConnection conn)
-        {
-            var sql = $"SELECT p.{nameof(PingbackRecord.Id)}, " +
-                          $"p.{nameof(PingbackRecord.Domain)}, " +
-                          $"p.{nameof(PingbackRecord.SourceUrl)}, " +
-                          $"p.{nameof(PingbackRecord.SourceTitle)}, " +
-                          $"p.{nameof(PingbackRecord.TargetPostId)}, " +
-                          $"p.{nameof(PingbackRecord.TargetPostTitle)}, " +
-                          $"p.{nameof(PingbackRecord.PingTimeUtc)} " +
-                          "FROM Pingback p";
-
-            var list = await conn.QueryAsync<PingbackRecord>(sql);
-            return list;
         }
 
         public async Task<bool> HasAlreadyBeenPinged(Guid postId, string sourceUrl, string sourceIp, IDbConnection conn)
