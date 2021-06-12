@@ -2,6 +2,8 @@
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
 
@@ -16,6 +18,7 @@ namespace Moonglade.Pingback.Tests
         private Mock<IDbConnection> _mockDbConnection;
         private Mock<IPingSourceInspector> _mockPingSourceInspector;
         private Mock<IPingbackRepository> _mockPingTargetFinder;
+        private Mock<IRepository<PingbackEntity>> _mockPingbackRepo;
 
         private string _fakePingRequest;
 
@@ -28,6 +31,8 @@ namespace Moonglade.Pingback.Tests
             _mockDbConnection = _mockRepository.Create<IDbConnection>();
             _mockPingSourceInspector = _mockRepository.Create<IPingSourceInspector>();
             _mockPingTargetFinder = _mockRepository.Create<IPingbackRepository>();
+            _mockPingbackRepo = _mockRepository.Create<IRepository<PingbackEntity>>();
+
             _fakePingRequest = @"<?xml version=""1.0"" encoding=""iso-8859-1""?>
                                 <methodCall>
                                   <methodName>pingback.ping</methodName>
@@ -43,7 +48,8 @@ namespace Moonglade.Pingback.Tests
                 _mockLogger.Object,
                 _mockDbConnection.Object,
                 _mockPingSourceInspector.Object,
-                _mockPingTargetFinder.Object);
+                _mockPingTargetFinder.Object,
+                _mockPingbackRepo.Object);
 
 
         [TestCase(" ", ExpectedResult = PingbackResponse.GenericError)]

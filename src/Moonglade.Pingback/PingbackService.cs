@@ -4,6 +4,8 @@ using System.Data;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Extensions.Logging;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Pingback
 {
@@ -12,6 +14,7 @@ namespace Moonglade.Pingback
         private readonly ILogger<PingbackService> _logger;
         private readonly IPingSourceInspector _pingSourceInspector;
         private readonly IPingbackRepository _pingbackRepository;
+        private readonly IRepository<PingbackEntity> _pingbackRepo;
 
         private readonly IDbConnection _dbConnection;
         private string _sourceUrl;
@@ -21,11 +24,13 @@ namespace Moonglade.Pingback
             ILogger<PingbackService> logger,
             IDbConnection dbConnection,
             IPingSourceInspector pingSourceInspector,
-            IPingbackRepository pingbackRepository)
+            IPingbackRepository pingbackRepository, 
+            IRepository<PingbackEntity> pingbackRepo)
         {
             _logger = logger;
             _pingSourceInspector = pingSourceInspector;
             _pingbackRepository = pingbackRepository;
+            _pingbackRepo = pingbackRepo;
             _dbConnection = dbConnection;
         }
 
