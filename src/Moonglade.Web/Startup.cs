@@ -147,18 +147,18 @@ namespace Moonglade.Web
             // Blog Services
             services.AddCoreBloggingServices()
                     .AddBlogPage()
-                    .AddPingback();
+                    .AddPingback()
+                    .AddSyndication()
+                    .AddNotificationClient()
+                    .AddReleaseCheckerClient();
             services.AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFriendLinkService, FriendLinkService>()
                     .AddScoped<IBlogAudit, BlogAudit>()
                     .AddScoped<IFoafWriter, FoafWriter>()
                     .AddScoped<IExportManager, ExportManager>();
-            services.AddSyndication();
             services.AddScoped<ValidateCaptcha>();
             services.AddMetaWeblog<MetaWeblogService>();
             services.AddBlogCache();
-            services.AddNotificationClient();
-            services.AddReleaseCheckerClient();
             services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
             services.AddBlogConfig(_configuration);
             services.AddScoped<ITimeZoneResolver>(

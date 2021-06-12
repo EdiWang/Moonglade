@@ -7,7 +7,7 @@ namespace Moonglade.Pingback
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddPingback(this IServiceCollection services)
+        public static IServiceCollection AddPingback(this IServiceCollection services)
         {
             services.AddHttpClient<IPingSourceInspector, PingSourceInspector>()
                 .ConfigureHttpClient(p => p.Timeout = TimeSpan.FromSeconds(30));
@@ -15,6 +15,8 @@ namespace Moonglade.Pingback
             services.AddHttpClient<IPingbackSender, PingbackSender>()
                     .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { Credentials = CredentialCache.DefaultNetworkCredentials });
             services.AddScoped<IPingbackService, PingbackService>();
+
+            return services;
         }
     }
 }
