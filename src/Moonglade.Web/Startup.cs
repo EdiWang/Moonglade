@@ -87,7 +87,6 @@ namespace Moonglade.Web
                 options.Cookie.HttpOnly = true;
             }).AddSessionBasedCaptcha();
 
-            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
