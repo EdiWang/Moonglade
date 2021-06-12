@@ -53,7 +53,7 @@ namespace Moonglade.Web
         private ILogger<Startup> _logger;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
-        private readonly IList<CultureInfo> _supportedCultures;
+        private readonly IList<CultureInfo> _cultures;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
@@ -62,7 +62,7 @@ namespace Moonglade.Web
 
             // Workaround stupid ASP.NET "by design" issue
             // https://github.com/aspnet/Configuration/issues/451
-            _supportedCultures = _configuration.GetSection("SupportedCultures").Get<string[]>()
+            _cultures = _configuration.GetSection("Cultures").Get<string[]>()
                                                .Select(p => new CultureInfo(p))
                                                .ToList();
         }
@@ -122,8 +122,8 @@ namespace Moonglade.Web
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new("en-US");
-                options.SupportedCultures = _supportedCultures;
-                options.SupportedUICultures = _supportedCultures;
+                options.SupportedCultures = _cultures;
+                options.SupportedUICultures = _cultures;
             });
 
             services.AddAntiforgery(options =>
@@ -246,8 +246,8 @@ namespace Moonglade.Web
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new("en-US"),
-                SupportedCultures = _supportedCultures,
-                SupportedUICultures = _supportedCultures
+                SupportedCultures = _cultures,
+                SupportedUICultures = _cultures
             });
 
             app.UseDefaultImage(options =>
