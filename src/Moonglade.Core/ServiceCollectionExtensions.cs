@@ -6,7 +6,7 @@ namespace Moonglade.Core
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddCoreBloggingServices(this IServiceCollection services)
+        public static IServiceCollection AddCoreBloggingServices(this IServiceCollection services)
         {
             services.AddScoped<IBlogStatistics, BlogStatistics>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -14,6 +14,8 @@ namespace Moonglade.Core
             services.AddScoped<IPostQueryService, PostQueryService>();
             services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<ITagService, TagService>();
+
+            return services;
         }
 
         public static void AddReleaseCheckerClient(this IServiceCollection services)

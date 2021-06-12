@@ -85,15 +85,17 @@ namespace Moonglade.Web
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.Cookie.HttpOnly = true;
-            });
-            services.AddSessionBasedCaptcha();
+            }).AddSessionBasedCaptcha();
+
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                     .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
-            services.AddRazorPages().AddViewLocalization()
-                    .AddDataAnnotationsLocalization().AddRazorPagesOptions(options =>
+            services.AddRazorPages()
+                    .AddViewLocalization()
+                    .AddDataAnnotationsLocalization()
+                    .AddRazorPagesOptions(options =>
                     {
                         options.Conventions.AuthorizeFolder("/Admin");
                         options.Conventions.AuthorizeFolder("/Settings");
@@ -143,8 +145,9 @@ namespace Moonglade.Web
             services.AddSwaggerGen();
 
             // Blog Services
-            services.AddCoreBloggingServices();
-            services.AddBlogPage();
+            services.AddCoreBloggingServices()
+                    .AddBlogPage()
+                    .AddPingback();
             services.AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFriendLinkService, FriendLinkService>()
                     .AddScoped<IBlogAudit, BlogAudit>()
@@ -154,7 +157,6 @@ namespace Moonglade.Web
             services.AddScoped<ValidateCaptcha>();
             services.AddMetaWeblog<MetaWeblogService>();
             services.AddBlogCache();
-            services.AddPingback();
             services.AddNotificationClient();
             services.AddReleaseCheckerClient();
             services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
