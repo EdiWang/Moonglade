@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moonglade.Data.Entities;
 using Moonglade.Pingback;
 
 namespace Moonglade.Web.Pages.Admin
@@ -9,7 +10,7 @@ namespace Moonglade.Web.Pages.Admin
     {
         private readonly IPingbackService _pingbackService;
 
-        public IEnumerable<PingbackRecord> PingbackRecords { get; set; }
+        public IReadOnlyList<PingbackEntity> PingbackRecords { get; set; }
 
         public PingbackModel(IPingbackService pingbackService)
         {

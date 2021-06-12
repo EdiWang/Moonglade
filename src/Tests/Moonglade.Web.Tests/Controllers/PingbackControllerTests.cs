@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auditing;
 using Moonglade.Configuration;
+using Moonglade.Data.Entities;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
@@ -66,7 +67,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockPingbackService
                 .Setup(p => p.ReceivePingAsync(It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<Action<PingbackRecord>>())).Returns(Task.FromResult(PingbackResponse.Success));
+                    It.IsAny<Action<PingbackEntity>>())).Returns(Task.FromResult(PingbackResponse.Success));
 
             var pingbackController = CreatePingbackController();
             pingbackController.ControllerContext = new()

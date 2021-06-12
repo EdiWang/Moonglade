@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Moonglade.Data.Entities;
 using Moonglade.Pingback;
 using Moonglade.Web.Pages.Admin;
 using Moq;
@@ -29,7 +30,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         [Test]
         public async Task OnGet_StateUnderTest_ExpectedBehavior()
         {
-            IEnumerable<PingbackRecord> pingback = new PingbackRecord[] { };
+            IReadOnlyList<PingbackEntity> pingback = new PingbackEntity[] { };
 
             _mockPingbackService.Setup(p => p.GetPingbackHistoryAsync())
                 .Returns(Task.FromResult(pingback));

@@ -29,6 +29,7 @@ namespace Moonglade.Data
         public virtual DbSet<SubMenuEntity> SubMenu { get; set; }
         public virtual DbSet<LocalAccountEntity> LocalAccount { get; set; }
         public virtual DbSet<AuditLogEntity> AuditLog { get; set; }
+        public virtual DbSet<PingbackEntity> Pingback { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +48,7 @@ namespace Moonglade.Data
             modelBuilder.ApplyConfiguration(new SubMenuConfiguration());
             modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
             modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
+            modelBuilder.ApplyConfiguration(new PingbackConfiguration());
 
             modelBuilder
                 .Entity<PostEntity>()
