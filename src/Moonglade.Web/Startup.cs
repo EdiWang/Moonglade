@@ -145,11 +145,11 @@ namespace Moonglade.Web
             // Blog Services
             services.AddCoreBloggingServices();
             services.AddBlogPage();
-            services.AddScoped<IMenuService, MenuService>();
-            services.AddScoped<IFriendLinkService, FriendLinkService>();
-            services.AddScoped<IBlogAudit, BlogAudit>();
-            services.AddScoped<IFoafWriter, FoafWriter>();
-            services.AddScoped<IExportManager, ExportManager>();
+            services.AddScoped<IMenuService, MenuService>()
+                    .AddScoped<IFriendLinkService, FriendLinkService>()
+                    .AddScoped<IBlogAudit, BlogAudit>()
+                    .AddScoped<IFoafWriter, FoafWriter>()
+                    .AddScoped<IExportManager, ExportManager>();
             services.AddSyndication();
             services.AddScoped<ValidateCaptcha>();
             services.AddMetaWeblog<MetaWeblogService>();
