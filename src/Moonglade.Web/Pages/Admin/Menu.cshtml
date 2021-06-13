@@ -167,9 +167,9 @@
                 var httpVerb = 'POST';
                 var menuId = $("#topmenu-id").val();
                 if (menuId == emptyGuid) {
-                    action = '';
+                    action = '/api/menu';
                 } else {
-                    action = 'edit';
+                    action = '/api/menu/edit';
                     httpVerb = 'PUT';
                 }
 
@@ -189,7 +189,7 @@
                     father.SubMenus.push(newSm);
                 }
 
-                callApi(`/api/menu/${action}`,
+                callApi(`${action}`,
                     httpVerb,
                     {
                         "Id": $("#topmenu-id").val(),
