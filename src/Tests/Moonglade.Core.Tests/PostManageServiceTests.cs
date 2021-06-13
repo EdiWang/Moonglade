@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
 using Moonglade.Data;
