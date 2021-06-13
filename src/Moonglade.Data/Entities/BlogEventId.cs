@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Auditing
+﻿namespace Moonglade.Data.Entities
 {
     public enum BlogEventId
     {

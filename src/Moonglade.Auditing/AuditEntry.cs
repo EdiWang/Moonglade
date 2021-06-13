@@ -1,4 +1,5 @@
 ﻿using System;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Auditing
 {

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auditing;
 using Moonglade.Auth;
+using Moonglade.Data.Entities;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;

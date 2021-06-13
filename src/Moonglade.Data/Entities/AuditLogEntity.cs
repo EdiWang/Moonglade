@@ -6,7 +6,7 @@ namespace Moonglade.Data.Entities
     {
         public long Id { get; set; }
 
-        public int EventId { get; set; }
+        public BlogEventId EventId { get; set; }
 
         public int EventType { get; set; }
 

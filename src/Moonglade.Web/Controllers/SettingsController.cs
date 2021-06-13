@@ -17,6 +17,7 @@ using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Data.Entities;
 using Moonglade.Notification.Client;
 using Moonglade.Setup;
 using Moonglade.Utils;

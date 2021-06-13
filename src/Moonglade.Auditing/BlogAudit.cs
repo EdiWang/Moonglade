@@ -46,7 +46,7 @@ namespace Moonglade.Auditing
 
                 var entity = new AuditLogEntity
                 {
-                    EventId = (int)blogEventId,
+                    EventId = blogEventId,
                     EventType = (int)eventType,
                     EventTimeUtc = DateTime.UtcNow,
                     IpAddressV4 = ipv4,
