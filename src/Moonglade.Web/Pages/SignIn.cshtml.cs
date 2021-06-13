@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moonglade.Auditing;
 using Moonglade.Auth;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Pages

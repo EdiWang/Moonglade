@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Auditing\Moonglade.Auditing.csproj" />
     <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
   </ItemGroup>
 </Project>

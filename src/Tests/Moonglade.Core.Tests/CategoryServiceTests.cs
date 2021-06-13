@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MemoryCache.Testing.Moq;
 using Moonglade.Auditing;
 using Moonglade.Caching;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;

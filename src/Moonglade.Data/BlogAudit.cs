@@ -9,7 +9,7 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 
-namespace Moonglade.Auditing
+namespace Moonglade.Data
 {
     public interface IBlogAudit
     {

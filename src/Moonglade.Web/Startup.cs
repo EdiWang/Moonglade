@@ -23,7 +23,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
-using Moonglade.Auditing;
 using Moonglade.Auth;
 using Moonglade.Caching;
 using Moonglade.Comments;
