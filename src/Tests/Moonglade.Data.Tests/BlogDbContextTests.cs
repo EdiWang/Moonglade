@@ -1,8 +1,7 @@
-﻿using Moonglade.Data;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Core.Tests
+namespace Moonglade.Data.Tests
 {
     [TestFixture]
     public class BlogDbContextTests

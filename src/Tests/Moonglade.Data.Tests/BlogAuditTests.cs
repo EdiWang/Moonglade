@@ -2,14 +2,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
-using Moonglade.Configuration.Settings;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Auditing.Tests
+namespace Moonglade.Data.Tests
 {
     [TestFixture]
     public class BlogAuditTests
@@ -45,7 +43,7 @@ namespace Moonglade.Auditing.Tests
         [Test]
         public async Task AddAuditEntry_AuditLogDisabled()
         {
-            _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
+            _mockFeatureManager.Setup(p => p.IsEnabledAsync("EnableAudit"))
                 .Returns(Task.FromResult(false));
 
             var blogAudit = CreateBlogAudit();
