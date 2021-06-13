@@ -50,7 +50,7 @@ namespace Moonglade.Auditing.Tests
             var blogAudit = CreateBlogAudit();
             await blogAudit.AddAuditEntry(
                 EventType.General,
-                AuditEventId.GeneralOperation,
+                BlogEventId.GeneralOperation,
                 "Work 996 and get into ICU");
 
             Assert.Pass();
@@ -62,7 +62,7 @@ namespace Moonglade.Auditing.Tests
         //    // Arrange
         //    var blogAudit = CreateBlogAudit();
         //    EventType eventType = default(EventType);
-        //    AuditEventId auditEventId = default(AuditEventId);
+        //    BlogEventId auditEventId = default(BlogEventId);
         //    string message = null;
 
         //    // Act
@@ -84,7 +84,7 @@ namespace Moonglade.Auditing.Tests
         //    int skip = 0;
         //    int take = 0;
         //    EventType? eventType = null;
-        //    AuditEventId? eventId = null;
+        //    BlogEventId? eventId = null;
 
         //    // Act
         //    var result = await blogAudit.GetAuditEntries(

@@ -177,7 +177,7 @@ namespace Moonglade.Auth.Tests
             Assert.IsTrue(result != Guid.Empty);
 
             _mockLocalAccountRepository.Verify(p => p.AddAsync(It.IsAny<LocalAccountEntity>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountCreated, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsAccountCreated, It.IsAny<string>()));
         }
 
         [TestCase(null)]
@@ -215,7 +215,7 @@ namespace Moonglade.Auth.Tests
             await svc.UpdatePasswordAsync(Uid, "Work996andGetintoICU");
 
             _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountPasswordUpdated, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsAccountPasswordUpdated, It.IsAny<string>()));
         }
 
         [Test]
@@ -241,7 +241,7 @@ namespace Moonglade.Auth.Tests
             await svc.DeleteAsync(Uid);
 
             _mockLocalAccountRepository.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsDeleteAccount, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsDeleteAccount, It.IsAny<string>()));
         }
     }
 }

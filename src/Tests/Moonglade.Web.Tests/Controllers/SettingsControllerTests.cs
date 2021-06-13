@@ -136,7 +136,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedGeneral, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedGeneral, It.IsAny<string>()));
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedContent, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedContent, It.IsAny<string>()));
         }
 
         [Test]
@@ -164,7 +164,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedNotification, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedNotification, It.IsAny<string>()));
         }
 
         [Test]
@@ -188,7 +188,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedSubscription, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedSubscription, It.IsAny<string>()));
         }
 
         [Test]
@@ -202,7 +202,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<WatermarkSettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedWatermark, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedWatermark, It.IsAny<string>()));
         }
 
         //[Test]
@@ -232,7 +232,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
 
         [Test]
@@ -266,7 +266,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
 
         [Test]
@@ -318,7 +318,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -337,7 +337,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -356,7 +356,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, AuditEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
 
         [Test]

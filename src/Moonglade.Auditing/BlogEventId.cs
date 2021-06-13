@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Auditing
 {
-    public enum AuditEventId
+    public enum BlogEventId
     {
         GeneralOperation = 1,
         ClearedAuditLog = 2,

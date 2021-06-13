@@ -80,7 +80,7 @@ namespace Moonglade.Core
             };
 
             var tag = await _tagRepo.AddAsync(newTag);
-            await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagCreated,
+            await _audit.AddAuditEntry(EventType.Content, BlogEventId.TagCreated,
                 $"Tag '{tag.NormalizedName}' created.");
 
             return new()
@@ -98,7 +98,7 @@ namespace Moonglade.Core
             tag.DisplayName = newName;
             tag.NormalizedName = NormalizeTagName(newName, _tagNormalizationDictionary);
             await _tagRepo.UpdateAsync(tag);
-            await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
+            await _audit.AddAuditEntry(EventType.Content, BlogEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
         }
 
         public async Task DeleteAsync(int tagId)
@@ -109,7 +109,7 @@ namespace Moonglade.Core
 
             // 2. Delte Tag itslef
             await _tagRepo.DeleteAsync(tagId);
-            await _audit.AddAuditEntry(EventType.Content, AuditEventId.TagDeleted, $"Tag id '{tagId}' is deleted");
+            await _audit.AddAuditEntry(EventType.Content, BlogEventId.TagDeleted, $"Tag id '{tagId}' is deleted");
         }
 
         public async Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top)

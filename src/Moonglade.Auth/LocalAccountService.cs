@@ -118,7 +118,7 @@ namespace Moonglade.Auth
             };
 
             await _accountRepo.AddAsync(account);
-            await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountCreated, $"Account '{account.Id}' created.");
+            await _audit.AddAuditEntry(EventType.Settings, BlogEventId.SettingsAccountCreated, $"Account '{account.Id}' created.");
 
             return uid;
         }
@@ -139,7 +139,7 @@ namespace Moonglade.Auth
             account.PasswordHash = Helper.HashPassword(clearPassword);
             await _accountRepo.UpdateAsync(account);
 
-            await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsAccountPasswordUpdated, $"Account password for '{id}' updated.");
+            await _audit.AddAuditEntry(EventType.Settings, BlogEventId.SettingsAccountPasswordUpdated, $"Account password for '{id}' updated.");
         }
 
         public async Task DeleteAsync(Guid id)
@@ -151,7 +151,7 @@ namespace Moonglade.Auth
             }
 
             await _accountRepo.DeleteAsync(id);
-            await _audit.AddAuditEntry(EventType.Settings, AuditEventId.SettingsDeleteAccount, $"Account '{id}' deleted.");
+            await _audit.AddAuditEntry(EventType.Settings, BlogEventId.SettingsDeleteAccount, $"Account '{id}' deleted.");
         }
 
         private static Account EntityToAccountModel(LocalAccountEntity entity)

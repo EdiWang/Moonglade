@@ -30,7 +30,7 @@ namespace Moonglade.Auditing
             _auditLogRepo = auditLogRepo;
         }
 
-        public async Task AddAuditEntry(EventType eventType, AuditEventId auditEventId, string message)
+        public async Task AddAuditEntry(EventType eventType, BlogEventId blogEventId, string message)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace Moonglade.Auditing
 
                 var entity = new AuditLogEntity
                 {
-                    EventId = (int)auditEventId,
+                    EventId = (int)blogEventId,
                     EventType = (int)eventType,
                     EventTimeUtc = DateTime.UtcNow,
                     IpAddressV4 = ipv4,
@@ -68,7 +68,7 @@ namespace Moonglade.Auditing
             var entries = await _auditLogRepo.SelectAsync(spec, p => new AuditEntry
             {
                 EventType = (EventType)p.EventType,
-                EventId = (AuditEventId)p.EventId,
+                EventId = (BlogEventId)p.EventId,
                 IpAddressV4 = p.IpAddressV4,
                 EventTimeUtc = p.EventTimeUtc,
                 MachineName = p.MachineName,
@@ -90,7 +90,7 @@ namespace Moonglade.Auditing
 
             // Make sure who ever doing this can't get away with it
             var (username, ipv4) = GetUsernameAndIp();
-            await AddAuditEntry(EventType.General, AuditEventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
+            await AddAuditEntry(EventType.General, BlogEventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
         }
 
         private (string Username, string Ipv4) GetUsernameAndIp()

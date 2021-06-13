@@ -171,7 +171,7 @@ namespace Moonglade.Core.Tests
 
             _mockRepositoryPostTagEntity.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostTagEntity>>()));
             _mockRepositoryTagEntity.Verify(p => p.DeleteAsync(996));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, AuditEventId.TagDeleted, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, BlogEventId.TagDeleted, It.IsAny<string>()));
         }
 
         [Test]
