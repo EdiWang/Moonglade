@@ -11,6 +11,15 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Auditing
 {
+    public interface IBlogAudit
+    {
+        Task AddAuditEntry(BlogEventType blogEventType, BlogEventId blogEventId, string message);
+
+        Task<(IReadOnlyList<AuditLogEntity> Entries, int Count)> GetAuditEntries(int skip, int take);
+
+        Task ClearAuditLog();
+    }
+
     public class BlogAudit : IBlogAudit
     {
         private readonly ILogger<BlogAudit> _logger;
@@ -47,7 +56,7 @@ namespace Moonglade.Auditing
                 var entity = new AuditLogEntity
                 {
                     EventId = blogEventId,
-                    EventType = (int)blogEventType,
+                    EventType = blogEventType,
                     EventTimeUtc = DateTime.UtcNow,
                     IpAddressV4 = ipv4,
                     MachineName = machineName,
@@ -62,19 +71,10 @@ namespace Moonglade.Auditing
             }
         }
 
-        public async Task<(IReadOnlyList<AuditEntry> Entries, int Count)> GetAuditEntries(int skip, int take)
+        public async Task<(IReadOnlyList<AuditLogEntity> Entries, int Count)> GetAuditEntries(int skip, int take)
         {
             var spec = new AuditPagingSpec(take, skip);
-            var entries = await _auditLogRepo.SelectAsync(spec, p => new AuditEntry
-            {
-                BlogEventType = (BlogEventType)p.EventType,
-                EventId = p.EventId,
-                IpAddressV4 = p.IpAddressV4,
-                EventTimeUtc = p.EventTimeUtc,
-                MachineName = p.MachineName,
-                Message = p.Message,
-                Username = p.WebUsername
-            });
+            var entries = await _auditLogRepo.GetAsync(spec);
 
             var totalRows = _auditLogRepo.Count();
             var returnType = (entries.ToList(), totalRows);

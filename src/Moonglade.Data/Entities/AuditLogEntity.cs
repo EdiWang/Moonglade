@@ -8,7 +8,7 @@ namespace Moonglade.Data.Entities
 
         public BlogEventId EventId { get; set; }
 
-        public int EventType { get; set; }
+        public BlogEventType EventType { get; set; }
 
         public DateTime EventTimeUtc { get; set; }
 

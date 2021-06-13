@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Settings;
+using Moonglade.Data.Entities;
 using X.PagedList;
 
 namespace Moonglade.Web.Pages.Admin
@@ -13,7 +14,7 @@ namespace Moonglade.Web.Pages.Admin
         private readonly IFeatureManager _featureManager;
         private readonly IBlogAudit _blogAudit;
 
-        public StaticPagedList<AuditEntry> Entries { get; set; }
+        public StaticPagedList<AuditLogEntity> Entries { get; set; }
 
         public AuditLogsModel(IFeatureManager featureManager, IBlogAudit blogAudit)
         {

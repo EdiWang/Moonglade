@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
 using Moonglade.Auditing;
 using Moonglade.Configuration.Settings;
+using Moonglade.Data.Entities;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
@@ -68,7 +69,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
                 .Returns(Task.FromResult(true));
-            (IReadOnlyList<AuditEntry> Entries, int Count) data = new(new List<AuditEntry>(), 996);
+            (IReadOnlyList<AuditLogEntity> Entries, int Count) data = new(new List<AuditLogEntity>(), 996);
 
             _mockBlogAudit.Setup(p => p.GetAuditEntries(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(data));
 
