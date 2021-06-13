@@ -87,7 +87,7 @@ namespace Moonglade.Page
             };
 
             await _pageRepo.AddAsync(page);
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.PageCreated, $"Page '{page.Id}' created.");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.PageCreated, $"Page '{page.Id}' created.");
 
             return uid;
         }
@@ -110,7 +110,7 @@ namespace Moonglade.Page
             page.IsPublished = request.IsPublished;
 
             await _pageRepo.UpdateAsync(page);
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.PageUpdated, $"Page '{id}' updated.");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.PageUpdated, $"Page '{id}' updated.");
 
             return page.Id;
         }
@@ -124,7 +124,7 @@ namespace Moonglade.Page
             }
 
             await _pageRepo.DeleteAsync(pageId);
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.PageDeleted, $"Page '{pageId}' deleted.");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.PageDeleted, $"Page '{pageId}' deleted.");
         }
 
         public static string RemoveScriptTagFromHtml(string html)

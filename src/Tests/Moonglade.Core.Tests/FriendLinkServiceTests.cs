@@ -125,7 +125,7 @@ namespace Moonglade.Core.Tests
             await svc.UpdateAsync(Guid.Empty, "work", "https://996.icu");
 
             _mockFriendlinkRepo.Verify(p => p.UpdateAsync(It.IsAny<FriendLinkEntity>()));
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Settings, BlogEventId.SettingsSavedFriendLink, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedFriendLink, It.IsAny<string>()));
         }
     }
 }

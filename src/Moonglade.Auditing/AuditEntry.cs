@@ -7,7 +7,7 @@ namespace Moonglade.Auditing
     {
         public BlogEventId EventId { get; set; }
 
-        public EventType EventType { get; set; }
+        public BlogEventType BlogEventType { get; set; }
 
         public DateTime EventTimeUtc { get; set; }
 

@@ -143,7 +143,7 @@ namespace Moonglade.Menus.Tests
             });
 
             Assert.AreNotEqual(Guid.Empty, result);
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, BlogEventId.MenuCreated, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(BlogEventType.Content, BlogEventId.MenuCreated, It.IsAny<string>()));
         }
 
         [Test]
@@ -186,7 +186,7 @@ namespace Moonglade.Menus.Tests
             });
 
             Assert.AreEqual(Guid.Parse("478ff468-a0cc-4f05-a5d8-b1dacdc695dd"), result);
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(EventType.Content, BlogEventId.MenuUpdated, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddAuditEntry(BlogEventType.Content, BlogEventId.MenuUpdated, It.IsAny<string>()));
         }
     }
 }

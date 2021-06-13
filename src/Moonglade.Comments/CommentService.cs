@@ -114,7 +114,7 @@ namespace Moonglade.Comments
 
                 string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
                 await _audit.AddAuditEntry(
-                    EventType.Content, cmt.IsApproved ? BlogEventId.CommentApproval : BlogEventId.CommentDisapproval, logMessage);
+                    BlogEventType.Content, cmt.IsApproved ? BlogEventId.CommentApproval : BlogEventId.CommentDisapproval, logMessage);
             }
         }
 
@@ -138,7 +138,7 @@ namespace Moonglade.Comments
 
                 // 2. Delete comment itself
                 await _commentRepo.DeleteAsync(cmt);
-                await _audit.AddAuditEntry(EventType.Content, BlogEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
+                await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
             }
         }
 
@@ -225,7 +225,7 @@ namespace Moonglade.Comments
                 Title = cmt.Post.Title
             };
 
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.CommentReplied, $"Replied comment id '{commentId}'");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CommentReplied, $"Replied comment id '{commentId}'");
             return reply;
         }
     }

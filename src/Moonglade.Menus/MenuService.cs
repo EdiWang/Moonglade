@@ -92,7 +92,7 @@ namespace Moonglade.Menus
             }
 
             await _menuRepo.AddAsync(menu);
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.MenuCreated, $"Menu '{uid}' created.");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.MenuCreated, $"Menu '{uid}' created.");
             return uid;
         }
 
@@ -129,7 +129,7 @@ namespace Moonglade.Menus
             }
 
             await _menuRepo.UpdateAsync(menu);
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.MenuUpdated, $"Menu '{id}' updated.");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.MenuUpdated, $"Menu '{id}' updated.");
             return menu.Id;
         }
 
@@ -142,7 +142,7 @@ namespace Moonglade.Menus
             }
 
             await _menuRepo.DeleteAsync(id);
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.CategoryDeleted, $"Menu '{id}' deleted.");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Menu '{id}' deleted.");
         }
 
         private static Menu EntityToMenuModel(MenuEntity entity)

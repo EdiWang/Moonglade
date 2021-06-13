@@ -83,7 +83,7 @@ namespace Moonglade.Core
             await _catRepo.AddAsync(category);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.CategoryCreated, $"Category '{category.RouteName}' created");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CategoryCreated, $"Category '{category.RouteName}' created");
         }
 
         public async Task DeleteAsync(Guid id)
@@ -97,7 +97,7 @@ namespace Moonglade.Core
             await _catRepo.DeleteAsync(id);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.CategoryDeleted, $"Category '{id}' deleted.");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Category '{id}' deleted.");
         }
 
         public async Task UpdateAsync(Guid id, UpdateCatRequest request)
@@ -112,7 +112,7 @@ namespace Moonglade.Core
             await _catRepo.UpdateAsync(cat);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _audit.AddAuditEntry(EventType.Content, BlogEventId.CategoryUpdated, $"Category '{id}' updated.");
+            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CategoryUpdated, $"Category '{id}' updated.");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Auditing
 {
-    public enum EventType
+    public enum BlogEventType
     {
         General = 0,
         Authentication = 100,

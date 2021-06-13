@@ -110,7 +110,7 @@ namespace Moonglade.Web.Pages
                         var successMessage = $@"Authentication success for local account ""{Username}""";
 
                         _logger.LogInformation(successMessage);
-                        await _blogAudit.AddAuditEntry(EventType.Authentication, BlogEventId.LoginSuccessLocal, successMessage);
+                        await _blogAudit.AddAuditEntry(BlogEventType.Authentication, BlogEventId.LoginSuccessLocal, successMessage);
 
                         return RedirectToPage("/Admin/Post");
                     }
@@ -121,7 +121,7 @@ namespace Moonglade.Web.Pages
                 var failMessage = $@"Authentication failed for local account ""{Username}""";
 
                 _logger.LogWarning(failMessage);
-                await _blogAudit.AddAuditEntry(EventType.Authentication, BlogEventId.LoginFailedLocal, failMessage);
+                await _blogAudit.AddAuditEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, failMessage);
 
                 Response.StatusCode = StatusCodes.Status400BadRequest;
                 ModelState.AddModelError(string.Empty, "Bad Request.");
