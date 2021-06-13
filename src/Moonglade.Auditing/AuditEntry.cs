@@ -17,23 +17,5 @@ namespace Moonglade.Auditing
         public string MachineName { get; set; }
 
         public string Message { get; set; }
-
-        public AuditEntry()
-        {
-            // For Dapper Mapping
-        }
-
-        public AuditEntry(EventType eventType, AuditEventId auditEventId, string username, string ipAddressV4, string machineName, string message)
-        {
-            EventId = auditEventId;
-            EventType = eventType;
-
-            Username = username;
-            Message = message;
-            MachineName = machineName;
-            IpAddressV4 = ipAddressV4;
-
-            EventTimeUtc = DateTime.UtcNow;
-        }
     }
 }
