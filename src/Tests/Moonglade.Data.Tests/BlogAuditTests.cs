@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 using Moq;
 using NUnit.Framework;
 
@@ -97,27 +99,26 @@ namespace Moonglade.Data.Tests
             });
         }
 
-        //[Test]
-        //public async Task GetAuditEntries_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var blogAudit = CreateBlogAudit();
-        //    int skip = 0;
-        //    int take = 0;
-        //    BlogEventType? blogEventType = null;
-        //    BlogEventId? eventId = null;
+        [Test]
+        public async Task GetAuditEntries_StateUnderTest_ExpectedBehavior()
+        {
+            // Arrange
+            IReadOnlyList<AuditLogEntity> list = new List<AuditLogEntity>();
+            _mockAuditLogRepo.Setup(p => p.Count((ISpecification<AuditLogEntity>)null)).Returns(251);
+            _mockAuditLogRepo.Setup(p => p.GetAsync(It.IsAny<AuditPagingSpec>())).Returns(Task.FromResult(list));
+            var blogAudit = CreateBlogAudit();
+            int skip = 35;
+            int take = 996;
 
-        //    // Act
-        //    var result = await blogAudit.GetAuditEntries(
-        //        skip,
-        //        take,
-        //        blogEventType,
-        //        eventId);
+            // Act
+            var result = await blogAudit.GetAuditEntries(
+                skip,
+                take);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            // Assert
+            Assert.AreEqual(251, result.Count);
+            Assert.IsNotNull(result.Entries);
+        }
 
         [Test]
         public async Task ClearAuditLog_StateUnderTest_ExpectedBehavior()
