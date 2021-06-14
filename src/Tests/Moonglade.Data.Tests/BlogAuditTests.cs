@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -52,28 +53,49 @@ namespace Moonglade.Data.Tests
                 BlogEventId.GeneralOperation,
                 "Work 996 and get into ICU");
 
-            Assert.Pass();
+            _mockAuditLogRepo.Verify(p => p.AddAsync(It.IsAny<AuditLogEntity>()), Times.Never);
         }
 
-        //[Test]
-        //public async Task AddAuditEntry_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var blogAudit = CreateBlogAudit();
-        //    BlogEventType blogEventType = default(BlogEventType);
-        //    BlogEventId auditEventId = default(BlogEventId);
-        //    string message = null;
+        [Test]
+        public async Task AddAuditEntry_StateUnderTest_ExpectedBehavior()
+        {
+            // Arrange
+            _mockFeatureManager.Setup(p => p.IsEnabledAsync("EnableAudit"))
+                .Returns(Task.FromResult(true));
+            var blogAudit = CreateBlogAudit();
+            BlogEventType blogEventType = BlogEventType.General;
+            BlogEventId auditEventId = BlogEventId.SettingsSavedGeneral;
+            string message = "Work 996 sick ICU";
 
-        //    // Act
-        //    await blogAudit.AddAuditEntry(
-        //        blogEventType,
-        //        auditEventId,
-        //        message);
+            // Act
+            await blogAudit.AddAuditEntry(
+                blogEventType,
+                auditEventId,
+                message);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            // Assert
+            _mockAuditLogRepo.Verify(p => p.AddAsync(It.IsAny<AuditLogEntity>()));
+        }
+
+        [Test]
+        public void AddAuditEntry_StateUnderTest_CoverException()
+        {
+            _mockFeatureManager.Setup(p => p.IsEnabledAsync("EnableAudit"))
+                .Returns(Task.FromResult(true));
+            _mockAuditLogRepo.Setup(p => p.AddAsync(It.IsAny<AuditLogEntity>())).Throws<InvalidOperationException>();
+            var blogAudit = CreateBlogAudit();
+            BlogEventType blogEventType = BlogEventType.General;
+            BlogEventId auditEventId = BlogEventId.SettingsSavedGeneral;
+            string message = "Work 996 sick ICU";
+
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                await blogAudit.AddAuditEntry(
+                    blogEventType,
+                    auditEventId,
+                    message);
+            });
+        }
 
         //[Test]
         //public async Task GetAuditEntries_StateUnderTest_ExpectedBehavior()
