@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
+    [ExcludeFromCodeCoverage]
     internal class PageConfiguration : IEntityTypeConfiguration<PageEntity>
     {
         public void Configure(EntityTypeBuilder<PageEntity> builder)

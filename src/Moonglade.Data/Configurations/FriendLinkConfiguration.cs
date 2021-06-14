@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
+    [ExcludeFromCodeCoverage]
     internal class FriendLinkConfiguration : IEntityTypeConfiguration<FriendLinkEntity>
     {
         public void Configure(EntityTypeBuilder<FriendLinkEntity> builder)
