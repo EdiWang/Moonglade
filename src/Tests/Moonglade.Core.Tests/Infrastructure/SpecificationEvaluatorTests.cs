@@ -1,7 +1,7 @@
-﻿using Moonglade.Data.Infrastructure;
-using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Moonglade.Data.Infrastructure;
+using NUnit.Framework;
 
 namespace Moonglade.Core.Tests.Infrastructure
 {
