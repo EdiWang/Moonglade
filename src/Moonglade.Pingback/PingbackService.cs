@@ -127,7 +127,6 @@ namespace Moonglade.Pingback
         {
             var list = await _pingbackRepo.GetAsync();
             return list;
-
         }
 
         public async Task DeletePingbackHistory(Guid id)

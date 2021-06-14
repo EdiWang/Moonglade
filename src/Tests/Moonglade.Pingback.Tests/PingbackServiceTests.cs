@@ -173,5 +173,14 @@ namespace Moonglade.Pingback.Tests
             var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
             Assert.AreEqual(PingbackResponse.Error48PingbackAlreadyRegistered, result);
         }
+
+        [Test]
+        public async Task DeletePingbackHistory_OK()
+        {
+            var pingbackService = CreateService();
+            await pingbackService.DeletePingbackHistory(Guid.Empty);
+
+            _mockPingbackRepo.Verify(p => p.DeleteAsync(Guid.Empty));
+        }
     }
 }
