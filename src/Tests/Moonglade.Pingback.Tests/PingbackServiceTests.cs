@@ -182,5 +182,14 @@ namespace Moonglade.Pingback.Tests
 
             _mockPingbackRepo.Verify(p => p.DeleteAsync(Guid.Empty));
         }
+
+        [Test]
+        public async Task GetPingbackHistoryAsync_OK()
+        {
+            var pingbackService = CreateService();
+            await pingbackService.GetPingbackHistoryAsync();
+
+            _mockPingbackRepo.Verify(p => p.GetAsync());
+        }
     }
 }
