@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -186,9 +187,27 @@ namespace Moonglade.Pingback.Tests
         [Test]
         public async Task GetPingbackHistoryAsync_OK()
         {
-            var pingbackService = CreateService();
-            await pingbackService.GetPingbackHistoryAsync();
+            IReadOnlyList<PingbackEntity> list = new List<PingbackEntity>
+            {
+                new()
+                {
+                    Id = Guid.Empty,
+                    SourceUrl = "https://996.icu/sick",
+                    SourceTitle = "Work 996",
+                    SourceIp = "35.251.7.4",
+                    TargetPostId = Guid.Empty,
+                    Domain = "996.icu",
+                    PingTimeUtc = DateTime.UtcNow,
+                    TargetPostTitle = "Sick ICU"
+                }
+            };
 
+            _mockPingbackRepo.Setup(p => p.GetAsync()).Returns(Task.FromResult(list));
+
+            var pingbackService = CreateService();
+            var data = await pingbackService.GetPingbackHistoryAsync();
+
+            Assert.IsNotNull(data);
             _mockPingbackRepo.Verify(p => p.GetAsync());
         }
     }
