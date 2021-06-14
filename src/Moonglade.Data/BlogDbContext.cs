@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Configurations;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Data
 {
+    [ExcludeFromCodeCoverage]
     public class BlogDbContext : DbContext
     {
         public BlogDbContext()
