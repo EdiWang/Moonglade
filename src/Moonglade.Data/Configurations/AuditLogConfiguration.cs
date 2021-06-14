@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class AuditLogConfiguration : IEntityTypeConfiguration<AuditLogEntity>
+    internal class AuditLogConfiguration : IEntityTypeConfiguration<AuditLogEntity>
     {
         public void Configure(EntityTypeBuilder<AuditLogEntity> builder)
         {

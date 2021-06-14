@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class PageConfiguration : IEntityTypeConfiguration<PageEntity>
+    internal class PageConfiguration : IEntityTypeConfiguration<PageEntity>
     {
         public void Configure(EntityTypeBuilder<PageEntity> builder)
         {

@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class PingbackConfiguration : IEntityTypeConfiguration<PingbackEntity>
+    internal class PingbackConfiguration : IEntityTypeConfiguration<PingbackEntity>
     {
         public void Configure(EntityTypeBuilder<PingbackEntity> builder)
         {

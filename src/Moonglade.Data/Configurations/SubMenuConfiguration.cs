@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class SubMenuConfiguration : IEntityTypeConfiguration<SubMenuEntity>
+    internal class SubMenuConfiguration : IEntityTypeConfiguration<SubMenuEntity>
     {
         public void Configure(EntityTypeBuilder<SubMenuEntity> builder)
         {

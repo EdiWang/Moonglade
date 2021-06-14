@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class MenuConfiguration : IEntityTypeConfiguration<MenuEntity>
+    internal class MenuConfiguration : IEntityTypeConfiguration<MenuEntity>
     {
         public void Configure(EntityTypeBuilder<MenuEntity> builder)
         {

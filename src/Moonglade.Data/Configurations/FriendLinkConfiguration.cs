@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations
 {
-    public class FriendLinkConfiguration : IEntityTypeConfiguration<FriendLinkEntity>
+    internal class FriendLinkConfiguration : IEntityTypeConfiguration<FriendLinkEntity>
     {
         public void Configure(EntityTypeBuilder<FriendLinkEntity> builder)
         {
