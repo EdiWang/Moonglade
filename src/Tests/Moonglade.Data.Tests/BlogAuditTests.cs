@@ -33,7 +33,7 @@ namespace Moonglade.Data.Tests
 
         private BlogAudit CreateBlogAudit()
         {
-            return new BlogAudit(
+            return new(
                 _mockLogger.Object,
                 _mockHttpContextAccessor.Object,
                 _mockFeatureManager.Object,
@@ -97,18 +97,20 @@ namespace Moonglade.Data.Tests
         //    _mockRepository.VerifyAll();
         //}
 
-        //[Test]
-        //public async Task ClearAuditLog_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var blogAudit = CreateBlogAudit();
+        [Test]
+        public async Task ClearAuditLog_StateUnderTest_ExpectedBehavior()
+        {
+            // Arrange
+            _mockFeatureManager.Setup(p => p.IsEnabledAsync("EnableAudit"))
+                .Returns(Task.FromResult(true));
+            var blogAudit = CreateBlogAudit();
 
-        //    // Act
-        //    await blogAudit.ClearAuditLog();
+            // Act
+            await blogAudit.ClearAuditLog();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            // Assert
+            _mockAuditLogRepo.Verify(p => p.ExecuteSqlRawAsync(It.IsAny<string>()));
+            _mockAuditLogRepo.Verify(p => p.AddAsync(It.IsAny<AuditLogEntity>()));
+        }
     }
 }
