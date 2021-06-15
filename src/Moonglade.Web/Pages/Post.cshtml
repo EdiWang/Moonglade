@@ -106,10 +106,19 @@
             {
                 <span class="badge bg-secondary me-2">@Localizer["Original"]</span>
             }
+            
+            @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
+            {
+                <i class="bi-person"></i>
+                <span class="me-2">@Model.Post.Author</span>
+            }
 
             <i class="bi-calendar-event"></i>
-            <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
-            @BlogConfig.GeneralSettings.TimeZoneId
+            <span class="me-2">
+                <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
+                @BlogConfig.GeneralSettings.TimeZoneId
+            </span>
+
             <i class="bi-eye"></i>
             <span class="post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
         </div>
