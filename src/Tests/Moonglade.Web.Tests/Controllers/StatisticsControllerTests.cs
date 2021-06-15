@@ -30,14 +30,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Get_EmptyGuid()
-        {
-            var ctl = CreateStatisticsController();
-            var result = await ctl.Get(Guid.Empty);
-            Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
-        }
-
-        [Test]
         public async Task Get_OK()
         {
             _mockBlogStatistics.Setup(p => p.GetStatisticAsync(It.IsAny<Guid>()))
@@ -47,22 +39,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Get(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
 
             Assert.IsInstanceOf(typeof(OkObjectResult), result);
-        }
-
-        [Test]
-        public async Task Hit_EmptyGuid()
-        {
-            var ctl = CreateStatisticsController();
-            var result = await ctl.Post(new() { PostId = Guid.Empty, IsLike = false });
-            Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
-        }
-
-        [Test]
-        public async Task Like_EmptyGuid()
-        {
-            var ctl = CreateStatisticsController();
-            var result = await ctl.Post(new() { PostId = Guid.Empty, IsLike = true });
-            Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
 
         [Test]

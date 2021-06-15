@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Auth;
 using Moonglade.Utils;
+using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Controllers
@@ -43,14 +44,8 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(id), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
             if (null == uidClaim || string.IsNullOrWhiteSpace(uidClaim.Value))
             {
@@ -76,14 +71,8 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> ResetPassword(Guid id, [FromBody][Required] string newPassword)
+        public async Task<IActionResult> ResetPassword([NotEmpty] Guid id, [FromBody][Required] string newPassword)
         {
-            if (id == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(id), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))
             {
                 return Conflict("Password must be minimum eight characters, at least one letter and one number");

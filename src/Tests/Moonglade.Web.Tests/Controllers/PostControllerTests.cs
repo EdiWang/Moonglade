@@ -289,27 +289,11 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Restore_EmptyId()
-        {
-            var postManageController = CreatePostController();
-            var result = await postManageController.Restore(Guid.Empty);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Restore_OK()
         {
             var postManageController = CreatePostController();
             var result = await postManageController.Restore(FakeData.Uid1);
             Assert.IsInstanceOf<OkResult>(result);
-        }
-
-        [Test]
-        public async Task Delete_EmptyId()
-        {
-            var postManageController = CreatePostController();
-            var result = await postManageController.Delete(Guid.Empty);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
@@ -319,14 +303,6 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await postManageController.Delete(FakeData.Uid1);
             Assert.IsInstanceOf<OkResult>(result);
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
-        }
-
-        [Test]
-        public async Task DeleteFromRecycleBin_EmptyId()
-        {
-            var postController = CreatePostController();
-            var result = await postController.DeleteFromRecycleBin(Guid.Empty);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]

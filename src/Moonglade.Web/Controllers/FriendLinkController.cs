@@ -53,14 +53,8 @@ namespace Moonglade.Web.Controllers
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(id), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             await _friendLinkService.DeleteAsync(id);
             return Ok();
         }

@@ -188,14 +188,8 @@ namespace Moonglade.Web.Controllers
         [HttpPost("{postId:guid}/restore")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Restore(Guid postId)
+        public async Task<IActionResult> Restore([NotEmpty] Guid postId)
         {
-            if (postId == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(postId), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             await _postManageService.RestoreAsync(postId);
             return Ok();
         }
@@ -206,14 +200,8 @@ namespace Moonglade.Web.Controllers
         [HttpDelete("{postId:guid}/recycle")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(Guid postId)
+        public async Task<IActionResult> Delete([NotEmpty] Guid postId)
         {
-            if (postId == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(postId), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             await _postManageService.DeleteAsync(postId, true);
             return Ok();
         }
@@ -223,14 +211,8 @@ namespace Moonglade.Web.Controllers
         [HttpDelete("{postId:guid}/destroy")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteFromRecycleBin(Guid postId)
+        public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
         {
-            if (postId == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(postId), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             await _postManageService.DeleteAsync(postId);
             return Ok();
         }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
+using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
@@ -23,14 +24,8 @@ namespace Moonglade.Web.Controllers
         [HttpGet("{postId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get(Guid postId)
+        public async Task<IActionResult> Get([NotEmpty] Guid postId)
         {
-            if (postId == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(postId), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             var (hits, likes) = await _statistics.GetStatisticAsync(postId);
             return Ok(new { Hits = hits, Likes = likes });
         }
@@ -42,12 +37,6 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post(StatisticsRequest request)
         {
-            if (request.PostId == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(request.PostId), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             if (DNT) return Ok();
 
             await _statistics.UpdateStatisticAsync(request.PostId, request.IsLike);
@@ -57,6 +46,7 @@ namespace Moonglade.Web.Controllers
 
     public class StatisticsRequest
     {
+        [NotEmpty]
         public Guid PostId { get; set; }
 
         public bool IsLike { get; set; }

@@ -39,15 +39,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task List_Empty_PostId()
-        {
-            var ctl = CreateCommentController();
-            var result = await ctl.List(Guid.Empty, null);
-
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
-
-        [Test]
         public async Task List_OK()
         {
             IReadOnlyList<Comment> comments = new List<Comment>
@@ -106,15 +97,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task SetApprovalStatus_EmptyId()
-        {
-            var ctl = CreateCommentController();
-            var result = await ctl.Approval(Guid.Empty);
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task SetApprovalStatus_ValidId()
         {
             _mockCommentService.Setup(p => p.ToggleApprovalAsync(It.IsAny<Guid[]>()));
@@ -146,15 +128,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.AreEqual(ids, ((OkObjectResult)result).Value);
-        }
-
-        [Test]
-        public async Task Reply_EmptyId()
-        {
-            var ctl = CreateCommentController();
-            var result = await ctl.Reply(Guid.Empty, "996", null);
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]

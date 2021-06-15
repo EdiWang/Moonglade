@@ -57,14 +57,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Delete_EmptyId()
-        {
-            var ctl = CreateMenuController();
-            var result = await ctl.Delete(Guid.Empty);
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
-
-        [Test]
         public async Task Delete_OK()
         {
             var ctl = CreateMenuController();

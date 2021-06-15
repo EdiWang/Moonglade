@@ -47,10 +47,8 @@ namespace Moonglade.Web.Controllers
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> List(Guid postId, [FromServices] ITimeZoneResolver timeZoneResolver)
+        public async Task<IActionResult> List([NotEmpty] Guid postId, [FromServices] ITimeZoneResolver timeZoneResolver)
         {
-            if (postId == Guid.Empty) return BadRequest();
-
             var comments = await _commentService.GetApprovedCommentsAsync(postId);
             var resp = comments.Select(p => new
             {
@@ -121,14 +119,8 @@ namespace Moonglade.Web.Controllers
         [HttpPut("{commentId:guid}/approval/toggle")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Approval(Guid commentId)
+        public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
         {
-            if (commentId == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(commentId), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             await _commentService.ToggleApprovalAsync(new[] { commentId });
             return Ok(commentId);
         }
@@ -152,14 +144,8 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Reply(Guid commentId, [Required][FromBody] string replyContent, [FromServices] LinkGenerator linkGenerator)
+        public async Task<IActionResult> Reply([NotEmpty] Guid commentId, [Required][FromBody] string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
-            if (commentId == Guid.Empty)
-            {
-                ModelState.AddModelError(nameof(commentId), "value is empty");
-                return BadRequest(ModelState.CombineErrorMessages());
-            }
-
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
             var reply = await _commentService.AddReply(commentId, replyContent);

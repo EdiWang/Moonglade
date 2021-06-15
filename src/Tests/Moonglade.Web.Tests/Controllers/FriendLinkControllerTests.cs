@@ -78,15 +78,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Delete_EmptyId()
-        {
-            var ctl = CreateFriendLinkController();
-            var result = await ctl.Delete(Guid.Empty);
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Delete_OK()
         {
             var ctl = CreateFriendLinkController();

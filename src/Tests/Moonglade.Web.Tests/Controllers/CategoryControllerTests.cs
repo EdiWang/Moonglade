@@ -82,14 +82,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Delete_EmptyId()
-        {
-            var categoryController = CreateCategoryController();
-            var result = await categoryController.Delete(Guid.Empty);
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Delete_ValidId()
         {
             var categoryController = CreateCategoryController();

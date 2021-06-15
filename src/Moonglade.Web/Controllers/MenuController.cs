@@ -59,10 +59,8 @@ namespace Moonglade.Web.Controllers
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            if (id == Guid.Empty) return BadRequest();
-
             await _menuService.DeleteAsync(id);
             return Ok();
         }
@@ -70,10 +68,8 @@ namespace Moonglade.Web.Controllers
         [HttpGet("edit/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit([NotEmpty] Guid id)
         {
-            if (id == Guid.Empty) return NotFound();
-
             var menu = await _menuService.GetAsync(id);
             if (null == menu) return NotFound();
 

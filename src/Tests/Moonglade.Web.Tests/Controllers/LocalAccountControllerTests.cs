@@ -62,15 +62,6 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Delete_EmptyId()
-        {
-            var ctl = CreateLocalAccountController();
-            var result = await ctl.Delete(Guid.Empty);
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public async Task Delete_NullCurrentUser()
         {
             var ctl = CreateLocalAccountController();
@@ -137,15 +128,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
             Assert.IsInstanceOf<OkResult>(result);
-        }
-
-        [Test]
-        public async Task ResetPassword_EmptyId()
-        {
-            var ctl = CreateLocalAccountController();
-            var result = await ctl.ResetPassword(Guid.Empty, "996007251404");
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
