@@ -20,6 +20,10 @@ namespace Moonglade.Web.Models
         [MaxLength(128)]
         public string Slug { get; set; }
 
+        [Display(Name = "Author")]
+        [MaxLength(64)]
+        public string Author { get; set; }
+
         [Required]
         public List<CategoryCheckBox> CategoryList { get; set; }
 
