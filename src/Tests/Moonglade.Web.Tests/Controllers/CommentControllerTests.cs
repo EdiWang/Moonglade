@@ -128,6 +128,53 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<ConflictObjectResult>(result);
         }
 
+
+        [Test]
+        public async Task Create_NotSendingEmail()
+        {
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings()
+            {
+                EnableComments = true,
+                RequireCommentReview = false
+            });
+            _mockBlogConfig.Setup(p => p.NotificationSettings).Returns(new NotificationSettings()
+            {
+                SendEmailOnNewComment = false
+            });
+
+            _mockCommentService.Setup(p => p.CreateAsync(It.IsAny<CommentRequest>()))
+                .Returns(Task.FromResult(new CommentDetailedItem()
+                {
+                    Id = Guid.Empty,
+                    Username = "Jack Ma",
+                    Email = "work996@996.icu",
+                    IsApproved = false,
+                    CommentContent = "Get your fubao",
+                    PostTitle = "Work 996",
+                    IpAddress = "9.9.9.6",
+                    CreateTimeUtc = DateTime.MinValue
+                }));
+
+            var ctl = CreateCommentController();
+            ctl.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    Items = { ["DNT"] = true }
+                }
+            };
+
+            var result = await ctl.Create(FakeData.Uid1, new()
+            {
+                Email = "work996@996.icu",
+                CaptchaCode = "0996",
+                Content = "Get your fubao",
+                Username = "Jack Ma"
+            });
+
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
         [Test]
         public async Task SetApprovalStatus_ValidId()
         {
