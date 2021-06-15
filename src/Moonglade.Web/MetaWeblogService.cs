@@ -229,11 +229,9 @@ namespace Moonglade.Web
 
             return TryExecuteAsync(async () =>
             {
-                await _categoryService.CreateAsync(new()
+                await _categoryService.CreateAsync(new(category.name.Trim(), category.slug.ToLower())
                 {
-                    DisplayName = category.name.Trim(),
                     Note = category.description.Trim(),
-                    RouteName = category.slug.ToLower()
                 });
 
                 return 996;

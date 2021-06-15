@@ -54,11 +54,9 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CategoryEditModel model)
         {
-            var request = new UpdateCatRequest
+            var request = new UpdateCatRequest(model.DisplayName, model.RouteName)
             {
-                RouteName = model.RouteName,
-                Note = model.Note,
-                DisplayName = model.DisplayName
+                Note = model.Note
             };
 
             await _catService.CreateAsync(request);
@@ -76,11 +74,9 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            var request = new UpdateCatRequest
+            var request = new UpdateCatRequest(model.DisplayName, model.RouteName)
             {
-                RouteName = model.RouteName,
-                Note = model.Note,
-                DisplayName = model.DisplayName
+                Note = model.Note
             };
 
             await _catService.UpdateAsync(id, request);
