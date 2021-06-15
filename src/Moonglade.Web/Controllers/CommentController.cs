@@ -80,7 +80,7 @@ namespace Moonglade.Web.Controllers
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            var response = await _commentService.CreateAsync(new(postId)
+            var item = await _commentService.CreateAsync(new(postId)
             {
                 Username = model.Username,
                 Content = model.Content,
@@ -88,7 +88,7 @@ namespace Moonglade.Web.Controllers
                 IpAddress = (bool)HttpContext.Items["DNT"] ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
             });
 
-            if (response is null)
+            if (item is null)
             {
                 ModelState.AddModelError(nameof(model.Content), "Your comment contains bad bad word.");
                 return Conflict(ModelState);
@@ -99,18 +99,18 @@ namespace Moonglade.Web.Controllers
                 _ = Task.Run(async () =>
                 {
                     await _notificationClient.NotifyCommentAsync(
-                        response.Username,
-                        response.Email,
-                        response.IpAddress,
-                        response.PostTitle,
-                        response.CommentContent,
-                        response.CreateTimeUtc);
+                        item.Username,
+                        item.Email,
+                        item.IpAddress,
+                        item.PostTitle,
+                        item.CommentContent,
+                        item.CreateTimeUtc);
                 });
             }
 
             if (_blogConfig.ContentSettings.RequireCommentReview)
             {
-                return Created("moonglade://empty", response);
+                return Created("moonglade://empty", item);
             }
 
             return Ok();
