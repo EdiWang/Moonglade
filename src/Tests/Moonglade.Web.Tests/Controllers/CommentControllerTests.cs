@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Comments;
 using Moonglade.Configuration;
@@ -108,6 +109,14 @@ namespace Moonglade.Web.Tests.Controllers
                 .Returns(Task.FromResult((CommentDetailedItem)null));
 
             var ctl = CreateCommentController();
+            ctl.ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext()
+                {
+                    Items = { ["DNT"] = true }
+                }
+            };
+
             var result = await ctl.Create(FakeData.Uid1, new()
             {
                 Email = "work996@996.icu",
