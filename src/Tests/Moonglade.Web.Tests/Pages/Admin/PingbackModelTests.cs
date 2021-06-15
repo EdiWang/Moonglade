@@ -32,7 +32,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<PingbackEntity> pingback = new PingbackEntity[] { };
 
-            _mockPingbackService.Setup(p => p.GetPingbackHistoryAsync())
+            _mockPingbackService.Setup(p => p.GetPingbacksAsync())
                 .Returns(Task.FromResult(pingback));
 
             var pingbackModel = CreatePingbackModel();

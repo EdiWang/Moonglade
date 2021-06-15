@@ -8,7 +8,7 @@ namespace Moonglade.Pingback
     public interface IPingbackService
     {
         Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackEntity> pingSuccessAction);
-        Task<IReadOnlyList<PingbackEntity>> GetPingbackHistoryAsync();
-        Task DeletePingbackHistory(Guid id);
+        Task<IReadOnlyList<PingbackEntity>> GetPingbacksAsync();
+        Task DeletePingback(Guid id);
     }
 }

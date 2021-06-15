@@ -19,7 +19,7 @@ namespace Moonglade.Web.Pages.Admin
 
         public async Task OnGet()
         {
-            PingbackRecords = await _pingbackService.GetPingbackHistoryAsync();
+            PingbackRecords = await _pingbackService.GetPingbacksAsync();
         }
     }
 }

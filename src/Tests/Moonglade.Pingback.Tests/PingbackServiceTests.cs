@@ -179,7 +179,7 @@ namespace Moonglade.Pingback.Tests
         public async Task DeletePingbackHistory_OK()
         {
             var pingbackService = CreateService();
-            await pingbackService.DeletePingbackHistory(Guid.Empty);
+            await pingbackService.DeletePingback(Guid.Empty);
 
             _mockPingbackRepo.Verify(p => p.DeleteAsync(Guid.Empty));
         }
@@ -205,7 +205,7 @@ namespace Moonglade.Pingback.Tests
             _mockPingbackRepo.Setup(p => p.GetAsync()).Returns(Task.FromResult(list));
 
             var pingbackService = CreateService();
-            var data = await pingbackService.GetPingbackHistoryAsync();
+            var data = await pingbackService.GetPingbacksAsync();
 
             Assert.IsNotNull(data);
             _mockPingbackRepo.Verify(p => p.GetAsync());

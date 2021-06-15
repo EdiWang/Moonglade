@@ -42,7 +42,7 @@ namespace Moonglade.Pingback
                     return PingbackResponse.GenericError;
                 }
 
-                var valid = ValidatePingRequest(requestBody);
+                var valid = ValidateRequest(requestBody);
                 if (!valid) return PingbackResponse.InvalidPingRequest;
 
                 _logger.LogInformation($"Processing Pingback from: {_sourceUrl} ({ip}) to {_targetUrl}");
@@ -60,7 +60,7 @@ namespace Moonglade.Pingback
                     return PingbackResponse.SpamDetectedFakeNotFound;
                 }
 
-                var (slug, pubDate) = GetSlugInfoFromPostUrl(pingRequest.TargetUrl);
+                var (slug, pubDate) = GetSlugInfoFromUrl(pingRequest.TargetUrl);
                 var spec = new PostSpec(pubDate, slug);
                 var (id, title) = await _postRepo.SelectFirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
                 if (id == Guid.Empty)
@@ -105,7 +105,7 @@ namespace Moonglade.Pingback
             }
         }
 
-        private static (string Slug, DateTime PubDate) GetSlugInfoFromPostUrl(string url)
+        private static (string Slug, DateTime PubDate) GetSlugInfoFromUrl(string url)
         {
             var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
             Match match = blogSlugRegex.Match(url);
@@ -123,18 +123,18 @@ namespace Moonglade.Pingback
             return (slug, date);
         }
 
-        public async Task<IReadOnlyList<PingbackEntity>> GetPingbackHistoryAsync()
+        public async Task<IReadOnlyList<PingbackEntity>> GetPingbacksAsync()
         {
             var list = await _pingbackRepo.GetAsync();
             return list;
         }
 
-        public async Task DeletePingbackHistory(Guid id)
+        public async Task DeletePingback(Guid id)
         {
             await _pingbackRepo.DeleteAsync(id);
         }
 
-        private bool ValidatePingRequest(string requestBody)
+        private bool ValidateRequest(string requestBody)
         {
             _logger.LogInformation($"Pingback received xml: {requestBody}");
 
