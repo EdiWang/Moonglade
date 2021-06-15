@@ -27,7 +27,7 @@
     <meta name="title" content="@Model.Post.Title" />
     <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
     <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
-    <meta name="author" content="@BlogConfig.GeneralSettings.OwnerName" />
+    <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
 }
 
 @if (BlogConfig.AdvancedSettings.EnableOpenGraph)
