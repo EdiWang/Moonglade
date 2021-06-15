@@ -67,6 +67,7 @@ CREATE TABLE [Post](
 [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
 [Title] [nvarchar](128) NULL,
 [Slug] [nvarchar](128) NULL,
+[Author] [nvarchar](64) NULL,
 [PostContent] [nvarchar](max) NULL,
 [CommentEnabled] [bit] NOT NULL,
 [CreateTimeUtc] [datetime] NOT NULL,

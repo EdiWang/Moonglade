@@ -66,6 +66,7 @@ namespace Moonglade.Web.Pages.Admin
                 PostId = post.Id,
                 IsPublished = post.IsPublished,
                 EditorContent = post.RawPostContent,
+                Author = post.Author,
                 Slug = post.Slug,
                 Title = post.Title,
                 EnableComment = post.CommentEnabled,

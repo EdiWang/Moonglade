@@ -20,6 +20,7 @@ namespace Moonglade.Data.Configurations
             builder.Property(e => e.LastModifiedUtc).HasColumnType("datetime");
             builder.Property(e => e.PostContent);
 
+            builder.Property(e => e.Author).HasMaxLength(64);
             builder.Property(e => e.Slug).HasMaxLength(128);
             builder.Property(e => e.Title).HasMaxLength(128);
             builder.Property(e => e.OriginLink).HasMaxLength(256);

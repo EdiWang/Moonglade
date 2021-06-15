@@ -27,7 +27,7 @@
     <meta name="title" content="@Model.Post.Title" />
     <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
     <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
-    <meta name="author" content="@BlogConfig.GeneralSettings.OwnerName" />
+    <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
 }
 
 @if (BlogConfig.AdvancedSettings.EnableOpenGraph)
@@ -106,10 +106,19 @@
             {
                 <span class="badge bg-secondary me-2">@Localizer["Original"]</span>
             }
+            
+            @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
+            {
+                <i class="bi-person"></i>
+                <span class="me-2">@Model.Post.Author</span>
+            }
 
             <i class="bi-calendar-event"></i>
-            <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
-            @BlogConfig.GeneralSettings.TimeZoneId
+            <span class="me-2">
+                <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
+                @BlogConfig.GeneralSettings.TimeZoneId
+            </span>
+
             <i class="bi-eye"></i>
             <span class="post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
         </div>

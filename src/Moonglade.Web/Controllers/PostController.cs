@@ -124,6 +124,7 @@ namespace Moonglade.Web.Controllers
                 {
                     Title = model.Title.Trim(),
                     Slug = model.Slug.Trim(),
+                    Author = model.Author?.Trim(),
                     EditorContent = model.EditorContent,
                     EnableComment = model.EnableComment,
                     ExposedToSiteMap = model.ExposedToSiteMap,
