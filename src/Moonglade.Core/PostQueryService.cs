@@ -54,6 +54,7 @@ namespace Moonglade.Core
             Id = p.Id,
             Title = p.Title,
             Slug = p.Slug,
+            Author = p.Author,
             RawPostContent = p.PostContent,
             ContentAbstract = p.ContentAbstract,
             CommentEnabled = p.CommentEnabled,

@@ -71,6 +71,7 @@ namespace Moonglade.Core
                 CreateTimeUtc = DateTime.UtcNow,
                 LastModifiedUtc = DateTime.UtcNow, // Fix draft orders
                 Slug = request.Slug.ToLower().Trim(),
+                Author = request.Author.Trim(),
                 Title = request.Title.Trim(),
                 ContentLanguageCode = request.ContentLanguageCode,
                 ExposedToSiteMap = request.ExposedToSiteMap,
@@ -186,6 +187,7 @@ namespace Moonglade.Core
                 post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
             }
 
+            post.Author = request.Author;
             post.Slug = request.Slug;
             post.Title = request.Title;
             post.ExposedToSiteMap = request.ExposedToSiteMap;
