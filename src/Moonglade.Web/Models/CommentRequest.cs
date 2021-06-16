@@ -3,7 +3,7 @@ using Edi.Captcha;
 
 namespace Moonglade.Web.Models
 {
-    public class NewCommentModel : ICaptchable
+    public class CommentRequest : ICaptchable
     {
         [Required]
         [MaxLength(64)]

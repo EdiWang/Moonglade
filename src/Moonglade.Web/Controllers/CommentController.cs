@@ -15,6 +15,7 @@ using Moonglade.Notification.Client;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
+using CommentRequest = Moonglade.Web.Models.CommentRequest;
 
 namespace Moonglade.Web.Controllers
 {
@@ -70,11 +71,11 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create([NotEmpty] Guid postId, NewCommentModel model)
+        public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
         {
-            if (!string.IsNullOrWhiteSpace(model.Email) && !Helper.IsValidEmailAddress(model.Email))
+            if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
             {
-                ModelState.AddModelError(nameof(model.Email), "Invalid Email address.");
+                ModelState.AddModelError(nameof(request.Email), "Invalid Email address.");
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
@@ -82,15 +83,15 @@ namespace Moonglade.Web.Controllers
 
             var item = await _commentService.CreateAsync(new(postId)
             {
-                Username = model.Username,
-                Content = model.Content,
-                Email = model.Email,
+                Username = request.Username,
+                Content = request.Content,
+                Email = request.Email,
                 IpAddress = (bool)HttpContext.Items["DNT"] ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
             });
 
             if (item is null)
             {
-                ModelState.AddModelError(nameof(model.Content), "Your comment contains bad bad word.");
+                ModelState.AddModelError(nameof(request.Content), "Your comment contains bad bad word.");
                 return Conflict(ModelState);
             }
 
