@@ -11,6 +11,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
+using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
 {
@@ -67,7 +68,7 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [HttpDelete("{pingbackId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Delete(Guid pingbackId, [FromServices] IBlogAudit blogAudit)
+        public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId, [FromServices] IBlogAudit blogAudit)
         {
             await _pingbackService.DeletePingback(pingbackId);
             await blogAudit.AddAuditEntry(BlogEventType.Content, BlogEventId.PingbackDeleted,

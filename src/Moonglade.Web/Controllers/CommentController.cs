@@ -70,7 +70,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create(Guid postId, NewCommentModel model)
+        public async Task<IActionResult> Create([NotEmpty] Guid postId, NewCommentModel model)
         {
             if (!string.IsNullOrWhiteSpace(model.Email) && !Helper.IsValidEmailAddress(model.Email))
             {

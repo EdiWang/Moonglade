@@ -64,7 +64,7 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> Edit(Guid id, PageEditModel model)
+        public Task<IActionResult> Edit([NotEmpty] Guid id, PageEditModel model)
         {
             return CreateOrEdit(model, async request => await _blogPageService.UpdateAsync(id, request));
         }
@@ -104,7 +104,7 @@ namespace Moonglade.Web.Controllers
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
             var page = await _blogPageService.GetAsync(id);
             if (page == null) return NotFound();

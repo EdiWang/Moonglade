@@ -32,7 +32,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(Link), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get([NotEmpty] Guid id)
         {
             var link = await _friendLinkService.GetAsync(id);
             if (null == link) return NotFound();
@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
         [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Edit(Guid id, FriendLinkEditModel model)
+        public async Task<IActionResult> Edit([NotEmpty] Guid id, FriendLinkEditModel model)
         {
             await _friendLinkService.UpdateAsync(id, model.Title, model.LinkUrl);
             return Ok(model);
