@@ -189,6 +189,44 @@ namespace Moonglade.Comments.Tests
             Assert.AreEqual(req.Username, result.Username);
         }
 
+        [Test]
+        public async Task CreateAsync_HasBadWord_Block()
+        {
+            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
+            {
+                EnableWordFilter = true,
+                WordFilterMode = WordFilterMode.Block,
+                RequireCommentReview = true
+            });
+
+            _mockCommentModerator.Setup(p => p.HasBadWord(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
+
+            CommentRequest req = new CommentRequest(Guid.Empty)
+            {
+                Content = "Work 996 and get into ICU",
+                Email = "worker@996.icu",
+                IpAddress = "9.9.6.35",
+                Username = "Fubao Collector"
+            };
+            var service = CreateCommentService();
+
+            var result = await service.CreateAsync(req);
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void AddReply_NullComment()
+        {
+            _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(ValueTask.FromResult((CommentEntity)null));
+
+            var service = CreateCommentService();
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await service.AddReply(Guid.Empty, "996");
+            });
+        }
+
         [TestCase(0)]
         [TestCase(-1)]
         public void GetCommentsAsync_InvalidPageSize(int pageSize)
