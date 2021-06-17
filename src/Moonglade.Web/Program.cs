@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Setup;
+using Moonglade.Data.Setup;
 using Moonglade.Utils;
 
 namespace Moonglade.Web

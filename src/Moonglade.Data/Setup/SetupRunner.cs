@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using Dapper;
 
-namespace Moonglade.Setup
+namespace Moonglade.Data.Setup
 {
     public class SetupRunner
     {
@@ -130,7 +130,7 @@ namespace Moonglade.Setup
         private static string GetEmbeddedSqlScript(string scriptName)
         {
             var assembly = typeof(SetupRunner).GetTypeInfo().Assembly;
-            using var stream = assembly.GetManifestResourceStream($"Moonglade.Setup.Data.{scriptName}.sql");
+            using var stream = assembly.GetManifestResourceStream($"Moonglade.Data.SQLScripts.{scriptName}.sql");
             using var reader = new StreamReader(stream);
             var sql = reader.ReadToEnd();
             return sql;

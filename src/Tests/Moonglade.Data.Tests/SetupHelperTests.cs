@@ -1,11 +1,11 @@
 ﻿using System.Data;
 using Dapper;
-using Moonglade.Setup;
+using Moonglade.Data.Setup;
 using Moq;
 using Moq.Dapper;
 using NUnit.Framework;
 
-namespace Moonglade.Core.Tests
+namespace Moonglade.Data.Tests
 {
     [TestFixture]
     public class SetupHelperTests
