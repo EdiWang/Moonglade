@@ -15,8 +15,7 @@ namespace Moonglade.Web.Middleware
 
         public Task Invoke(HttpContext httpContext)
         {
-            httpContext.Response.Headers["X-Powered-By"] = "Moonglade";
-            httpContext.Response.Headers.Add("X-Moonglade-Version", Helper.AppVersion);
+            httpContext.Response.Headers["X-Powered-By"] = $"Moonglade {Helper.AppVersion}, ASP.NET Core";
             return _next.Invoke(httpContext);
         }
     }
