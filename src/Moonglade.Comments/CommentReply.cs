@@ -14,8 +14,6 @@ namespace Moonglade.Comments
         public Guid Id { get; set; }
         public Guid CommentId { get; set; }
         public Guid PostId { get; set; }
-        public string UserAgent { get; set; }
-        public string IpAddress { get; set; }
         public string Email { get; set; }
         public string CommentContent { get; set; }
         public string Title { get; set; }
