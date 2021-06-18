@@ -31,7 +31,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Create_ValidModel()
         {
             var categoryController = CreateCategoryController();
-            var model = new CategoryEditModel
+            var model = new EditCategoryRequest
             {
                 DisplayName = FakeData.ShortString2,
                 RouteName = FakeData.ShortString2,
@@ -70,7 +70,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Update_ValidModel()
         {
             var categoryController = CreateCategoryController();
-            var model = new CategoryEditModel
+            var model = new EditCategoryRequest
             {
                 DisplayName = FakeData.ShortString2,
                 RouteName = FakeData.ShortString2,

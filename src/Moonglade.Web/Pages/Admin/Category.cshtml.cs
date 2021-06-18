@@ -10,14 +10,14 @@ namespace Moonglade.Web.Pages.Admin
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryEditModel CategoryEditViewModel { get; set; }
+        public EditCategoryRequest EditCategoryRequest { get; set; }
 
         public IReadOnlyList<Category> Categories { get; set; }
 
         public CategoryModel(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-            CategoryEditViewModel = new();
+            EditCategoryRequest = new();
         }
 
         public async Task OnGet()

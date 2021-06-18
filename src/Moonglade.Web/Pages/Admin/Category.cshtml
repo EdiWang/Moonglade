@@ -20,9 +20,9 @@
                 async (resp) => {
                     var data = await resp.json();
                     catId = data.id;
-                    $('#CategoryEditViewModel_RouteName').val(data.routeName);
-                    $('#CategoryEditViewModel_DisplayName').val(data.displayName);
-                    $('#CategoryEditViewModel_Note').val(data.note);
+                    $('#EditCategoryRequest_RouteName').val(data.routeName);
+                    $('#EditCategoryRequest_DisplayName').val(data.displayName);
+                    $('#EditCategoryRequest_Note').val(data.note);
                     editCanvas.show();
                 });
         }
@@ -62,9 +62,9 @@
 
                 callApi(apiAddress, verb,
                     {
-                        "RouteName": $("#CategoryEditViewModel_RouteName").val(),
-                        "DisplayName": $("#CategoryEditViewModel_DisplayName").val(),
-                        "Note": $("#CategoryEditViewModel_Note").val()
+                        "RouteName": $("#EditCategoryRequest_RouteName").val(),
+                        "DisplayName": $("#EditCategoryRequest_DisplayName").val(),
+                        "Note": $("#EditCategoryRequest_Note").val()
                     },
                     (resp) => {
                         $("#edit-form")[0].reset();
@@ -129,19 +129,19 @@
         <form id="edit-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
-                <label class="form-label" asp-for="CategoryEditViewModel.DisplayName"></label>
-                <input asp-for="CategoryEditViewModel.DisplayName" class="form-control" />
-                <span asp-validation-for="CategoryEditViewModel.DisplayName" class="text-danger"></span>
+                <label class="form-label" asp-for="EditCategoryRequest.DisplayName"></label>
+                <input asp-for="EditCategoryRequest.DisplayName" class="form-control" />
+                <span asp-validation-for="EditCategoryRequest.DisplayName" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="CategoryEditViewModel.RouteName"></label>
-                <input asp-for="CategoryEditViewModel.RouteName" class="form-control" />
-                <span asp-validation-for="CategoryEditViewModel.RouteName" class="text-danger"></span>
+                <label class="form-label" asp-for="EditCategoryRequest.RouteName"></label>
+                <input asp-for="EditCategoryRequest.RouteName" class="form-control" />
+                <span asp-validation-for="EditCategoryRequest.RouteName" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="CategoryEditViewModel.Note"></label>
-                <input asp-for="CategoryEditViewModel.Note" class="form-control" />
-                <span asp-validation-for="CategoryEditViewModel.Note" class="text-danger"></span>
+                <label class="form-label" asp-for="EditCategoryRequest.Note"></label>
+                <input asp-for="EditCategoryRequest.Note" class="form-control" />
+                <span asp-validation-for="EditCategoryRequest.Note" class="text-danger"></span>
             </div>
         </form>
         <div class="mt-3">

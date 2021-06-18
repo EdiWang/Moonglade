@@ -49,16 +49,16 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(CategoryEditModel model)
+        public async Task<IActionResult> Create(EditCategoryRequest model)
         {
             await _catService.CreateAsync(model.DisplayName, model.RouteName, model.Note);
             return Created(string.Empty, model);
         }
 
         [HttpPut("{id:guid}")]
-        [ProducesResponseType(typeof(CategoryEditModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EditCategoryRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update([NotEmpty] Guid id, CategoryEditModel model)
+        public async Task<IActionResult> Update([NotEmpty] Guid id, EditCategoryRequest model)
         {
             await _catService.UpdateAsync(id, model.DisplayName, model.RouteName, model.Note);
             return Ok(model);

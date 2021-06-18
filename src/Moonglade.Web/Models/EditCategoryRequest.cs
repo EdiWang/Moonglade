@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Models
 {
-    public class CategoryEditModel
+    public class EditCategoryRequest
     {
         [Required]
         [Display(Name = "Display Name")]

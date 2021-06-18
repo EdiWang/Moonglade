@@ -41,7 +41,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             await categoryModel.OnGet();
 
             Assert.IsNotNull(categoryModel.Categories);
-            Assert.IsNotNull(categoryModel.CategoryEditViewModel);
+            Assert.IsNotNull(categoryModel.EditCategoryRequest);
         }
     }
 }
