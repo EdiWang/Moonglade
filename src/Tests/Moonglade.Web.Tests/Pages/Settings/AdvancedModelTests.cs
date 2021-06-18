@@ -6,7 +6,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages.Settings
 {
     [TestFixture]
-
     public class AdvancedModelTests
     {
         private MockRepository _mockRepository;

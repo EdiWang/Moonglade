@@ -6,7 +6,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages.Settings
 {
     [TestFixture]
-
     public class NotificationModelTests
     {
         private MockRepository _mockRepository;
