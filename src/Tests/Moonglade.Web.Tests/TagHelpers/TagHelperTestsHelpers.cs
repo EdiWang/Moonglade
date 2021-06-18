@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Moonglade.Web.Tests.TagHelpers
 {
-    [ExcludeFromCodeCoverage]
     public class TagHelperTestsHelpers
     {
         public static TagHelperContext MakeTagHelperContext(string tagName, TagHelperAttributeList attributes = null)

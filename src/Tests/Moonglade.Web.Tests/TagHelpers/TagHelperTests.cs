@@ -9,7 +9,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.TagHelpers
 {
     [TestFixture]
-
     public class TagHelperTests
     {
         [Test]
