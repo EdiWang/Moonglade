@@ -26,8 +26,7 @@
         }
         else
         {
-            <partial name="_OpenGraph" />
-
+            <partial name="_OpenGraph" />    
         }
     }
 
@@ -44,7 +43,8 @@
         @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
     </title>
 
-    @if (BlogConfig.AdvancedSettings.EnableCDNRedirect && !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
+    @if (BlogConfig.AdvancedSettings.EnableCDNRedirect &&
+ !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
     }
@@ -107,15 +107,6 @@
     }
 </head>
 <body class="@ViewBag.BodyClass">
-    @if (Context.Request.Headers["geo-match"] == "china")
-    {
-        <section class="bg-danger text-white p-2">
-            <div class="container-fluid">
-                <h2>永远跟党走</h2>
-            </div>
-        </section>
-    }
-
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
     {
         <section class="call-out">
