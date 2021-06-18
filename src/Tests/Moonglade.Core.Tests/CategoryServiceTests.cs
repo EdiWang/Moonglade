@@ -79,7 +79,7 @@ namespace Moonglade.Core.Tests
             _mockCatRepo.Setup(p => p.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(true);
 
             var svc = CreateService();
-            await svc.CreateAsync(new("Work 996", "work-996"));
+            await svc.CreateAsync("Work 996", "work-996");
 
             _mockCatRepo.Verify(p => p.AddAsync(It.IsAny<CategoryEntity>()), Times.Never);
         }
@@ -90,10 +90,7 @@ namespace Moonglade.Core.Tests
             _mockCatRepo.Setup(p => p.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(false);
 
             var svc = CreateService();
-            await svc.CreateAsync(new("Work 996", "work-996")
-            {
-                Note = "Fubao"
-            });
+            await svc.CreateAsync("Work 996", "work-996", "Fubao");
 
             _mockCatRepo.Verify(p => p.AddAsync(It.IsAny<CategoryEntity>()));
             _mockBlogCache.Verify(p => p.Remove(CacheDivision.General, "allcats"));

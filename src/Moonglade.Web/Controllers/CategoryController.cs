@@ -51,12 +51,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CategoryEditModel model)
         {
-            var request = new UpdateCatRequest(model.DisplayName, model.RouteName)
-            {
-                Note = model.Note
-            };
-
-            await _catService.CreateAsync(request);
+            await _catService.CreateAsync(model.DisplayName, model.RouteName, model.Note);
             return Created(string.Empty, model);
         }
 

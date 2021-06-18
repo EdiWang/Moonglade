@@ -274,7 +274,7 @@ namespace Moonglade.Web.Tests
             var result = await service.AddCategoryAsync("996.icu", _username, _password, cat);
 
             Assert.AreEqual(996, result);
-            _mockCategoryService.Verify(p => p.CreateAsync(It.IsAny<UpdateCatRequest>()));
+            _mockCategoryService.Verify(p => p.CreateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
         }
 
         [Test]

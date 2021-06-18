@@ -15,7 +15,7 @@ namespace Moonglade.Core
         Task<IReadOnlyList<Category>> GetAll();
         Task<Category> Get(string routeName);
         Task<Category> Get(Guid id);
-        Task CreateAsync(UpdateCatRequest request);
+        Task CreateAsync(string displayName, string routeName, string note = null);
         Task DeleteAsync(Guid id);
         Task UpdateAsync(Guid id, UpdateCatRequest request);
     }
@@ -67,17 +67,17 @@ namespace Moonglade.Core
             return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(id), _categorySelector);
         }
 
-        public async Task CreateAsync(UpdateCatRequest request)
+        public async Task CreateAsync(string displayName, string routeName, string note = null)
         {
-            var exists = _catRepo.Any(c => c.RouteName == request.RouteName);
+            var exists = _catRepo.Any(c => c.RouteName == routeName);
             if (exists) return;
 
             var category = new CategoryEntity
             {
                 Id = Guid.NewGuid(),
-                RouteName = request.RouteName.Trim(),
-                Note = request.Note.Trim(),
-                DisplayName = request.DisplayName.Trim()
+                RouteName = routeName.Trim(),
+                Note = note?.Trim(),
+                DisplayName = displayName.Trim()
             };
 
             await _catRepo.AddAsync(category);
