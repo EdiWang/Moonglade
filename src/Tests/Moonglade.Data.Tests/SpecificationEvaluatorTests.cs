@@ -3,7 +3,7 @@ using System.Linq;
 using Moonglade.Data.Infrastructure;
 using NUnit.Framework;
 
-namespace Moonglade.Core.Tests.Infrastructure
+namespace Moonglade.Data.Tests
 {
     [TestFixture]
     public class SpecificationEvaluatorTests
