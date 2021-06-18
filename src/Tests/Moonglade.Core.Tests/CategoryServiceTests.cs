@@ -131,7 +131,7 @@ namespace Moonglade.Core.Tests
                 .Returns(ValueTask.FromResult((CategoryEntity)null));
 
             var svc = CreateService();
-            await svc.UpdateAsync(Guid.Empty, new(null, null));
+            await svc.UpdateAsync(Guid.Empty, null, null);
 
             _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()), Times.Never);
         }
@@ -149,10 +149,7 @@ namespace Moonglade.Core.Tests
                 }));
 
             var svc = CreateService();
-            await svc.UpdateAsync(Guid.Empty, new("Fubao", "fubao")
-            {
-                Note = "ICU"
-            });
+            await svc.UpdateAsync(Guid.Empty, "Fubao", "fubao", "ICU");
 
             _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()));
         }

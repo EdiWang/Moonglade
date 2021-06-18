@@ -17,7 +17,7 @@ namespace Moonglade.Core
         Task<Category> Get(Guid id);
         Task CreateAsync(string displayName, string routeName, string note = null);
         Task DeleteAsync(Guid id);
-        Task UpdateAsync(Guid id, UpdateCatRequest request);
+        Task UpdateAsync(Guid id, string displayName, string routeName, string note = null);
     }
 
     public class CategoryService : ICategoryService
@@ -100,14 +100,14 @@ namespace Moonglade.Core
             await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Category '{id}' deleted.");
         }
 
-        public async Task UpdateAsync(Guid id, UpdateCatRequest request)
+        public async Task UpdateAsync(Guid id, string displayName, string routeName, string note = null)
         {
             var cat = await _catRepo.GetAsync(id);
             if (cat is null) return;
 
-            cat.RouteName = request.RouteName.Trim();
-            cat.DisplayName = request.DisplayName.Trim();
-            cat.Note = request.Note.Trim();
+            cat.RouteName = routeName.Trim();
+            cat.DisplayName = displayName.Trim();
+            cat.Note = note?.Trim();
 
             await _catRepo.UpdateAsync(cat);
             _cache.Remove(CacheDivision.General, "allcats");
