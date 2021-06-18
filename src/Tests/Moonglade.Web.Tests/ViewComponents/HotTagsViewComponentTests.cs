@@ -10,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.ViewComponents
 {
     [TestFixture]
-
     public class HotTagsViewComponentTests
     {
         private MockRepository _mockRepository;

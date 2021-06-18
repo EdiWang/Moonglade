@@ -11,7 +11,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.ViewComponents
 {
     [TestFixture]
-
     public class RssListViewComponentTests
     {
         private MockRepository _mockRepository;

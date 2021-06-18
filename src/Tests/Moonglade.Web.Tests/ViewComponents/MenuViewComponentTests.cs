@@ -10,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.ViewComponents
 {
     [TestFixture]
-
     public class MenuViewComponentTests
     {
         private MockRepository _mockRepository;

@@ -10,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.ViewComponents
 {
     [TestFixture]
-
     public class FriendLinkViewComponentTests
     {
         private MockRepository _mockRepository;

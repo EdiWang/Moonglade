@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Moonglade.Core;
 using Moonglade.Page;
 
 namespace Moonglade.Web.Tests
 {
-    [ExcludeFromCodeCoverage]
     internal class FakeData
     {
         public static readonly Guid Uid1 = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
@@ -34,13 +32,13 @@ namespace Moonglade.Web.Tests
                 Title = Title1,
                 ContentAbstract = Content1,
                 LangCode = "zh-CN",
-                PubDateUtc = new(FakeData.Int2, 9, 6),
+                PubDateUtc = new(Int2, 9, 6),
                 Slug = "996-icu",
                 Tags = new Tag[]{
                     new ()
                     {
-                        DisplayName = FakeData.ShortString2,
-                        Id = FakeData.Int2,
+                        DisplayName = ShortString2,
+                        Id = Int2,
                         NormalizedName = "icu"
                     }
                 }
