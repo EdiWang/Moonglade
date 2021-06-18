@@ -14,7 +14,7 @@ namespace Moonglade.Web.Tests.Middleware
     public class OpenSearchMiddlewareTests
     {
         [Test]
-        public void UseCustomCssMiddlewareExtensions()
+        public void UseOpenSearch_Ext()
         {
             var serviceCollection = new ServiceCollection();
             var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());

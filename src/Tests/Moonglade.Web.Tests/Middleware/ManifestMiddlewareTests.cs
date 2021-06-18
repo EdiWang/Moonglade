@@ -35,7 +35,7 @@ namespace Moonglade.Web.Tests.Middleware
         }
 
         [Test]
-        public void UseManifestMiddlewareExtensions()
+        public void UseManifest_Ext()
         {
             var serviceCollection = new ServiceCollection();
             var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
