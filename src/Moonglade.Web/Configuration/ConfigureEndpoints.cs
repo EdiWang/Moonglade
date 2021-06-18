@@ -18,7 +18,9 @@ namespace Moonglade.Web.Configuration
                 {
                     Helper.AppVersion,
                     DotNetVersion = Environment.Version.ToString(),
-                    EnvironmentTags = Helper.GetEnvironmentTags()
+                    EnvironmentTags = Helper.GetEnvironmentTags(),
+                    GeoMatch = context.Request.Headers["geo-match"],
+                    RequestIpAddress = context.Connection.RemoteIpAddress?.ToString()
                 };
 
                 await context.Response.WriteAsJsonAsync(obj);
