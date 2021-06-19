@@ -9,7 +9,7 @@ namespace Moonglade.Data
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddDataStorage(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddDataStorage(this IServiceCollection services, string connectionString)
         {
             services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
             services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
@@ -22,6 +22,8 @@ namespace Moonglade.Data
                             TimeSpan.FromSeconds(30),
                             null);
                     }));
+
+            return services;
         }
     }
 }

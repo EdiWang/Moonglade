@@ -40,7 +40,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [ProducesResponseType(typeof(FriendLinkEditModel),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FriendLinkEditModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([NotEmpty] Guid id, FriendLinkEditModel model)
         {
             await _friendLinkService.UpdateAsync(id, model.Title, model.LinkUrl);

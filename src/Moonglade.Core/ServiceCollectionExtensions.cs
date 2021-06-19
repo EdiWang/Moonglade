@@ -18,11 +18,13 @@ namespace Moonglade.Core
             return services;
         }
 
-        public static void AddReleaseCheckerClient(this IServiceCollection services)
+        public static IServiceCollection AddReleaseCheckerClient(this IServiceCollection services)
         {
             services.AddHttpClient<IReleaseCheckerClient, ReleaseCheckerClient>()
                 .AddTransientHttpErrorPolicy(builder =>
                     builder.WaitAndRetryAsync(3, retryCount => TimeSpan.FromSeconds(Math.Pow(2, retryCount))));
+
+            return services;
         }
     }
 }

@@ -67,12 +67,12 @@ namespace Moonglade.Web
         public void ConfigureServices(IServiceCollection services)
         {
             // ASP.NET Setup
-            services.AddOptions();
-            services.AddHttpContextAccessor();
-            services.AddRateLimit(_configuration.GetSection("IpRateLimiting"));
+            services.AddOptions()
+                    .AddHttpContextAccessor()
+                    .AddRateLimit(_configuration.GetSection("IpRateLimiting"));
             services.AddFeatureManagement();
-            services.AddAzureAppConfiguration();
-            services.AddApplicationInsightsTelemetry()
+            services.AddAzureAppConfiguration()
+                    .AddApplicationInsightsTelemetry()
                     .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
                     {
                         module.EnableSqlCommandTextInstrumentation = true;
@@ -85,7 +85,7 @@ namespace Moonglade.Web
             }).AddSessionBasedCaptcha();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-
+            services.AddSwaggerGen();
             services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                     .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
             services.AddRazorPages()
@@ -99,8 +99,6 @@ namespace Moonglade.Web
 
             // Fix Chinese character being encoded in HTML output
             services.AddSingleton(HtmlEncoder.Create(
-                new[]
-                {
                     UnicodeRanges.BasicLatin,
                     UnicodeRanges.CjkCompatibility,
                     UnicodeRanges.CjkCompatibilityForms,
@@ -113,15 +111,7 @@ namespace Moonglade.Web
                     UnicodeRanges.EnclosedCjkLettersandMonths,
                     UnicodeRanges.MiscellaneousSymbols,
                     UnicodeRanges.HalfwidthandFullwidthForms
-                }
             ));
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                options.DefaultRequestCulture = new("en-US");
-                options.SupportedCultures = _cultures;
-                options.SupportedUICultures = _cultures;
-            });
 
             services.AddAntiforgery(options =>
             {
@@ -129,16 +119,17 @@ namespace Moonglade.Web
                 options.Cookie.Name = $"X-{csrfName}";
                 options.FormFieldName = $"{csrfName}-FORM";
                 options.HeaderName = "XSRF-TOKEN";
-            });
-
-            services.Configure<RouteOptions>(options =>
+            }).Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new("en-US");
+                options.SupportedCultures = _cultures;
+                options.SupportedUICultures = _cultures;
+            }).Configure<RouteOptions>(options =>
             {
                 options.LowercaseUrls = true;
                 options.LowercaseQueryStrings = true;
                 options.AppendTrailingSlash = false;
             });
-
-            services.AddSwaggerGen();
 
             // Blog Services
             services.AddCoreBloggingServices()
@@ -146,26 +137,26 @@ namespace Moonglade.Web
                     .AddPingback()
                     .AddSyndication()
                     .AddNotificationClient()
-                    .AddReleaseCheckerClient();
+                    .AddReleaseCheckerClient()
+                    .AddMetaWeblog<MetaWeblogService>();
             services.AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFriendLinkService, FriendLinkService>()
                     .AddScoped<IBlogAudit, BlogAudit>()
                     .AddScoped<IFoafWriter, FoafWriter>()
-                    .AddScoped<IExportManager, ExportManager>();
-            services.AddScoped<ValidateCaptcha>();
-            services.AddMetaWeblog<MetaWeblogService>();
+                    .AddScoped<IExportManager, ExportManager>()
+                    .AddScoped<ValidateCaptcha>();
             services.AddBlogCache();
-            services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
-            services.AddBlogConfig(_configuration);
+            services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"))
+                    .AddBlogConfig(_configuration);
             services.AddScoped<ITimeZoneResolver>(
                 c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
             services.AddBlogAuthenticaton(_configuration);
             services.AddComments(_configuration);
-            services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"));
-            services.AddImageStorage(_configuration, options =>
-            {
-                options.ContentRootPath = _environment.ContentRootPath;
-            });
+            services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"))
+                    .AddImageStorage(_configuration, options =>
+                    {
+                        options.ContentRootPath = _environment.ContentRootPath;
+                    });
         }
 
         public void Configure(
