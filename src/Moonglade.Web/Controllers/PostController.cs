@@ -66,26 +66,19 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(JqDataTableResponse<PostSegment>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ListPublished([FromForm] DataTableRequest model)
         {
-            var jqdtResponse = await GetJqDataTableResponse(PostStatus.Published, model);
-            return Ok(jqdtResponse);
-        }
-
-        private async Task<JqDataTableResponse<PostSegment>> GetJqDataTableResponse(PostStatus status, DataTableRequest model)
-        {
             var searchBy = model.Search?.Value;
             var take = model.Length;
             var offset = model.Start;
 
-            var (posts, totalRows) = await _postQueryService.ListSegment(status, offset, take, searchBy);
-            var jqdtResponse = new JqDataTableResponse<PostSegment>
+            var (posts, totalRows) = await _postQueryService.ListSegment(PostStatus.Published, offset, take, searchBy);
+            var response = new JqDataTableResponse<PostSegment>
             {
                 Draw = model.Draw,
                 RecordsFiltered = totalRows,
                 RecordsTotal = totalRows,
                 Data = posts
             };
-
-            return jqdtResponse;
+            return Ok(response);
         }
 
         [HttpPost("createoredit")]
@@ -188,7 +181,6 @@ namespace Moonglade.Web.Controllers
         [TypeFilter(typeof(ClearPagingCountCache))]
         [HttpPost("{postId:guid}/restore")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Restore([NotEmpty] Guid postId)
         {
             await _postManageService.RestoreAsync(postId);
@@ -200,7 +192,6 @@ namespace Moonglade.Web.Controllers
         [TypeFilter(typeof(ClearPagingCountCache))]
         [HttpDelete("{postId:guid}/recycle")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([NotEmpty] Guid postId)
         {
             await _postManageService.DeleteAsync(postId, true);
@@ -211,7 +202,6 @@ namespace Moonglade.Web.Controllers
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [HttpDelete("{postId:guid}/destroy")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
         {
             await _postManageService.DeleteAsync(postId);

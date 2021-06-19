@@ -21,8 +21,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("{postId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Tuple<int, int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([NotEmpty] Guid postId)
         {
             var (hits, likes) = await _statistics.GetStatisticAsync(postId);
@@ -32,8 +31,6 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [DisallowSpiderUA]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post(StatisticsRequest request)
         {
             if (DNT) return Ok();

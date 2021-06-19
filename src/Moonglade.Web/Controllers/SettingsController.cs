@@ -354,6 +354,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("clear-data-cache")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult ClearDataCache([FromForm] string[] cachedObjectValues, [FromServices] IBlogCache cache)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
@@ -380,6 +381,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpDelete("auditlogs/clear")]
         [FeatureGate(FeatureFlags.EnableAudit)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ClearAuditLogs()
         {
             await _blogAudit.ClearAuditLog();
