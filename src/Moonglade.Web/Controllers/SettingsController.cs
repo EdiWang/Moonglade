@@ -194,7 +194,6 @@ namespace Moonglade.Web.Controllers
             var settings = _blogConfig.FeedSettings;
             settings.AuthorName = model.AuthorName;
             settings.RssCopyright = model.RssCopyright;
-            settings.RssDescription = model.RssDescription;
             settings.RssItemCount = model.RssItemCount;
             settings.RssTitle = model.RssTitle;
             settings.UseFullContent = model.UseFullContent;

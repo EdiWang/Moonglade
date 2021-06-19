@@ -123,9 +123,6 @@
   <data name="Copyright" xml:space="preserve">
     <value>版权信息</value>
   </data>
-  <data name="Description" xml:space="preserve">
-    <value>描述</value>
-  </data>
   <data name="RSS Items" xml:space="preserve">
     <value>RSS 条目显示数量</value>
   </data>

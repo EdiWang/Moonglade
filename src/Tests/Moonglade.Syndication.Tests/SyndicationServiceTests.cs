@@ -62,12 +62,16 @@ namespace Moonglade.Syndication.Tests
                 }
             });
 
+            _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings()
+            {
+                MetaDescription = "Work 996 Sick ICU"
+            });
+
             _mockBlogConfig.Setup(bc => bc.FeedSettings).Returns(new FeedSettings
             {
                 RssTitle = "Fuck 996",
                 AuthorName = "Dead Workers",
                 RssCopyright = "(C) 2021 Gank PDD",
-                RssDescription = "Die in pain",
                 RssItemCount = 20
             });
         }

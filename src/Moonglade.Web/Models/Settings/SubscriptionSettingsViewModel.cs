@@ -13,11 +13,6 @@ namespace Moonglade.Web.Models.Settings
         public string RssCopyright { get; set; }
 
         [Required]
-        [Display(Name = "Description")]
-        [MaxLength(512)]
-        public string RssDescription { get; set; }
-
-        [Required]
         [Display(Name = "Title")]
         [MaxLength(64)]
         public string RssTitle { get; set; }

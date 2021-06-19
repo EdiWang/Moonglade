@@ -48,7 +48,7 @@ namespace Moonglade.Syndication
             {
                 HostUrl = _baseUrl,
                 HeadTitle = _blogConfig.FeedSettings.RssTitle,
-                HeadDescription = _blogConfig.FeedSettings.RssDescription,
+                HeadDescription = _blogConfig.GeneralSettings.MetaDescription,
                 Copyright = _blogConfig.FeedSettings.RssCopyright,
                 Generator = $"Moonglade v{Helper.AppVersion}",
                 TrackBackUrl = _baseUrl

@@ -22,7 +22,6 @@ namespace Moonglade.Web.Pages.Settings
             {
                 AuthorName = settings.AuthorName,
                 RssCopyright = settings.RssCopyright,
-                RssDescription = settings.RssDescription,
                 RssItemCount = settings.RssItemCount,
                 RssTitle = settings.RssTitle,
                 UseFullContent = settings.UseFullContent
