@@ -12,7 +12,7 @@ namespace Moonglade.Auth
 
         public AuthenticationSettings()
         {
-            Provider = AuthenticationProvider.None;
+            Provider = AuthenticationProvider.Local;
         }
     }
 }

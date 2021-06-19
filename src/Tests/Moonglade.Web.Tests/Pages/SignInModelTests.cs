@@ -108,23 +108,6 @@ namespace Moonglade.Web.Tests.Pages
         //}
 
         [Test]
-        public async Task OnGetAsync_None()
-        {
-            _mockOptions.Setup(p => p.Value).Returns(new AuthenticationSettings
-            {
-                Provider = AuthenticationProvider.None
-            });
-
-            var signInModel = CreateSignInModel();
-            var result = await signInModel.OnGetAsync();
-
-            Assert.IsInstanceOf<ContentResult>(result);
-            var statusCode = signInModel.HttpContext.Response.StatusCode;
-
-            Assert.AreEqual(StatusCodes.Status501NotImplemented, statusCode);
-        }
-
-        [Test]
         public async Task OnPostAsync_Exception()
         {
             _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);

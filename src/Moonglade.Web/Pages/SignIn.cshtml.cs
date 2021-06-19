@@ -70,11 +70,9 @@ namespace Moonglade.Web.Pages
                 case AuthenticationProvider.Local:
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     break;
-                case AuthenticationProvider.None:
-                    Response.StatusCode = StatusCodes.Status501NotImplemented;
-                    return Content("No AuthenticationProvider is set, please check system settings.");
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    Response.StatusCode = StatusCodes.Status501NotImplemented;
+                    return Content("Invalid AuthenticationProvider, please check system settings.");
             }
 
             return Page();

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,21 +29,6 @@ namespace Moonglade.Auth.Tests
             {
                 services.AddBlogAuthenticaton(config);
             });
-        }
-
-        [Test]
-        public void AddBlogAuthenticaton_None()
-        {
-            var json = @"{""Authentication"":{""Provider"": ""None""}}";
-            var config = GetConfiguration(json);
-            IServiceCollection services = new ServiceCollection();
-            services.AddBlogAuthenticaton(config);
-
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IGetApiKeyQuery));
-            Assert.IsNotNull(obj1);
-
-            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(ILocalAccountService));
-            Assert.IsNotNull(obj2);
         }
     }
 }

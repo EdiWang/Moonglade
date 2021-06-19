@@ -45,8 +45,6 @@ namespace Moonglade.Auth
                                 options.LogoutPath = "/auth/signout";
                             }).AddApiKeySupport(_ => { });
                     break;
-                case AuthenticationProvider.None:
-                    break;
                 default:
                     var msg = $"Provider {authentication.Provider} is not supported.";
                     throw new NotSupportedException(msg);
