@@ -150,7 +150,6 @@ namespace Moonglade.Web.Controllers
             _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
             _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
             _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
-            _blogConfig.ContentSettings.DefaultLangCode = model.DefaultLangCode;
 
             await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
             await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");

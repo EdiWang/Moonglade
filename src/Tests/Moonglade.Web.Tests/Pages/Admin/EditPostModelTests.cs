@@ -68,16 +68,10 @@ namespace Moonglade.Web.Tests.Pages.Admin
 
         private EditPostModel CreateEditPostModel()
         {
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
-            {
-                DefaultLangCode = "en-US"
-            });
-
             return new(
                 _mockCategoryService.Object,
                 _mockPostService.Object,
-                _mockTZoneResolver.Object,
-                _mockBlogConfig.Object);
+                _mockTZoneResolver.Object);
         }
 
         [Test]

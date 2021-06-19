@@ -28,8 +28,6 @@
 
         public string PostFooterHtmlPitch { get; set; }
 
-        public string DefaultLangCode { get; set; }
-
         public ContentSettings()
         {
             DisharmonyWords = string.Empty;
@@ -37,7 +35,6 @@
             UseFriendlyNotFoundImage = true;
             PostListPageSize = 10;
             HotTagAmount = 10;
-            DefaultLangCode = "en-us";
         }
     }
 

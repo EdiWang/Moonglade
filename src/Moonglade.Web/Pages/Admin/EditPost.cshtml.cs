@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Web.Models;
 
@@ -20,8 +19,7 @@ namespace Moonglade.Web.Pages.Admin
         public EditPostModel(
             ICategoryService catService,
             IPostQueryService postQueryService,
-            ITimeZoneResolver timeZoneResolver,
-            IBlogConfig blogConfig)
+            ITimeZoneResolver timeZoneResolver)
         {
             _catService = catService;
             _postQueryService = postQueryService;
@@ -32,8 +30,7 @@ namespace Moonglade.Web.Pages.Admin
                 Featured = false,
                 EnableComment = true,
                 ExposedToSiteMap = true,
-                FeedIncluded = true,
-                LanguageCode = blogConfig.ContentSettings.DefaultLangCode
+                FeedIncluded = true
             };
         }
 

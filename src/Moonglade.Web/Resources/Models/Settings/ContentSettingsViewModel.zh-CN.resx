@@ -144,9 +144,6 @@
   <data name="Page Size can only range from 1-1024" xml:space="preserve">
     <value>分页数量必须在1-1024之间</value>
   </data>
-  <data name="Please enter a lower case ISO language code (e.g. 'en-us')" xml:space="preserve">
-    <value>请输入小写英文ISO标准语言代码（例如：'zh-cn'）</value>
-  </data>
   <data name="Post footer HTML Pitch" xml:space="preserve">
     <value>文章页脚HTML内容</value>
   </data>

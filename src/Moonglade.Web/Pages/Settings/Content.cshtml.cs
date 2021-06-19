@@ -30,8 +30,7 @@ namespace Moonglade.Web.Pages.Settings
                 ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
                 CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
                 ShowPostFooter = _blogConfig.ContentSettings.ShowPostFooter,
-                PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch,
-                DefaultLangCode = _blogConfig.ContentSettings.DefaultLangCode
+                PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch
             };
         }
     }
