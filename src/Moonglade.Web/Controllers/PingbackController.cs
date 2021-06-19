@@ -38,6 +38,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Process()
         {

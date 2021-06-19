@@ -54,7 +54,6 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> Create(PageEditModel model)
         {
             return CreateOrEdit(model, async request => await _blogPageService.CreateAsync(request));
@@ -63,7 +62,6 @@ namespace Moonglade.Web.Controllers
         [HttpPut("{id:guid}")]
         [ServiceFilter(typeof(ClearSiteMapCache))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> Edit([NotEmpty] Guid id, PageEditModel model)
         {
             return CreateOrEdit(model, async request => await _blogPageService.UpdateAsync(id, request));

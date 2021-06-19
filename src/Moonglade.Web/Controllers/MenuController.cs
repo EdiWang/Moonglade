@@ -26,7 +26,6 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(MenuEditViewModel model)
         {
             var request = new UpdateMenuRequest
@@ -58,7 +57,6 @@ namespace Moonglade.Web.Controllers
         [HttpDelete("{id:guid}")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
             await _menuService.DeleteAsync(id);
@@ -66,7 +64,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("edit/{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MenuEditViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit([NotEmpty] Guid id)
         {
@@ -96,7 +94,6 @@ namespace Moonglade.Web.Controllers
         [HttpPut("edit")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(MenuEditViewModel model)
         {
             var request = new UpdateMenuRequest
