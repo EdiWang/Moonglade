@@ -100,6 +100,8 @@ namespace Moonglade.Web.Controllers
         [ResponseCache(Duration = 3600)]
         [HttpHead(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
         [HttpGet(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult SiteIcon(string filename)
         {
             var iconBytes = MemoryStreamIconGenerator.GetIcon(filename);

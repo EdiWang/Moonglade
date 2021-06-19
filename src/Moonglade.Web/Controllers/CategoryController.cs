@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("list")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
-        [ProducesResponseType(typeof(IEnumerable<Category>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> List()
         {
@@ -47,8 +47,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(EditCategoryRequest model)
         {
             await _catService.CreateAsync(model.DisplayName, model.RouteName, model.Note);
@@ -57,7 +56,6 @@ namespace Moonglade.Web.Controllers
 
         [HttpPut("{id:guid}")]
         [ProducesResponseType(typeof(EditCategoryRequest), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update([NotEmpty] Guid id, EditCategoryRequest model)
         {
             await _catService.UpdateAsync(id, model.DisplayName, model.RouteName, model.Note);
@@ -66,7 +64,6 @@ namespace Moonglade.Web.Controllers
 
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
             await _catService.DeleteAsync(id);
