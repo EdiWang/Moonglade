@@ -42,6 +42,10 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status302Found)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Image(string filename, [FromServices] IMemoryCache cache)
         {
             var invalidChars = Path.GetInvalidFileNameChars();
@@ -74,6 +78,8 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost, IgnoreAntiforgeryToken]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Image(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
         {
             static bool IsValidColorValue(int colorValue)
