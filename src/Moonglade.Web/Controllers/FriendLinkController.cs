@@ -22,7 +22,6 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(FriendLinkEditModel model)
         {
             await _friendLinkService.AddAsync(model.Title, model.LinkUrl);
@@ -41,8 +40,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FriendLinkEditModel),StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([NotEmpty] Guid id, FriendLinkEditModel model)
         {
             await _friendLinkService.UpdateAsync(id, model.Title, model.LinkUrl);
@@ -51,7 +49,6 @@ namespace Moonglade.Web.Controllers
 
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
             await _friendLinkService.DeleteAsync(id);

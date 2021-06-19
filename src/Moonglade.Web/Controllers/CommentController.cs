@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
@@ -46,8 +48,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("list/{postId:guid}")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(IEnumerable<>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List([NotEmpty] Guid postId, [FromServices] ITimeZoneResolver timeZoneResolver)
         {
             var comments = await _commentService.GetApprovedCommentsAsync(postId);
@@ -70,7 +71,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
         {
             if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
@@ -118,8 +119,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPut("{commentId:guid}/approval/toggle")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
         {
             await _commentService.ToggleApprovalAsync(new[] { commentId });
@@ -128,7 +128,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpDelete]
         [ProducesResponseType(typeof(Guid[]), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromBody] Guid[] commentIds)
         {
             if (commentIds.Length == 0)
@@ -142,8 +142,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("{commentId:guid}/reply")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(CommentReply), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Reply([NotEmpty] Guid commentId, [Required][FromBody] string replyContent, [FromServices] LinkGenerator linkGenerator)
         {
