@@ -138,18 +138,17 @@ namespace Moonglade.Web
                     .AddSyndication()
                     .AddNotificationClient()
                     .AddReleaseCheckerClient()
-                    .AddMetaWeblog<MetaWeblogService>();
+                    .AddMetaWeblog<MetaWeblogService>()
+                    .AddBlogCache();
             services.AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFriendLinkService, FriendLinkService>()
                     .AddScoped<IBlogAudit, BlogAudit>()
                     .AddScoped<IFoafWriter, FoafWriter>()
                     .AddScoped<IExportManager, ExportManager>()
                     .AddScoped<ValidateCaptcha>();
-            services.AddBlogCache();
             services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"))
                     .AddBlogConfig(_configuration);
-            services.AddScoped<ITimeZoneResolver>(
-                c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
+            services.AddScoped<ITimeZoneResolver>(c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
             services.AddBlogAuthenticaton(_configuration);
             services.AddComments(_configuration);
             services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"))
@@ -170,11 +169,11 @@ namespace Moonglade.Web
 
             if (_environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1");
-                });
+                app.UseSwagger()
+                   .UseSwaggerUI(c =>
+                   {
+                       c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1");
+                   });
             }
 
             if (!_environment.IsProduction())
@@ -205,13 +204,13 @@ namespace Moonglade.Web
 
             if (blogConfig.AdvancedSettings.EnableMetaWeblog)
             {
-                app.UseMiddleware<RSDMiddleware>();
-                app.UseMetaWeblog("/metaweblog");
+                app.UseMiddleware<RSDMiddleware>()
+                   .UseMetaWeblog("/metaweblog");
             }
 
-            app.UseMiddleware<SiteMapMiddleware>();
-            app.UseMiddleware<PoweredByMiddleware>();
-            app.UseMiddleware<DNTMiddleware>();
+            app.UseMiddleware<SiteMapMiddleware>()
+               .UseMiddleware<PoweredByMiddleware>()
+               .UseMiddleware<DNTMiddleware>();
 
             if (_configuration.GetValue<bool>("PreferAzureAppConfiguration"))
             {
@@ -220,15 +219,15 @@ namespace Moonglade.Web
 
             if (_environment.IsDevelopment())
             {
-                app.UseRouteDebugger();
-                app.UseDeveloperExceptionPage();
+                app.UseRouteDebugger()
+                   .UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseStatusCodePages(ConfigureStatusCodePages.Handler);
-                app.UseExceptionHandler("/error");
-                app.UseHttpsRedirection();
-                app.UseHsts();
+                app.UseStatusCodePages(ConfigureStatusCodePages.Handler)
+                   .UseExceptionHandler("/error");
+                app.UseHttpsRedirection()
+                   .UseHsts();
             }
 
             app.UseRequestLocalization(new RequestLocalizationOptions
