@@ -10,7 +10,6 @@ using Moonglade.Auth;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
-using Moonglade.Utils;
 
 namespace Moonglade.Web.Controllers
 {

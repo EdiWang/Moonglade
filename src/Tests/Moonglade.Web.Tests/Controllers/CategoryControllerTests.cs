@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
-using Moonglade.Data.Entities;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;
