@@ -21,7 +21,7 @@ namespace Moonglade.Web.Pages
 
         public async Task<IActionResult> OnGetAsync(Guid postId)
         {
-            var post = await _postQueryService.GetDraft(postId);
+            var post = await _postQueryService.GetDraftAsync(postId);
             if (post is null) return NotFound();
 
             ViewData["TitlePrefix"] = $"{post.Title}";

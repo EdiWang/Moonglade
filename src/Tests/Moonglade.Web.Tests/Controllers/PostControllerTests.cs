@@ -98,7 +98,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Segment_OK()
         {
             IReadOnlyList<PostSegment> ps = new List<PostSegment>();
-            _mockPostService.Setup(p => p.ListSegment(PostStatus.Published)).Returns(Task.FromResult(ps));
+            _mockPostService.Setup(p => p.ListSegmentAsync(PostStatus.Published)).Returns(Task.FromResult(ps));
 
             var ctl = CreatePostController();
             var result = await ctl.Segment();
@@ -111,7 +111,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
 
-            _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
+            _mockPostService.Setup(p => p.ListSegmentAsync(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
 
             var postManageController = CreatePostController();
             var model = new DataTableRequest

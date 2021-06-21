@@ -32,7 +32,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<PostSegment> data = new List<PostSegment>();
 
-            _mockPostService.Setup(p => p.ListSegment(PostStatus.Draft)).Returns(Task.FromResult(data));
+            _mockPostService.Setup(p => p.ListSegmentAsync(PostStatus.Draft)).Returns(Task.FromResult(data));
 
             var postDraftModel = CreatePostDraftModel();
             await postDraftModel.OnGet();

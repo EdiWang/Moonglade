@@ -22,10 +22,10 @@ namespace Moonglade.Core
         int CountByFeatured();
         Task<Post> GetAsync(Guid id);
         Task<Post> GetAsync(PostSlug slug);
-        Task<Post> GetDraft(Guid postId);
-        Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus status);
-        Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(PostStatus status, int offset, int pageSize, string keyword = null);
-        Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType);
+        Task<Post> GetDraftAsync(Guid postId);
+        Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus status);
+        Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostInsightsType insightsType);
+        Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? catId = null);
         Task<IReadOnlyList<PostDigest>> ListArchive(int year, int? month);
         Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
@@ -189,20 +189,20 @@ namespace Moonglade.Core
             return psm;
         }
 
-        public Task<Post> GetDraft(Guid id)
+        public Task<Post> GetDraftAsync(Guid id)
         {
             var spec = new PostSpec(id);
             var post = _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
             return post;
         }
 
-        public Task<IReadOnlyList<PostSegment>> ListSegment(PostStatus status)
+        public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus status)
         {
             var spec = new PostSpec(status);
             return _postRepo.SelectAsync(spec, _postSegmentSelector);
         }
 
-        public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegment(
+        public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(
             PostStatus status, int offset, int pageSize, string keyword = null)
         {
             if (pageSize < 1)
@@ -243,7 +243,7 @@ namespace Moonglade.Core
             return (posts, totalRows);
         }
 
-        public Task<IReadOnlyList<PostSegment>> ListInsights(PostInsightsType insightsType)
+        public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostInsightsType insightsType)
         {
             var spec = new PostInsightsSpec(insightsType, 10);
             return _postRepo.SelectAsync(spec, _postSegmentSelector);

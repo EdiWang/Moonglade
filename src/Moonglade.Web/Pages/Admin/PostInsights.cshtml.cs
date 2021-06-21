@@ -21,8 +21,8 @@ namespace Moonglade.Web.Pages.Admin
 
         public async Task OnGet()
         {
-            TopReadList = await _postQueryService.ListInsights(PostInsightsType.TopRead);
-            TopCommentedList = await _postQueryService.ListInsights(PostInsightsType.TopCommented);
+            TopReadList = await _postQueryService.ListSegmentAsync(PostInsightsType.TopRead);
+            TopCommentedList = await _postQueryService.ListSegmentAsync(PostInsightsType.TopCommented);
         }
     }
 }

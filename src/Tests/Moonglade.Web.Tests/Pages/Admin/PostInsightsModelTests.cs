@@ -32,7 +32,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<PostSegment> segments = new List<PostSegment>();
 
-            _mockPostService.Setup(p => p.ListInsights(It.IsAny<PostInsightsType>()))
+            _mockPostService.Setup(p => p.ListSegmentAsync(It.IsAny<PostInsightsType>()))
                 .Returns(Task.FromResult(segments));
 
             var postInsightsModel = CreatePostInsightsModel();

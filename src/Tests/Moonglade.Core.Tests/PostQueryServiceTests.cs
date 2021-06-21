@@ -118,7 +118,7 @@ namespace Moonglade.Core.Tests
         public async Task GetDraft_OK()
         {
             var svc = CreateService();
-            var result = await svc.GetDraft(Uid);
+            var result = await svc.GetDraftAsync(Uid);
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectFirstOrDefaultAsync(
@@ -129,7 +129,7 @@ namespace Moonglade.Core.Tests
         public async Task ListSegment_OK()
         {
             var svc = CreateService();
-            var result = await svc.ListSegment(PostStatus.Published);
+            var result = await svc.ListSegmentAsync(PostStatus.Published);
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectAsync(
@@ -144,7 +144,7 @@ namespace Moonglade.Core.Tests
 
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListSegment(PostStatus.Published, offset, pageSize);
+                await svc.ListSegmentAsync(PostStatus.Published, offset, pageSize);
             });
         }
 
@@ -169,7 +169,7 @@ namespace Moonglade.Core.Tests
             _mockPostEntityRepo.Setup(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>())).Returns(996);
 
             var svc = CreateService();
-            var result = await svc.ListSegment(postStatus, 0, 35);
+            var result = await svc.ListSegmentAsync(postStatus, 0, 35);
 
             Assert.IsNotNull(result);
         }
@@ -178,7 +178,7 @@ namespace Moonglade.Core.Tests
         public async Task ListInsights_OK()
         {
             var svc = CreateService();
-            var result = await svc.ListInsights(PostInsightsType.TopRead);
+            var result = await svc.ListSegmentAsync(PostInsightsType.TopRead);
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectAsync(

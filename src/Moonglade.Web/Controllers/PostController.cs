@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Segment()
         {
             // for security, only allow published posts to be listed to third party API calls
-            var list = await _postQueryService.ListSegment(PostStatus.Published);
+            var list = await _postQueryService.ListSegmentAsync(PostStatus.Published);
             return Ok(list);
         }
 
@@ -70,7 +70,7 @@ namespace Moonglade.Web.Controllers
             var take = model.Length;
             var offset = model.Start;
 
-            var (posts, totalRows) = await _postQueryService.ListSegment(PostStatus.Published, offset, take, searchBy);
+            var (posts, totalRows) = await _postQueryService.ListSegmentAsync(PostStatus.Published, offset, take, searchBy);
             var response = new JqDataTableResponse<PostSegment>
             {
                 Draw = model.Draw,

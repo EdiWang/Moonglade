@@ -51,7 +51,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_NotFound()
         {
-            _mockPostQueryService.Setup(p => p.GetDraft(Guid.Empty))
+            _mockPostQueryService.Setup(p => p.GetDraftAsync(Guid.Empty))
                 .Returns(Task.FromResult((Post)null));
             var postPreviewModel = CreatePostPreviewModel();
 
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_Found()
         {
-            _mockPostQueryService.Setup(p => p.GetDraft(Guid.Empty))
+            _mockPostQueryService.Setup(p => p.GetDraftAsync(Guid.Empty))
                 .Returns(Task.FromResult(new Post()));
             var postPreviewModel = CreatePostPreviewModel();
 

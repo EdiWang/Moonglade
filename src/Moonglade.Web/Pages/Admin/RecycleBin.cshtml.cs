@@ -19,7 +19,7 @@ namespace Moonglade.Web.Pages.Admin
 
         public async Task OnGet()
         {
-            Posts = await _postQueryService.ListSegment(PostStatus.Deleted);
+            Posts = await _postQueryService.ListSegmentAsync(PostStatus.Deleted);
         }
     }
 }

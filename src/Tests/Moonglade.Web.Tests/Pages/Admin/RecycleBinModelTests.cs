@@ -33,7 +33,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<PostSegment> segments = new List<PostSegment>();
 
-            _mockPostService.Setup(p => p.ListSegment(It.IsAny<PostStatus>()))
+            _mockPostService.Setup(p => p.ListSegmentAsync(It.IsAny<PostStatus>()))
                 .Returns(Task.FromResult(segments));
 
             var recycleBinModel = CreateRecycleBinModel();
