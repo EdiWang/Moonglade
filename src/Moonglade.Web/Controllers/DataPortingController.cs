@@ -23,7 +23,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("export/{type}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ExportDownload(ExportDataType type, CancellationToken cancellationToken)
         {
             var exportResult = await _expman.ExportData(type, cancellationToken);

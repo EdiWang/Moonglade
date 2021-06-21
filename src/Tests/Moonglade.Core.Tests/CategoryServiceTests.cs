@@ -125,18 +125,6 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
-        public async Task UpdateAsync_NullCat()
-        {
-            _mockCatRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(ValueTask.FromResult((CategoryEntity)null));
-
-            var svc = CreateService();
-            await svc.UpdateAsync(Guid.Empty, null, null);
-
-            _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()), Times.Never);
-        }
-
-        [Test]
         public async Task UpdateAsync_OK()
         {
             _mockCatRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))

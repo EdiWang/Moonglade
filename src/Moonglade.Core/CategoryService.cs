@@ -103,7 +103,6 @@ namespace Moonglade.Core
         public async Task UpdateAsync(Guid id, string displayName, string routeName, string note = null)
         {
             var cat = await _catRepo.GetAsync(id);
-            if (cat is null) return;
 
             cat.RouteName = routeName.Trim();
             cat.DisplayName = displayName.Trim();
