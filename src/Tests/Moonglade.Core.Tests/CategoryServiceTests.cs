@@ -50,7 +50,7 @@ namespace Moonglade.Core.Tests
 
             var svc = CreateService(memBc);
 
-            var result = await svc.GetAll();
+            var result = await svc.GetAllAsync();
 
             _mockCatRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
         }

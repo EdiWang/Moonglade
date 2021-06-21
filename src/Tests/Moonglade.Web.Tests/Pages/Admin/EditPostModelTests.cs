@@ -82,7 +82,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
                 new(){Id = Guid.Empty, DisplayName = FakeData.Title3, Note = "Get into ICU", RouteName = FakeData.Slug2}
             };
 
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
 
             var editPostModel = CreateEditPostModel();
             var result = await editPostModel.OnGetAsync(null);
@@ -109,7 +109,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             IReadOnlyList<Category> cats = new List<Category> { Cat };
 
             _mockPostService.Setup(p => p.GetAsync(Uid)).Returns(Task.FromResult(Post));
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
 
             var editPostModel = CreateEditPostModel();
             var result = await editPostModel.OnGetAsync(Uid);

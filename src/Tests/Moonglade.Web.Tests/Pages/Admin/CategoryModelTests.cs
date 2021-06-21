@@ -35,7 +35,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
                 new (){Id = Guid.Empty, DisplayName = FakeData.Title3, Note = "Fubao", RouteName = FakeData.Slug2 }
             };
 
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
 
             var categoryModel = CreateCategoryModel();
             await categoryModel.OnGet();

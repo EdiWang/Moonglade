@@ -57,7 +57,7 @@ namespace Moonglade.Web.Tests.Controllers
                 }
             };
 
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
                 CanonicalPrefix = FakeData.Url1,

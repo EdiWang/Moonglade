@@ -40,7 +40,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("opml")]
         public async Task<IActionResult> Opml()
         {
-            var cats = await _catService.GetAll();
+            var cats = await _catService.GetAllAsync();
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
             var rootUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix);
 

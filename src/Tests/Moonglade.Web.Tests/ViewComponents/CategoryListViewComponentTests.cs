@@ -38,7 +38,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockCategoryService.Setup(p => p.GetAll()).Throws(new(FakeData.ShortString2));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(false);
@@ -49,7 +49,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_IsMenu()
         {
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(_cats));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(_cats));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(true);
@@ -61,7 +61,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_NotMenu()
         {
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(_cats));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(_cats));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(false);

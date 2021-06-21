@@ -24,7 +24,7 @@ namespace Moonglade.Web.ViewComponents
         {
             try
             {
-                var cats = await _catService.GetAll();
+                var cats = await _catService.GetAllAsync();
                 var items = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
 
                 return View(items);

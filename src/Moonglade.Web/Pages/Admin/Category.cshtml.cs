@@ -22,7 +22,7 @@ namespace Moonglade.Web.Pages.Admin
 
         public async Task OnGet()
         {
-            Categories = await _categoryService.GetAll();
+            Categories = await _categoryService.GetAllAsync();
         }
     }
 }

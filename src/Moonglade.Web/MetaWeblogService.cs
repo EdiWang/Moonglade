@@ -209,7 +209,7 @@ namespace Moonglade.Web
 
             return TryExecuteAsync(async () =>
             {
-                var cats = await _categoryService.GetAll();
+                var cats = await _categoryService.GetAllAsync();
                 var catInfos = cats.Select(p => new CategoryInfo
                 {
                     title = p.DisplayName,
@@ -453,7 +453,7 @@ namespace Moonglade.Web
 
         private async Task<Guid[]> GetCatIds(string[] mPostCategories)
         {
-            var allCats = await _categoryService.GetAll();
+            var allCats = await _categoryService.GetAllAsync();
             var cids = (from postCategory in mPostCategories
                         select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
                         into cat

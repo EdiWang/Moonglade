@@ -69,13 +69,13 @@ namespace Moonglade.FriendLink
             };
 
             await _friendlinkRepo.AddAsync(link);
-            await _audit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+            await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
         }
 
         public async Task DeleteAsync(Guid id)
         {
             await _friendlinkRepo.DeleteAsync(id);
-            await _audit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+            await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
         }
 
         public async Task UpdateAsync(Guid id, string newTitle, string newLinkUrl)
@@ -92,7 +92,7 @@ namespace Moonglade.FriendLink
                 link.LinkUrl = Helper.SterilizeLink(newLinkUrl);
 
                 await _friendlinkRepo.UpdateAsync(link);
-                await _audit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
+                await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedFriendLink, "FriendLink Settings updated.");
             }
         }
     }

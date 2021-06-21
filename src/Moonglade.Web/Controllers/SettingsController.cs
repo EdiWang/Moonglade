@@ -126,7 +126,7 @@ namespace Moonglade.Web.Controllers
 
             AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "General Settings updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "General Settings updated.");
 
             return Ok();
         }
@@ -152,7 +152,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
 
             await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");
 
             return Ok();
         }
@@ -171,7 +171,7 @@ namespace Moonglade.Web.Controllers
             settings.AzureFunctionEndpoint = model.AzureFunctionEndpoint;
 
             await _blogConfig.SaveAsync(settings);
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, "Notification Settings updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, "Notification Settings updated.");
 
             return Ok();
         }
@@ -199,7 +199,7 @@ namespace Moonglade.Web.Controllers
             settings.UseFullContent = model.UseFullContent;
 
             await _blogConfig.SaveAsync(settings);
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, "Subscription Settings updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
             return Ok();
         }
@@ -217,7 +217,7 @@ namespace Moonglade.Web.Controllers
             settings.WatermarkText = model.WatermarkText;
 
             await _blogConfig.SaveAsync(settings);
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, "Watermark Settings updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
             return Ok();
         }
@@ -238,7 +238,7 @@ namespace Moonglade.Web.Controllers
             if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
 
             await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "Site icon updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "Site icon updated.");
 
             return Ok();
         }
@@ -292,7 +292,7 @@ namespace Moonglade.Web.Controllers
             }
 
             await _blogConfig.SaveAsync(settings);
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
             return Ok();
         }
 
@@ -314,7 +314,7 @@ namespace Moonglade.Web.Controllers
             var setupHelper = new SetupRunner(dbConnection);
             setupHelper.ClearData();
 
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "System reset.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "System reset.");
 
             applicationLifetime.StopApplication();
             return Accepted();
@@ -348,7 +348,7 @@ namespace Moonglade.Web.Controllers
             settings.CssCode = model.CssCode;
 
             await _blogConfig.SaveAsync(settings);
-            await _blogAudit.AddAuditEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
             return Ok();
         }
 

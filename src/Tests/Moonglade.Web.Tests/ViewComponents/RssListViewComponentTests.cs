@@ -37,7 +37,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockCategoryService.Setup(p => p.GetAll()).Throws(new(FakeData.ShortString2));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync();
@@ -53,7 +53,7 @@ namespace Moonglade.Web.Tests.ViewComponents
                 new() {DisplayName = "Fubao", Id = Guid.Empty, Note = FakeData.ShortString2, RouteName = FakeData.Slug2}
             };
 
-            _mockCategoryService.Setup(p => p.GetAll()).Returns(Task.FromResult(cats));
+            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync();

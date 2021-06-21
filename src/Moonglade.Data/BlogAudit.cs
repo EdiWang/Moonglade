@@ -13,7 +13,7 @@ namespace Moonglade.Data
 {
     public interface IBlogAudit
     {
-        Task AddAuditEntry(BlogEventType blogEventType, BlogEventId blogEventId, string message);
+        Task AddEntry(BlogEventType blogEventType, BlogEventId blogEventId, string message);
 
         Task<(IReadOnlyList<AuditLogEntity> Entries, int Count)> GetAuditEntries(int skip, int take);
 
@@ -39,7 +39,7 @@ namespace Moonglade.Data
             _auditLogRepo = auditLogRepo;
         }
 
-        public async Task AddAuditEntry(BlogEventType blogEventType, BlogEventId blogEventId, string message)
+        public async Task AddEntry(BlogEventType blogEventType, BlogEventId blogEventId, string message)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace Moonglade.Data
 
             // Make sure who ever doing this can't get away with it
             var (username, ipv4) = GetUsernameAndIp();
-            await AddAuditEntry(BlogEventType.General, BlogEventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
+            await AddEntry(BlogEventType.General, BlogEventId.ClearedAuditLog, $"Audit log was cleared by '{username}' from '{ipv4}'");
         }
 
         private (string Username, string Ipv4) GetUsernameAndIp()

@@ -38,7 +38,7 @@ namespace Moonglade.Web.Pages.Admin
         {
             if (id is null)
             {
-                var cats1 = await _catService.GetAll();
+                var cats1 = await _catService.GetAllAsync();
                 if (cats1.Count > 0)
                 {
                     var cbCatList = cats1.Select(p =>
@@ -89,7 +89,7 @@ namespace Moonglade.Web.Pages.Admin
             tagStr = tagStr.TrimEnd(',');
             ViewModel.Tags = tagStr;
 
-            var cats2 = await _catService.GetAll();
+            var cats2 = await _catService.GetAllAsync();
             if (cats2.Count > 0)
             {
                 var cbCatList = cats2.Select(p =>

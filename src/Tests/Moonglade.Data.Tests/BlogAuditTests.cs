@@ -50,7 +50,7 @@ namespace Moonglade.Data.Tests
                 .Returns(Task.FromResult(false));
 
             var blogAudit = CreateBlogAudit();
-            await blogAudit.AddAuditEntry(
+            await blogAudit.AddEntry(
                 BlogEventType.General,
                 BlogEventId.GeneralOperation,
                 "Work 996 and get into ICU");
@@ -70,7 +70,7 @@ namespace Moonglade.Data.Tests
             string message = "Work 996 sick ICU";
 
             // Act
-            await blogAudit.AddAuditEntry(
+            await blogAudit.AddEntry(
                 blogEventType,
                 auditEventId,
                 message);
@@ -92,7 +92,7 @@ namespace Moonglade.Data.Tests
 
             Assert.DoesNotThrowAsync(async () =>
             {
-                await blogAudit.AddAuditEntry(
+                await blogAudit.AddEntry(
                     blogEventType,
                     auditEventId,
                     message);

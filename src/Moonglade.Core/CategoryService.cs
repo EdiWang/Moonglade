@@ -12,7 +12,7 @@ namespace Moonglade.Core
 {
     public interface ICategoryService
     {
-        Task<IReadOnlyList<Category>> GetAll();
+        Task<IReadOnlyList<Category>> GetAllAsync();
         Task<Category> GetAsync(string routeName);
         Task<Category> GetAsync(Guid id);
         Task CreateAsync(string displayName, string routeName, string note = null);
@@ -47,7 +47,7 @@ namespace Moonglade.Core
             _cache = cache;
         }
 
-        public Task<IReadOnlyList<Category>> GetAll()
+        public Task<IReadOnlyList<Category>> GetAllAsync()
         {
             return _cache.GetOrCreateAsync(CacheDivision.General, "allcats", async entry =>
             {
@@ -83,7 +83,7 @@ namespace Moonglade.Core
             await _catRepo.AddAsync(category);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CategoryCreated, $"Category '{category.RouteName}' created");
+            await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryCreated, $"Category '{category.RouteName}' created");
         }
 
         public async Task DeleteAsync(Guid id)
@@ -97,7 +97,7 @@ namespace Moonglade.Core
             await _catRepo.DeleteAsync(id);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Category '{id}' deleted.");
+            await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Category '{id}' deleted.");
         }
 
         public async Task UpdateAsync(Guid id, string displayName, string routeName, string note = null)
@@ -112,7 +112,7 @@ namespace Moonglade.Core
             await _catRepo.UpdateAsync(cat);
             _cache.Remove(CacheDivision.General, "allcats");
 
-            await _audit.AddAuditEntry(BlogEventType.Content, BlogEventId.CategoryUpdated, $"Category '{id}' updated.");
+            await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryUpdated, $"Category '{id}' updated.");
         }
     }
 }

@@ -146,7 +146,7 @@ namespace Moonglade.Web.Tests.Pages
             var modelState = signInModel.ViewData.ModelState;
             Assert.IsFalse(modelState.IsValid);
 
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, It.IsAny<string>()));
         }
 
 
@@ -167,7 +167,7 @@ namespace Moonglade.Web.Tests.Pages
             var modelState = signInModel.ViewData.ModelState;
             Assert.IsFalse(modelState.IsValid);
 
-            _mockBlogAudit.Verify(p => p.AddAuditEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, It.IsAny<string>()));
         }
 
         [Test]
@@ -205,7 +205,7 @@ namespace Moonglade.Web.Tests.Pages
         //        Assert.IsInstanceOf<RedirectToPageResult>(result);
         //        var modelState = signInModel.ViewData.ModelState;
         //        Assert.IsTrue(modelState.IsValid);
-        //        _mockBlogAudit.Verify(p => p.AddAuditEntry(BlogEventType.Authentication, BlogEventId.LoginSuccessLocal, It.IsAny<string>()));
+        //        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginSuccessLocal, It.IsAny<string>()));
         //        _mockLocalAccountService.Verify(p => p.LogSuccessLoginAsync(FakeData.Uid1, It.IsAny<string>()));
         //    }
     }
