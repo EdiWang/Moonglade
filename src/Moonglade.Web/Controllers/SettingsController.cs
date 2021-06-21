@@ -99,7 +99,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("general")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITimeZoneResolver timeZoneResolver)
         {
             var model = wrapperModel.ViewModel;
@@ -128,11 +128,11 @@ namespace Moonglade.Web.Controllers
 
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "General Settings updated.");
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("content")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Content([FromForm] MagicWrapper<ContentSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
@@ -154,11 +154,11 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("notification")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Notification([FromForm] MagicWrapper<NotificationSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
@@ -173,7 +173,7 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, "Notification Settings updated.");
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("send-test-email")]
@@ -186,7 +186,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("subscription")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Subscription([FromForm] MagicWrapper<SubscriptionSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
@@ -201,11 +201,11 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("watermark")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Watermark([FromForm] MagicWrapper<WatermarkSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
@@ -219,11 +219,11 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, "Watermark Settings updated.");
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("set-siteicon")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> SetSiteIcon([FromForm] string base64Img)
         {
@@ -240,11 +240,11 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "Site icon updated.");
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("advanced")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Advanced([FromForm] MagicWrapper<AdvancedSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
@@ -293,7 +293,7 @@ namespace Moonglade.Web.Controllers
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("shutdown")]
@@ -321,7 +321,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("custom-css")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
         {
@@ -349,7 +349,7 @@ namespace Moonglade.Web.Controllers
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("clear-data-cache")]
@@ -381,11 +381,11 @@ namespace Moonglade.Web.Controllers
 
         [HttpDelete("auditlogs/clear")]
         [FeatureGate(FeatureFlags.EnableAudit)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> ClearAuditLogs()
         {
             await _blogAudit.ClearAuditLog();
-            return Ok();
+            return NoContent();
         }
     }
 }

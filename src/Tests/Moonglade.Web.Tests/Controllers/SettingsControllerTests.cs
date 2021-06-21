@@ -135,7 +135,7 @@ namespace Moonglade.Web.Tests.Controllers
             var settingsController = CreateSettingsController();
             var result = await settingsController.General(new(model), tZoneResolverMock.Object);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, It.IsAny<string>()));
         }
@@ -149,7 +149,7 @@ namespace Moonglade.Web.Tests.Controllers
             var settingsController = CreateSettingsController();
             var result = await settingsController.Content(new(model));
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, It.IsAny<string>()));
         }
@@ -163,7 +163,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await settingsController.Notification(new(model));
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, It.IsAny<string>()));
         }
@@ -187,7 +187,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await settingsController.Subscription(new(model));
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, It.IsAny<string>()));
         }
@@ -201,7 +201,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await settingsController.Watermark(new(model));
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<WatermarkSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, It.IsAny<string>()));
         }
@@ -231,7 +231,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await settingsController.Advanced(new(model));
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
@@ -265,7 +265,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await settingsController.Advanced(new(model));
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
@@ -355,7 +355,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await settingsController.CustomStyleSheet(new(model));
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
         }
@@ -377,7 +377,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockBlogAudit.Verify();
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
 
         //[Test]
