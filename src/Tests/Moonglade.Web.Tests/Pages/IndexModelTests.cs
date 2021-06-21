@@ -46,7 +46,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGet_StateUnderTest_ExpectedBehavior()
         {
-            _mockPostQueryService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
+            _mockPostQueryService.Setup(p => p.ListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             _mockPostQueryService.Setup(p => p.CountPublic()).Returns(FakeData.Int2);

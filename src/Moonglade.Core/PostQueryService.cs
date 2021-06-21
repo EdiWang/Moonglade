@@ -26,10 +26,10 @@ namespace Moonglade.Core
         Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus status);
         Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostInsightsType insightsType);
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
-        Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? catId = null);
-        Task<IReadOnlyList<PostDigest>> ListArchive(int year, int? month);
-        Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex);
-        Task<IReadOnlyList<PostDigest>> ListFeatured(int pageSize, int pageIndex);
+        Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null);
+        Task<IReadOnlyList<PostDigest>> ListArchiveAsync(int year, int? month);
+        Task<IReadOnlyList<PostDigest>> ListByTagAsync(int tagId, int pageSize, int pageIndex);
+        Task<IReadOnlyList<PostDigest>> ListFeaturedAsync(int pageSize, int pageIndex);
         Task<IReadOnlyList<Archive>> GetArchiveAsync();
     }
 
@@ -249,7 +249,7 @@ namespace Moonglade.Core
             return _postRepo.SelectAsync(spec, _postSegmentSelector);
         }
 
-        public Task<IReadOnlyList<PostDigest>> List(int pageSize, int pageIndex, Guid? catId = null)
+        public Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null)
         {
             ValidatePagingParameters(pageSize, pageIndex);
 
@@ -257,7 +257,7 @@ namespace Moonglade.Core
             return _postRepo.SelectAsync(spec, SharedSelectors.PostDigestSelector);
         }
 
-        public Task<IReadOnlyList<PostDigest>> ListByTag(int tagId, int pageSize, int pageIndex)
+        public Task<IReadOnlyList<PostDigest>> ListByTagAsync(int tagId, int pageSize, int pageIndex)
         {
             if (tagId <= 0) throw new ArgumentOutOfRangeException(nameof(tagId));
             ValidatePagingParameters(pageSize, pageIndex);
@@ -266,7 +266,7 @@ namespace Moonglade.Core
             return posts;
         }
 
-        public Task<IReadOnlyList<PostDigest>> ListFeatured(int pageSize, int pageIndex)
+        public Task<IReadOnlyList<PostDigest>> ListFeaturedAsync(int pageSize, int pageIndex)
         {
             ValidatePagingParameters(pageSize, pageIndex);
 
@@ -289,7 +289,7 @@ namespace Moonglade.Core
             return list;
         }
 
-        public Task<IReadOnlyList<PostDigest>> ListArchive(int year, int? month)
+        public Task<IReadOnlyList<PostDigest>> ListArchiveAsync(int year, int? month)
         {
             if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
             {

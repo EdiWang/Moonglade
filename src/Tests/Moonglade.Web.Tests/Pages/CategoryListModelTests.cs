@@ -109,7 +109,7 @@ namespace Moonglade.Web.Tests.Pages
                     p.GetOrCreate(CacheDivision.PostCountCategory, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
                 .Returns(35);
 
-            _mockPostQueryService.Setup(p => p.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
+            _mockPostQueryService.Setup(p => p.ListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             var categoryListModel = CreateCategoryListModel();

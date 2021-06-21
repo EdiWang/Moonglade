@@ -25,7 +25,7 @@ namespace Moonglade.Web.Pages
         public async Task OnGet(int p = 1)
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.ListFeatured(pagesize, p);
+            var posts = await _postQueryService.ListFeaturedAsync(pagesize, p);
             var count = _cache.GetOrCreate(CacheDivision.PostCountFeatured, "featured", _ => _postQueryService.CountByFeatured());
 
             var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);

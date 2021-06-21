@@ -189,7 +189,7 @@ namespace Moonglade.Core.Tests
         public async Task List_OK()
         {
             var svc = CreateService();
-            await svc.List(35, 7, Uid);
+            await svc.ListAsync(35, 7, Uid);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostPagingSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()));
         }
@@ -201,7 +201,7 @@ namespace Moonglade.Core.Tests
 
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.List(-1, 7, Uid);
+                await svc.ListAsync(-1, 7, Uid);
             });
         }
 
@@ -212,7 +212,7 @@ namespace Moonglade.Core.Tests
 
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.List(10, -1, Uid);
+                await svc.ListAsync(10, -1, Uid);
             });
         }
 
@@ -222,7 +222,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListByTag(-35, 996, 251);
+                await svc.ListByTagAsync(-35, 996, 251);
             });
         }
 
@@ -233,7 +233,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListArchive(year, 1);
+                await svc.ListArchiveAsync(year, 1);
             });
         }
 
@@ -244,7 +244,7 @@ namespace Moonglade.Core.Tests
             var svc = CreateService();
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListArchive(996, month);
+                await svc.ListArchiveAsync(996, month);
             });
         }
 
@@ -252,7 +252,7 @@ namespace Moonglade.Core.Tests
         public async Task ListArchive_OK()
         {
             var svc = CreateService();
-            await svc.ListArchive(996, 9);
+            await svc.ListArchiveAsync(996, 9);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()
             ));
@@ -264,7 +264,7 @@ namespace Moonglade.Core.Tests
         public async Task ListByTag_OK()
         {
             var svc = CreateService();
-            var result = await svc.ListByTag(35, 996, 251);
+            var result = await svc.ListByTagAsync(35, 996, 251);
 
             _mockPostTagEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>()));
         }
@@ -273,7 +273,7 @@ namespace Moonglade.Core.Tests
         public async Task ListFeatured_OK()
         {
             var svc = CreateService();
-            var result = await svc.ListFeatured(7, 404);
+            var result = await svc.ListFeaturedAsync(7, 404);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<FeaturedPostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()));
         }

@@ -75,7 +75,7 @@ namespace Moonglade.Web.Tests.Pages
                 NormalizedName = "fu-bao"
             });
 
-            _mockPostQueryService.Setup(p => p.ListByTag(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+            _mockPostQueryService.Setup(p => p.ListByTagAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             _mockBlogCache.Setup(p =>

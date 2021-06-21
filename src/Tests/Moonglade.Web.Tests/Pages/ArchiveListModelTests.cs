@@ -65,7 +65,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_Year()
         {
-            _mockPostQueryService.Setup(p => p.ListArchive(It.IsAny<int>(), null))
+            _mockPostQueryService.Setup(p => p.ListArchiveAsync(It.IsAny<int>(), null))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             var model = CreateArchiveListModel();
@@ -78,7 +78,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_Year_Month()
         {
-            _mockPostQueryService.Setup(p => p.ListArchive(It.IsAny<int>(), It.IsAny<int?>())).Returns(Task.FromResult(FakeData.FakePosts));
+            _mockPostQueryService.Setup(p => p.ListArchiveAsync(It.IsAny<int>(), It.IsAny<int?>())).Returns(Task.FromResult(FakeData.FakePosts));
 
             var model = CreateArchiveListModel();
             var result = await model.OnGetAsync(2021, 1);

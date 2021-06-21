@@ -27,13 +27,13 @@ namespace Moonglade.Web.Pages
             {
                 // {year}/{month}
                 ViewData["ArchiveInfo"] = $"{year}.{month}";
-                model = await _postQueryService.ListArchive(year, month);
+                model = await _postQueryService.ListArchiveAsync(year, month);
             }
             else
             {
                 // {year}
                 ViewData["ArchiveInfo"] = $"{year}";
-                model = await _postQueryService.ListArchive(year, null);
+                model = await _postQueryService.ListArchiveAsync(year, null);
             }
 
             Posts = model;

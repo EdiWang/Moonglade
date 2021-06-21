@@ -26,7 +26,7 @@ namespace Moonglade.Web.Pages
         public async Task OnGet(int p = 1)
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.List(pagesize, p);
+            var posts = await _postQueryService.ListAsync(pagesize, p);
             var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postQueryService.CountPublic());
 
             var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);
