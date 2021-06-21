@@ -65,23 +65,13 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf<OkResult>(result);
         }
 
-        [TestCase(-1)]
-        [TestCase(0)]
-        public async Task Delete_InvalidId(int tagId)
-        {
-            var ctl = CreateTagsController();
-            var result = await ctl.Delete(tagId);
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
         [Test]
         public async Task Delete_ValidId()
         {
             var ctl = CreateTagsController();
             var result = await ctl.Delete(FakeData.Int2);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
 
         [Test]
@@ -90,7 +80,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateTagsController();
             var result = await ctl.Update(FakeData.Int2, FakeData.ShortString1);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
 
 

@@ -86,7 +86,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var categoryController = CreateCategoryController();
             var result = await categoryController.Delete(Guid.NewGuid());
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
 
         [Test]

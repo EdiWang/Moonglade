@@ -48,11 +48,11 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
             await _friendLinkService.DeleteAsync(id);
-            return Ok();
+            return NoContent();
         }
     }
 }
