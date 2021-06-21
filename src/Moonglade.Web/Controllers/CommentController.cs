@@ -48,7 +48,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("list/{postId:guid}")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
-        [ProducesResponseType(typeof(IEnumerable<>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> List([NotEmpty] Guid postId, [FromServices] ITimeZoneResolver timeZoneResolver)
         {
             var comments = await _commentService.GetApprovedCommentsAsync(postId);
