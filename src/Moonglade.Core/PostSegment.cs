@@ -2,7 +2,7 @@
 
 namespace Moonglade.Core
 {
-    public class PostSegment
+    public struct PostSegment
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

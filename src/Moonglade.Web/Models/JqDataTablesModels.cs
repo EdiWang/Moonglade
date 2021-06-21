@@ -35,7 +35,7 @@ namespace Moonglade.Web.Models
         public string Dir { get; set; }
     }
 
-    public class JqDataTableResponse<T> where T : class
+    public class JqDataTableResponse<T>
     {
         public int Draw { get; set; }
         public int RecordsTotal { get; set; }
