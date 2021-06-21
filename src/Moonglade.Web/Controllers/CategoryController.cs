@@ -54,15 +54,10 @@ namespace Moonglade.Web.Controllers
             return Created(string.Empty, model);
         }
 
-
         [HttpPut("{id:guid}")]
         [ProducesResponseType(typeof(EditCategoryRequest), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update([NotEmpty] Guid id, EditCategoryRequest model)
         {
-            var cat = await _catService.GetAsync(id);
-            if (cat is null) return NotFound();
-
             await _catService.UpdateAsync(id, model.DisplayName, model.RouteName, model.Note);
             return Ok(model);
         }

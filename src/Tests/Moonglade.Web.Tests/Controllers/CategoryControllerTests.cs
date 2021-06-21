@@ -69,9 +69,6 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Update_ValidModel()
         {
-            _mockCategoryService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(new Category()));
-
             var categoryController = CreateCategoryController();
             var model = new EditCategoryRequest
             {
@@ -82,24 +79,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             var result = await categoryController.Update(FakeData.Uid1, model);
             Assert.IsInstanceOf<OkObjectResult>(result);
-        }
-
-        [Test]
-        public async Task Update_NotFound()
-        {
-            _mockCategoryService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult((Category)null));
-
-            var categoryController = CreateCategoryController();
-            var model = new EditCategoryRequest
-            {
-                DisplayName = FakeData.ShortString2,
-                RouteName = FakeData.ShortString2,
-                Note = FakeData.ShortString1
-            };
-
-            var result = await categoryController.Update(FakeData.Uid1, model);
-            Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
