@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +60,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("rss/{routeName?}")]
-        public async Task<IActionResult> Rss(string routeName = null)
+        public async Task<IActionResult> Rss([MaxLength(64)] string routeName = null)
         {
             bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
             var route = hasRoute ? routeName.ToLower().Trim() : null;
