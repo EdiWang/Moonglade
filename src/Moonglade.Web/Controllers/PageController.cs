@@ -52,7 +52,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost]
-        [ServiceFilter(typeof(ClearSiteMapCache))]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public Task<IActionResult> Create(PageEditModel model)
         {
@@ -60,7 +60,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [ServiceFilter(typeof(ClearSiteMapCache))]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public Task<IActionResult> Edit([NotEmpty] Guid id, PageEditModel model)
         {

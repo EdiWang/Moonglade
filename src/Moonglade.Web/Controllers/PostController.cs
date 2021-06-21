@@ -82,9 +82,9 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPost("createoredit")]
-        [ServiceFilter(typeof(ClearSiteMapCache))]
-        [ServiceFilter(typeof(ClearSubscriptionCache))]
-        [TypeFilter(typeof(ClearPagingCountCache))]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> CreateOrEdit(
@@ -176,9 +176,9 @@ namespace Moonglade.Web.Controllers
             }
         }
 
-        [ServiceFilter(typeof(ClearSubscriptionCache))]
-        [ServiceFilter(typeof(ClearSiteMapCache))]
-        [TypeFilter(typeof(ClearPagingCountCache))]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
         [HttpPost("{postId:guid}/restore")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Restore([NotEmpty] Guid postId)
@@ -187,9 +187,9 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [ServiceFilter(typeof(ClearSubscriptionCache))]
-        [ServiceFilter(typeof(ClearSiteMapCache))]
-        [TypeFilter(typeof(ClearPagingCountCache))]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
         [HttpDelete("{postId:guid}/recycle")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([NotEmpty] Guid postId)
@@ -198,8 +198,8 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [ServiceFilter(typeof(ClearSubscriptionCache))]
-        [ServiceFilter(typeof(ClearSiteMapCache))]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [HttpDelete("{postId:guid}/destroy")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
@@ -208,8 +208,8 @@ namespace Moonglade.Web.Controllers
             return Ok();
         }
 
-        [ServiceFilter(typeof(ClearSubscriptionCache))]
-        [ServiceFilter(typeof(ClearSiteMapCache))]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [HttpDelete("empty-recycle-bin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EmptyRecycleBin()

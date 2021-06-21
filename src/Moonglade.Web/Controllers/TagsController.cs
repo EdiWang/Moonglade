@@ -57,7 +57,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [TypeFilter(typeof(ClearPagingCountCache))]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
@@ -67,8 +67,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [TypeFilter(typeof(ClearPagingCountCache))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
+        [ProducesResponseType(StatusCodes.Status200OK), ]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {

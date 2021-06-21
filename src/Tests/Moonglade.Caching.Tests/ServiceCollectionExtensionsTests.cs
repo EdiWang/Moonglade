@@ -16,12 +16,6 @@ namespace Moonglade.Caching.Tests
 
             var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogCache));
             Assert.IsNotNull(obj1);
-
-            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(ClearSubscriptionCache));
-            Assert.IsNotNull(obj2);
-
-            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(ClearSiteMapCache));
-            Assert.IsNotNull(obj3);
         }
     }
 }

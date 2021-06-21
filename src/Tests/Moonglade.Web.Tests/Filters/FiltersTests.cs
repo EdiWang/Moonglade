@@ -30,7 +30,7 @@ namespace Moonglade.Web.Tests.Filters
             blogCache.GetOrCreate(CacheDivision.PostCountCategory, "pdd", _ => 007);
             blogCache.GetOrCreate(CacheDivision.PostCountTag, "hw", _ => FakeData.Int1);
 
-            var att = new ClearPagingCountCache(blogCache);
+            var att = new ClearBlogCache(BlogCacheType.PagingCount, blogCache);
             att.OnActionExecuted(ctx);
 
             var postcount = mockedCache.Get<int>("General-postcount");
@@ -76,7 +76,7 @@ namespace Moonglade.Web.Tests.Filters
             blogCache.GetOrCreate(CacheDivision.General, "sitemap",
                 _ => "The 996 working hour system (Chinese: 996工作制) is a work schedule commonly practiced by some companies in the People's Republic of China. It derives its name from its requirement that employees work from 9:00 am to 9:00 pm, 6 days per week; i.e. 72 hours per week. A number of Chinese internet companies have adopted this system as their official work schedule. Critics argue that the 996 working hour system is a flagrant violation of Chinese law.");
 
-            var att = new ClearSiteMapCache(blogCache);
+            var att = new ClearBlogCache(BlogCacheType.SiteMap ,blogCache);
             att.OnActionExecuted(ctx);
 
             var work996 = mockedCache.Get<string>("General-sitemap");
@@ -94,7 +94,7 @@ namespace Moonglade.Web.Tests.Filters
             blogCache.GetOrCreate(CacheDivision.General, "rss", _ => "The culture of overtime work has a long history in Chinese IT companies, where the focus is typically on speed and cost reduction. Companies employ a range of measures, such as reimbursing taxi fares for employees who remain working at the office late into the night, to encourage overtime work.");
             blogCache.GetOrCreate(CacheDivision.General, "atom", _ => "On 26 March 2019, the 996.ICU repository and website were created. The repository states that the name \"996.icu\" refers to how developers who work under the 996 system (9AM–9PM, 6 days per week) would risk poor health and a possible stay in an intensive care unit. The movement's slogan is \"developers' lives matter\".");
 
-            var att = new ClearSubscriptionCache(blogCache);
+            var att = new ClearBlogCache(BlogCacheType.Subscription, blogCache);
             att.OnActionExecuted(ctx);
 
             var work996 = mockedCache.Get<string>("General-rss");
