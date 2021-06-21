@@ -51,7 +51,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await ctl.Post(new() { PostId = Guid.NewGuid(), IsLike = false });
-            Assert.IsInstanceOf(typeof(OkResult), result);
+            Assert.IsInstanceOf(typeof(NoContentResult), result);
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await ctl.Post(new() { PostId = Guid.NewGuid(), IsLike = true });
-            Assert.IsInstanceOf(typeof(OkResult), result);
+            Assert.IsInstanceOf(typeof(NoContentResult), result);
         }
     }
 }

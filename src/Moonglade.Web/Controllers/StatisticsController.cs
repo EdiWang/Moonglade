@@ -33,10 +33,10 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Post(StatisticsRequest request)
         {
-            if (DNT) return Ok();
+            if (DNT) return NoContent();
 
             await _statistics.UpdateStatisticAsync(request.PostId, request.IsLike);
-            return Ok();
+            return NoContent();
         }
     }
 
