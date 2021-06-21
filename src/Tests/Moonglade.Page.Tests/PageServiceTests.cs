@@ -103,7 +103,7 @@ namespace Moonglade.Page.Tests
         public async Task ListSegment_OK()
         {
             var svc = CreatePageService();
-            await svc.ListSegment();
+            await svc.ListSegmentAsync();
 
             _mockPageRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<PageEntity, PageSegment>>>()));
         }

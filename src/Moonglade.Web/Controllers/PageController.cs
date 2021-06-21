@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<PageSegment>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Segment()
         {
-            var pageSegments = await _blogPageService.ListSegment();
+            var pageSegments = await _blogPageService.ListSegmentAsync();
             if (pageSegments is null) return Ok(Array.Empty<PageSegment>());
 
             // for security, only allow published pages to be listed to third party API calls

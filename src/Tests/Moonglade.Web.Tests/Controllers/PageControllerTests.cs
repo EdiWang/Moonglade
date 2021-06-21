@@ -78,7 +78,7 @@ namespace Moonglade.Web.Tests.Controllers
                     Title = FakeData.Title3
                 }
             };
-            _mockPageService.Setup(p => p.ListSegment()).Returns(Task.FromResult(ps));
+            _mockPageService.Setup(p => p.ListSegmentAsync()).Returns(Task.FromResult(ps));
 
             var ctl = CreatePageController();
             var result = await ctl.Segment();
@@ -89,7 +89,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Segment_Null()
         {
-            _mockPageService.Setup(p => p.ListSegment()).Returns(Task.FromResult((IReadOnlyList<PageSegment>)null));
+            _mockPageService.Setup(p => p.ListSegmentAsync()).Returns(Task.FromResult((IReadOnlyList<PageSegment>)null));
 
             var ctl = CreatePageController();
             var result = await ctl.Segment();

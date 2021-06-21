@@ -18,7 +18,7 @@ namespace Moonglade.Web.Pages.Admin
 
         public async Task OnGet()
         {
-            PageSegments = await _blogPageService.ListSegment();
+            PageSegments = await _blogPageService.ListSegmentAsync();
         }
     }
 }

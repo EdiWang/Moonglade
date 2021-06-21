@@ -41,7 +41,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
                     Title = "Fuck Jack Ma's Fu Bao"
                 }
             };
-            _mockPageService.Setup(p => p.ListSegment()).Returns(Task.FromResult(fakePageSegments));
+            _mockPageService.Setup(p => p.ListSegmentAsync()).Returns(Task.FromResult(fakePageSegments));
 
             var pageModel = CreatePageModel();
             await pageModel.OnGet();
