@@ -52,7 +52,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpGet("segment/published")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
+        [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
         [ProducesResponseType(typeof(IReadOnlyList<PostSegment>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Segment()
         {

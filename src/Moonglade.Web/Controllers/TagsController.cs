@@ -27,7 +27,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpGet("list")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
+        [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
         [ProducesResponseType(typeof(IReadOnlyList<Tag>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
         {

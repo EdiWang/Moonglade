@@ -46,7 +46,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpGet("list/{postId:guid}")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
+        [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> List([NotEmpty] Guid postId, [FromServices] ITimeZoneResolver timeZoneResolver)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpGet("list")]
         [FeatureGate(FeatureFlags.EnableWebApi)]
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
+        [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
         [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
         {
