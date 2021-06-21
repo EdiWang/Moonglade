@@ -8,6 +8,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Data;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers
@@ -58,7 +59,9 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(EditCategoryRequest), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([NotEmpty] Guid id, EditCategoryRequest model)
         {
-            await _catService.UpdateAsync(id, model.DisplayName, model.RouteName, model.Note);
+            var oc = await _catService.UpdateAsync(id, model.DisplayName, model.RouteName, model.Note);
+            if (oc == OperationCode.ObjectNotFound) return NotFound();
+
             return Ok(model);
         }
 
