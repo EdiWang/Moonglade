@@ -293,7 +293,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var postManageController = CreatePostController();
             var result = await postManageController.Restore(FakeData.Uid1);
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
 
         [Test]
@@ -301,7 +301,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var postManageController = CreatePostController();
             var result = await postManageController.Delete(FakeData.Uid1);
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
         }
 
@@ -310,7 +310,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var postManageController = CreatePostController();
             var result = await postManageController.DeleteFromRecycleBin(FakeData.Uid1);
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), false));
         }
 
@@ -320,7 +320,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostController();
             var result = await postManageController.EmptyRecycleBin();
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
     }
 }

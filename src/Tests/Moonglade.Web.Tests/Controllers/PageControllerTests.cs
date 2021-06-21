@@ -60,7 +60,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreatePageController();
             var result = await ctl.Delete(Guid.Empty);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogCache.Verify(p => p.Remove(CacheDivision.Page, It.IsAny<string>()));
         }
 

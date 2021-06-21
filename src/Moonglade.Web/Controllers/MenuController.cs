@@ -56,11 +56,11 @@ namespace Moonglade.Web.Controllers
 
         [HttpDelete("{id:guid}")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
             await _menuService.DeleteAsync(id);
-            return Ok();
+            return NoContent();
         }
 
         [HttpGet("edit/{id:guid}")]
@@ -93,7 +93,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPut("edit")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Edit(MenuEditViewModel model)
         {
             var request = new UpdateMenuRequest
@@ -119,7 +119,7 @@ namespace Moonglade.Web.Controllers
             }
 
             await _menuService.UpdateAsync(model.Id, request);
-            return Ok();
+            return NoContent();
         }
     }
 }

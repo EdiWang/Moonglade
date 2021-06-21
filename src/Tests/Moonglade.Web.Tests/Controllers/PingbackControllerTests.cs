@@ -86,7 +86,7 @@ namespace Moonglade.Web.Tests.Controllers
             var pingbackController = CreatePingbackController();
 
             var result = await pingbackController.Delete(Guid.Empty, mockBlogAudit.Object);
-            Assert.IsInstanceOf(typeof(OkResult), result);
+            Assert.IsInstanceOf(typeof(NoContentResult), result);
         }
     }
 }

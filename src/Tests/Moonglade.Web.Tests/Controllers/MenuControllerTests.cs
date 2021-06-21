@@ -62,7 +62,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateMenuController();
             var result = await ctl.Delete(_noneEmptyId);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockMenuService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
         }
 
@@ -111,7 +111,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateMenuController();
             var result = await ctl.Edit(_menuEditViewModel);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockMenuService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdateMenuRequest>()));
         }
     }

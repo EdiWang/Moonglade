@@ -40,9 +40,8 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
             var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
@@ -63,11 +62,11 @@ namespace Moonglade.Web.Controllers
             }
 
             await _accountService.DeleteAsync(id);
-            return Ok();
+            return NoContent();
         }
 
         [HttpPut("{id:guid}/password")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> ResetPassword([NotEmpty] Guid id, [FromBody][Required] string newPassword)
         {
@@ -77,7 +76,7 @@ namespace Moonglade.Web.Controllers
             }
 
             await _accountService.UpdatePasswordAsync(id, newPassword);
-            return Ok();
+            return NoContent();
         }
     }
 }

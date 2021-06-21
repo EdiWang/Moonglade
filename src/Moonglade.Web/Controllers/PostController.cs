@@ -180,42 +180,42 @@ namespace Moonglade.Web.Controllers
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
         [HttpPost("{postId:guid}/restore")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Restore([NotEmpty] Guid postId)
         {
             await _postManageService.RestoreAsync(postId);
-            return Ok();
+            return NoContent();
         }
 
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
         [HttpDelete("{postId:guid}/recycle")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid postId)
         {
             await _postManageService.DeleteAsync(postId, true);
-            return Ok();
+            return NoContent();
         }
 
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [HttpDelete("{postId:guid}/destroy")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
         {
             await _postManageService.DeleteAsync(postId);
-            return Ok();
+            return NoContent();
         }
 
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [HttpDelete("empty-recycle-bin")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> EmptyRecycleBin()
         {
             await _postManageService.PurgeRecycledAsync();
-            return Ok();
+            return NoContent();
         }
 
         [IgnoreAntiforgeryToken]

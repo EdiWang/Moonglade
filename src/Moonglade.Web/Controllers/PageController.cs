@@ -100,7 +100,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
@@ -110,7 +110,7 @@ namespace Moonglade.Web.Controllers
             await _blogPageService.DeleteAsync(id);
 
             _cache.Remove(CacheDivision.Page, page.Slug);
-            return Ok();
+            return NoContent();
         }
     }
 }
