@@ -13,8 +13,8 @@ namespace Moonglade.Core
     public interface ICategoryService
     {
         Task<IReadOnlyList<Category>> GetAll();
-        Task<Category> Get(string routeName);
-        Task<Category> Get(Guid id);
+        Task<Category> GetAsync(string routeName);
+        Task<Category> GetAsync(Guid id);
         Task CreateAsync(string displayName, string routeName, string note = null);
         Task DeleteAsync(Guid id);
         Task UpdateAsync(Guid id, string displayName, string routeName, string note = null);
@@ -57,12 +57,12 @@ namespace Moonglade.Core
             });
         }
 
-        public Task<Category> Get(string routeName)
+        public Task<Category> GetAsync(string routeName)
         {
             return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(routeName), _categorySelector);
         }
 
-        public Task<Category> Get(Guid id)
+        public Task<Category> GetAsync(Guid id)
         {
             return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(id), _categorySelector);
         }

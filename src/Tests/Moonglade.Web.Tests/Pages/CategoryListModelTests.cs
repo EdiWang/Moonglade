@@ -82,7 +82,7 @@ namespace Moonglade.Web.Tests.Pages
         public async Task OnGetAsync_NullCat()
         {
             _mockCategoryService
-                .Setup(p => p.Get(It.IsAny<string>()))
+                .Setup(p => p.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult((Category)null));
 
             var categoryListModel = CreateCategoryListModel();
@@ -102,7 +102,7 @@ namespace Moonglade.Web.Tests.Pages
             };
 
             _mockCategoryService
-                .Setup(p => p.Get(It.IsAny<string>()))
+                .Setup(p => p.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(cat));
 
             _mockBlogCache.Setup(p =>

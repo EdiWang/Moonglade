@@ -45,7 +45,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Get_NonExists()
         {
-            _mockCategoryService.Setup(c => c.Get(It.IsAny<Guid>()))
+            _mockCategoryService.Setup(c => c.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((Category)null));
 
             var categoryController = CreateCategoryController();
@@ -57,7 +57,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Get_Exists()
         {
-            _mockCategoryService.Setup(c => c.Get(It.IsAny<Guid>()))
+            _mockCategoryService.Setup(c => c.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(new Category()));
 
             var categoryController = CreateCategoryController();

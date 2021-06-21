@@ -59,7 +59,7 @@ namespace Moonglade.Core.Tests
         public async Task Get_ByName()
         {
             var svc = CreateService();
-            await svc.Get("work996");
+            await svc.GetAsync("work996");
 
             _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
         }
@@ -68,7 +68,7 @@ namespace Moonglade.Core.Tests
         public async Task Get_ById()
         {
             var svc = CreateService();
-            await svc.Get(Guid.Empty);
+            await svc.GetAsync(Guid.Empty);
 
             _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
         }
