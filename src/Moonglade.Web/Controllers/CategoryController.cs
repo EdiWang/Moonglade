@@ -56,13 +56,13 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [ProducesResponseType(typeof(EditCategoryRequest), StatusCodes.Status200OK)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> Update([NotEmpty] Guid id, EditCategoryRequest model)
         {
             var oc = await _catService.UpdateAsync(id, model.DisplayName, model.RouteName, model.Note);
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
-            return Ok(model);
+            return NoContent();
         }
 
         [HttpDelete("{id:guid}")]

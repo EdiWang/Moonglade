@@ -83,7 +83,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             var result = await categoryController.Update(FakeData.Uid1, model);
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
 
         [Test]
