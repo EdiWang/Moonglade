@@ -40,7 +40,6 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)]
         [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> List()
         {
             var cats = await _catService.GetAllAsync();
