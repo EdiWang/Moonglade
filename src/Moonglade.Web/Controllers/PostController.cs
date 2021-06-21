@@ -63,7 +63,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [IgnoreAntiforgeryToken]
         [Route("list-published")]
-        [ProducesResponseType(typeof(JqDataTableResponse<PostSegment>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(JqDataTable<PostSegment>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ListPublished([FromForm] DataTableRequest model)
         {
             var searchBy = model.Search?.Value;
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Controllers
             var offset = model.Start;
 
             var (posts, totalRows) = await _postQueryService.ListSegmentAsync(PostStatus.Published, offset, take, searchBy);
-            var response = new JqDataTableResponse<PostSegment>
+            var response = new JqDataTable<PostSegment>
             {
                 Draw = model.Draw,
                 RecordsFiltered = totalRows,
