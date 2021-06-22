@@ -108,9 +108,25 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_ValidId()
         {
+            _mockCategoryService
+                .Setup(p => p.DeleteAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(OperationCode.Done));
+
             var categoryController = CreateCategoryController();
             var result = await categoryController.Delete(Guid.NewGuid());
             Assert.IsInstanceOf<NoContentResult>(result);
+        }
+
+        [Test]
+        public async Task Delete_NotFound()
+        {
+            _mockCategoryService
+                .Setup(p => p.DeleteAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(OperationCode.ObjectNotFound));
+
+            var categoryController = CreateCategoryController();
+            var result = await categoryController.Delete(Guid.NewGuid());
+            Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
