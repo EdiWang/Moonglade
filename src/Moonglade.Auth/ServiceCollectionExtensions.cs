@@ -9,7 +9,7 @@ namespace Moonglade.Auth
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddBlogAuthenticaton(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddBlogAuthenticaton(this IServiceCollection services, IConfiguration configuration)
         {
             var section = configuration.GetSection("Authentication");
             var authentication = section.Get<AuthenticationSettings>();
@@ -49,6 +49,8 @@ namespace Moonglade.Auth
                     var msg = $"Provider {authentication.Provider} is not supported.";
                     throw new NotSupportedException(msg);
             }
+
+            return services;
         }
 
         private class ConfigureAzureOptions : IConfigureNamedOptions<OpenIdConnectOptions>

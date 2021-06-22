@@ -7,7 +7,7 @@ namespace Moonglade.Comments
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddComments(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddComments(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ICommentService, CommentService>();
 
@@ -41,6 +41,8 @@ namespace Moonglade.Comments
                     var msg = $"Provider {provider} is not supported.";
                     throw new NotSupportedException(msg);
             }
+
+            return services;
         }
     }
 }

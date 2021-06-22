@@ -4,10 +4,11 @@ namespace Moonglade.Caching
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddBlogCache(this IServiceCollection services)
+        public static IServiceCollection AddBlogCache(this IServiceCollection services)
         {
             services.AddMemoryCache();
             services.AddSingleton<IBlogCache, BlogMemoryCache>();
+            return services;
         }
     }
 }

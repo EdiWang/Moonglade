@@ -138,24 +138,24 @@ namespace Moonglade.Web
                     .AddSyndication()
                     .AddNotificationClient()
                     .AddReleaseCheckerClient()
+                    .AddBlogCache()
                     .AddMetaWeblog<MetaWeblogService>()
-                    .AddBlogCache();
-            services.AddScoped<IMenuService, MenuService>()
+                    .AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFriendLinkService, FriendLinkService>()
                     .AddScoped<IBlogAudit, BlogAudit>()
                     .AddScoped<IFoafWriter, FoafWriter>()
                     .AddScoped<IExportManager, ExportManager>()
-                    .AddScoped<ValidateCaptcha>();
-            services.Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"))
-                    .AddBlogConfig(_configuration);
-            services.AddScoped<ITimeZoneResolver>(c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset));
-            services.AddBlogAuthenticaton(_configuration);
-            services.AddComments(_configuration);
-            services.AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"))
+                    .AddScoped<ValidateCaptcha>()
+                    .AddScoped<ITimeZoneResolver>(c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset))
+                    .AddBlogConfig(_configuration)
+                    .AddBlogAuthenticaton(_configuration)
+                    .AddComments(_configuration)
+                    .AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"))
                     .AddImageStorage(_configuration, options =>
                     {
                         options.ContentRootPath = _environment.ContentRootPath;
-                    });
+                    })
+                    .Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
         }
 
         public void Configure(

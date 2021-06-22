@@ -15,7 +15,7 @@ namespace Moonglade.ImageStorage
     {
         private static readonly ImageStorageOptions Options = new();
 
-        public static void AddImageStorage(
+        public static IServiceCollection AddImageStorage(
            this IServiceCollection services, IConfiguration configuration, Action<ImageStorageOptions> options)
         {
             options(Options);
@@ -59,6 +59,8 @@ namespace Moonglade.ImageStorage
                     var msg = $"Provider {provider} is not supported.";
                     throw new NotSupportedException(msg);
             }
+
+            return services;
         }
     }
 }

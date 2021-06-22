@@ -8,12 +8,12 @@ namespace Moonglade.Core
     {
         public static IServiceCollection AddCoreBloggingServices(this IServiceCollection services)
         {
-            services.AddScoped<IBlogStatistics, BlogStatistics>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IPostManageService, PostManageService>();
-            services.AddScoped<IPostQueryService, PostQueryService>();
-            services.AddScoped<ISearchService, SearchService>();
-            services.AddScoped<ITagService, TagService>();
+            services.AddScoped<IBlogStatistics, BlogStatistics>()
+                    .AddScoped<ICategoryService, CategoryService>()
+                    .AddScoped<IPostManageService, PostManageService>()
+                    .AddScoped<IPostQueryService, PostQueryService>()
+                    .AddScoped<ISearchService, SearchService>()
+                    .AddScoped<ITagService, TagService>();
 
             return services;
         }
@@ -21,7 +21,7 @@ namespace Moonglade.Core
         public static IServiceCollection AddReleaseCheckerClient(this IServiceCollection services)
         {
             services.AddHttpClient<IReleaseCheckerClient, ReleaseCheckerClient>()
-                .AddTransientHttpErrorPolicy(builder =>
+                    .AddTransientHttpErrorPolicy(builder =>
                     builder.WaitAndRetryAsync(3, retryCount => TimeSpan.FromSeconds(Math.Pow(2, retryCount))));
 
             return services;
