@@ -15,7 +15,6 @@
         SettingsSavedNotification = 2003,
         SettingsSavedSubscription = 2004,
         SettingsSavedWatermark = 2005,
-        SettingsSavedFriendLink = 2006,
         SettingsSavedAdvanced = 2007,
         SettingsDeleteAccount = 2008,
         SettingsAccountCreated = 2009,
@@ -50,6 +49,10 @@
 
         MenuCreated = 9001,
         MenuUpdated = 9002,
-        MenuDeleted = 9003
+        MenuDeleted = 9003,
+
+        FriendLinkCreated = 10001,
+        FriendLinkUpdated = 10002,
+        FriendLinkDeleted = 10003,
     }
 }
