@@ -354,11 +354,8 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("clear-data-cache")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult ClearDataCache([FromForm] string[] cachedObjectValues, [FromServices] IBlogCache cache)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.CombineErrorMessages());
-
             if (cachedObjectValues.Contains("MCO_IMEM"))
             {
                 cache.RemoveAllCache();
