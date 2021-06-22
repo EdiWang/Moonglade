@@ -18,8 +18,8 @@ namespace Moonglade.Core
         Task<IReadOnlyList<Tag>> GetAll();
         Task<IReadOnlyList<string>> GetAllNames();
         Task<Tag> Create(string name);
-        Task UpdateAsync(int tagId, string newName);
-        Task DeleteAsync(int tagId);
+        Task<OperationCode> UpdateAsync(int tagId, string newName);
+        Task<OperationCode> DeleteAsync(int tagId);
         Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top);
         Tag Get(string normalizedName);
         Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetTagCountList();
@@ -90,19 +90,24 @@ namespace Moonglade.Core
             };
         }
 
-        public async Task UpdateAsync(int tagId, string newName)
+        public async Task<OperationCode> UpdateAsync(int tagId, string newName)
         {
             var tag = await _tagRepo.GetAsync(tagId);
-            if (null == tag) return;
+            if (null == tag) return OperationCode.ObjectNotFound;
 
             tag.DisplayName = newName;
             tag.NormalizedName = NormalizeTagName(newName, _tagNormalizationDictionary);
             await _tagRepo.UpdateAsync(tag);
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
+
+            return OperationCode.Done;
         }
 
-        public async Task DeleteAsync(int tagId)
+        public async Task<OperationCode> DeleteAsync(int tagId)
         {
+            var exists = _tagRepo.Any(c => c.Id == tagId);
+            if (!exists) return OperationCode.ObjectNotFound;
+
             // 1. Delete Post-Tag Association
             var postTags = await _postTagRepo.GetAsync(new PostTagSpec(tagId));
             await _postTagRepo.DeleteAsync(postTags);
@@ -110,6 +115,8 @@ namespace Moonglade.Core
             // 2. Delte Tag itslef
             await _tagRepo.DeleteAsync(tagId);
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagDeleted, $"Tag id '{tagId}' is deleted");
+
+            return OperationCode.Done;
         }
 
         public async Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top)

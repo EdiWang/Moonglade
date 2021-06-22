@@ -10,6 +10,7 @@ using Moonglade.Auth;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Data;
 
 namespace Moonglade.Web.Controllers
 {
@@ -58,19 +59,23 @@ namespace Moonglade.Web.Controllers
 
         [HttpPut("{id:int}")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
         {
-            await _tagService.UpdateAsync(id, name);
+            var oc = await _tagService.UpdateAsync(id, name);
+            if (oc == OperationCode.ObjectNotFound) return NotFound();
+
             return NoContent();
         }
 
         [HttpDelete("{id:int}")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
-        [ProducesResponseType(StatusCodes.Status204NoContent),]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([Range(0, int.MaxValue)] int id)
         {
-            await _tagService.DeleteAsync(id);
+            var oc = await _tagService.DeleteAsync(id);
+            if (oc == OperationCode.ObjectNotFound) return NotFound();
+
             return NoContent();
         }
     }

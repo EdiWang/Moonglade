@@ -1,6 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
+using Moonglade.Data;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -68,6 +70,10 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_ValidId()
         {
+            _mockTagService
+                .Setup(p => p.DeleteAsync(It.IsAny<int>()))
+                .Returns(Task.FromResult(OperationCode.Done));
+
             var ctl = CreateTagsController();
             var result = await ctl.Delete(FakeData.Int2);
 
@@ -75,14 +81,43 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
+        public async Task Delete_NotFound()
+        {
+            _mockTagService
+                .Setup(p => p.DeleteAsync(It.IsAny<int>()))
+                .Returns(Task.FromResult(OperationCode.ObjectNotFound));
+
+            var ctl = CreateTagsController();
+            var result = await ctl.Delete(FakeData.Int2);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
         public async Task Update_OK()
         {
+            _mockTagService
+                .Setup(p => p.UpdateAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(OperationCode.Done));
+
             var ctl = CreateTagsController();
             var result = await ctl.Update(FakeData.Int2, FakeData.ShortString1);
 
             Assert.IsInstanceOf<NoContentResult>(result);
         }
 
+        [Test]
+        public async Task Update_NotFound()
+        {
+            _mockTagService
+                .Setup(p => p.UpdateAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(OperationCode.ObjectNotFound));
+
+            var ctl = CreateTagsController();
+            var result = await ctl.Update(FakeData.Int2, FakeData.ShortString1);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
 
         [Test]
         public async Task List_OK()
