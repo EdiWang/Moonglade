@@ -43,22 +43,15 @@ namespace Moonglade.Web
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
                 var logger = loggerFactory.CreateLogger<Program>();
 
-                try
-                {
-                    var dataDir = CreateDataDirectory();
-                    AppDomain.CurrentDomain.SetData("DataDirectory", dataDir);
-                    logger.LogInformation($"Using data directory '{dataDir}'");
+                var dataDir = CreateDataDirectory();
+                AppDomain.CurrentDomain.SetData("DataDirectory", dataDir);
+                logger.LogInformation($"Using data directory '{dataDir}'");
 
-                    var dbConnection = services.GetRequiredService<IDbConnection>();
-                    TryInitFirstRun(dbConnection, logger);
+                var dbConnection = services.GetRequiredService<IDbConnection>();
+                TryInitFirstRun(dbConnection, logger);
 
-                    var blogConfig = services.GetRequiredService<IBlogConfig>();
-                    TryInitSiteIcons(blogConfig, env.WebRootPath, logger);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Moonglade start up boom boom");
-                }
+                var blogConfig = services.GetRequiredService<IBlogConfig>();
+                TryInitSiteIcons(blogConfig, env.WebRootPath, logger);
             }
 
             host.Run();
