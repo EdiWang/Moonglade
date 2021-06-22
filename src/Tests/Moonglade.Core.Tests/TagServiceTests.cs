@@ -158,6 +158,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task DeleteAsync_OK()
         {
+            _mockRepositoryTagEntity.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(true);
+
             _mockRepositoryTagEntity.Setup(p => p.GetAsync(It.IsAny<int>()))
                 .Returns(ValueTask.FromResult(new TagEntity
                 {
