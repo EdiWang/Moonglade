@@ -142,7 +142,6 @@ namespace Moonglade.Web
                     .AddMetaWeblog<MetaWeblogService>()
                     .AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFriendLinkService, FriendLinkService>()
-                    .AddScoped<IBlogAudit, BlogAudit>()
                     .AddScoped<IFoafWriter, FoafWriter>()
                     .AddScoped<IExportManager, ExportManager>()
                     .AddScoped<ValidateCaptcha>()

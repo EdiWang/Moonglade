@@ -22,6 +22,7 @@ namespace Moonglade.Data
                             TimeSpan.FromSeconds(30),
                             null);
                     }));
+            services.AddScoped<IBlogAudit, BlogAudit>();
 
             return services;
         }
