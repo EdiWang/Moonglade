@@ -156,7 +156,7 @@ namespace Moonglade.Menus.Tests
 
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                var result = await svc.UpdateAsync(Guid.Empty, new());
+                await svc.UpdateAsync(Guid.Empty, new());
             });
         }
 
@@ -167,7 +167,7 @@ namespace Moonglade.Menus.Tests
                 .Returns(ValueTask.FromResult(_menu));
 
             var svc = CreateService();
-            var result = await svc.UpdateAsync(Guid.Empty, new()
+            await svc.UpdateAsync(Guid.Empty, new()
             {
                 DisplayOrder = 996,
                 Icon = "work-996",
@@ -185,7 +185,6 @@ namespace Moonglade.Menus.Tests
                 }
             });
 
-            Assert.AreEqual(Guid.Parse("478ff468-a0cc-4f05-a5d8-b1dacdc695dd"), result);
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.MenuUpdated, It.IsAny<string>()));
         }
     }

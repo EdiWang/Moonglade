@@ -15,7 +15,7 @@ namespace Moonglade.Menus
         Task<Menu> GetAsync(Guid id);
         Task<IReadOnlyList<Menu>> GetAllAsync();
         Task<Guid> CreateAsync(UpdateMenuRequest request);
-        Task<Guid> UpdateAsync(Guid id, UpdateMenuRequest request);
+        Task UpdateAsync(Guid id, UpdateMenuRequest request);
         Task DeleteAsync(Guid id);
     }
 
@@ -96,7 +96,7 @@ namespace Moonglade.Menus
             return uid;
         }
 
-        public async Task<Guid> UpdateAsync(Guid id, UpdateMenuRequest request)
+        public async Task UpdateAsync(Guid id, UpdateMenuRequest request)
         {
             var menu = await _menuRepo.GetAsync(id);
             if (menu is null)
@@ -130,7 +130,6 @@ namespace Moonglade.Menus
 
             await _menuRepo.UpdateAsync(menu);
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.MenuUpdated, $"Menu '{id}' updated.");
-            return menu.Id;
         }
 
         public async Task DeleteAsync(Guid id)
