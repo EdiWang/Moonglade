@@ -96,8 +96,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
             var page = await _blogPageService.GetAsync(id);
