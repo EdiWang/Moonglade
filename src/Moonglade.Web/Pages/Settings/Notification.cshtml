@@ -8,7 +8,7 @@
             $('#a-send-test-mail').addClass('disabled');
             $('#a-send-test-mail').attr('disabled', 'disabled');
 
-            $.post('/api/settings/send-test-email',
+            $.post('/api/settings/test-email',
                 function (data) {
                     if (data.isSuccess) {
                         blogToast.success('Email is sent.');

@@ -176,7 +176,7 @@ namespace Moonglade.Web.Controllers
             return NoContent();
         }
 
-        [HttpPost("send-test-email")]
+        [HttpPost("test-email")]
         [IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SendTestEmail([FromServices] IBlogNotificationClient notificationClient)
@@ -222,7 +222,7 @@ namespace Moonglade.Web.Controllers
             return NoContent();
         }
 
-        [HttpPost("set-siteicon")]
+        [HttpPost("siteicon")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> SetSiteIcon([FromForm] string base64Img)
