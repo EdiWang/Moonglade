@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Caching;
@@ -25,16 +24,13 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IBlogCache _cache;
         private readonly IBlogPageService _blogPageService;
-        private readonly ILogger<PageController> _logger;
 
         public PageController(
             IBlogCache cache,
-            IBlogPageService blogPageService,
-            ILogger<PageController> logger)
+            IBlogPageService blogPageService)
         {
             _cache = cache;
             _blogPageService = blogPageService;
-            _logger = logger;
         }
 
         [HttpGet("segment/published")]

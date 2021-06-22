@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Page;
 using Moonglade.Web.Controllers;
@@ -19,7 +18,6 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogPageService> _mockPageService;
-        private Mock<ILogger<PageController>> _mockLogger;
 
         private PageEditModel _pageEditModel;
 
@@ -30,7 +28,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockPageService = _mockRepository.Create<IBlogPageService>();
-            _mockLogger = _mockRepository.Create<ILogger<PageController>>();
 
             _pageEditModel = new()
             {
@@ -48,8 +45,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             return new(
                 _mockBlogCache.Object,
-                _mockPageService.Object,
-                _mockLogger.Object);
+                _mockPageService.Object);
         }
 
         [Test]
