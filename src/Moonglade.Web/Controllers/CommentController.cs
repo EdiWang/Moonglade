@@ -29,6 +29,7 @@ namespace Moonglade.Web.Controllers
 
         private readonly ICommentService _commentService;
         private readonly IBlogNotificationClient _notificationClient;
+        private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly IBlogConfig _blogConfig;
 
         #endregion
@@ -36,11 +37,12 @@ namespace Moonglade.Web.Controllers
         public CommentController(
             ICommentService commentService,
             IBlogConfig blogConfig,
-            IBlogNotificationClient notificationClient = null)
+            ITimeZoneResolver timeZoneResolver,
+            IBlogNotificationClient notificationClient)
         {
-            _blogConfig = blogConfig;
-
             _commentService = commentService;
+            _blogConfig = blogConfig;
+            _timeZoneResolver = timeZoneResolver;
             _notificationClient = notificationClient;
         }
 
@@ -48,7 +50,7 @@ namespace Moonglade.Web.Controllers
         [FeatureGate(FeatureFlags.EnableWebApi)]
         [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> List([NotEmpty] Guid postId, [FromServices] ITimeZoneResolver timeZoneResolver)
+        public async Task<IActionResult> List([NotEmpty] Guid postId)
         {
             var comments = await _commentService.GetApprovedCommentsAsync(postId);
             var resp = comments.Select(p => new
@@ -56,7 +58,7 @@ namespace Moonglade.Web.Controllers
                 p.Username,
                 Content = p.CommentContent,
                 p.CreateTimeUtc,
-                CreateTimeLocal = timeZoneResolver.ToTimeZone(p.CreateTimeUtc),
+                CreateTimeLocal = _timeZoneResolver.ToTimeZone(p.CreateTimeUtc),
                 Replies = p.CommentReplies
             });
 

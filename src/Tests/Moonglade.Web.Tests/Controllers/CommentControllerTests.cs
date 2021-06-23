@@ -20,6 +20,8 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<ICommentService> _mockCommentService;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogNotificationClient> _mockBlogNotificationClient;
+        private Mock<ITimeZoneResolver> _mockTimeZoneResolver;
+
 
         [SetUp]
         public void SetUp()
@@ -29,6 +31,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockCommentService = _mockRepository.Create<ICommentService>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogNotificationClient = _mockRepository.Create<IBlogNotificationClient>();
+            _mockTimeZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
         }
 
         private CommentController CreateCommentController()
@@ -36,6 +39,7 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockCommentService.Object,
                 _mockBlogConfig.Object,
+                _mockTimeZoneResolver.Object,
                 _mockBlogNotificationClient.Object);
         }
 
@@ -53,11 +57,10 @@ namespace Moonglade.Web.Tests.Controllers
             _mockCommentService.Setup(p => p.GetApprovedCommentsAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(comments));
 
-            var mockTz = _mockRepository.Create<ITimeZoneResolver>();
-            mockTz.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(DateTime.Today);
+            _mockTimeZoneResolver.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(DateTime.Today);
 
             var ctl = CreateCommentController();
-            var result = await ctl.List(FakeData.Uid2, mockTz.Object);
+            var result = await ctl.List(FakeData.Uid2);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
