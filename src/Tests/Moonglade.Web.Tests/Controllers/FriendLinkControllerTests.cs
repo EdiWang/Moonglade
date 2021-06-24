@@ -67,13 +67,13 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Edit_OK()
+        public async Task Update_OK()
         {
             var ctl = CreateFriendLinkController();
 
-            var result = await ctl.Edit(FakeData.Uid1, _friendlinkEditViewModel);
+            var result = await ctl.Update(FakeData.Uid1, _friendlinkEditViewModel);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
             _mockFriendLinkService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()));
         }
 
