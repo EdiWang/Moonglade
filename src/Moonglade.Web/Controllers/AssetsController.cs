@@ -1,19 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Utils;
+using Moonglade.Web.Models.Settings;
+using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiController]
     public class AssetsController : ControllerBase
     {
         private readonly IBlogConfig _blogConfig;
@@ -142,5 +149,36 @@ namespace Moonglade.Web.Controllers
         }
 
         #endregion
+
+        [HttpGet("theme.css")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<UglifyError>), StatusCodes.Status409Conflict)]
+        public IActionResult ThemeCss([FromServices] IConfiguration configuration)
+        {
+            var bt = configuration.GetSection("Themes").Get<BlogTheme[]>();
+            if (bt is not { Length: > 0 }) return NotFound();
+
+            var currentTheme = bt.FirstOrDefault(p => p.Key == _blogConfig.GeneralSettings.ThemeName) ??
+                               bt.FirstOrDefault(p => p.Key == "Word Blue");
+            if (currentTheme is null) return NotFound();
+            if (currentTheme.CssRules is null) return NotFound();
+
+            var sb = new StringBuilder();
+            sb.Append(":root {");
+            foreach (var (key, value) in currentTheme.CssRules)
+            {
+                if (null != key && null != value)
+                {
+                    sb.Append($"{key}: {value};");
+                }
+            }
+            sb.Append('}');
+
+            var css = Uglify.Css(sb.ToString());
+            if (css.HasErrors) return Conflict(css.Errors);
+
+            return Content(css.Code, "text/css");
+        }
     }
 }

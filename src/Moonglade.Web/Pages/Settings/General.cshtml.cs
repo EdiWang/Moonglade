@@ -35,7 +35,7 @@ namespace Moonglade.Web.Pages.Settings
                 OwnerShortDescription = _blogConfig.GeneralSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
                 SelectedUtcOffset = _timeZoneResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
-                SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
+                SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeName,
                 AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };
         }

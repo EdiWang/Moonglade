@@ -10,12 +10,11 @@
         Value = t.Id
     });
 
-    var tmList = _configuration.GetSection("Themes")
-        .GetChildren().AsEnumerable()
+    var tmList = _configuration.GetSection("Themes").Get<BlogTheme[]>()
         .Select(t => new SelectListItem
         {
             Text = t.Key,
-            Value = t.Value
+            Value = t.Key
         });
 }
 
