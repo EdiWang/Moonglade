@@ -86,7 +86,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost, IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Image(IFormFile file)
+        public async Task<IActionResult> Image(IFormFile file, [FromQuery] bool skipWatermark = false)
         {
             static bool IsValidColorValue(int colorValue)
             {
@@ -123,7 +123,7 @@ namespace Moonglade.Web.Controllers
 
             // Add watermark
             MemoryStream watermarkedStream = null;
-            if (_blogConfig.WatermarkSettings.IsEnabled)
+            if (_blogConfig.WatermarkSettings.IsEnabled && !skipWatermark)
             {
                 if (null == _imageStorageSettings.Watermark.NoWatermarkExtensions
                     || _imageStorageSettings.Watermark.NoWatermarkExtensions.All(
