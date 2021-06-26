@@ -24,6 +24,8 @@ namespace Moonglade.Web.Controllers
         private readonly IBlogImageStorage _imageStorage;
         private readonly ILogger<ImageController> _logger;
         private readonly IBlogConfig _blogConfig;
+        private readonly IMemoryCache _cache;
+        private readonly IFileNameGenerator _fileNameGenerator;
         private readonly AppSettings _settings;
         private readonly ImageStorageSettings _imageStorageSettings;
 
@@ -31,12 +33,16 @@ namespace Moonglade.Web.Controllers
             IBlogImageStorage imageStorage,
             ILogger<ImageController> logger,
             IBlogConfig blogConfig,
+            IMemoryCache cache,
+            IFileNameGenerator fileNameGenerator,
             IOptions<AppSettings> settings,
             IOptions<ImageStorageSettings> imageStorageSettings)
         {
             _imageStorage = imageStorage;
             _logger = logger;
             _blogConfig = blogConfig;
+            _cache = cache;
+            _fileNameGenerator = fileNameGenerator;
             _settings = settings.Value;
             _imageStorageSettings = imageStorageSettings.Value;
         }
@@ -46,7 +52,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Image(string filename, [FromServices] IMemoryCache cache)
+        public async Task<IActionResult> Image(string filename)
         {
             var invalidChars = Path.GetInvalidFileNameChars();
             if (filename.IndexOfAny(invalidChars) >= 0)
@@ -62,7 +68,7 @@ namespace Moonglade.Web.Controllers
                 return Redirect(imageUrl);
             }
 
-            var image = await cache.GetOrCreateAsync(filename, async entry =>
+            var image = await _cache.GetOrCreateAsync(filename, async entry =>
             {
                 _logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
@@ -80,7 +86,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost, IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Image(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
+        public async Task<IActionResult> Image(IFormFile file)
         {
             static bool IsValidColorValue(int colorValue)
             {
@@ -109,8 +115,8 @@ namespace Moonglade.Web.Controllers
                 return BadRequest();
             }
 
-            var primaryFileName = fileNameGenerator.GetFileName(name);
-            var secondaryFieName = fileNameGenerator.GetFileName(name, "origin");
+            var primaryFileName = _fileNameGenerator.GetFileName(name);
+            var secondaryFieName = _fileNameGenerator.GetFileName(name, "origin");
 
             await using var stream = new MemoryStream();
             await file.CopyToAsync(stream);
