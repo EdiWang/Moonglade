@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Moonglade.Configuration;
 using Moonglade.Theme;
 using Moonglade.Web.Pages.Settings;
@@ -35,12 +36,12 @@ namespace Moonglade.Web.Tests.Pages.Settings
         }
 
         [Test]
-        public void OnGet_StateUnderTest_ExpectedBehavior()
+        public async Task OnGet_StateUnderTest_ExpectedBehavior()
         {
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
             var generalModel = CreateGeneralModel();
 
-            generalModel.OnGet();
+            await generalModel.OnGetAsync();
             Assert.IsNotNull(generalModel.ViewModel);
         }
     }

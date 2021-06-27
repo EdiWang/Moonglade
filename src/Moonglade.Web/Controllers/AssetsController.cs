@@ -157,7 +157,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(List<UglifyError>), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> ThemeCss([FromServices] IThemeService themeService)
         {
-            // TODO: Add cache
+            // TODO: Add cache 
             try
             {
                 var css = await themeService.GetStyleSheet(_blogConfig.GeneralSettings.ThemeName);
