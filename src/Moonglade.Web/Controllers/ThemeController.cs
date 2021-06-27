@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
+using Moonglade.Data;
 using Moonglade.Theme;
 using Moonglade.Web.Models.Settings;
 using NUglify;
@@ -79,12 +80,17 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpDelete]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
         public async Task<IActionResult> DeleteTheme([Range(1, int.MaxValue)] int id)
         {
-            await _themeService.Delete(id);
-            return NoContent();
+            var oc = await _themeService.Delete(id);
+            return oc switch
+            {
+                OperationCode.ObjectNotFound => NotFound(),
+                OperationCode.Canceled => BadRequest("Can not delete system theme"),
+                _ => NoContent()
+            };
         }
     }
 }

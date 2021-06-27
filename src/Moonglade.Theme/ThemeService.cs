@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
@@ -15,7 +16,7 @@ namespace Moonglade.Theme
         Task Create(string name, IDictionary<string, string> cssRules);
         Task<IReadOnlyList<string>> GetAllNames();
         Task<string> GetStyleSheet(string themeName);
-        Task Delete(int id);
+        Task<OperationCode> Delete(int id);
     }
 
     public class ThemeService : IThemeService
@@ -77,9 +78,14 @@ namespace Moonglade.Theme
             return sb.ToString();
         }
 
-        public Task Delete(int id)
+        public async Task<OperationCode> Delete(int id)
         {
-            return _themeRepo.DeleteAsync(id);
+            var theme = await _themeRepo.GetAsync(id);
+            if (null == theme) return OperationCode.ObjectNotFound;
+            if (theme.ThemeType == ThemeType.System) return OperationCode.Canceled;
+
+            await _themeRepo.DeleteAsync(id);
+            return OperationCode.Done;
         }
     }
 }
