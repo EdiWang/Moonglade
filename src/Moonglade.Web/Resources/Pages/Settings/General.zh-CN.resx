@@ -189,4 +189,10 @@
   <data name="Use [c] for copyright mark: &amp;copy;, [year] for current year." xml:space="preserve">
     <value>使用 [c] 表示版权符号 &amp;copy; ，[year] 表示当前年份</value>
   </data>
+  <data name="Custom Theme" xml:space="preserve">
+    <value>自定义主题</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
 </root>
