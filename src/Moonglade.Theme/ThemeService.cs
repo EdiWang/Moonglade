@@ -14,6 +14,7 @@ namespace Moonglade.Theme
     {
         Task<IReadOnlyList<string>> GetAllNames();
         Task<string> GetStyleSheet(string themeName);
+        Task Delete(int id);
     }
 
     public class ThemeService : IThemeService
@@ -58,6 +59,11 @@ namespace Moonglade.Theme
             sb.Append('}');
 
             return sb.ToString();
+        }
+
+        public Task Delete(int id)
+        {
+            return _themeRepo.DeleteAsync(id);
         }
     }
 }
