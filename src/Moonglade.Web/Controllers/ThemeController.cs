@@ -73,7 +73,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
-        public async Task<IActionResult> CreateTheme(CreateThemeRequest request)
+        public async Task<IActionResult> Create(CreateThemeRequest request)
         {
             var dic = new Dictionary<string, string>
             {
@@ -90,7 +90,7 @@ namespace Moonglade.Web.Controllers
         [HttpDelete]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
-        public async Task<IActionResult> DeleteTheme([Range(1, int.MaxValue)] int id)
+        public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
         {
             var oc = await _themeService.Delete(id);
             return oc switch

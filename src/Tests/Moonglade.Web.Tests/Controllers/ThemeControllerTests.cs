@@ -68,7 +68,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             // Act
-            var result = await themeController.CreateTheme(request);
+            var result = await themeController.Create(request);
 
             // Assert
 
@@ -85,7 +85,7 @@ namespace Moonglade.Web.Tests.Controllers
             int id = 996;
 
             // Act
-            var result = await themeController.DeleteTheme(id);
+            var result = await themeController.Delete(id);
 
             // Assert
             Assert.IsInstanceOf<NoContentResult>(result);
@@ -100,7 +100,7 @@ namespace Moonglade.Web.Tests.Controllers
             int id = 996;
 
             // Act
-            var result = await themeController.DeleteTheme(id);
+            var result = await themeController.Delete(id);
 
             // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
@@ -115,7 +115,7 @@ namespace Moonglade.Web.Tests.Controllers
             int id = 996;
 
             // Act
-            var result = await themeController.DeleteTheme(id);
+            var result = await themeController.Delete(id);
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
