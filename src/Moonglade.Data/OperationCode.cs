@@ -4,6 +4,7 @@
     {
         None,
         ObjectNotFound,
+        Canceled,
         Done
     }
 }

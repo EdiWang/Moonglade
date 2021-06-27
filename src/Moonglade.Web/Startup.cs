@@ -36,6 +36,7 @@ using Moonglade.Notification.Client;
 using Moonglade.Page;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
+using Moonglade.Theme;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
@@ -139,6 +140,7 @@ namespace Moonglade.Web
                     .AddNotificationClient()
                     .AddReleaseCheckerClient()
                     .AddBlogCache()
+                    .AddBlogTheme()
                     .AddMetaWeblog<MetaWeblogService>()
                     .AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFriendLinkService, FriendLinkService>()

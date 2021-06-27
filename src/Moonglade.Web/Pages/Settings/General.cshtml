@@ -10,11 +10,11 @@
         Value = t.Id
     });
 
-    var tmList = _configuration.GetSection("Themes").Get<BlogTheme[]>()
+    var tmList = Model.Themes
         .Select(t => new SelectListItem
         {
-            Text = t.Key,
-            Value = t.Key
+            Text = t,
+            Value = t
         });
 }
 
@@ -36,6 +36,23 @@
                 siteiconUploader.uploadImage('/api/settings/siteicon');
             });
         });
+
+        var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
+        function createTheme(oFormElement) {
+            callApi(oFormElement.action,
+                'POST',
+                {
+                    Name: $('#ThemeRequest_Name').val(),
+                    AccentColor1: $('#ThemeRequest_AccentColor1').val(),
+                    AccentColor2: $('#ThemeRequest_AccentColor2').val(),
+                    AccentColor3: $('#ThemeRequest_AccentColor3').val()
+                },
+                (resp) => {
+                    themeModal.hide();
+                    $("#ViewModel_SelectedThemeFileName").append(new Option($('#ThemeRequest_Name').val(), $('#ThemeRequest_Name').val()));
+                    blogToast.success('Theme created');
+                });
+        }
     </script>
 }
 
@@ -147,8 +164,19 @@
                         @Localizer["Theme"]
                     </h6>
                     <div>
-                        <div class="input-group mb-1">
-                            <select class="form-select" asp-for="ViewModel.SelectedThemeFileName" asp-items="@tmList"></select>
+                        <div class="row g-1 mb-3">
+                            <div class="col">
+                                <select class="form-select" asp-for="ViewModel.SelectedThemeFileName" asp-items="@tmList"></select>
+                            </div>
+                            <div class="col-auto">
+                                <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
+                                    <i class="bi-palette"></i>
+                                    New
+                                </a>
+                                <a class="btn btn-outline-danger btn-delete-theme" href="#">
+                                    <i class="bi-trash"></i>
+                                </a>
+                            </div>
                         </div>
                         <div class="form-check">
                             <input asp-for="ViewModel.AutoDarkLightTheme" class="form-check-input" type="checkbox">
@@ -269,6 +297,52 @@
             <div class="modal-footer">
                 <button class="btn btn-success disabled" id="btn-upload-siteicon" disabled="disabled">@Localizer["Upload"]</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="thememodal" tabindex="-1" role="dialog" aria-labelledby="themeLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="themeLabel">@Localizer["Custom Theme"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form method="post" action="/api/theme" onsubmit="createTheme(this);return false;">
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <input type="text" asp-for="ThemeRequest.Name" class="form-control" placeholder="@Localizer["Name"]" />
+                        <span asp-validation-for="ThemeRequest.Name" class="text-danger"></span>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col">
+                            <label asp-for="ThemeRequest.AccentColor1" class="form-label">Accent Color 1</label>
+                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor1" value="#2a579a" title="Accent Color 1">
+                        </div>
+                        <div class="col">
+                            <label asp-for="ThemeRequest.AccentColor2" class="form-label">Accent Color 2</label>
+                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor2" value="#1a365f" title="Accent Color 2">
+                        </div>
+                        <div class="col">
+                            <label asp-for="ThemeRequest.AccentColor3" class="form-label">Accent Color 3</label>
+                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor3" value="#3e6db5" title="Accent Color 3">
+                        </div>
+                    </div>
+                    <div>
+                        <span asp-validation-for="ThemeRequest.AccentColor1" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <span asp-validation-for="ThemeRequest.AccentColor2" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <span asp-validation-for="ThemeRequest.AccentColor3" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" id="btn-save-theme">@Localizer["Save"]</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

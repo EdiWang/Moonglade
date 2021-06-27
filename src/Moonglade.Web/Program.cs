@@ -66,8 +66,7 @@ namespace Moonglade.Web
                               .UseStartup<Startup>()
                               .ConfigureAppConfiguration((hostingContext, config) =>
                               {
-                                  config.AddJsonFile("themes.json", false, true)
-                                        .AddJsonFile("manifesticons.json", false, true)
+                                  config.AddJsonFile("manifesticons.json", false, true)
                                         .AddJsonFile("tagnormalization.json", false, true);
 
                                   var settings = config.Build();
