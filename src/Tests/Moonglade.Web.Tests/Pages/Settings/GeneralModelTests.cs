@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moonglade.Configuration;
 using Moonglade.Theme;
@@ -38,6 +39,8 @@ namespace Moonglade.Web.Tests.Pages.Settings
         [Test]
         public async Task OnGet_StateUnderTest_ExpectedBehavior()
         {
+            IReadOnlyList<string> themes = new List<string>();
+            _mockThemeService.Setup(p => p.GetAllNames()).Returns(Task.FromResult(themes));
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
             var generalModel = CreateGeneralModel();
 
