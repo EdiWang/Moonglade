@@ -33,10 +33,7 @@ namespace Moonglade.Theme
         public async Task<string> GetStyleSheet(string themeName)
         {
             var theme = await _themeRepo.GetAsync(p => p.ThemeName == themeName);
-            if (null == theme)
-            {
-                throw new KeyNotFoundException($"theme with name '{themeName}' does not exist");
-            }
+            if (null == theme) return null;
 
             if (string.IsNullOrWhiteSpace(theme.CssRules))
             {
