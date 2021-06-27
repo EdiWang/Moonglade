@@ -164,6 +164,14 @@ CREATE TABLE [SubMenu](
 	[IsOpenInNewTab] [bit] NOT NULL,
 	[MenuId] [uniqueidentifier] NULL)
 
+IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'BlogTheme')
+CREATE TABLE [BlogTheme](
+[Id] [int] PRIMARY KEY CLUSTERED NOT NULL,
+[ThemeName] [varchar](32) NULL,
+[CssRules] [nvarchar](max) NULL,
+[AdditionalProps] [nvarchar](max) NULL,
+[ThemeType] [int] NOT NULL)
+
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = N'FK_Comment_Post')
 ALTER TABLE [Comment] WITH CHECK ADD CONSTRAINT [FK_Comment_Post] FOREIGN KEY([PostId])
 REFERENCES [Post] ([Id])
