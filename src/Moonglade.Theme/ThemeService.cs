@@ -12,6 +12,7 @@ namespace Moonglade.Theme
 {
     public interface IThemeService
     {
+        Task Create(string name, IDictionary<string, string> cssRules);
         Task<IReadOnlyList<string>> GetAllNames();
         Task<string> GetStyleSheet(string themeName);
         Task Delete(int id);
@@ -29,6 +30,21 @@ namespace Moonglade.Theme
         public Task<IReadOnlyList<string>> GetAllNames()
         {
             return _themeRepo.SelectAsync(p => p.ThemeName);
+        }
+
+        public async Task Create(string name, IDictionary<string, string> cssRules)
+        {
+            if (_themeRepo.Any(p => p.ThemeName == name.Trim())) return;
+
+            var rules = JsonSerializer.Serialize(cssRules);
+            var blogTheme = new BlogThemeEntity
+            {
+                ThemeName = name.Trim(),
+                CssRules = rules,
+                ThemeType = ThemeType.User
+            };
+
+            await _themeRepo.AddAsync(blogTheme);
         }
 
         public async Task<string> GetStyleSheet(string themeName)
