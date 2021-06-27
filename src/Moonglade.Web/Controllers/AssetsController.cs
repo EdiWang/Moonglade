@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
+using Moonglade.Theme;
 using Moonglade.Utils;
 using Moonglade.Web.Models.Settings;
 using NUglify;
@@ -154,31 +155,23 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(List<UglifyError>), StatusCodes.Status409Conflict)]
-        public IActionResult ThemeCss([FromServices] IConfiguration configuration)
+        public async Task<IActionResult> ThemeCss([FromServices] IThemeService themeService)
         {
-            var bt = configuration.GetSection("Themes").Get<BlogTheme[]>();
-            if (bt is not { Length: > 0 }) return NotFound();
-
-            var currentTheme = bt.FirstOrDefault(p => p.Key == _blogConfig.GeneralSettings.ThemeName) ??
-                               bt.FirstOrDefault(p => p.Key == "Word Blue");
-            if (currentTheme is null) return NotFound();
-            if (currentTheme.CssRules is null) return NotFound();
-
-            var sb = new StringBuilder();
-            sb.Append(":root {");
-            foreach (var (key, value) in currentTheme.CssRules)
+            // TODO: Add cache
+            try
             {
-                if (null != key && null != value)
-                {
-                    sb.Append($"{key}: {value};");
-                }
+                var css = await themeService.GetStyleSheet(_blogConfig.GeneralSettings.ThemeName);
+                if (css == null) return NotFound();
+
+                var uCss = Uglify.Css(css);
+                if (uCss.HasErrors) return Conflict(uCss.Errors);
+
+                return Content(uCss.Code, "text/css");
             }
-            sb.Append('}');
-
-            var css = Uglify.Css(sb.ToString());
-            if (css.HasErrors) return Conflict(css.Errors);
-
-            return Content(css.Code, "text/css");
+            catch (InvalidDataException e)
+            {
+                return Conflict(e.Message);
+            }
         }
     }
 }
