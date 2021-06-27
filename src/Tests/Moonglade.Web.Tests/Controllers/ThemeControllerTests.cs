@@ -58,6 +58,8 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task CreateTheme_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
+            _mockThemeService.Setup(p => p.Create(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Returns(Task.FromResult(1));
             var themeController = CreateThemeController();
             CreateThemeRequest request = new()
             {
