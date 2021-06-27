@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -20,6 +21,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Setup;
 using Moonglade.Notification.Client;
+using Moonglade.Theme;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
@@ -128,6 +130,21 @@ namespace Moonglade.Web.Controllers
 
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "General Settings updated.");
 
+            return NoContent();
+        }
+
+        [HttpPost("theme")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> CreateTheme(CreateThemeRequest request, [FromServices] IThemeService themeService)
+        {
+            var dic = new Dictionary<string, string>
+            {
+                { "--accent-color1", request.AccentColor1 },
+                { "--accent-color2", request.AccentColor2 },
+                { "--accent-color3", request.AccentColor3 }
+            };
+
+            await themeService.Create(request.Name, dic);
             return NoContent();
         }
 
