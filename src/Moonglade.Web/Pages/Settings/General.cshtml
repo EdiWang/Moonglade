@@ -147,8 +147,19 @@
                         @Localizer["Theme"]
                     </h6>
                     <div>
-                        <div class="input-group mb-1">
-                            <select class="form-select" asp-for="ViewModel.SelectedThemeFileName" asp-items="@tmList"></select>
+                        <div class="row g-1 mb-3">
+                            <div class="col">
+                                <select class="form-select" asp-for="ViewModel.SelectedThemeFileName" asp-items="@tmList"></select>
+                            </div>
+                            <div class="col-auto">
+                                <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
+                                    <i class="bi-palette"></i>
+                                    New
+                                </a>
+                                <a href="#" class="btn btn-outline-danger">
+                                    <i class="bi-trash"></i>
+                                </a>
+                            </div>
                         </div>
                         <div class="form-check">
                             <input asp-for="ViewModel.AutoDarkLightTheme" class="form-check-input" type="checkbox">
@@ -268,6 +279,40 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success disabled" id="btn-upload-siteicon" disabled="disabled">@Localizer["Upload"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="thememodal" tabindex="-1" role="dialog" aria-labelledby="themeLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="themeLabel">@Localizer["Custom Theme"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <input id="themeName" type="text" value="" class="form-control" placeholder="@Localizer["Name"]" />
+                </div>
+                <div class="row g-2">
+                    <div class="col">
+                        <label for="accentColor1" class="form-label">Accent Color 1</label>
+                        <input type="color" class="form-control form-control-color" id="accentColor1" value="#2a579a" title="Accent Color 1">
+                    </div>
+                    <div class="col">
+                        <label for="accentColor2" class="form-label">Accent Color 2</label>
+                        <input type="color" class="form-control form-control-color" id="accentColor2" value="#1a365f" title="Accent Color 2">
+                    </div>
+                    <div class="col">
+                        <label for="accentColor3" class="form-label">Accent Color 3</label>
+                        <input type="color" class="form-control form-control-color" id="accentColor3" value="#3e6db5" title="Accent Color 3">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success disabled" id="btn-save-theme">@Localizer["Save"]</button>
             </div>
         </div>
     </div>
