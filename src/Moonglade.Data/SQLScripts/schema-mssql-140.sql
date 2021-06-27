@@ -166,7 +166,7 @@ CREATE TABLE [SubMenu](
 
 IF NOT EXISTS(SELECT TOP 1 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'BlogTheme')
 CREATE TABLE [BlogTheme](
-[Id] [int] PRIMARY KEY CLUSTERED NOT NULL,
+[Id] [int] PRIMARY KEY CLUSTERED NOT NULL IDENTITY(1,1),
 [ThemeName] [varchar](32) NULL,
 [CssRules] [nvarchar](max) NULL,
 [AdditionalProps] [nvarchar](max) NULL,
