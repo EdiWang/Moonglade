@@ -47,12 +47,13 @@
                     AccentColor2: $('#ThemeRequest_AccentColor2').val(),
                     AccentColor3: $('#ThemeRequest_AccentColor3').val()
                 },
-                (resp) => {
+                async (resp) => {
+                    var id = await resp.json();
+                    console.info(id);
+
                     themeModal.hide();
+                    $("#ViewModel_SelectedThemeId").append(new Option($('#ThemeRequest_Name').val(), id));
                     blogToast.success('Theme created');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 800);
                 });
         }
     </script>

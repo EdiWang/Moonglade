@@ -11,7 +11,7 @@ namespace Moonglade.Theme
 {
     public interface IThemeService
     {
-        Task Create(string name, IDictionary<string, string> cssRules);
+        Task<int> Create(string name, IDictionary<string, string> cssRules);
         Task<IReadOnlyList<ThemeSegment>> GetAllSegment();
         Task<string> GetStyleSheet(int id);
         Task<OperationCode> Delete(int id);
@@ -41,9 +41,9 @@ namespace Moonglade.Theme
             });
         }
 
-        public async Task Create(string name, IDictionary<string, string> cssRules)
+        public async Task<int> Create(string name, IDictionary<string, string> cssRules)
         {
-            if (_themeRepo.Any(p => p.ThemeName == name.Trim())) return;
+            if (_themeRepo.Any(p => p.ThemeName == name.Trim())) return 0;
 
             var rules = JsonSerializer.Serialize(cssRules);
             var blogTheme = new BlogThemeEntity
@@ -54,6 +54,7 @@ namespace Moonglade.Theme
             };
 
             await _themeRepo.AddAsync(blogTheme);
+            return blogTheme.Id;
         }
 
         public async Task<string> GetStyleSheet(int id)

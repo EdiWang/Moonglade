@@ -72,7 +72,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             // Assert
 
-            Assert.IsInstanceOf<NoContentResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
             _mockThemeService.Verify(p => p.Create("996", It.IsAny<IDictionary<string, string>>()));
         }
 

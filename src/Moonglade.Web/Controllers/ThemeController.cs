@@ -69,7 +69,8 @@ namespace Moonglade.Web.Controllers
 
         [Authorize]
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
         public async Task<IActionResult> Create(CreateThemeRequest request)
         {
@@ -80,8 +81,10 @@ namespace Moonglade.Web.Controllers
                 { "--accent-color3", request.AccentColor3 }
             };
 
-            await _themeService.Create(request.Name, dic);
-            return NoContent();
+            var id = await _themeService.Create(request.Name, dic);
+            if (id == 0) return Conflict("Theme with same name already exists");
+
+            return Ok(id);
         }
 
         [Authorize]
