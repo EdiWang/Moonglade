@@ -1,5 +1,8 @@
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
+using Moonglade.Theme;
 using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Pages.Settings
@@ -8,15 +11,20 @@ namespace Moonglade.Web.Pages.Settings
     {
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
+        private readonly IThemeService _themeService;
+
         public GeneralSettingsViewModel ViewModel { get; set; }
 
-        public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver)
+        public string[] Themes { get; set; }
+
+        public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver, IThemeService themeService)
         {
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
+            _themeService = themeService;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
             ViewModel = new()
             {
@@ -38,6 +46,8 @@ namespace Moonglade.Web.Pages.Settings
                 SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeName,
                 AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };
+
+            Themes = (await _themeService.GetAllNames()).ToArray();
         }
     }
 }
