@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,7 +18,7 @@ namespace Moonglade.Web.Pages.Settings
 
         public CreateThemeRequest ThemeRequest { get; set; }
 
-        public string[] Themes { get; set; }
+        public IReadOnlyList<ThemeSegment> Themes { get; set; }
 
         public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver, IThemeService themeService)
         {
@@ -45,11 +46,11 @@ namespace Moonglade.Web.Pages.Settings
                 OwnerShortDescription = _blogConfig.GeneralSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
                 SelectedUtcOffset = _timeZoneResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
-                SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeName,
+                SelectedThemeId = _blogConfig.GeneralSettings.ThemeId,
                 AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };
 
-            Themes = (await _themeService.GetAllNames()).ToArray();
+            Themes = await _themeService.GetAllSegment();
         }
     }
 }

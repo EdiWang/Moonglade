@@ -13,8 +13,8 @@
     var tmList = Model.Themes
         .Select(t => new SelectListItem
         {
-            Text = t,
-            Value = t
+            Text = t.Name,
+            Value = t.Id.ToString()
         });
 }
 
@@ -49,8 +49,10 @@
                 },
                 (resp) => {
                     themeModal.hide();
-                    $("#ViewModel_SelectedThemeFileName").append(new Option($('#ThemeRequest_Name').val(), $('#ThemeRequest_Name').val()));
                     blogToast.success('Theme created');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 800);
                 });
         }
     </script>
@@ -166,7 +168,7 @@
                     <div>
                         <div class="row g-1 mb-3">
                             <div class="col">
-                                <select class="form-select" asp-for="ViewModel.SelectedThemeFileName" asp-items="@tmList"></select>
+                                <select class="form-select" asp-for="ViewModel.SelectedThemeId" asp-items="@tmList"></select>
                             </div>
                             <div class="col-auto">
                                 <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">

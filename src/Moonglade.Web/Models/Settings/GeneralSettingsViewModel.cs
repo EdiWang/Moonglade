@@ -79,7 +79,6 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Auto Light / Dark theme regarding client system settings")]
         public bool AutoDarkLightTheme { get; set; }
 
-        [MaxLength(32)]
-        public string SelectedThemeFileName { get; set; }
+        public int SelectedThemeId { get; set; }
     }
 }

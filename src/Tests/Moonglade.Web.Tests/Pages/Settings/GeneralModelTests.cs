@@ -37,10 +37,10 @@ namespace Moonglade.Web.Tests.Pages.Settings
         }
 
         [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
+        public async Task OnGetAsync_StateUnderTest_ExpectedBehavior()
         {
-            IReadOnlyList<string> themes = new List<string>();
-            _mockThemeService.Setup(p => p.GetAllNames()).Returns(Task.FromResult(themes));
+            IReadOnlyList<ThemeSegment> themes = new List<ThemeSegment>();
+            _mockThemeService.Setup(p => p.GetAllSegment()).Returns(Task.FromResult(themes));
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
             var generalModel = CreateGeneralModel();
 

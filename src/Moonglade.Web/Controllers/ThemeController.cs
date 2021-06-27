@@ -43,16 +43,14 @@ namespace Moonglade.Web.Controllers
                 {
                     entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
-                    // Fall back to default theme
-                    // .css is for migrating from previous version
-                    if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.ThemeName) || 
-                        _blogConfig.GeneralSettings.ThemeName.EndsWith(".css"))
+                    // Fall back to default theme for migration
+                    if (_blogConfig.GeneralSettings.ThemeId == 0)
                     {
-                        _blogConfig.GeneralSettings.ThemeName = "Word Blue";
+                        _blogConfig.GeneralSettings.ThemeId = 1;
                         await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
                     }
 
-                    var data = await _themeService.GetStyleSheet(_blogConfig.GeneralSettings.ThemeName);
+                    var data = await _themeService.GetStyleSheet(_blogConfig.GeneralSettings.ThemeId);
                     return data;
                 });
 

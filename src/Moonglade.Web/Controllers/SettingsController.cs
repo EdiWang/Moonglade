@@ -117,7 +117,7 @@ namespace Moonglade.Web.Controllers
             _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
             _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
             _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
-            _blogConfig.GeneralSettings.ThemeName = model.SelectedThemeFileName;
+            _blogConfig.GeneralSettings.ThemeId = model.SelectedThemeId;
             _blogConfig.GeneralSettings.OwnerName = model.OwnerName;
             _blogConfig.GeneralSettings.OwnerEmail = model.OwnerEmail;
             _blogConfig.GeneralSettings.Description = model.OwnerDescription;

@@ -12,9 +12,15 @@ namespace Moonglade.Theme
     public interface IThemeService
     {
         Task Create(string name, IDictionary<string, string> cssRules);
-        Task<IReadOnlyList<string>> GetAllNames();
-        Task<string> GetStyleSheet(string themeName);
+        Task<IReadOnlyList<ThemeSegment>> GetAllSegment();
+        Task<string> GetStyleSheet(int id);
         Task<OperationCode> Delete(int id);
+    }
+
+    public struct ThemeSegment
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class ThemeService : IThemeService
@@ -26,9 +32,13 @@ namespace Moonglade.Theme
             _themeRepo = themeRepo;
         }
 
-        public Task<IReadOnlyList<string>> GetAllNames()
+        public Task<IReadOnlyList<ThemeSegment>> GetAllSegment()
         {
-            return _themeRepo.SelectAsync(p => p.ThemeName);
+            return _themeRepo.SelectAsync(p => new ThemeSegment()
+            {
+                Id = p.Id,
+                Name = p.ThemeName
+            });
         }
 
         public async Task Create(string name, IDictionary<string, string> cssRules)
@@ -46,20 +56,20 @@ namespace Moonglade.Theme
             await _themeRepo.AddAsync(blogTheme);
         }
 
-        public async Task<string> GetStyleSheet(string themeName)
+        public async Task<string> GetStyleSheet(int id)
         {
-            var theme = await _themeRepo.GetAsync(p => p.ThemeName == themeName);
+            var theme = await _themeRepo.GetAsync(id);
             if (null == theme) return null;
 
             if (string.IsNullOrWhiteSpace(theme.CssRules))
             {
-                throw new InvalidDataException($"'{themeName}' is having empty CSS Rules");
+                throw new InvalidDataException($"Theme id '{id}' is having empty CSS Rules");
             }
 
             var rules = JsonSerializer.Deserialize<IDictionary<string, string>>(theme.CssRules);
             if (null == rules)
             {
-                throw new InvalidDataException($"'{themeName}' CssRules is not a valid json");
+                throw new InvalidDataException($"Theme id '{id}' CssRules is not a valid json");
             }
 
             var sb = new StringBuilder();
