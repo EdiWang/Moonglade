@@ -49,6 +49,8 @@
                 },
                 (resp) => {
                     themeModal.hide();
+                    $("#ViewModel_SelectedThemeFileName").append(new Option($('#ThemeRequest_Name').val(), $('#ThemeRequest_Name').val()));
+                    blogToast.success('Theme created');
                 });
         }
     </script>
