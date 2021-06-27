@@ -1,4 +1,5 @@
 using Moonglade.Configuration;
+using Moonglade.Theme;
 using Moonglade.Web.Pages.Settings;
 using Moq;
 using NUnit.Framework;
@@ -12,6 +13,8 @@ namespace Moonglade.Web.Tests.Pages.Settings
 
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
+        private Mock<IThemeService> _mockThemeService;
+
 
         [SetUp]
         public void SetUp()
@@ -20,13 +23,15 @@ namespace Moonglade.Web.Tests.Pages.Settings
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
+            _mockThemeService = _mockRepository.Create<IThemeService>();
         }
 
         private GeneralModel CreateGeneralModel()
         {
             return new(
                 _mockBlogConfig.Object,
-                _mockTZoneResolver.Object);
+                _mockTZoneResolver.Object,
+                _mockThemeService.Object);
         }
 
         [Test]
