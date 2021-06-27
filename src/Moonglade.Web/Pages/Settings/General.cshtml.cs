@@ -15,6 +15,8 @@ namespace Moonglade.Web.Pages.Settings
 
         public GeneralSettingsViewModel ViewModel { get; set; }
 
+        public CreateThemeRequest ThemeRequest { get; set; }
+
         public string[] Themes { get; set; }
 
         public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver, IThemeService themeService)
