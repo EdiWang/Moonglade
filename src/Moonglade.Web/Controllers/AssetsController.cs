@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
-using Moonglade.Theme;
 using Moonglade.Utils;
-using Moonglade.Web.Models.Settings;
-using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
@@ -150,28 +143,5 @@ namespace Moonglade.Web.Controllers
         }
 
         #endregion
-
-        [HttpGet("theme.css")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<UglifyError>), StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> ThemeCss([FromServices] IThemeService themeService)
-        {
-            // TODO: Add cache 
-            try
-            {
-                var css = await themeService.GetStyleSheet(_blogConfig.GeneralSettings.ThemeName);
-                if (css == null) return NotFound();
-
-                var uCss = Uglify.Css(css);
-                if (uCss.HasErrors) return Conflict(uCss.Errors);
-
-                return Content(uCss.Code, "text/css");
-            }
-            catch (InvalidDataException e)
-            {
-                return Conflict(e.Message);
-            }
-        }
     }
 }
