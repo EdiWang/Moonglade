@@ -44,7 +44,9 @@ namespace Moonglade.Web.Controllers
                     entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
                     // Fall back to default theme
-                    if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.ThemeName))
+                    // .css is for migrating from previous version
+                    if (string.IsNullOrWhiteSpace(_blogConfig.GeneralSettings.ThemeName) || 
+                        _blogConfig.GeneralSettings.ThemeName.EndsWith(".css"))
                     {
                         _blogConfig.GeneralSettings.ThemeName = "Word Blue";
                         await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
