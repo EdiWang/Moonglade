@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
+using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Theme;
 using Moonglade.Web.Models.Settings;
@@ -61,6 +63,7 @@ namespace Moonglade.Web.Controllers
         [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
         public async Task<IActionResult> CreateTheme(CreateThemeRequest request)
         {
             var dic = new Dictionary<string, string>
@@ -74,10 +77,14 @@ namespace Moonglade.Web.Controllers
             return NoContent();
         }
 
-        //[HttpDelete]
-        //public async Task<IActionResult> DeleteTheme(int id)
-        //{
-
-        //}
+        [Authorize]
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
+        public async Task<IActionResult> DeleteTheme([Range(1, int.MaxValue)] int id)
+        {
+            await _themeService.Delete(id);
+            return NoContent();
+        }
     }
 }
