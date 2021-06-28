@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Data;
 using Moonglade.Web.Models.Settings;
 
@@ -40,22 +41,56 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockBlogConfig.Object);
         }
 
-        //[Test]
-        //public async Task Css_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var themeController = CreateThemeController();
+        [Test]
+        public async Task Css_NotFound()
+        {
+            // Arrange
+            _mockBlogCache.Setup(p =>
+                p.GetOrCreateAsync<string>(CacheDivision.General, "theme", It.IsAny<Func<ICacheEntry, Task<string>>>())).Returns(Task.FromResult((string)null));
 
-        //    // Act
-        //    var result = await themeController.Css();
+            var themeController = CreateThemeController();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    _mockRepository.VerifyAll();
-        //}
+            // Act
+            var result = await themeController.Css();
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
 
         [Test]
-        public async Task CreateTheme_StateUnderTest_ExpectedBehavior()
+        public async Task Css_Conflict()
+        {
+            // Arrange
+            _mockBlogCache.Setup(p =>
+                p.GetOrCreateAsync<string>(CacheDivision.General, "theme", It.IsAny<Func<ICacheEntry, Task<string>>>())).Returns(Task.FromResult("hahahahaha"));
+
+            var themeController = CreateThemeController();
+
+            // Act
+            var result = await themeController.Css();
+
+            // Assert
+            Assert.IsInstanceOf<ConflictObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Css_Content()
+        {
+            // Arrange
+            _mockBlogCache.Setup(p =>
+                p.GetOrCreateAsync<string>(CacheDivision.General, "theme", It.IsAny<Func<ICacheEntry, Task<string>>>())).Returns(Task.FromResult(":root{--accent-color1:#2a579a;--accent-color2:#1a365f;--accent-color3:#3e6db5}"));
+
+            var themeController = CreateThemeController();
+
+            // Act
+            var result = await themeController.Css();
+
+            // Assert
+            Assert.IsInstanceOf<ContentResult>(result);
+        }
+
+        [Test]
+        public async Task Create_OK()
         {
             // Arrange
             _mockThemeService.Setup(p => p.Create(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
@@ -73,13 +108,35 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await themeController.Create(request);
 
             // Assert
-
             Assert.IsInstanceOf<OkObjectResult>(result);
             _mockThemeService.Verify(p => p.Create("996", It.IsAny<IDictionary<string, string>>()));
         }
 
         [Test]
-        public async Task DeleteTheme_OK()
+        public async Task Create_Conflict()
+        {
+            // Arrange
+            _mockThemeService.Setup(p => p.Create(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Returns(Task.FromResult(0));
+            var themeController = CreateThemeController();
+            CreateThemeRequest request = new()
+            {
+                Name = "996",
+                AccentColor1 = "#996",
+                AccentColor2 = "#007",
+                AccentColor3 = "#404",
+            };
+
+            // Act
+            var result = await themeController.Create(request);
+
+            // Assert
+            Assert.IsInstanceOf<ConflictObjectResult>(result);
+            _mockThemeService.Verify(p => p.Create("996", It.IsAny<IDictionary<string, string>>()));
+        }
+
+        [Test]
+        public async Task Delete_OK()
         {
             // Arrange
             _mockThemeService.Setup(p => p.Delete(It.IsAny<int>())).Returns(Task.FromResult(OperationCode.Done));
@@ -94,7 +151,7 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task DeleteTheme_NotFound()
+        public async Task Delete_NotFound()
         {
             // Arrange
             _mockThemeService.Setup(p => p.Delete(It.IsAny<int>())).Returns(Task.FromResult(OperationCode.ObjectNotFound));
@@ -109,7 +166,7 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task DeleteTheme_BadRequest()
+        public async Task Delete_BadRequest()
         {
             // Arrange
             _mockThemeService.Setup(p => p.Delete(It.IsAny<int>())).Returns(Task.FromResult(OperationCode.Canceled));
