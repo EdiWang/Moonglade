@@ -17,12 +17,6 @@ namespace Moonglade.Theme
         Task<OperationCode> Delete(int id);
     }
 
-    public struct ThemeSegment
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
     public class ThemeService : IThemeService
     {
         private readonly IRepository<BlogThemeEntity> _themeRepo;
