@@ -38,6 +38,7 @@
         });
 
         var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
+
         function createTheme(oFormElement) {
             callApi(oFormElement.action,
                 'POST',
@@ -56,6 +57,17 @@
                     blogToast.success('Theme created');
                 });
         }
+
+        $('.btn-delete-theme').click(function () {
+            var selectedThemeId = $('#ViewModel_SelectedThemeId').val();
+            callApi(`/api/theme/${selectedThemeId}`,
+                'DELETE',
+                {},
+                (resp) => {
+                    $(`#ViewModel_SelectedThemeId option[value='${selectedThemeId}']`).remove();
+                    blogToast.success('Theme deleted.');
+                });
+        });
     </script>
 }
 

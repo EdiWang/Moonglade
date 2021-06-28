@@ -88,7 +88,7 @@ namespace Moonglade.Web.Controllers
         }
 
         [Authorize]
-        [HttpDelete]
+        [HttpDelete("{id:int}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
         public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
