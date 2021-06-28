@@ -5,14 +5,15 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
-using Moonglade.DataPorting.Exporters;
+using Moonglade.Data.Porting;
+using Moonglade.Data.Porting.Exporters;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.DataPorting.Tests.Exporters
+namespace Moonglade.Data.Tests.Exporters
 {
     [TestFixture]
-    public class CSVExporterTests
+    public class ZippedJsonExporterTests
     {
         private MockRepository _mockRepository;
 
@@ -25,7 +26,7 @@ namespace Moonglade.DataPorting.Tests.Exporters
             _mockRepo = _mockRepository.Create<IRepository<int>>();
         }
 
-        private CSVExporter<int> CreateCSVExporter()
+        private ZippedJsonExporter<int> CreateZippedJsonExporter()
         {
             return new(_mockRepo.Object, "996", Path.GetTempPath());
         }
@@ -40,12 +41,12 @@ namespace Moonglade.DataPorting.Tests.Exporters
             };
 
             _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>())).Returns(Task.FromResult(data));
+            var zippedJsonExporter = CreateZippedJsonExporter();
 
-            var csvExporter = CreateCSVExporter();
-            var result = await csvExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), CancellationToken.None);
+            var result = await zippedJsonExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), CancellationToken.None);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(ExportFormat.SingleCSVFile, result.ExportFormat);
+            Assert.AreEqual(ExportFormat.ZippedJsonFiles, result.ExportFormat);
             Assert.IsNotNull(result.FilePath);
 
             try

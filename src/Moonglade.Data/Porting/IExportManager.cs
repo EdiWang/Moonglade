@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moonglade.DataPorting
+namespace Moonglade.Data.Porting
 {
     public interface IExportManager
     {

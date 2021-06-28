@@ -1,10 +1,11 @@
 ﻿using System.IO;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Porting;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.DataPorting.Tests
+namespace Moonglade.Data.Tests
 {
     [TestFixture]
     public class ExportManagerTests

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.DataPorting.Exporters
+namespace Moonglade.Data.Porting.Exporters
 {
     public class CSVExporter<T> : IExporter<T>
     {

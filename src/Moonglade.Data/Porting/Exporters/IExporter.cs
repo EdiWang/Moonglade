@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moonglade.DataPorting.Exporters
+namespace Moonglade.Data.Porting.Exporters
 {
     public interface IExporter<T>
     {

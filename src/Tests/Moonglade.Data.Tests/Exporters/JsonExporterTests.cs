@@ -4,11 +4,12 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Moonglade.Data.Infrastructure;
-using Moonglade.DataPorting.Exporters;
+using Moonglade.Data.Porting;
+using Moonglade.Data.Porting.Exporters;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.DataPorting.Tests.Exporters
+namespace Moonglade.Data.Tests.Exporters
 {
     [TestFixture]
     public class JsonExporterTests

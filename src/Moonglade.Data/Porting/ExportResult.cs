@@ -1,4 +1,4 @@
-﻿namespace Moonglade.DataPorting
+﻿namespace Moonglade.Data.Porting
 {
     public class ExportResult
     {

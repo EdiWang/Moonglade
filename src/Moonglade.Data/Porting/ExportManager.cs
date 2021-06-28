@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.DataPorting.Exporters;
+using Moonglade.Data.Porting.Exporters;
 
-namespace Moonglade.DataPorting
+namespace Moonglade.Data.Porting
 {
     public class ExportManager : IExportManager
     {
