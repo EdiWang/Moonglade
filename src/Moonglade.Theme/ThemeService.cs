@@ -28,7 +28,7 @@ namespace Moonglade.Theme
 
         public Task<IReadOnlyList<ThemeSegment>> GetAllSegment()
         {
-            return _themeRepo.SelectAsync(p => new ThemeSegment()
+            return _themeRepo.SelectAsync(p => new ThemeSegment
             {
                 Id = p.Id,
                 Name = p.ThemeName

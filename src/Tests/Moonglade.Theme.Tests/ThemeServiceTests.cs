@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Moonglade.Theme.Tests
@@ -28,19 +29,19 @@ namespace Moonglade.Theme.Tests
             return new(_mockThemeRepository.Object);
         }
 
-        //[Test]
-        //public async Task GetAllSegment_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var service = this.CreateService();
+        [Test]
+        public async Task GetAllSegment_StateUnderTest_ExpectedBehavior()
+        {
+            // Arrange
+            var service = CreateService();
 
-        //    // Act
-        //    var result = await service.GetAllSegment();
+            // Act
+            var result = await service.GetAllSegment();
 
-        //    // Assert
-        //    Assert.Fail();
-        //    this.mockRepository.VerifyAll();
-        //}
+            // Assert
+            _mockThemeRepository.Verify(p=> p.SelectAsync(It.IsAny<Expression<Func<BlogThemeEntity, ThemeSegment>>>()));
+            Assert.Pass();
+        }
 
         //[Test]
         //public async Task Create_StateUnderTest_ExpectedBehavior()
