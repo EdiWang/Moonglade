@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Page;
+using Moonglade.Core;
 
 namespace Moonglade.Web.Pages.Admin
 {

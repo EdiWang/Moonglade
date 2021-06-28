@@ -6,7 +6,6 @@ namespace Moonglade.Page
     {
         public static IServiceCollection AddBlogPage(this IServiceCollection services)
         {
-            services.AddScoped<IBlogPageService, BlogPageService>();
             return services;
         }
     }

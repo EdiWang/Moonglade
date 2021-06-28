@@ -16,8 +16,7 @@ namespace Moonglade.Page.Tests
             // Act
             services.AddBlogPage();
 
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogPageService));
-            Assert.IsNotNull(obj1);
+           
         }
     }
 }

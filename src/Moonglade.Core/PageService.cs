@@ -8,7 +8,7 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 
-namespace Moonglade.Page
+namespace Moonglade.Core
 {
     public interface IBlogPageService
     {

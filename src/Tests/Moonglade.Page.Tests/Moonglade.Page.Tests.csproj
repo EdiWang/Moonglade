@@ -16,7 +16,4 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Moonglade.Page\Moonglade.Page.csproj" />
-  </ItemGroup>
 </Project>

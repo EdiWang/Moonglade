@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Page;
+using Moonglade.Core;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Pages.Admin

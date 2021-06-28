@@ -1,12 +1,10 @@
-﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moonglade.Theme;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections;
+﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Theme.Tests
 {
@@ -39,7 +37,7 @@ namespace Moonglade.Theme.Tests
             var result = await service.GetAllSegment();
 
             // Assert
-            _mockThemeRepository.Verify(p=> p.SelectAsync(It.IsAny<Expression<Func<BlogThemeEntity, ThemeSegment>>>()));
+            _mockThemeRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<BlogThemeEntity, ThemeSegment>>>()));
             Assert.Pass();
         }
 

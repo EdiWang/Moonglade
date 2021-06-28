@@ -12,6 +12,7 @@ namespace Moonglade.Core
                     .AddScoped<ICategoryService, CategoryService>()
                     .AddScoped<IPostManageService, PostManageService>()
                     .AddScoped<IPostQueryService, PostQueryService>()
+                    .AddScoped<IBlogPageService, BlogPageService>()
                     .AddScoped<ISearchService, SearchService>()
                     .AddScoped<ITagService, TagService>();
 

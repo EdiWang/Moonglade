@@ -9,7 +9,7 @@ using Moonglade.Data.Spec;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Page.Tests
+namespace Moonglade.Core.Tests
 {
     [TestFixture]
     public class PageServiceTests

@@ -1,16 +1,16 @@
-﻿using Moonglade.Caching;
-using Moonglade.Configuration;
-using Moonglade.Theme;
-using Moonglade.Web.Controllers;
-using Moq;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Moonglade.Caching;
+using Moonglade.Configuration;
 using Moonglade.Data;
+using Moonglade.Theme;
+using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
+using Moq;
+using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Controllers
 {

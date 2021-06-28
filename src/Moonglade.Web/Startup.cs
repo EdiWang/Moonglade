@@ -33,7 +33,6 @@ using Moonglade.FriendLink;
 using Moonglade.ImageStorage;
 using Moonglade.Menus;
 using Moonglade.Notification.Client;
-using Moonglade.Page;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using Moonglade.Theme;
@@ -134,7 +133,6 @@ namespace Moonglade.Web
 
             // Blog Services
             services.AddCoreBloggingServices()
-                    .AddBlogPage()
                     .AddPingback()
                     .AddSyndication()
                     .AddNotificationClient()
