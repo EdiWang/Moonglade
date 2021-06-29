@@ -11,39 +11,44 @@
     margin-left: -20px;
 }
 
-    .animbrand a::after, .animbrand a::before {
-        -moz-transition: -moz-transform .3s, opacity .2s;
-        -webkit-transition: -webkit-transform .3s, opacity .2s;
-        color: var(--bs-white);
-        display: inline-block;
-        font-size: 22px;
-        line-height: 16px;
-        opacity: 0;
-        transition: transform .3s, opacity .2s;
-    }
+.animbrand a::after,
+.animbrand a::before {
+    -moz-transition: -moz-transform .3s, opacity .2s;
+    -webkit-transition: -webkit-transform .3s, opacity .2s;
+    color: var(--bs-white);
+    display: inline-block;
+    font-size: 22px;
+    line-height: 16px;
+    opacity: 0;
+    transition: transform .3s, opacity .2s;
+}
 
-    .animbrand a::before {
-        -moz-transform: translateX(50px);
-        -webkit-transform: translateX(50px);
-        content: '<';
-        transform: translateX(50px)
-    }
+.animbrand a::before {
+    -moz-transform: translateX(50px);
+    -webkit-transform: translateX(50px);
+    content: '<';
+    transform: translateX(50px)
+}
 
-    .animbrand a::after {
-        -moz-transform: translateX(-50px);
-        -webkit-transform: translateX(-50px);
-        content: '>';
-        transform: translateX(-50px)
-    }
+.animbrand a::after {
+    -moz-transform: translateX(-50px);
+    -webkit-transform: translateX(-50px);
+    content: '>';
+    transform: translateX(-50px)
+}
 
-    .animbrand a:focus::after, .animbrand a:focus::before, .animbrand a:hover::after, .animbrand a:hover::before {
-        -moz-transform: translateX(0);
-        -webkit-transform: translateX(0);
-        opacity: 0.9;
-        transform: translateX(0)
-    }
+.animbrand a:focus::after,
+.animbrand a:focus::before,
+.animbrand a:hover::after,
+.animbrand a:hover::before {
+    -moz-transform: translateX(0);
+    -webkit-transform: translateX(0);
+    opacity: 0.9;
+    transform: translateX(0)
+}
 
-div.animbrand a:focus, div.animbrand a:hover {
+div.animbrand a:focus,
+div.animbrand a:hover {
     outline: 0
 }
 
@@ -68,12 +73,13 @@ div.animbrand a:focus, div.animbrand a:hover {
     font-size: 0.9rem;
 }
 
-    .navbar .dropdown-menu .dropdown-item {
-        color: var(--bs-white);
-        line-height: 1.7rem;
-    }
+.navbar .dropdown-menu .dropdown-item {
+    color: var(--bs-white);
+    line-height: 1.7rem;
+}
 
-.navbar .dropdown-item.active, .dropdown-item:hover {
+.navbar .dropdown-item.active,
+.dropdown-item:hover {
     background-color: var(--accent-color3);
     color: var(--bs-white);
     text-decoration: none;
@@ -83,9 +89,10 @@ div.animbrand a:focus, div.animbrand a:hover {
     color: var(--transparent-light-70);
 }
 
-    .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
-        color: var(--bs-white);
-    }
+.navbar-dark .navbar-nav .nav-link:focus,
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--bs-white);
+}
 
 .nav-link strong {
     font-weight: 500;
@@ -108,21 +115,23 @@ div.animbrand a:focus, div.animbrand a:hover {
     width: 230px;
 }
 
-    .form-control#term::-webkit-input-placeholder {
-        color: var(--bs-white) !important;
-    }
+.form-control#term::-webkit-input-placeholder {
+    color: var(--bs-white) !important;
+}
 
-    .form-control#term:-moz-placeholder { /* Firefox 18- */
-        color: var(--bs-white) !important;
-    }
+.form-control#term:-moz-placeholder {
+    /* Firefox 18- */
+    color: var(--bs-white) !important;
+}
 
-    .form-control#term::-moz-placeholder { /* Firefox 19+ */
-        color: var(--bs-white) !important;
-    }
+.form-control#term::-moz-placeholder {
+    /* Firefox 19+ */
+    color: var(--bs-white) !important;
+}
 
-    .form-control#term:-ms-input-placeholder {
-        color: var(--bs-white) !important;
-    }
+.form-control#term:-ms-input-placeholder {
+    color: var(--bs-white) !important;
+}
 
 .form-control#search:focus {
     -ms-box-shadow: none;
