@@ -94,7 +94,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{9505
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{2C27F5AF-7A99-4B49-A053-8E3486319F2B}"
 	ProjectSection(SolutionItems) = preProject
-		..\.github\workflows\acr.yml = ..\.github\workflows\acr.yml
 		..\.github\workflows\docker.yml = ..\.github\workflows\docker.yml
 		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
 	EndProjectSection
@@ -103,7 +102,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.Tests", "Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Theme", "Moonglade.Theme\Moonglade.Theme.csproj", "{59770DF9-9CC5-4912-8677-5E99DA9C96CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Theme.Tests", "Tests\Moonglade.Theme.Tests\Moonglade.Theme.Tests.csproj", "{035A45DD-E42D-4E36-888D-28633E3F7EE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Theme.Tests", "Tests\Moonglade.Theme.Tests\Moonglade.Theme.Tests.csproj", "{035A45DD-E42D-4E36-888D-28633E3F7EE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
