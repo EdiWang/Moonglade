@@ -142,6 +142,7 @@ namespace Moonglade.Web.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("siteicon")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
