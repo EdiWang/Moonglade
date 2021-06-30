@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -220,27 +218,6 @@ namespace Moonglade.Web.Controllers
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, "Watermark Settings updated.");
-
-            return NoContent();
-        }
-
-        [HttpPost("siteicon")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> SetSiteIcon([FromForm] string base64Img)
-        {
-            base64Img = base64Img.Trim();
-            if (!Helper.TryParseBase64(base64Img, out var base64Chars))
-            {
-                _logger.LogWarning("Bad base64 is used when setting site icon.");
-                return Conflict("Bad base64 data");
-            }
-
-            using var bmp = new Bitmap(new MemoryStream(base64Chars));
-            if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
-
-            await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
-            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "Site icon updated.");
 
             return NoContent();
         }

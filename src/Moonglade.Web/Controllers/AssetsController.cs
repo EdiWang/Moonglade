@@ -142,6 +142,26 @@ namespace Moonglade.Web.Controllers
             }
         }
 
+        [HttpPost("siteicon")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> UpdateSiteIcon([FromForm] string base64Img)
+        {
+            base64Img = base64Img.Trim();
+            if (!Helper.TryParseBase64(base64Img, out var base64Chars))
+            {
+                _logger.LogWarning("Bad base64 is used when setting site icon.");
+                return Conflict("Bad base64 data");
+            }
+
+            using var bmp = new Bitmap(new MemoryStream(base64Chars));
+            if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
+
+            await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
+
+            return NoContent();
+        }
+
         #endregion
     }
 }
