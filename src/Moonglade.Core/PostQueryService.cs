@@ -232,7 +232,7 @@ namespace Moonglade.Core
                 case PostStatus.Deleted:
                     countExp.AndAlso(p => p.IsDeleted);
                     break;
-                case PostStatus.NotSet:
+                case PostStatus.Default:
                     countExp.AndAlso(p => true);
                     break;
                 default:

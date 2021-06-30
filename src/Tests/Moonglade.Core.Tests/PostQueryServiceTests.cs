@@ -151,7 +151,7 @@ namespace Moonglade.Core.Tests
         [TestCase(PostStatus.Published)]
         [TestCase(PostStatus.Deleted)]
         [TestCase(PostStatus.Draft)]
-        [TestCase(PostStatus.NotSet)]
+        [TestCase(PostStatus.Default)]
         public async Task ListSegment_WithPaging(PostStatus postStatus)
         {
             IReadOnlyList<PostSegment> segments = new List<PostSegment>()
