@@ -108,14 +108,17 @@
                                     <span asp-validation-for="ViewModel.LogoText" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-1">
                                 <label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
                                 <input asp-for="ViewModel.MetaKeyword" class="form-control" />
                                 <span asp-validation-for="ViewModel.MetaKeyword" class="text-danger"></span>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" asp-for="ViewModel.MetaDescription"></label>
-                                <textarea asp-for="ViewModel.MetaDescription" class="form-control"></textarea>
+                                <div class="form-floating">
+                                    <textarea asp-for="ViewModel.MetaDescription" placeholder="@Html.DisplayNameFor(m => m.ViewModel.MetaDescription)"
+                                  class="form-control h-100px"></textarea>
+                                    <label class="form-label" asp-for="ViewModel.MetaDescription"></label>
+                                </div>
                                 <span asp-validation-for="ViewModel.MetaDescription" class="text-danger"></span>
                             </div>
                             <div class="mb-3">
@@ -156,8 +159,13 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" asp-for="ViewModel.OwnerDescription"></label>
-                                <textarea asp-for="ViewModel.OwnerDescription" class="form-control"></textarea>
+                                <div class="form-floating">
+                                    <textarea asp-for="ViewModel.OwnerDescription"
+                                              placeholder="@Html.DisplayNameFor(m => m.ViewModel.OwnerDescription)"
+                                              class="form-control h-100px"
+                                              spellcheck="false" cols="10" rows="10"></textarea>
+                                    <label class="form-label" asp-for="ViewModel.OwnerDescription"></label>
+                                </div>
                                 <span asp-validation-for="ViewModel.OwnerDescription" class="text-danger"></span>
                             </div>
                             <div>
@@ -218,11 +226,16 @@
                             <label class="form-check-label" for="@SideBarOption.Disabled.ToString()">@Localizer["Disabled"]</label>
                         </div>
                     </div>
-                    <div>
+                    <div class="form-floating">
+                        <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
+                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
+                                  class="form-control form-control-sm h-100px textarea-code" 
+                                  spellcheck="false"
+                                  cols="10" 
+                                  rows="10"></textarea>
                         <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
-                        <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" cols="10" rows="10"></textarea>
-                        <span asp-validation-for="ViewModel.SideBarCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
+                    <span asp-validation-for="ViewModel.SideBarCustomizedHtmlPitch" class="text-danger"></span>
                 </div>
                 <hr />
                 <div class="card-body">
@@ -235,11 +248,14 @@
                         <p class="text-muted">@Localizer["Use [c] for copyright mark: &copy;, [year] for current year."]</p>
                         <span asp-validation-for="ViewModel.Copyright" class="text-danger"></span>
                     </div>
-                    <div>
+                    <div class="form-floating">
+                        <textarea asp-for="ViewModel.FooterCustomizedHtmlPitch" 
+                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.FooterCustomizedHtmlPitch)"
+                                  class="form-control form-control-sm h-100px textarea-code"
+                                  spellcheck="false" rows="10" cols="10"></textarea>
                         <label class="form-label" asp-for="ViewModel.FooterCustomizedHtmlPitch"></label>
-                        <textarea asp-for="ViewModel.FooterCustomizedHtmlPitch" class="form-control textarea-code" spellcheck="false" rows="10" cols="10"></textarea>
-                        <span asp-validation-for="ViewModel.FooterCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
+                    <span asp-validation-for="ViewModel.FooterCustomizedHtmlPitch" class="text-danger"></span>
                 </div>
             </div>
         </div>

@@ -74,14 +74,6 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header">@Localizer["Blog posts"]</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-input">
-                            <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
                 <div class="card-body">
                     <div class="row g-2 mb-3">
                         <div class="col">
@@ -97,6 +89,12 @@
                     </div>
                 </div>
                 <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-input">
+                            <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-label"></label>
+                        </div>
+                    </li>
                     <li class="list-group-item">
                         <div class="form-check form-switch">
                             <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="form-check-input">
