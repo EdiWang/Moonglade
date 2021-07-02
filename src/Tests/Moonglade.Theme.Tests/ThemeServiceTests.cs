@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
@@ -75,20 +76,67 @@ namespace Moonglade.Theme.Tests
         //    this.mockRepository.VerifyAll();
         //}
 
-        //[Test]
-        //public async Task Delete_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var service = this.CreateService();
-        //    int id = 0;
+        [Test]
+        public async Task Delete_Done()
+        {
+            // Arrange
+            _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
+                .Returns(ValueTask.FromResult(new BlogThemeEntity()
+                {
+                    Id = 996,
+                    ThemeName = "996",
+                    CssRules = string.Empty,
+                    ThemeType = ThemeType.User
+                }));
+            var service = CreateService();
+            int id = 996;
 
-        //    // Act
-        //    var result = await service.Delete(
-        //        id);
+            // Act
+            var result = await service.Delete(id);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    this.mockRepository.VerifyAll();
-        //}
+            // Assert
+            _mockThemeRepository.Verify(p => p.DeleteAsync(It.IsAny<int>()));
+            Assert.AreEqual(OperationCode.Done, result);
+        }
+
+        [Test]
+        public async Task Delete_SystemTheme()
+        {
+            // Arrange
+            _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
+                .Returns(ValueTask.FromResult(new BlogThemeEntity()
+                {
+                    Id = 996,
+                    ThemeName = "996",
+                    CssRules = string.Empty,
+                    ThemeType = ThemeType.System
+                }));
+            var service = CreateService();
+            int id = 996;
+
+            // Act
+            var result = await service.Delete(id);
+
+            // Assert
+            _mockThemeRepository.Verify(p => p.DeleteAsync(It.IsAny<int>()), Times.Never);
+            Assert.AreEqual(OperationCode.Canceled, result);
+        }
+
+        [Test]
+        public async Task Delete_NotFound()
+        {
+            // Arrange
+            _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
+                .Returns(ValueTask.FromResult((BlogThemeEntity)null));
+            var service = CreateService();
+            int id = 996;
+
+            // Act
+            var result = await service.Delete(id);
+
+            // Assert
+            _mockThemeRepository.Verify(p => p.DeleteAsync(It.IsAny<int>()), Times.Never);
+            Assert.AreEqual(OperationCode.ObjectNotFound, result);
+        }
     }
 }
