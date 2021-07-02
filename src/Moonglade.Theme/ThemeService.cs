@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
@@ -61,24 +62,27 @@ namespace Moonglade.Theme
                 throw new InvalidDataException($"Theme id '{id}' is having empty CSS Rules");
             }
 
-            var rules = JsonSerializer.Deserialize<IDictionary<string, string>>(theme.CssRules);
-            if (null == rules)
+            try
+            {
+                var rules = JsonSerializer.Deserialize<IDictionary<string, string>>(theme.CssRules);
+
+                var sb = new StringBuilder();
+                sb.Append(":root {");
+                foreach (var (key, value) in rules)
+                {
+                    if (null != key && null != value)
+                    {
+                        sb.Append($"{key}: {value};");
+                    }
+                }
+                sb.Append('}');
+
+                return sb.ToString();
+            }
+            catch (JsonException)
             {
                 throw new InvalidDataException($"Theme id '{id}' CssRules is not a valid json");
             }
-
-            var sb = new StringBuilder();
-            sb.Append(":root {");
-            foreach (var (key, value) in rules)
-            {
-                if (null != key && null != value)
-                {
-                    sb.Append($"{key}: {value};");
-                }
-            }
-            sb.Append('}');
-
-            return sb.ToString();
         }
 
         public async Task<OperationCode> Delete(int id)

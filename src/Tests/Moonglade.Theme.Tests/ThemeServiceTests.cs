@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moonglade.Data;
@@ -60,28 +61,58 @@ namespace Moonglade.Theme.Tests
         //    this.mockRepository.VerifyAll();
         //}
 
-        //[Test]
-        //public async Task GetStyleSheet_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var service = this.CreateService();
-        //    int id = 0;
+        [Test]
+        public void GetStyleSheet_EmptyCSS()
+        {
+            // Arrange
+            _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
+                .Returns(ValueTask.FromResult(new BlogThemeEntity
+                {
+                    Id = 996,
+                    ThemeName = "996",
+                    CssRules = string.Empty,
+                    ThemeType = ThemeType.User
+                }));
+            var service = CreateService();
+            int id = 0;
 
-        //    // Act
-        //    var result = await service.GetStyleSheet(
-        //        id);
+            // Act
+            Assert.ThrowsAsync<InvalidDataException>(async () =>
+            {
+                var result = await service.GetStyleSheet(
+                    id);
+            });
+        }
 
-        //    // Assert
-        //    Assert.Fail();
-        //    this.mockRepository.VerifyAll();
-        //}
+        [Test]
+        public void GetStyleSheet_BadCSS()
+        {
+            // Arrange
+            _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
+                .Returns(ValueTask.FromResult(new BlogThemeEntity
+                {
+                    Id = 996,
+                    ThemeName = "996",
+                    CssRules = "work 996",
+                    ThemeType = ThemeType.User
+                }));
+            var service = CreateService();
+            int id = 0;
+
+            // Act
+            Assert.ThrowsAsync<InvalidDataException>(async () =>
+            {
+                var result = await service.GetStyleSheet(
+                    id);
+            });
+        }
 
         [Test]
         public async Task Delete_Done()
         {
             // Arrange
             _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
-                .Returns(ValueTask.FromResult(new BlogThemeEntity()
+                .Returns(ValueTask.FromResult(new BlogThemeEntity
                 {
                     Id = 996,
                     ThemeName = "996",
@@ -104,7 +135,7 @@ namespace Moonglade.Theme.Tests
         {
             // Arrange
             _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
-                .Returns(ValueTask.FromResult(new BlogThemeEntity()
+                .Returns(ValueTask.FromResult(new BlogThemeEntity
                 {
                     Id = 996,
                     ThemeName = "996",
