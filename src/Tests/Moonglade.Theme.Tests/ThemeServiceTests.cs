@@ -108,6 +108,28 @@ namespace Moonglade.Theme.Tests
         }
 
         [Test]
+        public async Task GetStyleSheet_GoodCSS()
+        {
+            // Arrange
+            _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
+                .Returns(ValueTask.FromResult(new BlogThemeEntity
+                {
+                    Id = 996,
+                    ThemeName = "996",
+                    CssRules = "{\"--honestman-hat\": \"green !important\"}",
+                    ThemeType = ThemeType.User
+                }));
+            var service = CreateService();
+            int id = 0;
+
+            // Act
+            var result = await service.GetStyleSheet(
+                id);
+
+            Assert.AreEqual(":root {--honestman-hat: green !important;}", result);
+        }
+
+        [Test]
         public async Task Delete_Done()
         {
             // Arrange
