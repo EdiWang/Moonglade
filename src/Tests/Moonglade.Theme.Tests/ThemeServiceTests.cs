@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -43,23 +45,21 @@ namespace Moonglade.Theme.Tests
             Assert.Pass();
         }
 
-        //[Test]
-        //public async Task Create_StateUnderTest_ExpectedBehavior()
-        //{
-        //    // Arrange
-        //    var service = this.CreateService();
-        //    string name = null;
-        //    IDictionary cssRules = null;
+        [Test]
+        public async Task Create_Exists()
+        {
+            // Arrange
+            _mockThemeRepository.Setup(p => p.Any(It.IsAny<Expression<Func<BlogThemeEntity, bool>>>())).Returns(true);
+            var service = CreateService();
+            string name = "Honest Man";
+            var cssRules = new Dictionary<string, string>();
 
-        //    // Act
-        //    var result = await service.Create(
-        //        name,
-        //        cssRules);
+            // Act
+            var result = await service.Create(name, cssRules);
 
-        //    // Assert
-        //    Assert.Fail();
-        //    this.mockRepository.VerifyAll();
-        //}
+            // Assert
+            Assert.AreEqual(0, result);
+        }
 
         [Test]
         public void GetStyleSheet_EmptyCSS()
