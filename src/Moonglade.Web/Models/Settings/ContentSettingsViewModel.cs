@@ -22,9 +22,6 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Word Filter Mode")]
         public string WordFilterMode { get; set; }
 
-        [Display(Name = "Use Friendly 404 Image")]
-        public bool UseFriendlyNotFoundImage { get; set; }
-
         [Required]
         [Display(Name = "Post List Page Size")]
         [Range(1, 100, ErrorMessage = "Page Size can only range from 1-1024")]

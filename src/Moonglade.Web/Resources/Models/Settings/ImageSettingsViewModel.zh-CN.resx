@@ -132,4 +132,7 @@
   <data name="Please enter watermark text" xml:space="preserve">
     <value>请输入水印文字</value>
   </data>
+  <data name="Use Friendly 404 Image" xml:space="preserve">
+    <value>启用友好404图片</value>
+  </data>
 </root>

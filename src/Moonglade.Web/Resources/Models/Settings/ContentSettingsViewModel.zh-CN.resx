@@ -162,9 +162,6 @@
   <data name="This field is required." xml:space="preserve">
     <value>必填</value>
   </data>
-  <data name="Use Friendly 404 Image" xml:space="preserve">
-    <value>启用友好404图片</value>
-  </data>
   <data name="Word Filter Mode" xml:space="preserve">
     <value>违禁词屏蔽模式</value>
   </data>

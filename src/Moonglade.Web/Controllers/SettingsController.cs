@@ -142,7 +142,6 @@ namespace Moonglade.Web.Controllers
             _blogConfig.ContentSettings.RequireCommentReview = model.RequireCommentReview;
             _blogConfig.ContentSettings.EnableWordFilter = model.EnableWordFilter;
             _blogConfig.ContentSettings.WordFilterMode = Enum.Parse<WordFilterMode>(model.WordFilterMode);
-            _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
             _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
             _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
             _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
@@ -210,11 +209,12 @@ namespace Moonglade.Web.Controllers
         {
             var model = wrapperModel.ViewModel;
 
-            var settings = _blogConfig.WatermarkSettings;
-            settings.IsEnabled = model.IsEnabled;
+            var settings = _blogConfig.ImageSettings;
+            settings.IsWatermarkEnabled = model.IsWatermarkEnabled;
             settings.KeepOriginImage = model.KeepOriginImage;
-            settings.FontSize = model.FontSize;
+            settings.WatermarkFontSize = model.WatermarkFontSize;
             settings.WatermarkText = model.WatermarkText;
+            settings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");

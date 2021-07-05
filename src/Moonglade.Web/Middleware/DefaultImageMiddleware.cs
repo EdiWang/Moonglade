@@ -28,7 +28,7 @@ namespace Moonglade.Web.Middleware
 
             if (context.Response.StatusCode == StatusCodes.Status404NotFound &&
                 context.Request.Path.StartsWithSegments("/image") &&
-                blogConfig.ContentSettings.UseFriendlyNotFoundImage)
+                blogConfig.ImageSettings.UseFriendlyNotFoundImage)
             {
                 var ext = Path.GetExtension(context.Request.Path);
                 var contentType = context.Request.Headers["accept"].ToString().ToLower();

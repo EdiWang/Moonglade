@@ -23,7 +23,6 @@ namespace Moonglade.Web.Pages.Settings
                 RequireCommentReview = _blogConfig.ContentSettings.RequireCommentReview,
                 EnableWordFilter = _blogConfig.ContentSettings.EnableWordFilter,
                 WordFilterMode = _blogConfig.ContentSettings.WordFilterMode.ToString(),
-                UseFriendlyNotFoundImage = _blogConfig.ContentSettings.UseFriendlyNotFoundImage,
                 PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
                 HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
                 EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,

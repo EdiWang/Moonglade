@@ -16,13 +16,14 @@ namespace Moonglade.Web.Pages.Settings
 
         public void OnGet()
         {
-            var settings = _blogConfig.WatermarkSettings;
+            var settings = _blogConfig.ImageSettings;
             ViewModel = new()
             {
-                IsEnabled = settings.IsEnabled,
+                IsWatermarkEnabled = settings.IsWatermarkEnabled,
                 KeepOriginImage = settings.KeepOriginImage,
-                FontSize = settings.FontSize,
-                WatermarkText = settings.WatermarkText
+                WatermarkFontSize = settings.WatermarkFontSize,
+                WatermarkText = settings.WatermarkText,
+                UseFriendlyNotFoundImage = settings.UseFriendlyNotFoundImage
             };
         }
     }

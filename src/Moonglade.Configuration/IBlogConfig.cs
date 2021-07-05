@@ -13,7 +13,7 @@ namespace Moonglade.Configuration
         ContentSettings ContentSettings { get; set; }
         NotificationSettings NotificationSettings { get; set; }
         FeedSettings FeedSettings { get; set; }
-        WatermarkSettings WatermarkSettings { get; set; }
+        ImageSettings ImageSettings { get; set; }
         AdvancedSettings AdvancedSettings { get; set; }
         CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
