@@ -158,80 +158,6 @@
                             <label asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-label"></label>
                         </div>
                     </li>
-                </ul>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">
-                    CDN
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableCDNRedirect" class="form-check-input">
-                            <label asp-for="ViewModel.EnableCDNRedirect" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="input-group mb-2">
-                        <div class="input-group-text">@Localizer["Endpoint"]</div>
-                        <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
-                    </div>
-                    <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
-                    <small class="form-text text-muted">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</small>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    Robots.txt
-                </div>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
-                        <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    MetaWeblog
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableMetaWeblog" class="form-check-input">
-                            <label asp-for="ViewModel.EnableMetaWeblog" class="form-check-label"></label>
-                        </div>
-                        <small class="form-text text-muted">@Localizer["* Requires restarting application"]</small>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-7">
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    @Localizer["Password"]
-                                </div>
-                                <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" />
-                            </div>
-                            <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
-                            <small class="form-text text-muted">@Localizer["Leave blank if you don't need to change password."]</small>
-                            <small class="form-text text-muted">@Localizer["* Username: moonglade"]</small>
-                        </div>
-                        <div class="col-auto">
-                            <a href="javascript:;" class="btn btn-outline-accent" onclick="generateMetaWeblogPassword()">@Localizer["Generate Password"]</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card mb-4">
-                <div class="card-header">@Localizer["Security Settings"]</div>
-
-                <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="form-check form-switch">
                             <input type="checkbox" asp-for="ViewModel.WarnExternalLink" class="form-check-input">
@@ -251,6 +177,62 @@
                         </div>
                     </li>
                 </ul>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label asp-for="ViewModel.RobotsTxtContent" class="form-label"></label>
+                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                        <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    More
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-3 text-muted">
+                        MetaWeblog
+                    </h6>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" asp-for="ViewModel.EnableMetaWeblog" class="form-check-input">
+                        <label asp-for="ViewModel.EnableMetaWeblog" class="form-check-label"></label>
+                        <small class="form-text text-muted">@Localizer["* Requires restarting application"]</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    @Localizer["Password"]
+                                </div>
+                                <input asp-for="ViewModel.MetaWeblogPassword" class="form-control"/>
+                            </div>
+                            <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
+                            <small class="form-text text-muted">@Localizer["Leave blank if you don't need to change password."]</small>
+                            <small class="form-text text-muted">@Localizer["* Username: moonglade"]</small>
+                        </div>
+                        <div class="col-auto">
+                            <a href="javascript:;" class="btn btn-outline-accent" onclick="generateMetaWeblogPassword()">@Localizer["Generate Password"]</a>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-3 text-muted">
+                        CDN
+                    </h6>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" asp-for="ViewModel.EnableCDNRedirect" class="form-check-input">
+                        <label asp-for="ViewModel.EnableCDNRedirect" class="form-check-label"></label>
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-text">@Localizer["Endpoint"]</div>
+                        <input asp-for="ViewModel.CDNEndpoint" class="form-control"/>
+                    </div>
+                    <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
+                    <small class="form-text text-muted">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</small>
+                </div>
             </div>
             <div class="card">
                 <div class="card-header">
