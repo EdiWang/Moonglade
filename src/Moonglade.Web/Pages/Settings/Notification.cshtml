@@ -52,8 +52,11 @@
                         <input asp-for="ViewModel.EmailDisplayName" class="form-control" />
                         <span asp-validation-for="ViewModel.EmailDisplayName" class="text-danger"></span>
                     </div>
-
-                    <hr />
+                    <div class="mb-2">
+                        <label class="form-label" asp-for="ViewModel.AzureFunctionEndpoint"></label>
+                        <input asp-for="ViewModel.AzureFunctionEndpoint" class="form-control" />
+                        <span asp-validation-for="ViewModel.AzureFunctionEndpoint" class="text-danger"></span>
+                    </div>
                     <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
                         <i class="bi-envelope"></i>
                         @Localizer["Send Test Email"]
@@ -84,13 +87,6 @@
                         </div>
                     </li>
                 </ul>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <label class="form-label" asp-for="ViewModel.AzureFunctionEndpoint"></label>
-                        <input asp-for="ViewModel.AzureFunctionEndpoint" class="form-control" />
-                        <span asp-validation-for="ViewModel.AzureFunctionEndpoint" class="text-danger"></span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
