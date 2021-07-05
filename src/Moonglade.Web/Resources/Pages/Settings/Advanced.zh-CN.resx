@@ -126,20 +126,11 @@
   <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
     <value>你确定要重启网站吗？所有当前请求都会被终止。</value>
   </data>
-  <data name="Clear" xml:space="preserve">
-    <value>清除</value>
-  </data>
-  <data name="Clear Data Cache" xml:space="preserve">
-    <value>清空数据缓存</value>
-  </data>
   <data name="Delete cached objects both in memory and on disk" xml:space="preserve">
     <value>删除内存及磁盘上的数据对象</value>
   </data>
   <data name="Erase all data and configuration." xml:space="preserve">
     <value>抹除所有数据及配置</value>
-  </data>
-  <data name="Memory Caches" xml:space="preserve">
-    <value>内存缓存</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>选项</value>

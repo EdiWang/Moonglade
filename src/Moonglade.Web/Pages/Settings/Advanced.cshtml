@@ -73,37 +73,6 @@
             });
         });
 
-        var btnClearCache = '.btn-clearcache';
-        var onClearCacheBegin = function () {
-            $(btnClearCache).text('Processing...');
-            $(btnClearCache).addClass('disabled');
-            $(btnClearCache).attr('disabled', 'disabled');
-        };
-
-        var onClearCacheComplete = function () {
-            $(btnClearCache).text('Clear');
-            $(btnClearCache).removeClass('disabled');
-            $(btnClearCache).removeAttr('disabled');
-        };
-
-        var onClearCacheSuccess = function (context) {
-            $('#cacheModal').modal('hide');
-            if (blogToast) {
-                blogToast.success('Cleared Cache');
-            } else {
-                alert('Cleared Cache');
-            }
-        };
-
-        var onClearCacheFailed = function (context) {
-            var msg = buildErrorMessage(context);
-            if (blogToast) {
-                blogToast.error(`Server Error: ${msg}`);
-            } else {
-                alert(`Error Code: ${msg}`);
-            }
-        };
-
         function generateMetaWeblogPassword() {
             callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
                 var data = await resp.json();
@@ -235,12 +204,6 @@
                 <div class="card-body">
                     <div class="row row-cols-2 g-3">
                         <div class="col">
-                            <h6>@Localizer["Clear Data Cache"]</h6>
-                            <hr />
-                            <p>@Localizer["Delete cached objects both in memory and on disk"]</p>
-                            <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#cacheModal">@Localizer["Clear"]</a>
-                        </div>
-                        <div class="col">
                             <h6>@Localizer["Update"]</h6>
                             <hr />
 
@@ -281,40 +244,6 @@
         <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
     </div>
 </form>
-
-<div class="modal fade" id="cacheModal" tabindex="-1" role="dialog" aria-labelledby="cacheModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cacheModalLabel">@Localizer["Clear Data Cache"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <form id="form-clearcache" asp-controller="Settings" asp-action="ClearDataCache"
-                  data-ajax-begin="onClearCacheBegin"
-                  data-ajax-complete="onClearCacheComplete"
-                  data-ajax-failure="onClearCacheFailed"
-                  data-ajax-success="onClearCacheSuccess"
-                  data-ajax="true"
-                  data-ajax-method="POST">
-                <div class="modal-body">
-                    <ul class="list-unstyled">
-                        <li>
-                            <div class="form-check">
-                                <input id="MCO_IMEM" value="MCO_IMEM" name="cachedObjectValues" class="form-check-input" type="checkbox">
-                                <label for="MCO_IMEM" class="form-check-label">@Localizer["Memory Caches"]</label>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger btn-clearcache">@Localizer["Clear"]</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
