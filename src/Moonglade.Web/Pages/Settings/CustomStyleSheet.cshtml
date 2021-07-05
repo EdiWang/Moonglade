@@ -65,29 +65,22 @@
       data-ajax="true"
       data-ajax-method="POST">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-    <div class="row">
-        <div class="col-md-9 col-xl-10">
-            <div>
-                <span asp-validation-for="ViewModel.CssCode" class="text-danger"></span>
+    <div class="card">
+        <div class="card-header">
+            Custom CSS
+        </div>
+        <div class="card-body">
+            <div class="form-check form-switch mb-3">
+                <input type="checkbox" asp-for="ViewModel.EnableCustomCss" class="form-check-input">
+                <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
             </div>
 
             <div id="CssContentEditor" class="monaco-target">
 
             </div>
             <textarea asp-for="ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
-        </div>
-
-        <div class="col-md-3 col-xl-2">
-            <div class="card mb-4">
-                <div class="card-header">Options</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableCustomCss" class="form-check-input">
-                            <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
+            <div>
+                <span asp-validation-for="ViewModel.CssCode" class="text-danger"></span>
             </div>
         </div>
     </div>
