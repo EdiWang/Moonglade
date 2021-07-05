@@ -195,14 +195,14 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Image_Post()
         {
-            _mockBlogConfig.Setup(p => p.WatermarkSettings).Returns(new WatermarkSettings());
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
             ImageSettingsViewModel model = new();
 
             var result = await settingsController.Image(new(model));
 
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<WatermarkSettings>()));
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
         }
 

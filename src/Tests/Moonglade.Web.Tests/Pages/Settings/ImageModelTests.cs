@@ -27,7 +27,7 @@ namespace Moonglade.Web.Tests.Pages.Settings
         [Test]
         public void OnGet_StateUnderTest_ExpectedBehavior()
         {
-            _mockBlogConfig.Setup(p => p.WatermarkSettings).Returns(new WatermarkSettings());
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
 
             var watermarkModel = CreateWatermarkModel();
             watermarkModel.OnGet();

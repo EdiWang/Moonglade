@@ -19,8 +19,14 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.IsEnabled" class="form-check-input">
-                            <label asp-for="ViewModel.IsEnabled" class="form-check-label"></label>
+                            <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-input">
+                            <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-label"></label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.IsWatermarkEnabled" class="form-check-input">
+                            <label asp-for="ViewModel.IsWatermarkEnabled" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
@@ -32,9 +38,9 @@
                 </ul>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label" asp-for="ViewModel.FontSize"></label>
-                        <input asp-for="ViewModel.FontSize" class="form-control" />
-                        <span asp-validation-for="ViewModel.FontSize" class="text-danger"></span>
+                        <label class="form-label" asp-for="ViewModel.WatermarkFontSize"></label>
+                        <input asp-for="ViewModel.WatermarkFontSize" class="form-control" />
+                        <span asp-validation-for="ViewModel.WatermarkFontSize" class="text-danger"></span>
                     </div>
                     <div>
                         <label class="form-label" asp-for="ViewModel.WatermarkText"></label>
