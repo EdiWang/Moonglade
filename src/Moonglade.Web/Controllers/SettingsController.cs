@@ -103,23 +103,24 @@ namespace Moonglade.Web.Controllers
         {
             var model = wrapperModel.ViewModel;
 
-            _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
-            _blogConfig.GeneralSettings.MetaDescription = model.MetaDescription;
-            _blogConfig.GeneralSettings.CanonicalPrefix = model.CanonicalPrefix;
-            _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
-            _blogConfig.GeneralSettings.Copyright = model.Copyright;
-            _blogConfig.GeneralSettings.LogoText = model.LogoText;
-            _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
-            _blogConfig.GeneralSettings.SideBarOption = Enum.Parse<SideBarOption>(model.SideBarOption);
-            _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-            _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
-            _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
-            _blogConfig.GeneralSettings.ThemeId = model.SelectedThemeId;
-            _blogConfig.GeneralSettings.OwnerName = model.OwnerName;
-            _blogConfig.GeneralSettings.OwnerEmail = model.OwnerEmail;
-            _blogConfig.GeneralSettings.Description = model.OwnerDescription;
-            _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
-            _blogConfig.GeneralSettings.AutoDarkLightTheme = model.AutoDarkLightTheme;
+            var settings = _blogConfig.GeneralSettings;
+            settings.MetaKeyword = model.MetaKeyword;
+            settings.MetaDescription = model.MetaDescription;
+            settings.CanonicalPrefix = model.CanonicalPrefix;
+            settings.SiteTitle = model.SiteTitle;
+            settings.Copyright = model.Copyright;
+            settings.LogoText = model.LogoText;
+            settings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
+            settings.SideBarOption = Enum.Parse<SideBarOption>(model.SideBarOption);
+            settings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
+            settings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
+            settings.TimeZoneId = model.SelectedTimeZoneId;
+            settings.ThemeId = model.SelectedThemeId;
+            settings.OwnerName = model.OwnerName;
+            settings.OwnerEmail = model.OwnerEmail;
+            settings.Description = model.OwnerDescription;
+            settings.ShortDescription = model.OwnerShortDescription;
+            settings.AutoDarkLightTheme = model.AutoDarkLightTheme;
 
             await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
 
@@ -136,18 +137,19 @@ namespace Moonglade.Web.Controllers
         {
             var model = wrapperModel.ViewModel;
 
-            _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
-            _blogConfig.ContentSettings.EnableComments = model.EnableComments;
-            _blogConfig.ContentSettings.RequireCommentReview = model.RequireCommentReview;
-            _blogConfig.ContentSettings.EnableWordFilter = model.EnableWordFilter;
-            _blogConfig.ContentSettings.WordFilterMode = Enum.Parse<WordFilterMode>(model.WordFilterMode);
-            _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
-            _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
-            _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
-            _blogConfig.ContentSettings.ShowCalloutSection = model.ShowCalloutSection;
-            _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
-            _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
-            _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
+            var settings = _blogConfig.ContentSettings;
+            settings.DisharmonyWords = model.DisharmonyWords;
+            settings.EnableComments = model.EnableComments;
+            settings.RequireCommentReview = model.RequireCommentReview;
+            settings.EnableWordFilter = model.EnableWordFilter;
+            settings.WordFilterMode = Enum.Parse<WordFilterMode>(model.WordFilterMode);
+            settings.PostListPageSize = model.PostListPageSize;
+            settings.HotTagAmount = model.HotTagAmount;
+            settings.EnableGravatar = model.EnableGravatar;
+            settings.ShowCalloutSection = model.ShowCalloutSection;
+            settings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
+            settings.ShowPostFooter = model.ShowPostFooter;
+            settings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
 
             await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");
