@@ -138,8 +138,8 @@
   <data name="Subscription" xml:space="preserve">
     <value>订阅</value>
   </data>
-  <data name="Watermark" xml:space="preserve">
-    <value>水印</value>
+  <data name="Image" xml:space="preserve">
+    <value>图片</value>
   </data>
   <data name="Custom CSS" xml:space="preserve">
     <value>自定义 CSS</value>

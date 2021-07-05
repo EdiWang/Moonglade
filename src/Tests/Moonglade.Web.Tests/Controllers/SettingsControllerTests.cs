@@ -193,17 +193,17 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Watermark_Post()
+        public async Task Image_Post()
         {
             _mockBlogConfig.Setup(p => p.WatermarkSettings).Returns(new WatermarkSettings());
             var settingsController = CreateSettingsController();
-            WatermarkSettingsViewModel model = new();
+            ImageSettingsViewModel model = new();
 
-            var result = await settingsController.Watermark(new(model));
+            var result = await settingsController.Image(new(model));
 
             Assert.IsInstanceOf<NoContentResult>(result);
             _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<WatermarkSettings>()));
-            _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, It.IsAny<string>()));
+            _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
         }
 
         //[Test]

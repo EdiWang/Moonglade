@@ -206,7 +206,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("watermark")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Watermark([FromForm] MagicWrapper<WatermarkSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
@@ -217,7 +217,7 @@ namespace Moonglade.Web.Controllers
             settings.WatermarkText = model.WatermarkText;
 
             await _blogConfig.SaveAsync(settings);
-            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, "Watermark Settings updated.");
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
 
             return NoContent();
         }

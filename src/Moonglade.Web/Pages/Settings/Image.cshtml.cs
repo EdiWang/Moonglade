@@ -4,12 +4,12 @@ using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Pages.Settings
 {
-    public class WatermarkModel : PageModel
+    public class ImageModel : PageModel
     {
         private readonly IBlogConfig _blogConfig;
-        public WatermarkSettingsViewModel ViewModel { get; set; }
+        public ImageSettingsViewModel ViewModel { get; set; }
 
-        public WatermarkModel(IBlogConfig blogConfig)
+        public ImageModel(IBlogConfig blogConfig)
         {
             _blogConfig = blogConfig;
         }

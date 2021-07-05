@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Models.Settings
 {
-    public class WatermarkSettingsViewModel
+    public class ImageSettingsViewModel
     {
         [Display(Name = "Enabled Watermark")]
         public bool IsEnabled { get; set; }
