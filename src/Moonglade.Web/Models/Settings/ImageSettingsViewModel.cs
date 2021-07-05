@@ -21,5 +21,8 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Use Friendly 404 Image")]
         public bool UseFriendlyNotFoundImage { get; set; }
+
+        [Display(Name = "Fit Image to Device Pixel Ratio")]
+        public bool FitImageToDevicePixelRatio { get; set; }
     }
 }

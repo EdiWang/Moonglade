@@ -27,7 +27,6 @@ namespace Moonglade.Web.Pages.Settings
                 EnableOpenSearch = settings.EnableOpenSearch,
                 EnableMetaWeblog = settings.EnableMetaWeblog,
                 CDNEndpoint = settings.CDNEndpoint,
-                FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio,
                 WarnExternalLink = settings.WarnExternalLink,
                 AllowScriptsInPage = settings.AllowScriptsInPage,
                 ShowAdminLoginButton = settings.ShowAdminLoginButton

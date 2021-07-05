@@ -7,5 +7,6 @@
         public int WatermarkFontSize { get; set; }
         public string WatermarkText { get; set; }
         public bool UseFriendlyNotFoundImage { get; set; }
+        public bool FitImageToDevicePixelRatio { get; set; }
     }
 }

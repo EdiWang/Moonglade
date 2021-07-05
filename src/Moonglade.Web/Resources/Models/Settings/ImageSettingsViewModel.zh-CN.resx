@@ -135,4 +135,7 @@
   <data name="Use Friendly 404 Image" xml:space="preserve">
     <value>启用友好404图片</value>
   </data>
+  <data name="Fit Image to Device Pixel Ratio" xml:space="preserve">
+    <value>图片自动适配设备DPI</value>
+  </data>
 </root>

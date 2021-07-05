@@ -36,9 +36,6 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "MetaWeblog Password")]
         public string MetaWeblogPassword { get; set; }
 
-        [Display(Name = "Fit Image to Device Pixel Ratio")]
-        public bool FitImageToDevicePixelRatio { get; set; }
-
         [Display(Name = "Show warning when clicking external links")]
         public bool WarnExternalLink { get; set; }
 

@@ -23,7 +23,8 @@ namespace Moonglade.Web.Pages.Settings
                 KeepOriginImage = settings.KeepOriginImage,
                 WatermarkFontSize = settings.WatermarkFontSize,
                 WatermarkText = settings.WatermarkText,
-                UseFriendlyNotFoundImage = settings.UseFriendlyNotFoundImage
+                UseFriendlyNotFoundImage = settings.UseFriendlyNotFoundImage,
+                FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio
             };
         }
     }

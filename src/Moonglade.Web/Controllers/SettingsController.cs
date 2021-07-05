@@ -215,6 +215,7 @@ namespace Moonglade.Web.Controllers
             settings.WatermarkFontSize = model.WatermarkFontSize;
             settings.WatermarkText = model.WatermarkText;
             settings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
+            settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
@@ -235,7 +236,6 @@ namespace Moonglade.Web.Controllers
             settings.EnableOpenGraph = model.EnableOpenGraph;
             settings.EnableCDNRedirect = model.EnableCDNRedirect;
             settings.EnableOpenSearch = model.EnableOpenSearch;
-            settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
             settings.EnableMetaWeblog = model.EnableMetaWeblog;
             settings.WarnExternalLink = model.WarnExternalLink;
             settings.AllowScriptsInPage = model.AllowScriptsInPage;
