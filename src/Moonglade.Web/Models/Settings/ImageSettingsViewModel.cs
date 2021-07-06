@@ -24,5 +24,13 @@ namespace Moonglade.Web.Models.Settings
 
         [Display(Name = "Fit Image to Device Pixel Ratio")]
         public bool FitImageToDevicePixelRatio { get; set; }
+
+        [Display(Name = "Enable CDN for images")]
+        public bool EnableCDNRedirect { get; set; }
+
+        [DataType(DataType.Url)]
+        [MaxLength(128)]
+        [Display(Name = "CDN Endpoint")]
+        public string CDNEndpoint { get; set; }
     }
 }

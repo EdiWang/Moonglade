@@ -18,19 +18,11 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Enable OpenGraph")]
         public bool EnableOpenGraph { get; set; }
 
-        [Display(Name = "Enable CDN for images")]
-        public bool EnableCDNRedirect { get; set; }
-
         [Display(Name = "Enable MetaWeblog API")]
         public bool EnableMetaWeblog { get; set; }
 
         [Display(Name = "Enable OpenSearch")]
         public bool EnableOpenSearch { get; set; }
-
-        [DataType(DataType.Url)]
-        [MaxLength(128)]
-        [Display(Name = "CDN Endpoint")]
-        public string CDNEndpoint { get; set; }
 
         [MinLength(8), MaxLength(16)]
         [Display(Name = "MetaWeblog Password")]

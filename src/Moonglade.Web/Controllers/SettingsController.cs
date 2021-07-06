@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -217,6 +218,35 @@ namespace Moonglade.Web.Controllers
             settings.WatermarkText = model.WatermarkText;
             settings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
             settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
+            settings.EnableCDNRedirect = model.EnableCDNRedirect;
+
+            if (model.EnableCDNRedirect)
+            {
+                if (string.IsNullOrWhiteSpace(model.CDNEndpoint))
+                {
+                    settings.EnableCDNRedirect = false;
+
+                    ModelState.AddModelError(nameof(model.CDNEndpoint), $"{nameof(model.CDNEndpoint)} must be specified when {nameof(model.EnableCDNRedirect)} is enabled.");
+
+                    return BadRequest(ModelState.CombineErrorMessages());
+                }
+
+                _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
+
+                // Validate endpoint Url to avoid security risks
+                // But it still has risks:
+                // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
+
+                var endpoint = model.CDNEndpoint;
+                var isValidEndpoint = endpoint.IsValidUrl(UrlExtension.UrlScheme.Https);
+                if (!isValidEndpoint)
+                {
+                    ModelState.AddModelError(nameof(model.CDNEndpoint), "CDN Endpoint is not a valid HTTPS Url.");
+                    return BadRequest(ModelState.CombineErrorMessages());
+                }
+
+                settings.CDNEndpoint = model.CDNEndpoint;
+            }
 
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
@@ -235,7 +265,6 @@ namespace Moonglade.Web.Controllers
             settings.EnablePingBackSend = model.EnablePingbackSend;
             settings.EnablePingBackReceive = model.EnablePingbackReceive;
             settings.EnableOpenGraph = model.EnableOpenGraph;
-            settings.EnableCDNRedirect = model.EnableCDNRedirect;
             settings.EnableOpenSearch = model.EnableOpenSearch;
             settings.EnableMetaWeblog = model.EnableMetaWeblog;
             settings.WarnExternalLink = model.WarnExternalLink;
@@ -245,30 +274,6 @@ namespace Moonglade.Web.Controllers
             if (!string.IsNullOrWhiteSpace(model.MetaWeblogPassword))
             {
                 settings.MetaWeblogPasswordHash = Helper.HashPassword(model.MetaWeblogPassword);
-            }
-
-            if (model.EnableCDNRedirect)
-            {
-                if (string.IsNullOrWhiteSpace(model.CDNEndpoint))
-                {
-                    throw new ArgumentNullException(nameof(model.CDNEndpoint),
-                        $"{nameof(model.CDNEndpoint)} must be specified when {nameof(model.EnableCDNRedirect)} is enabled.");
-                }
-
-                _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
-
-                // Validate endpoint Url to avoid security risks
-                // But it still has risks:
-                // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
-
-                var endpoint = model.CDNEndpoint;
-                var isValidEndpoint = endpoint.IsValidUrl(UrlExtension.UrlScheme.Https);
-                if (!isValidEndpoint)
-                {
-                    throw new UriFormatException("CDN Endpoint is not a valid HTTPS Url.");
-                }
-
-                settings.CDNEndpoint = model.CDNEndpoint;
             }
 
             await _blogConfig.SaveAsync(settings);

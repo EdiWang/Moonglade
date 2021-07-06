@@ -24,7 +24,9 @@ namespace Moonglade.Web.Pages.Settings
                 WatermarkFontSize = settings.WatermarkFontSize,
                 WatermarkText = settings.WatermarkText,
                 UseFriendlyNotFoundImage = settings.UseFriendlyNotFoundImage,
-                FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio
+                FitImageToDevicePixelRatio = settings.FitImageToDevicePixelRatio,
+                EnableCDNRedirect = settings.EnableCDNRedirect,
+                CDNEndpoint = settings.CDNEndpoint
             };
         }
     }

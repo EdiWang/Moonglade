@@ -138,4 +138,7 @@
   <data name="Fit Image to Device Pixel Ratio" xml:space="preserve">
     <value>图片自动适配设备DPI</value>
   </data>
+  <data name="Enable CDN for images" xml:space="preserve">
+    <value>启用图片 CDN</value>
+  </data>
 </root>

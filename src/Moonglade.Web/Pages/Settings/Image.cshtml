@@ -54,6 +54,23 @@
                         <span asp-validation-for="ViewModel.WatermarkText" class="text-danger"></span>
                     </div>
                 </div>
+                
+                <hr/>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-3 text-muted">
+                        CDN
+                    </h6>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" asp-for="ViewModel.EnableCDNRedirect" class="form-check-input">
+                        <label asp-for="ViewModel.EnableCDNRedirect" class="form-check-label"></label>
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-text">@Localizer["Endpoint"]</div>
+                        <input asp-for="ViewModel.CDNEndpoint" class="form-control"/>
+                    </div>
+                    <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
+                    <small class="form-text text-muted">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</small>
+                </div>
             </div>
         </div>
     </div>

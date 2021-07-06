@@ -73,7 +73,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
             {
                 EnableCDNRedirect = true,
                 CDNEndpoint = "https://cdn.996.icu/fubao"
@@ -85,7 +85,7 @@ namespace Moonglade.Web.Tests.Controllers
             Assert.IsInstanceOf(typeof(RedirectResult), result);
             if (result is RedirectResult rdResult)
             {
-                var resultUrl = _mockBlogConfig.Object.AdvancedSettings.CDNEndpoint.CombineUrl(filename);
+                var resultUrl = _mockBlogConfig.Object.ImageSettings.CDNEndpoint.CombineUrl(filename);
                 Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
             }
         }
@@ -95,7 +95,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
             {
                 EnableCDNRedirect = false,
             });
@@ -122,7 +122,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
             {
                 EnableCDNRedirect = false,
             });

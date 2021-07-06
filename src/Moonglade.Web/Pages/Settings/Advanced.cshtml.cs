@@ -23,10 +23,8 @@ namespace Moonglade.Web.Pages.Settings
                 EnablePingbackSend = settings.EnablePingBackSend,
                 EnablePingbackReceive = settings.EnablePingBackReceive,
                 EnableOpenGraph = settings.EnableOpenGraph,
-                EnableCDNRedirect = settings.EnableCDNRedirect,
                 EnableOpenSearch = settings.EnableOpenSearch,
                 EnableMetaWeblog = settings.EnableMetaWeblog,
-                CDNEndpoint = settings.CDNEndpoint,
                 WarnExternalLink = settings.WarnExternalLink,
                 AllowScriptsInPage = settings.AllowScriptsInPage,
                 ShowAdminLoginButton = settings.ShowAdminLoginButton

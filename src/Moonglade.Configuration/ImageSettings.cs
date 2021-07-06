@@ -8,5 +8,7 @@
         public string WatermarkText { get; set; }
         public bool UseFriendlyNotFoundImage { get; set; }
         public bool FitImageToDevicePixelRatio { get; set; }
+        public bool EnableCDNRedirect { get; set; }
+        public string CDNEndpoint { get; set; }
     }
 }

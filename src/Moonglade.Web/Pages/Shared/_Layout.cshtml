@@ -43,10 +43,10 @@
         @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
     </title>
 
-    @if (BlogConfig.AdvancedSettings.EnableCDNRedirect &&
- !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
+    @if (BlogConfig.ImageSettings.EnableCDNRedirect &&
+ !string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
     {
-        <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
+        <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.ImageSettings.CDNEndpoint)" />
     }
 
     @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
