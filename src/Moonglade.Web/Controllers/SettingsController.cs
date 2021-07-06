@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -207,6 +206,7 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("watermark")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
