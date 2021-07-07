@@ -198,14 +198,14 @@ if ($createCDN) {
     #Write-Host "Configuring CDN endpoint for Image Storage"
     #if ($useLinuxPlanWithDocker){
     #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__CDNSettings__EnableCDNRedirect=true
-    #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__CDNSettings__CDNEndpoint="https://#$cdnEndpointName.azureedge.net/$storageContainerName"
+    #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__CDNSettings__CDNEndpoint="https://$cdnEndpointName.azureedge.net/$storageContainerName"
     #}
     #else{
     #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:CDNSettings:EnableCDNRedirect=true
-    #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:CDNSettings:CDNEndpoint="https://#$cdnEndpointName.azureedge.net/$storageContainerName"
+    #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:CDNSettings:CDNEndpoint="https://$cdnEndpointName.azureedge.net/$storageContainerName"
     #}
     
-    Write-Host "It can take up to 10 minutes for endpoint '$cdnEndpointName.azureedge.net' to propagate, after that, please set CDN endpoint to 'https://#$cdnEndpointName.azureedge.net/$storageContainerName' in blog admin settings." -ForegroundColor Yellow
+    Write-Host "It can take up to 10 minutes for endpoint '$cdnEndpointName.azureedge.net' to propagate, after that, please set CDN endpoint to 'https://$cdnEndpointName.azureedge.net/$storageContainerName' in blog admin settings." -ForegroundColor Yellow
 }
 
 if (!$useLinuxPlanWithDocker){
