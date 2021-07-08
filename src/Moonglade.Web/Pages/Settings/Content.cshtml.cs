@@ -27,9 +27,9 @@ namespace Moonglade.Web.Pages.Settings
                 HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
                 EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,
                 ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
-                CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
+                CalloutSectionHtmlCode = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
                 ShowPostFooter = _blogConfig.ContentSettings.ShowPostFooter,
-                PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch
+                PostFooterHtmlCode = _blogConfig.ContentSettings.PostFooterHtmlPitch
             };
         }
     }

@@ -147,9 +147,9 @@ namespace Moonglade.Web.Controllers
             settings.HotTagAmount = model.HotTagAmount;
             settings.EnableGravatar = model.EnableGravatar;
             settings.ShowCalloutSection = model.ShowCalloutSection;
-            settings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
+            settings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlCode;
             settings.ShowPostFooter = model.ShowPostFooter;
-            settings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
+            settings.PostFooterHtmlPitch = model.PostFooterHtmlCode;
 
             await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");

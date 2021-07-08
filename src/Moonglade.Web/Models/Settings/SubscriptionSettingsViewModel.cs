@@ -4,7 +4,7 @@ namespace Moonglade.Web.Models.Settings
 {
     public class SubscriptionSettingsViewModel
     {
-        [Display(Name = "RSS Items")]
+        [Display(Name = "RSS items")]
         public int RssItemCount { get; set; }
 
         [Required]
@@ -18,7 +18,7 @@ namespace Moonglade.Web.Models.Settings
         public string RssTitle { get; set; }
 
         [Required]
-        [Display(Name = "Author Name")]
+        [Display(Name = "Author name")]
         [MaxLength(32)]
         public string AuthorName { get; set; }
 

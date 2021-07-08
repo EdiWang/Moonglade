@@ -4,27 +4,27 @@ namespace Moonglade.Web.Models.Settings
 {
     public class ContentSettingsViewModel
     {
-        [Display(Name = "Enable Comments")]
+        [Display(Name = "Enable comments")]
         public bool EnableComments { get; set; }
 
-        [Display(Name = "Comments Require Blog Admin Review and Approval")]
+        [Display(Name = "Comments require review and approval")]
         public bool RequireCommentReview { get; set; }
 
         [Required]
         [DataType(DataType.MultilineText)]
-        [Display(Name = "Blocked Words")]
+        [Display(Name = "Blocked words")]
         [MaxLength(2048)]
         public string DisharmonyWords { get; set; }
 
-        [Display(Name = "Enable Word Filter")]
+        [Display(Name = "Enable word filter")]
         public bool EnableWordFilter { get; set; }
 
-        [Display(Name = "Word Filter Mode")]
+        [Display(Name = "Word filter mode")]
         public string WordFilterMode { get; set; }
 
         [Required]
-        [Display(Name = "Post List Page Size")]
-        [Range(1, 100, ErrorMessage = "Page Size can only range from 1-1024")]
+        [Display(Name = "Post list page size")]
+        [Range(1, 100, ErrorMessage = "Page size can only range from 1-100")]
         public int PostListPageSize { get; set; }
 
         [Required]
@@ -32,21 +32,21 @@ namespace Moonglade.Web.Models.Settings
         [Range(1, 50, ErrorMessage = "Tag amount can only range from 1-50")]
         public int HotTagAmount { get; set; }
 
-        [Display(Name = "Enable Gravatar in Comment List")]
+        [Display(Name = "Enable Gravatar in comment list")]
         public bool EnableGravatar { get; set; }
 
-        [Display(Name = "Call-out Section Html Pitch")]
+        [Display(Name = "Call-out Section HTML code")]
         [DataType(DataType.MultilineText)]
         [MaxLength(2048)]
-        public string CalloutSectionHtmlPitch { get; set; }
+        public string CalloutSectionHtmlCode { get; set; }
 
-        [Display(Name = "Show Call-out Section")]
+        [Display(Name = "Show call-out section")]
         public bool ShowCalloutSection { get; set; }
 
         [Display(Name = "Show customize footer on each post")]
         public bool ShowPostFooter { get; set; }
 
-        [Display(Name = "Post footer HTML Pitch")]
-        public string PostFooterHtmlPitch { get; set; }
+        [Display(Name = "Post footer HTML code")]
+        public string PostFooterHtmlCode { get; set; }
     }
 }

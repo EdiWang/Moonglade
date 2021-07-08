@@ -117,13 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Author Name" xml:space="preserve">
+  <data name="Author name" xml:space="preserve">
     <value>作者名字</value>
   </data>
   <data name="Copyright" xml:space="preserve">
     <value>版权信息</value>
   </data>
-  <data name="RSS Items" xml:space="preserve">
+  <data name="RSS items" xml:space="preserve">
     <value>RSS 条目显示数量</value>
   </data>
   <data name="Title" xml:space="preserve">
