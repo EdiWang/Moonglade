@@ -165,7 +165,7 @@
   <data name="* Username: moonglade" xml:space="preserve">
     <value>* 用户名: moonglade</value>
   </data>
-  <data name="Generate Password" xml:space="preserve">
+  <data name="Generate password" xml:space="preserve">
     <value>生成密码</value>
   </data>
   <data name="Endpoint" xml:space="preserve">
@@ -180,7 +180,7 @@
   <data name="Update" xml:space="preserve">
     <value>更新</value>
   </data>
-  <data name="Check Now" xml:space="preserve">
+  <data name="Check now" xml:space="preserve">
     <value>立即检查更新</value>
   </data>
   <data name="Check online for new Moonglade release." xml:space="preserve">
@@ -192,13 +192,13 @@
   <data name="Name" xml:space="preserve">
     <value>名称</value>
   </data>
-  <data name="Tag Name" xml:space="preserve">
+  <data name="Tag name" xml:space="preserve">
     <value>标签名</value>
   </data>
-  <data name="Release Time" xml:space="preserve">
+  <data name="Release time" xml:space="preserve">
     <value>发布时间</value>
   </data>
-  <data name="Get Update" xml:space="preserve">
+  <data name="Get update" xml:space="preserve">
     <value>获取更新</value>
   </data>
   <data name="Cancel" xml:space="preserve">

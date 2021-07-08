@@ -129,10 +129,13 @@
   <data name="Enable OpenSearch" xml:space="preserve">
     <value>启用 OpenSearch</value>
   </data>
-  <data name="Enable Pingback Receive" xml:space="preserve">
+  <data name="MetaWeblog password" xml:space="preserve">
+    <value>MetaWeblog 密码</value>
+  </data>
+  <data name="Enable Pingback receive" xml:space="preserve">
     <value>启用 Pingback 接受</value>
   </data>
-  <data name="Enable Pingback Send" xml:space="preserve">
+  <data name="Enable Pingback send" xml:space="preserve">
     <value>启用 Pingback 发送</value>
   </data>
   <data name="Show Admin login button under sidebar" xml:space="preserve">

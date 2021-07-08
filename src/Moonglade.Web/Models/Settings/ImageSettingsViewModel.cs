@@ -4,25 +4,25 @@ namespace Moonglade.Web.Models.Settings
 {
     public class ImageSettingsViewModel
     {
-        [Display(Name = "Enabled Watermark")]
+        [Display(Name = "Enabled watermark")]
         public bool IsWatermarkEnabled { get; set; }
 
-        [Display(Name = "Keep Origin Image")]
+        [Display(Name = "Keep origin image")]
         public bool KeepOriginImage { get; set; }
 
-        [Display(Name = "Font Size")]
+        [Display(Name = "Font size")]
         [Range(8, 32)]
         public int WatermarkFontSize { get; set; }
 
         [Required(ErrorMessage = "Please enter watermark text")]
-        [Display(Name = "Watermark Text")]
+        [Display(Name = "Watermark text")]
         [MaxLength(32)]
         public string WatermarkText { get; set; }
 
-        [Display(Name = "Use Friendly 404 Image")]
+        [Display(Name = "Use friendly 404 image")]
         public bool UseFriendlyNotFoundImage { get; set; }
 
-        [Display(Name = "Fit Image to Device Pixel Ratio")]
+        [Display(Name = "Fit image to device pixel ratio")]
         public bool FitImageToDevicePixelRatio { get; set; }
 
         [Display(Name = "Enable CDN for images")]
@@ -30,7 +30,7 @@ namespace Moonglade.Web.Models.Settings
 
         [DataType(DataType.Url)]
         [MaxLength(128)]
-        [Display(Name = "CDN Endpoint")]
+        [Display(Name = "CDN endpoint")]
         public string CDNEndpoint { get; set; }
     }
 }

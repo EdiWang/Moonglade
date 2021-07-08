@@ -123,4 +123,7 @@
   <data name="Save" xml:space="preserve">
     <value>保存</value>
   </data>
+  <data name="Watermark" xml:space="preserve">
+    <value>水印</value>
+  </data>
 </root>
