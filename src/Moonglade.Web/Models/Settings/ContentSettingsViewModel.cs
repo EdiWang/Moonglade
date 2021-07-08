@@ -35,7 +35,7 @@ namespace Moonglade.Web.Models.Settings
         [Display(Name = "Enable Gravatar in comment list")]
         public bool EnableGravatar { get; set; }
 
-        [Display(Name = "Call-out Section HTML code")]
+        [Display(Name = "Call-out section HTML code")]
         [DataType(DataType.MultilineText)]
         [MaxLength(2048)]
         public string CalloutSectionHtmlCode { get; set; }

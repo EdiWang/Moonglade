@@ -120,40 +120,40 @@
   <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
     <value>在客户端自动适配明亮/黑暗主题</value>
   </data>
-  <data name="Blog Title" xml:space="preserve">
+  <data name="Blog title" xml:space="preserve">
     <value>博客标题</value>
   </data>
-  <data name="Canonical URL Prefix" xml:space="preserve">
+  <data name="Canonical URL prefix" xml:space="preserve">
     <value>网址 (Canonical URL)</value>
   </data>
   <data name="Copyright" xml:space="preserve">
     <value>版权信息</value>
   </data>
-  <data name="Footer Pitch (HTML)" xml:space="preserve">
+  <data name="Footer HTML code" xml:space="preserve">
     <value>页脚HTML区域</value>
   </data>
-  <data name="Logo Text" xml:space="preserve">
+  <data name="Logo text" xml:space="preserve">
     <value>Logo 文字</value>
   </data>
-  <data name="Meta Description" xml:space="preserve">
+  <data name="Meta description" xml:space="preserve">
     <value>网站简介</value>
   </data>
-  <data name="Meta Keyword" xml:space="preserve">
+  <data name="Meta keyword" xml:space="preserve">
     <value>网站关键词</value>
   </data>
   <data name="Only letters, numbers, - and [] are allowed." xml:space="preserve">
     <value>仅允许字母、数字、-及[]</value>
   </data>
-  <data name="Short Description" xml:space="preserve">
+  <data name="Short description" xml:space="preserve">
     <value>博主简介(短)</value>
   </data>
-  <data name="Side Bar Pitch (HTML)" xml:space="preserve">
+  <data name="Side bar HTML code" xml:space="preserve">
     <value>侧边栏HTML区域</value>
   </data>
-  <data name="Your Description" xml:space="preserve">
+  <data name="Your description" xml:space="preserve">
     <value>博主简介</value>
   </data>
-  <data name="Your Name" xml:space="preserve">
+  <data name="Your name" xml:space="preserve">
     <value>博主名字</value>
   </data>
   <data name="Please enter keyword" xml:space="preserve">
@@ -180,10 +180,10 @@
   <data name="Please enter your name" xml:space="preserve">
     <value>请输入您的名字</value>
   </data>
-  <data name="Side Bar Display" xml:space="preserve">
+  <data name="Side bar display" xml:space="preserve">
     <value>侧边栏位置</value>
   </data>
-  <data name="Owner Email" xml:space="preserve">
+  <data name="Owner email" xml:space="preserve">
     <value>博主邮箱</value>
   </data>
 </root>
