@@ -174,7 +174,7 @@ namespace Moonglade.Web.Tests.Controllers
             var settingsController = CreateSettingsController();
             Mock<IBlogNotificationClient> notificationClientMock = new();
 
-            var result = await settingsController.SendTestEmail(notificationClientMock.Object);
+            var result = await settingsController.TestEmail(notificationClientMock.Object);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 

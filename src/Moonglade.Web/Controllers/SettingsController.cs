@@ -179,7 +179,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("test-email")]
         [IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> SendTestEmail([FromServices] IBlogNotificationClient notificationClient)
+        public async Task<IActionResult> TestEmail([FromServices] IBlogNotificationClient notificationClient)
         {
             await notificationClient.TestNotificationAsync();
             return Ok(true);
