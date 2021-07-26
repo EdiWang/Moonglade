@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.ImageStorage;
-using Moonglade.Page;
 using Moonglade.Utils;
 using WilderMinds.MetaWeblog;
 using Post = WilderMinds.MetaWeblog.Post;

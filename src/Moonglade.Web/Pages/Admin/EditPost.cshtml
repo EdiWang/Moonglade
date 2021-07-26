@@ -17,6 +17,7 @@
 }
 
 @section scripts{
+    <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
     <script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
     @{
         var ec = Settings.Value.Editor;
@@ -71,6 +72,31 @@
                 }
             }
         });
+
+        var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
+
+        function ajaxImageUpload(oFormElement) {
+            const formData = new FormData(oFormElement);
+
+            fetch(oFormElement.action, {
+                method: 'POST',
+                body: formData
+            }).then(async (response) => {
+                if (!response.ok) {
+                    blogToast.error('API Boom');
+                    console.error(err);
+                } else {
+                    var data = await response.json();
+                    $('#ViewModel_HeroImageUrl').val(data.location);
+                }
+            }).then(response => {
+                $('#form-hero-image')[0].reset();
+                heroImageModal.hide();
+            }).catch(err => {
+                blogToast.error(err);
+                console.error(err);
+            });
+        }
     </script>
 }
 
@@ -183,14 +209,17 @@
                         <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
                         <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
                     </div>
-                    <div class="form-floating">
+                    <div class="form-floating mb-1">
                         <textarea asp-for="ViewModel.HeroImageUrl"
                                   class="form-control form-control-sm"
                                   placeholder="@Html.DisplayNameFor(m => m.ViewModel.HeroImageUrl)"></textarea>
                         <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
                     </div>
-                    <div class="text-muted">
-                        <small>* Image uploader coming soon...</small>
+                    <div>
+                        <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
+                            <i class="bi-upload"></i>
+                            @Localizer["Upload Image"]
+                        </a>
                     </div>
 
                     @if (Model.ViewModel.PostId != Guid.Empty)
@@ -262,7 +291,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="resetModalLabel">@Localizer["Change Publish Date"]</h5>
+                    <h5 class="modal-title" id="changePublishDateModalLabel">@Localizer["Change Publish Date"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
@@ -280,8 +309,31 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@Localizer["Continue"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="form-hero-image" action="/image?skipWatermark=true"
+      enctype="multipart/form-data" onsubmit="ajaxImageUpload(this);return false;"
+      method="post">
+    <div class="modal fade" id="heroImageModal" tabindex="-1" role="dialog" aria-labelledby="heroImageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="heroImageModalLabel">@Localizer["Upload Image"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <input type="file" accept="image/png, image/jpeg" class="form-control" id="heroImageFile" name="file">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="submit" class="btn btn-accent"><i class="bi-upload"></i> @Localizer["Upload"]</button>
                 </div>
             </div>
         </div>

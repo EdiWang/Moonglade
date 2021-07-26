@@ -26,6 +26,8 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogImageStorage> _mockBlogImageStorage;
         private Mock<ILogger<ImageController>> _mockLogger;
         private Mock<IBlogConfig> _mockBlogConfig;
+        private IMemoryCache _mockMemoryCache;
+        private Mock<IFileNameGenerator> _mockFileNameGenerator;
         private Mock<IOptions<AppSettings>> _mockAppSettings;
         private Mock<IOptions<ImageStorageSettings>> _mockImageStorageSettings;
 
@@ -37,6 +39,8 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockLogger = _mockRepository.Create<ILogger<ImageController>>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+            _mockMemoryCache = Create.MockedMemoryCache();
+            _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
             _mockAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
             _mockImageStorageSettings = _mockRepository.Create<IOptions<ImageStorageSettings>>();
         }
@@ -47,6 +51,8 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockBlogImageStorage.Object,
                 _mockLogger.Object,
                 _mockBlogConfig.Object,
+                _mockMemoryCache,
+                _mockFileNameGenerator.Object,
                 _mockAppSettings.Object,
                 _mockImageStorageSettings.Object);
         }
@@ -58,9 +64,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task GetImage_InvalidFileNames(string filename)
         {
             var ctl = CreateImageController();
-
-            var memCacheMock = new Mock<IMemoryCache>();
-            var result = await ctl.Image(filename, memCacheMock.Object);
+            var result = await ctl.Image(filename);
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
 
@@ -69,7 +73,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
             {
                 EnableCDNRedirect = true,
                 CDNEndpoint = "https://cdn.996.icu/fubao"
@@ -77,12 +81,11 @@ namespace Moonglade.Web.Tests.Controllers
 
             var ctl = CreateImageController();
 
-            var memCacheMock = new Mock<IMemoryCache>();
-            var result = await ctl.Image(filename, memCacheMock.Object);
+            var result = await ctl.Image(filename);
             Assert.IsInstanceOf(typeof(RedirectResult), result);
             if (result is RedirectResult rdResult)
             {
-                var resultUrl = _mockBlogConfig.Object.AdvancedSettings.CDNEndpoint.CombineUrl(filename);
+                var resultUrl = _mockBlogConfig.Object.ImageSettings.CDNEndpoint.CombineUrl(filename);
                 Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
             }
         }
@@ -92,7 +95,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
             {
                 EnableCDNRedirect = false,
             });
@@ -105,12 +108,11 @@ namespace Moonglade.Web.Tests.Controllers
                 }
             });
 
-            var memCacheMock = Create.MockedMemoryCache();
             _mockBlogImageStorage.Setup(p => p.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult((ImageInfo)null));
 
             var ctl = CreateImageController();
-            var result = await ctl.Image(filename, memCacheMock);
+            var result = await ctl.Image(filename);
 
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
@@ -120,7 +122,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             const string filename = "test.png";
 
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
             {
                 EnableCDNRedirect = false,
             });
@@ -133,7 +135,6 @@ namespace Moonglade.Web.Tests.Controllers
                 }
             });
 
-            var memCacheMock = Create.MockedMemoryCache();
             _mockBlogImageStorage.Setup(p => p.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(new ImageInfo
                 {
@@ -142,7 +143,7 @@ namespace Moonglade.Web.Tests.Controllers
                 }));
 
             var ctl = CreateImageController();
-            var result = await ctl.Image(filename, memCacheMock);
+            var result = await ctl.Image(filename);
 
             Assert.IsInstanceOf<FileContentResult>(result);
         }
@@ -151,7 +152,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Image_Upload_NullFile()
         {
             var ctl = CreateImageController();
-            var result = await ctl.Image((IFormFile)null, null);
+            var result = await ctl.Image((IFormFile)null);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
@@ -167,7 +168,7 @@ namespace Moonglade.Web.Tests.Controllers
             IFormFile file = new FormFile(new MemoryStream(), 0, 1024, "996.jpg", "996.jpg");
 
             var ctl = CreateImageController();
-            var result = await ctl.Image(file, null);
+            var result = await ctl.Image(file);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
         }

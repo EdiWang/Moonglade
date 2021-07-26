@@ -165,4 +165,10 @@
   <data name="Origin Link" xml:space="preserve">
     <value>原文链接</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>上传</value>
+  </data>
+  <data name="Upload Image" xml:space="preserve">
+    <value>上传头图</value>
+  </data>
 </root>

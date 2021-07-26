@@ -174,7 +174,7 @@ namespace Moonglade.Web.Tests.Controllers
             var settingsController = CreateSettingsController();
             Mock<IBlogNotificationClient> notificationClientMock = new();
 
-            var result = await settingsController.SendTestEmail(notificationClientMock.Object);
+            var result = await settingsController.TestEmail(notificationClientMock.Object);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
@@ -193,17 +193,17 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Watermark_Post()
+        public async Task Image_Post()
         {
-            _mockBlogConfig.Setup(p => p.WatermarkSettings).Returns(new WatermarkSettings());
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            WatermarkSettingsViewModel model = new();
+            ImageSettingsViewModel model = new();
 
-            var result = await settingsController.Watermark(new(model));
+            var result = await settingsController.Image(new(model));
 
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<WatermarkSettings>()));
-            _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, It.IsAny<string>()));
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
+            _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
         }
 
         //[Test]
@@ -237,37 +237,37 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public void Advanced_Post_EnableCDNRedirect_EmptyCDNEndpoint()
+        public async Task Image_Post_EnableCDNRedirect_EmptyCDNEndpoint()
         {
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
-
-            Assert.ThrowsAsync<ArgumentNullException>(async () => { await settingsController.Advanced(new(model)); });
+            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
+            var result = await settingsController.Image(new(model));
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
-        public void Advanced_Post_EnableCDNRedirect_InvalidCDNEndpoint()
+        public async Task Image_Post_EnableCDNRedirect_InvalidCDNEndpoint()
         {
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
-
-            Assert.ThrowsAsync<UriFormatException>(async () => { await settingsController.Advanced(new(model)); });
+            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
+            var result = await settingsController.Image(new(model));
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
-        public async Task Advanced_Post_EnableCDNRedirect_ValidCDNEndpoint()
+        public async Task Image_Post_EnableCDNRedirect_ValidCDNEndpoint()
         {
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
+            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            AdvancedSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
+            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
 
-            var result = await settingsController.Advanced(new(model));
+            var result = await settingsController.Image(new(model));
 
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
-            _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+            _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
+            _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
         }
 
         [Test]

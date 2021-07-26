@@ -19,8 +19,8 @@
     <PackageReference Include="Edi.Captcha" Version="3.3.0" />
     <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="4.4.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.8" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.3.0" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
     <PackageReference Include="NUglify" Version="1.13.12" />
@@ -36,13 +36,12 @@
     <ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
     <ProjectReference Include="..\Moonglade.Comments\Moonglade.Comments.csproj" />
     <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
-    <ProjectReference Include="..\Moonglade.DataPorting\Moonglade.DataPorting.csproj" />
     <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
     <ProjectReference Include="..\Moonglade.Menus\Moonglade.Menus.csproj" />
     <ProjectReference Include="..\Moonglade.Notification.Client\Moonglade.Notification.Client.csproj" />
-    <ProjectReference Include="..\Moonglade.Page\Moonglade.Page.csproj" />
     <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
     <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
+    <ProjectReference Include="..\Moonglade.Theme\Moonglade.Theme.csproj" />
   </ItemGroup>
 </Project>

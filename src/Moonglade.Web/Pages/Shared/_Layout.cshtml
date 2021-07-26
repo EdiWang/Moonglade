@@ -43,10 +43,10 @@
         @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
     </title>
 
-    @if (BlogConfig.AdvancedSettings.EnableCDNRedirect &&
- !string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.CDNEndpoint))
+    @if (BlogConfig.ImageSettings.EnableCDNRedirect &&
+ !string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
     {
-        <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.AdvancedSettings.CDNEndpoint)" />
+        <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.ImageSettings.CDNEndpoint)" />
     }
 
     @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
@@ -85,7 +85,7 @@
         <link href="~/css/src/highlighter-custom.css" rel="stylesheet" />
     </environment>
     @await RenderSectionAsync("head", false)
-    <link href="~/css/theme/@BlogConfig.GeneralSettings.ThemeFileName" rel="stylesheet" asp-append-version="true" />
+    <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
     {
         <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />

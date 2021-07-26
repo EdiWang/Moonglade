@@ -14,6 +14,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Web.Controllers
 {
+    [ApiController]
     public class AssetsController : ControllerBase
     {
         private readonly IBlogConfig _blogConfig;
@@ -139,6 +140,27 @@ namespace Moonglade.Web.Controllers
                 _logger.LogError($"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string", e);
                 return PhysicalFile(fallbackImageFile, "image/png");
             }
+        }
+
+        [Authorize]
+        [HttpPost("siteicon")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> UpdateSiteIcon([FromForm] string base64Img)
+        {
+            base64Img = base64Img.Trim();
+            if (!Helper.TryParseBase64(base64Img, out var base64Chars))
+            {
+                _logger.LogWarning("Bad base64 is used when setting site icon.");
+                return Conflict("Bad base64 data");
+            }
+
+            using var bmp = new Bitmap(new MemoryStream(base64Chars));
+            if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
+
+            await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
+
+            return NoContent();
         }
 
         #endregion

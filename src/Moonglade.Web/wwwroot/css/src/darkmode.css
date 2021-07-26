@@ -5,19 +5,21 @@
 .darkmode .box {
     background-color: var(--moca-dark);
     border: 1px solid var(--gray-2);
-    box-shadow: 0 1.6px 3.6px 0 var(--transparent-dark-3),0 .3px .9px 0 var(--transparent-dark-1);
+    box-shadow: 0 1.6px 3.6px 0 var(--transparent-dark-3), 0 .3px .9px 0 var(--transparent-dark-1);
 }
 
 .darkmode a {
     color: var(--gray-3);
 }
 
-.darkmode .post-content blockquote, .darkmode .post-content .blockquote {
+.darkmode .post-content blockquote,
+.darkmode .post-content .blockquote {
     border-left: 5px solid var(--gray-6);
     color: var(--gray-4);
 }
 
-.darkmode .list-group-item.active, .darkmode .page-item.active .page-link {
+.darkmode .list-group-item.active,
+.darkmode .page-item.active .page-link {
     background-color: var(--gray-7);
     border-color: var(--gray-7);
 }
@@ -35,19 +37,19 @@
     background-color: var(--gray-5);
 }
 
-.darkmode .timeline > li > .timeline-panel {
+.darkmode .timeline>li>.timeline-panel {
     border: 1px solid var(--gray-5);
 }
 
-    .darkmode .timeline > li > .timeline-panel:before {
-        border-left: 15px solid var(--gray-5);
-        border-right: 0 solid var(--gray-5);
-    }
+.darkmode .timeline>li>.timeline-panel:before {
+    border-left: 15px solid var(--gray-5);
+    border-right: 0 solid var(--gray-5);
+}
 
-    .darkmode .timeline > li > .timeline-panel:after {
-        border-left: 14px solid var(--gray-5);
-        border-right: 0 solid var(--gray-5);
-    }
+.darkmode .timeline>li>.timeline-panel:after {
+    border-left: 14px solid var(--gray-5);
+    border-right: 0 solid var(--gray-5);
+}
 
 .darkmode .timeline-title a {
     color: var(--bs-white);
@@ -79,17 +81,18 @@
     border: 1px solid var(--gray-7);
 }
 
-    .darkmode .page-link:hover {
-        background-color: var(--gray-7);
-        border: 1px solid var(--gray-7);
-        color: var(--bs-white);
-    }
+.darkmode .page-link:hover {
+    background-color: var(--gray-7);
+    border: 1px solid var(--gray-7);
+    color: var(--bs-white);
+}
 
 .darkmode .navbar .dropdown-menu {
     background-color: var(--moca-dark-2);
 }
 
-.darkmode .navbar .dropdown-item.active, .darkmode .dropdown-item:hover {
+.darkmode .navbar .dropdown-item.active,
+.darkmode .dropdown-item:hover {
     background-color: var(--gray-7);
     color: var(--bs-white);
     text-decoration: none;

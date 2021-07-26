@@ -66,15 +66,15 @@
         width: 100%;
     }
 
-        .blogger-intro-content h4 {
-            background-color: var(--transparent-light-20);
-            border-radius: 5px;
-            color: var(--bs-white);
-            font-size: 1rem;
-            padding: 5px;
-            text-shadow: 2px 0 2px #000;
-            transform: translate(0, 50%);
-        }
+    .blogger-intro-content h4 {
+        background-color: var(--transparent-light-20);
+        border-radius: 5px;
+        color: var(--bs-white);
+        font-size: 1rem;
+        padding: 5px;
+        text-shadow: 2px 0 2px #000;
+        transform: translate(0, 50%);
+    }
 
     .navbar .nav-item {
         margin: 0 !important;

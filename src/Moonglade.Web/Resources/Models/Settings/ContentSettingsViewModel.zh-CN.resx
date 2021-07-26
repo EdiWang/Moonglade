@@ -117,40 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Blocked Words" xml:space="preserve">
+  <data name="Blocked words" xml:space="preserve">
     <value>违禁词</value>
   </data>
-  <data name="Call-out Section Html Pitch" xml:space="preserve">
+  <data name="Call-out section HTML code" xml:space="preserve">
     <value>横幅HTML内容</value>
   </data>
-  <data name="Comments Require Blog Admin Review and Approval" xml:space="preserve">
+  <data name="Comments require review and approval" xml:space="preserve">
     <value>评论需要管理员审核</value>
   </data>
   <data name="Default language code" xml:space="preserve">
     <value>默认语言代码</value>
   </data>
-  <data name="Enable Comments" xml:space="preserve">
+  <data name="Enable comments" xml:space="preserve">
     <value>开启评论</value>
   </data>
-  <data name="Enable Gravatar in Comment List" xml:space="preserve">
+  <data name="Enable Gravatar in comment list" xml:space="preserve">
     <value>在评论列表中开启Gravatar头像</value>
   </data>
-  <data name="Enable Word Filter" xml:space="preserve">
+  <data name="Enable word filter" xml:space="preserve">
     <value>启用违禁词过滤</value>
   </data>
   <data name="How many tags show on sidebar" xml:space="preserve">
     <value>侧边栏显示标签数量</value>
   </data>
-  <data name="Page Size can only range from 1-1024" xml:space="preserve">
-    <value>分页数量必须在1-1024之间</value>
+  <data name="Page size can only range from 1-100" xml:space="preserve">
+    <value>分页数量必须在1-100之间</value>
   </data>
-  <data name="Post footer HTML Pitch" xml:space="preserve">
+  <data name="Post footer HTML code" xml:space="preserve">
     <value>文章页脚HTML内容</value>
   </data>
-  <data name="Post List Page Size" xml:space="preserve">
+  <data name="Post list page size" xml:space="preserve">
     <value>文章分页数量</value>
   </data>
-  <data name="Show Call-out Section" xml:space="preserve">
+  <data name="Show call-out section" xml:space="preserve">
     <value>显示横幅区</value>
   </data>
   <data name="Show customize footer on each post" xml:space="preserve">
@@ -162,10 +162,7 @@
   <data name="This field is required." xml:space="preserve">
     <value>必填</value>
   </data>
-  <data name="Use Friendly 404 Image" xml:space="preserve">
-    <value>启用友好404图片</value>
-  </data>
-  <data name="Word Filter Mode" xml:space="preserve">
+  <data name="Word filter mode" xml:space="preserve">
     <value>违禁词屏蔽模式</value>
   </data>
 </root>

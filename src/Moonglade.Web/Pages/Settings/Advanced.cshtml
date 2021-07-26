@@ -73,37 +73,6 @@
             });
         });
 
-        var btnClearCache = '.btn-clearcache';
-        var onClearCacheBegin = function () {
-            $(btnClearCache).text('Processing...');
-            $(btnClearCache).addClass('disabled');
-            $(btnClearCache).attr('disabled', 'disabled');
-        };
-
-        var onClearCacheComplete = function () {
-            $(btnClearCache).text('Clear');
-            $(btnClearCache).removeClass('disabled');
-            $(btnClearCache).removeAttr('disabled');
-        };
-
-        var onClearCacheSuccess = function (context) {
-            $('#cacheModal').modal('hide');
-            if (blogToast) {
-                blogToast.success('Cleared Cache');
-            } else {
-                alert('Cleared Cache');
-            }
-        };
-
-        var onClearCacheFailed = function (context) {
-            var msg = buildErrorMessage(context);
-            if (blogToast) {
-                blogToast.error(`Server Error: ${msg}`);
-            } else {
-                alert(`Error Code: ${msg}`);
-            }
-        };
-
         function generateMetaWeblogPassword() {
             callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
                 var data = await resp.json();
@@ -154,86 +123,6 @@
                     </li>
                     <li class="list-group-item">
                         <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-input">
-                            <label asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">
-                    CDN
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableCDNRedirect" class="form-check-input">
-                            <label asp-for="ViewModel.EnableCDNRedirect" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="input-group mb-2">
-                        <div class="input-group-text">@Localizer["Endpoint"]</div>
-                        <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
-                    </div>
-                    <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
-                    <small class="form-text text-muted">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</small>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    Robots.txt
-                </div>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
-                        <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    MetaWeblog
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableMetaWeblog" class="form-check-input">
-                            <label asp-for="ViewModel.EnableMetaWeblog" class="form-check-label"></label>
-                        </div>
-                        <small class="form-text text-muted">@Localizer["* Requires restarting application"]</small>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-7">
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    @Localizer["Password"]
-                                </div>
-                                <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" />
-                            </div>
-                            <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
-                            <small class="form-text text-muted">@Localizer["Leave blank if you don't need to change password."]</small>
-                            <small class="form-text text-muted">@Localizer["* Username: moonglade"]</small>
-                        </div>
-                        <div class="col-auto">
-                            <a href="javascript:;" class="btn btn-outline-accent" onclick="generateMetaWeblogPassword()">@Localizer["Generate Password"]</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card mb-4">
-                <div class="card-header">@Localizer["Security Settings"]</div>
-
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
                             <input type="checkbox" asp-for="ViewModel.WarnExternalLink" class="form-check-input">
                             <label asp-for="ViewModel.WarnExternalLink" class="form-check-label"></label>
                         </div>
@@ -251,6 +140,43 @@
                         </div>
                     </li>
                 </ul>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label asp-for="ViewModel.RobotsTxtContent" class="form-label"></label>
+                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                        <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    MetaWeblog
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" asp-for="ViewModel.EnableMetaWeblog" class="form-check-input">
+                        <label asp-for="ViewModel.EnableMetaWeblog" class="form-check-label"></label>
+                        <small class="form-text text-muted">@Localizer["* Requires restarting application"]</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    @Localizer["Password"]
+                                </div>
+                                <input asp-for="ViewModel.MetaWeblogPassword" class="form-control"/>
+                            </div>
+                            <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
+                            <small class="form-text text-muted">@Localizer["Leave blank if you don't need to change password."]</small>
+                            <small class="form-text text-muted">@Localizer["* Username: moonglade"]</small>
+                        </div>
+                        <div class="col-auto">
+                            <a href="javascript:;" class="btn btn-outline-accent" onclick="generateMetaWeblogPassword()">@Localizer["Generate password"]</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card">
                 <div class="card-header">
@@ -259,19 +185,13 @@
                 <div class="card-body">
                     <div class="row row-cols-2 g-3">
                         <div class="col">
-                            <h6>@Localizer["Clear Data Cache"]</h6>
-                            <hr />
-                            <p>@Localizer["Delete cached objects both in memory and on disk"]</p>
-                            <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#cacheModal">@Localizer["Clear"]</a>
-                        </div>
-                        <div class="col">
                             <h6>@Localizer["Update"]</h6>
                             <hr />
 
                             <p>@Localizer["Check online for new Moonglade release."]</p>
 
                             <a href="#" class="btn btn-sm btn-outline-accent btn-check-update">
-                                @Localizer["Check Now"]
+                                @Localizer["Check now"]
                             </a>
                         </div>
                         <div class="col">
@@ -305,40 +225,6 @@
         <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
     </div>
 </form>
-
-<div class="modal fade" id="cacheModal" tabindex="-1" role="dialog" aria-labelledby="cacheModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cacheModalLabel">@Localizer["Clear Data Cache"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <form id="form-clearcache" asp-controller="Settings" asp-action="ClearDataCache"
-                  data-ajax-begin="onClearCacheBegin"
-                  data-ajax-complete="onClearCacheComplete"
-                  data-ajax-failure="onClearCacheFailed"
-                  data-ajax-success="onClearCacheSuccess"
-                  data-ajax="true"
-                  data-ajax-method="POST">
-                <div class="modal-body">
-                    <ul class="list-unstyled">
-                        <li>
-                            <div class="form-check">
-                                <input id="MCO_IMEM" value="MCO_IMEM" name="cachedObjectValues" class="form-check-input" type="checkbox">
-                                <label for="MCO_IMEM" class="form-check-label">@Localizer["Memory Caches"]</label>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger btn-clearcache">@Localizer["Clear"]</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -414,7 +300,7 @@
             </div>
             <div class="mb-1 row">
                 <label for="releaseTagName" class="col-4 col-form-label">
-                    <strong>@Localizer["Tag Name"]</strong>
+                    <strong>@Localizer["Tag name"]</strong>
                 </label>
                 <div class="col-8">
                     <input type="text" readonly class="form-control-plaintext" id="releaseTagName" value="...">
@@ -422,7 +308,7 @@
             </div>
             <div class="mb-1 row">
                 <label for="releaseCreatedAt" class="col-4 col-form-label">
-                    <strong>@Localizer["Release Time"]</strong>
+                    <strong>@Localizer["Release time"]</strong>
                 </label>
                 <div class="col-8">
                     <input type="text" readonly class="form-control-plaintext" id="releaseCreatedAt" value="...">
@@ -433,7 +319,7 @@
         <div class="mt-3">
             <a href="#" target="_blank" class="btn btn-success disabled btn-get-update">
                 <i class="bi-download"></i>
-                @Localizer["Get Update"]
+                @Localizer["Get update"]
             </a>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@Localizer["Cancel"]</button>
         </div>

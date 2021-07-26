@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Page;
+using Moonglade.Core;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
@@ -10,7 +10,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages
 {
     [TestFixture]
-
     public class BlogPagePreviewModelTests
     {
         private MockRepository _mockRepository;

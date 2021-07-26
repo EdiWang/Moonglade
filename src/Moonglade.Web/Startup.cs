@@ -28,14 +28,14 @@ using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data;
-using Moonglade.DataPorting;
+using Moonglade.Data.Porting;
 using Moonglade.FriendLink;
 using Moonglade.ImageStorage;
 using Moonglade.Menus;
 using Moonglade.Notification.Client;
-using Moonglade.Page;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
+using Moonglade.Theme;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
@@ -133,12 +133,12 @@ namespace Moonglade.Web
 
             // Blog Services
             services.AddCoreBloggingServices()
-                    .AddBlogPage()
                     .AddPingback()
                     .AddSyndication()
                     .AddNotificationClient()
                     .AddReleaseCheckerClient()
                     .AddBlogCache()
+                    .AddBlogTheme()
                     .AddMetaWeblog<MetaWeblogService>()
                     .AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFriendLinkService, FriendLinkService>()

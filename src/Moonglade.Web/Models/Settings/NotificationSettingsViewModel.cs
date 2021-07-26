@@ -4,21 +4,21 @@ namespace Moonglade.Web.Models.Settings
 {
     public class NotificationSettingsViewModel
     {
-        [Display(Name = "Enable Email Sending")]
+        [Display(Name = "Enable email sending")]
         public bool EnableEmailSending { get; set; }
 
-        [Display(Name = "Send Email on Comment Reply")]
+        [Display(Name = "Send email on comment reply")]
         public bool SendEmailOnCommentReply { get; set; }
 
-        [Display(Name = "Send Email on New Comment")]
+        [Display(Name = "Send email on new comment")]
         public bool SendEmailOnNewComment { get; set; }
 
         [Required]
-        [Display(Name = "Display Name")]
+        [Display(Name = "Display name")]
         [MaxLength(64)]
         public string EmailDisplayName { get; set; }
 
-        [Display(Name = "Azure Function Endpoint")]
+        [Display(Name = "Azure Function endpoint")]
         public string AzureFunctionEndpoint { get; set; }
     }
 }

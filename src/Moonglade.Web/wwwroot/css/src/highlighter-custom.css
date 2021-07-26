@@ -17,7 +17,12 @@
     color: #008000
 }
 
-.hljs-built_in, .hljs-keyword, .hljs-name, .hljs-pscommand, .hljs-selector-tag, .hljs-tag {
+.hljs-built_in,
+.hljs-keyword,
+.hljs-name,
+.hljs-pscommand,
+.hljs-selector-tag,
+.hljs-tag {
     color: #0101FD
 }
 
@@ -29,11 +34,24 @@
     color: hsla(0, 0%, 9%, 1);
 }
 
-    .hljs-code, .hljs-deletion, .hljs-section, .hljs-string, .hljs-string .hljs-subst .hljs-string, .hljs-template-tag, .hljs-template-variable {
-        color: #a31515
-    }
+.hljs-code,
+.hljs-deletion,
+.hljs-section,
+.hljs-string,
+.hljs-string .hljs-subst .hljs-string,
+.hljs-template-tag,
+.hljs-template-variable {
+    color: #a31515
+}
 
-.hljs-addition, .hljs-attribute, .hljs-meta, .hljs-parameter, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-title, .hljs-type {
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta,
+.hljs-parameter,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-title,
+.hljs-type {
     color: #007d9a
 }
 
@@ -53,7 +71,9 @@
     color: #795e26
 }
 
-.hljs-bullet, .hljs-link, .hljs-symbol {
+.hljs-bullet,
+.hljs-link,
+.hljs-symbol {
     color: #00b0e8
 }
 
@@ -65,7 +85,8 @@
     font-weight: 600
 }
 
-.hljs-constant, .hljs-reserved {
+.hljs-constant,
+.hljs-reserved {
     color: #cd3131
 }
 
@@ -81,7 +102,13 @@
     color: #b5cea8
 }
 
-.darkmode .hljs-built_in, .darkmode .hljs-keyword, .darkmode .hljs-literal, .darkmode .hljs-name, .darkmode .hljs-pscommand, .darkmode .hljs-selector-tag, .darkmode .hljs-tag {
+.darkmode .hljs-built_in,
+.darkmode .hljs-keyword,
+.darkmode .hljs-literal,
+.darkmode .hljs-name,
+.darkmode .hljs-pscommand,
+.darkmode .hljs-selector-tag,
+.darkmode .hljs-tag {
     color: #569cd6
 }
 
@@ -93,11 +120,22 @@
     color: hsla(0, 0%, 9%, 1);
 }
 
-    .darkmode .hljs-attribute, .darkmode .hljs-code, .darkmode .hljs-deletion, .darkmode .hljs-section, .darkmode .hljs-string, .darkmode .hljs-string .hljs-subst .hljs-string, .darkmode .hljs-template-tag, .darkmode .hljs-template-variable, .darkmode .hljs-type {
-        color: #ce9178
-    }
+.darkmode .hljs-attribute,
+.darkmode .hljs-code,
+.darkmode .hljs-deletion,
+.darkmode .hljs-section,
+.darkmode .hljs-string,
+.darkmode .hljs-string .hljs-subst .hljs-string,
+.darkmode .hljs-template-tag,
+.darkmode .hljs-template-variable,
+.darkmode .hljs-type {
+    color: #ce9178
+}
 
-.darkmode .hljs-addition, .darkmode .hljs-meta, .darkmode .hljs-selector-attr, .darkmode .hljs-selector-pseudo {
+.darkmode .hljs-addition,
+.darkmode .hljs-meta,
+.darkmode .hljs-selector-attr,
+.darkmode .hljs-selector-pseudo {
     color: #2b91af
 }
 
@@ -109,7 +147,14 @@
     color: #9cdcfe
 }
 
-.darkmode .hljs-addition, .darkmode .hljs-attribute, .darkmode .hljs-meta, .darkmode .hljs-parameter, .darkmode .hljs-selector-attr, .darkmode .hljs-selector-pseudo, .darkmode .hljs-title, .darkmode .hljs-type {
+.darkmode .hljs-addition,
+.darkmode .hljs-attribute,
+.darkmode .hljs-meta,
+.darkmode .hljs-parameter,
+.darkmode .hljs-selector-attr,
+.darkmode .hljs-selector-pseudo,
+.darkmode .hljs-title,
+.darkmode .hljs-type {
     color: #01cfff
 }
 
@@ -121,10 +166,13 @@
     color: #dcdcaa
 }
 
-.darkmode .hljs-bullet, .darkmode .hljs-link, .darkmode .hljs-symbol {
+.darkmode .hljs-bullet,
+.darkmode .hljs-link,
+.darkmode .hljs-symbol {
     color: #808080
 }
 
-.darkmode .hljs-constant, .darkmode .hljs-reserved {
+.darkmode .hljs-constant,
+.darkmode .hljs-reserved {
     color: #f44747
 }

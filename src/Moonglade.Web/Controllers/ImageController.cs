@@ -24,6 +24,8 @@ namespace Moonglade.Web.Controllers
         private readonly IBlogImageStorage _imageStorage;
         private readonly ILogger<ImageController> _logger;
         private readonly IBlogConfig _blogConfig;
+        private readonly IMemoryCache _cache;
+        private readonly IFileNameGenerator _fileNameGenerator;
         private readonly AppSettings _settings;
         private readonly ImageStorageSettings _imageStorageSettings;
 
@@ -31,12 +33,16 @@ namespace Moonglade.Web.Controllers
             IBlogImageStorage imageStorage,
             ILogger<ImageController> logger,
             IBlogConfig blogConfig,
+            IMemoryCache cache,
+            IFileNameGenerator fileNameGenerator,
             IOptions<AppSettings> settings,
             IOptions<ImageStorageSettings> imageStorageSettings)
         {
             _imageStorage = imageStorage;
             _logger = logger;
             _blogConfig = blogConfig;
+            _cache = cache;
+            _fileNameGenerator = fileNameGenerator;
             _settings = settings.Value;
             _imageStorageSettings = imageStorageSettings.Value;
         }
@@ -46,7 +52,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Image(string filename, [FromServices] IMemoryCache cache)
+        public async Task<IActionResult> Image(string filename)
         {
             var invalidChars = Path.GetInvalidFileNameChars();
             if (filename.IndexOfAny(invalidChars) >= 0)
@@ -56,13 +62,13 @@ namespace Moonglade.Web.Controllers
 
             _logger.LogTrace($"Requesting image file {filename}");
 
-            if (_blogConfig.AdvancedSettings.EnableCDNRedirect)
+            if (_blogConfig.ImageSettings.EnableCDNRedirect)
             {
-                var imageUrl = _blogConfig.AdvancedSettings.CDNEndpoint.CombineUrl(filename);
+                var imageUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(filename);
                 return Redirect(imageUrl);
             }
 
-            var image = await cache.GetOrCreateAsync(filename, async entry =>
+            var image = await _cache.GetOrCreateAsync(filename, async entry =>
             {
                 _logger.LogTrace($"Image file {filename} not on cache, fetching image...");
 
@@ -80,7 +86,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost, IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Image(IFormFile file, [FromServices] IFileNameGenerator fileNameGenerator)
+        public async Task<IActionResult> Image(IFormFile file, [FromQuery] bool skipWatermark = false)
         {
             static bool IsValidColorValue(int colorValue)
             {
@@ -109,15 +115,15 @@ namespace Moonglade.Web.Controllers
                 return BadRequest();
             }
 
-            var primaryFileName = fileNameGenerator.GetFileName(name);
-            var secondaryFieName = fileNameGenerator.GetFileName(name, "origin");
+            var primaryFileName = _fileNameGenerator.GetFileName(name);
+            var secondaryFieName = _fileNameGenerator.GetFileName(name, "origin");
 
             await using var stream = new MemoryStream();
             await file.CopyToAsync(stream);
 
             // Add watermark
             MemoryStream watermarkedStream = null;
-            if (_blogConfig.WatermarkSettings.IsEnabled)
+            if (_blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark)
             {
                 if (null == _imageStorageSettings.Watermark.NoWatermarkExtensions
                     || _imageStorageSettings.Watermark.NoWatermarkExtensions.All(
@@ -139,11 +145,11 @@ namespace Moonglade.Web.Controllers
                     }
 
                     watermarkedStream = watermarker.AddWatermark(
-                        _blogConfig.WatermarkSettings.WatermarkText,
+                        _blogConfig.ImageSettings.WatermarkText,
                         Color.FromArgb(colorArray[0], colorArray[1], colorArray[2], colorArray[3]),
                         WatermarkPosition.BottomRight,
                         15,
-                        _blogConfig.WatermarkSettings.FontSize);
+                        _blogConfig.ImageSettings.WatermarkFontSize);
                 }
                 else
                 {
@@ -156,7 +162,7 @@ namespace Moonglade.Web.Controllers
                     watermarkedStream.ToArray() :
                     stream.ToArray());
 
-            if (_blogConfig.WatermarkSettings.KeepOriginImage)
+            if (_blogConfig.ImageSettings.KeepOriginImage)
             {
                 var arr = stream.ToArray();
                 _ = Task.Run(async () => await _imageStorage.InsertAsync(secondaryFieName, arr));

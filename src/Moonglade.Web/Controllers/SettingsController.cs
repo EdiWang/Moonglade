@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
+using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
@@ -100,27 +98,29 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("general")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
         public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITimeZoneResolver timeZoneResolver)
         {
             var model = wrapperModel.ViewModel;
 
-            _blogConfig.GeneralSettings.MetaKeyword = model.MetaKeyword;
-            _blogConfig.GeneralSettings.MetaDescription = model.MetaDescription;
-            _blogConfig.GeneralSettings.CanonicalPrefix = model.CanonicalPrefix;
-            _blogConfig.GeneralSettings.SiteTitle = model.SiteTitle;
-            _blogConfig.GeneralSettings.Copyright = model.Copyright;
-            _blogConfig.GeneralSettings.LogoText = model.LogoText;
-            _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
-            _blogConfig.GeneralSettings.SideBarOption = Enum.Parse<SideBarOption>(model.SideBarOption);
-            _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-            _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
-            _blogConfig.GeneralSettings.TimeZoneId = model.SelectedTimeZoneId;
-            _blogConfig.GeneralSettings.ThemeFileName = model.SelectedThemeFileName;
-            _blogConfig.GeneralSettings.OwnerName = model.OwnerName;
-            _blogConfig.GeneralSettings.OwnerEmail = model.OwnerEmail;
-            _blogConfig.GeneralSettings.Description = model.OwnerDescription;
-            _blogConfig.GeneralSettings.ShortDescription = model.OwnerShortDescription;
-            _blogConfig.GeneralSettings.AutoDarkLightTheme = model.AutoDarkLightTheme;
+            var settings = _blogConfig.GeneralSettings;
+            settings.MetaKeyword = model.MetaKeyword;
+            settings.MetaDescription = model.MetaDescription;
+            settings.CanonicalPrefix = model.CanonicalPrefix;
+            settings.SiteTitle = model.SiteTitle;
+            settings.Copyright = model.Copyright;
+            settings.LogoText = model.LogoText;
+            settings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
+            settings.SideBarOption = Enum.Parse<SideBarOption>(model.SideBarOption);
+            settings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
+            settings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
+            settings.TimeZoneId = model.SelectedTimeZoneId;
+            settings.ThemeId = model.SelectedThemeId;
+            settings.OwnerName = model.OwnerName;
+            settings.OwnerEmail = model.OwnerEmail;
+            settings.Description = model.OwnerDescription;
+            settings.ShortDescription = model.OwnerShortDescription;
+            settings.AutoDarkLightTheme = model.AutoDarkLightTheme;
 
             await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
 
@@ -137,19 +137,19 @@ namespace Moonglade.Web.Controllers
         {
             var model = wrapperModel.ViewModel;
 
-            _blogConfig.ContentSettings.DisharmonyWords = model.DisharmonyWords;
-            _blogConfig.ContentSettings.EnableComments = model.EnableComments;
-            _blogConfig.ContentSettings.RequireCommentReview = model.RequireCommentReview;
-            _blogConfig.ContentSettings.EnableWordFilter = model.EnableWordFilter;
-            _blogConfig.ContentSettings.WordFilterMode = Enum.Parse<WordFilterMode>(model.WordFilterMode);
-            _blogConfig.ContentSettings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
-            _blogConfig.ContentSettings.PostListPageSize = model.PostListPageSize;
-            _blogConfig.ContentSettings.HotTagAmount = model.HotTagAmount;
-            _blogConfig.ContentSettings.EnableGravatar = model.EnableGravatar;
-            _blogConfig.ContentSettings.ShowCalloutSection = model.ShowCalloutSection;
-            _blogConfig.ContentSettings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlPitch;
-            _blogConfig.ContentSettings.ShowPostFooter = model.ShowPostFooter;
-            _blogConfig.ContentSettings.PostFooterHtmlPitch = model.PostFooterHtmlPitch;
+            var settings = _blogConfig.ContentSettings;
+            settings.DisharmonyWords = model.DisharmonyWords;
+            settings.EnableComments = model.EnableComments;
+            settings.RequireCommentReview = model.RequireCommentReview;
+            settings.EnableWordFilter = model.EnableWordFilter;
+            settings.WordFilterMode = Enum.Parse<WordFilterMode>(model.WordFilterMode);
+            settings.PostListPageSize = model.PostListPageSize;
+            settings.HotTagAmount = model.HotTagAmount;
+            settings.EnableGravatar = model.EnableGravatar;
+            settings.ShowCalloutSection = model.ShowCalloutSection;
+            settings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlCode;
+            settings.ShowPostFooter = model.ShowPostFooter;
+            settings.PostFooterHtmlPitch = model.PostFooterHtmlCode;
 
             await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");
@@ -179,7 +179,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost("test-email")]
         [IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> SendTestEmail([FromServices] IBlogNotificationClient notificationClient)
+        public async Task<IActionResult> TestEmail([FromServices] IBlogNotificationClient notificationClient)
         {
             await notificationClient.TestNotificationAsync();
             return Ok(true);
@@ -206,39 +206,50 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("watermark")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Watermark([FromForm] MagicWrapper<WatermarkSettingsViewModel> wrapperModel)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettingsViewModel> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
-            var settings = _blogConfig.WatermarkSettings;
-            settings.IsEnabled = model.IsEnabled;
+            var settings = _blogConfig.ImageSettings;
+            settings.IsWatermarkEnabled = model.IsWatermarkEnabled;
             settings.KeepOriginImage = model.KeepOriginImage;
-            settings.FontSize = model.FontSize;
+            settings.WatermarkFontSize = model.WatermarkFontSize;
             settings.WatermarkText = model.WatermarkText;
+            settings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
+            settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
+            settings.EnableCDNRedirect = model.EnableCDNRedirect;
 
-            await _blogConfig.SaveAsync(settings);
-            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedWatermark, "Watermark Settings updated.");
-
-            return NoContent();
-        }
-
-        [HttpPost("siteicon")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> SetSiteIcon([FromForm] string base64Img)
-        {
-            base64Img = base64Img.Trim();
-            if (!Helper.TryParseBase64(base64Img, out var base64Chars))
+            if (model.EnableCDNRedirect)
             {
-                _logger.LogWarning("Bad base64 is used when setting site icon.");
-                return Conflict("Bad base64 data");
+                if (string.IsNullOrWhiteSpace(model.CDNEndpoint))
+                {
+                    settings.EnableCDNRedirect = false;
+
+                    ModelState.AddModelError(nameof(model.CDNEndpoint), $"{nameof(model.CDNEndpoint)} must be specified when {nameof(model.EnableCDNRedirect)} is enabled.");
+
+                    return BadRequest(ModelState.CombineErrorMessages());
+                }
+
+                _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
+
+                // Validate endpoint Url to avoid security risks
+                // But it still has risks:
+                // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
+
+                var endpoint = model.CDNEndpoint;
+                var isValidEndpoint = endpoint.IsValidUrl(UrlExtension.UrlScheme.Https);
+                if (!isValidEndpoint)
+                {
+                    ModelState.AddModelError(nameof(model.CDNEndpoint), "CDN Endpoint is not a valid HTTPS Url.");
+                    return BadRequest(ModelState.CombineErrorMessages());
+                }
+
+                settings.CDNEndpoint = model.CDNEndpoint;
             }
 
-            using var bmp = new Bitmap(new MemoryStream(base64Chars));
-            if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
-
-            await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
-            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "Site icon updated.");
+            await _blogConfig.SaveAsync(settings);
+            await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
 
             return NoContent();
         }
@@ -254,9 +265,7 @@ namespace Moonglade.Web.Controllers
             settings.EnablePingBackSend = model.EnablePingbackSend;
             settings.EnablePingBackReceive = model.EnablePingbackReceive;
             settings.EnableOpenGraph = model.EnableOpenGraph;
-            settings.EnableCDNRedirect = model.EnableCDNRedirect;
             settings.EnableOpenSearch = model.EnableOpenSearch;
-            settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
             settings.EnableMetaWeblog = model.EnableMetaWeblog;
             settings.WarnExternalLink = model.WarnExternalLink;
             settings.AllowScriptsInPage = model.AllowScriptsInPage;
@@ -265,30 +274,6 @@ namespace Moonglade.Web.Controllers
             if (!string.IsNullOrWhiteSpace(model.MetaWeblogPassword))
             {
                 settings.MetaWeblogPasswordHash = Helper.HashPassword(model.MetaWeblogPassword);
-            }
-
-            if (model.EnableCDNRedirect)
-            {
-                if (string.IsNullOrWhiteSpace(model.CDNEndpoint))
-                {
-                    throw new ArgumentNullException(nameof(model.CDNEndpoint),
-                        $"{nameof(model.CDNEndpoint)} must be specified when {nameof(model.EnableCDNRedirect)} is enabled.");
-                }
-
-                _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
-
-                // Validate endpoint Url to avoid security risks
-                // But it still has risks:
-                // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
-
-                var endpoint = model.CDNEndpoint;
-                var isValidEndpoint = endpoint.IsValidUrl(UrlExtension.UrlScheme.Https);
-                if (!isValidEndpoint)
-                {
-                    throw new UriFormatException("CDN Endpoint is not a valid HTTPS Url.");
-                }
-
-                settings.CDNEndpoint = model.CDNEndpoint;
             }
 
             await _blogConfig.SaveAsync(settings);
@@ -350,18 +335,6 @@ namespace Moonglade.Web.Controllers
             await _blogConfig.SaveAsync(settings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
             return NoContent();
-        }
-
-        [HttpPost("clear-data-cache")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult ClearDataCache([FromForm] string[] cachedObjectValues, [FromServices] IBlogCache cache)
-        {
-            if (cachedObjectValues.Contains("MCO_IMEM"))
-            {
-                cache.RemoveAllCache();
-            }
-
-            return Ok();
         }
 
         [HttpGet("password/generate")]

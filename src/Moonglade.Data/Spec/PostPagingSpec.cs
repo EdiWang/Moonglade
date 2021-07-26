@@ -31,7 +31,7 @@ namespace Moonglade.Data.Spec
                 case PostStatus.Deleted:
                     AddCriteria(p => p.IsDeleted);
                     break;
-                case PostStatus.NotSet:
+                case PostStatus.Default:
                     AddCriteria(p => true);
                     break;
                 default:

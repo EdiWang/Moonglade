@@ -126,20 +126,11 @@
   <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
     <value>你确定要重启网站吗？所有当前请求都会被终止。</value>
   </data>
-  <data name="Clear" xml:space="preserve">
-    <value>清除</value>
-  </data>
-  <data name="Clear Data Cache" xml:space="preserve">
-    <value>清空数据缓存</value>
-  </data>
   <data name="Delete cached objects both in memory and on disk" xml:space="preserve">
     <value>删除内存及磁盘上的数据对象</value>
   </data>
   <data name="Erase all data and configuration." xml:space="preserve">
     <value>抹除所有数据及配置</value>
-  </data>
-  <data name="Memory Caches" xml:space="preserve">
-    <value>内存缓存</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>选项</value>
@@ -174,7 +165,7 @@
   <data name="* Username: moonglade" xml:space="preserve">
     <value>* 用户名: moonglade</value>
   </data>
-  <data name="Generate Password" xml:space="preserve">
+  <data name="Generate password" xml:space="preserve">
     <value>生成密码</value>
   </data>
   <data name="Endpoint" xml:space="preserve">
@@ -185,5 +176,32 @@
   </data>
   <data name="Security Settings" xml:space="preserve">
     <value>安全设置</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="Check now" xml:space="preserve">
+    <value>立即检查更新</value>
+  </data>
+  <data name="Check online for new Moonglade release." xml:space="preserve">
+    <value>在线检查新版本的 Moonglade</value>
+  </data>
+  <data name="Moonglade Update" xml:space="preserve">
+    <value>Moonglade 更新</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="Tag name" xml:space="preserve">
+    <value>标签名</value>
+  </data>
+  <data name="Release time" xml:space="preserve">
+    <value>发布时间</value>
+  </data>
+  <data name="Get update" xml:space="preserve">
+    <value>获取更新</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
   </data>
 </root>

@@ -68,36 +68,12 @@ namespace Moonglade.Web
 
             var icon2Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
             Program.SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
-
-            if (Program.SiteIconDictionary.ContainsKey("favicon-16x16.png"))
-            {
-                var icoBytes = GenerateIco(Program.SiteIconDictionary["favicon-16x16.png"]);
-                Program.SiteIconDictionary.TryAdd("favicon.ico", icoBytes);
-            }
         }
 
         public static byte[] GetIcon(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return null;
             return Program.SiteIconDictionary.ContainsKey(fileName) ? Program.SiteIconDictionary[fileName] : null;
-        }
-
-        private static byte[] GenerateIco(byte[] fromBytes)
-        {
-            var stream = new MemoryStream(fromBytes);
-            using (stream)
-            {
-                using var image = new Bitmap(stream);
-
-                // Wrong color and incorrect ico image, but since mordern browsers only use 'favicon-16x16.png', this .ico file is considerable fine.
-                var icon = Icon.FromHandle(image.GetHicon());
-
-                using var memoryStream = new MemoryStream();
-                icon.Save(memoryStream);
-                memoryStream.Flush();
-
-                return memoryStream.ToArray();
-            }
         }
 
         private static byte[] ResizeImage(Stream fromStream, int toWidth, int toHeight, ImageFormat format)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
-using Moonglade.Page;
+using Moonglade.Core;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;

@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
+using Moonglade.Theme;
 using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Pages.Settings
@@ -8,15 +11,22 @@ namespace Moonglade.Web.Pages.Settings
     {
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
+        private readonly IThemeService _themeService;
+
         public GeneralSettingsViewModel ViewModel { get; set; }
 
-        public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver)
+        public CreateThemeRequest ThemeRequest { get; set; }
+
+        public IReadOnlyList<ThemeSegment> Themes { get; set; }
+
+        public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver, IThemeService themeService)
         {
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
+            _themeService = themeService;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
             ViewModel = new()
             {
@@ -35,9 +45,11 @@ namespace Moonglade.Web.Pages.Settings
                 OwnerShortDescription = _blogConfig.GeneralSettings.ShortDescription,
                 SelectedTimeZoneId = _blogConfig.GeneralSettings.TimeZoneId,
                 SelectedUtcOffset = _timeZoneResolver.GetTimeSpanByZoneId(_blogConfig.GeneralSettings.TimeZoneId),
-                SelectedThemeFileName = _blogConfig.GeneralSettings.ThemeFileName,
+                SelectedThemeId = _blogConfig.GeneralSettings.ThemeId,
                 AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };
+
+            Themes = await _themeService.GetAllSegment();
         }
     }
 }

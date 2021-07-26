@@ -35,7 +35,6 @@ namespace Moonglade.Web.Tests
         }
 
         [TestCase("favicon-16x16.png")]
-        [TestCase("favicon.ico")]
         [TestCase("android-icon-144x144.png")]
         public void GetIcon_StateUnderTest_ExpectedBehavior(string fileName)
         {

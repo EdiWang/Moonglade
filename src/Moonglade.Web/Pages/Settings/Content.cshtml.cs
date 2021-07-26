@@ -23,14 +23,13 @@ namespace Moonglade.Web.Pages.Settings
                 RequireCommentReview = _blogConfig.ContentSettings.RequireCommentReview,
                 EnableWordFilter = _blogConfig.ContentSettings.EnableWordFilter,
                 WordFilterMode = _blogConfig.ContentSettings.WordFilterMode.ToString(),
-                UseFriendlyNotFoundImage = _blogConfig.ContentSettings.UseFriendlyNotFoundImage,
                 PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
                 HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
                 EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,
                 ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
-                CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
+                CalloutSectionHtmlCode = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
                 ShowPostFooter = _blogConfig.ContentSettings.ShowPostFooter,
-                PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch
+                PostFooterHtmlCode = _blogConfig.ContentSettings.PostFooterHtmlPitch
             };
         }
     }

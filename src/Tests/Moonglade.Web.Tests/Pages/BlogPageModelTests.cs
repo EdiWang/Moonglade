@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
-using Moonglade.Page;
+using Moonglade.Core;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
@@ -13,7 +13,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages
 {
     [TestFixture]
-
     public class BlogPageModelTests
     {
         private MockRepository _mockRepository;

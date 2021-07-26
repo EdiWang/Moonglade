@@ -26,7 +26,7 @@
 
         public string TimeZoneId { get; set; }
 
-        public string ThemeFileName { get; set; }
+        public int ThemeId { get; set; }
 
         public string OwnerName { get; set; }
 
@@ -40,7 +40,7 @@
 
         public GeneralSettings()
         {
-            ThemeFileName = "word-blue.css";
+            ThemeId = 1;
         }
     }
 

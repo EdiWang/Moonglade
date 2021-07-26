@@ -74,14 +74,6 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header">@Localizer["Blog posts"]</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-input">
-                            <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
                 <div class="card-body">
                     <div class="row g-2 mb-3">
                         <div class="col">
@@ -107,13 +99,13 @@
                 <div class="card-body">
                     <div>
                         <div class="form-floating">
-                            <textarea asp-for="ViewModel.PostFooterHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.PostFooterHtmlPitch)"
+                            <textarea asp-for="ViewModel.PostFooterHtmlCode"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.PostFooterHtmlCode)"
                                       class="form-control form-control-sm h-100px"
                                       spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="ViewModel.PostFooterHtmlPitch"></label>
+                            <label class="form-label" asp-for="ViewModel.PostFooterHtmlCode"></label>
                         </div>
-                        <span asp-validation-for="ViewModel.PostFooterHtmlPitch" class="text-danger"></span>
+                        <span asp-validation-for="ViewModel.PostFooterHtmlCode" class="text-danger"></span>
 
                         <small class="form-text text-muted">@Localizer["e.g. Your blog post license information."]</small>
                     </div>
@@ -132,13 +124,13 @@
                 <div class="card-body">
                     <div>
                         <div class="form-floating">
-                            <textarea asp-for="ViewModel.CalloutSectionHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.CalloutSectionHtmlPitch)"
+                            <textarea asp-for="ViewModel.CalloutSectionHtmlCode"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.CalloutSectionHtmlCode)"
                                       class="form-control form-control-sm h-100px"
                                       spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
+                            <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlCode"></label>
                         </div>
-                        <span asp-validation-for="ViewModel.CalloutSectionHtmlPitch" class="text-danger"></span>
+                        <span asp-validation-for="ViewModel.CalloutSectionHtmlCode" class="text-danger"></span>
                         <small class="form-text text-muted">@Localizer["The call-out section will display on top of every page in the website."]</small>
                     </div>
                 </div>

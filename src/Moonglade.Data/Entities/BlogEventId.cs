@@ -14,7 +14,7 @@
         SettingsSavedContent = 2002,
         SettingsSavedNotification = 2003,
         SettingsSavedSubscription = 2004,
-        SettingsSavedWatermark = 2005,
+        SettingsSavedImage = 2005,
         SettingsSavedAdvanced = 2007,
         SettingsDeleteAccount = 2008,
         SettingsAccountCreated = 2009,
