@@ -131,6 +131,8 @@ namespace Moonglade.Web
                 options.AppendTrailingSlash = false;
             });
 
+            services.AddHealthChecks();
+
             // Blog Services
             services.AddCoreBloggingServices()
                     .AddPingback()
