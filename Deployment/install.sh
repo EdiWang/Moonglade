@@ -198,7 +198,7 @@ install_Moonglade()
 
     # Finish the installation
     echo "Successfully installed Moonglade as a service in your machine! Please open https://$server to try it now!"
-    echo "Default management user name is `admin` and default password is `admin123`. Please open https://$server/admin to try it now!"
+    echo "Default management user name is "admin" and default password is "admin123". Please open https://$server/admin to try it now!"
     echo "Successfully installed mssql as a service in your machine! The port is not opened so you can't connect!"
     echo "Successfully installed caddy as a service in your machine!"
     sleep 1
