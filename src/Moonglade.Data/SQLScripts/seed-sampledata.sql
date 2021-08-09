@@ -17,7 +17,7 @@ INSERT INTO Post(Id, Title, Slug, Author, PostContent, CommentEnabled, CreateTim
 VALUES (@NewPostId, 'Welcome to Moonglade', 'welcome-to-moonglade', 'admin', @PostCotent, 1, '2021-1-1', @PostCotent, 1, 0, 1, 1, NULL, 0, GETDATE(), 'en-us', -1688639577, 1)
 
 INSERT INTO PostExtension(PostId,  Hits,  Likes) 
-VALUES (@NewPostId,  1024,  512)
+VALUES (@NewPostId, 0, 0)
 
 INSERT INTO PostCategory (PostId, CategoryId) VALUES (@NewPostId, @CatId)
 INSERT INTO PostTag (PostId, TagId) (SELECT p.Id, t.Id FROM Post p LEFT JOIN Tag t ON 1 = 1)
