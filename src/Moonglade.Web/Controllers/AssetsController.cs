@@ -1,8 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +7,10 @@ using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Utils;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {

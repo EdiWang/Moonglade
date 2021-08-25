@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using MemoryCache.Testing.Moq;
+﻿using MemoryCache.Testing.Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -15,6 +11,10 @@ using Moonglade.Utils;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {

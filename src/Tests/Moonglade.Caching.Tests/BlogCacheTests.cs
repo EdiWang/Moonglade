@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using MemoryCache.Testing.Moq;
+﻿using MemoryCache.Testing.Moq;
 using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Moonglade.Caching.Tests
 {

@@ -25,6 +25,8 @@
         <foaf href="/foaf.xml" />
     </feature>
     <partial name="_Favicons" />
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/3rd/bootstrap-icons.css" rel="stylesheet" />
     <environment exclude="Development">
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
         <link href="~/css/admin-bundle.min.css" rel="stylesheet" asp-append-version="true" />
@@ -136,6 +138,9 @@
     <partial name="_Toast" />
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js" asp-append-version="true"></script>
     <environment exclude="Development">
         <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
         <script src="~/js/dist/admin-bundle.min.js" asp-append-version="true"></script>
@@ -147,10 +152,6 @@
         <script src="~/js/app/httpService.js"></script>
         <script src="~/js/app/comments.js"></script>
         <script src="~/js/app/darklighttheme.js"></script>
-
-        <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-        <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
         <script src="~/js/3rd/bootstrap-tagsinput.min.js"></script>
         <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
         <script src="~/js/app/admin.js"></script>

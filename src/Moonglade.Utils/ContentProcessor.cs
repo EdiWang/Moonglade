@@ -1,7 +1,7 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using Markdig;
+﻿using Markdig;
 using NUglify;
+using System;
+using System.Text.RegularExpressions;
 
 namespace Moonglade.Utils
 {

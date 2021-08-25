@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Edi.Captcha;
+﻿using Edi.Captcha;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -16,6 +13,9 @@ using Moonglade.Data.Entities;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Pages
 {

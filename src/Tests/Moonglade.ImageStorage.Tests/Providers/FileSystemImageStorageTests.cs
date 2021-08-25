@@ -1,9 +1,9 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moonglade.ImageStorage.Providers;
 using Moq;
 using NUnit.Framework;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.ImageStorage.Tests.Providers
 {

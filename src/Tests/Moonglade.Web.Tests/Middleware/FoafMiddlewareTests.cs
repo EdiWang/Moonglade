@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration;
 using Moonglade.FriendLink;
@@ -9,6 +6,9 @@ using Moonglade.Web.Middleware;
 using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Middleware
 {

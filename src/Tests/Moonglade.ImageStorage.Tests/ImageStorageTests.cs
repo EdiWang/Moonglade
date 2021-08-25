@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
-using Moonglade.ImageStorage.Providers;
+﻿using Moonglade.ImageStorage.Providers;
 using NUnit.Framework;
+using System;
+using System.IO;
 
 namespace Moonglade.ImageStorage.Tests
 {

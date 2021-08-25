@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using MemoryCache.Testing.Moq;
+﻿using MemoryCache.Testing.Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +10,10 @@ using Moonglade.Data.Spec;
 using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Middleware
 {

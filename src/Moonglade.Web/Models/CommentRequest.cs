@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Edi.Captcha;
+﻿using Edi.Captcha;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Models
 {

@@ -1,8 +1,8 @@
-﻿using System;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace Moonglade.Core.Tests
 {

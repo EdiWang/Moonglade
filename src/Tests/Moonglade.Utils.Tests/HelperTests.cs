@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using NUnit.Framework;
 
 namespace Moonglade.Utils.Tests
 {

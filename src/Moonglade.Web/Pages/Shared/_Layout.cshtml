@@ -26,7 +26,8 @@
         }
         else
         {
-            <partial name="_OpenGraph" />    
+            <partial name="_OpenGraph" />
+
         }
     }
 
@@ -44,7 +45,7 @@
     </title>
 
     @if (BlogConfig.ImageSettings.EnableCDNRedirect &&
- !string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
+!string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.ImageSettings.CDNEndpoint)" />
     }
@@ -69,12 +70,12 @@
         <foaf href="/foaf.xml" />
     </feature>
     <partial name="_Favicons" />
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/3rd/bootstrap-icons.css" rel="stylesheet" />
     <environment exclude="Development">
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
     </environment>
     <environment include="Development">
-        <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="~/css/3rd/bootstrap-icons.css" rel="stylesheet" />
         <link href="~/css/src/fonts.css" rel="stylesheet" />
         <link href="~/css/src/base.css" rel="stylesheet" />
         <link href="~/css/src/rwd.css" rel="stylesheet" />

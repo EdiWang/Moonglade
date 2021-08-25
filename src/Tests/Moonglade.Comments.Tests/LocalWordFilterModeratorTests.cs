@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
 using Moonglade.Configuration;
 using Moq;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Moonglade.Comments.Tests
 {

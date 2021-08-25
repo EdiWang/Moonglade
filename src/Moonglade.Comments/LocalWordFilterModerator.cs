@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Edi.WordFilter;
+﻿using Edi.WordFilter;
 using Moonglade.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Moonglade.Comments
 {

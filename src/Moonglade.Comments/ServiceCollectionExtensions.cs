@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Azure.CognitiveServices.ContentModerator;
+﻿using Microsoft.Azure.CognitiveServices.ContentModerator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Moonglade.Comments
 {

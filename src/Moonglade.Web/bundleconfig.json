@@ -3,7 +3,7 @@
     "outputFileName": "wwwroot/css/tinymce-bs-bundle.css",
     "inputFiles": [
       "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
-      "wwwroot/css/3rd/bootstrap-icons.css",
+      "wwwroot/lib/bootstrap-icons/font/bootstrap-icons.css",
       "wwwroot/css/src/tinymce-content.css",
       "wwwroot/css/src/post-slug.css"
     ]
@@ -22,9 +22,6 @@
   {
     "outputFileName": "wwwroot/js/dist/admin-bundle.js",
     "inputFiles": [
-      "wwwroot/lib/jquery-validate/jquery.validate.min.js",
-      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
-      "wwwroot/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js",
       "wwwroot/js/3rd/bootstrap-tagsinput.min.js",
       "wwwroot/lib/jquery.AreYouSure/jquery.are-you-sure.min.js",
       "wwwroot/js/app/admin.js"
@@ -33,8 +30,6 @@
   {
     "outputFileName": "wwwroot/css/bundle.css",
     "inputFiles": [
-      "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
-      "wwwroot/css/3rd/bootstrap-icons.css",
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/base.css",
       "wwwroot/css/src/rwd.css",

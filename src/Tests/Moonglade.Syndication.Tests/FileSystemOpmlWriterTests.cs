@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using NUnit.Framework;
 
 namespace Moonglade.Syndication.Tests
 {

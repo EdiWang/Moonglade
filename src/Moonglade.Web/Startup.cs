@@ -1,11 +1,5 @@
 ﻿#region Usings
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Text.Unicode;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
 using Microsoft.ApplicationInsights.DependencyCollector;
@@ -39,6 +33,12 @@ using Moonglade.Theme;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using WilderMinds.MetaWeblog;
 
 #endregion

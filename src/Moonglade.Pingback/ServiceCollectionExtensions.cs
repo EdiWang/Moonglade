@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net;
 using System.Net.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Moonglade.Pingback
 {

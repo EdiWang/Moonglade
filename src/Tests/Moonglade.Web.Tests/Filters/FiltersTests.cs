@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Edi.Captcha;
+﻿using Edi.Captcha;
 using MemoryCache.Testing.Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +9,8 @@ using Moonglade.Caching.Filters;
 using Moonglade.Web.Filters;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Filters
 {

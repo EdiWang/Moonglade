@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Data;
 using System.IO;
 using System.Reflection;
-using Dapper;
 
 namespace Moonglade.Data.Setup
 {

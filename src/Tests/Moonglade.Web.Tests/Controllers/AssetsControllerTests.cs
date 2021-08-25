@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {

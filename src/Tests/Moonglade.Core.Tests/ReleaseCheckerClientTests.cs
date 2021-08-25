@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Moq;
+using Moq.Protected;
+using NUnit.Framework;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Moq;
-using Moq.Protected;
-using NUnit.Framework;
 
 namespace Moonglade.Core.Tests
 {

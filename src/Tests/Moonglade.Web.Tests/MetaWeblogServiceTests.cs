@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
@@ -10,6 +6,10 @@ using Moonglade.ImageStorage;
 using Moonglade.Utils;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using WilderMinds.MetaWeblog;
 using Post = Moonglade.Core.Post;
 using Tag = Moonglade.Core.Tag;

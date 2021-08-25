@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Moonglade.Utils;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Middleware
 {

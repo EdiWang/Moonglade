@@ -1,6 +1,6 @@
-﻿using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Moonglade.Utils;
+using System.Text.Encodings.Web;
 
 namespace Moonglade.Web.TagHelpers
 {

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Moonglade.Core;
+using System;
 using System.Collections.Generic;
-using Moonglade.Core;
 
 namespace Moonglade.Web.Tests
 {
