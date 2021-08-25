@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace Moonglade.Web.Controllers
     public class FriendLinkController : ControllerBase
     {
         private readonly IFriendLinkService _friendLinkService;
+        private readonly IMediator _mediator;
 
-        public FriendLinkController(IFriendLinkService friendLinkService)
+        public FriendLinkController(IFriendLinkService friendLinkService, IMediator mediator)
         {
             _friendLinkService = friendLinkService;
+            _mediator = mediator;
         }
 
         [HttpPost]
@@ -33,7 +36,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([NotEmpty] Guid id)
         {
-            var link = await _friendLinkService.GetAsync(id);
+            var link = await _mediator.Send(new GetLinkQuery(id));
             if (null == link) return NotFound();
 
             return Ok(link);

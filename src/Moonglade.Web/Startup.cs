@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
+using MediatR;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
@@ -66,6 +68,8 @@ namespace Moonglade.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+
             // ASP.NET Setup
             services.AddOptions()
                     .AddHttpContextAccessor()
