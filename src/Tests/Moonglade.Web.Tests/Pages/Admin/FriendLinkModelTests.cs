@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Moonglade.FriendLink;
 using Moonglade.Web.Pages.Admin;
 using Moq;
@@ -13,25 +15,25 @@ namespace Moonglade.Web.Tests.Pages.Admin
     {
         private MockRepository _mockRepository;
 
-        private Mock<IFriendLinkService> _mockFriendLinkService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockFriendLinkService = _mockRepository.Create<IFriendLinkService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private FriendLinkModel CreateFriendLinkModel()
         {
-            return new(_mockFriendLinkService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
         public async Task OnGet_StateUnderTest_ExpectedBehavior()
         {
             IReadOnlyList<Link> links = new List<Link>();
-            _mockFriendLinkService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(links));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Returns(Task.FromResult(links));
 
             var friendLinkModel = CreateFriendLinkModel();
             await friendLinkModel.OnGet();

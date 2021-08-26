@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -45,8 +46,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetAllAsync_OK()
         {
-            var svc = CreateService();
-            await svc.GetAllAsync();
+            var handler = new GetAllLinksQueryHandler(_mockFriendlinkRepo.Object);
+            await handler.Handle(new(), CancellationToken.None);
 
             _mockFriendlinkRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<FriendLinkEntity, Link>>>()));
         }

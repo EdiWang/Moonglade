@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration;
@@ -22,7 +23,7 @@ namespace Moonglade.Web.Middleware
             HttpContext context,
             IBlogConfig blogConfig,
             IFoafWriter foafWriter,
-            IFriendLinkService friendLinkService,
+            IMediator mediator,
             LinkGenerator linkGenerator)
         {
             if (context.Request.Path == "/foaf.xml")
@@ -41,7 +42,7 @@ namespace Moonglade.Web.Middleware
                         request.QueryString.HasValue ? request.QueryString.Value : string.Empty));
                 }
 
-                var friends = await friendLinkService.GetAllAsync();
+                var friends = await mediator.Send(new GetAllLinksQuery());
                 var foafDoc = new FoafDoc
                 {
                     Name = blogConfig.GeneralSettings.OwnerName,

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -10,7 +9,6 @@ namespace Moonglade.FriendLink
 {
     public interface IFriendLinkService
     {
-        Task<IReadOnlyList<Link>> GetAllAsync();
         Task AddAsync(string title, string linkUrl);
         Task DeleteAsync(Guid id);
         Task UpdateAsync(Guid id, string newTitle, string newLinkUrl);
@@ -27,17 +25,6 @@ namespace Moonglade.FriendLink
         {
             _friendlinkRepo = friendlinkRepo;
             _audit = audit;
-        }
-
-        public Task<IReadOnlyList<Link>> GetAllAsync()
-        {
-            var item = _friendlinkRepo.SelectAsync(f => new Link
-            {
-                Id = f.Id,
-                LinkUrl = f.LinkUrl,
-                Title = f.Title
-            });
-            return item;
         }
 
         public async Task AddAsync(string title, string linkUrl)
