@@ -8,21 +8,21 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class FriendLinkModel : PageModel
     {
-        private readonly IFriendLinkService _friendLinkService;
+        private readonly IMediator _mediator;
 
         public FriendLinkEditModel FriendLinkEditViewModel { get; set; }
 
         public IReadOnlyList<Link> FriendLinks { get; set; }
 
-        public FriendLinkModel(IFriendLinkService friendLinkService)
+        public FriendLinkModel(IMediator mediator)
         {
-            _friendLinkService = friendLinkService;
+            _mediator = mediator;
             FriendLinkEditViewModel = new();
         }
 
         public async Task OnGet()
         {
-            FriendLinks = await _friendLinkService.GetAllAsync();
+            FriendLinks = await _mediator.Send(new GetAllLinksQuery());
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.FriendLink;
 using System;
@@ -10,20 +10,19 @@ namespace Moonglade.Web.ViewComponents
     public class FriendLinkViewComponent : ViewComponent
     {
         private readonly ILogger<FriendLinkViewComponent> _logger;
-        private readonly IFriendLinkService _friendLinkService;
+        private readonly IMediator _mediator;
 
-        public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger,
-            IFriendLinkService friendLinkService)
+        public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger, IMediator mediator)
         {
             _logger = logger;
-            _friendLinkService = friendLinkService;
+            _mediator = mediator;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             try
             {
-                var links = await _friendLinkService.GetAllAsync();
+                var links = await _mediator.Send(new GetAllLinksQuery());
                 return View(links ?? new List<Link>());
             }
             catch (Exception e)

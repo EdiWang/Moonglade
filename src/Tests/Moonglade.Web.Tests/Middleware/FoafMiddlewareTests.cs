@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration;
 using Moonglade.FriendLink;
@@ -18,7 +18,7 @@ namespace Moonglade.Web.Tests.Middleware
         private MockRepository _mockRepository;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IFoafWriter> _mockFoafWriter;
-        private Mock<IFriendLinkService> _mockFriendLinkService;
+        private Mock<IMediator> _mockMediator;
         private Mock<LinkGenerator> _mockLinkGenerator;
 
         [SetUp]
@@ -27,7 +27,7 @@ namespace Moonglade.Web.Tests.Middleware
             _mockRepository = new(MockBehavior.Default);
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockFoafWriter = _mockRepository.Create<IFoafWriter>();
-            _mockFriendLinkService = _mockRepository.Create<IFriendLinkService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockLinkGenerator = _mockRepository.Create<LinkGenerator>();
 
             _mockBlogConfig.Setup(bc => bc.GeneralSettings).Returns(new GeneralSettings
@@ -47,7 +47,7 @@ namespace Moonglade.Web.Tests.Middleware
                     Title = "Fubao"
                 }
             };
-            _mockFriendLinkService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(links));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Returns(Task.FromResult(links));
 
             var xml = @"<?xml version=""1.0"" encoding=""utf-16""?>
 <rdf:RDF xmlns:foaf=""http://xmlns.com/foaf/0.1/"" xmlns:rdfs=""http://www.w3.org/2000/01/rdf-schema#"" xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#"">
@@ -81,9 +81,9 @@ namespace Moonglade.Web.Tests.Middleware
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new FoafMiddleware(RequestDelegate);
 
-            await middleware.Invoke(context, _mockBlogConfig.Object, _mockFoafWriter.Object, _mockFriendLinkService.Object, _mockLinkGenerator.Object);
+            await middleware.Invoke(context, _mockBlogConfig.Object, _mockFoafWriter.Object, _mockMediator.Object, _mockLinkGenerator.Object);
 
-            _mockFriendLinkService.Verify(p => p.GetAllAsync(), Times.Never);
+            _mockMediator.Verify(p => p.Send(It.IsAny<GetAllLinksQuery>(), default), Times.Never);
             _mockFoafWriter.Verify(p => p.GetFoafData(It.IsAny<FoafDoc>(), It.IsAny<string>(), It.IsAny<IReadOnlyList<Link>>()), Times.Never);
             Assert.Pass();
         }
@@ -100,9 +100,9 @@ namespace Moonglade.Web.Tests.Middleware
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new FoafMiddleware(RequestDelegate);
 
-            await middleware.Invoke(context, _mockBlogConfig.Object, _mockFoafWriter.Object, _mockFriendLinkService.Object, _mockLinkGenerator.Object);
+            await middleware.Invoke(context, _mockBlogConfig.Object, _mockFoafWriter.Object, _mockMediator.Object, _mockLinkGenerator.Object);
 
-            _mockFriendLinkService.Verify(p => p.GetAllAsync());
+            _mockMediator.Verify(p => p.Send(It.IsAny<GetAllLinksQuery>(), default));
             _mockFoafWriter.Verify(p => p.GetFoafData(It.IsAny<FoafDoc>(), It.IsAny<string>(), It.IsAny<IReadOnlyList<Link>>()));
             Assert.Pass();
         }

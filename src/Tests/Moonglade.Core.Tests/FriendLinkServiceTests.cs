@@ -1,4 +1,4 @@
-﻿using Moonglade.Data;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.FriendLink;
@@ -33,8 +33,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetAsync_OK()
         {
-            var svc = CreateService();
-            await svc.GetAsync(Guid.Empty);
+            var handler = new GetLinkQueryHandler(_mockFriendlinkRepo.Object);
+            await handler.Handle(new(Guid.Empty), CancellationToken.None);
 
             _mockFriendlinkRepo.Verify(p =>
                 p.SelectFirstOrDefaultAsync(It.IsAny<ISpecification<FriendLinkEntity>>(),
@@ -44,8 +44,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetAllAsync_OK()
         {
-            var svc = CreateService();
-            await svc.GetAllAsync();
+            var handler = new GetAllLinksQueryHandler(_mockFriendlinkRepo.Object);
+            await handler.Handle(new(), CancellationToken.None);
 
             _mockFriendlinkRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<FriendLinkEntity, Link>>>()));
         }

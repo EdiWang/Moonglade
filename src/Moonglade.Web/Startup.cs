@@ -1,7 +1,8 @@
-﻿#region Usings
+#region Usings
 
 using AspNetCoreRateLimit;
 using Edi.Captcha;
+using MediatR;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
@@ -66,6 +67,8 @@ namespace Moonglade.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+
             // ASP.NET Setup
             services.AddOptions()
                     .AddHttpContextAccessor()
