@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace Moonglade.Web.Tests.Controllers
 {

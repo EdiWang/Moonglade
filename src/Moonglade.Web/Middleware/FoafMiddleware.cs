@@ -6,6 +6,7 @@ using Moonglade.Utils;
 using Moonglade.Web.Models;
 using System;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace Moonglade.Web.Middleware
 {

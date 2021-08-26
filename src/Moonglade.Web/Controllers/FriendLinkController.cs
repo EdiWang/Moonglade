@@ -5,6 +5,7 @@ using Moonglade.FriendLink;
 using Moonglade.Web.Models;
 using System;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace Moonglade.Web.Controllers
 {

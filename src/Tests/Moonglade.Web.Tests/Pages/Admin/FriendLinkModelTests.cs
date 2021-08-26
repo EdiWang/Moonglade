@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace Moonglade.Web.Tests.Pages.Admin
 {

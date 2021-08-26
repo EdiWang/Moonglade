@@ -4,6 +4,7 @@ using Moonglade.FriendLink;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace Moonglade.Web.ViewComponents
 {

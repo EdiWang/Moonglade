@@ -3,6 +3,7 @@ using Moonglade.FriendLink;
 using Moonglade.Web.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace Moonglade.Web.Pages.Admin
 {
