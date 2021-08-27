@@ -42,7 +42,7 @@ namespace Moonglade.Auth
         public async Task<Account> GetAsync(Guid id)
         {
             var entity = await _accountRepo.GetAsync(id);
-            var item = EntityToAccountModel(entity);
+            var item = new Account(entity);
             return item;
         }
 
@@ -152,20 +152,6 @@ namespace Moonglade.Auth
 
             await _accountRepo.DeleteAsync(id);
             await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsDeleteAccount, $"Account '{id}' deleted.");
-        }
-
-        private static Account EntityToAccountModel(LocalAccountEntity entity)
-        {
-            if (entity is null) return null;
-
-            return new()
-            {
-                Id = entity.Id,
-                CreateTimeUtc = entity.CreateTimeUtc,
-                LastLoginIp = entity.LastLoginIp.Trim(),
-                LastLoginTimeUtc = entity.LastLoginTimeUtc.GetValueOrDefault(),
-                Username = entity.Username.Trim()
-            };
         }
     }
 }
