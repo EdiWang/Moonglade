@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -24,13 +25,16 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IBlogCache _cache;
         private readonly IBlogPageService _blogPageService;
+        private readonly IMediator _mediator;
 
         public PageController(
             IBlogCache cache,
-            IBlogPageService blogPageService)
+            IBlogPageService blogPageService,
+            IMediator mediator)
         {
             _cache = cache;
             _blogPageService = blogPageService;
+            _mediator = mediator;
         }
 
         [HttpGet("segment/published")]
@@ -102,7 +106,7 @@ namespace Moonglade.Web.Controllers
             var page = await _blogPageService.GetAsync(id);
             if (page == null) return NotFound();
 
-            await _blogPageService.DeleteAsync(id);
+            await _mediator.Send(new DeletePageCommand(id));
 
             _cache.Remove(CacheDivision.Page, page.Slug);
             return NoContent();

@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
@@ -32,6 +33,7 @@ namespace Moonglade.Web.Tests
         private Mock<IBlogPageService> _mockPageService;
         private Mock<IBlogImageStorage> _mockBlogImageStorage;
         private Mock<IFileNameGenerator> _mockFileNameGenerator;
+        private Mock<IMediator> _mockMediator;
 
         private readonly string _key = "work996andgetintoicu";
         private readonly string _username = "moonglade";
@@ -84,6 +86,7 @@ namespace Moonglade.Web.Tests
             _mockPageService = _mockRepository.Create<IBlogPageService>();
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
+            _mockMediator = _mockRepository.Create<IMediator>();
 
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
@@ -111,7 +114,7 @@ namespace Moonglade.Web.Tests
                 _mockPostManageService.Object,
                 _mockPageService.Object,
                 _mockBlogImageStorage.Object,
-                _mockFileNameGenerator.Object);
+                _mockFileNameGenerator.Object, _mockMediator.Object);
         }
 
         [TestCase(null, null)]
@@ -445,7 +448,7 @@ namespace Moonglade.Web.Tests
             var result = await service.DeletePageAsync("996.icu", _username, _password, FakeData.Uid2.ToString());
 
             Assert.IsTrue(result);
-            _mockPageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeletePageCommand>(), default));
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.ImageStorage;
@@ -25,6 +26,7 @@ namespace Moonglade.Web
         private readonly IBlogPageService _blogPageService;
         private readonly IBlogImageStorage _blogImageStorage;
         private readonly IFileNameGenerator _fileNameGenerator;
+        private readonly IMediator _mediator;
 
         public MetaWeblogService(
             IBlogConfig blogConfig,
@@ -36,7 +38,8 @@ namespace Moonglade.Web
             IPostManageService postManageService,
             IBlogPageService blogPageService,
             IBlogImageStorage blogImageStorage,
-            IFileNameGenerator fileNameGenerator)
+            IFileNameGenerator fileNameGenerator,
+            IMediator mediator)
         {
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
@@ -47,6 +50,7 @@ namespace Moonglade.Web
             _blogPageService = blogPageService;
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
+            _mediator = mediator;
             _postManageService = postManageService;
         }
 
@@ -378,7 +382,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(pageid));
                 }
 
-                await _blogPageService.DeleteAsync(id);
+                await _mediator.Send(new DeletePageCommand(id));
                 return true;
             });
         }

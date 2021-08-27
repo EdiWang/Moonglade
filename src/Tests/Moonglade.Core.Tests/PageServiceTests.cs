@@ -148,8 +148,8 @@ namespace Moonglade.Core.Tests
                 .Returns(ValueTask.FromResult(_fakePageEntity));
             _mockPageRepository.Setup(p => p.DeleteAsync(It.IsAny<Guid>()));
 
-            var svc = CreatePageService();
-            await svc.DeleteAsync(Guid.Empty);
+            var handler = new DeletePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(Guid.Empty), default);
 
             _mockBlogAudit.Verify();
         }
@@ -160,11 +160,10 @@ namespace Moonglade.Core.Tests
             _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((PageEntity)null));
 
-            var svc = CreatePageService();
-
+            var handler = new DeletePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await svc.DeleteAsync(Guid.Empty);
+                await handler.Handle(new(Guid.Empty), default);
             });
         }
 

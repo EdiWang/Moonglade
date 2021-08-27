@@ -1,5 +1,5 @@
-﻿using System;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
+using System;
 
 namespace Moonglade.Auth
 {
@@ -13,7 +13,7 @@ namespace Moonglade.Auth
 
         public Account()
         {
-            
+
         }
 
         public Account(LocalAccountEntity entity)

@@ -18,7 +18,6 @@ namespace Moonglade.Core
         Task<IReadOnlyList<PageSegment>> ListSegmentAsync();
         Task<Guid> CreateAsync(UpdatePageRequest request);
         Task<Guid> UpdateAsync(Guid id, UpdatePageRequest request);
-        Task DeleteAsync(Guid id);
     }
 
     public class BlogPageService : IBlogPageService
@@ -113,18 +112,6 @@ namespace Moonglade.Core
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.PageUpdated, $"Page '{id}' updated.");
 
             return page.Id;
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            var page = await _pageRepo.GetAsync(id);
-            if (page is null)
-            {
-                throw new InvalidOperationException($"CustomPageEntity with Id '{id}' not found.");
-            }
-
-            await _pageRepo.DeleteAsync(id);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.PageDeleted, $"Page '{id}' deleted.");
         }
 
         public static string RemoveScriptTagFromHtml(string html)

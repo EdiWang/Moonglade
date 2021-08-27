@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Core;
@@ -18,6 +19,7 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogPageService> _mockPageService;
+        private Mock<IMediator> _mockMediator;
 
         private PageEditModel _pageEditModel;
 
@@ -28,6 +30,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockPageService = _mockRepository.Create<IBlogPageService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
 
             _pageEditModel = new()
             {
@@ -45,7 +48,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             return new(
                 _mockBlogCache.Object,
-                _mockPageService.Object);
+                _mockPageService.Object, _mockMediator.Object);
         }
 
         [Test]
