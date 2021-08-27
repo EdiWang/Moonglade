@@ -140,11 +140,11 @@ namespace Moonglade.Theme.Tests
                     CssRules = string.Empty,
                     ThemeType = ThemeType.User
                 }));
-            var service = CreateService();
+            var handler = new DeleteThemeCommandHandler(_mockThemeRepository.Object);
             int id = 996;
 
             // Act
-            var result = await service.Delete(id);
+            var result = await handler.Handle(new(id), default);
 
             // Assert
             _mockThemeRepository.Verify(p => p.DeleteAsync(It.IsAny<int>()));
@@ -163,11 +163,11 @@ namespace Moonglade.Theme.Tests
                     CssRules = string.Empty,
                     ThemeType = ThemeType.System
                 }));
-            var service = CreateService();
+            var handler = new DeleteThemeCommandHandler(_mockThemeRepository.Object);
             int id = 996;
 
             // Act
-            var result = await service.Delete(id);
+            var result = await handler.Handle(new(id), default);
 
             // Assert
             _mockThemeRepository.Verify(p => p.DeleteAsync(It.IsAny<int>()), Times.Never);
@@ -180,11 +180,11 @@ namespace Moonglade.Theme.Tests
             // Arrange
             _mockThemeRepository.Setup(p => p.GetAsync(It.IsAny<int>()))
                 .Returns(ValueTask.FromResult((BlogThemeEntity)null));
-            var service = CreateService();
+            var handler = new DeleteThemeCommandHandler(_mockThemeRepository.Object);
             int id = 996;
 
             // Act
-            var result = await service.Delete(id);
+            var result = await handler.Handle(new(id), default);
 
             // Assert
             _mockThemeRepository.Verify(p => p.DeleteAsync(It.IsAny<int>()), Times.Never);

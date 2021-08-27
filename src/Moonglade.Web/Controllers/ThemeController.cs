@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
@@ -20,12 +21,16 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class ThemeController : ControllerBase
     {
+        private readonly IMediator _mediator;
+
         private readonly IThemeService _themeService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
 
-        public ThemeController(IThemeService themeService, IBlogCache cache, IBlogConfig blogConfig)
+        public ThemeController(IMediator mediator, IThemeService themeService, IBlogCache cache, IBlogConfig blogConfig)
         {
+            _mediator = mediator;
+
             _themeService = themeService;
             _cache = cache;
             _blogConfig = blogConfig;
@@ -93,7 +98,7 @@ namespace Moonglade.Web.Controllers
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
         public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
         {
-            var oc = await _themeService.Delete(id);
+            var oc = await _mediator.Send(new DeleteThemeCommand(id));
             return oc switch
             {
                 OperationCode.ObjectNotFound => NotFound(),

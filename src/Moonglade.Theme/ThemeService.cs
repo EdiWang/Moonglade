@@ -1,5 +1,4 @@
-﻿using Moonglade.Data;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +13,6 @@ namespace Moonglade.Theme
         Task<int> Create(string name, IDictionary<string, string> cssRules);
         Task<IReadOnlyList<ThemeSegment>> GetAllSegment();
         Task<string> GetStyleSheet(int id);
-        Task<OperationCode> Delete(int id);
     }
 
     public class ThemeService : IThemeService
@@ -82,16 +80,6 @@ namespace Moonglade.Theme
             {
                 throw new InvalidDataException($"Theme id '{id}' CssRules is not a valid json");
             }
-        }
-
-        public async Task<OperationCode> Delete(int id)
-        {
-            var theme = await _themeRepo.GetAsync(id);
-            if (null == theme) return OperationCode.ObjectNotFound;
-            if (theme.ThemeType == ThemeType.System) return OperationCode.Canceled;
-
-            await _themeRepo.DeleteAsync(id);
-            return OperationCode.Done;
         }
     }
 }
