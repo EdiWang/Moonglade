@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.FriendLink;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -46,7 +45,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Create(_friendlinkEditViewModel);
 
             Assert.IsInstanceOf<CreatedResult>(result);
-            _mockFriendLinkService.Verify(p => p.AddAsync(It.IsAny<string>(), It.IsAny<string>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<AddLinkCommand>(), default));
         }
 
         [Test]

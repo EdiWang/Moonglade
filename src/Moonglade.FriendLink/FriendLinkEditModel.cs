@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.Web.Models
+namespace Moonglade.FriendLink
 {
     public class FriendLinkEditModel
     {

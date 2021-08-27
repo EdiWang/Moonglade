@@ -9,7 +9,6 @@ namespace Moonglade.FriendLink
 {
     public interface IFriendLinkService
     {
-        Task AddAsync(string title, string linkUrl);
         Task UpdateAsync(Guid id, string newTitle, string newLinkUrl);
     }
 
@@ -24,24 +23,6 @@ namespace Moonglade.FriendLink
         {
             _friendlinkRepo = friendlinkRepo;
             _audit = audit;
-        }
-
-        public async Task AddAsync(string title, string linkUrl)
-        {
-            if (!Uri.IsWellFormedUriString(linkUrl, UriKind.Absolute))
-            {
-                throw new InvalidOperationException($"{nameof(linkUrl)} is not a valid url.");
-            }
-
-            var link = new FriendLinkEntity
-            {
-                Id = Guid.NewGuid(),
-                LinkUrl = Helper.SterilizeLink(linkUrl),
-                Title = title
-            };
-
-            await _friendlinkRepo.AddAsync(link);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.FriendLinkCreated, "FriendLink created.");
         }
 
         public async Task UpdateAsync(Guid id, string newTitle, string newLinkUrl)

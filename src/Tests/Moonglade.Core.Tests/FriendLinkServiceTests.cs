@@ -54,10 +54,15 @@ namespace Moonglade.Core.Tests
         [Test]
         public void AddAsync_InvalidUrl()
         {
-            var svc = CreateService();
+            var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await svc.AddAsync("Fubao", "work006");
+                await handler.Handle(new(new()
+                {
+                    LinkUrl = "Fubao",
+                    Title = "work006"
+                }), CancellationToken.None);
             });
         }
 
@@ -76,8 +81,13 @@ namespace Moonglade.Core.Tests
 
             _mockFriendlinkRepo.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
 
-            var svc = CreateService();
-            await svc.AddAsync("Choice of 955", "https://dot.net");
+            var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(new()
+            {
+                LinkUrl = "https://dot.net",
+                Title = "Choice of 955"
+            }), CancellationToken.None);
+
             Assert.Pass();
         }
 

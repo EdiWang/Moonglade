@@ -27,7 +27,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(FriendLinkEditModel model)
         {
-            await _friendLinkService.AddAsync(model.Title, model.LinkUrl);
+            await _mediator.Send(new AddLinkCommand(model));
             return Created(string.Empty, model);
         }
 
