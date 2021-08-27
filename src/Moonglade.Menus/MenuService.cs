@@ -4,7 +4,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,7 +11,6 @@ namespace Moonglade.Menus
 {
     public interface IMenuService
     {
-        Task<IReadOnlyList<Menu>> GetAllAsync();
         Task<Guid> CreateAsync(UpdateMenuRequest request);
         Task UpdateAsync(Guid id, UpdateMenuRequest request);
         Task DeleteAsync(Guid id);
@@ -32,28 +30,6 @@ namespace Moonglade.Menus
             _logger = logger;
             _menuRepo = menuRepo;
             _audit = audit;
-        }
-
-        public Task<IReadOnlyList<Menu>> GetAllAsync()
-        {
-            var list = _menuRepo.SelectAsync(p => new Menu
-            {
-                Id = p.Id,
-                DisplayOrder = p.DisplayOrder,
-                Icon = p.Icon,
-                Title = p.Title,
-                Url = p.Url,
-                IsOpenInNewTab = p.IsOpenInNewTab,
-                SubMenus = p.SubMenus.Select(sm => new SubMenu
-                {
-                    Id = sm.Id,
-                    Title = sm.Title,
-                    Url = sm.Url,
-                    IsOpenInNewTab = sm.IsOpenInNewTab
-                }).ToList()
-            });
-
-            return list;
         }
 
         public async Task<Guid> CreateAsync(UpdateMenuRequest request)

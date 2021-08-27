@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Moonglade.Caching;
 using Moonglade.Menus;
@@ -13,20 +14,20 @@ namespace Moonglade.Web.Tests.ViewComponents
     public class MenuViewComponentTests
     {
         private MockRepository _mockRepository;
-        private Mock<IMenuService> _mockMenuService;
+        private Mock<IMediator> _mockMediator;
         private Mock<IBlogCache> _mockBlogCache;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockMenuService = _mockRepository.Create<IMenuService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
         }
 
         private MenuViewComponent CreateComponent()
         {
-            return new(_mockMenuService.Object, _mockBlogCache.Object);
+            return new(_mockBlogCache.Object, _mockMediator.Object);
         }
 
         //[Test]
@@ -45,7 +46,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         {
             IReadOnlyList<Menu> menus = new List<Menu>();
 
-            _mockMenuService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(menus));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllMenusQuery>(), default)).Returns(Task.FromResult(menus));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync();

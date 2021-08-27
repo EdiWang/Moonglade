@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Menus;
 using System;
@@ -8,13 +9,13 @@ namespace Moonglade.Web.ViewComponents
 {
     public class MenuViewComponent : ViewComponent
     {
-        private readonly IMenuService _menuService;
         private readonly IBlogCache _cache;
+        private readonly IMediator _mediator;
 
-        public MenuViewComponent(IMenuService menuService, IBlogCache cache)
+        public MenuViewComponent(IBlogCache cache, IMediator mediator)
         {
-            _menuService = menuService;
             _cache = cache;
+            _mediator = mediator;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
@@ -25,7 +26,7 @@ namespace Moonglade.Web.ViewComponents
                 {
                     entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
-                    var items = await _menuService.GetAllAsync();
+                    var items = await _mediator.Send(new GetAllMenusQuery());
                     return items;
                 });
 
