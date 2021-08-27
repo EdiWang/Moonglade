@@ -274,7 +274,7 @@ namespace Moonglade.Web
             });
         }
 
-        public Task<WilderMinds.MetaWeblog.Page> GetPageAsync(string blogid, string pageid, string username, string password)
+        public Task<Page> GetPageAsync(string blogid, string pageid, string username, string password)
         {
             EnsureUser(username, password);
 
@@ -285,7 +285,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(pageid));
                 }
 
-                var page = await _blogPageService.GetAsync(id);
+                var page = await _mediator.Send(new GetPageByIdQuery(id));
                 return ToMetaWeblogPage(page);
             });
         }

@@ -328,7 +328,7 @@ namespace Moonglade.Web.Tests
         [Test]
         public async Task GetPageAsync_OK()
         {
-            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(FakeData.FakePage));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default)).Returns(Task.FromResult(FakeData.FakePage));
             var service = CreateService();
 
             var result = await service.GetPageAsync("996.icu", FakeData.Uid2.ToString(), _username, _password);

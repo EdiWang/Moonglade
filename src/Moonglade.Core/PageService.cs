@@ -12,7 +12,6 @@ namespace Moonglade.Core
 {
     public interface IBlogPageService
     {
-        Task<BlogPage> GetAsync(Guid pageId);
         Task<IReadOnlyList<BlogPage>> GetAsync(int top);
         Task<IReadOnlyList<PageSegment>> ListSegmentAsync();
         Task<Guid> CreateAsync(PageEditModel request);
@@ -30,15 +29,6 @@ namespace Moonglade.Core
         {
             _pageRepo = pageRepo;
             _audit = audit;
-        }
-
-        public async Task<BlogPage> GetAsync(Guid pageId)
-        {
-            var entity = await _pageRepo.GetAsync(pageId);
-            if (entity == null) return null;
-
-            var item = new BlogPage(entity);
-            return item;
         }
 
         public async Task<IReadOnlyList<BlogPage>> GetAsync(int top)

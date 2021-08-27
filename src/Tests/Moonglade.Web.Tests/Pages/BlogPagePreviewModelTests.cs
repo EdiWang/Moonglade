@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
 using Moonglade.Web.Pages;
@@ -13,8 +14,7 @@ namespace Moonglade.Web.Tests.Pages
     public class BlogPagePreviewModelTests
     {
         private MockRepository _mockRepository;
-
-        private Mock<IBlogPageService> _mockBlogPageService;
+        private Mock<IMediator> _mockMediator;
 
         readonly BlogPage _fakeBlogPage = new()
         {
@@ -34,19 +34,18 @@ namespace Moonglade.Web.Tests.Pages
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockBlogPageService = _mockRepository.Create<IBlogPageService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private BlogPagePreviewModel CreateBlogPagePreviewModel()
         {
-            return new(
-                _mockBlogPageService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
         public async Task OnGetAsync_NoPage()
         {
-            _mockBlogPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default))
                 .Returns(Task.FromResult((BlogPage)null));
 
             var blogPagePreviewModel = CreateBlogPagePreviewModel();
@@ -58,7 +57,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_HasPage()
         {
-            _mockBlogPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default))
                     .Returns(Task.FromResult(_fakeBlogPage));
 
             var blogPagePreviewModel = CreateBlogPagePreviewModel();

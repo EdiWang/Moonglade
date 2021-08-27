@@ -16,11 +16,11 @@ namespace Moonglade.Core
         public string Slug { get; set; }
     }
 
-    public class GetPageBySlugCommandHandler : IRequestHandler<GetPageBySlugQuery, BlogPage>
+    public class GetPageBySlugQueryHandler : IRequestHandler<GetPageBySlugQuery, BlogPage>
     {
         private readonly IRepository<PageEntity> _pageRepo;
 
-        public GetPageBySlugCommandHandler(IRepository<PageEntity> pageRepo)
+        public GetPageBySlugQueryHandler(IRepository<PageEntity> pageRepo)
         {
             _pageRepo = pageRepo;
         }

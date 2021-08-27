@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
@@ -13,18 +14,18 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class EditPageModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IBlogPageService> _mockPageService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPageService = _mockRepository.Create<IBlogPageService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private EditPageModel CreateEditPageModel()
         {
-            return new(_mockPageService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -39,7 +40,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         [Test]
         public async Task OnGetAsync_NoPage()
         {
-            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default))
                 .Returns(Task.FromResult((BlogPage)null));
 
             var editPageModel = CreateEditPageModel();
@@ -64,7 +65,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
                 Title = "Fuck Jack Ma 1000 years!",
                 UpdateTimeUtc = new DateTime(1996, 9, 6)
             };
-            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default))
                 .Returns(Task.FromResult(fakePage));
 
             var editPageModel = CreateEditPageModel();

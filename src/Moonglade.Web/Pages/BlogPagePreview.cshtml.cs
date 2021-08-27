@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,18 +11,18 @@ namespace Moonglade.Web.Pages
     [Authorize]
     public class BlogPagePreviewModel : PageModel
     {
-        private readonly IBlogPageService _blogPageService;
+        private readonly IMediator _mediator;
 
         public BlogPage BlogPage { get; set; }
 
-        public BlogPagePreviewModel(IBlogPageService blogPageService)
+        public BlogPagePreviewModel(IMediator mediator)
         {
-            _blogPageService = blogPageService;
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> OnGetAsync(Guid pageId)
         {
-            var page = await _blogPageService.GetAsync(pageId);
+            var page = await _mediator.Send(new GetPageByIdQuery(pageId));
             if (page is null) return NotFound();
 
             BlogPage = page;

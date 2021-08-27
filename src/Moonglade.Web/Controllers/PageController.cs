@@ -92,7 +92,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            var page = await _blogPageService.GetAsync(id);
+            var page = await _mediator.Send(new GetPageByIdQuery(id));
             if (page == null) return NotFound();
 
             await _mediator.Send(new DeletePageCommand(id));

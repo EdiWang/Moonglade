@@ -53,7 +53,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_Success()
         {
-            _mockPageService.Setup(p => p.GetAsync(Guid.Empty)).Returns(Task.FromResult(new BlogPage() { Slug = "996" }));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default)).Returns(Task.FromResult(new BlogPage() { Slug = "996" }));
 
             var ctl = CreatePageController();
             var result = await ctl.Delete(Guid.Empty);

@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
@@ -8,15 +9,15 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class EditPageModel : PageModel
     {
-        private readonly IBlogPageService _blogPageService;
+        private readonly IMediator _mediator;
 
         public Guid PageId { get; set; }
 
         public PageEditModel PageEditModel { get; set; }
 
-        public EditPageModel(IBlogPageService blogPageService)
+        public EditPageModel(IMediator mediator)
         {
-            _blogPageService = blogPageService;
+            _mediator = mediator;
             PageEditModel = new();
         }
 
@@ -24,7 +25,7 @@ namespace Moonglade.Web.Pages.Admin
         {
             if (id is null) return Page();
 
-            var page = await _blogPageService.GetAsync(id.Value);
+            var page = await _mediator.Send(new GetPageByIdQuery(id.Value));
             if (page is null) return NotFound();
 
             PageId = page.Id;
