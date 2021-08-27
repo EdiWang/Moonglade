@@ -30,7 +30,6 @@ namespace Moonglade.Core
         Task<IReadOnlyList<PostDigest>> ListArchiveAsync(int year, int? month);
         Task<IReadOnlyList<PostDigest>> ListByTagAsync(int tagId, int pageSize, int pageIndex);
         Task<IReadOnlyList<PostDigest>> ListFeaturedAsync(int pageSize, int pageIndex);
-        Task<IReadOnlyList<Archive>> GetArchiveAsync();
     }
 
     public class PostQueryService : IPostQueryService
@@ -112,9 +111,6 @@ namespace Moonglade.Core
                 DisplayName = pt.DisplayName
             })
         };
-
-        private readonly Expression<Func<IGrouping<(int Year, int Month), PostEntity>, Archive>> _archiveSelector =
-            p => new(p.Key.Year, p.Key.Month, p.Count());
 
         #endregion
 
@@ -272,21 +268,6 @@ namespace Moonglade.Core
 
             var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), SharedSelectors.PostDigestSelector);
             return posts;
-        }
-
-        public async Task<IReadOnlyList<Archive>> GetArchiveAsync()
-        {
-            if (!_postRepo.Any(p => p.IsPublished && !p.IsDeleted))
-            {
-                return new List<Archive>();
-            }
-
-            var spec = new PostSpec(PostStatus.Published);
-            var list = await _postRepo.SelectAsync(
-                post => new(post.PubDateUtc.Value.Year, post.PubDateUtc.Value.Month),
-                _archiveSelector, spec);
-
-            return list;
         }
 
         public Task<IReadOnlyList<PostDigest>> ListArchiveAsync(int year, int? month)

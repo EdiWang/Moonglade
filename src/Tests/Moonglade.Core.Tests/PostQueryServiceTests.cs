@@ -282,9 +282,9 @@ namespace Moonglade.Core.Tests
         public async Task GetArchiveAsync_NoPosts()
         {
             _mockPostEntityRepo.Setup(p => p.Any(p => p.IsPublished && !p.IsDeleted)).Returns(false);
-            var service = CreateService();
 
-            var result = await service.GetArchiveAsync();
+            var handler = new GetArchiveQueryHandler(_mockPostEntityRepo.Object);
+            var result = await handler.Handle(new(), default);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
@@ -296,7 +296,8 @@ namespace Moonglade.Core.Tests
             _mockPostEntityRepo.Setup(p => p.Any(p => p.IsPublished && !p.IsDeleted)).Returns(true);
             var service = CreateService();
 
-            await service.GetArchiveAsync();
+            var handler = new GetArchiveQueryHandler(_mockPostEntityRepo.Object);
+            var result = await handler.Handle(new(), default);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(
                 It.IsAny<Expression<Func<PostEntity, (int Year, int Month)>>>(),
