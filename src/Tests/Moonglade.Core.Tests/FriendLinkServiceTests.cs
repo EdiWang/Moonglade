@@ -26,11 +26,6 @@ namespace Moonglade.Core.Tests
             _mockFriendlinkRepo = _mockRepository.Create<IRepository<FriendLinkEntity>>();
         }
 
-        private FriendLinkService CreateService()
-        {
-            return new(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
-        }
-
         [Test]
         public async Task GetAsync_OK()
         {
@@ -104,10 +99,15 @@ namespace Moonglade.Core.Tests
         [Test]
         public void UpdateAsync_InvalidUrl()
         {
-            var svc = CreateService();
+            var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await svc.UpdateAsync(Guid.Empty, "Fubao", "work006");
+                await handler.Handle(new(Guid.Empty, new()
+                {
+                    LinkUrl = "Fubao",
+                    Title = "work006"
+                }), default);
             });
         }
 
@@ -116,8 +116,12 @@ namespace Moonglade.Core.Tests
         {
             _mockFriendlinkRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()));
 
-            var svc = CreateService();
-            await svc.UpdateAsync(Guid.Empty, "work", "https://996.icu");
+            var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(Guid.Empty, new()
+            {
+                LinkUrl = "https://996.icu",
+                Title = "work"
+            }), default);
 
             _mockFriendlinkRepo.Verify(p => p.UpdateAsync(It.IsAny<FriendLinkEntity>()), Times.Never);
         }
@@ -132,8 +136,12 @@ namespace Moonglade.Core.Tests
                 Title = "Choice of 955"
             }));
 
-            var svc = CreateService();
-            await svc.UpdateAsync(Guid.Empty, "work", "https://996.icu");
+            var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(Guid.Empty, new()
+            {
+                LinkUrl = "https://996.icu",
+                Title = "work"
+            }), default);
 
             _mockFriendlinkRepo.Verify(p => p.UpdateAsync(It.IsAny<FriendLinkEntity>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.FriendLinkUpdated, It.IsAny<string>()));

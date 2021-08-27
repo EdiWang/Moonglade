@@ -14,12 +14,10 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class FriendLinkController : ControllerBase
     {
-        private readonly IFriendLinkService _friendLinkService;
         private readonly IMediator _mediator;
 
-        public FriendLinkController(IFriendLinkService friendLinkService, IMediator mediator)
+        public FriendLinkController(IMediator mediator)
         {
-            _friendLinkService = friendLinkService;
             _mediator = mediator;
         }
 
@@ -46,7 +44,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Update([NotEmpty] Guid id, FriendLinkEditModel model)
         {
-            await _friendLinkService.UpdateAsync(id, model.Title, model.LinkUrl);
+            await _mediator.Send(new UpdateLinkCommand(id, model));
             return NoContent();
         }
 

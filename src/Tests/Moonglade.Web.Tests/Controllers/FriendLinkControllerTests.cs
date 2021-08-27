@@ -14,10 +14,9 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<IFriendLinkService> _mockFriendLinkService;
         private Mock<IMediator> _mockMediator;
 
-        private FriendLinkEditModel _friendlinkEditViewModel = new()
+        private readonly FriendLinkEditModel _friendlinkEditViewModel = new()
         {
             LinkUrl = FakeData.Url1,
             Title = "996 ICU"
@@ -28,13 +27,12 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockFriendLinkService = _mockRepository.Create<IFriendLinkService>();
             _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private FriendLinkController CreateFriendLinkController()
         {
-            return new(_mockFriendLinkService.Object, _mockMediator.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -76,7 +74,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Update(FakeData.Uid1, _friendlinkEditViewModel);
 
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockFriendLinkService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<UpdateLinkCommand>(), default));
         }
 
         [Test]
