@@ -56,7 +56,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public Task<IActionResult> Create(PageEditModel model)
         {
-            return CreateOrEdit(model, async request => await _blogPageService.CreateAsync(request));
+            return CreateOrEdit(model, async request => await _mediator.Send(new CreatePageCommand(request)));
         }
 
         [HttpPut("{id:guid}")]

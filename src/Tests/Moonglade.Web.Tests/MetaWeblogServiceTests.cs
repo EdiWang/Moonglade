@@ -363,10 +363,10 @@ namespace Moonglade.Web.Tests
         [Test]
         public async Task AddPageAsync_OK()
         {
-            _mockPageService
-                .Setup(p => p.CreateAsync(It.IsAny<PageEditModel>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<CreatePageCommand>(), default))
                 .Returns(Task.FromResult(Guid.Empty));
-            var page = new WilderMinds.MetaWeblog.Page
+            var page = new Page
             {
                 title = FakeData.FakePage.Title,
                 description = "fubao"
@@ -377,7 +377,7 @@ namespace Moonglade.Web.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(Guid.Empty.ToString(), result);
-            _mockPageService.Verify(p => p.CreateAsync(It.IsAny<PageEditModel>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreatePageCommand>(), default));
         }
 
         [Test]
@@ -386,7 +386,7 @@ namespace Moonglade.Web.Tests
             _mockPageService
                 .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<PageEditModel>()))
                 .Returns(Task.FromResult(Guid.Empty));
-            var page = new WilderMinds.MetaWeblog.Page
+            var page = new Page
             {
                 page_id = Guid.Empty.ToString(),
                 title = FakeData.FakePage.Title,

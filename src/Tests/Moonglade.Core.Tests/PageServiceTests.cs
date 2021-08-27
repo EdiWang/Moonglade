@@ -170,8 +170,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task CreateAsync_OK()
         {
-            var svc = CreatePageService();
-            var result = await svc.CreateAsync(new()
+            var handler = new CreatePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
+            var result = await handler.Handle(new(new()
             {
                 CssContent = string.Empty,
                 HideSidebar = true,
@@ -180,7 +180,7 @@ namespace Moonglade.Core.Tests
                 MetaDescription = "Work 996",
                 Slug = "work-996",
                 Title = "Work 996"
-            });
+            }), default);
 
             Assert.AreNotEqual(Guid.Empty, result);
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.PageCreated, It.IsAny<string>()));

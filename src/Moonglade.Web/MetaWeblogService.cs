@@ -339,7 +339,7 @@ namespace Moonglade.Web
                     Slug = ToSlug(page.title)
                 };
 
-                var uid = await _blogPageService.CreateAsync(pageRequest);
+                var uid = await _mediator.Send(new CreatePageCommand(pageRequest));
                 return uid.ToString();
             });
         }

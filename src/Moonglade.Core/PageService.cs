@@ -9,7 +9,6 @@ namespace Moonglade.Core
 {
     public interface IBlogPageService
     {
-        Task<Guid> CreateAsync(PageEditModel request);
         Task<Guid> UpdateAsync(Guid id, PageEditModel request);
     }
 
@@ -24,28 +23,6 @@ namespace Moonglade.Core
         {
             _pageRepo = pageRepo;
             _audit = audit;
-        }
-
-        public async Task<Guid> CreateAsync(PageEditModel request)
-        {
-            var uid = Guid.NewGuid();
-            var page = new PageEntity
-            {
-                Id = uid,
-                Title = request.Title.Trim(),
-                Slug = request.Slug.ToLower().Trim(),
-                MetaDescription = request.MetaDescription,
-                CreateTimeUtc = DateTime.UtcNow,
-                HtmlContent = request.RawHtmlContent,
-                CssContent = request.CssContent,
-                HideSidebar = request.HideSidebar,
-                IsPublished = request.IsPublished
-            };
-
-            await _pageRepo.AddAsync(page);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.PageCreated, $"Page '{page.Id}' created.");
-
-            return uid;
         }
 
         public async Task<Guid> UpdateAsync(Guid id, PageEditModel request)
