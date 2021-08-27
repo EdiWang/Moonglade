@@ -31,7 +31,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         public async Task OnGet_StateUnderTest_ExpectedBehavior()
         {
             IReadOnlyList<Menu> menus = new List<Menu>();
-            _mockMediator.Setup(p => p.Send(new GetAllMenusQuery(), default)).Returns(Task.FromResult(menus));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllMenusQuery>(), default)).Returns(Task.FromResult(menus));
 
             var menuModel = CreateMenuModel();
             await menuModel.OnGet();
