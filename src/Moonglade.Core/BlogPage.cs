@@ -1,4 +1,5 @@
 ﻿using System;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Core
 {
@@ -14,5 +15,26 @@ namespace Moonglade.Core
         public bool IsPublished { get; set; }
         public DateTime CreateTimeUtc { get; set; }
         public DateTime? UpdateTimeUtc { get; set; }
+
+        public BlogPage()
+        {
+
+        }
+
+        public BlogPage(PageEntity entity)
+        {
+            if (entity is null) return;
+
+            Id = entity.Id;
+            Title = entity.Title.Trim();
+            CreateTimeUtc = entity.CreateTimeUtc;
+            CssContent = entity.CssContent;
+            RawHtmlContent = entity.HtmlContent;
+            HideSidebar = entity.HideSidebar;
+            Slug = entity.Slug.Trim().ToLower();
+            MetaDescription = entity.MetaDescription?.Trim();
+            UpdateTimeUtc = entity.UpdateTimeUtc;
+            IsPublished = entity.IsPublished;
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace Moonglade.Core
         public async Task<BlogPage> GetAsync(Guid pageId)
         {
             var entity = await _pageRepo.GetAsync(pageId);
-            var item = EntityToPage(entity);
+            var item = new BlogPage(entity);
             return item;
         }
 
@@ -44,7 +44,7 @@ namespace Moonglade.Core
         {
             var lower = slug.ToLower();
             var entity = await _pageRepo.GetAsync(p => p.Slug == lower);
-            var item = EntityToPage(entity);
+            var item = new BlogPage(entity);
             return item;
         }
 
@@ -53,7 +53,7 @@ namespace Moonglade.Core
             if (top <= 0) throw new ArgumentOutOfRangeException(nameof(top));
 
             var pages = await _pageRepo.GetAsync(new PageSpec(top));
-            var list = pages.Select(EntityToPage).ToList();
+            var list = pages.Select(p => new BlogPage(p)).ToList();
             return list;
         }
 
@@ -121,25 +121,6 @@ namespace Moonglade.Core
             var regex = new Regex("\\<script(.+?)\\</script\\>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
             var result = regex.Replace(html, string.Empty);
             return result;
-        }
-
-        private static BlogPage EntityToPage(PageEntity entity)
-        {
-            if (entity is null) return null;
-
-            return new()
-            {
-                Id = entity.Id,
-                Title = entity.Title.Trim(),
-                CreateTimeUtc = entity.CreateTimeUtc,
-                CssContent = entity.CssContent,
-                RawHtmlContent = entity.HtmlContent,
-                HideSidebar = entity.HideSidebar,
-                Slug = entity.Slug.Trim().ToLower(),
-                MetaDescription = entity.MetaDescription?.Trim(),
-                UpdateTimeUtc = entity.UpdateTimeUtc,
-                IsPublished = entity.IsPublished
-            };
         }
     }
 }
