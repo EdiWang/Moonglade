@@ -1,10 +1,10 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
 using Moonglade.Theme;
 using Moonglade.Web.Models.Settings;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Moonglade.Web.Pages.Settings
 {

@@ -28,7 +28,6 @@ using Moonglade.ImageStorage;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
-using Moonglade.Theme;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
@@ -67,6 +66,7 @@ namespace Moonglade.Web
         {
             AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
             AppDomain.CurrentDomain.Load("Moonglade.Menus");
+            AppDomain.CurrentDomain.Load("Moonglade.Theme");
             services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
             // ASP.NET Setup
@@ -143,7 +143,6 @@ namespace Moonglade.Web
                     .AddNotificationClient()
                     .AddReleaseCheckerClient()
                     .AddBlogCache()
-                    .AddBlogTheme()
                     .AddMetaWeblog<MetaWeblogService>()
                     .AddScoped<IFoafWriter, FoafWriter>()
                     .AddScoped<IExportManager, ExportManager>()

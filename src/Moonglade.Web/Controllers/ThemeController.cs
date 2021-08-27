@@ -23,15 +23,13 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IMediator _mediator;
 
-        private readonly IThemeService _themeService;
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
 
-        public ThemeController(IMediator mediator, IThemeService themeService, IBlogCache cache, IBlogConfig blogConfig)
+        public ThemeController(IMediator mediator, IBlogCache cache, IBlogConfig blogConfig)
         {
             _mediator = mediator;
 
-            _themeService = themeService;
             _cache = cache;
             _blogConfig = blogConfig;
         }
@@ -86,7 +84,7 @@ namespace Moonglade.Web.Controllers
                 { "--accent-color3", request.AccentColor3 }
             };
 
-            var id = await _themeService.Create(request.Name, dic);
+            var id = await _mediator.Send(new CreateThemeCommand(request.Name, dic));
             if (id == 0) return Conflict("Theme with same name already exists");
 
             return Ok(id);

@@ -25,11 +25,6 @@ namespace Moonglade.Theme.Tests
             _mockThemeRepository = _mockRepository.Create<IRepository<BlogThemeEntity>>();
         }
 
-        private ThemeService CreateService()
-        {
-            return new(_mockThemeRepository.Object);
-        }
-
         [Test]
         public async Task GetAllSegment_StateUnderTest_ExpectedBehavior()
         {
@@ -49,12 +44,12 @@ namespace Moonglade.Theme.Tests
         {
             // Arrange
             _mockThemeRepository.Setup(p => p.Any(It.IsAny<Expression<Func<BlogThemeEntity, bool>>>())).Returns(true);
-            var service = CreateService();
+            var handler = new CreateThemeCommandHandler(_mockThemeRepository.Object);
             string name = "Honest Man";
             var cssRules = new Dictionary<string, string>();
 
             // Act
-            var result = await service.Create(name, cssRules);
+            var result = await handler.Handle(new(name, cssRules), default);
 
             // Assert
             Assert.AreEqual(0, result);
