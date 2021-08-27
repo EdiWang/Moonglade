@@ -2,6 +2,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
+using Moonglade.Utils;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -40,13 +41,6 @@ namespace Moonglade.Core.Tests
             Slug = "pdd-IS-evil",
             Title = "PDD is Evil "
         };
-
-        private BlogPageService CreatePageService()
-        {
-            return new(
-                _mockPageRepository.Object,
-                _mockBlogAudit.Object);
-        }
 
         [Test]
         public async Task GetAsync_PageId()
@@ -127,7 +121,7 @@ namespace Moonglade.Core.Tests
         public void RemoveScriptTagFromHtml()
         {
             var html = @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><script>console.info('hey');</script><img src=""a.jpg"" /> The best <span>cloud</span>!</p>";
-            var output = BlogPageService.RemoveScriptTagFromHtml(html);
+            var output = Helper.RemoveScriptTagFromHtml(html);
 
             Assert.IsTrue(output == @"<p>Microsoft</p><p>Rocks!</p><p>Azure <br /><img src=""a.jpg"" /> The best <span>cloud</span>!</p>");
         }
@@ -137,7 +131,7 @@ namespace Moonglade.Core.Tests
         [TestCase(" ")]
         public void RemoveScriptTagFromHtml_Empty(string html)
         {
-            var output = BlogPageService.RemoveScriptTagFromHtml(html);
+            var output = Helper.RemoveScriptTagFromHtml(html);
             Assert.AreEqual(string.Empty, output);
         }
 
@@ -192,11 +186,10 @@ namespace Moonglade.Core.Tests
             _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((PageEntity)null));
 
-            var svc = CreatePageService();
-
+            var handler = new UpdatePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                var result = await svc.UpdateAsync(Guid.Empty, new());
+                var result = await handler.Handle(new(Guid.Empty, new()), default);
             });
         }
 
@@ -206,8 +199,8 @@ namespace Moonglade.Core.Tests
             _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_fakePageEntity));
 
-            var svc = CreatePageService();
-            var result = await svc.UpdateAsync(Guid.Empty, new()
+            var handler = new UpdatePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
+            var result = await handler.Handle(new(Guid.Empty, new()
             {
                 CssContent = string.Empty,
                 HideSidebar = true,
@@ -216,7 +209,7 @@ namespace Moonglade.Core.Tests
                 MetaDescription = "Work 996",
                 Slug = "work-996",
                 Title = "Work 996"
-            });
+            }), default);
 
             Assert.AreEqual(Guid.Empty, result);
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.PageUpdated, It.IsAny<string>()));

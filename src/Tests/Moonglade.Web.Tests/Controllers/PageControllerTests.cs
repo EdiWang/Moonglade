@@ -17,7 +17,6 @@ namespace Moonglade.Web.Tests.Controllers
         private MockRepository _mockRepository;
 
         private Mock<IBlogCache> _mockBlogCache;
-        private Mock<IBlogPageService> _mockPageService;
         private Mock<IMediator> _mockMediator;
 
         private PageEditModel _pageEditModel;
@@ -28,7 +27,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockRepository = new(MockBehavior.Default);
 
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
-            _mockPageService = _mockRepository.Create<IBlogPageService>();
             _mockMediator = _mockRepository.Create<IMediator>();
 
             _pageEditModel = new()
@@ -45,9 +43,7 @@ namespace Moonglade.Web.Tests.Controllers
 
         private PageController CreatePageController()
         {
-            return new(
-                _mockBlogCache.Object,
-                _mockPageService.Object, _mockMediator.Object);
+            return new(_mockBlogCache.Object, _mockMediator.Object);
         }
 
         [Test]

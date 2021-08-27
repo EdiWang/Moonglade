@@ -23,7 +23,6 @@ namespace Moonglade.Web
         private readonly ICategoryService _categoryService;
         private readonly IPostQueryService _postQueryService;
         private readonly IPostManageService _postManageService;
-        private readonly IBlogPageService _blogPageService;
         private readonly IBlogImageStorage _blogImageStorage;
         private readonly IFileNameGenerator _fileNameGenerator;
         private readonly IMediator _mediator;
@@ -36,7 +35,6 @@ namespace Moonglade.Web
             ICategoryService categoryService,
             IPostQueryService postQueryService,
             IPostManageService postManageService,
-            IBlogPageService blogPageService,
             IBlogImageStorage blogImageStorage,
             IFileNameGenerator fileNameGenerator,
             IMediator mediator)
@@ -47,7 +45,6 @@ namespace Moonglade.Web
             _tagService = tagService;
             _categoryService = categoryService;
             _postQueryService = postQueryService;
-            _blogPageService = blogPageService;
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
             _mediator = mediator;
@@ -366,7 +363,7 @@ namespace Moonglade.Web
                     Slug = ToSlug(page.title)
                 };
 
-                await _blogPageService.UpdateAsync(id, pageRequest);
+                await _mediator.Send(new UpdatePageCommand(id, pageRequest));
                 return true;
             });
         }

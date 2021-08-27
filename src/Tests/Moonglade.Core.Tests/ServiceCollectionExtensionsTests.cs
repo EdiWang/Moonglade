@@ -30,9 +30,6 @@ namespace Moonglade.Core.Tests
 
             var obj6 = services.FirstOrDefault(p => p.ServiceType == typeof(ITagService));
             Assert.IsNotNull(obj6);
-
-            var obj7 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogPageService));
-            Assert.IsNotNull(obj1);
         }
 
         [Test]

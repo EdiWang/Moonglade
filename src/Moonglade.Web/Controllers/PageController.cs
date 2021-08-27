@@ -24,16 +24,13 @@ namespace Moonglade.Web.Controllers
     public class PageController : Controller
     {
         private readonly IBlogCache _cache;
-        private readonly IBlogPageService _blogPageService;
         private readonly IMediator _mediator;
 
         public PageController(
             IBlogCache cache,
-            IBlogPageService blogPageService,
             IMediator mediator)
         {
             _cache = cache;
-            _blogPageService = blogPageService;
             _mediator = mediator;
         }
 
@@ -64,7 +61,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public Task<IActionResult> Edit([NotEmpty] Guid id, PageEditModel model)
         {
-            return CreateOrEdit(model, async request => await _blogPageService.UpdateAsync(id, request));
+            return CreateOrEdit(model, async request => await _mediator.Send(new UpdatePageCommand(id, request)));
         }
 
         private async Task<IActionResult> CreateOrEdit(PageEditModel model, Func<PageEditModel, Task<Guid>> pageServiceAction)

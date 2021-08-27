@@ -2,6 +2,7 @@
 @model Moonglade.Web.Pages.BlogPagePreviewModel
 @using NUglify
 @using Moonglade.Core
+@using Moonglade.Utils
 
 @{
     ViewBag.TitlePrefix = Model.BlogPage.Title;
@@ -44,5 +45,5 @@
 }
 else
 {
-    @Html.Raw(BlogPageService.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
+    @Html.Raw(Helper.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
 }

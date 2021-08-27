@@ -30,7 +30,6 @@ namespace Moonglade.Web.Tests
         private Mock<ICategoryService> _mockCategoryService;
         private Mock<IPostQueryService> _mockPostService;
         private Mock<IPostManageService> _mockPostManageService;
-        private Mock<IBlogPageService> _mockPageService;
         private Mock<IBlogImageStorage> _mockBlogImageStorage;
         private Mock<IFileNameGenerator> _mockFileNameGenerator;
         private Mock<IMediator> _mockMediator;
@@ -83,7 +82,6 @@ namespace Moonglade.Web.Tests
             _mockCategoryService = _mockRepository.Create<ICategoryService>();
             _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockPostManageService = _mockRepository.Create<IPostManageService>();
-            _mockPageService = _mockRepository.Create<IBlogPageService>();
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
             _mockMediator = _mockRepository.Create<IMediator>();
@@ -112,7 +110,6 @@ namespace Moonglade.Web.Tests
                 _mockCategoryService.Object,
                 _mockPostService.Object,
                 _mockPostManageService.Object,
-                _mockPageService.Object,
                 _mockBlogImageStorage.Object,
                 _mockFileNameGenerator.Object, _mockMediator.Object);
         }
@@ -383,8 +380,8 @@ namespace Moonglade.Web.Tests
         [Test]
         public async Task EditPageAsync_OK()
         {
-            _mockPageService
-                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<PageEditModel>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<UpdatePageCommand>(), default))
                 .Returns(Task.FromResult(Guid.Empty));
             var page = new Page
             {
@@ -397,7 +394,7 @@ namespace Moonglade.Web.Tests
             var result = await service.EditPageAsync("996.icu", Guid.Empty.ToString(), _username, _password, page, true);
 
             Assert.IsTrue(result);
-            _mockPageService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<PageEditModel>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<UpdatePageCommand>(), default));
         }
 
         [Test]
