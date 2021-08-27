@@ -1,3 +1,4 @@
+using MediatR;
 using Moonglade.Core;
 using Moonglade.Web.Pages.Admin;
 using Moq;
@@ -13,18 +14,18 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class BlogPageModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IBlogPageService> _mockPageService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPageService = _mockRepository.Create<IBlogPageService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private BlogPageModel CreatePageModel()
         {
-            return new(_mockPageService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -41,7 +42,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
                     Title = "Fuck Jack Ma's Fu Bao"
                 }
             };
-            _mockPageService.Setup(p => p.ListSegmentAsync()).Returns(Task.FromResult(fakePageSegments));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListPageSegmentQuery>(), default)).Returns(Task.FromResult(fakePageSegments));
 
             var pageModel = CreatePageModel();
             await pageModel.OnGet();
