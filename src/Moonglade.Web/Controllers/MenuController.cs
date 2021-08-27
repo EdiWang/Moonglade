@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
@@ -17,10 +18,12 @@ namespace Moonglade.Web.Controllers
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _menuService;
+        private readonly IMediator _mediator;
 
-        public MenuController(IMenuService menuService)
+        public MenuController(IMenuService menuService, IMediator mediator)
         {
             _menuService = menuService;
+            _mediator = mediator;
         }
 
         [HttpPost]
@@ -68,7 +71,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit([NotEmpty] Guid id)
         {
-            var menu = await _menuService.GetAsync(id);
+            var menu = await _mediator.Send(new GetMenuQuery(id));
             if (null == menu) return NotFound();
 
             var model = new MenuEditViewModel

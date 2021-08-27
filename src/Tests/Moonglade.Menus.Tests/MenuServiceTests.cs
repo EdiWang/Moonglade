@@ -65,8 +65,8 @@ namespace Moonglade.Menus.Tests
             _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((MenuEntity)null));
 
-            var ctl = CreateService();
-            var result = await ctl.GetAsync(Guid.Empty);
+            var handler = new GetMenuQueryHandler(_mockMenuRepository.Object);
+            var result = await handler.Handle(new(Guid.Empty), default);
 
             Assert.IsNull(result);
         }
@@ -86,8 +86,8 @@ namespace Moonglade.Menus.Tests
             _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_menu));
 
-            var ctl = CreateService();
-            var result = await ctl.GetAsync(Guid.Empty);
+            var handler = new GetMenuQueryHandler(_mockMenuRepository.Object);
+            var result = await handler.Handle(new(Guid.Empty), default);
 
             Assert.IsNotNull(result);
             Assert.AreEqual("work-996", result.Icon);

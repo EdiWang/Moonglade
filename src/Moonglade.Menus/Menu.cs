@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Moonglade.Data.Entities;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Moonglade.Menus
 {
@@ -23,6 +25,25 @@ namespace Moonglade.Menus
         {
             SubMenus = new();
             Icon = "icon-file-text2";
+        }
+
+        public Menu(MenuEntity entity)
+        {
+            if (entity is null) return;
+
+            Id = entity.Id;
+            Title = entity.Title.Trim();
+            DisplayOrder = entity.DisplayOrder;
+            Icon = entity.Icon?.Trim();
+            Url = entity.Url?.Trim();
+            IsOpenInNewTab = entity.IsOpenInNewTab;
+            SubMenus = entity.SubMenus.Select(sm => new SubMenu
+            {
+                Id = sm.Id,
+                Title = sm.Title,
+                Url = sm.Url,
+                IsOpenInNewTab = sm.IsOpenInNewTab
+            }).ToList();
         }
     }
 }

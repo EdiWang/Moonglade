@@ -12,7 +12,6 @@ namespace Moonglade.Menus
 {
     public interface IMenuService
     {
-        Task<Menu> GetAsync(Guid id);
         Task<IReadOnlyList<Menu>> GetAllAsync();
         Task<Guid> CreateAsync(UpdateMenuRequest request);
         Task UpdateAsync(Guid id, UpdateMenuRequest request);
@@ -33,13 +32,6 @@ namespace Moonglade.Menus
             _logger = logger;
             _menuRepo = menuRepo;
             _audit = audit;
-        }
-
-        public async Task<Menu> GetAsync(Guid id)
-        {
-            var entity = await _menuRepo.GetAsync(id);
-            var item = EntityToMenuModel(entity);
-            return item;
         }
 
         public Task<IReadOnlyList<Menu>> GetAllAsync()

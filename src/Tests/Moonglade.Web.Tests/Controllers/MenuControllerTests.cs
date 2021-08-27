@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Menus;
 using Moonglade.Web.Controllers;
@@ -14,6 +15,8 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
         private Mock<IMenuService> _mockMenuService;
+        private Mock<IMediator> _mockMediator;
+
         private readonly Guid _noneEmptyId = Guid.Parse("4ac8e62e-92f1-449d-8feb-ee42a99caa09");
 
         private readonly MenuEditViewModel _menuEditViewModel = new()
@@ -38,11 +41,12 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
             _mockMenuService = _mockRepository.Create<IMenuService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private MenuController CreateMenuController()
         {
-            return new(_mockMenuService.Object);
+            return new(_mockMenuService.Object, _mockMediator.Object);
         }
 
         [Test]
@@ -77,7 +81,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Edit_NullMenu()
         {
-            _mockMenuService.Setup(p => p.GetAsync(_noneEmptyId))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetMenuQuery>(), default))
                 .Returns(Task.FromResult((Menu)null));
 
             var ctl = CreateMenuController();
@@ -88,7 +92,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Edit_Get_OK()
         {
-            _mockMenuService.Setup(p => p.GetAsync(_noneEmptyId))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetMenuQuery>(), default))
                 .Returns(Task.FromResult(new Menu
                 {
                     Id = _noneEmptyId,
