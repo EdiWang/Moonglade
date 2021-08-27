@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Moonglade.Core
 {
-    public class GetPageBySlugCommand : IRequest<BlogPage>
+    public class GetPageBySlugQuery : IRequest<BlogPage>
     {
-        public GetPageBySlugCommand(string slug)
+        public GetPageBySlugQuery(string slug)
         {
             Slug = slug;
         }
@@ -16,7 +16,7 @@ namespace Moonglade.Core
         public string Slug { get; set; }
     }
 
-    public class GetPageBySlugCommandHandler : IRequestHandler<GetPageBySlugCommand, BlogPage>
+    public class GetPageBySlugCommandHandler : IRequestHandler<GetPageBySlugQuery, BlogPage>
     {
         private readonly IRepository<PageEntity> _pageRepo;
 
@@ -25,7 +25,7 @@ namespace Moonglade.Core
             _pageRepo = pageRepo;
         }
 
-        public async Task<BlogPage> Handle(GetPageBySlugCommand request, CancellationToken cancellationToken)
+        public async Task<BlogPage> Handle(GetPageBySlugQuery request, CancellationToken cancellationToken)
         {
             var lower = request.Slug.ToLower();
             var entity = await _pageRepo.GetAsync(p => p.Slug == lower);

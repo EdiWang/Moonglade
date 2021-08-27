@@ -34,7 +34,7 @@ namespace Moonglade.Web.Pages
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Page"]);
 
-                var p = await _mediator.Send(new GetPageBySlugCommand(slug));
+                var p = await _mediator.Send(new GetPageBySlugQuery(slug));
                 return p;
             });
 
