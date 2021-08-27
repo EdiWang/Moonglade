@@ -14,7 +14,6 @@ namespace Moonglade.Web.Tests.Controllers
     public class MenuControllerTests
     {
         private MockRepository _mockRepository;
-        private Mock<IMenuService> _mockMenuService;
         private Mock<IMediator> _mockMediator;
 
         private readonly Guid _noneEmptyId = Guid.Parse("4ac8e62e-92f1-449d-8feb-ee42a99caa09");
@@ -40,13 +39,12 @@ namespace Moonglade.Web.Tests.Controllers
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockMenuService = _mockRepository.Create<IMenuService>();
             _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private MenuController CreateMenuController()
         {
-            return new(_mockMenuService.Object, _mockMediator.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -116,7 +114,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Edit(_menuEditViewModel);
 
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockMenuService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdateMenuRequest>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<UpdateMenuCommand>(), default));
         }
     }
 }

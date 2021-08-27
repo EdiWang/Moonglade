@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -16,7 +15,6 @@ namespace Moonglade.Menus.Tests
     {
         private MockRepository _mockRepository;
 
-        private Mock<ILogger<MenuService>> _mockLogger;
         private Mock<IRepository<MenuEntity>> _mockMenuRepository;
         private Mock<IBlogAudit> _mockBlogAudit;
 
@@ -46,17 +44,8 @@ namespace Moonglade.Menus.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockLogger = _mockRepository.Create<ILogger<MenuService>>();
             _mockMenuRepository = _mockRepository.Create<IRepository<MenuEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-        }
-
-        private MenuService CreateService()
-        {
-            return new(
-                _mockLogger.Object,
-                _mockMenuRepository.Object,
-                _mockBlogAudit.Object);
         }
 
         [Test]
@@ -123,7 +112,6 @@ namespace Moonglade.Menus.Tests
         public async Task CreateAsync_OK()
         {
             var handler = new CreateMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
-
             var result = await handler.Handle(new(new()
             {
                 DisplayOrder = 996,
@@ -152,11 +140,10 @@ namespace Moonglade.Menus.Tests
             _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((MenuEntity)null));
 
-            var svc = CreateService();
-
+            var handler = new UpdateMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await svc.UpdateAsync(Guid.Empty, new());
+                await handler.Handle(new(Guid.Empty, new()), default);
             });
         }
 
@@ -166,8 +153,9 @@ namespace Moonglade.Menus.Tests
             _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_menu));
 
-            var svc = CreateService();
-            await svc.UpdateAsync(Guid.Empty, new()
+            var handler = new UpdateMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
+
+            await handler.Handle(new(Guid.Empty, new()
             {
                 DisplayOrder = 996,
                 Icon = "work-996",
@@ -183,7 +171,7 @@ namespace Moonglade.Menus.Tests
                         Url = "https://251.today"
                     }
                 }
-            });
+            }), default);
 
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.MenuUpdated, It.IsAny<string>()));
         }

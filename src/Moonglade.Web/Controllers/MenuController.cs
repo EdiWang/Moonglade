@@ -17,12 +17,10 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class MenuController : ControllerBase
     {
-        private readonly IMenuService _menuService;
         private readonly IMediator _mediator;
 
-        public MenuController(IMenuService menuService, IMediator mediator)
+        public MenuController(IMediator mediator)
         {
-            _menuService = menuService;
             _mediator = mediator;
         }
 
@@ -121,7 +119,7 @@ namespace Moonglade.Web.Controllers
                 request.SubMenus = subMenuRequests;
             }
 
-            await _menuService.UpdateAsync(model.Id, request);
+            await _mediator.Send(new UpdateMenuCommand(model.Id, request));
             return NoContent();
         }
     }

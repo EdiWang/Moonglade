@@ -25,7 +25,6 @@ using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Porting;
 using Moonglade.ImageStorage;
-using Moonglade.Menus;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
@@ -67,6 +66,7 @@ namespace Moonglade.Web
         public void ConfigureServices(IServiceCollection services)
         {
             AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
+            AppDomain.CurrentDomain.Load("Moonglade.Menus");
             services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
             // ASP.NET Setup
@@ -145,7 +145,6 @@ namespace Moonglade.Web
                     .AddBlogCache()
                     .AddBlogTheme()
                     .AddMetaWeblog<MetaWeblogService>()
-                    .AddScoped<IMenuService, MenuService>()
                     .AddScoped<IFoafWriter, FoafWriter>()
                     .AddScoped<IExportManager, ExportManager>()
                     .AddScoped<ValidateCaptcha>()
