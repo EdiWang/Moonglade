@@ -53,7 +53,7 @@ namespace Moonglade.Web.Controllers
                 request.SubMenus = subMenuRequests;
             }
 
-            var response = await _menuService.CreateAsync(request);
+            var response = await _mediator.Send(new CreateMenuCommand(request));
             return Ok(response);
         }
 

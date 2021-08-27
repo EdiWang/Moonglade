@@ -122,8 +122,9 @@ namespace Moonglade.Menus.Tests
         [Test]
         public async Task CreateAsync_OK()
         {
-            var svc = CreateService();
-            var result = await svc.CreateAsync(new()
+            var handler = new CreateMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
+
+            var result = await handler.Handle(new(new()
             {
                 DisplayOrder = 996,
                 Icon = "work-996",
@@ -139,7 +140,7 @@ namespace Moonglade.Menus.Tests
                         Url = "https://251.today"
                     }
                 }
-            });
+            }), default);
 
             Assert.AreNotEqual(Guid.Empty, result);
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.MenuCreated, It.IsAny<string>()));

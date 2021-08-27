@@ -11,7 +11,6 @@ namespace Moonglade.Menus
 {
     public interface IMenuService
     {
-        Task<Guid> CreateAsync(UpdateMenuRequest request);
         Task UpdateAsync(Guid id, UpdateMenuRequest request);
     }
 
@@ -29,38 +28,6 @@ namespace Moonglade.Menus
             _logger = logger;
             _menuRepo = menuRepo;
             _audit = audit;
-        }
-
-        public async Task<Guid> CreateAsync(UpdateMenuRequest request)
-        {
-            var uid = Guid.NewGuid();
-            var menu = new MenuEntity
-            {
-                Id = uid,
-                Title = request.Title.Trim(),
-                DisplayOrder = request.DisplayOrder,
-                Icon = request.Icon,
-                Url = request.Url,
-                IsOpenInNewTab = request.IsOpenInNewTab
-            };
-
-            if (request.SubMenus is { Length: > 0 })
-            {
-                var sms = request.SubMenus.Select(p => new SubMenuEntity
-                {
-                    Id = Guid.NewGuid(),
-                    IsOpenInNewTab = p.IsOpenInNewTab,
-                    Title = p.Title,
-                    Url = p.Url,
-                    MenuId = uid
-                });
-
-                menu.SubMenus = sms.ToList();
-            }
-
-            await _menuRepo.AddAsync(menu);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.MenuCreated, $"Menu '{uid}' created.");
-            return uid;
         }
 
         public async Task UpdateAsync(Guid id, UpdateMenuRequest request)

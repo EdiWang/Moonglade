@@ -57,7 +57,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Create(_menuEditViewModel);
             Assert.IsInstanceOf<OkObjectResult>(result);
 
-            _mockMenuService.Verify(p => p.CreateAsync(It.IsAny<UpdateMenuRequest>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreateMenuCommand>(), default));
         }
 
         [Test]
