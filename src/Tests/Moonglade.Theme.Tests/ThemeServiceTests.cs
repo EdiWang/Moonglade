@@ -34,10 +34,10 @@ namespace Moonglade.Theme.Tests
         public async Task GetAllSegment_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            var service = CreateService();
+            var handler = new GetAllThemeSegmentQueryHandler(_mockThemeRepository.Object);
 
             // Act
-            var result = await service.GetAllSegment();
+            var result = await handler.Handle(new(), default);
 
             // Assert
             _mockThemeRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<BlogThemeEntity, ThemeSegment>>>()));

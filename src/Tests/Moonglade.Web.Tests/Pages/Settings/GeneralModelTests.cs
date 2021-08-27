@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace Moonglade.Web.Tests.Pages.Settings
 {
@@ -15,7 +16,7 @@ namespace Moonglade.Web.Tests.Pages.Settings
 
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
-        private Mock<IThemeService> _mockThemeService;
+        private Mock<IMediator> _mockMediator;
 
 
         [SetUp]
@@ -25,7 +26,7 @@ namespace Moonglade.Web.Tests.Pages.Settings
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
-            _mockThemeService = _mockRepository.Create<IThemeService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private GeneralModel CreateGeneralModel()
@@ -33,14 +34,14 @@ namespace Moonglade.Web.Tests.Pages.Settings
             return new(
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
-                _mockThemeService.Object);
+                _mockMediator.Object);
         }
 
         [Test]
         public async Task OnGetAsync_StateUnderTest_ExpectedBehavior()
         {
             IReadOnlyList<ThemeSegment> themes = new List<ThemeSegment>();
-            _mockThemeService.Setup(p => p.GetAllSegment()).Returns(Task.FromResult(themes));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllThemeSegmentQuery>(), default)).Returns(Task.FromResult(themes));
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
             var generalModel = CreateGeneralModel();
 

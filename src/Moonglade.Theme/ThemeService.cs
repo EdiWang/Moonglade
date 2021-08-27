@@ -9,7 +9,6 @@ namespace Moonglade.Theme
     public interface IThemeService
     {
         Task<int> Create(string name, IDictionary<string, string> cssRules);
-        Task<IReadOnlyList<ThemeSegment>> GetAllSegment();
     }
 
     public class ThemeService : IThemeService
@@ -19,15 +18,6 @@ namespace Moonglade.Theme
         public ThemeService(IRepository<BlogThemeEntity> themeRepo)
         {
             _themeRepo = themeRepo;
-        }
-
-        public Task<IReadOnlyList<ThemeSegment>> GetAllSegment()
-        {
-            return _themeRepo.SelectAsync(p => new ThemeSegment
-            {
-                Id = p.Id,
-                Name = p.ThemeName
-            });
         }
 
         public async Task<int> Create(string name, IDictionary<string, string> cssRules)
