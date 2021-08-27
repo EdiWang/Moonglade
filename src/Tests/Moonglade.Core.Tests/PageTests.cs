@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    public class PageServiceTests
+    public class PageTests
     {
         private MockRepository _mockRepository;
 
