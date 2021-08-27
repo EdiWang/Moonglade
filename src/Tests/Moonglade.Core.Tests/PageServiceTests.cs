@@ -92,10 +92,10 @@ namespace Moonglade.Core.Tests
         [TestCase(-1)]
         public void GetAsync_InvalidTop(int top)
         {
-            var svc = CreatePageService();
+            var handler = new GetPagesQueryHandler(_mockPageRepository.Object);
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.GetAsync(top);
+                await handler.Handle(new(top), default);
             });
         }
 
@@ -116,8 +116,8 @@ namespace Moonglade.Core.Tests
             _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<PageSpec>()))
                 .Returns(Task.FromResult(pageEntities));
 
-            var svc = CreatePageService();
-            var pages = await svc.GetAsync(996);
+            var handler = new GetPagesQueryHandler(_mockPageRepository.Object);
+            var pages = await handler.Handle(new(996), default);
 
             Assert.IsNotNull(pages);
             Assert.AreEqual(_fakePageEntity.Title.Trim(), pages[0].Title);

@@ -298,7 +298,7 @@ namespace Moonglade.Web
             {
                 if (numPages < 0) throw new ArgumentOutOfRangeException(nameof(numPages));
 
-                var pages = await _blogPageService.GetAsync(numPages);
+                var pages = await _mediator.Send(new GetPagesQuery(numPages));
                 var mPages = pages.Select(ToMetaWeblogPage);
 
                 return mPages.ToArray();

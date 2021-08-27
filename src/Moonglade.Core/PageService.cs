@@ -1,10 +1,7 @@
 ﻿using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -12,7 +9,6 @@ namespace Moonglade.Core
 {
     public interface IBlogPageService
     {
-        Task<IReadOnlyList<BlogPage>> GetAsync(int top);
         Task<Guid> CreateAsync(PageEditModel request);
         Task<Guid> UpdateAsync(Guid id, PageEditModel request);
     }
@@ -28,15 +24,6 @@ namespace Moonglade.Core
         {
             _pageRepo = pageRepo;
             _audit = audit;
-        }
-
-        public async Task<IReadOnlyList<BlogPage>> GetAsync(int top)
-        {
-            if (top <= 0) throw new ArgumentOutOfRangeException(nameof(top));
-
-            var pages = await _pageRepo.GetAsync(new PageSpec(top));
-            var list = pages.Select(p => new BlogPage(p)).ToList();
-            return list;
         }
 
         public async Task<Guid> CreateAsync(PageEditModel request)
