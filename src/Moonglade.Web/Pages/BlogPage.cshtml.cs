@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
@@ -11,16 +12,17 @@ namespace Moonglade.Web.Pages
 {
     public class BlogPageModel : PageModel
     {
-        private readonly IBlogPageService _blogPageService;
+        private readonly IMediator _mediator;
+
         private readonly IBlogCache _cache;
         private readonly AppSettings _settings;
         public BlogPage BlogPage { get; set; }
 
         public BlogPageModel(
-            IBlogPageService blogPageService, IBlogCache cache, IOptions<AppSettings> settingsOptions)
+            IMediator mediator, IBlogCache cache, IOptions<AppSettings> settingsOptions)
         {
-            _blogPageService = blogPageService;
             _cache = cache;
+            _mediator = mediator;
             _settings = settingsOptions.Value;
         }
 
@@ -32,7 +34,7 @@ namespace Moonglade.Web.Pages
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Page"]);
 
-                var p = await _blogPageService.GetAsync(slug);
+                var p = await _mediator.Send(new GetPageBySlugCommand(slug));
                 return p;
             });
 

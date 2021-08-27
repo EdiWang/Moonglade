@@ -80,8 +80,8 @@ namespace Moonglade.Core.Tests
             _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Expression<Func<PageEntity, bool>>>()))
                 .Returns(Task.FromResult(_fakePageEntity));
 
-            var svc = CreatePageService();
-            var page = await svc.GetAsync("pdd-is-evil");
+            var handler = new GetPageBySlugCommandHandler(_mockPageRepository.Object);
+            var page = await handler.Handle(new("pdd-is-evil"), default);
 
             Assert.IsNotNull(page);
             Assert.AreEqual("PDD is Evil", page.Title);

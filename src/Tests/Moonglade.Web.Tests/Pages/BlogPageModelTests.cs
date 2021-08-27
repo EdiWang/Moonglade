@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
@@ -17,7 +18,7 @@ namespace Moonglade.Web.Tests.Pages
     {
         private MockRepository _mockRepository;
 
-        private Mock<IBlogPageService> _mockBlogPageService;
+        private Mock<IMediator> _mockMediator;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IOptions<AppSettings>> _mockOptions;
 
@@ -26,7 +27,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockBlogPageService = _mockRepository.Create<IBlogPageService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockOptions = _mockRepository.Create<IOptions<AppSettings>>();
         }
@@ -34,7 +35,7 @@ namespace Moonglade.Web.Tests.Pages
         private BlogPageModel CreateBlogPageModel()
         {
             return new(
-                _mockBlogPageService.Object,
+                _mockMediator.Object,
                 _mockBlogCache.Object,
                 _mockOptions.Object);
         }
