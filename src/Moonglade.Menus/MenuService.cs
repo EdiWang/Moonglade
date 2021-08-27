@@ -13,7 +13,6 @@ namespace Moonglade.Menus
     {
         Task<Guid> CreateAsync(UpdateMenuRequest request);
         Task UpdateAsync(Guid id, UpdateMenuRequest request);
-        Task DeleteAsync(Guid id);
     }
 
     public class MenuService : IMenuService
@@ -98,40 +97,6 @@ namespace Moonglade.Menus
 
             await _menuRepo.UpdateAsync(menu);
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.MenuUpdated, $"Menu '{id}' updated.");
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            var menu = await _menuRepo.GetAsync(id);
-            if (menu is null)
-            {
-                throw new InvalidOperationException($"MenuEntity with Id '{id}' not found.");
-            }
-
-            await _menuRepo.DeleteAsync(id);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Menu '{id}' deleted.");
-        }
-
-        private static Menu EntityToMenuModel(MenuEntity entity)
-        {
-            if (entity is null) return null;
-
-            return new()
-            {
-                Id = entity.Id,
-                Title = entity.Title.Trim(),
-                DisplayOrder = entity.DisplayOrder,
-                Icon = entity.Icon?.Trim(),
-                Url = entity.Url?.Trim(),
-                IsOpenInNewTab = entity.IsOpenInNewTab,
-                SubMenus = entity.SubMenus.Select(sm => new SubMenu
-                {
-                    Id = sm.Id,
-                    Title = sm.Title,
-                    Url = sm.Url,
-                    IsOpenInNewTab = sm.IsOpenInNewTab
-                }).ToList()
-            };
         }
     }
 }

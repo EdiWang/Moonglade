@@ -100,11 +100,10 @@ namespace Moonglade.Menus.Tests
             _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((MenuEntity)null));
 
-            var ctl = CreateService();
-
+            var handler = new DeleteMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await ctl.DeleteAsync(Guid.Empty);
+                await handler.Handle(new(Guid.Empty), default);
             });
         }
 
@@ -114,8 +113,8 @@ namespace Moonglade.Menus.Tests
             _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_menu));
 
-            var ctl = CreateService();
-            await ctl.DeleteAsync(Guid.Empty);
+            var handler = new DeleteMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(Guid.Empty), default);
 
             _mockBlogAudit.Verify();
         }

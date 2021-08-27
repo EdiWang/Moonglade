@@ -62,7 +62,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            await _menuService.DeleteAsync(id);
+            await _mediator.Send(new DeleteMenuCommand(id));
             return NoContent();
         }
 
