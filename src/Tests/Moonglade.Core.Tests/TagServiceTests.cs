@@ -201,8 +201,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetTagCountList_OK()
         {
-            var svc = CreateService();
-            await svc.GetTagCountList();
+            var handler = new GetTagCountListQueryHandler(_mockRepositoryTagEntity.Object);
+            await handler.Handle(new(), default);
 
             _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, KeyValuePair<Tag, int>>>>()));
         }

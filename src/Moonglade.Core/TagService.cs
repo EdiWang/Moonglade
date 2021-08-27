@@ -22,7 +22,6 @@ namespace Moonglade.Core
         Task<OperationCode> DeleteAsync(int tagId);
         Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top);
         Tag Get(string normalizedName);
-        Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetTagCountList();
     }
 
     public class TagService : ITagService
@@ -139,17 +138,6 @@ namespace Moonglade.Core
         {
             var tag = _tagRepo.SelectFirstOrDefault(new TagSpec(normalizedName), _tagSelector);
             return tag;
-        }
-
-        public Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetTagCountList()
-        {
-            return _tagRepo.SelectAsync(t =>
-                new KeyValuePair<Tag, int>(new()
-                {
-                    Id = t.Id,
-                    DisplayName = t.DisplayName,
-                    NormalizedName = t.NormalizedName
-                }, t.Posts.Count));
         }
 
         public static string NormalizeTagName(string orgTagName, IDictionary<string, string> normalizations)
