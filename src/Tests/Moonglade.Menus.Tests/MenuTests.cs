@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Moonglade.Menus.Tests
 {
     [TestFixture]
-    public class MenuServiceTests
+    public class MenuTests
     {
         private MockRepository _mockRepository;
 
