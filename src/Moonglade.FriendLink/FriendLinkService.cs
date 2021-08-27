@@ -3,7 +3,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Moonglade.FriendLink
@@ -11,7 +10,6 @@ namespace Moonglade.FriendLink
     public interface IFriendLinkService
     {
         Task AddAsync(string title, string linkUrl);
-        Task DeleteAsync(Guid id);
         Task UpdateAsync(Guid id, string newTitle, string newLinkUrl);
     }
 
@@ -44,12 +42,6 @@ namespace Moonglade.FriendLink
 
             await _friendlinkRepo.AddAsync(link);
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.FriendLinkCreated, "FriendLink created.");
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            await _friendlinkRepo.DeleteAsync(id);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.FriendLinkDeleted, "FriendLink deleted.");
         }
 
         public async Task UpdateAsync(Guid id, string newTitle, string newLinkUrl)

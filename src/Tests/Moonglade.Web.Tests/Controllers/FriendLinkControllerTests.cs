@@ -87,7 +87,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.Delete(FakeData.Uid1);
 
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockFriendLinkService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeleteLinkCommand>(), default));
         }
     }
 }

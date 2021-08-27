@@ -84,8 +84,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task DeleteAsync_OK()
         {
-            var svc = CreateService();
-            await svc.DeleteAsync(Guid.Empty);
+            var handler = new DeleteLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(Guid.Empty), CancellationToken.None);
 
             _mockBlogAudit.Verify();
             Assert.Pass();
