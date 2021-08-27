@@ -1,8 +1,6 @@
 ﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -12,7 +10,6 @@ namespace Moonglade.Theme
     {
         Task<int> Create(string name, IDictionary<string, string> cssRules);
         Task<IReadOnlyList<ThemeSegment>> GetAllSegment();
-        Task<string> GetStyleSheet(int id);
     }
 
     public class ThemeService : IThemeService
@@ -47,39 +44,6 @@ namespace Moonglade.Theme
 
             await _themeRepo.AddAsync(blogTheme);
             return blogTheme.Id;
-        }
-
-        public async Task<string> GetStyleSheet(int id)
-        {
-            var theme = await _themeRepo.GetAsync(id);
-            if (null == theme) return null;
-
-            if (string.IsNullOrWhiteSpace(theme.CssRules))
-            {
-                throw new InvalidDataException($"Theme id '{id}' is having empty CSS Rules");
-            }
-
-            try
-            {
-                var rules = JsonSerializer.Deserialize<IDictionary<string, string>>(theme.CssRules);
-
-                var sb = new StringBuilder();
-                sb.Append(":root {");
-                foreach (var (key, value) in rules)
-                {
-                    if (null != key && null != value)
-                    {
-                        sb.Append($"{key}: {value};");
-                    }
-                }
-                sb.Append('}');
-
-                return sb.ToString();
-            }
-            catch (JsonException)
-            {
-                throw new InvalidDataException($"Theme id '{id}' CssRules is not a valid json");
-            }
         }
     }
 }

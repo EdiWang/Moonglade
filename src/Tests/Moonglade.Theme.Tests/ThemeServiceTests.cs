@@ -72,14 +72,13 @@ namespace Moonglade.Theme.Tests
                     CssRules = string.Empty,
                     ThemeType = ThemeType.User
                 }));
-            var service = CreateService();
+            var handler = new GetStyleSheetQueryHandler(_mockThemeRepository.Object);
             int id = 0;
 
             // Act
             Assert.ThrowsAsync<InvalidDataException>(async () =>
             {
-                var result = await service.GetStyleSheet(
-                    id);
+                var result = await handler.Handle(new(id), default);
             });
         }
 
@@ -95,14 +94,13 @@ namespace Moonglade.Theme.Tests
                     CssRules = "work 996",
                     ThemeType = ThemeType.User
                 }));
-            var service = CreateService();
+            var handler = new GetStyleSheetQueryHandler(_mockThemeRepository.Object);
             int id = 0;
 
             // Act
             Assert.ThrowsAsync<InvalidDataException>(async () =>
             {
-                var result = await service.GetStyleSheet(
-                    id);
+                var result = await handler.Handle(new(id), default);
             });
         }
 
@@ -118,12 +116,11 @@ namespace Moonglade.Theme.Tests
                     CssRules = "{\"--honestman-hat\": \"green !important\"}",
                     ThemeType = ThemeType.User
                 }));
-            var service = CreateService();
+            var handler = new GetStyleSheetQueryHandler(_mockThemeRepository.Object);
             int id = 0;
 
             // Act
-            var result = await service.GetStyleSheet(
-                id);
+            var result = await handler.Handle(new(id), default);
 
             Assert.AreEqual(":root {--honestman-hat: green !important;}", result);
         }

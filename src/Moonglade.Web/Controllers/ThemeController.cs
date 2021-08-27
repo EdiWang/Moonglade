@@ -55,7 +55,7 @@ namespace Moonglade.Web.Controllers
                         await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
                     }
 
-                    var data = await _themeService.GetStyleSheet(_blogConfig.GeneralSettings.ThemeId);
+                    var data = await _mediator.Send(new GetStyleSheetQuery(_blogConfig.GeneralSettings.ThemeId));
                     return data;
                 });
 
