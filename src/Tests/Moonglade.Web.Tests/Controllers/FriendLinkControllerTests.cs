@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.FriendLink;
 using Moonglade.Web.Controllers;
@@ -6,7 +7,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Moonglade.Web.Tests.Controllers
 {

@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -5,7 +6,6 @@ using Moonglade.FriendLink;
 using Moonglade.Web.Models;
 using System;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Moonglade.Web.Controllers
 {

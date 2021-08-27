@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration;
@@ -9,7 +10,6 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Moonglade.Web.Tests.Middleware
 {

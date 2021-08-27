@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Moonglade.FriendLink
 {
