@@ -25,9 +25,6 @@ namespace Moonglade.Core.Tests
             var obj4 = services.FirstOrDefault(p => p.ServiceType == typeof(IPostQueryService));
             Assert.IsNotNull(obj4);
 
-            var obj5 = services.FirstOrDefault(p => p.ServiceType == typeof(ISearchService));
-            Assert.IsNotNull(obj5);
-
             var obj6 = services.FirstOrDefault(p => p.ServiceType == typeof(ITagService));
             Assert.IsNotNull(obj6);
         }

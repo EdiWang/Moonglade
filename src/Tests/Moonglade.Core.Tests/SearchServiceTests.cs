@@ -19,21 +19,16 @@ namespace Moonglade.Core.Tests
             _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
         }
 
-        private SearchService CreateService()
-        {
-            return new(_mockPostEntityRepo.Object);
-        }
-
         [TestCase(null)]
         [TestCase("")]
         [TestCase(" ")]
         public void SearchAsync_EmptyTerm(string keyword)
         {
-            var service = CreateService();
+            var handler = new SearchPostQueryHandler(_mockPostEntityRepo.Object);
 
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                var result = await service.SearchAsync(keyword);
+                var result = await handler.Handle(It.IsAny<SearchPostQuery>(), default);
             });
         }
 

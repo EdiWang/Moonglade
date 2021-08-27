@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,18 +18,18 @@ namespace Moonglade.Web.Tests.Pages
     public class SearchModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<ISearchService> _mockSearchService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockSearchService = _mockRepository.Create<ISearchService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private SearchModel CreateSearchModel()
         {
-            return new(_mockSearchService.Object);
+            return new(_mockMediator.Object);
         }
 
         [TestCase(null)]
@@ -61,7 +62,7 @@ namespace Moonglade.Web.Tests.Pages
                 }
             };
 
-            _mockSearchService.Setup(p => p.SearchAsync(It.IsAny<string>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<SearchPostQuery>(), default))
                 .Returns(Task.FromResult((IReadOnlyList<PostDigest>)fakePosts));
 
             var httpContext = new DefaultHttpContext();
@@ -75,7 +76,7 @@ namespace Moonglade.Web.Tests.Pages
                 ViewData = viewData
             };
 
-            var searchModel = new SearchModel(_mockSearchService.Object)
+            var searchModel = new SearchModel(_mockMediator.Object)
             {
                 PageContext = pageContext,
                 TempData = tempData

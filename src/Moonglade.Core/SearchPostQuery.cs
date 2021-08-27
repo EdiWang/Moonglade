@@ -1,46 +1,52 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Moonglade.Core
 {
-    public interface ISearchService
+    public class SearchPostQuery : IRequest<IReadOnlyList<PostDigest>>
     {
-        Task<IReadOnlyList<PostDigest>> SearchAsync(string keyword);
+        public SearchPostQuery(string keyword)
+        {
+            Keyword = keyword;
+        }
+
+        public string Keyword { get; set; }
     }
 
-    public class SearchService : ISearchService
+    public class SearchPostQueryHandler : IRequestHandler<SearchPostQuery, IReadOnlyList<PostDigest>>
     {
         private readonly IRepository<PostEntity> _postRepo;
 
-        public SearchService(IRepository<PostEntity> postRepo)
+        public SearchPostQueryHandler(IRepository<PostEntity> postRepo)
         {
             _postRepo = postRepo;
         }
 
-        public async Task<IReadOnlyList<PostDigest>> SearchAsync(string keyword)
+        public async Task<IReadOnlyList<PostDigest>> Handle(SearchPostQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(keyword))
+            if (null == request || string.IsNullOrWhiteSpace(request.Keyword))
             {
-                throw new ArgumentNullException(keyword);
+                throw new ArgumentNullException(request?.Keyword);
             }
 
-            var postList = SearchByKeyword(keyword);
-            var resultList = await postList.Select(SharedSelectors.PostDigestSelector).ToListAsync();
+            var postList = SearchByKeyword(request.Keyword);
+            var resultList = await postList.Select(SharedSelectors.PostDigestSelector).ToListAsync(cancellationToken);
 
             return resultList;
         }
 
-
         private IQueryable<PostEntity> SearchByKeyword(string keyword)
         {
             var query = _postRepo.GetAsQueryable()
-                                       .Where(p => !p.IsDeleted && p.IsPublished).AsNoTracking();
+                .Where(p => !p.IsDeleted && p.IsPublished).AsNoTracking();
 
             var str = Regex.Replace(keyword, @"\s+", " ");
             var rst = str.Split(' ');
