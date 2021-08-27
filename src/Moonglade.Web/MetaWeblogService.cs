@@ -328,12 +328,12 @@ namespace Moonglade.Web
 
             return TryExecuteAsync(async () =>
             {
-                var pageRequest = new UpdatePageRequest
+                var pageRequest = new PageEditModel
                 {
                     Title = page.title,
                     HideSidebar = true,
                     MetaDescription = string.Empty,
-                    HtmlContent = page.description,
+                    RawHtmlContent = page.description,
                     CssContent = string.Empty,
                     IsPublished = publish,
                     Slug = ToSlug(page.title)
@@ -355,12 +355,12 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(pageid));
                 }
 
-                var pageRequest = new UpdatePageRequest
+                var pageRequest = new PageEditModel
                 {
                     Title = page.title,
                     HideSidebar = true,
                     MetaDescription = string.Empty,
-                    HtmlContent = page.description,
+                    RawHtmlContent = page.description,
                     CssContent = string.Empty,
                     IsPublished = publish,
                     Slug = ToSlug(page.title)

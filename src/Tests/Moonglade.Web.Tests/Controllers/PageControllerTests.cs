@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Core;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 using System;

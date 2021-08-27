@@ -15,8 +15,8 @@ namespace Moonglade.Core
         Task<BlogPage> GetAsync(Guid pageId);
         Task<IReadOnlyList<BlogPage>> GetAsync(int top);
         Task<IReadOnlyList<PageSegment>> ListSegmentAsync();
-        Task<Guid> CreateAsync(UpdatePageRequest request);
-        Task<Guid> UpdateAsync(Guid id, UpdatePageRequest request);
+        Task<Guid> CreateAsync(PageEditModel request);
+        Task<Guid> UpdateAsync(Guid id, PageEditModel request);
     }
 
     public class BlogPageService : IBlogPageService
@@ -62,7 +62,7 @@ namespace Moonglade.Core
             });
         }
 
-        public async Task<Guid> CreateAsync(UpdatePageRequest request)
+        public async Task<Guid> CreateAsync(PageEditModel request)
         {
             var uid = Guid.NewGuid();
             var page = new PageEntity
@@ -72,7 +72,7 @@ namespace Moonglade.Core
                 Slug = request.Slug.ToLower().Trim(),
                 MetaDescription = request.MetaDescription,
                 CreateTimeUtc = DateTime.UtcNow,
-                HtmlContent = request.HtmlContent,
+                HtmlContent = request.RawHtmlContent,
                 CssContent = request.CssContent,
                 HideSidebar = request.HideSidebar,
                 IsPublished = request.IsPublished
@@ -84,7 +84,7 @@ namespace Moonglade.Core
             return uid;
         }
 
-        public async Task<Guid> UpdateAsync(Guid id, UpdatePageRequest request)
+        public async Task<Guid> UpdateAsync(Guid id, PageEditModel request)
         {
             var page = await _pageRepo.GetAsync(id);
             if (page is null)
@@ -95,7 +95,7 @@ namespace Moonglade.Core
             page.Title = request.Title.Trim();
             page.Slug = request.Slug.ToLower().Trim();
             page.MetaDescription = request.MetaDescription;
-            page.HtmlContent = request.HtmlContent;
+            page.HtmlContent = request.RawHtmlContent;
             page.CssContent = request.CssContent;
             page.HideSidebar = request.HideSidebar;
             page.UpdateTimeUtc = DateTime.UtcNow;

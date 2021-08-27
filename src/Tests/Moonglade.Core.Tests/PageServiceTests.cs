@@ -175,7 +175,7 @@ namespace Moonglade.Core.Tests
             {
                 CssContent = string.Empty,
                 HideSidebar = true,
-                HtmlContent = "<p>Work 996</p>",
+                RawHtmlContent = "<p>Work 996</p>",
                 IsPublished = true,
                 MetaDescription = "Work 996",
                 Slug = "work-996",
@@ -211,7 +211,7 @@ namespace Moonglade.Core.Tests
             {
                 CssContent = string.Empty,
                 HideSidebar = true,
-                HtmlContent = "<p>Work 996</p>",
+                RawHtmlContent = "<p>Work 996</p>",
                 IsPublished = true,
                 MetaDescription = "Work 996",
                 Slug = "work-996",

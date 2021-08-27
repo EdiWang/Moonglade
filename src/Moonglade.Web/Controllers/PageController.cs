@@ -67,7 +67,7 @@ namespace Moonglade.Web.Controllers
             return CreateOrEdit(model, async request => await _blogPageService.UpdateAsync(id, request));
         }
 
-        private async Task<IActionResult> CreateOrEdit(PageEditModel model, Func<UpdatePageRequest, Task<Guid>> pageServiceAction)
+        private async Task<IActionResult> CreateOrEdit(PageEditModel model, Func<PageEditModel, Task<Guid>> pageServiceAction)
         {
             if (!string.IsNullOrWhiteSpace(model.CssContent))
             {
@@ -82,20 +82,9 @@ namespace Moonglade.Web.Controllers
                 }
             }
 
-            var req = new UpdatePageRequest
-            {
-                HtmlContent = model.RawHtmlContent,
-                CssContent = model.CssContent,
-                HideSidebar = model.HideSidebar,
-                Slug = model.Slug,
-                MetaDescription = model.MetaDescription,
-                Title = model.Title,
-                IsPublished = model.IsPublished
-            };
+            var uid = await pageServiceAction(model);
 
-            var uid = await pageServiceAction(req);
-
-            _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
+            _cache.Remove(CacheDivision.Page, model.Slug.ToLower());
             return Ok(new { PageId = uid });
         }
 

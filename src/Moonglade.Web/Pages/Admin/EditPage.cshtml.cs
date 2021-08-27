@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
-using Moonglade.Web.Models;
 using System;
 using System.Threading.Tasks;
 

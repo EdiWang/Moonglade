@@ -364,7 +364,7 @@ namespace Moonglade.Web.Tests
         public async Task AddPageAsync_OK()
         {
             _mockPageService
-                .Setup(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()))
+                .Setup(p => p.CreateAsync(It.IsAny<PageEditModel>()))
                 .Returns(Task.FromResult(Guid.Empty));
             var page = new WilderMinds.MetaWeblog.Page
             {
@@ -377,14 +377,14 @@ namespace Moonglade.Web.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(Guid.Empty.ToString(), result);
-            _mockPageService.Verify(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()));
+            _mockPageService.Verify(p => p.CreateAsync(It.IsAny<PageEditModel>()));
         }
 
         [Test]
         public async Task EditPageAsync_OK()
         {
             _mockPageService
-                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()))
+                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<PageEditModel>()))
                 .Returns(Task.FromResult(Guid.Empty));
             var page = new WilderMinds.MetaWeblog.Page
             {
@@ -397,7 +397,7 @@ namespace Moonglade.Web.Tests
             var result = await service.EditPageAsync("996.icu", Guid.Empty.ToString(), _username, _password, page, true);
 
             Assert.IsTrue(result);
-            _mockPageService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()));
+            _mockPageService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<PageEditModel>()));
         }
 
         [Test]
