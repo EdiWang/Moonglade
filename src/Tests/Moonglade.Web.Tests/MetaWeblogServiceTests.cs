@@ -280,7 +280,7 @@ namespace Moonglade.Web.Tests
         public async Task GetTagsAsync_OK()
         {
             IReadOnlyList<string> names = new[] { "996", "icu" };
-            _mockTagService.Setup(p => p.GetAllNames()).Returns(Task.FromResult(names));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagNamesQuery>(), default)).Returns(Task.FromResult(names));
 
             var service = CreateService();
             var result = await service.GetTagsAsync("996.icu", _username, _password);

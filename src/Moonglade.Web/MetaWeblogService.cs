@@ -241,7 +241,7 @@ namespace Moonglade.Web
 
             return TryExecuteAsync(async () =>
             {
-                var names = await _tagService.GetAllNames();
+                var names = await _mediator.Send(new GetTagNamesQuery());
                 var tags = names.Select(p => new Tag
                 {
                     name = p

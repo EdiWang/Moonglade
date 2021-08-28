@@ -43,7 +43,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Names()
         {
-            var tagNames = await _tagService.GetAllNames();
+            var tagNames = await _mediator.Send(new GetTagNamesQuery());
             return Ok(tagNames);
         }
 

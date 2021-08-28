@@ -77,8 +77,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetAllNames_OK()
         {
-            var svc = CreateService();
-            await svc.GetAllNames();
+            var handler = new GetTagNamesQueryHandler(_mockRepositoryTagEntity.Object);
+            await handler.Handle(new(), default);
             _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, string>>>()));
         }
 
