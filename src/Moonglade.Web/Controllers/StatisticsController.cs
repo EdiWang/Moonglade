@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
 using Moonglade.Web.Filters;
@@ -12,19 +13,20 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class StatisticsController : ControllerBase
     {
-        private readonly IBlogStatistics _statistics;
+        private readonly IMediator _mediator;
+
         private bool DNT => (bool)HttpContext.Items["DNT"];
 
-        public StatisticsController(IBlogStatistics statistics)
+        public StatisticsController(IMediator mediator)
         {
-            _statistics = statistics;
+            _mediator = mediator;
         }
 
         [HttpGet("{postId:guid}")]
         [ProducesResponseType(typeof(Tuple<int, int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([NotEmpty] Guid postId)
         {
-            var (hits, likes) = await _statistics.GetStatisticAsync(postId);
+            var (hits, likes) = await _mediator.Send(new GetStatisticQuery(postId));
             return Ok(new { Hits = hits, Likes = likes });
         }
 
@@ -35,7 +37,7 @@ namespace Moonglade.Web.Controllers
         {
             if (DNT) return NoContent();
 
-            await _statistics.UpdateStatisticAsync(request.PostId, request.IsLike);
+            await _mediator.Send(new UpdateStatisticCommand(request.PostId, request.IsLike));
             return NoContent();
         }
     }

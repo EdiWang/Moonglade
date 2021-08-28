@@ -13,9 +13,6 @@ namespace Moonglade.Core.Tests
             IServiceCollection services = new ServiceCollection();
             services.AddCoreBloggingServices();
 
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogStatistics));
-            Assert.IsNotNull(obj1);
-
             var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(IPostManageService));
             Assert.IsNotNull(obj3);
 

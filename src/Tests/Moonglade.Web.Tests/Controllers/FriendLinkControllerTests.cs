@@ -13,7 +13,6 @@ namespace Moonglade.Web.Tests.Controllers
     public class FriendLinkControllerTests
     {
         private MockRepository _mockRepository;
-
         private Mock<IMediator> _mockMediator;
 
         private readonly FriendLinkEditModel _friendlinkEditViewModel = new()
@@ -26,7 +25,6 @@ namespace Moonglade.Web.Tests.Controllers
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-
             _mockMediator = _mockRepository.Create<IMediator>();
         }
 

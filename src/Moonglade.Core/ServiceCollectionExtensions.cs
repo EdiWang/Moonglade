@@ -8,8 +8,7 @@ namespace Moonglade.Core
     {
         public static IServiceCollection AddCoreBloggingServices(this IServiceCollection services)
         {
-            services.AddScoped<IBlogStatistics, BlogStatistics>()
-                    .AddScoped<IPostManageService, PostManageService>()
+            services.AddScoped<IPostManageService, PostManageService>()
                     .AddScoped<IPostQueryService, PostQueryService>();
 
             return services;
