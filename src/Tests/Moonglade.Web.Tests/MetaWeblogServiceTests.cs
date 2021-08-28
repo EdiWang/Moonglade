@@ -104,7 +104,6 @@ namespace Moonglade.Web.Tests
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
                 _mockLogger.Object,
-                _mockCategoryService.Object,
                 _mockPostService.Object,
                 _mockPostManageService.Object,
                 _mockBlogImageStorage.Object,
@@ -270,7 +269,7 @@ namespace Moonglade.Web.Tests
             var result = await service.AddCategoryAsync("996.icu", _username, _password, cat);
 
             Assert.AreEqual(996, result);
-            _mockCategoryService.Verify(p => p.CreateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreateCategoryCommand>(), default));
         }
 
         [Test]

@@ -9,7 +9,6 @@ namespace Moonglade.Core
 {
     public interface ICategoryService
     {
-        Task CreateAsync(string displayName, string routeName, string note = null);
         Task<OperationCode> UpdateAsync(Guid id, string displayName, string routeName, string note = null);
     }
 
@@ -27,25 +26,6 @@ namespace Moonglade.Core
             _catRepo = catRepo;
             _audit = audit;
             _cache = cache;
-        }
-
-        public async Task CreateAsync(string displayName, string routeName, string note = null)
-        {
-            var exists = _catRepo.Any(c => c.RouteName == routeName);
-            if (exists) return;
-
-            var category = new CategoryEntity
-            {
-                Id = Guid.NewGuid(),
-                RouteName = routeName.Trim(),
-                Note = note?.Trim(),
-                DisplayName = displayName.Trim()
-            };
-
-            await _catRepo.AddAsync(category);
-            _cache.Remove(CacheDivision.General, "allcats");
-
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryCreated, $"Category '{category.RouteName}' created");
         }
 
         public async Task<OperationCode> UpdateAsync(Guid id, string displayName, string routeName, string note = null)

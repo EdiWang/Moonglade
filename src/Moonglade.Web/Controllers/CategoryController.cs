@@ -53,7 +53,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(EditCategoryRequest model)
         {
-            await _catService.CreateAsync(model.DisplayName, model.RouteName, model.Note);
+            await _mediator.Send(new CreateCategoryCommand(model));
             return Created(string.Empty, model);
         }
 

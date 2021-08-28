@@ -19,7 +19,6 @@ namespace Moonglade.Web
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly ILogger<MetaWeblogService> _logger;
-        private readonly ICategoryService _categoryService;
         private readonly IPostQueryService _postQueryService;
         private readonly IPostManageService _postManageService;
         private readonly IBlogImageStorage _blogImageStorage;
@@ -30,7 +29,6 @@ namespace Moonglade.Web
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             ILogger<MetaWeblogService> logger,
-            ICategoryService categoryService,
             IPostQueryService postQueryService,
             IPostManageService postManageService,
             IBlogImageStorage blogImageStorage,
@@ -40,7 +38,6 @@ namespace Moonglade.Web
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _logger = logger;
-            _categoryService = categoryService;
             _postQueryService = postQueryService;
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
@@ -226,7 +223,12 @@ namespace Moonglade.Web
 
             return TryExecuteAsync(async () =>
             {
-                await _categoryService.CreateAsync(category.name.Trim(), category.slug.ToLower(), category.description.Trim());
+                await _mediator.Send(new CreateCategoryCommand(new()
+                {
+                    DisplayName = category.name.Trim(),
+                    RouteName = category.slug.ToLower(),
+                    Note = category.description.Trim()
+                }));
 
                 return 996;
             });
