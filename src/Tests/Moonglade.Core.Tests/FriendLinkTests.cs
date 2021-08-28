@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    public class FriendLinkHandlersTests
+    public class FriendLinkTests
     {
         private MockRepository _mockRepository;
         private Mock<IBlogAudit> _mockBlogAudit;

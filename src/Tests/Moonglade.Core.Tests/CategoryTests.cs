@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    public class CategoryServiceTests
+    public class CategoryTests
     {
         private MockRepository _mockRepository;
 

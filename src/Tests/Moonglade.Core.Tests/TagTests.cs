@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    public class TagServiceTests
+    public class TagTests
     {
         private MockRepository _mockRepository;
 

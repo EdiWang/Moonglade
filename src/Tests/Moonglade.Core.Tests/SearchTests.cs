@@ -7,7 +7,7 @@ using System;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    public class SearchServiceTests
+    public class SearchTests
     {
         private MockRepository _mockRepository;
         private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
