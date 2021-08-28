@@ -25,7 +25,6 @@ namespace Moonglade.Core.Tests
 
         private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
         private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
-        private Mock<ILogger<PostManageService>> _mockLogger;
         private Mock<ILogger<CreatePostCommandHandler>> _mockLogger2;
         private Mock<IRepository<TagEntity>> _mockTagEntityRepo;
         private Mock<IBlogAudit> _mockBlogAudit;
@@ -62,28 +61,11 @@ namespace Moonglade.Core.Tests
 
             _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
             _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
-            _mockLogger = _mockRepository.Create<ILogger<PostManageService>>();
             _mockLogger2 = _mockRepository.Create<ILogger<CreatePostCommandHandler>>();
             _mockTagEntityRepo = _mockRepository.Create<IRepository<TagEntity>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockConfiguration = _mockRepository.Create<IConfiguration>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
-        }
-
-        private PostManageService CreateService()
-        {
-            var config = @"{""TagNormalization"":{""."": ""dot""}}";
-            var builder = new ConfigurationBuilder();
-            builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(config)));
-            var configuration = builder.Build();
-
-            return new(
-                _mockBlogAudit.Object,
-                configuration,
-                _mockOptionsAppSettings.Object,
-                _mockTagEntityRepo.Object,
-                _mockPostEntityRepo.Object,
-                _mockBlogCache.Object);
         }
 
         private IConfigurationRoot GetFakeConfiguration()
@@ -139,11 +121,18 @@ namespace Moonglade.Core.Tests
         public void UpdateAsync_NullPost()
         {
             _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult((PostEntity)null));
-            var svc = CreateService();
+            var handler = new UpdatePostCommandHandler(
+                _mockBlogAudit.Object,
+                GetFakeConfiguration(),
+                _mockOptionsAppSettings.Object,
+                _mockTagEntityRepo.Object,
+                _mockPostEntityRepo.Object,
+                _mockBlogCache.Object
+            );
 
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await svc.UpdateAsync(Uid, new());
+                await handler.Handle(new(Uid, new()), default);
             });
         }
 
@@ -174,8 +163,16 @@ namespace Moonglade.Core.Tests
                 CategoryIds = new[] { Uid }
             };
 
-            var svc = CreateService();
-            var result = await svc.UpdateAsync(Uid, req);
+            var handler = new UpdatePostCommandHandler(
+                _mockBlogAudit.Object,
+                GetFakeConfiguration(),
+                _mockOptionsAppSettings.Object,
+                _mockTagEntityRepo.Object,
+                _mockPostEntityRepo.Object,
+                _mockBlogCache.Object
+               );
+
+            var result = await handler.Handle(new(Uid, req), default);
 
             Assert.IsNotNull(result);
             Assert.AreNotEqual(Guid.Empty, result.Id);

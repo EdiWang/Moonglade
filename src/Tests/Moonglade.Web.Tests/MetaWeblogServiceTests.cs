@@ -27,7 +27,6 @@ namespace Moonglade.Web.Tests
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<ILogger<MetaWeblogService>> _mockLogger;
         private Mock<IPostQueryService> _mockPostService;
-        private Mock<IPostManageService> _mockPostManageService;
         private Mock<IBlogImageStorage> _mockBlogImageStorage;
         private Mock<IFileNameGenerator> _mockFileNameGenerator;
         private Mock<IMediator> _mockMediator;
@@ -77,7 +76,6 @@ namespace Moonglade.Web.Tests
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockLogger = _mockRepository.Create<ILogger<MetaWeblogService>>();
             _mockPostService = _mockRepository.Create<IPostQueryService>();
-            _mockPostManageService = _mockRepository.Create<IPostManageService>();
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
             _mockMediator = _mockRepository.Create<IMediator>();
@@ -103,7 +101,6 @@ namespace Moonglade.Web.Tests
                 _mockTZoneResolver.Object,
                 _mockLogger.Object,
                 _mockPostService.Object,
-                _mockPostManageService.Object,
                 _mockBlogImageStorage.Object,
                 _mockFileNameGenerator.Object, _mockMediator.Object);
         }
@@ -235,7 +232,7 @@ namespace Moonglade.Web.Tests
             }, true);
 
             Assert.IsTrue(result);
-            _mockPostManageService.Verify(p => p.UpdateAsync(FakeData.Uid1, It.IsAny<UpdatePostRequest>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<UpdatePostCommand>(), default));
         }
 
         [Test]

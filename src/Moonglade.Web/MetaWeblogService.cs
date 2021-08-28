@@ -20,7 +20,6 @@ namespace Moonglade.Web
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly ILogger<MetaWeblogService> _logger;
         private readonly IPostQueryService _postQueryService;
-        private readonly IPostManageService _postManageService;
         private readonly IBlogImageStorage _blogImageStorage;
         private readonly IFileNameGenerator _fileNameGenerator;
         private readonly IMediator _mediator;
@@ -30,7 +29,6 @@ namespace Moonglade.Web
             ITimeZoneResolver timeZoneResolver,
             ILogger<MetaWeblogService> logger,
             IPostQueryService postQueryService,
-            IPostManageService postManageService,
             IBlogImageStorage blogImageStorage,
             IFileNameGenerator fileNameGenerator,
             IMediator mediator)
@@ -42,7 +40,6 @@ namespace Moonglade.Web
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
             _mediator = mediator;
-            _postManageService = postManageService;
         }
 
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
@@ -192,7 +189,7 @@ namespace Moonglade.Web
                     PublishDate = DateTime.UtcNow
                 };
 
-                await _postManageService.UpdateAsync(id, req);
+                await _mediator.Send(new UpdatePostCommand(id, req));
                 return true;
             });
         }

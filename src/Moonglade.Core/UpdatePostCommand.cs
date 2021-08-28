@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
@@ -9,16 +10,25 @@ using Moonglade.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Moonglade.Core
 {
-    public interface IPostManageService
+    public class UpdatePostCommand : IRequest<PostEntity>
     {
-        Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request);
+        public UpdatePostCommand(Guid id, UpdatePostRequest request)
+        {
+            Id = id;
+            Request = request;
+        }
+
+        public Guid Id { get; set; }
+
+        public UpdatePostRequest Request { get; set; }
     }
 
-    public class PostManageService : IPostManageService
+    public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
     {
         private readonly IBlogAudit _audit;
         private readonly AppSettings _settings;
@@ -28,7 +38,7 @@ namespace Moonglade.Core
 
         private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
-        public PostManageService(
+        public UpdatePostCommandHandler(
             IBlogAudit audit,
             IConfiguration configuration,
             IOptions<AppSettings> settings,
@@ -46,26 +56,26 @@ namespace Moonglade.Core
                 configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
         }
 
-        public async Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request)
+        public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
         {
-            var post = await _postRepo.GetAsync(id);
+            var post = await _postRepo.GetAsync(request.Id);
             if (null == post)
             {
-                throw new InvalidOperationException($"Post {id} is not found.");
+                throw new InvalidOperationException($"Post {request.Id} is not found.");
             }
 
-            post.CommentEnabled = request.EnableComment;
-            post.PostContent = request.EditorContent;
+            post.CommentEnabled = request.Request.EnableComment;
+            post.PostContent = request.Request.EditorContent;
             post.ContentAbstract = ContentProcessor.GetPostAbstract(
-                string.IsNullOrEmpty(request.Abstract) ? request.EditorContent : request.Abstract.Trim(),
+                string.IsNullOrEmpty(request.Request.Abstract) ? request.Request.EditorContent : request.Request.Abstract.Trim(),
                 _settings.PostAbstractWords,
                 _settings.Editor == EditorChoice.Markdown);
 
             // Address #221: Do not allow published posts back to draft status
-            // postModel.IsPublished = request.IsPublished;
+            // postModel.IsPublished = request.Request.IsPublished;
             // Edit draft -> save and publish, ignore false case because #221
             bool isNewPublish = false;
-            if (request.IsPublished && !post.IsPublished)
+            if (request.Request.IsPublished && !post.IsPublished)
             {
                 post.IsPublished = true;
                 post.PubDateUtc = DateTime.UtcNow;
@@ -74,24 +84,24 @@ namespace Moonglade.Core
             }
 
             // #325: Allow changing publish date for published posts
-            if (request.PublishDate is not null && post.PubDateUtc.HasValue)
+            if (request.Request.PublishDate is not null && post.PubDateUtc.HasValue)
             {
                 var tod = post.PubDateUtc.Value.TimeOfDay;
-                var adjustedDate = request.PublishDate.Value;
+                var adjustedDate = request.Request.PublishDate.Value;
                 post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
             }
 
-            post.Author = request.Author?.Trim();
-            post.Slug = request.Slug.ToLower().Trim();
-            post.Title = request.Title;
-            post.ExposedToSiteMap = request.ExposedToSiteMap;
+            post.Author = request.Request.Author?.Trim();
+            post.Slug = request.Request.Slug.ToLower().Trim();
+            post.Title = request.Request.Title;
+            post.ExposedToSiteMap = request.Request.ExposedToSiteMap;
             post.LastModifiedUtc = DateTime.UtcNow;
-            post.IsFeedIncluded = request.IsFeedIncluded;
-            post.ContentLanguageCode = request.ContentLanguageCode;
-            post.IsFeatured = request.IsFeatured;
-            post.IsOriginal = request.IsOriginal;
-            post.OriginLink = string.IsNullOrWhiteSpace(request.OriginLink) ? null : Helper.SterilizeLink(request.OriginLink);
-            post.HeroImageUrl = string.IsNullOrWhiteSpace(request.HeroImageUrl) ? null : Helper.SterilizeLink(request.HeroImageUrl);
+            post.IsFeedIncluded = request.Request.IsFeedIncluded;
+            post.ContentLanguageCode = request.Request.ContentLanguageCode;
+            post.IsFeatured = request.Request.IsFeatured;
+            post.IsOriginal = request.Request.IsOriginal;
+            post.OriginLink = string.IsNullOrWhiteSpace(request.Request.OriginLink) ? null : Helper.SterilizeLink(request.Request.OriginLink);
+            post.HeroImageUrl = string.IsNullOrWhiteSpace(request.Request.HeroImageUrl) ? null : Helper.SterilizeLink(request.Request.HeroImageUrl);
 
             // compute hash
             var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
@@ -99,7 +109,7 @@ namespace Moonglade.Core
             post.HashCheckSum = checkSum;
 
             // 1. Add new tags to tag lib
-            foreach (var item in request.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
+            foreach (var item in request.Request.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
             {
                 await _tagRepo.AddAsync(new()
                 {
@@ -113,9 +123,9 @@ namespace Moonglade.Core
 
             // 2. update tags
             post.Tags.Clear();
-            if (request.Tags.Any())
+            if (request.Request.Tags.Any())
             {
-                foreach (var tagName in request.Tags)
+                foreach (var tagName in request.Request.Tags)
                 {
                     if (!Tag.ValidateName(tagName))
                     {
@@ -129,9 +139,9 @@ namespace Moonglade.Core
 
             // 3. update categories
             post.PostCategory.Clear();
-            if (request.CategoryIds is { Length: > 0 })
+            if (request.Request.CategoryIds is { Length: > 0 })
             {
-                foreach (var cid in request.CategoryIds)
+                foreach (var cid in request.Request.CategoryIds)
                 {
                     post.PostCategory.Add(new()
                     {
@@ -148,7 +158,7 @@ namespace Moonglade.Core
                 isNewPublish ? BlogEventId.PostPublished : BlogEventId.PostUpdated,
                 $"Post updated, id: {post.Id}");
 
-            _cache.Remove(CacheDivision.Post, id.ToString());
+            _cache.Remove(CacheDivision.Post, request.Id.ToString());
             return post;
         }
     }

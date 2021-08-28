@@ -25,7 +25,6 @@ namespace Moonglade.Web.Tests.Controllers
         private MockRepository _mockRepository;
 
         private Mock<IPostQueryService> _mockPostService;
-        private Mock<IPostManageService> _mockPostManageService;
         private Mock<IMediator> _mockMediator;
 
         private Mock<IBlogConfig> _mockBlogConfig;
@@ -71,7 +70,6 @@ namespace Moonglade.Web.Tests.Controllers
             _mockRepository = new(MockBehavior.Default);
 
             _mockPostService = _mockRepository.Create<IPostQueryService>();
-            _mockPostManageService = _mockRepository.Create<IPostManageService>();
             _mockMediator = _mockRepository.Create<IMediator>();
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -84,7 +82,6 @@ namespace Moonglade.Web.Tests.Controllers
         {
             return new(
                 _mockPostService.Object,
-                _mockPostManageService.Object,
                 _mockMediator.Object,
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,

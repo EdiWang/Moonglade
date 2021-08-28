@@ -28,7 +28,6 @@ namespace Moonglade.Web.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostQueryService _postQueryService;
-        private readonly IPostManageService _postManageService;
         private readonly IMediator _mediator;
 
         private readonly IBlogConfig _blogConfig;
@@ -38,7 +37,6 @@ namespace Moonglade.Web.Controllers
 
         public PostController(
             IPostQueryService postQueryService,
-            IPostManageService postManageService,
             IMediator mediator,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
@@ -46,7 +44,6 @@ namespace Moonglade.Web.Controllers
             ILogger<PostController> logger)
         {
             _postQueryService = postQueryService;
-            _postManageService = postManageService;
             _mediator = mediator;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
@@ -149,7 +146,7 @@ namespace Moonglade.Web.Controllers
 
                 var postEntity = model.PostId == Guid.Empty ?
                     await _mediator.Send(new CreatePostCommand(request)) :
-                    await _postManageService.UpdateAsync(model.PostId, request);
+                    await _mediator.Send(new UpdatePostCommand(model.PostId, request));
 
                 if (model.IsPublished)
                 {
