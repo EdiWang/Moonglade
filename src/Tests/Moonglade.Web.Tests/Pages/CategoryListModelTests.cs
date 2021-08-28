@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,7 +22,7 @@ namespace Moonglade.Web.Tests.Pages
     {
         private MockRepository _mockRepository;
 
-        private Mock<ICategoryService> _mockCategoryService;
+        private Mock<IMediator> _mockMediator;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IPostQueryService> _mockPostQueryService;
@@ -31,7 +32,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
@@ -56,8 +57,8 @@ namespace Moonglade.Web.Tests.Pages
             };
 
             var model = new CategoryListModel(
-                _mockCategoryService.Object,
                 _mockBlogConfig.Object,
+                _mockMediator.Object,
                 _mockBlogCache.Object,
                 _mockPostQueryService.Object)
             {
@@ -81,8 +82,8 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_NullCat()
         {
-            _mockCategoryService
-                .Setup(p => p.GetAsync(It.IsAny<string>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<GetCategoryByRouteCommand>(), default))
                 .Returns(Task.FromResult((Category)null));
 
             var categoryListModel = CreateCategoryListModel();
@@ -101,8 +102,8 @@ namespace Moonglade.Web.Tests.Pages
                 RouteName = FakeData.Slug2
             };
 
-            _mockCategoryService
-                .Setup(p => p.GetAsync(It.IsAny<string>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<GetCategoryByRouteCommand>(), default))
                 .Returns(Task.FromResult(cat));
 
             _mockBlogCache.Setup(p =>

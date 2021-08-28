@@ -2,7 +2,6 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
 using System;
 using System.Threading.Tasks;
 
@@ -10,7 +9,6 @@ namespace Moonglade.Core
 {
     public interface ICategoryService
     {
-        Task<Category> GetAsync(string routeName);
         Task CreateAsync(string displayName, string routeName, string note = null);
         Task<OperationCode> UpdateAsync(Guid id, string displayName, string routeName, string note = null);
     }
@@ -29,11 +27,6 @@ namespace Moonglade.Core
             _catRepo = catRepo;
             _audit = audit;
             _cache = cache;
-        }
-
-        public Task<Category> GetAsync(string routeName)
-        {
-            return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(routeName), Category.EntitySelector);
         }
 
         public async Task CreateAsync(string displayName, string routeName, string note = null)
