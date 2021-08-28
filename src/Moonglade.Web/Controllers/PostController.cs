@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -28,6 +29,7 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IPostQueryService _postQueryService;
         private readonly IPostManageService _postManageService;
+        private readonly IMediator _mediator;
 
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
@@ -37,6 +39,7 @@ namespace Moonglade.Web.Controllers
         public PostController(
             IPostQueryService postQueryService,
             IPostManageService postManageService,
+            IMediator mediator,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IPingbackSender pingbackSender,
@@ -44,6 +47,7 @@ namespace Moonglade.Web.Controllers
         {
             _postQueryService = postQueryService;
             _postManageService = postManageService;
+            _mediator = mediator;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _pingbackSender = pingbackSender;
@@ -215,7 +219,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> EmptyRecycleBin()
         {
-            await _postManageService.PurgeRecycledAsync();
+            await _mediator.Send(new PurgeRecycledCommand());
             return NoContent();
         }
 

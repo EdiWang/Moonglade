@@ -252,8 +252,9 @@ namespace Moonglade.Core.Tests
             _mockPostEntityRepo.Setup(p => p.GetAsync(It.IsAny<ISpecification<PostEntity>>()))
                 .Returns(Task.FromResult(entities));
 
-            var svc = CreateService();
-            await svc.PurgeRecycledAsync();
+            var handler = new PurgeRecycledCommandHandler(_mockBlogAudit.Object, _mockBlogCache.Object,
+                _mockPostEntityRepo.Object);
+            await handler.Handle(new(), default);
 
             _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostEntity>>()));
         }

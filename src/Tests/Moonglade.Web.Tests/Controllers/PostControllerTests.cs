@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -25,6 +26,8 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IPostQueryService> _mockPostService;
         private Mock<IPostManageService> _mockPostManageService;
+        private Mock<IMediator> _mockMediator;
+
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<IPingbackSender> _mockPingbackSender;
@@ -69,6 +72,8 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockPostManageService = _mockRepository.Create<IPostManageService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
+
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockPingbackSender = _mockRepository.Create<IPingbackSender>();
@@ -80,6 +85,7 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockPostService.Object,
                 _mockPostManageService.Object,
+                _mockMediator.Object,
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
                 _mockPingbackSender.Object,
