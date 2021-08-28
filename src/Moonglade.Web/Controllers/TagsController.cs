@@ -54,9 +54,9 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Create([Required][FromBody] string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return BadRequest();
-            if (!TagService.ValidateTagName(name)) return Conflict();
+            if (!Tag.ValidateName(name)) return Conflict();
 
-            await _tagService.Create(name.Trim());
+            await _mediator.Send(new CreateTagCommand(name.Trim()));
             return Ok();
         }
 

@@ -65,7 +65,7 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateTagsController();
             var result = await ctl.Create(FakeData.ShortString2);
 
-            _mockTagService.Verify(p => p.Create(It.IsAny<string>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreateTagCommand>(), default));
             Assert.IsInstanceOf<OkResult>(result);
         }
 

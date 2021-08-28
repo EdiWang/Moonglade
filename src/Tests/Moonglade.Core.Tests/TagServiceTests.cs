@@ -48,6 +48,16 @@ namespace Moonglade.Core.Tests
                 configuration);
         }
 
+        private IConfigurationRoot GetFakeConfiguration()
+        {
+            var config = @"{""TagNormalization"":{"" "": ""-""}}";
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(config)));
+            var configuration = builder.Build();
+
+            return configuration;
+        }
+
         [Test]
         public void Get_OK()
         {
@@ -90,8 +100,9 @@ namespace Moonglade.Core.Tests
                     p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>()))
                 .Returns(new Tag());
 
-            var svc = CreateService();
-            var result = await svc.Create("Work 996");
+            var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+                GetFakeConfiguration());
+            var result = await handler.Handle(new("Work 996"), default);
 
             Assert.IsNotNull(result);
         }
@@ -101,7 +112,9 @@ namespace Moonglade.Core.Tests
         {
             var ctl = CreateService();
 
-            var result = await ctl.Create("ます");
+            var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+                GetFakeConfiguration());
+            var result = await handler.Handle(new("ます"), default);
 
             Assert.IsNull(result);
             _mockRepositoryTagEntity.Verify(p => p.AddAsync(It.IsAny<TagEntity>()), Times.Never);
@@ -119,8 +132,9 @@ namespace Moonglade.Core.Tests
                     NormalizedName = "work-996"
                 }));
 
-            var svc = CreateService();
-            var result = await svc.Create("Work 996");
+            var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+                GetFakeConfiguration());
+            var result = await handler.Handle(new("Work 996"), default);
 
             Assert.IsNotNull(result);
             _mockRepositoryTagEntity.Verify(p => p.AddAsync(It.IsAny<TagEntity>()));
@@ -219,14 +233,14 @@ namespace Moonglade.Core.Tests
                 { ".", "dot" }
             };
 
-            return TagService.NormalizeTagName(str, dic);
+            return Tag.NormalizeName(str, dic);
         }
 
         [TestCase("福报", ExpectedResult = "8f-79-a5-62")]
         public string NormalizeTagNameNonEnglish(string str)
         {
             var dic = new Dictionary<string, string>();
-            return TagService.NormalizeTagName(str, dic);
+            return Tag.NormalizeName(str, dic);
         }
 
         [TestCase("C", ExpectedResult = true)]
@@ -242,7 +256,7 @@ namespace Moonglade.Core.Tests
         [TestCase("", ExpectedResult = false)]
         public bool ValidateTagName(string tagDisplayName)
         {
-            return TagService.ValidateTagName(tagDisplayName);
+            return Tag.ValidateName(tagDisplayName);
         }
     }
 }

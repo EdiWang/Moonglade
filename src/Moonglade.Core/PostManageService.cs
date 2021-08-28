@@ -122,7 +122,7 @@ namespace Moonglade.Core
             {
                 foreach (var item in request.Tags)
                 {
-                    if (!TagService.ValidateTagName(item))
+                    if (!Tag.ValidateName(item))
                     {
                         continue;
                     }
@@ -143,7 +143,7 @@ namespace Moonglade.Core
             var newTag = new TagEntity
             {
                 DisplayName = item,
-                NormalizedName = TagService.NormalizeTagName(item, _tagNormalizationDictionary)
+                NormalizedName = Tag.NormalizeName(item, _tagNormalizationDictionary)
             };
 
             var tag = await _tagRepo.AddAsync(newTag);
@@ -210,7 +210,7 @@ namespace Moonglade.Core
                 await _tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
-                    NormalizedName = TagService.NormalizeTagName(item, _tagNormalizationDictionary)
+                    NormalizedName = Tag.NormalizeName(item, _tagNormalizationDictionary)
                 });
 
                 await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagCreated,
@@ -223,7 +223,7 @@ namespace Moonglade.Core
             {
                 foreach (var tagName in request.Tags)
                 {
-                    if (!TagService.ValidateTagName(tagName))
+                    if (!Tag.ValidateName(tagName))
                     {
                         continue;
                     }
