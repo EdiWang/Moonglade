@@ -2,7 +2,6 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,7 +10,6 @@ namespace Moonglade.Core
     public interface ITagService
     {
         Task<OperationCode> UpdateAsync(int tagId, string newName);
-        Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top);
     }
 
     public class TagService : ITagService
@@ -43,22 +41,6 @@ namespace Moonglade.Core
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
 
             return OperationCode.Done;
-        }
-
-        public async Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top)
-        {
-            if (!_tagRepo.Any()) return new List<KeyValuePair<Tag, int>>();
-
-            var spec = new TagSpec(top);
-            var tags = await _tagRepo.SelectAsync(spec, t =>
-                new KeyValuePair<Tag, int>(new()
-                {
-                    Id = t.Id,
-                    DisplayName = t.DisplayName,
-                    NormalizedName = t.NormalizedName
-                }, t.Posts.Count));
-
-            return tags;
         }
     }
 }

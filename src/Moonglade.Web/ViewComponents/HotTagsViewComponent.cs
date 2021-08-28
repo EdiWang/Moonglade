@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using System;
@@ -8,21 +9,20 @@ namespace Moonglade.Web.ViewComponents
 {
     public class HotTagsViewComponent : ViewComponent
     {
-        private readonly ITagService _tagService;
-
         private readonly IBlogConfig _blogConfig;
+        private readonly IMediator _mediator;
 
-        public HotTagsViewComponent(ITagService tagService, IBlogConfig blogConfig)
+        public HotTagsViewComponent(IBlogConfig blogConfig, IMediator mediator)
         {
-            _tagService = tagService;
             _blogConfig = blogConfig;
+            _mediator = mediator;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             try
             {
-                var tags = await _tagService.GetHotTagsAsync(_blogConfig.ContentSettings.HotTagAmount);
+                var tags = await _mediator.Send(new GetHotTagsQuery(_blogConfig.ContentSettings.HotTagAmount));
                 return View(tags);
             }
             catch (Exception e)

@@ -195,8 +195,8 @@ namespace Moonglade.Core.Tests
         {
             _mockRepositoryTagEntity.Setup(p => p.Any((Expression<Func<TagEntity, bool>>)null)).Returns(false);
 
-            var svc = CreateService();
-            var result = await svc.GetHotTagsAsync(35);
+            var handler = new GetHotTagsQueryHandler(_mockRepositoryTagEntity.Object);
+            var result = await handler.Handle(new(35), default);
 
             Assert.IsNotNull(result);
         }
@@ -206,8 +206,8 @@ namespace Moonglade.Core.Tests
         {
             _mockRepositoryTagEntity.Setup(p => p.Any((Expression<Func<TagEntity, bool>>)null)).Returns(true);
 
-            var svc = CreateService();
-            await svc.GetHotTagsAsync(35);
+            var handler = new GetHotTagsQueryHandler(_mockRepositoryTagEntity.Object);
+            var result = await handler.Handle(new(35), default);
 
             _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, KeyValuePair<Tag, int>>>>()));
         }
