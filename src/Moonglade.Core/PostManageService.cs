@@ -19,7 +19,6 @@ namespace Moonglade.Core
     {
         Task<PostEntity> CreateAsync(UpdatePostRequest request);
         Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request);
-        Task RestoreAsync(Guid id);
     }
 
     public class PostManageService : IPostManageService
@@ -254,18 +253,6 @@ namespace Moonglade.Core
 
             _cache.Remove(CacheDivision.Post, id.ToString());
             return post;
-        }
-
-        public async Task RestoreAsync(Guid id)
-        {
-            var pp = await _postRepo.GetAsync(id);
-            if (null == pp) return;
-
-            pp.IsDeleted = false;
-            await _postRepo.UpdateAsync(pp);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostRestored, $"Post restored, id: {id}");
-
-            _cache.Remove(CacheDivision.Post, id.ToString());
         }
     }
 }

@@ -174,8 +174,9 @@ namespace Moonglade.Core.Tests
         {
             _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
 
-            var svc = CreateService();
-            await svc.RestoreAsync(Guid.Empty);
+            var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
+                _mockBlogAudit.Object);
+            await handler.Handle(new(Guid.Empty), default);
 
             _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()), Times.Never);
         }
@@ -190,8 +191,9 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
 
-            var svc = CreateService();
-            await svc.RestoreAsync(Uid);
+            var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
+                _mockBlogAudit.Object);
+            await handler.Handle(new(Uid), default);
 
             _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
             Assert.IsFalse(post.IsDeleted);

@@ -188,7 +188,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Restore([NotEmpty] Guid postId)
         {
-            await _postManageService.RestoreAsync(postId);
+            await _mediator.Send(new RestorePostCommand(postId));
             return NoContent();
         }
 
