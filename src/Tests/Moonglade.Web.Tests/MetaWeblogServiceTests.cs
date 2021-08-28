@@ -201,7 +201,7 @@ namespace Moonglade.Web.Tests
                 Cat
             };
 
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
             _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()))
                 .Returns(Task.FromResult(new PostEntity { Id = FakeData.Uid1 }));
 
@@ -225,7 +225,7 @@ namespace Moonglade.Web.Tests
             {
                 Cat
             };
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var service = CreateService();
             var result = await service.EditPostAsync(FakeData.Uid1.ToString(), _username, _password, new()
@@ -248,7 +248,7 @@ namespace Moonglade.Web.Tests
             {
                 Cat
             };
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var service = CreateService();
             var result = await service.GetCategoriesAsync("996.icu", _username, _password);

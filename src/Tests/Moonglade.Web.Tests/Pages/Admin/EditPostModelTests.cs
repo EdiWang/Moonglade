@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
@@ -17,7 +18,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
     {
         private MockRepository _mockRepository;
 
-        private Mock<ICategoryService> _mockCategoryService;
+        private Mock<IMediator> _mockMediator;
         private Mock<IPostQueryService> _mockPostService;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<IBlogConfig> _mockBlogConfig;
@@ -60,7 +61,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -69,7 +70,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         private EditPostModel CreateEditPostModel()
         {
             return new(
-                _mockCategoryService.Object,
+                _mockMediator.Object,
                 _mockPostService.Object,
                 _mockTZoneResolver.Object);
         }
@@ -82,7 +83,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
                 new(){Id = Guid.Empty, DisplayName = FakeData.Title3, Note = "Get into ICU", RouteName = FakeData.Slug2}
             };
 
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var editPostModel = CreateEditPostModel();
             var result = await editPostModel.OnGetAsync(null);
@@ -109,7 +110,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             IReadOnlyList<Category> cats = new List<Category> { Cat };
 
             _mockPostService.Setup(p => p.GetAsync(Uid)).Returns(Task.FromResult(Post));
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var editPostModel = CreateEditPostModel();
             var result = await editPostModel.OnGetAsync(Uid);

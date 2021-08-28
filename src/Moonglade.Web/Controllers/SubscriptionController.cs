@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration;
@@ -18,30 +19,30 @@ namespace Moonglade.Web.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly ISyndicationService _syndicationService;
-        private readonly ICategoryService _catService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogCache _cache;
         private readonly IOpmlWriter _opmlWriter;
+        private readonly IMediator _mediator;
 
         public SubscriptionController(
             ISyndicationService syndicationService,
-            ICategoryService catService,
             IBlogConfig blogConfig,
             IBlogCache cache,
-            IOpmlWriter opmlWriter)
+            IOpmlWriter opmlWriter,
+            IMediator mediator)
         {
             _syndicationService = syndicationService;
-            _catService = catService;
             _blogConfig = blogConfig;
             _cache = cache;
             _opmlWriter = opmlWriter;
+            _mediator = mediator;
         }
 
         [FeatureGate(FeatureFlags.OPML)]
         [HttpGet("opml")]
         public async Task<IActionResult> Opml()
         {
-            var cats = await _catService.GetAllAsync();
+            var cats = await _mediator.Send(new GetCategoriesQuery());
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
             var rootUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix);
 

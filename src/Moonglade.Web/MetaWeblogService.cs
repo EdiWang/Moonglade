@@ -206,7 +206,7 @@ namespace Moonglade.Web
 
             return TryExecuteAsync(async () =>
             {
-                var cats = await _categoryService.GetAllAsync();
+                var cats = await _mediator.Send(new GetCategoriesQuery());
                 var catInfos = cats.Select(p => new CategoryInfo
                 {
                     title = p.DisplayName,
@@ -450,7 +450,7 @@ namespace Moonglade.Web
 
         private async Task<Guid[]> GetCatIds(string[] mPostCategories)
         {
-            var allCats = await _categoryService.GetAllAsync();
+            var allCats = await _mediator.Send(new GetCategoriesQuery());
             var cids = (from postCategory in mPostCategories
                         select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
                         into cat

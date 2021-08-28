@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
@@ -10,18 +11,18 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class EditPostModel : PageModel
     {
-        private readonly ICategoryService _catService;
+        private readonly IMediator _mediator;
         private readonly IPostQueryService _postQueryService;
         private readonly ITimeZoneResolver _timeZoneResolver;
 
         public PostEditModel ViewModel { get; set; }
 
         public EditPostModel(
-            ICategoryService catService,
+            IMediator mediator,
             IPostQueryService postQueryService,
             ITimeZoneResolver timeZoneResolver)
         {
-            _catService = catService;
+            _mediator = mediator;
             _postQueryService = postQueryService;
             _timeZoneResolver = timeZoneResolver;
             ViewModel = new()
@@ -38,7 +39,7 @@ namespace Moonglade.Web.Pages.Admin
         {
             if (id is null)
             {
-                var cats1 = await _catService.GetAllAsync();
+                var cats1 = await _mediator.Send(new GetCategoriesQuery());
                 if (cats1.Count > 0)
                 {
                     var cbCatList = cats1.Select(p =>
@@ -89,7 +90,7 @@ namespace Moonglade.Web.Pages.Admin
             tagStr = tagStr.TrimEnd(',');
             ViewModel.Tags = tagStr;
 
-            var cats2 = await _catService.GetAllAsync();
+            var cats2 = await _mediator.Send(new GetCategoriesQuery());
             if (cats2.Count > 0)
             {
                 var cbCatList = cats2.Select(p =>

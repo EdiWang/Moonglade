@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Moonglade.Data.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace Moonglade.Core
 {
@@ -8,5 +10,13 @@ namespace Moonglade.Core
         public string RouteName { get; set; }
         public string DisplayName { get; set; }
         public string Note { get; set; }
+
+        public static readonly Expression<Func<CategoryEntity, Category>> EntitySelector = c => new()
+        {
+            Id = c.Id,
+            DisplayName = c.DisplayName,
+            RouteName = c.RouteName,
+            Note = c.Note
+        };
     }
 }

@@ -4,7 +4,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -12,7 +11,6 @@ namespace Moonglade.Core
 {
     public interface ICategoryService
     {
-        Task<IReadOnlyList<Category>> GetAllAsync();
         Task<Category> GetAsync(string routeName);
         Task<Category> GetAsync(Guid id);
         Task CreateAsync(string displayName, string routeName, string note = null);
@@ -41,16 +39,6 @@ namespace Moonglade.Core
             _catRepo = catRepo;
             _audit = audit;
             _cache = cache;
-        }
-
-        public Task<IReadOnlyList<Category>> GetAllAsync()
-        {
-            return _cache.GetOrCreateAsync(CacheDivision.General, "allcats", async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromHours(1);
-                var list = await _catRepo.SelectAsync(_categorySelector);
-                return list;
-            });
         }
 
         public Task<Category> GetAsync(string routeName)

@@ -45,7 +45,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
         {
-            var cats = await _catService.GetAllAsync();
+            var cats = await _mediator.Send(new GetCategoriesQuery());
             return Ok(cats);
         }
 

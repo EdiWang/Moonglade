@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
@@ -16,7 +17,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         private MockRepository _mockRepository;
 
         private Mock<ILogger<RssListViewComponent>> _mockLogger;
-        private Mock<ICategoryService> _mockCategoryService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
@@ -24,20 +25,20 @@ namespace Moonglade.Web.Tests.ViewComponents
             _mockRepository = new(MockBehavior.Default);
 
             _mockLogger = _mockRepository.Create<ILogger<RssListViewComponent>>();
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private RssListViewComponent CreateComponent()
         {
             return new(
                 _mockLogger.Object,
-                _mockCategoryService.Object);
+                _mockMediator.Object);
         }
 
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Throws(new(FakeData.ShortString2));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync();
@@ -53,7 +54,7 @@ namespace Moonglade.Web.Tests.ViewComponents
                 new() {DisplayName = "Fubao", Id = Guid.Empty, Note = FakeData.ShortString2, RouteName = FakeData.Slug2}
             };
 
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync();

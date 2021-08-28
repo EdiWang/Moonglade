@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
@@ -19,10 +20,10 @@ namespace Moonglade.Web.Tests.Controllers
         private MockRepository _mockRepository;
 
         private Mock<ISyndicationService> _mockSyndicationService;
-        private Mock<ICategoryService> _mockCategoryService;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IOpmlWriter> _mockOpmlWriter;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
@@ -30,20 +31,19 @@ namespace Moonglade.Web.Tests.Controllers
             _mockRepository = new(MockBehavior.Default);
 
             _mockSyndicationService = _mockRepository.Create<ISyndicationService>();
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockOpmlWriter = _mockRepository.Create<IOpmlWriter>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private SubscriptionController CreateSubscriptionController()
         {
             return new(
                 _mockSyndicationService.Object,
-                _mockCategoryService.Object,
                 _mockBlogConfig.Object,
                 _mockBlogCache.Object,
-                _mockOpmlWriter.Object);
+                _mockOpmlWriter.Object, _mockMediator.Object);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Moonglade.Web.Tests.Controllers
                 }
             };
 
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
                 CanonicalPrefix = FakeData.Url1,

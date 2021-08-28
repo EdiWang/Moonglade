@@ -47,9 +47,8 @@ namespace Moonglade.Core.Tests
             var mockedCache = Create.MockedMemoryCache();
             var memBc = new BlogMemoryCache(mockedCache);
 
-            var svc = CreateService(memBc);
-
-            var result = await svc.GetAllAsync();
+            var handler = new GetCategoriesQueryHandler(_mockCatRepo.Object, memBc);
+            var result = await handler.Handle(new(), default);
 
             _mockCatRepo.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
         }

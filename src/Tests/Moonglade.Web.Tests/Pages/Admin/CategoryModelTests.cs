@@ -1,3 +1,4 @@
+using MediatR;
 using Moonglade.Core;
 using Moonglade.Web.Pages.Admin;
 using Moq;
@@ -13,18 +14,18 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class CategoryModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<ICategoryService> _mockCategoryService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private CategoryModel CreateCategoryModel()
         {
-            return new(_mockCategoryService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -35,7 +36,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
                 new (){Id = Guid.Empty, DisplayName = FakeData.Title3, Note = "Fubao", RouteName = FakeData.Slug2 }
             };
 
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var categoryModel = CreateCategoryModel();
             await categoryModel.OnGet();
