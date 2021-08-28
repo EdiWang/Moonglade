@@ -23,7 +23,7 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<Tag>> Handle(GetTagsQuery request, CancellationToken cancellationToken)
         {
-            return _tagRepo.SelectAsync(SharedSelectors.TagSelector);
+            return _tagRepo.SelectAsync(Tag.EntitySelector);
         }
     }
 }

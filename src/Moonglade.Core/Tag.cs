@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Moonglade.Data.Entities;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -12,6 +15,13 @@ namespace Moonglade.Core
         public string DisplayName { get; set; }
 
         public string NormalizedName { get; set; }
+
+        public static readonly Expression<Func<TagEntity, Tag>> EntitySelector = t => new()
+        {
+            Id = t.Id,
+            NormalizedName = t.NormalizedName,
+            DisplayName = t.DisplayName
+        };
 
         public static bool ValidateName(string tagDisplayName)
         {

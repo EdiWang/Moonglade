@@ -41,7 +41,7 @@ namespace Moonglade.Core
             var normalizedName = Tag.NormalizeName(request.Name, _tagNormalizationDictionary);
             if (_tagRepo.Any(t => t.NormalizedName == normalizedName))
             {
-                return _tagRepo.SelectFirstOrDefault(new TagSpec(normalizedName), SharedSelectors.TagSelector);
+                return _tagRepo.SelectFirstOrDefault(new TagSpec(normalizedName), Tag.EntitySelector);
             }
 
             var newTag = new TagEntity

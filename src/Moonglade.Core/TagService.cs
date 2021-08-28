@@ -3,9 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Moonglade.Core
@@ -14,7 +12,6 @@ namespace Moonglade.Core
     {
         Task<OperationCode> UpdateAsync(int tagId, string newName);
         Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top);
-        Tag Get(string normalizedName);
     }
 
     public class TagService : ITagService
@@ -22,13 +19,6 @@ namespace Moonglade.Core
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IBlogAudit _audit;
         private readonly IDictionary<string, string> _tagNormalizationDictionary;
-
-        private readonly Expression<Func<TagEntity, Tag>> _tagSelector = t => new()
-        {
-            Id = t.Id,
-            NormalizedName = t.NormalizedName,
-            DisplayName = t.DisplayName
-        };
 
         public TagService(
             IRepository<TagEntity> tagRepo,
@@ -69,12 +59,6 @@ namespace Moonglade.Core
                 }, t.Posts.Count));
 
             return tags;
-        }
-
-        public Tag Get(string normalizedName)
-        {
-            var tag = _tagRepo.SelectFirstOrDefault(new TagSpec(normalizedName), _tagSelector);
-            return tag;
         }
     }
 }

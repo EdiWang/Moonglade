@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,7 +22,7 @@ namespace Moonglade.Web.Tests.Pages
     {
         private MockRepository _mockRepository;
 
-        private Mock<ITagService> _mockTagService;
+        private Mock<IMediator> _mockMediator;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IPostQueryService> _mockPostQueryService;
         private Mock<IBlogCache> _mockBlogCache;
@@ -31,7 +32,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockTagService = _mockRepository.Create<ITagService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
@@ -45,7 +46,7 @@ namespace Moonglade.Web.Tests.Pages
         private TagListModel CreateTagListModel()
         {
             return new(
-                _mockTagService.Object,
+                _mockMediator.Object,
                 _mockBlogConfig.Object,
                 _mockPostQueryService.Object,
                 _mockBlogCache.Object);
@@ -54,7 +55,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGet_NullTag()
         {
-            _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns((Tag)null);
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagQuery>(), default)).Returns(Task.FromResult((Tag)null));
 
             // Arrange
             var tagListModel = CreateTagListModel();
@@ -68,12 +69,12 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGet_ValidTag()
         {
-            _mockTagService.Setup(p => p.Get(It.IsAny<string>())).Returns(new Tag
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagQuery>(), default)).Returns(Task.FromResult(new Tag
             {
                 Id = FakeData.Int2,
                 DisplayName = "Fubao",
                 NormalizedName = "fu-bao"
-            });
+            }));
 
             _mockPostQueryService.Setup(p => p.ListByTagAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(FakeData.FakePosts));
@@ -94,7 +95,7 @@ namespace Moonglade.Web.Tests.Pages
             };
 
             var model = new TagListModel(
-                _mockTagService.Object,
+                _mockMediator.Object,
                 _mockBlogConfig.Object,
                 _mockPostQueryService.Object,
                 _mockBlogCache.Object)

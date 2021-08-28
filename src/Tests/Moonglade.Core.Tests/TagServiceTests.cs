@@ -70,8 +70,8 @@ namespace Moonglade.Core.Tests
                     NormalizedName = "work-996"
                 });
 
-            var svc = CreateService();
-            var result = svc.Get("work-996");
+            var handler = new GetTagQueryHandler(_mockRepositoryTagEntity.Object);
+            var result = handler.Handle(new("work-996"), default);
 
             Assert.IsNotNull(result);
         }

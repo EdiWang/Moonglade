@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Caching;
@@ -10,7 +11,7 @@ namespace Moonglade.Web.Pages
 {
     public class TagListModel : PageModel
     {
-        private readonly ITagService _tagService;
+        private readonly IMediator _mediator;
         private readonly IBlogConfig _blogConfig;
         private readonly IPostQueryService _postQueryService;
         private readonly IBlogCache _cache;
@@ -19,10 +20,9 @@ namespace Moonglade.Web.Pages
         public int P { get; set; }
         public StaticPagedList<PostDigest> Posts { get; set; }
 
-        public TagListModel(
-            ITagService tagService, IBlogConfig blogConfig, IPostQueryService postQueryService, IBlogCache cache)
+        public TagListModel(IMediator mediator, IBlogConfig blogConfig, IPostQueryService postQueryService, IBlogCache cache)
         {
-            _tagService = tagService;
+            _mediator = mediator;
             _blogConfig = blogConfig;
             _postQueryService = postQueryService;
             _cache = cache;
@@ -32,7 +32,7 @@ namespace Moonglade.Web.Pages
 
         public async Task<IActionResult> OnGet(string normalizedName)
         {
-            var tagResponse = _tagService.Get(normalizedName);
+            var tagResponse = await _mediator.Send(new GetTagQuery(normalizedName));
             if (tagResponse is null) return NotFound();
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
