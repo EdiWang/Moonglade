@@ -33,14 +33,6 @@ namespace Moonglade.Core.Tests
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
         }
 
-        private CategoryService CreateService(IBlogCache cache = null)
-        {
-            return new(
-                _mockCatRepo.Object,
-                _mockBlogAudit.Object,
-                cache ?? _mockBlogCache.Object);
-        }
-
         [Test]
         public async Task GetAll_OK()
         {
@@ -141,8 +133,9 @@ namespace Moonglade.Core.Tests
             _mockCatRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((CategoryEntity)null));
 
-            var svc = CreateService();
-            await svc.UpdateAsync(Guid.Empty, null, null);
+            var handler =
+                new UpdateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            await handler.Handle(new(Guid.Empty, null), default);
 
             _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()), Times.Never);
         }
@@ -159,8 +152,14 @@ namespace Moonglade.Core.Tests
                     RouteName = "work-996"
                 }));
 
-            var svc = CreateService();
-            await svc.UpdateAsync(Guid.Empty, "Fubao", "fubao", "ICU");
+            var handler =
+                new UpdateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            await handler.Handle(new(Guid.Empty, new()
+            {
+                Note = "Fubao",
+                RouteName = "fubao",
+                DisplayName = "ICU"
+            }), default);
 
             _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()));
         }

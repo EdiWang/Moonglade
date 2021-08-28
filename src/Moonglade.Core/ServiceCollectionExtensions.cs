@@ -9,7 +9,6 @@ namespace Moonglade.Core
         public static IServiceCollection AddCoreBloggingServices(this IServiceCollection services)
         {
             services.AddScoped<IBlogStatistics, BlogStatistics>()
-                    .AddScoped<ICategoryService, CategoryService>()
                     .AddScoped<IPostManageService, PostManageService>()
                     .AddScoped<IPostQueryService, PostQueryService>();
 

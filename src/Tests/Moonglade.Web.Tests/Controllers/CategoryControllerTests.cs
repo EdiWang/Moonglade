@@ -14,20 +14,18 @@ namespace Moonglade.Web.Tests.Controllers
     public class CategoryControllerTests
     {
         private MockRepository _mockRepository;
-        private Mock<ICategoryService> _mockCategoryService;
         private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
             _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private CategoryController CreateCategoryController()
         {
-            return new(_mockCategoryService.Object, _mockMediator.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -72,8 +70,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Update_ValidModel()
         {
-            _mockCategoryService
-                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<UpdateCategoryCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.Done));
 
             var categoryController = CreateCategoryController();
@@ -91,8 +89,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Update_NotFound()
         {
-            _mockCategoryService
-                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<UpdateCategoryCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.ObjectNotFound));
 
             var categoryController = CreateCategoryController();

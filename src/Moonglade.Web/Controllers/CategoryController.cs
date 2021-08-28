@@ -19,12 +19,10 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryService _catService;
         private readonly IMediator _mediator;
 
-        public CategoryController(ICategoryService catService, IMediator mediator)
+        public CategoryController(IMediator mediator)
         {
-            _catService = catService;
             _mediator = mediator;
         }
 
@@ -61,7 +59,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> Update([NotEmpty] Guid id, EditCategoryRequest model)
         {
-            var oc = await _catService.UpdateAsync(id, model.DisplayName, model.RouteName, model.Note);
+            var oc = await _mediator.Send(new UpdateCategoryCommand(id, model));
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
             return NoContent();
