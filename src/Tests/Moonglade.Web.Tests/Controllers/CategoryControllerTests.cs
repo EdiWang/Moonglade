@@ -49,7 +49,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Get_NonExists()
         {
-            _mockCategoryService.Setup(c => c.GetAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(c => c.Send(It.IsAny<GetCategoryByIdCommand>(), default))
                 .Returns(Task.FromResult((Category)null));
 
             var categoryController = CreateCategoryController();
@@ -61,7 +61,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Get_Exists()
         {
-            _mockCategoryService.Setup(c => c.GetAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(c => c.Send(It.IsAny<GetCategoryByIdCommand>(), default))
                 .Returns(Task.FromResult(new Category()));
 
             var categoryController = CreateCategoryController();

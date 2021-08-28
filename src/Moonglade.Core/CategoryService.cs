@@ -4,7 +4,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using System;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Moonglade.Core
@@ -12,7 +11,6 @@ namespace Moonglade.Core
     public interface ICategoryService
     {
         Task<Category> GetAsync(string routeName);
-        Task<Category> GetAsync(Guid id);
         Task CreateAsync(string displayName, string routeName, string note = null);
         Task<OperationCode> UpdateAsync(Guid id, string displayName, string routeName, string note = null);
     }
@@ -22,14 +20,6 @@ namespace Moonglade.Core
         private readonly IRepository<CategoryEntity> _catRepo;
         private readonly IBlogAudit _audit;
         private readonly IBlogCache _cache;
-
-        private readonly Expression<Func<CategoryEntity, Category>> _categorySelector = c => new()
-        {
-            Id = c.Id,
-            DisplayName = c.DisplayName,
-            RouteName = c.RouteName,
-            Note = c.Note
-        };
 
         public CategoryService(
             IRepository<CategoryEntity> catRepo,
@@ -43,12 +33,7 @@ namespace Moonglade.Core
 
         public Task<Category> GetAsync(string routeName)
         {
-            return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(routeName), _categorySelector);
-        }
-
-        public Task<Category> GetAsync(Guid id)
-        {
-            return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(id), _categorySelector);
+            return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(routeName), Category.EntitySelector);
         }
 
         public async Task CreateAsync(string displayName, string routeName, string note = null)

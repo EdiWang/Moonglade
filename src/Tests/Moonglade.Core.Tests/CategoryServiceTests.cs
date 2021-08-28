@@ -65,8 +65,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task Get_ById()
         {
-            var svc = CreateService();
-            await svc.GetAsync(Guid.Empty);
+            var handler = new GetCategoryByIdCommandHandler(_mockCatRepo.Object);
+            var result = await handler.Handle(new(Guid.Empty), default);
 
             _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
         }

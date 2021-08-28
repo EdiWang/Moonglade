@@ -33,7 +33,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([NotEmpty] Guid id)
         {
-            var cat = await _catService.GetAsync(id);
+            var cat = await _mediator.Send(new GetCategoryByIdCommand(id));
             if (null == cat) return NotFound();
 
             return Ok(cat);
