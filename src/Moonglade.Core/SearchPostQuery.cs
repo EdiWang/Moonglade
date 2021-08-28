@@ -38,7 +38,7 @@ namespace Moonglade.Core
             }
 
             var postList = SearchByKeyword(request.Keyword);
-            var resultList = await postList.Select(SharedSelectors.PostDigestSelector).ToListAsync(cancellationToken);
+            var resultList = await postList.Select(PostDigest.EntitySelector).ToListAsync(cancellationToken);
 
             return resultList;
         }

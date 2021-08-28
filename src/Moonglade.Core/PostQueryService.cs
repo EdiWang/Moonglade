@@ -250,7 +250,7 @@ namespace Moonglade.Core
             ValidatePagingParameters(pageSize, pageIndex);
 
             var spec = new PostPagingSpec(pageSize, pageIndex, catId);
-            return _postRepo.SelectAsync(spec, SharedSelectors.PostDigestSelector);
+            return _postRepo.SelectAsync(spec, PostDigest.EntitySelector);
         }
 
         public Task<IReadOnlyList<PostDigest>> ListByTagAsync(int tagId, int pageSize, int pageIndex)
@@ -266,7 +266,7 @@ namespace Moonglade.Core
         {
             ValidatePagingParameters(pageSize, pageIndex);
 
-            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), SharedSelectors.PostDigestSelector);
+            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), PostDigest.EntitySelector);
             return posts;
         }
 
@@ -285,7 +285,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostSpec(year, month.GetValueOrDefault());
-            var list = _postRepo.SelectAsync(spec, SharedSelectors.PostDigestSelector);
+            var list = _postRepo.SelectAsync(spec, PostDigest.EntitySelector);
             return list;
         }
 
