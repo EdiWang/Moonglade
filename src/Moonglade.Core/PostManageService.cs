@@ -20,7 +20,6 @@ namespace Moonglade.Core
         Task<PostEntity> CreateAsync(UpdatePostRequest request);
         Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request);
         Task RestoreAsync(Guid id);
-        Task DeleteAsync(Guid id, bool softDelete = false);
     }
 
     public class PostManageService : IPostManageService
@@ -265,26 +264,6 @@ namespace Moonglade.Core
             pp.IsDeleted = false;
             await _postRepo.UpdateAsync(pp);
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostRestored, $"Post restored, id: {id}");
-
-            _cache.Remove(CacheDivision.Post, id.ToString());
-        }
-
-        public async Task DeleteAsync(Guid id, bool softDelete = false)
-        {
-            var post = await _postRepo.GetAsync(id);
-            if (null == post) return;
-
-            if (softDelete)
-            {
-                post.IsDeleted = true;
-                await _postRepo.UpdateAsync(post);
-                await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostRecycled, $"Post '{id}' moved to Recycle Bin.");
-            }
-            else
-            {
-                await _postRepo.DeleteAsync(post);
-                await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostDeleted, $"Post '{id}' deleted from Recycle Bin.");
-            }
 
             _cache.Remove(CacheDivision.Post, id.ToString());
         }

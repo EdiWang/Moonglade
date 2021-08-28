@@ -308,7 +308,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostController();
             var result = await postManageController.Delete(FakeData.Uid1);
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeletePostCommand>(), default));
         }
 
         [Test]
@@ -317,7 +317,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostController();
             var result = await postManageController.DeleteFromRecycleBin(FakeData.Uid1);
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), false));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeletePostCommand>(), default));
         }
 
         [Test]

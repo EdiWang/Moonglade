@@ -408,7 +408,7 @@ namespace Moonglade.Web.Tests
             var service = CreateService();
             await service.DeletePostAsync("996.icu", FakeData.Uid1.ToString(), _username, _password, true);
 
-            _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeletePostCommand>(), default));
         }
 
         [Test]

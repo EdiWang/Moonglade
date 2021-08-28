@@ -199,7 +199,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid postId)
         {
-            await _postManageService.DeleteAsync(postId, true);
+            await _mediator.Send(new DeletePostCommand(postId, true));
             return NoContent();
         }
 
@@ -209,7 +209,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
         {
-            await _postManageService.DeleteAsync(postId);
+            await _mediator.Send(new DeletePostCommand(postId));
             return NoContent();
         }
 

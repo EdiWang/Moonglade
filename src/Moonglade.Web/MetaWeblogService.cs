@@ -155,7 +155,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(postid));
                 }
 
-                await _postManageService.DeleteAsync(id, publish);
+                await _mediator.Send(new DeletePostCommand(id, publish));
                 return true;
             });
         }
