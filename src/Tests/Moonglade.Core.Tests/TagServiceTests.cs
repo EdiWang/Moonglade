@@ -44,7 +44,6 @@ namespace Moonglade.Core.Tests
 
             return new(
                 _mockRepositoryTagEntity.Object,
-                _mockRepositoryPostTagEntity.Object,
                 _mockBlogAudit.Object,
                 configuration);
         }
@@ -168,8 +167,9 @@ namespace Moonglade.Core.Tests
                     NormalizedName = "ma-yun"
                 }));
 
-            var svc = CreateService();
-            await svc.DeleteAsync(996);
+            var handler = new DeleteTagCommandHandler(_mockRepositoryTagEntity.Object,
+                _mockRepositoryPostTagEntity.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(996), default);
 
             _mockRepositoryPostTagEntity.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostTagEntity>>()));
             _mockRepositoryTagEntity.Verify(p => p.DeleteAsync(996));

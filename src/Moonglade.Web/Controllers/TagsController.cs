@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -20,10 +21,12 @@ namespace Moonglade.Web.Controllers
     public class TagsController : ControllerBase
     {
         private readonly ITagService _tagService;
+        private readonly IMediator _mediator;
 
-        public TagsController(ITagService tagService)
+        public TagsController(ITagService tagService, IMediator mediator)
         {
             _tagService = tagService;
+            _mediator = mediator;
         }
 
         [HttpGet("list")]
@@ -73,7 +76,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([Range(0, int.MaxValue)] int id)
         {
-            var oc = await _tagService.DeleteAsync(id);
+            var oc = await _mediator.Send(new DeleteTagCommand(id));
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
             return NoContent();

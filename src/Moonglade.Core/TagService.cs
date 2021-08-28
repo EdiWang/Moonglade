@@ -19,7 +19,6 @@ namespace Moonglade.Core
         Task<IReadOnlyList<string>> GetAllNames();
         Task<Tag> Create(string name);
         Task<OperationCode> UpdateAsync(int tagId, string newName);
-        Task<OperationCode> DeleteAsync(int tagId);
         Task<IReadOnlyList<KeyValuePair<Tag, int>>> GetHotTagsAsync(int top);
         Tag Get(string normalizedName);
     }
@@ -27,7 +26,6 @@ namespace Moonglade.Core
     public class TagService : ITagService
     {
         private readonly IRepository<TagEntity> _tagRepo;
-        private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IBlogAudit _audit;
         private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
@@ -40,12 +38,10 @@ namespace Moonglade.Core
 
         public TagService(
             IRepository<TagEntity> tagRepo,
-            IRepository<PostTagEntity> postTagRepo,
             IBlogAudit audit,
             IConfiguration configuration)
         {
             _tagRepo = tagRepo;
-            _postTagRepo = postTagRepo;
             _audit = audit;
 
             _tagNormalizationDictionary =
@@ -98,22 +94,6 @@ namespace Moonglade.Core
             tag.NormalizedName = NormalizeTagName(newName, _tagNormalizationDictionary);
             await _tagRepo.UpdateAsync(tag);
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagUpdated, $"Tag id '{tagId}' is updated.");
-
-            return OperationCode.Done;
-        }
-
-        public async Task<OperationCode> DeleteAsync(int tagId)
-        {
-            var exists = _tagRepo.Any(c => c.Id == tagId);
-            if (!exists) return OperationCode.ObjectNotFound;
-
-            // 1. Delete Post-Tag Association
-            var postTags = await _postTagRepo.GetAsync(new PostTagSpec(tagId));
-            await _postTagRepo.DeleteAsync(postTags);
-
-            // 2. Delte Tag itslef
-            await _tagRepo.DeleteAsync(tagId);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagDeleted, $"Tag id '{tagId}' is deleted");
 
             return OperationCode.Done;
         }
