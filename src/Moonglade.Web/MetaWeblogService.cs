@@ -139,7 +139,7 @@ namespace Moonglade.Web
                     PublishDate = DateTime.UtcNow
                 };
 
-                var p = await _postManageService.CreateAsync(req);
+                var p = await _mediator.Send(new CreatePostCommand(req));
                 return p.Id.ToString();
             });
         }

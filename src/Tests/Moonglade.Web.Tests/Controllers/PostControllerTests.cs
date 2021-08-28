@@ -179,7 +179,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Mock<LinkGenerator> mockLinkGenerator = new();
 
-            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Throws(new("Work 996"));
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default)).Throws(new("Work 996"));
 
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
             Assert.IsInstanceOf<ConflictObjectResult>(result);
@@ -215,7 +215,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             Mock<LinkGenerator> mockLinkGenerator = new();
-            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Returns(Task.FromResult(new PostEntity
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default)).Returns(Task.FromResult(new PostEntity
             {
                 Id = FakeData.Uid1
             }));
@@ -277,7 +277,7 @@ namespace Moonglade.Web.Tests.Controllers
                 trySendPingAsyncCalled.Set();
             });
 
-            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Returns(Task.FromResult(new PostEntity
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default)).Returns(Task.FromResult(new PostEntity
             {
                 Id = FakeData.Uid1,
                 PubDateUtc = new(1996, 7, 2, 5, 1, 0),

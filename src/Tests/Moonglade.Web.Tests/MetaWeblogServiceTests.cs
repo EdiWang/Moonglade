@@ -199,7 +199,7 @@ namespace Moonglade.Web.Tests
             };
 
             _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
-            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default))
                 .Returns(Task.FromResult(new PostEntity { Id = FakeData.Uid1 }));
 
             var service = CreateService();
@@ -212,7 +212,7 @@ namespace Moonglade.Web.Tests
                 mt_keywords = "996,icu"
             }, true);
 
-            _mockPostManageService.Verify(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreatePostCommand>(), default));
         }
 
         [Test]

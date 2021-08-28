@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
 using Moonglade.Utils;
 using System;
 using System.Collections.Generic;
@@ -17,14 +15,12 @@ namespace Moonglade.Core
 {
     public interface IPostManageService
     {
-        Task<PostEntity> CreateAsync(UpdatePostRequest request);
         Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request);
     }
 
     public class PostManageService : IPostManageService
     {
         private readonly IBlogAudit _audit;
-        private readonly ILogger<PostManageService> _logger;
         private readonly AppSettings _settings;
         private readonly IRepository<TagEntity> _tagRepo;
         private readonly IRepository<PostEntity> _postRepo;
@@ -34,7 +30,6 @@ namespace Moonglade.Core
 
         public PostManageService(
             IBlogAudit audit,
-            ILogger<PostManageService> logger,
             IConfiguration configuration,
             IOptions<AppSettings> settings,
             IRepository<TagEntity> tagRepo,
@@ -42,7 +37,6 @@ namespace Moonglade.Core
             IBlogCache cache)
         {
             _audit = audit;
-            _logger = logger;
             _tagRepo = tagRepo;
             _postRepo = postRepo;
             _cache = cache;
@@ -50,103 +44,6 @@ namespace Moonglade.Core
 
             _tagNormalizationDictionary =
                 configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
-        }
-
-        public async Task<PostEntity> CreateAsync(UpdatePostRequest request)
-        {
-            var abs = ContentProcessor.GetPostAbstract(
-                    string.IsNullOrEmpty(request.Abstract) ? request.EditorContent : request.Abstract.Trim(),
-                    _settings.PostAbstractWords,
-                    _settings.Editor == EditorChoice.Markdown);
-
-            var post = new PostEntity
-            {
-                CommentEnabled = request.EnableComment,
-                Id = Guid.NewGuid(),
-                PostContent = request.EditorContent,
-                ContentAbstract = abs,
-                CreateTimeUtc = DateTime.UtcNow,
-                LastModifiedUtc = DateTime.UtcNow, // Fix draft orders
-                Slug = request.Slug.ToLower().Trim(),
-                Author = request.Author?.Trim(),
-                Title = request.Title.Trim(),
-                ContentLanguageCode = request.ContentLanguageCode,
-                ExposedToSiteMap = request.ExposedToSiteMap,
-                IsFeedIncluded = request.IsFeedIncluded,
-                PubDateUtc = request.IsPublished ? DateTime.UtcNow : null,
-                IsDeleted = false,
-                IsPublished = request.IsPublished,
-                IsFeatured = request.IsFeatured,
-                IsOriginal = request.IsOriginal,
-                OriginLink = string.IsNullOrWhiteSpace(request.OriginLink) ? null : Helper.SterilizeLink(request.OriginLink),
-                HeroImageUrl = string.IsNullOrWhiteSpace(request.HeroImageUrl) ? null : Helper.SterilizeLink(request.HeroImageUrl),
-                PostExtension = new()
-                {
-                    Hits = 0,
-                    Likes = 0
-                }
-            };
-
-            // check if exist same slug under the same day
-            var todayUtc = DateTime.UtcNow.Date;
-            if (_postRepo.Any(new PostSpec(post.Slug, todayUtc)))
-            {
-                var uid = Guid.NewGuid();
-                post.Slug += $"-{uid.ToString().ToLower()[..8]}";
-                _logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
-            }
-
-            // compute hash
-            var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
-            var checkSum = Helper.ComputeCheckSum(input);
-            post.HashCheckSum = checkSum;
-
-            // add categories
-            if (request.CategoryIds is { Length: > 0 })
-            {
-                foreach (var id in request.CategoryIds)
-                {
-                    post.PostCategory.Add(new()
-                    {
-                        CategoryId = id,
-                        PostId = post.Id
-                    });
-                }
-            }
-
-            // add tags
-            if (request.Tags is { Length: > 0 })
-            {
-                foreach (var item in request.Tags)
-                {
-                    if (!Tag.ValidateName(item))
-                    {
-                        continue;
-                    }
-
-                    var tag = await _tagRepo.GetAsync(q => q.DisplayName == item) ?? await CreateTag(item);
-                    post.Tags.Add(tag);
-                }
-            }
-
-            await _postRepo.AddAsync(post);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostCreated, $"Post created, id: {post.Id}");
-
-            return post;
-        }
-
-        private async Task<TagEntity> CreateTag(string item)
-        {
-            var newTag = new TagEntity
-            {
-                DisplayName = item,
-                NormalizedName = Tag.NormalizeName(item, _tagNormalizationDictionary)
-            };
-
-            var tag = await _tagRepo.AddAsync(newTag);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagCreated,
-                $"Tag '{tag.NormalizedName}' created.");
-            return tag;
         }
 
         public async Task<PostEntity> UpdateAsync(Guid id, UpdatePostRequest request)

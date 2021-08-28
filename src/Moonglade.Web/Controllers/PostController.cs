@@ -148,7 +148,7 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var postEntity = model.PostId == Guid.Empty ?
-                    await _postManageService.CreateAsync(request) :
+                    await _mediator.Send(new CreatePostCommand(request)) :
                     await _postManageService.UpdateAsync(model.PostId, request);
 
                 if (model.IsPublished)
