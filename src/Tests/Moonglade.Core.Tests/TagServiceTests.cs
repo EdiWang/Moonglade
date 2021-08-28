@@ -35,19 +35,6 @@ namespace Moonglade.Core.Tests
             _mockConfiguration = _mockRepository.Create<IConfiguration>();
         }
 
-        private TagService CreateService()
-        {
-            var config = @"{""TagNormalization"":{"" "": ""-""}}";
-            var builder = new ConfigurationBuilder();
-            builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(config)));
-            var configuration = builder.Build();
-
-            return new(
-                _mockRepositoryTagEntity.Object,
-                _mockBlogAudit.Object,
-                configuration);
-        }
-
         private IConfigurationRoot GetFakeConfiguration()
         {
             var config = @"{""TagNormalization"":{"" "": ""-""}}";
@@ -110,8 +97,6 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task Create_InvalidName()
         {
-            var ctl = CreateService();
-
             var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
                 GetFakeConfiguration());
             var result = await handler.Handle(new("ます"), default);
@@ -145,8 +130,9 @@ namespace Moonglade.Core.Tests
         {
             _mockRepositoryTagEntity.Setup(p => p.GetAsync(It.IsAny<int>())).Returns(null);
 
-            var svc = CreateService();
-            await svc.UpdateAsync(996, "fubao");
+            var handler = new UpdateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+                GetFakeConfiguration());
+            await handler.Handle(new(996, "fubao"), default);
 
             _mockBlogAudit.VerifyNoOtherCalls();
         }
@@ -162,8 +148,9 @@ namespace Moonglade.Core.Tests
                     NormalizedName = "ma-yun"
                 }));
 
-            var svc = CreateService();
-            await svc.UpdateAsync(996, "fubao");
+            var handler = new UpdateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+                GetFakeConfiguration());
+            await handler.Handle(new(996, "fubao"), default);
 
             _mockBlogAudit.Verify();
         }

@@ -19,7 +19,6 @@ namespace Moonglade.Web
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly ILogger<MetaWeblogService> _logger;
-        private readonly ITagService _tagService;
         private readonly ICategoryService _categoryService;
         private readonly IPostQueryService _postQueryService;
         private readonly IPostManageService _postManageService;
@@ -31,7 +30,6 @@ namespace Moonglade.Web
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             ILogger<MetaWeblogService> logger,
-            ITagService tagService,
             ICategoryService categoryService,
             IPostQueryService postQueryService,
             IPostManageService postManageService,
@@ -42,7 +40,6 @@ namespace Moonglade.Web
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _logger = logger;
-            _tagService = tagService;
             _categoryService = categoryService;
             _postQueryService = postQueryService;
             _blogImageStorage = blogImageStorage;

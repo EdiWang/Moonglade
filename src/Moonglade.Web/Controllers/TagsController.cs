@@ -20,12 +20,10 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class TagsController : ControllerBase
     {
-        private readonly ITagService _tagService;
         private readonly IMediator _mediator;
 
-        public TagsController(ITagService tagService, IMediator mediator)
+        public TagsController(IMediator mediator)
         {
-            _tagService = tagService;
             _mediator = mediator;
         }
 
@@ -65,7 +63,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
         {
-            var oc = await _tagService.UpdateAsync(id, name);
+            var oc = await _mediator.Send(new UpdateTagCommand(id, name));
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
             return NoContent();

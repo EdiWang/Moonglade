@@ -11,8 +11,7 @@ namespace Moonglade.Core
             services.AddScoped<IBlogStatistics, BlogStatistics>()
                     .AddScoped<ICategoryService, CategoryService>()
                     .AddScoped<IPostManageService, PostManageService>()
-                    .AddScoped<IPostQueryService, PostQueryService>()
-                    .AddScoped<ITagService, TagService>();
+                    .AddScoped<IPostQueryService, PostQueryService>();
 
             return services;
         }
