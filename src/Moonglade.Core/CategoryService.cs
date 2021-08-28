@@ -22,7 +22,6 @@ namespace Moonglade.Core
     public class CategoryService : ICategoryService
     {
         private readonly IRepository<CategoryEntity> _catRepo;
-        private readonly IRepository<PostCategoryEntity> _postCatRepo;
         private readonly IBlogAudit _audit;
         private readonly IBlogCache _cache;
 
@@ -36,12 +35,10 @@ namespace Moonglade.Core
 
         public CategoryService(
             IRepository<CategoryEntity> catRepo,
-            IRepository<PostCategoryEntity> postCatRepo,
             IBlogAudit audit,
             IBlogCache cache)
         {
             _catRepo = catRepo;
-            _postCatRepo = postCatRepo;
             _audit = audit;
             _cache = cache;
         }

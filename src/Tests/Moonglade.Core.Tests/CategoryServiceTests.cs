@@ -37,7 +37,6 @@ namespace Moonglade.Core.Tests
         {
             return new(
                 _mockCatRepo.Object,
-                _mockRepositoryPostCategoryEntity.Object,
                 _mockBlogAudit.Object,
                 cache ?? _mockBlogCache.Object);
         }
