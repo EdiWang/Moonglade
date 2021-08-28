@@ -53,7 +53,7 @@ namespace Moonglade.Core.Tests
         {
             _mockRepositoryTagEntity.Setup(p =>
                     p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>()))
-                .Returns(new Tag()
+                .Returns(new Tag
                 {
                     DisplayName = "Work 996",
                     Id = 996,
@@ -69,8 +69,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetAll_OK()
         {
-            var svc = CreateService();
-            await svc.GetAll();
+            var handler = new GetTagsQueryHandler(_mockRepositoryTagEntity.Object);
+            await handler.Handle(new(), default);
             _mockRepositoryTagEntity.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<TagEntity, Tag>>>()));
         }
 

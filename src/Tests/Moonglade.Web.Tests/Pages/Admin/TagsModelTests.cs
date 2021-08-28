@@ -1,3 +1,4 @@
+using MediatR;
 using Moonglade.Core;
 using Moonglade.Web.Pages.Admin;
 using Moq;
@@ -12,19 +13,18 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class TagsModelTests
     {
         private MockRepository _mockRepository;
-
-        private Mock<ITagService> _mockTagService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockTagService = _mockRepository.Create<ITagService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private TagsModel CreateTagsModel()
         {
-            return new(_mockTagService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             {
                 new() { Id = FakeData.Int2, DisplayName = FakeData.Title3, NormalizedName = FakeData.Slug2 }
             };
-            _mockTagService.Setup(p => p.GetAll()).Returns(Task.FromResult(tags));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagsQuery>(), default)).Returns(Task.FromResult(tags));
 
             var tagsModel = CreateTagsModel();
             await tagsModel.OnGet();

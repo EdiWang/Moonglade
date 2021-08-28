@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
 using System.Collections.Generic;
@@ -7,18 +8,17 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class TagsModel : PageModel
     {
-        private readonly ITagService _tagService;
-
+        private readonly IMediator _mediator;
         public IReadOnlyList<Tag> Tags { get; set; }
 
-        public TagsModel(ITagService tagService)
+        public TagsModel(IMediator mediator)
         {
-            _tagService = tagService;
+            _mediator = mediator;
         }
 
         public async Task OnGet()
         {
-            Tags = await _tagService.GetAll();
+            Tags = await _mediator.Send(new GetTagsQuery());
         }
     }
 }

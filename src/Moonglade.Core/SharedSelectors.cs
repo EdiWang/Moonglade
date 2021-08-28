@@ -21,5 +21,12 @@ namespace Moonglade.Core
                 DisplayName = pt.DisplayName
             })
         };
+
+        public static readonly Expression<Func<TagEntity, Tag>> TagSelector = t => new()
+        {
+            Id = t.Id,
+            NormalizedName = t.NormalizedName,
+            DisplayName = t.DisplayName
+        };
     }
 }

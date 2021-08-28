@@ -15,7 +15,6 @@ namespace Moonglade.Core
 {
     public interface ITagService
     {
-        Task<IReadOnlyList<Tag>> GetAll();
         Task<IReadOnlyList<string>> GetAllNames();
         Task<Tag> Create(string name);
         Task<OperationCode> UpdateAsync(int tagId, string newName);
@@ -46,11 +45,6 @@ namespace Moonglade.Core
 
             _tagNormalizationDictionary =
                 configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
-        }
-
-        public Task<IReadOnlyList<Tag>> GetAll()
-        {
-            return _tagRepo.SelectAsync(_tagSelector);
         }
 
         public Task<IReadOnlyList<string>> GetAllNames()

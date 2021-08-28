@@ -35,7 +35,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(IReadOnlyList<Tag>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
         {
-            var tags = await _tagService.GetAll();
+            var tags = await _mediator.Send(new GetTagsQuery());
             return Ok(tags);
         }
 
