@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -19,10 +20,12 @@ namespace Moonglade.Web.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _catService;
+        private readonly IMediator _mediator;
 
-        public CategoryController(ICategoryService catService)
+        public CategoryController(ICategoryService catService, IMediator mediator)
         {
             _catService = catService;
+            _mediator = mediator;
         }
 
         [HttpGet("{id:guid}")]
@@ -68,7 +71,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            var oc = await _catService.DeleteAsync(id);
+            var oc = await _mediator.Send(new DeleteCategoryCommand(id));
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
             return NoContent();

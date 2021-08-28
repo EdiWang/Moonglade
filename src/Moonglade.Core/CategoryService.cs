@@ -16,7 +16,6 @@ namespace Moonglade.Core
         Task<Category> GetAsync(string routeName);
         Task<Category> GetAsync(Guid id);
         Task CreateAsync(string displayName, string routeName, string note = null);
-        Task<OperationCode> DeleteAsync(Guid id);
         Task<OperationCode> UpdateAsync(Guid id, string displayName, string routeName, string note = null);
     }
 
@@ -84,21 +83,6 @@ namespace Moonglade.Core
             _cache.Remove(CacheDivision.General, "allcats");
 
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryCreated, $"Category '{category.RouteName}' created");
-        }
-
-        public async Task<OperationCode> DeleteAsync(Guid id)
-        {
-            var exists = _catRepo.Any(c => c.Id == id);
-            if (!exists) return OperationCode.ObjectNotFound;
-
-            var pcs = await _postCatRepo.GetAsync(pc => pc.CategoryId == id);
-            if (pcs is not null) await _postCatRepo.DeleteAsync(pcs);
-
-            await _catRepo.DeleteAsync(id);
-            _cache.Remove(CacheDivision.General, "allcats");
-
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Category '{id}' deleted.");
-            return OperationCode.Done;
         }
 
         public async Task<OperationCode> UpdateAsync(Guid id, string displayName, string routeName, string note = null)

@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core;
 using Moonglade.Data;
@@ -15,17 +16,19 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
         private Mock<ICategoryService> _mockCategoryService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
             _mockCategoryService = _mockRepository.Create<ICategoryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private CategoryController CreateCategoryController()
         {
-            return new(_mockCategoryService.Object);
+            return new(_mockCategoryService.Object, _mockMediator.Object);
         }
 
         [Test]
@@ -108,8 +111,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_ValidId()
         {
-            _mockCategoryService
-                .Setup(p => p.DeleteAsync(It.IsAny<Guid>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<DeleteCategoryCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.Done));
 
             var categoryController = CreateCategoryController();
@@ -120,9 +123,9 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_NotFound()
         {
-            _mockCategoryService
-                .Setup(p => p.DeleteAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(OperationCode.ObjectNotFound));
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<DeleteCategoryCommand>(), default))
+               .Returns(Task.FromResult(OperationCode.ObjectNotFound));
 
             var categoryController = CreateCategoryController();
             var result = await categoryController.Delete(Guid.NewGuid());

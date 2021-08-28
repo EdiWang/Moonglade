@@ -102,8 +102,9 @@ namespace Moonglade.Core.Tests
             _mockCatRepo.Setup(c => c.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>()))
                 .Returns(false);
 
-            var svc = CreateService();
-            await svc.DeleteAsync(Guid.Empty);
+            var handler = new DeleteCategoryCommandHandler(_mockCatRepo.Object,
+                _mockRepositoryPostCategoryEntity.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            await handler.Handle(new(Guid.Empty), default);
 
             _mockCatRepo.Verify();
         }
@@ -117,8 +118,9 @@ namespace Moonglade.Core.Tests
             _mockCatRepo.Setup(p => p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>()))
                 .Returns(Task.FromResult(new CategoryEntity()));
 
-            var svc = CreateService();
-            await svc.DeleteAsync(Guid.Empty);
+            var handler = new DeleteCategoryCommandHandler(_mockCatRepo.Object,
+                _mockRepositoryPostCategoryEntity.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            await handler.Handle(new(Guid.Empty), default);
 
             _mockCatRepo.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
             _mockBlogCache.Verify(p => p.Remove(CacheDivision.General, "allcats"));
