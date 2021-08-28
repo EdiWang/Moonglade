@@ -8,7 +8,6 @@ using Moonglade.Data.Spec;
 using Moonglade.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -46,74 +45,6 @@ namespace Moonglade.Core
 
         #endregion
 
-        #region Selectors
-
-        private readonly Expression<Func<PostEntity, Post>> _postSelector = p => new()
-        {
-            Id = p.Id,
-            Title = p.Title,
-            Slug = p.Slug,
-            Author = p.Author,
-            RawPostContent = p.PostContent,
-            ContentAbstract = p.ContentAbstract,
-            CommentEnabled = p.CommentEnabled,
-            CreateTimeUtc = p.CreateTimeUtc,
-            PubDateUtc = p.PubDateUtc,
-            LastModifiedUtc = p.LastModifiedUtc,
-            IsPublished = p.IsPublished,
-            ExposedToSiteMap = p.ExposedToSiteMap,
-            IsFeedIncluded = p.IsFeedIncluded,
-            Featured = p.IsFeatured,
-            IsOriginal = p.IsOriginal,
-            OriginLink = p.OriginLink,
-            HeroImageUrl = p.HeroImageUrl,
-            ContentLanguageCode = p.ContentLanguageCode,
-            Tags = p.Tags.Select(pt => new Tag
-            {
-                Id = pt.Id,
-                NormalizedName = pt.NormalizedName,
-                DisplayName = pt.DisplayName
-            }).ToArray(),
-            Categories = p.PostCategory.Select(pc => new Category
-            {
-                Id = pc.CategoryId,
-                DisplayName = pc.Category.DisplayName,
-                RouteName = pc.Category.RouteName,
-                Note = pc.Category.Note
-            }).ToArray()
-        };
-
-        private readonly Expression<Func<PostEntity, PostSegment>> _postSegmentSelector = p => new()
-        {
-            Id = p.Id,
-            Title = p.Title,
-            Slug = p.Slug,
-            PubDateUtc = p.PubDateUtc,
-            IsPublished = p.IsPublished,
-            IsDeleted = p.IsDeleted,
-            CreateTimeUtc = p.CreateTimeUtc,
-            LastModifiedUtc = p.LastModifiedUtc,
-            ContentAbstract = p.ContentAbstract,
-            Hits = p.PostExtension.Hits
-        };
-
-        private readonly Expression<Func<PostTagEntity, PostDigest>> _postDigestSelectorByTag = p => new()
-        {
-            Title = p.Post.Title,
-            Slug = p.Post.Slug,
-            ContentAbstract = p.Post.ContentAbstract,
-            PubDateUtc = p.Post.PubDateUtc.GetValueOrDefault(),
-            LangCode = p.Post.ContentLanguageCode,
-            IsFeatured = p.Post.IsFeatured,
-            Tags = p.Post.Tags.Select(pt => new Tag
-            {
-                NormalizedName = pt.NormalizedName,
-                DisplayName = pt.DisplayName
-            })
-        };
-
-        #endregion
-
         public PostQueryService(
             ILogger<PostQueryService> logger,
             IOptions<AppSettings> settings,
@@ -146,7 +77,7 @@ namespace Moonglade.Core
         public Task<Post> GetAsync(Guid id)
         {
             var spec = new PostSpec(id);
-            var post = _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
+            var post = _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
             return post;
         }
 
@@ -178,7 +109,7 @@ namespace Moonglade.Core
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
 
-                var post = await _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
+                var post = await _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
                 return post;
             });
 
@@ -188,14 +119,14 @@ namespace Moonglade.Core
         public Task<Post> GetDraftAsync(Guid id)
         {
             var spec = new PostSpec(id);
-            var post = _postRepo.SelectFirstOrDefaultAsync(spec, _postSelector);
+            var post = _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
             return post;
         }
 
         public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus status)
         {
             var spec = new PostSpec(status);
-            return _postRepo.SelectAsync(spec, _postSegmentSelector);
+            return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
         }
 
         public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(
@@ -213,7 +144,7 @@ namespace Moonglade.Core
             }
 
             var spec = new PostPagingSpec(status, keyword, pageSize, offset);
-            var posts = await _postRepo.SelectAsync(spec, _postSegmentSelector);
+            var posts = await _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
 
             Expression<Func<PostEntity, bool>> countExp = p => null == keyword || p.Title.Contains(keyword);
 
@@ -242,7 +173,7 @@ namespace Moonglade.Core
         public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostInsightsType insightsType)
         {
             var spec = new PostInsightsSpec(insightsType, 10);
-            return _postRepo.SelectAsync(spec, _postSegmentSelector);
+            return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
         }
 
         public Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null)
@@ -258,7 +189,7 @@ namespace Moonglade.Core
             if (tagId <= 0) throw new ArgumentOutOfRangeException(nameof(tagId));
             ValidatePagingParameters(pageSize, pageIndex);
 
-            var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex), _postDigestSelectorByTag);
+            var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex), PostDigest.EntitySelectorByTag);
             return posts;
         }
 

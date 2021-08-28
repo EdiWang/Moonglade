@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Moonglade.Data.Entities;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Moonglade.Core
 {
@@ -24,5 +27,40 @@ namespace Moonglade.Core
         public Category[] Categories { get; set; }
         public DateTime? PubDateUtc { get; set; }
         public DateTime? LastModifiedUtc { get; set; }
+
+        public static readonly Expression<Func<PostEntity, Post>> EntitySelector = p => new()
+        {
+            Id = p.Id,
+            Title = p.Title,
+            Slug = p.Slug,
+            Author = p.Author,
+            RawPostContent = p.PostContent,
+            ContentAbstract = p.ContentAbstract,
+            CommentEnabled = p.CommentEnabled,
+            CreateTimeUtc = p.CreateTimeUtc,
+            PubDateUtc = p.PubDateUtc,
+            LastModifiedUtc = p.LastModifiedUtc,
+            IsPublished = p.IsPublished,
+            ExposedToSiteMap = p.ExposedToSiteMap,
+            IsFeedIncluded = p.IsFeedIncluded,
+            Featured = p.IsFeatured,
+            IsOriginal = p.IsOriginal,
+            OriginLink = p.OriginLink,
+            HeroImageUrl = p.HeroImageUrl,
+            ContentLanguageCode = p.ContentLanguageCode,
+            Tags = p.Tags.Select(pt => new Tag
+            {
+                Id = pt.Id,
+                NormalizedName = pt.NormalizedName,
+                DisplayName = pt.DisplayName
+            }).ToArray(),
+            Categories = p.PostCategory.Select(pc => new Category
+            {
+                Id = pc.CategoryId,
+                DisplayName = pc.Category.DisplayName,
+                RouteName = pc.Category.RouteName,
+                Note = pc.Category.Note
+            }).ToArray()
+        };
     }
 }
