@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using Moonglade.Data.Spec;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using System.Threading.Tasks;
 using X.PagedList;
 

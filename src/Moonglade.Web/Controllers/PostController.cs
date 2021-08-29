@@ -10,6 +10,7 @@ using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Utils;

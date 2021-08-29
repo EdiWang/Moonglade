@@ -4,6 +4,7 @@ using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PageFeature;
+using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
@@ -411,7 +412,7 @@ namespace Moonglade.Web
             return hexName;
         }
 
-        private Post ToMetaWeblogPost(Core.Post post)
+        private Post ToMetaWeblogPost(Core.PostFeature.Post post)
         {
             if (!post.IsPublished) return null;
             var pubDate = post.PubDateUtc.GetValueOrDefault();

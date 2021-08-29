@@ -1,4 +1,5 @@
 using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using Moonglade.Data.Spec;
 using Moonglade.Web.Pages.Admin;
 using Moq;

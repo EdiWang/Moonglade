@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
+using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Spec;

@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.PostFeature
 {
     public class GetArchiveQuery : IRequest<IReadOnlyList<Archive>>
     {

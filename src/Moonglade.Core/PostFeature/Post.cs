@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.PostFeature
 {
     public class Post
     {

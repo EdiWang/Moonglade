@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using System;
 using System.Threading.Tasks;
 

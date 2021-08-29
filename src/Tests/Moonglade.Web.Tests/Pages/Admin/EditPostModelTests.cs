@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
+using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.Web.Pages.Admin;
 using Moq;

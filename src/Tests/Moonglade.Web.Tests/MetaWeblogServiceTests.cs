@@ -4,6 +4,7 @@ using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PageFeature;
+using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
 using Moonglade.ImageStorage;
@@ -15,7 +16,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using WilderMinds.MetaWeblog;
-using Post = Moonglade.Core.Post;
+using Post = Moonglade.Core.PostFeature.Post;
 using Tag = Moonglade.Core.TagFeature.Tag;
 
 namespace Moonglade.Web.Tests

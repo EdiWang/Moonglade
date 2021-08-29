@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.PostFeature
 {
     public class UpdatePostRequest
     {

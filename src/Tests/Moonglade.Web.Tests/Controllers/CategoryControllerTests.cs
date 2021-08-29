@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Data;
 using Moonglade.Web.Controllers;

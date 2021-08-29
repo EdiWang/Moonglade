@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.PostFeature
 {
     public class SearchPostQuery : IRequest<IReadOnlyList<PostDigest>>
     {
