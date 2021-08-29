@@ -62,13 +62,9 @@ namespace Moonglade.Syndication
         public async Task<string> WriteAtomAsync()
         {
             var feed = GetItemCollection(FeedItemCollection);
-            var settings = new XmlWriterSettings
-            {
-                Async = true
-            };
 
-            var sb = new StringBuilder();
-            await using (var xmlWriter = XmlWriter.Create(sb, settings))
+            var sw = new StringWriterWithEncoding(Encoding.UTF8);
+            await using (var xmlWriter = XmlWriter.Create(sw, new() { Async = true }))
             {
                 var writer = new AtomFeedWriter(xmlWriter);
 
@@ -87,7 +83,7 @@ namespace Moonglade.Syndication
                 xmlWriter.Close();
             }
 
-            var xml = sb.ToString();
+            var xml = sw.ToString();
             return xml;
         }
 
