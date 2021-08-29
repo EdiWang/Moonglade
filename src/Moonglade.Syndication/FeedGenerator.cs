@@ -3,6 +3,7 @@ using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -32,13 +33,9 @@ namespace Moonglade.Syndication
         public async Task<string> WriteRssAsync()
         {
             var feed = GetItemCollection(FeedItemCollection);
-            var settings = new XmlWriterSettings
-            {
-                Async = true
-            };
 
-            var sb = new StringBuilder();
-            await using (var xmlWriter = XmlWriter.Create(sb, settings))
+            var sw = new StringWriterWithEncoding(Encoding.UTF8);
+            await using (var xmlWriter = XmlWriter.Create(sw, new() { Async = true }))
             {
                 var writer = new RssFeedWriter(xmlWriter);
 
@@ -58,7 +55,7 @@ namespace Moonglade.Syndication
                 xmlWriter.Close();
             }
 
-            var xml = sb.ToString();
+            var xml = sw.ToString();
             return xml;
         }
 
@@ -131,5 +128,15 @@ namespace Moonglade.Syndication
             }
             return synItemCollection;
         }
+    }
+
+    public class StringWriterWithEncoding : StringWriter
+    {
+        public StringWriterWithEncoding(Encoding encoding)
+        {
+            Encoding = encoding;
+        }
+
+        public override Encoding Encoding { get; }
     }
 }
