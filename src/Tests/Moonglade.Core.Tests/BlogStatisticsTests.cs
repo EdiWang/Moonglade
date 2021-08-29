@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Entities;
+﻿using Moonglade.Core.StatisticFeature;
+using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;

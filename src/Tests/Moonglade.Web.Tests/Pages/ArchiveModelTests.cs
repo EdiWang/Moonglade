@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Core;
 using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;

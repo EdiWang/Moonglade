@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Core
+﻿namespace Moonglade.Core.PostFeature
 {
     public readonly struct Archive
     {
