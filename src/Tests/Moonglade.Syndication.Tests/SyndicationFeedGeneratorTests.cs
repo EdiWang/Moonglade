@@ -53,7 +53,7 @@ namespace Moonglade.Syndication.Tests
             var xmlContent = await rw.WriteRssAsync();
 
             Assert.IsNotNull(xmlContent);
-            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-16""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-8""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace Moonglade.Syndication.Tests
             var xmlContent = await rw.WriteRssAsync();
 
             Assert.IsNotNull(xmlContent);
-            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-16""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-8""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace Moonglade.Syndication.Tests
             var xmlContent = await rw.WriteRssAsync();
 
             Assert.IsNotNull(xmlContent);
-            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-16""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-8""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
         }
 
         [Test]
@@ -118,7 +118,7 @@ namespace Moonglade.Syndication.Tests
             var xmlContent = await rw.WriteRssAsync();
 
             Assert.IsNotNull(xmlContent);
-            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-16""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿﻿<?xml version=""1.0"" encoding=""utf-8""?><rss version=""2.0""><channel><title>996 ICU</title><description>Work 996 and get into ICU</description><link>https://996.icu/trackback</link>"));
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace Moonglade.Syndication.Tests
             var xmlContent = await rw.WriteAtomAsync();
 
             Assert.IsNotNull(xmlContent);
-            Assert.IsTrue(xmlContent.StartsWith(@"﻿<?xml version=""1.0"" encoding=""utf-16""?><feed xmlns=""http://www.w3.org/2005/Atom""><title>996 ICU</title><subtitle>Work 996 and get into ICU</subtitle><rights>(c) 2020 996.icu</rights>"));
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿<?xml version=""1.0"" encoding=""utf-8""?><feed xmlns=""http://www.w3.org/2005/Atom""><title>996 ICU</title><subtitle>Work 996 and get into ICU</subtitle><rights>(c) 2020 996.icu</rights>"));
         }
 
         [Test]
@@ -162,7 +162,7 @@ namespace Moonglade.Syndication.Tests
             var xmlContent = await rw.WriteAtomAsync();
 
             Assert.IsNotNull(xmlContent);
-            Assert.IsTrue(xmlContent.StartsWith(@"﻿<?xml version=""1.0"" encoding=""utf-16""?><feed xmlns=""http://www.w3.org/2005/Atom""><title>996 ICU</title><subtitle>Work 996 and get into ICU</subtitle><rights>(c) 2020 996.icu</rights>"));
+            Assert.IsTrue(xmlContent.StartsWith(@"﻿<?xml version=""1.0"" encoding=""utf-8""?><feed xmlns=""http://www.w3.org/2005/Atom""><title>996 ICU</title><subtitle>Work 996 and get into ICU</subtitle><rights>(c) 2020 996.icu</rights>"));
         }
 
         [Test]
