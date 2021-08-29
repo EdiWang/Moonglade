@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Moonglade.Configuration;
-using Moonglade.Core;
+using Moonglade.Core.TagFeature;
 using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;

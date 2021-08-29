@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moonglade.Core;
+using Moonglade.Core.TagFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.TagFeature
 {
     public class GetTagCountListQuery : IRequest<IReadOnlyList<KeyValuePair<Tag, int>>>
     {

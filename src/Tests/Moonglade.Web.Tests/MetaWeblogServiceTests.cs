@@ -2,6 +2,9 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
+using Moonglade.Core.PageFeature;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
@@ -13,7 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WilderMinds.MetaWeblog;
 using Post = Moonglade.Core.Post;
-using Tag = Moonglade.Core.Tag;
+using Tag = Moonglade.Core.TagFeature.Tag;
 
 namespace Moonglade.Web.Tests
 {

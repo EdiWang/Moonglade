@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;

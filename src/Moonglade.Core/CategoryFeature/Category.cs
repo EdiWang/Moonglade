@@ -2,7 +2,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.CategoryFeature
 {
     public class Category
     {

@@ -7,7 +7,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.CategoryFeature
 {
     public class UpdateCategoryCommand : IRequest<OperationCode>
     {

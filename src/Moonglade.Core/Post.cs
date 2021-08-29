@@ -1,4 +1,6 @@
-﻿using Moonglade.Data.Entities;
+﻿using Moonglade.Core.CategoryFeature;
+using Moonglade.Core.TagFeature;
+using Moonglade.Data.Entities;
 using System;
 using System.Linq;
 using System.Linq.Expressions;

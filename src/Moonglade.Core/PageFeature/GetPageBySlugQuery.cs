@@ -4,7 +4,7 @@ using Moonglade.Data.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.PageFeature
 {
     public class GetPageBySlugQuery : IRequest<BlogPage>
     {

@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
+using Moonglade.Core.PageFeature;
 using System;
 using System.Threading.Tasks;
 

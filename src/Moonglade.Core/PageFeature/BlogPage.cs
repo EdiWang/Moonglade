@@ -1,7 +1,7 @@
 ﻿using Moonglade.Data.Entities;
 using System;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.PageFeature
 {
     public class BlogPage
     {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Syndication;
 using Moonglade.Web.Controllers;
 using Moq;

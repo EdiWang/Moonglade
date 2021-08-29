@@ -4,7 +4,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Syndication;
 using Moonglade.Utils;
 using System;

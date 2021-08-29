@@ -8,6 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;

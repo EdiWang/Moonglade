@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.PageFeature
 {
     public class UpdatePageCommand : IRequest<Guid>
     {

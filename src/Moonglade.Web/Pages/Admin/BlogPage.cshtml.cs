@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
+using Moonglade.Core.PageFeature;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

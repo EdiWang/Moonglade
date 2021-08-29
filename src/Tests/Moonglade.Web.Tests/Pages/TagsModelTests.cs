@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Moonglade.Core;
+using Moonglade.Core.TagFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;

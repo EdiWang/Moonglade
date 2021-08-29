@@ -6,7 +6,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data;
 using System;
 using System.Collections.Generic;

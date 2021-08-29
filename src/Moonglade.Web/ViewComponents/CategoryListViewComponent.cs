@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using System;
 using System.Threading.Tasks;
 

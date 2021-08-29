@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
-using Moonglade.Core;
+using Moonglade.Core.PageFeature;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;

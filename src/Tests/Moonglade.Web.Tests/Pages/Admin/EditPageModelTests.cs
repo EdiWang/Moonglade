@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
+using Moonglade.Core.PageFeature;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;

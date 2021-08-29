@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Moonglade.Core
+namespace Moonglade.Core.TagFeature
 {
     public class Tag
     {

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using System;
 using System.Collections.Generic;
 using System.Linq;

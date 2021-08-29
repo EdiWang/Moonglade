@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data;
 using Moonglade.Web.Controllers;
 using Moq;

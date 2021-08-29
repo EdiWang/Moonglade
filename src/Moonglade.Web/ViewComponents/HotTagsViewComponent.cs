@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Configuration;
-using Moonglade.Core;
+using Moonglade.Core.TagFeature;
 using System;
 using System.Threading.Tasks;
 

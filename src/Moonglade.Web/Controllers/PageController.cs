@@ -7,7 +7,7 @@ using Moonglade.Auth;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
+using Moonglade.Core.PageFeature;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
 using NUglify;

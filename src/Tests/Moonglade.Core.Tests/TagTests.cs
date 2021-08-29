@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
