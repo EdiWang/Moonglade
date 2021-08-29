@@ -9,7 +9,7 @@
 
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="NUglify" Version="1.16.0" />
-    <PackageReference Include="Markdig" Version="0.25.0" />
+    <PackageReference Include="Markdig" Version="0.26.0" />
   </ItemGroup>
 
 </Project>
