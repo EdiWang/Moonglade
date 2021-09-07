@@ -94,8 +94,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetAsync_OK()
         {
-            var svc = CreateService();
-            var result = await svc.GetAsync(Uid);
+            var handler = new GetPostByIdQueryHandler(_mockPostEntityRepo.Object);
+            var result = await handler.Handle(new(Uid), default);
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectFirstOrDefaultAsync(

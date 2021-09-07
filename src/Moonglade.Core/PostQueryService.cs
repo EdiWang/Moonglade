@@ -20,7 +20,6 @@ namespace Moonglade.Core
         int CountByCategory(Guid catId);
         int CountByTag(int tagId);
         int CountByFeatured();
-        Task<Post> GetAsync(Guid id);
         Task<Post> GetAsync(PostSlug slug);
         Task<Post> GetDraftAsync(Guid postId);
         Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostInsightsType insightsType);
@@ -73,13 +72,6 @@ namespace Moonglade.Core
         public int CountByFeatured() => _postRepo.Count(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
 
         #endregion
-
-        public Task<Post> GetAsync(Guid id)
-        {
-            var spec = new PostSpec(id);
-            var post = _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
-            return post;
-        }
 
         public async Task<Post> GetAsync(PostSlug slug)
         {

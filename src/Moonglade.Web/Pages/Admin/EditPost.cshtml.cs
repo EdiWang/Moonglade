@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
+using Moonglade.Core.PostFeature;
 using Moonglade.Web.Models;
 using System;
 using System.Linq;
@@ -13,18 +13,13 @@ namespace Moonglade.Web.Pages.Admin
     public class EditPostModel : PageModel
     {
         private readonly IMediator _mediator;
-        private readonly IPostQueryService _postQueryService;
         private readonly ITimeZoneResolver _timeZoneResolver;
 
         public PostEditModel ViewModel { get; set; }
 
-        public EditPostModel(
-            IMediator mediator,
-            IPostQueryService postQueryService,
-            ITimeZoneResolver timeZoneResolver)
+        public EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolver)
         {
             _mediator = mediator;
-            _postQueryService = postQueryService;
             _timeZoneResolver = timeZoneResolver;
             ViewModel = new()
             {
@@ -57,7 +52,7 @@ namespace Moonglade.Web.Pages.Admin
                 return Page();
             }
 
-            var post = await _postQueryService.GetAsync(id.Value);
+            var post = await _mediator.Send(new GetPostByIdQuery(id.Value));
             if (null == post) return NotFound();
 
             ViewModel = new()

@@ -72,10 +72,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
 
         private EditPostModel CreateEditPostModel()
         {
-            return new(
-                _mockMediator.Object,
-                _mockPostService.Object,
-                _mockTZoneResolver.Object);
+            return new(_mockMediator.Object, _mockTZoneResolver.Object);
         }
 
         [Test]
@@ -99,7 +96,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         [Test]
         public async Task OnGetAsync_NotFound()
         {
-            _mockPostService.Setup(p => p.GetAsync(Guid.Empty)).Returns(Task.FromResult((Post)null));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPostByIdQuery>(), default)).Returns(Task.FromResult((Post)null));
 
             var editPostModel = CreateEditPostModel();
             var result = await editPostModel.OnGetAsync(Guid.Empty);
@@ -112,7 +109,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<Category> cats = new List<Category> { Cat };
 
-            _mockPostService.Setup(p => p.GetAsync(Uid)).Returns(Task.FromResult(Post));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPostByIdQuery>(), default)).Returns(Task.FromResult(Post));
             _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var editPostModel = CreateEditPostModel();

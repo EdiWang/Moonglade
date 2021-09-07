@@ -156,7 +156,7 @@ namespace Moonglade.Web.Tests
         [Test]
         public async Task GetPostAsync_ExpectedBehavior()
         {
-            _mockPostService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(Post));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPostByIdQuery>(), default)).Returns(Task.FromResult(Post));
 
             var service = CreateService();
             var result = await service.GetPostAsync(FakeData.Uid1.ToString(), _username, _password);

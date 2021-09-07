@@ -94,7 +94,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(postid));
                 }
 
-                var post = await _postQueryService.GetAsync(id);
+                var post = await _mediator.Send(new GetPostByIdQuery(id));
                 return ToMetaWeblogPost(post);
             });
         }
