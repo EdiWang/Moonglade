@@ -129,8 +129,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task ListSegment_OK()
         {
-            var svc = CreateService();
-            var result = await svc.ListSegmentAsync(PostStatus.Published);
+            var handler = new ListPostSegmentByStatusQueryHandler(_mockPostEntityRepo.Object);
+            var result = await handler.Handle(new(PostStatus.Published), default);
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectAsync(

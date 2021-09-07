@@ -23,7 +23,6 @@ namespace Moonglade.Core
         Task<Post> GetAsync(Guid id);
         Task<Post> GetAsync(PostSlug slug);
         Task<Post> GetDraftAsync(Guid postId);
-        Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus status);
         Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostInsightsType insightsType);
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null);
@@ -122,12 +121,6 @@ namespace Moonglade.Core
             var spec = new PostSpec(id);
             var post = _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
             return post;
-        }
-
-        public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostStatus status)
-        {
-            var spec = new PostSpec(status);
-            return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
         }
 
         public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(

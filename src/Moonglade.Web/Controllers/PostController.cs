@@ -59,7 +59,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Segment()
         {
             // for security, only allow published posts to be listed to third party API calls
-            var list = await _postQueryService.ListSegmentAsync(PostStatus.Published);
+            var list = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Published));
             return Ok(list);
         }
 

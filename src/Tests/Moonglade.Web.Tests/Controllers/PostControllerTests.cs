@@ -104,7 +104,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Segment_OK()
         {
             IReadOnlyList<PostSegment> ps = new List<PostSegment>();
-            _mockPostService.Setup(p => p.ListSegmentAsync(PostStatus.Published)).Returns(Task.FromResult(ps));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentByStatusQuery>(), default)).Returns(Task.FromResult(ps));
 
             var ctl = CreatePostController();
             var result = await ctl.Segment();
