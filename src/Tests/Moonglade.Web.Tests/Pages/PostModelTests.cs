@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moonglade.Core;
 using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
@@ -18,13 +18,13 @@ namespace Moonglade.Web.Tests.Pages
     public class PostModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPostQueryService> _mockPostQueryService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private PostModel CreatePostModel()
@@ -40,7 +40,7 @@ namespace Moonglade.Web.Tests.Pages
                 ViewData = viewData
             };
 
-            var model = new PostModel(_mockPostQueryService.Object)
+            var model = new PostModel(_mockMediator.Object)
             {
                 PageContext = pageContext,
                 TempData = tempData
@@ -72,7 +72,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_NullPost()
         {
-            _mockPostQueryService.Setup(p => p.GetAsync(It.IsAny<PostSlug>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPostBySlugQuery>(), default))
                 .Returns(Task.FromResult((Post)null));
 
             var postModel = CreatePostModel();
@@ -84,7 +84,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task Slug_View()
         {
-            _mockPostQueryService.Setup(p => p.GetAsync(It.IsAny<PostSlug>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPostBySlugQuery>(), default))
                 .Returns(Task.FromResult(new Post
                 {
                     Id = Guid.Empty,

@@ -1,6 +1,6 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
 using Moonglade.Core.PostFeature;
 using Moonglade.Pingback;
 using System;
@@ -11,13 +11,13 @@ namespace Moonglade.Web.Pages
     [AddPingbackHeader("pingback")]
     public class PostModel : PageModel
     {
-        private readonly IPostQueryService _postQueryService;
+        private readonly IMediator _mediator;
 
         public Post Post { get; set; }
 
-        public PostModel(IPostQueryService postQueryService)
+        public PostModel(IMediator mediator)
         {
-            _postQueryService = postQueryService;
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> OnGetAsync(int year, int month, int day, string slug)
@@ -25,7 +25,7 @@ namespace Moonglade.Web.Pages
             if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
             var slugInfo = new PostSlug(year, month, day, slug);
-            var post = await _postQueryService.GetAsync(slugInfo);
+            var post = await _mediator.Send(new GetPostBySlugQuery(slugInfo));
 
             if (post is null) return NotFound();
 

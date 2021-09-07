@@ -48,11 +48,9 @@ namespace Moonglade.Core.Tests
         {
             return new(
                 _mockLogger.Object,
-                _mockOptionsAppSettings.Object,
                 _mockPostEntityRepo.Object,
                 _mockPostTagEntityRepo.Object,
-                _mockPostCategoryRepo.Object,
-                _mockBlogCache.Object);
+                _mockPostCategoryRepo.Object);
         }
 
         [Test]
@@ -109,8 +107,9 @@ namespace Moonglade.Core.Tests
                 .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(),
                     It.IsAny<Expression<Func<PostEntity, Guid>>>())).Returns(Task.FromResult(Uid));
 
-            var svc = CreateService();
-            var result = await svc.GetAsync(new PostSlug(996, 3, 5, "work-996-junk-35"));
+            var handler = new GetPostBySlugQueryHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
+                _mockOptionsAppSettings.Object);
+            var result = await handler.Handle(new(new(996, 3, 5, "work-996-junk-35")), default);
 
             _mockBlogCache.Verify(p => p.GetOrCreateAsync(CacheDivision.Post, Uid.ToString(), It.IsAny<Func<ICacheEntry, Task<Post>>>()));
         }

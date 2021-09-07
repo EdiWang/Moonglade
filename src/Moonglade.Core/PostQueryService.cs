@@ -1,12 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moonglade.Caching;
-using Moonglade.Configuration.Settings;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using Moonglade.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -20,7 +16,6 @@ namespace Moonglade.Core
         int CountByCategory(Guid catId);
         int CountByTag(int tagId);
         int CountByFeatured();
-        Task<Post> GetAsync(PostSlug slug);
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null);
         Task<IReadOnlyList<PostDigest>> ListArchiveAsync(int year, int? month);
@@ -31,8 +26,6 @@ namespace Moonglade.Core
     public class PostQueryService : IPostQueryService
     {
         private readonly ILogger<PostQueryService> _logger;
-        private readonly IBlogCache _cache;
-        private readonly AppSettings _settings;
 
         #region Repository Objects
 
@@ -44,18 +37,14 @@ namespace Moonglade.Core
 
         public PostQueryService(
             ILogger<PostQueryService> logger,
-            IOptions<AppSettings> settings,
             IRepository<PostEntity> postRepo,
             IRepository<PostTagEntity> postTagRepo,
-            IRepository<PostCategoryEntity> postCatRepo,
-            IBlogCache cache)
+            IRepository<PostCategoryEntity> postCatRepo)
         {
             _logger = logger;
-            _settings = settings.Value;
             _postRepo = postRepo;
             _postTagRepo = postTagRepo;
             _postCatRepo = postCatRepo;
-            _cache = cache;
         }
 
         #region Counts
@@ -70,41 +59,6 @@ namespace Moonglade.Core
         public int CountByFeatured() => _postRepo.Count(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
 
         #endregion
-
-        public async Task<Post> GetAsync(PostSlug slug)
-        {
-            var date = new DateTime(slug.Year, slug.Month, slug.Day);
-
-            // Try to find by checksum
-            var slugCheckSum = Helper.ComputeCheckSum($"{slug.Slug}#{date:yyyyMMdd}");
-            ISpecification<PostEntity> spec = new PostSpec(slugCheckSum);
-
-            var pid = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Id);
-            if (pid == Guid.Empty)
-            {
-                // Post does not have a checksum, fall back to old method
-                spec = new PostSpec(date, slug.Slug);
-                pid = await _postRepo.SelectFirstOrDefaultAsync(spec, x => x.Id);
-
-                if (pid == Guid.Empty) return null;
-
-                // Post is found, fill it's checksum so that next time the query can be run against checksum
-                var p = await _postRepo.GetAsync(pid);
-                p.HashCheckSum = slugCheckSum;
-
-                await _postRepo.UpdateAsync(p);
-            }
-
-            var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
-
-                var post = await _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
-                return post;
-            });
-
-            return psm;
-        }
 
         public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(
             PostStatus status, int offset, int pageSize, string keyword = null)
