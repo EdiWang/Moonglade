@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
-using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
@@ -22,7 +21,6 @@ namespace Moonglade.Web.Tests.Pages.Admin
         private MockRepository _mockRepository;
 
         private Mock<IMediator> _mockMediator;
-        private Mock<IPostQueryService> _mockPostService;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<IBlogConfig> _mockBlogConfig;
 
@@ -65,7 +63,6 @@ namespace Moonglade.Web.Tests.Pages.Admin
             _mockRepository = new(MockBehavior.Default);
 
             _mockMediator = _mockRepository.Create<IMediator>();
-            _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
         }

@@ -118,8 +118,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task GetDraft_OK()
         {
-            var svc = CreateService();
-            var result = await svc.GetDraftAsync(Uid);
+            var handler = new GetDraftQueryHandler(_mockPostEntityRepo.Object);
+            var result = await handler.Handle(new(Uid), default);
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectFirstOrDefaultAsync(
