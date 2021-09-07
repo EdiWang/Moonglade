@@ -178,8 +178,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task ListInsights_OK()
         {
-            var svc = CreateService();
-            var result = await svc.ListSegmentAsync(PostInsightsType.TopRead);
+            var handler = new ListInsightsQueryHandler(_mockPostEntityRepo.Object);
+            var result = await handler.Handle(new(PostInsightsType.TopRead), default);
 
             _mockPostEntityRepo.Verify(
                 p => p.SelectAsync(

@@ -21,7 +21,6 @@ namespace Moonglade.Core
         int CountByTag(int tagId);
         int CountByFeatured();
         Task<Post> GetAsync(PostSlug slug);
-        Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostInsightsType insightsType);
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null);
         Task<IReadOnlyList<PostDigest>> ListArchiveAsync(int year, int? month);
@@ -146,12 +145,6 @@ namespace Moonglade.Core
 
             var totalRows = _postRepo.Count(countExp);
             return (posts, totalRows);
-        }
-
-        public Task<IReadOnlyList<PostSegment>> ListSegmentAsync(PostInsightsType insightsType)
-        {
-            var spec = new PostInsightsSpec(insightsType, 10);
-            return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
         }
 
         public Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null)

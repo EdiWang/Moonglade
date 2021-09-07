@@ -1,6 +1,5 @@
-using Moonglade.Core;
+using MediatR;
 using Moonglade.Core.PostFeature;
-using Moonglade.Data.Spec;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
@@ -14,18 +13,18 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class PostInsightsModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPostQueryService> _mockPostService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPostService = _mockRepository.Create<IPostQueryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private PostInsightsModel CreatePostInsightsModel()
         {
-            return new(_mockPostService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -33,7 +32,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<PostSegment> segments = new List<PostSegment>();
 
-            _mockPostService.Setup(p => p.ListSegmentAsync(It.IsAny<PostInsightsType>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListInsightsQuery>(), default))
                 .Returns(Task.FromResult(segments));
 
             var postInsightsModel = CreatePostInsightsModel();
