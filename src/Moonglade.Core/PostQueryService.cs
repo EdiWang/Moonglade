@@ -18,7 +18,6 @@ namespace Moonglade.Core
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null);
         Task<IReadOnlyList<PostDigest>> ListByTagAsync(int tagId, int pageSize, int pageIndex);
-        Task<IReadOnlyList<PostDigest>> ListFeaturedAsync(int pageSize, int pageIndex);
     }
 
     public class PostQueryService : IPostQueryService
@@ -109,14 +108,6 @@ namespace Moonglade.Core
             ValidatePagingParameters(pageSize, pageIndex);
 
             var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex), PostDigest.EntitySelectorByTag);
-            return posts;
-        }
-
-        public Task<IReadOnlyList<PostDigest>> ListFeaturedAsync(int pageSize, int pageIndex)
-        {
-            ValidatePagingParameters(pageSize, pageIndex);
-
-            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), PostDigest.EntitySelector);
             return posts;
         }
 

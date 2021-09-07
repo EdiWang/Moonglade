@@ -268,8 +268,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task ListFeatured_OK()
         {
-            var svc = CreateService();
-            var result = await svc.ListFeaturedAsync(7, 404);
+            var handler = new ListFeaturedQueryHandler(_mockPostEntityRepo.Object);
+            var result = await handler.Handle(new(7, 404), default);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<FeaturedPostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()));
         }

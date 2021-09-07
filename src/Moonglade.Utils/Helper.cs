@@ -408,16 +408,21 @@ namespace Moonglade.Utils
                 for (int iter = 0; iter < length; iter++)
                 {
                     int i = (int)(buf[iter] % 87);
-                    if (i < 10)
-                        cBuf[iter] = (char)('0' + i);
-                    else if (i < 36)
-                        cBuf[iter] = (char)('A' + i - 10);
-                    else if (i < 62)
-                        cBuf[iter] = (char)('a' + i - 36);
-                    else
+                    switch (i)
                     {
-                        cBuf[iter] = Punctuations[i - 62];
-                        count++;
+                        case < 10:
+                            cBuf[iter] = (char)('0' + i);
+                            break;
+                        case < 36:
+                            cBuf[iter] = (char)('A' + i - 10);
+                            break;
+                        case < 62:
+                            cBuf[iter] = (char)('a' + i - 36);
+                            break;
+                        default:
+                            cBuf[iter] = Punctuations[i - 62];
+                            count++;
+                            break;
                     }
                 }
 
@@ -484,7 +489,22 @@ namespace Moonglade.Utils
 
         private static bool IsAtoZ(char c)
         {
-            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+            return c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
+        }
+
+        public static void ValidatePagingParameters(int pageSize, int pageIndex)
+        {
+            if (pageSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize),
+                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
+            }
+
+            if (pageIndex < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageIndex),
+                    $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
+            }
         }
     }
 }
