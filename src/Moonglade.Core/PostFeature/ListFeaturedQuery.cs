@@ -33,9 +33,9 @@ namespace Moonglade.Core.PostFeature
 
         public Task<IReadOnlyList<PostDigest>> Handle(ListFeaturedQuery request, CancellationToken cancellationToken)
         {
-            Helper.ValidatePagingParameters(request.PageSize, request.PageSize);
+            Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
-            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(request.PageSize, request.PageSize), PostDigest.EntitySelector);
+            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(request.PageSize, request.PageIndex), PostDigest.EntitySelector);
             return posts;
         }
     }
