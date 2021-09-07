@@ -1,6 +1,6 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
 using Moonglade.Core.PostFeature;
 using System;
 using System.Collections.Generic;
@@ -10,12 +10,13 @@ namespace Moonglade.Web.Pages
 {
     public class ArchiveListModel : PageModel
     {
-        private readonly IPostQueryService _postQueryService;
+        private readonly IMediator _mediator;
+
         public IReadOnlyList<PostDigest> Posts { get; set; }
 
-        public ArchiveListModel(IPostQueryService postQueryService)
+        public ArchiveListModel(IMediator mediator)
         {
-            _postQueryService = postQueryService;
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> OnGetAsync(int year, int? month)
@@ -28,13 +29,13 @@ namespace Moonglade.Web.Pages
             {
                 // {year}/{month}
                 ViewData["ArchiveInfo"] = $"{year}.{month}";
-                model = await _postQueryService.ListArchiveAsync(year, month);
+                model = await _mediator.Send(new ListArchiveQuery(year, month));
             }
             else
             {
                 // {year}
                 ViewData["ArchiveInfo"] = $"{year}";
-                model = await _postQueryService.ListArchiveAsync(year, null);
+                model = await _mediator.Send(new ListArchiveQuery(year));
             }
 
             Posts = model;

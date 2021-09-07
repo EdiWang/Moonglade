@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
@@ -22,7 +21,6 @@ namespace Moonglade.Core.Tests
     {
         private MockRepository _mockRepository;
 
-        private Mock<ILogger<PostQueryService>> _mockLogger;
         private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
         private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
         private Mock<IRepository<PostTagEntity>> _mockPostTagEntityRepo;
@@ -36,7 +34,6 @@ namespace Moonglade.Core.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockLogger = _mockRepository.Create<ILogger<PostQueryService>>();
             _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
             _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
             _mockPostTagEntityRepo = _mockRepository.Create<IRepository<PostTagEntity>>();
@@ -47,7 +44,6 @@ namespace Moonglade.Core.Tests
         private PostQueryService CreateService()
         {
             return new(
-                _mockLogger.Object,
                 _mockPostEntityRepo.Object,
                 _mockPostTagEntityRepo.Object,
                 _mockPostCategoryRepo.Object);
@@ -230,10 +226,10 @@ namespace Moonglade.Core.Tests
         [TestCase(12306)]
         public void ListArchive_InvalidYear(int year)
         {
-            var svc = CreateService();
+            var handler = new ListArchiveQueryHandler(_mockPostEntityRepo.Object);
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListArchiveAsync(year, 1);
+                await handler.Handle(new(year, 1), default);
             });
         }
 
@@ -241,18 +237,18 @@ namespace Moonglade.Core.Tests
         [TestCase(251)]
         public void ListArchive_InvalidMonth(int month)
         {
-            var svc = CreateService();
+            var handler = new ListArchiveQueryHandler(_mockPostEntityRepo.Object);
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListArchiveAsync(996, month);
+                await handler.Handle(new(996, month), default);
             });
         }
 
         [Test]
         public async Task ListArchive_OK()
         {
-            var svc = CreateService();
-            await svc.ListArchiveAsync(996, 9);
+            var handler = new ListArchiveQueryHandler(_mockPostEntityRepo.Object);
+            await handler.Handle(new(996, 9), default);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()
             ));

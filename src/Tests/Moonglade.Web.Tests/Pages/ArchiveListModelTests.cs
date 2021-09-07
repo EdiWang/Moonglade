@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
@@ -16,13 +17,13 @@ namespace Moonglade.Web.Tests.Pages
     public class ArchiveListModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPostQueryService> _mockPostQueryService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private ArchiveListModel CreateArchiveListModel()
@@ -38,7 +39,7 @@ namespace Moonglade.Web.Tests.Pages
                 ViewData = viewData
             };
 
-            var model = new ArchiveListModel(_mockPostQueryService.Object)
+            var model = new ArchiveListModel(_mockMediator.Object)
             {
                 PageContext = pageContext,
                 TempData = tempData
@@ -65,7 +66,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_Year()
         {
-            _mockPostQueryService.Setup(p => p.ListArchiveAsync(It.IsAny<int>(), null))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListArchiveQuery>(), default))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             var model = CreateArchiveListModel();
@@ -78,7 +79,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_Year_Month()
         {
-            _mockPostQueryService.Setup(p => p.ListArchiveAsync(It.IsAny<int>(), It.IsAny<int?>())).Returns(Task.FromResult(FakeData.FakePosts));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListArchiveQuery>(), default)).Returns(Task.FromResult(FakeData.FakePosts));
 
             var model = CreateArchiveListModel();
             var result = await model.OnGetAsync(2021, 1);

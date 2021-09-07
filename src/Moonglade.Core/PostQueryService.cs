@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Moonglade.Core.PostFeature;
+﻿using Moonglade.Core.PostFeature;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -18,15 +17,12 @@ namespace Moonglade.Core
         int CountByFeatured();
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null);
-        Task<IReadOnlyList<PostDigest>> ListArchiveAsync(int year, int? month);
         Task<IReadOnlyList<PostDigest>> ListByTagAsync(int tagId, int pageSize, int pageIndex);
         Task<IReadOnlyList<PostDigest>> ListFeaturedAsync(int pageSize, int pageIndex);
     }
 
     public class PostQueryService : IPostQueryService
     {
-        private readonly ILogger<PostQueryService> _logger;
-
         #region Repository Objects
 
         private readonly IRepository<PostEntity> _postRepo;
@@ -36,12 +32,10 @@ namespace Moonglade.Core
         #endregion
 
         public PostQueryService(
-            ILogger<PostQueryService> logger,
             IRepository<PostEntity> postRepo,
             IRepository<PostTagEntity> postTagRepo,
             IRepository<PostCategoryEntity> postCatRepo)
         {
-            _logger = logger;
             _postRepo = postRepo;
             _postTagRepo = postTagRepo;
             _postCatRepo = postCatRepo;
@@ -124,25 +118,6 @@ namespace Moonglade.Core
 
             var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), PostDigest.EntitySelector);
             return posts;
-        }
-
-        public Task<IReadOnlyList<PostDigest>> ListArchiveAsync(int year, int? month)
-        {
-            if (year < DateTime.MinValue.Year || year > DateTime.MaxValue.Year)
-            {
-                _logger.LogError($"parameter '{nameof(year)}:{year}' is out of range");
-                throw new ArgumentOutOfRangeException(nameof(year));
-            }
-
-            if (month is > 12 or < 0)
-            {
-                _logger.LogError($"parameter '{nameof(month)}:{month}' is out of range");
-                throw new ArgumentOutOfRangeException(nameof(month));
-            }
-
-            var spec = new PostSpec(year, month.GetValueOrDefault());
-            var list = _postRepo.SelectAsync(spec, PostDigest.EntitySelector);
-            return list;
         }
 
         private static void ValidatePagingParameters(int pageSize, int pageIndex)
