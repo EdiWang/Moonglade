@@ -184,8 +184,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task List_OK()
         {
-            var svc = CreateService();
-            await svc.ListAsync(35, 7, Uid);
+            var handler = new ListPostsQueryHandler(_mockPostEntityRepo.Object);
+            await handler.Handle(new(35, 7, Uid), default);
 
             _mockPostEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostPagingSpec>(), It.IsAny<Expression<Func<PostEntity, PostDigest>>>()));
         }
@@ -193,22 +193,22 @@ namespace Moonglade.Core.Tests
         [Test]
         public void List_InvalidPageSize()
         {
-            var svc = CreateService();
+            var handler = new ListPostsQueryHandler(_mockPostEntityRepo.Object);
 
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListAsync(-1, 7, Uid);
+                await handler.Handle(new(-1, 7, Uid), default);
             });
         }
 
         [Test]
         public void List_InvalidPageIndex()
         {
-            var svc = CreateService();
+            var handler = new ListPostsQueryHandler(_mockPostEntityRepo.Object);
 
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListAsync(10, -1, Uid);
+                await handler.Handle(new(10, -1, Uid), default);
             });
         }
 

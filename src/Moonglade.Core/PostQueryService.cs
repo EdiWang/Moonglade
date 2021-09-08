@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
@@ -17,7 +16,6 @@ namespace Moonglade.Core
         int CountByTag(int tagId);
         int CountByFeatured();
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
-        Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null);
     }
 
     public class PostQueryService : IPostQueryService
@@ -92,14 +90,6 @@ namespace Moonglade.Core
 
             var totalRows = _postRepo.Count(countExp);
             return (posts, totalRows);
-        }
-
-        public Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null)
-        {
-            Helper.ValidatePagingParameters(pageSize, pageIndex);
-
-            var spec = new PostPagingSpec(pageSize, pageIndex, catId);
-            return _postRepo.SelectAsync(spec, PostDigest.EntitySelector);
         }
     }
 }

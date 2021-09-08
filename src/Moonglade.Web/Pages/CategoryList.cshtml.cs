@@ -52,7 +52,7 @@ namespace Moonglade.Web.Pages
             var postCount = _cache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
                 _ => _postQueryService.CountByCategory(cat.Id));
 
-            var postList = await _postQueryService.ListAsync(pageSize, P, cat.Id);
+            var postList = await _mediator.Send(new ListPostsQuery(pageSize, P, cat.Id));
 
             Posts = new(postList, P, pageSize, postCount);
             return Page();

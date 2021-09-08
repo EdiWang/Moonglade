@@ -9,6 +9,7 @@ using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
+using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
@@ -111,7 +112,7 @@ namespace Moonglade.Web.Tests.Pages
                     p.GetOrCreate(CacheDivision.PostCountCategory, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
                 .Returns(35);
 
-            _mockPostQueryService.Setup(p => p.ListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Guid?>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostsQuery>(), default))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             var categoryListModel = CreateCategoryListModel();
