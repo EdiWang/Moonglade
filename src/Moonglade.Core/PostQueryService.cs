@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Moonglade.Utils;
 
 namespace Moonglade.Core
 {
@@ -95,25 +96,10 @@ namespace Moonglade.Core
 
         public Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null)
         {
-            ValidatePagingParameters(pageSize, pageIndex);
+            Helper.ValidatePagingParameters(pageSize, pageIndex);
 
             var spec = new PostPagingSpec(pageSize, pageIndex, catId);
             return _postRepo.SelectAsync(spec, PostDigest.EntitySelector);
-        }
-
-        private static void ValidatePagingParameters(int pageSize, int pageIndex)
-        {
-            if (pageSize < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize),
-                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
-            }
-
-            if (pageIndex < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageIndex),
-                    $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
-            }
         }
     }
 }
