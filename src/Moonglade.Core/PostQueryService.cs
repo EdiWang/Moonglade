@@ -17,7 +17,6 @@ namespace Moonglade.Core
         int CountByFeatured();
         Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
         Task<IReadOnlyList<PostDigest>> ListAsync(int pageSize, int pageIndex, Guid? catId = null);
-        Task<IReadOnlyList<PostDigest>> ListByTagAsync(int tagId, int pageSize, int pageIndex);
     }
 
     public class PostQueryService : IPostQueryService
@@ -100,15 +99,6 @@ namespace Moonglade.Core
 
             var spec = new PostPagingSpec(pageSize, pageIndex, catId);
             return _postRepo.SelectAsync(spec, PostDigest.EntitySelector);
-        }
-
-        public Task<IReadOnlyList<PostDigest>> ListByTagAsync(int tagId, int pageSize, int pageIndex)
-        {
-            if (tagId <= 0) throw new ArgumentOutOfRangeException(nameof(tagId));
-            ValidatePagingParameters(pageSize, pageIndex);
-
-            var posts = _postTagRepo.SelectAsync(new PostTagSpec(tagId, pageSize, pageIndex), PostDigest.EntitySelectorByTag);
-            return posts;
         }
 
         private static void ValidatePagingParameters(int pageSize, int pageIndex)

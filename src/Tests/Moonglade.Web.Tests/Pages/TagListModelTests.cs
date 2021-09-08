@@ -8,6 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.Web.Pages;
 using Moq;
@@ -77,7 +78,7 @@ namespace Moonglade.Web.Tests.Pages
                 NormalizedName = "fu-bao"
             }));
 
-            _mockPostQueryService.Setup(p => p.ListByTagAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListByTagQuery>(), default))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             _mockBlogCache.Setup(p =>

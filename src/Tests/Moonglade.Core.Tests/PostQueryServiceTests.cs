@@ -215,10 +215,10 @@ namespace Moonglade.Core.Tests
         [Test]
         public void ListByTag_TagIdOutOfRange()
         {
-            var svc = CreateService();
+            var handler = new ListByTagQueryHandler(_mockPostTagEntityRepo.Object);
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListByTagAsync(-35, 996, 251);
+                await handler.Handle(new(-35, 996, 251), default);
             });
         }
 
@@ -259,8 +259,8 @@ namespace Moonglade.Core.Tests
         [Test]
         public async Task ListByTag_OK()
         {
-            var svc = CreateService();
-            var result = await svc.ListByTagAsync(35, 996, 251);
+            var handler = new ListByTagQueryHandler(_mockPostTagEntityRepo.Object);
+            var result = await handler.Handle(new(35, 996, 251), default);
 
             _mockPostTagEntityRepo.Verify(p => p.SelectAsync(It.IsAny<PostTagSpec>(), It.IsAny<Expression<Func<PostTagEntity, PostDigest>>>()));
         }

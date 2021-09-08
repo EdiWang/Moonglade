@@ -38,7 +38,7 @@ namespace Moonglade.Web.Pages
             if (tagResponse is null) return NotFound();
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.ListByTagAsync(tagResponse.Id, pagesize, P);
+            var posts = await _mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
             var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postQueryService.CountByTag(tagResponse.Id));
 
             ViewData["TitlePrefix"] = tagResponse.DisplayName;
