@@ -26,7 +26,7 @@ namespace Moonglade.Web.Tests.Pages
 
         private Mock<IMediator> _mockMediator;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IPostQueryService> _mockPostQueryService;
+        private Mock<IPostCountService> _mockPostQueryService;
         private Mock<IBlogCache> _mockBlogCache;
 
         [SetUp]
@@ -36,7 +36,7 @@ namespace Moonglade.Web.Tests.Pages
 
             _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
+            _mockPostQueryService = _mockRepository.Create<IPostCountService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
 
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings

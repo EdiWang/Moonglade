@@ -13,7 +13,7 @@ namespace Moonglade.Web.Pages
 {
     public class CategoryListModel : PageModel
     {
-        private readonly IPostQueryService _postQueryService;
+        private readonly IPostCountService _postCountService;
         private readonly IMediator _mediator;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogCache _cache;
@@ -26,12 +26,12 @@ namespace Moonglade.Web.Pages
             IBlogConfig blogConfig,
             IMediator mediator,
             IBlogCache cache,
-            IPostQueryService postQueryService)
+            IPostCountService postCountService)
         {
             _blogConfig = blogConfig;
             _mediator = mediator;
             _cache = cache;
-            _postQueryService = postQueryService;
+            _postCountService = postCountService;
 
             P = 1;
         }
@@ -50,7 +50,7 @@ namespace Moonglade.Web.Pages
             ViewData["CategoryDescription"] = cat.Note;
 
             var postCount = _cache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
-                _ => _postQueryService.CountByCategory(cat.Id));
+                _ => _postCountService.CountByCategory(cat.Id));
 
             var postList = await _mediator.Send(new ListPostsQuery(pageSize, P, cat.Id));
 

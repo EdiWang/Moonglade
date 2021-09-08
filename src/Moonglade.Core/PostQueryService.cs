@@ -4,7 +4,7 @@ using System;
 
 namespace Moonglade.Core
 {
-    public interface IPostQueryService
+    public interface IPostCountService
     {
         int CountPublic();
         int CountByCategory(Guid catId);
@@ -12,13 +12,13 @@ namespace Moonglade.Core
         int CountByFeatured();
     }
 
-    public class PostQueryService : IPostQueryService
+    public class PostCountService : IPostCountService
     {
         private readonly IRepository<PostEntity> _postRepo;
         private readonly IRepository<PostTagEntity> _postTagRepo;
         private readonly IRepository<PostCategoryEntity> _postCatRepo;
 
-        public PostQueryService(
+        public PostCountService(
             IRepository<PostEntity> postRepo,
             IRepository<PostTagEntity> postTagRepo,
             IRepository<PostCategoryEntity> postCatRepo)

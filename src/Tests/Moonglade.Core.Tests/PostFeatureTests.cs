@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
@@ -17,14 +17,12 @@ using System.Threading.Tasks;
 namespace Moonglade.Core.Tests
 {
     [TestFixture]
-    public class PostQueryServiceTests
+    public class PostFeatureTests
     {
         private MockRepository _mockRepository;
-
-        private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
         private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
         private Mock<IRepository<PostTagEntity>> _mockPostTagEntityRepo;
-        private Mock<IRepository<PostCategoryEntity>> _mockPostCategoryRepo;
+        private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
         private Mock<IBlogCache> _mockBlogCache;
 
         private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
@@ -33,60 +31,14 @@ namespace Moonglade.Core.Tests
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-
-            _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
             _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
             _mockPostTagEntityRepo = _mockRepository.Create<IRepository<PostTagEntity>>();
-            _mockPostCategoryRepo = _mockRepository.Create<IRepository<PostCategoryEntity>>();
+            _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
         }
 
-        private PostQueryService CreateService()
-        {
-            return new(
-                _mockPostEntityRepo.Object,
-                _mockPostTagEntityRepo.Object,
-                _mockPostCategoryRepo.Object);
-        }
-
         [Test]
-        public void CountPublic_OK()
-        {
-            var svc = CreateService();
-            svc.CountPublic();
-
-            _mockPostEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>()));
-        }
-
-        [Test]
-        public void CountByCategory_OK()
-        {
-            var svc = CreateService();
-            svc.CountByCategory(Uid);
-
-            _mockPostCategoryRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostCategoryEntity, bool>>>()));
-        }
-
-        [Test]
-        public void CountByTag_OK()
-        {
-            var svc = CreateService();
-            svc.CountByTag(996);
-
-            _mockPostTagEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostTagEntity, bool>>>()));
-        }
-
-        [Test]
-        public void CountByFeatured_OK()
-        {
-            var svc = CreateService();
-            svc.CountByFeatured();
-
-            _mockPostEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>()));
-        }
-
-        [Test]
-        public async Task GetAsync_OK()
+        public async Task GetPostByIdQueryHandler_OK()
         {
             var handler = new GetPostByIdQueryHandler(_mockPostEntityRepo.Object);
             var result = await handler.Handle(new(Uid), default);
@@ -97,7 +49,7 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
-        public async Task GetAsync_Slug_OK()
+        public async Task GetPostBySlugQueryHandler_OK()
         {
             _mockPostEntityRepo
                 .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(),
@@ -111,7 +63,7 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
-        public async Task GetDraft_OK()
+        public async Task GetDraftQueryHandler_OK()
         {
             var handler = new GetDraftQueryHandler(_mockPostEntityRepo.Object);
             var result = await handler.Handle(new(Uid), default);
@@ -122,7 +74,7 @@ namespace Moonglade.Core.Tests
         }
 
         [Test]
-        public async Task ListSegment_OK()
+        public async Task ListPostSegmentByStatusQueryHandler_OK()
         {
             var handler = new ListPostSegmentByStatusQueryHandler(_mockPostEntityRepo.Object);
             var result = await handler.Handle(new(PostStatus.Published), default);
@@ -134,7 +86,7 @@ namespace Moonglade.Core.Tests
 
         [TestCase(-1, 0)]
         [TestCase(-1, 1)]
-        public void ListSegment_InvalidParameter(int offset, int pageSize)
+        public void ListPostSegmentQueryHandler_InvalidParameter(int offset, int pageSize)
         {
             var handler = new ListPostSegmentQueryHandler(_mockPostEntityRepo.Object);
 
@@ -148,7 +100,7 @@ namespace Moonglade.Core.Tests
         [TestCase(PostStatus.Deleted)]
         [TestCase(PostStatus.Draft)]
         [TestCase(PostStatus.Default)]
-        public async Task ListSegment_WithPaging(PostStatus postStatus)
+        public async Task ListPostSegmentQueryHandler_WithPaging(PostStatus postStatus)
         {
             IReadOnlyList<PostSegment> segments = new List<PostSegment>()
             {
@@ -290,7 +242,6 @@ namespace Moonglade.Core.Tests
         public async Task GetArchiveAsync_HasPosts()
         {
             _mockPostEntityRepo.Setup(p => p.Any(p => p.IsPublished && !p.IsDeleted)).Returns(true);
-            var service = CreateService();
 
             var handler = new GetArchiveQueryHandler(_mockPostEntityRepo.Object);
             var result = await handler.Handle(new(), default);

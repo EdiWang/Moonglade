@@ -15,18 +15,18 @@ namespace Moonglade.Web.Pages
     {
         private readonly IMediator _mediator;
         private readonly IBlogConfig _blogConfig;
-        private readonly IPostQueryService _postQueryService;
+        private readonly IPostCountService _postCountService;
         private readonly IBlogCache _cache;
 
         [BindProperty(SupportsGet = true)]
         public int P { get; set; }
         public StaticPagedList<PostDigest> Posts { get; set; }
 
-        public TagListModel(IMediator mediator, IBlogConfig blogConfig, IPostQueryService postQueryService, IBlogCache cache)
+        public TagListModel(IMediator mediator, IBlogConfig blogConfig, IPostCountService postCountService, IBlogCache cache)
         {
             _mediator = mediator;
             _blogConfig = blogConfig;
-            _postQueryService = postQueryService;
+            _postCountService = postCountService;
             _cache = cache;
 
             P = 1;
@@ -39,7 +39,7 @@ namespace Moonglade.Web.Pages
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
             var posts = await _mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
-            var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postQueryService.CountByTag(tagResponse.Id));
+            var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postCountService.CountByTag(tagResponse.Id));
 
             ViewData["TitlePrefix"] = tagResponse.DisplayName;
 

@@ -23,7 +23,7 @@ namespace Moonglade.Web
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly ILogger<MetaWeblogService> _logger;
-        private readonly IPostQueryService _postQueryService;
+        private readonly IPostCountService _postCountService;
         private readonly IBlogImageStorage _blogImageStorage;
         private readonly IFileNameGenerator _fileNameGenerator;
         private readonly IMediator _mediator;
@@ -32,7 +32,7 @@ namespace Moonglade.Web
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             ILogger<MetaWeblogService> logger,
-            IPostQueryService postQueryService,
+            IPostCountService postCountService,
             IBlogImageStorage blogImageStorage,
             IFileNameGenerator fileNameGenerator,
             IMediator mediator)
@@ -40,7 +40,7 @@ namespace Moonglade.Web
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _logger = logger;
-            _postQueryService = postQueryService;
+            _postCountService = postCountService;
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
             _mediator = mediator;
