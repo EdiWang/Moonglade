@@ -4,12 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
@@ -27,7 +25,6 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<IPostQueryService> _mockPostService;
         private Mock<IMediator> _mockMediator;
 
         private Mock<IBlogConfig> _mockBlogConfig;
@@ -72,7 +69,6 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockPostService = _mockRepository.Create<IPostQueryService>();
             _mockMediator = _mockRepository.Create<IMediator>();
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -84,7 +80,6 @@ namespace Moonglade.Web.Tests.Controllers
         private PostController CreatePostController()
         {
             return new(
-                _mockPostService.Object,
                 _mockMediator.Object,
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
@@ -117,7 +112,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
 
-            _mockPostService.Setup(p => p.ListSegmentAsync(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentQuery>(), default)).Returns(Task.FromResult(data));
 
             var postManageController = CreatePostController();
             var model = new DataTableRequest

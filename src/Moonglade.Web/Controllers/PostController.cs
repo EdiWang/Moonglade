@@ -9,7 +9,6 @@ using Moonglade.Auth;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Spec;
 using Moonglade.Pingback;
@@ -28,7 +27,6 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class PostController : ControllerBase
     {
-        private readonly IPostQueryService _postQueryService;
         private readonly IMediator _mediator;
 
         private readonly IBlogConfig _blogConfig;
@@ -37,14 +35,12 @@ namespace Moonglade.Web.Controllers
         private readonly ILogger<PostController> _logger;
 
         public PostController(
-            IPostQueryService postQueryService,
             IMediator mediator,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IPingbackSender pingbackSender,
             ILogger<PostController> logger)
         {
-            _postQueryService = postQueryService;
             _mediator = mediator;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
@@ -73,7 +69,7 @@ namespace Moonglade.Web.Controllers
             var take = model.Length;
             var offset = model.Start;
 
-            var (posts, totalRows) = await _postQueryService.ListSegmentAsync(PostStatus.Published, offset, take, searchBy);
+            var (posts, totalRows) = await _mediator.Send(new ListPostSegmentQuery(PostStatus.Published, offset, take, searchBy));
             var response = new JqDataTable<PostSegment>
             {
                 Draw = model.Draw,

@@ -1,11 +1,6 @@
-﻿using Moonglade.Core.PostFeature;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Moonglade.Core
 {
@@ -15,7 +10,6 @@ namespace Moonglade.Core
         int CountByCategory(Guid catId);
         int CountByTag(int tagId);
         int CountByFeatured();
-        Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(PostStatus status, int offset, int pageSize, string keyword = null);
     }
 
     public class PostQueryService : IPostQueryService
@@ -42,46 +36,5 @@ namespace Moonglade.Core
         public int CountByTag(int tagId) => _postTagRepo.Count(p => p.TagId == tagId && p.Post.IsPublished && !p.Post.IsDeleted);
 
         public int CountByFeatured() => _postRepo.Count(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
-
-        public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> ListSegmentAsync(
-            PostStatus status, int offset, int pageSize, string keyword = null)
-        {
-            if (pageSize < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize),
-                    $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
-            }
-            if (offset < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(offset),
-                    $"{nameof(offset)} can not be less than 0, current value: {offset}.");
-            }
-
-            var spec = new PostPagingSpec(status, keyword, pageSize, offset);
-            var posts = await _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
-
-            Expression<Func<PostEntity, bool>> countExp = p => null == keyword || p.Title.Contains(keyword);
-
-            switch (status)
-            {
-                case PostStatus.Draft:
-                    countExp.AndAlso(p => !p.IsPublished && !p.IsDeleted);
-                    break;
-                case PostStatus.Published:
-                    countExp.AndAlso(p => p.IsPublished && !p.IsDeleted);
-                    break;
-                case PostStatus.Deleted:
-                    countExp.AndAlso(p => p.IsDeleted);
-                    break;
-                case PostStatus.Default:
-                    countExp.AndAlso(p => true);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(status), status, null);
-            }
-
-            var totalRows = _postRepo.Count(countExp);
-            return (posts, totalRows);
-        }
     }
 }

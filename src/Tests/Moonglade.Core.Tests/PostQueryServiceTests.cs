@@ -136,11 +136,11 @@ namespace Moonglade.Core.Tests
         [TestCase(-1, 1)]
         public void ListSegment_InvalidParameter(int offset, int pageSize)
         {
-            var svc = CreateService();
+            var handler = new ListPostSegmentQueryHandler(_mockPostEntityRepo.Object);
 
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await svc.ListSegmentAsync(PostStatus.Published, offset, pageSize);
+                await handler.Handle(new(PostStatus.Published, offset, pageSize), default);
             });
         }
 
@@ -164,8 +164,8 @@ namespace Moonglade.Core.Tests
 
             _mockPostEntityRepo.Setup(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>())).Returns(996);
 
-            var svc = CreateService();
-            var result = await svc.ListSegmentAsync(postStatus, 0, 35);
+            var handler = new ListPostSegmentQueryHandler(_mockPostEntityRepo.Object);
+            var result = await handler.Handle(new(postStatus, 0, 35), default);
 
             Assert.IsNotNull(result);
         }
