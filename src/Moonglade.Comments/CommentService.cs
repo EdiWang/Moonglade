@@ -14,7 +14,6 @@ namespace Moonglade.Comments
     public interface ICommentService
     {
         int Count();
-        Task<IReadOnlyList<Comment>> GetApprovedCommentsAsync(Guid postId);
         Task<IReadOnlyList<CommentDetailedItem>> GetCommentsAsync(int pageSize, int pageIndex);
         Task ToggleApprovalAsync(Guid[] commentIds);
         Task DeleteAsync(Guid[] commentIds);
@@ -50,22 +49,6 @@ namespace Moonglade.Comments
         }
 
         public int Count() => _commentRepo.Count(c => true);
-
-        public Task<IReadOnlyList<Comment>> GetApprovedCommentsAsync(Guid postId)
-        {
-            return _commentRepo.SelectAsync(new CommentSpec(postId), c => new Comment
-            {
-                CommentContent = c.CommentContent,
-                CreateTimeUtc = c.CreateTimeUtc,
-                Username = c.Username,
-                Email = c.Email,
-                CommentReplies = c.Replies.Select(cr => new CommentReplyDigest
-                {
-                    ReplyContent = cr.ReplyContent,
-                    ReplyTimeUtc = cr.CreateTimeUtc
-                }).ToList()
-            });
-        }
 
         public Task<IReadOnlyList<CommentDetailedItem>> GetCommentsAsync(int pageSize, int pageIndex)
         {

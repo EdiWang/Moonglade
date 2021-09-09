@@ -61,8 +61,8 @@ namespace Moonglade.Comments.Tests
         [Test]
         public async Task GetApprovedCommentsAsync_OK()
         {
-            var service = CreateCommentService();
-            await service.GetApprovedCommentsAsync(Guid.Empty);
+            var handler = new GetApprovedCommentsQueryHandler(_mockCommentEntityRepo.Object);
+            await handler.Handle(new(Guid.Empty), default);
 
             _mockCommentEntityRepo.Verify(p => p.SelectAsync(It.IsAny<ISpecification<CommentEntity>>(),
                 It.IsAny<Expression<Func<CommentEntity, Comment>>>()));

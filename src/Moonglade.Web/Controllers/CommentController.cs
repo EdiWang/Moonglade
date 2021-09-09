@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -28,6 +29,8 @@ namespace Moonglade.Web.Controllers
         #region Private Fields
 
         private readonly ICommentService _commentService;
+        private readonly IMediator _mediator;
+
         private readonly IBlogNotificationClient _notificationClient;
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly IBlogConfig _blogConfig;
@@ -36,11 +39,13 @@ namespace Moonglade.Web.Controllers
 
         public CommentController(
             ICommentService commentService,
+            IMediator mediator,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IBlogNotificationClient notificationClient)
         {
             _commentService = commentService;
+            _mediator = mediator;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _notificationClient = notificationClient;
@@ -52,7 +57,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> List([NotEmpty] Guid postId)
         {
-            var comments = await _commentService.GetApprovedCommentsAsync(postId);
+            var comments = await _mediator.Send(new GetApprovedCommentsQuery(postId));
             var resp = comments.Select(p => new
             {
                 p.Username,

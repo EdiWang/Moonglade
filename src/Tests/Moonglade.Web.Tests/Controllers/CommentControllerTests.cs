@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Comments;
@@ -18,6 +19,7 @@ namespace Moonglade.Web.Tests.Controllers
         private MockRepository _mockRepository;
 
         private Mock<ICommentService> _mockCommentService;
+        private Mock<IMediator> _mockMediator;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogNotificationClient> _mockBlogNotificationClient;
         private Mock<ITimeZoneResolver> _mockTimeZoneResolver;
@@ -29,6 +31,8 @@ namespace Moonglade.Web.Tests.Controllers
             _mockRepository = new(MockBehavior.Default);
 
             _mockCommentService = _mockRepository.Create<ICommentService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
+
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogNotificationClient = _mockRepository.Create<IBlogNotificationClient>();
             _mockTimeZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
@@ -38,6 +42,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             return new(
                 _mockCommentService.Object,
+                _mockMediator.Object,
                 _mockBlogConfig.Object,
                 _mockTimeZoneResolver.Object,
                 _mockBlogNotificationClient.Object);
@@ -54,7 +59,7 @@ namespace Moonglade.Web.Tests.Controllers
                 }
             };
 
-            _mockCommentService.Setup(p => p.GetApprovedCommentsAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default))
                 .Returns(Task.FromResult(comments));
 
             _mockTimeZoneResolver.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(DateTime.Today);
