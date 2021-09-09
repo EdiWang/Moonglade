@@ -143,7 +143,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            await _commentService.DeleteAsync(commentIds);
+            await _mediator.Send(new DeleteCommentsCommand(commentIds));
             return Ok(commentIds);
         }
 

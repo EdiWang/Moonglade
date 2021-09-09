@@ -14,7 +14,6 @@ namespace Moonglade.Comments
     {
         int Count();
         Task ToggleApprovalAsync(Guid[] commentIds);
-        Task DeleteAsync(Guid[] commentIds);
         Task<CommentDetailedItem> CreateAsync(CommentRequest request);
         Task<CommentReply> AddReply(Guid commentId, string replyContent);
     }
@@ -65,30 +64,6 @@ namespace Moonglade.Comments
                 string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
                 await _audit.AddEntry(
                     BlogEventType.Content, cmt.IsApproved ? BlogEventId.CommentApproval : BlogEventId.CommentDisapproval, logMessage);
-            }
-        }
-
-        public async Task DeleteAsync(Guid[] commentIds)
-        {
-            if (commentIds is null || !commentIds.Any())
-            {
-                throw new ArgumentNullException(nameof(commentIds));
-            }
-
-            var spec = new CommentSpec(commentIds);
-            var comments = await _commentRepo.GetAsync(spec);
-            foreach (var cmt in comments)
-            {
-                // 1. Delete all replies
-                var cReplies = await _commentReplyRepo.GetAsync(new CommentReplySpec(cmt.Id));
-                if (cReplies.Any())
-                {
-                    await _commentReplyRepo.DeleteAsync(cReplies);
-                }
-
-                // 2. Delete comment itself
-                await _commentRepo.DeleteAsync(cmt);
-                await _audit.AddEntry(BlogEventType.Content, BlogEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
             }
         }
 

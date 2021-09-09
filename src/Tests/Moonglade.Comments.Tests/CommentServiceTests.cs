@@ -110,9 +110,10 @@ namespace Moonglade.Comments.Tests
         [Test]
         public void DeleteAsync_EmptyIds()
         {
-            var service = CreateCommentService();
+            var handler = new DeleteCommentsCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object,
+                _mockCommentReplyEntityRepo.Object);
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => { await service.DeleteAsync(Array.Empty<Guid>()); });
+            Assert.ThrowsAsync<ArgumentNullException>(async () => { await handler.Handle(new(Array.Empty<Guid>()), default); });
         }
 
         [Test]
@@ -149,9 +150,10 @@ namespace Moonglade.Comments.Tests
                 .Setup(p => p.GetAsync(It.IsAny<CommentReplySpec>()))
                 .Returns(Task.FromResult(replyEntities));
 
-            var service = CreateCommentService();
+            var handler = new DeleteCommentsCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object,
+                _mockCommentReplyEntityRepo.Object);
 
-            await service.DeleteAsync(new[] { Guid.Empty });
+            await handler.Handle(new(new[] { Guid.Empty }), default);
 
             _mockCommentReplyEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<CommentReplyEntity>>()));
             _mockCommentEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<CommentEntity>()));
