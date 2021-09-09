@@ -49,12 +49,11 @@ namespace Moonglade.Comments.Tests
         }
 
         [Test]
-        public void Count_ExpectedBehavior()
+        public async Task Count_ExpectedBehavior()
         {
             _mockCommentEntityRepo.Setup(p => p.Count(t => true)).Returns(996);
-            var service = CreateCommentService();
-
-            var result = service.Count();
+            var handler = new CountCommentsQueryHandler(_mockCommentEntityRepo.Object);
+            var result = await handler.Handle(new(), default);
             Assert.AreEqual(996, result);
         }
 

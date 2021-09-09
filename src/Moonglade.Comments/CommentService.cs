@@ -12,7 +12,6 @@ namespace Moonglade.Comments
 {
     public interface ICommentService
     {
-        int Count();
         Task ToggleApprovalAsync(Guid[] commentIds);
         Task<CommentDetailedItem> CreateAsync(CommentRequest request);
         Task<CommentReply> AddReply(Guid commentId, string replyContent);
@@ -44,8 +43,6 @@ namespace Moonglade.Comments
             _postRepo = postRepo;
             _commentModerator = commentModerator;
         }
-
-        public int Count() => _commentRepo.Count(c => true);
 
         public async Task ToggleApprovalAsync(Guid[] commentIds)
         {

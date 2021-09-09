@@ -8,14 +8,12 @@ namespace Moonglade.Web.Pages.Admin
 {
     public class CommentsModel : PageModel
     {
-        private readonly ICommentService _commentService;
         private readonly IMediator _mediator;
 
         public StaticPagedList<CommentDetailedItem> CommentDetailedItems { get; set; }
 
-        public CommentsModel(ICommentService commentService, IMediator mediator)
+        public CommentsModel(IMediator mediator)
         {
-            _commentService = commentService;
             _mediator = mediator;
         }
 
@@ -23,7 +21,8 @@ namespace Moonglade.Web.Pages.Admin
         {
             const int pageSize = 10;
             var comments = await _mediator.Send(new GetCommentsQuery(pageSize, pageIndex));
-            CommentDetailedItems = new(comments, pageIndex, pageSize, _commentService.Count());
+            var count = await _mediator.Send(new CountCommentsQuery());
+            CommentDetailedItems = new(comments, pageIndex, pageSize, count);
         }
     }
 }

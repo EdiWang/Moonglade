@@ -13,21 +13,18 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class CommentsModelTests
     {
         private MockRepository _mockRepository;
-
-        private Mock<ICommentService> _mockCommentService;
         private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Strict);
-            _mockCommentService = _mockRepository.Create<ICommentService>();
             _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private CommentsModel CreateCommentsModel()
         {
-            return new(_mockCommentService.Object, _mockMediator.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -37,7 +34,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
 
             _mockMediator.Setup(p => p.Send(It.IsAny<GetCommentsQuery>(), default))
                 .Returns(Task.FromResult(comments));
-            _mockCommentService.Setup(p => p.Count()).Returns(FakeData.Int2);
+            _mockMediator.Setup(p => p.Send(It.IsAny<CountCommentsQuery>(), default)).Returns(Task.FromResult(FakeData.Int2));
 
             var commentsModel = CreateCommentsModel();
             int pageIndex = 1;
