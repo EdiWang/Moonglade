@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Core;
 using Moonglade.Core.PostFeature;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -12,17 +11,15 @@ namespace Moonglade.Web.Pages
     public class IndexModel : PageModel
     {
         private readonly IBlogConfig _blogConfig;
-        private readonly IPostCountService _postCountService;
         private readonly IMediator _mediator;
         private readonly IBlogCache _cache;
 
         public StaticPagedList<PostDigest> Posts { get; set; }
 
         public IndexModel(
-            IBlogConfig blogConfig, IPostCountService postCountService, IBlogCache cache, IMediator mediator)
+            IBlogConfig blogConfig, IBlogCache cache, IMediator mediator)
         {
             _blogConfig = blogConfig;
-            _postCountService = postCountService;
             _cache = cache;
             _mediator = mediator;
         }
@@ -31,7 +28,7 @@ namespace Moonglade.Web.Pages
         {
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
             var posts = await _mediator.Send(new ListPostsQuery(pagesize, p));
-            var count = _cache.GetOrCreate(CacheDivision.General, "postcount", _ => _postCountService.CountPublic());
+            var count = await _cache.GetOrCreateAsync(CacheDivision.General, "postcount", _ => _mediator.Send(new CountPostQuery(CountType.Public)));
 
             var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);
 

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
 using System.Threading.Tasks;
@@ -13,7 +12,6 @@ namespace Moonglade.Web.Pages
 {
     public class CategoryListModel : PageModel
     {
-        private readonly IPostCountService _postCountService;
         private readonly IMediator _mediator;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogCache _cache;
@@ -25,13 +23,11 @@ namespace Moonglade.Web.Pages
         public CategoryListModel(
             IBlogConfig blogConfig,
             IMediator mediator,
-            IBlogCache cache,
-            IPostCountService postCountService)
+            IBlogCache cache)
         {
             _blogConfig = blogConfig;
             _mediator = mediator;
             _cache = cache;
-            _postCountService = postCountService;
 
             P = 1;
         }
@@ -49,8 +45,8 @@ namespace Moonglade.Web.Pages
             ViewData["CategoryRouteName"] = cat.RouteName;
             ViewData["CategoryDescription"] = cat.Note;
 
-            var postCount = _cache.GetOrCreate(CacheDivision.PostCountCategory, cat.Id.ToString(),
-                _ => _postCountService.CountByCategory(cat.Id));
+            var postCount = await _cache.GetOrCreateAsync(CacheDivision.PostCountCategory, cat.Id.ToString(),
+                _ => _mediator.Send(new CountPostQuery(CountType.Category, cat.Id)));
 
             var postList = await _mediator.Send(new ListPostsQuery(pageSize, P, cat.Id));
 

@@ -137,8 +137,7 @@ namespace Moonglade.Web
             services.AddHealthChecks();
 
             // Blog Services
-            services.AddScoped<IPostCountService, PostCountService>()
-                    .AddPingback()
+            services.AddPingback()
                     .AddSyndication()
                     .AddNotificationClient()
                     .AddReleaseCheckerClient()

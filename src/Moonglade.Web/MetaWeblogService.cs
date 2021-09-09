@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Core;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PageFeature;
 using Moonglade.Core.PostFeature;
@@ -23,7 +22,6 @@ namespace Moonglade.Web
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly ILogger<MetaWeblogService> _logger;
-        private readonly IPostCountService _postCountService;
         private readonly IBlogImageStorage _blogImageStorage;
         private readonly IFileNameGenerator _fileNameGenerator;
         private readonly IMediator _mediator;
@@ -32,7 +30,6 @@ namespace Moonglade.Web
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             ILogger<MetaWeblogService> logger,
-            IPostCountService postCountService,
             IBlogImageStorage blogImageStorage,
             IFileNameGenerator fileNameGenerator,
             IMediator mediator)
@@ -40,7 +37,6 @@ namespace Moonglade.Web
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _logger = logger;
-            _postCountService = postCountService;
             _blogImageStorage = blogImageStorage;
             _fileNameGenerator = fileNameGenerator;
             _mediator = mediator;

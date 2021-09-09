@@ -1,3 +1,4 @@
+using Moonglade.Core.PostFeature;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
@@ -28,19 +29,12 @@ namespace Moonglade.Core.Tests
             _mockPostCategoryRepo = _mockRepository.Create<IRepository<PostCategoryEntity>>();
         }
 
-        private PostCountService CreateService()
-        {
-            return new(
-                _mockPostEntityRepo.Object,
-                _mockPostTagEntityRepo.Object,
-                _mockPostCategoryRepo.Object);
-        }
-
         [Test]
         public void CountPublic_OK()
         {
-            var svc = CreateService();
-            svc.CountPublic();
+            var handler = new CountPostQueryHandler(_mockPostEntityRepo.Object, _mockPostTagEntityRepo.Object,
+                _mockPostCategoryRepo.Object);
+            handler.Handle(new(CountType.Public), default);
 
             _mockPostEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>()));
         }
@@ -48,8 +42,9 @@ namespace Moonglade.Core.Tests
         [Test]
         public void CountByCategory_OK()
         {
-            var svc = CreateService();
-            svc.CountByCategory(Uid);
+            var handler = new CountPostQueryHandler(_mockPostEntityRepo.Object, _mockPostTagEntityRepo.Object,
+                _mockPostCategoryRepo.Object);
+            handler.Handle(new(CountType.Category, Uid), default);
 
             _mockPostCategoryRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostCategoryEntity, bool>>>()));
         }
@@ -57,8 +52,9 @@ namespace Moonglade.Core.Tests
         [Test]
         public void CountByTag_OK()
         {
-            var svc = CreateService();
-            svc.CountByTag(996);
+            var handler = new CountPostQueryHandler(_mockPostEntityRepo.Object, _mockPostTagEntityRepo.Object,
+                _mockPostCategoryRepo.Object);
+            handler.Handle(new(CountType.Tag, tagId: 996), default);
 
             _mockPostTagEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostTagEntity, bool>>>()));
         }
@@ -66,8 +62,9 @@ namespace Moonglade.Core.Tests
         [Test]
         public void CountByFeatured_OK()
         {
-            var svc = CreateService();
-            svc.CountByFeatured();
+            var handler = new CountPostQueryHandler(_mockPostEntityRepo.Object, _mockPostTagEntityRepo.Object,
+                _mockPostCategoryRepo.Object);
+            handler.Handle(new(CountType.Featured), default);
 
             _mockPostEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostEntity, bool>>>()));
         }

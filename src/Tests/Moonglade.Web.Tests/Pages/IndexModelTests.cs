@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Core;
 using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
@@ -19,7 +18,6 @@ namespace Moonglade.Web.Tests.Pages
         private MockRepository _mockRepository;
 
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IPostCountService> _mockPostQueryService;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IMediator> _mockMediator;
 
@@ -29,7 +27,6 @@ namespace Moonglade.Web.Tests.Pages
             _mockRepository = new(MockBehavior.Default);
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockPostQueryService = _mockRepository.Create<IPostCountService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockMediator = _mockRepository.Create<IMediator>();
 
@@ -43,7 +40,6 @@ namespace Moonglade.Web.Tests.Pages
         {
             return new(
                 _mockBlogConfig.Object,
-                _mockPostQueryService.Object,
                 _mockBlogCache.Object,
                 _mockMediator.Object);
         }
@@ -54,11 +50,11 @@ namespace Moonglade.Web.Tests.Pages
             _mockMediator.Setup(p => p.Send(It.IsAny<ListPostsQuery>(), default))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
-            _mockPostQueryService.Setup(p => p.CountPublic()).Returns(FakeData.Int2);
+            _mockMediator.Setup(p => p.Send(It.IsAny<CountPostQuery>(), default)).Returns(Task.FromResult(FakeData.Int2));
 
             _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.General, "postcount", It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(FakeData.Int2);
+                    p.GetOrCreateAsync(CacheDivision.General, "postcount", It.IsAny<Func<ICacheEntry, Task<int>>>()))
+                .Returns(Task.FromResult(FakeData.Int2));
 
             var indexModel = CreateIndexModel();
             int p = 1;

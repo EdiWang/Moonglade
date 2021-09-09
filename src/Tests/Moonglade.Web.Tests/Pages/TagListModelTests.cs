@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Core;
 using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.Web.Pages;
@@ -26,7 +25,6 @@ namespace Moonglade.Web.Tests.Pages
 
         private Mock<IMediator> _mockMediator;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IPostCountService> _mockPostQueryService;
         private Mock<IBlogCache> _mockBlogCache;
 
         [SetUp]
@@ -36,7 +34,6 @@ namespace Moonglade.Web.Tests.Pages
 
             _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockPostQueryService = _mockRepository.Create<IPostCountService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
 
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
@@ -50,7 +47,6 @@ namespace Moonglade.Web.Tests.Pages
             return new(
                 _mockMediator.Object,
                 _mockBlogConfig.Object,
-                _mockPostQueryService.Object,
                 _mockBlogCache.Object);
         }
 
@@ -82,8 +78,8 @@ namespace Moonglade.Web.Tests.Pages
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(FakeData.Int1);
+                    p.GetOrCreateAsync(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, Task<int>>>()))
+                .Returns(Task.FromResult(FakeData.Int1));
 
             var httpContext = new DefaultHttpContext();
             var modelState = new ModelStateDictionary();
@@ -99,7 +95,6 @@ namespace Moonglade.Web.Tests.Pages
             var model = new TagListModel(
                 _mockMediator.Object,
                 _mockBlogConfig.Object,
-                _mockPostQueryService.Object,
                 _mockBlogCache.Object)
             {
                 PageContext = pageContext,
