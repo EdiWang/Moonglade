@@ -231,11 +231,11 @@ namespace Moonglade.Comments.Tests
         [TestCase(-1)]
         public void GetCommentsAsync_InvalidPageSize(int pageSize)
         {
-            var service = CreateCommentService();
+            var handler = new GetCommentsQueryHandler(_mockCommentEntityRepo.Object);
 
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
-                await service.GetCommentsAsync(pageSize, 1);
+                await handler.Handle(new(pageSize, 1), default);
             });
         }
 
@@ -248,8 +248,8 @@ namespace Moonglade.Comments.Tests
                 It.IsAny<Expression<Func<CommentEntity, CommentDetailedItem>>>()))
                 .Returns(Task.FromResult(details));
 
-            var service = CreateCommentService();
-            var result = await service.GetCommentsAsync(7, 996);
+            var handler = new GetCommentsQueryHandler(_mockCommentEntityRepo.Object);
+            var result = await handler.Handle(new(7, 996), default);
 
             Assert.IsNotNull(result);
             _mockCommentEntityRepo.Verify(p => p.SelectAsync(It.IsAny<CommentSpec>(),

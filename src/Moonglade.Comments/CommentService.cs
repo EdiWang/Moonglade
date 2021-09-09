@@ -5,7 +5,6 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +13,6 @@ namespace Moonglade.Comments
     public interface ICommentService
     {
         int Count();
-        Task<IReadOnlyList<CommentDetailedItem>> GetCommentsAsync(int pageSize, int pageIndex);
         Task ToggleApprovalAsync(Guid[] commentIds);
         Task DeleteAsync(Guid[] commentIds);
         Task<CommentDetailedItem> CreateAsync(CommentRequest request);
@@ -49,19 +47,6 @@ namespace Moonglade.Comments
         }
 
         public int Count() => _commentRepo.Count(c => true);
-
-        public Task<IReadOnlyList<CommentDetailedItem>> GetCommentsAsync(int pageSize, int pageIndex)
-        {
-            if (pageSize < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} can not be less than 1.");
-            }
-
-            var spec = new CommentSpec(pageSize, pageIndex);
-            var comments = _commentRepo.SelectAsync(spec, CommentDetailedItem.EntitySelector);
-
-            return comments;
-        }
 
         public async Task ToggleApprovalAsync(Guid[] commentIds)
         {

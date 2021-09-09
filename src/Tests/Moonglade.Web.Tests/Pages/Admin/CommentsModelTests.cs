@@ -1,3 +1,4 @@
+using MediatR;
 using Moonglade.Comments;
 using Moonglade.Web.Pages.Admin;
 using Moq;
@@ -14,18 +15,19 @@ namespace Moonglade.Web.Tests.Pages.Admin
         private MockRepository _mockRepository;
 
         private Mock<ICommentService> _mockCommentService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Strict);
             _mockCommentService = _mockRepository.Create<ICommentService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private CommentsModel CreateCommentsModel()
         {
-            return new(
-                _mockCommentService.Object);
+            return new(_mockCommentService.Object, _mockMediator.Object);
         }
 
         [Test]
@@ -33,7 +35,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<CommentDetailedItem> comments = new List<CommentDetailedItem>();
 
-            _mockCommentService.Setup(p => p.GetCommentsAsync(It.IsAny<int>(), 1))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCommentsQuery>(), default))
                 .Returns(Task.FromResult(comments));
             _mockCommentService.Setup(p => p.Count()).Returns(FakeData.Int2);
 
