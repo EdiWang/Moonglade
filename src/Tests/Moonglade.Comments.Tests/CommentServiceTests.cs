@@ -70,11 +70,10 @@ namespace Moonglade.Comments.Tests
         [Test]
         public void ToggleApprovalAsync_EmptyIds()
         {
-            var service = CreateCommentService();
-
+            var handler = new ToggleApprovalCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object);
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                await service.ToggleApprovalAsync(Array.Empty<Guid>());
+                await handler.Handle(new(Array.Empty<Guid>()), default);
             });
         }
 
@@ -99,8 +98,8 @@ namespace Moonglade.Comments.Tests
 
             _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<CommentSpec>())).Returns(Task.FromResult(fakeComments));
 
-            var service = CreateCommentService();
-            await service.ToggleApprovalAsync(new[] { Guid.Empty });
+            var handler = new ToggleApprovalCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object);
+            await handler.Handle(new(new[] { Guid.Empty }), default);
 
             Assert.IsTrue(cmt.IsApproved);
             _mockCommentEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<CommentEntity>()));

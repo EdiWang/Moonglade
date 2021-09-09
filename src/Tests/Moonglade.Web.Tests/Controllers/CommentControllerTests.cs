@@ -186,7 +186,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task SetApprovalStatus_ValidId()
         {
-            _mockCommentService.Setup(p => p.ToggleApprovalAsync(It.IsAny<Guid[]>()));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ToggleApprovalCommand>(), default));
             var id = Guid.NewGuid();
 
             var ctl = CreateCommentController();

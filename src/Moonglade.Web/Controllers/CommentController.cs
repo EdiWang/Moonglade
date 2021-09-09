@@ -128,7 +128,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
         {
-            await _commentService.ToggleApprovalAsync(new[] { commentId });
+            await _mediator.Send(new ToggleApprovalCommand(new[] { commentId }));
             return Ok(commentId);
         }
 

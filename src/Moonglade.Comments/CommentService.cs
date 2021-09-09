@@ -5,14 +5,12 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Moonglade.Comments
 {
     public interface ICommentService
     {
-        Task ToggleApprovalAsync(Guid[] commentIds);
         Task<CommentDetailedItem> CreateAsync(CommentRequest request);
         Task<CommentReply> AddReply(Guid commentId, string replyContent);
     }
@@ -42,26 +40,6 @@ namespace Moonglade.Comments
             _commentReplyRepo = commentReplyRepo;
             _postRepo = postRepo;
             _commentModerator = commentModerator;
-        }
-
-        public async Task ToggleApprovalAsync(Guid[] commentIds)
-        {
-            if (commentIds is null || !commentIds.Any())
-            {
-                throw new ArgumentNullException(nameof(commentIds));
-            }
-
-            var spec = new CommentSpec(commentIds);
-            var comments = await _commentRepo.GetAsync(spec);
-            foreach (var cmt in comments)
-            {
-                cmt.IsApproved = !cmt.IsApproved;
-                await _commentRepo.UpdateAsync(cmt);
-
-                string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
-                await _audit.AddEntry(
-                    BlogEventType.Content, cmt.IsApproved ? BlogEventId.CommentApproval : BlogEventId.CommentDisapproval, logMessage);
-            }
         }
 
         public async Task<CommentDetailedItem> CreateAsync(CommentRequest request)
