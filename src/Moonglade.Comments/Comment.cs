@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Comments
 {
@@ -22,5 +25,22 @@ namespace Moonglade.Comments
         public string IpAddress { get; set; }
         public string PostTitle { get; set; }
         public bool IsApproved { get; set; }
+
+        public static Expression<Func<CommentEntity, CommentDetailedItem>> EntitySelector => p => new()
+        {
+            Id = p.Id,
+            CommentContent = p.CommentContent,
+            CreateTimeUtc = p.CreateTimeUtc,
+            Email = p.Email,
+            IpAddress = p.IPAddress,
+            Username = p.Username,
+            IsApproved = p.IsApproved,
+            PostTitle = p.Post.Title,
+            CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
+            {
+                ReplyContent = cr.ReplyContent,
+                ReplyTimeUtc = cr.CreateTimeUtc
+            }).ToList()
+        };
     }
 }

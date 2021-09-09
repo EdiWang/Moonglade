@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Edi.WordFilter" Version="1.4.0" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.ContentModerator" Version="2.0.0" />
   </ItemGroup>
 
