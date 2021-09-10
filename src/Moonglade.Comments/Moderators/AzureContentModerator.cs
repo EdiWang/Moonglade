@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Moonglade.Comments
+namespace Moonglade.Comments.Moderators
 {
     public class AzureContentModerator : ICommentModerator, IDisposable
     {

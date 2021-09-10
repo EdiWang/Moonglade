@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Moonglade.Comments
+namespace Moonglade.Comments.Moderators
 {
     public interface ICommentModerator
     {

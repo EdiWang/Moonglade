@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Comments
+﻿namespace Moonglade.Comments.Moderators
 {
     public class AzureContentModeratorSettings
     {

@@ -1,3 +1,4 @@
+using Moonglade.Comments.Moderators;
 using Moonglade.Configuration;
 using Moq;
 using NUnit.Framework;

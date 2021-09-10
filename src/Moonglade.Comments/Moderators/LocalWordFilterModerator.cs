@@ -3,7 +3,7 @@ using Moonglade.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Moonglade.Comments
+namespace Moonglade.Comments.Moderators
 {
     public class LocalWordFilterModerator : ICommentModerator
     {

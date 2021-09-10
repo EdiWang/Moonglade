@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moonglade.Comments.Moderators;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
