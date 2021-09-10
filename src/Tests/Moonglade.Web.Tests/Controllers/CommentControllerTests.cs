@@ -18,7 +18,6 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<ICommentService> _mockCommentService;
         private Mock<IMediator> _mockMediator;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogNotificationClient> _mockBlogNotificationClient;
@@ -30,7 +29,6 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockCommentService = _mockRepository.Create<ICommentService>();
             _mockMediator = _mockRepository.Create<IMediator>();
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
@@ -41,7 +39,6 @@ namespace Moonglade.Web.Tests.Controllers
         private CommentController CreateCommentController()
         {
             return new(
-                _mockCommentService.Object,
                 _mockMediator.Object,
                 _mockBlogConfig.Object,
                 _mockTimeZoneResolver.Object,

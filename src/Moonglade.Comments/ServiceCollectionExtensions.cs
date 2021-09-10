@@ -9,8 +9,6 @@ namespace Moonglade.Comments
     {
         public static IServiceCollection AddComments(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<ICommentService, CommentService>();
-
             var section = configuration.GetSection("CommentModerator");
             var settings = section.Get<CommentModeratorSettings>();
 

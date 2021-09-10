@@ -37,14 +37,6 @@ namespace Moonglade.Comments.Tests
             _mockCommentModerator = _mockRepository.Create<ICommentModerator>();
         }
 
-        private CommentService CreateCommentService()
-        {
-            return new(
-                _mockBlogAudit.Object,
-                _mockCommentEntityRepo.Object,
-                _mockCommentReplyEntityRepo.Object);
-        }
-
         [Test]
         public async Task Count_ExpectedBehavior()
         {
@@ -217,10 +209,10 @@ namespace Moonglade.Comments.Tests
         {
             _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(ValueTask.FromResult((CommentEntity)null));
 
-            var service = CreateCommentService();
+            var handler = new ReplyCommentCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object, _mockCommentReplyEntityRepo.Object);
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await service.AddReply(Guid.Empty, "996");
+                await handler.Handle(new(Guid.Empty, "996"), default);
             });
         }
 

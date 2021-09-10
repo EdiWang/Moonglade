@@ -27,7 +27,6 @@ namespace Moonglade.Web.Controllers
     {
         #region Private Fields
 
-        private readonly ICommentService _commentService;
         private readonly IMediator _mediator;
 
         private readonly IBlogNotificationClient _notificationClient;
@@ -37,13 +36,11 @@ namespace Moonglade.Web.Controllers
         #endregion
 
         public CommentController(
-            ICommentService commentService,
             IMediator mediator,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IBlogNotificationClient notificationClient)
         {
-            _commentService = commentService;
             _mediator = mediator;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
@@ -148,7 +145,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            var reply = await _commentService.AddReply(commentId, replyContent);
+            var reply = await _mediator.Send(new ReplyCommentCommand(commentId, replyContent));
             if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
             {
                 var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
