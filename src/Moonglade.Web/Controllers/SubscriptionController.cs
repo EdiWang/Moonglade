@@ -18,20 +18,17 @@ namespace Moonglade.Web.Controllers
     [ApiController]
     public class SubscriptionController : ControllerBase
     {
-        private readonly ISyndicationDataSource _syndicationDataSource;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogCache _cache;
         private readonly IOpmlWriter _opmlWriter;
         private readonly IMediator _mediator;
 
         public SubscriptionController(
-            ISyndicationDataSource syndicationDataSource,
             IBlogConfig blogConfig,
             IBlogCache cache,
             IOpmlWriter opmlWriter,
             IMediator mediator)
         {
-            _syndicationDataSource = syndicationDataSource;
             _blogConfig = blogConfig;
             _cache = cache;
             _opmlWriter = opmlWriter;

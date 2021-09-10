@@ -19,7 +19,6 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<ISyndicationDataSource> _mockSyndicationService;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IOpmlWriter> _mockOpmlWriter;
@@ -30,7 +29,6 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockSyndicationService = _mockRepository.Create<ISyndicationDataSource>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockOpmlWriter = _mockRepository.Create<IOpmlWriter>();
@@ -40,7 +38,6 @@ namespace Moonglade.Web.Tests.Controllers
         private SubscriptionController CreateSubscriptionController()
         {
             return new(
-                _mockSyndicationService.Object,
                 _mockBlogConfig.Object,
                 _mockBlogCache.Object,
                 _mockOpmlWriter.Object, _mockMediator.Object);

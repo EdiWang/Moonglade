@@ -29,15 +29,13 @@ namespace Moonglade.Syndication
             var acc = httpContextAccessor;
             var baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
 
-            _feedGenerator = new()
-            {
-                HostUrl = baseUrl,
-                HeadTitle = blogConfig.FeedSettings.RssTitle,
-                HeadDescription = blogConfig.GeneralSettings.MetaDescription,
-                Copyright = blogConfig.FeedSettings.RssCopyright,
-                Generator = $"Moonglade v{Helper.AppVersion}",
-                TrackBackUrl = baseUrl
-            };
+            _feedGenerator = new(
+                baseUrl,
+                blogConfig.FeedSettings.RssTitle,
+                blogConfig.GeneralSettings.MetaDescription,
+                blogConfig.FeedSettings.RssCopyright,
+                 $"Moonglade v{Helper.AppVersion}",
+                baseUrl);
         }
 
         public async Task<string> Handle(GetRssStringQuery request, CancellationToken cancellationToken)

@@ -17,6 +17,18 @@ namespace Moonglade.Syndication
             FeedItemCollection = new List<FeedEntry>();
         }
 
+        public FeedGenerator(string hostUrl, string headTitle, string headDescription, string copyright, string generator, string trackBackUrl)
+        {
+            HostUrl = hostUrl;
+            HeadTitle = headTitle;
+            HeadDescription = headDescription;
+            Copyright = copyright;
+            Generator = generator;
+            TrackBackUrl = trackBackUrl;
+
+            FeedItemCollection = new List<FeedEntry>();
+        }
+
         #region Properties
 
         public IEnumerable<FeedEntry> FeedItemCollection { get; set; }
