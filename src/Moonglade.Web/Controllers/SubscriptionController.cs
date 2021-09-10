@@ -18,20 +18,20 @@ namespace Moonglade.Web.Controllers
     [ApiController]
     public class SubscriptionController : ControllerBase
     {
-        private readonly ISyndicationService _syndicationService;
+        private readonly ISyndicationDataSource _syndicationDataSource;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogCache _cache;
         private readonly IOpmlWriter _opmlWriter;
         private readonly IMediator _mediator;
 
         public SubscriptionController(
-            ISyndicationService syndicationService,
+            ISyndicationDataSource syndicationDataSource,
             IBlogConfig blogConfig,
             IBlogCache cache,
             IOpmlWriter opmlWriter,
             IMediator mediator)
         {
-            _syndicationService = syndicationService;
+            _syndicationDataSource = syndicationDataSource;
             _blogConfig = blogConfig;
             _cache = cache;
             _opmlWriter = opmlWriter;
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Controllers
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var xml = await _syndicationService.GetRssStringAsync(routeName);
+                var xml = await _mediator.Send(new GetRssStringQuery(routeName));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();
@@ -88,7 +88,7 @@ namespace Moonglade.Web.Controllers
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var xml = await _syndicationService.GetAtomStringAsync();
+                var xml = await _mediator.Send(new GetAtomStringQuery());
                 return Content(xml, "text/xml");
             });
         }

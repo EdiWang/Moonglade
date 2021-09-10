@@ -84,7 +84,7 @@ namespace Moonglade.Syndication.Tests
                 .Returns(Task.FromResult((IReadOnlyList<FeedEntry>)entries));
         }
 
-        private SyndicationService CreateService()
+        private SyndicationDataSource CreateService()
         {
             return new(
                 _mockOptions.Object,
@@ -99,9 +99,10 @@ namespace Moonglade.Syndication.Tests
         {
             SetupPostEntity(_fakeFeedsFullProperties);
 
-            var service = CreateService();
+            var handler = new GetRssStringQueryHandler(_mockBlogConfig.Object, CreateService(),
+                _mockHttpContextAccessor.Object);
 
-            var result = await service.GetRssStringAsync();
+            var result = await handler.Handle(new(), default);
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
@@ -120,9 +121,10 @@ namespace Moonglade.Syndication.Tests
             _mockRepositoryCategoryEntity.Setup(p =>
                 p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(Task.FromResult((CategoryEntity)null));
 
-            var service = CreateService();
+            var handler = new GetRssStringQueryHandler(_mockBlogConfig.Object, CreateService(),
+                _mockHttpContextAccessor.Object);
 
-            var result = await service.GetRssStringAsync("fuckpdd");
+            var result = await handler.Handle(new("fuckpdd"), default);
             Assert.IsNull(result);
         }
 
@@ -142,9 +144,10 @@ namespace Moonglade.Syndication.Tests
             _mockRepositoryCategoryEntity.Setup(p =>
                 p.GetAsync(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(Task.FromResult(fakeCat));
 
-            var service = CreateService();
+            var handler = new GetRssStringQueryHandler(_mockBlogConfig.Object, CreateService(),
+                _mockHttpContextAccessor.Object);
 
-            var result = await service.GetRssStringAsync("fuckpdd");
+            var result = await handler.Handle(new("fuckpdd"), default);
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
@@ -160,9 +163,10 @@ namespace Moonglade.Syndication.Tests
         {
             SetupPostEntity(_fakeFeedsFullProperties);
 
-            var service = CreateService();
+            var handler = new GetAtomStringQueryHandler(_mockBlogConfig.Object, CreateService(),
+                _mockHttpContextAccessor.Object);
 
-            var result = await service.GetAtomStringAsync();
+            var result = await handler.Handle(new(), default);
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
@@ -185,8 +189,10 @@ namespace Moonglade.Syndication.Tests
                 Editor = EditorChoice.Markdown
             });
 
-            var service = CreateService();
-            var result = await service.GetRssStringAsync();
+            var handler = new GetRssStringQueryHandler(_mockBlogConfig.Object, CreateService(),
+                _mockHttpContextAccessor.Object);
+            var result = await handler.Handle(new(), default);
+
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);
@@ -206,8 +212,9 @@ namespace Moonglade.Syndication.Tests
                 Editor = EditorChoice.Html
             });
 
-            var service = CreateService();
-            var result = await service.GetRssStringAsync();
+            var handler = new GetRssStringQueryHandler(_mockBlogConfig.Object, CreateService(),
+                _mockHttpContextAccessor.Object);
+            var result = await handler.Handle(new(), default);
             Assert.IsNotNull(result);
 
             var xdoc = XDocument.Parse(result);

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Data.Entities;
@@ -10,16 +9,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Moonglade.Syndication
 {
-    public interface ISyndicationService
+    public interface ISyndicationDataSource
     {
-        Task<string> GetRssStringAsync(string categoryName = null);
-        Task<string> GetAtomStringAsync();
+        Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null);
     }
 
-    public class SyndicationService : ISyndicationService
+    public class SyndicationDataSource : ISyndicationDataSource
     {
         private readonly string _baseUrl;
         private readonly AppSettings _settings;
@@ -27,9 +26,7 @@ namespace Moonglade.Syndication
         private readonly IRepository<CategoryEntity> _catRepo;
         private readonly IRepository<PostEntity> _postRepo;
 
-        private readonly FeedGenerator _feedGenerator;
-
-        public SyndicationService(
+        public SyndicationDataSource(
             IOptions<AppSettings> settings,
             IBlogConfig blogConfig,
             IHttpContextAccessor httpContextAccessor,
@@ -43,36 +40,9 @@ namespace Moonglade.Syndication
 
             var acc = httpContextAccessor;
             _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
-
-            _feedGenerator = new()
-            {
-                HostUrl = _baseUrl,
-                HeadTitle = _blogConfig.FeedSettings.RssTitle,
-                HeadDescription = _blogConfig.GeneralSettings.MetaDescription,
-                Copyright = _blogConfig.FeedSettings.RssCopyright,
-                Generator = $"Moonglade v{Helper.AppVersion}",
-                TrackBackUrl = _baseUrl
-            };
         }
 
-        public async Task<string> GetRssStringAsync(string categoryName = null)
-        {
-            var data = await GetDataAsync(categoryName);
-            if (data is null) return null;
-
-            _feedGenerator.FeedItemCollection = data;
-            var xml = await _feedGenerator.WriteRssAsync();
-            return xml;
-        }
-
-        public async Task<string> GetAtomStringAsync()
-        {
-            _feedGenerator.FeedItemCollection = await GetDataAsync();
-            var xml = await _feedGenerator.WriteAtomAsync();
-            return xml;
-        }
-
-        private async Task<IReadOnlyList<FeedEntry>> GetDataAsync(string categoryName = null)
+        public async Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null)
         {
             IReadOnlyList<FeedEntry> itemCollection;
             if (!string.IsNullOrWhiteSpace(categoryName))
