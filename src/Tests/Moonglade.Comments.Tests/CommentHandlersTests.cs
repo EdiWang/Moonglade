@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Moonglade.Comments.Tests
 {
     [TestFixture]
-    public class CommentServiceTests
+    public class CommentHandlersTests
     {
         private MockRepository _mockRepository;
 
