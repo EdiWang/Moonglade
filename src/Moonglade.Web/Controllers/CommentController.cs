@@ -17,7 +17,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using CommentRequest = Moonglade.Web.Models.CommentRequest;
 
 namespace Moonglade.Web.Controllers
 {
@@ -88,13 +87,8 @@ namespace Moonglade.Web.Controllers
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            var item = await _commentService.CreateAsync(new(postId)
-            {
-                Username = request.Username,
-                Content = request.Content,
-                Email = request.Email,
-                IpAddress = (bool)HttpContext.Items["DNT"] ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
-            });
+            var ip = (bool)HttpContext.Items["DNT"] ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString();
+            var item = await _mediator.Send(new CreateCommentCommand(postId, request, ip));
 
             if (item is null)
             {

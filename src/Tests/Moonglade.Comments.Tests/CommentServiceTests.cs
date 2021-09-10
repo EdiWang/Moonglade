@@ -40,12 +40,9 @@ namespace Moonglade.Comments.Tests
         private CommentService CreateCommentService()
         {
             return new(
-                _mockBlogConfig.Object,
                 _mockBlogAudit.Object,
                 _mockCommentEntityRepo.Object,
-                _mockCommentReplyEntityRepo.Object,
-                _mockPostEntityRepo.Object,
-                _mockCommentModerator.Object);
+                _mockCommentReplyEntityRepo.Object);
         }
 
         [Test]
@@ -171,16 +168,16 @@ namespace Moonglade.Comments.Tests
                 .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(), p => p.Title))
                 .Returns(Task.FromResult("996 is Fubao"));
 
-            CommentRequest req = new CommentRequest(Guid.Empty)
+            CommentRequest req = new CommentRequest
             {
                 Content = "Work 996 and get into ICU",
                 Email = "worker@996.icu",
-                IpAddress = "9.9.6.35",
                 Username = "Fubao Collector"
             };
-            var service = CreateCommentService();
+            var handler = new CreateCommentCommandHandler(_mockBlogConfig.Object, _mockPostEntityRepo.Object,
+                _mockCommentModerator.Object, _mockCommentEntityRepo.Object);
 
-            var result = await service.CreateAsync(req);
+            var result = await handler.Handle(new(Guid.Empty, req, "251.251.251.251"), default);
 
             Assert.IsNotNull(result);
             Assert.AreEqual("996 is Fubao", result.PostTitle);
@@ -202,16 +199,16 @@ namespace Moonglade.Comments.Tests
             _mockCommentModerator.Setup(p => p.HasBadWord(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
 
-            CommentRequest req = new CommentRequest(Guid.Empty)
+            CommentRequest req = new CommentRequest
             {
                 Content = "Work 996 and get into ICU",
                 Email = "worker@996.icu",
-                IpAddress = "9.9.6.35",
                 Username = "Fubao Collector"
             };
-            var service = CreateCommentService();
+            var handler = new CreateCommentCommandHandler(_mockBlogConfig.Object, _mockPostEntityRepo.Object,
+                _mockCommentModerator.Object, _mockCommentEntityRepo.Object);
 
-            var result = await service.CreateAsync(req);
+            var result = await handler.Handle(new(Guid.Empty, req, "251.251.251.251"), default);
             Assert.IsNull(result);
         }
 

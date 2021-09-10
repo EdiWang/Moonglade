@@ -1,8 +1,6 @@
-﻿using Moonglade.Configuration;
-using Moonglade.Data;
+﻿using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
 using Moonglade.Utils;
 using System;
 using System.Threading.Tasks;
@@ -11,87 +9,25 @@ namespace Moonglade.Comments
 {
     public interface ICommentService
     {
-        Task<CommentDetailedItem> CreateAsync(CommentRequest request);
         Task<CommentReply> AddReply(Guid commentId, string replyContent);
     }
 
     public class CommentService : ICommentService
     {
-        private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _audit;
 
-        private readonly IRepository<PostEntity> _postRepo;
         private readonly IRepository<CommentEntity> _commentRepo;
         private readonly IRepository<CommentReplyEntity> _commentReplyRepo;
-        private readonly ICommentModerator _commentModerator;
 
         public CommentService(
-            IBlogConfig blogConfig,
             IBlogAudit audit,
             IRepository<CommentEntity> commentRepo,
-            IRepository<CommentReplyEntity> commentReplyRepo,
-            IRepository<PostEntity> postRepo,
-            ICommentModerator commentModerator)
+            IRepository<CommentReplyEntity> commentReplyRepo)
         {
-            _blogConfig = blogConfig;
             _audit = audit;
 
             _commentRepo = commentRepo;
             _commentReplyRepo = commentReplyRepo;
-            _postRepo = postRepo;
-            _commentModerator = commentModerator;
-        }
-
-        public async Task<CommentDetailedItem> CreateAsync(CommentRequest request)
-        {
-            if (_blogConfig.ContentSettings.EnableWordFilter)
-            {
-                switch (_blogConfig.ContentSettings.WordFilterMode)
-                {
-                    case WordFilterMode.Mask:
-                        request.Username = await _commentModerator.ModerateContent(request.Username);
-                        request.Content = await _commentModerator.ModerateContent(request.Content);
-                        break;
-                    case WordFilterMode.Block:
-                        if (await _commentModerator.HasBadWord(request.Username, request.Content))
-                        {
-                            await Task.CompletedTask;
-                            return null;
-                        }
-                        break;
-                }
-            }
-
-            var model = new CommentEntity
-            {
-                Id = Guid.NewGuid(),
-                Username = request.Username,
-                CommentContent = request.Content,
-                PostId = request.PostId,
-                CreateTimeUtc = DateTime.UtcNow,
-                Email = request.Email,
-                IPAddress = request.IpAddress,
-                IsApproved = !_blogConfig.ContentSettings.RequireCommentReview
-            };
-
-            await _commentRepo.AddAsync(model);
-
-            var spec = new PostSpec(request.PostId, false);
-            var postTitle = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Title);
-
-            var item = new CommentDetailedItem
-            {
-                Id = model.Id,
-                CommentContent = model.CommentContent,
-                CreateTimeUtc = model.CreateTimeUtc,
-                Email = model.Email,
-                IpAddress = model.IPAddress,
-                IsApproved = model.IsApproved,
-                PostTitle = postTitle,
-                Username = model.Username
-            };
-
-            return item;
         }
 
         public async Task<CommentReply> AddReply(Guid commentId, string replyContent)

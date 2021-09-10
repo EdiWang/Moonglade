@@ -113,7 +113,7 @@ namespace Moonglade.Web.Tests.Controllers
                 EnableComments = true
             });
 
-            _mockCommentService.Setup(p => p.CreateAsync(It.IsAny<CommentRequest>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreateCommentCommand>(), default))
                 .Returns(Task.FromResult((CommentDetailedItem)null));
 
             var ctl = CreateCommentController();
@@ -150,7 +150,7 @@ namespace Moonglade.Web.Tests.Controllers
                 SendEmailOnNewComment = false
             });
 
-            _mockCommentService.Setup(p => p.CreateAsync(It.IsAny<CommentRequest>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreateCommentCommand>(), default))
                 .Returns(Task.FromResult(new CommentDetailedItem()
                 {
                     Id = Guid.Empty,
