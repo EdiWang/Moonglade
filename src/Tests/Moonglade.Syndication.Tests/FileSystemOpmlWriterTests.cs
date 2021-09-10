@@ -26,8 +26,8 @@ namespace Moonglade.Syndication.Tests
                 HtmlUrlTemplate = $"{siteRootUrl}/category/[catTitle]"
             };
 
-            var writer = new StringOpmlWriter();
-            var xml = await writer.GetOpmlDataAsync(info);
+            var handler = new GetOpmlQueryHandler();
+            var xml = await handler.Handle(new(info), default);
 
             Assert.IsNotNull(xml);
         }

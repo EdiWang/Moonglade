@@ -20,18 +20,15 @@ namespace Moonglade.Web.Controllers
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogCache _cache;
-        private readonly IOpmlWriter _opmlWriter;
         private readonly IMediator _mediator;
 
         public SubscriptionController(
             IBlogConfig blogConfig,
             IBlogCache cache,
-            IOpmlWriter opmlWriter,
             IMediator mediator)
         {
             _blogConfig = blogConfig;
             _cache = cache;
-            _opmlWriter = opmlWriter;
             _mediator = mediator;
         }
 
@@ -53,7 +50,7 @@ namespace Moonglade.Web.Controllers
                 HtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
             };
 
-            var xml = await _opmlWriter.GetOpmlDataAsync(oi);
+            var xml = await _mediator.Send(new GetOpmlQuery(oi));
             return Content(xml, "text/xml");
         }
 

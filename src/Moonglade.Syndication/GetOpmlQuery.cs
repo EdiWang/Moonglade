@@ -1,12 +1,24 @@
-﻿using System.Text;
+﻿using MediatR;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
 namespace Moonglade.Syndication
 {
-    public class StringOpmlWriter : IOpmlWriter
+    public class GetOpmlQuery : IRequest<string>
     {
-        public async Task<string> GetOpmlDataAsync(OpmlDoc opmlDoc)
+        public GetOpmlQuery(OpmlDoc opmlDoc)
+        {
+            OpmlDoc = opmlDoc;
+        }
+
+        public OpmlDoc OpmlDoc { get; set; }
+    }
+
+    public class GetOpmlQueryHandler : IRequestHandler<GetOpmlQuery, string>
+    {
+        public async Task<string> Handle(GetOpmlQuery request, CancellationToken cancellationToken)
         {
             var sb = new StringBuilder();
 
@@ -23,7 +35,7 @@ namespace Moonglade.Syndication
                 // open HEAD
                 writer.WriteStartElement("head");
                 writer.WriteStartElement("title");
-                writer.WriteValue(opmlDoc.SiteTitle);
+                writer.WriteValue(request.OpmlDoc.SiteTitle);
                 await writer.WriteEndElementAsync();
                 await writer.WriteEndElementAsync();
 
@@ -35,12 +47,12 @@ namespace Moonglade.Syndication
                 writer.WriteAttributeString("title", "All Posts");
                 writer.WriteAttributeString("text", "All Posts");
                 writer.WriteAttributeString("type", "rss");
-                writer.WriteAttributeString("xmlUrl", opmlDoc.XmlUrl);
-                writer.WriteAttributeString("htmlUrl", opmlDoc.HtmlUrl);
+                writer.WriteAttributeString("xmlUrl", request.OpmlDoc.XmlUrl);
+                writer.WriteAttributeString("htmlUrl", request.OpmlDoc.HtmlUrl);
                 await writer.WriteEndElementAsync();
 
                 // categories
-                foreach (var cat in opmlDoc.ContentInfo)
+                foreach (var cat in request.OpmlDoc.ContentInfo)
                 {
                     // open OUTLINE
                     writer.WriteStartElement("outline");
@@ -48,8 +60,8 @@ namespace Moonglade.Syndication
                     writer.WriteAttributeString("title", cat.Key);
                     writer.WriteAttributeString("text", cat.Value);
                     writer.WriteAttributeString("type", "rss");
-                    writer.WriteAttributeString("xmlUrl", opmlDoc.XmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
-                    writer.WriteAttributeString("htmlUrl", opmlDoc.HtmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
+                    writer.WriteAttributeString("xmlUrl", request.OpmlDoc.XmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
+                    writer.WriteAttributeString("htmlUrl", request.OpmlDoc.HtmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
 
                     // close OUTLINE
                     await writer.WriteEndElementAsync();

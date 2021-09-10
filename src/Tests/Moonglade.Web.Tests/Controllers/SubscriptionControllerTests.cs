@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.CategoryFeature;
-using Moonglade.Syndication;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -21,7 +20,6 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogCache> _mockBlogCache;
-        private Mock<IOpmlWriter> _mockOpmlWriter;
         private Mock<IMediator> _mockMediator;
 
         [SetUp]
@@ -31,7 +29,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
-            _mockOpmlWriter = _mockRepository.Create<IOpmlWriter>();
             _mockMediator = _mockRepository.Create<IMediator>();
         }
 
@@ -40,7 +37,7 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockBlogConfig.Object,
                 _mockBlogCache.Object,
-                _mockOpmlWriter.Object, _mockMediator.Object);
+                _mockMediator.Object);
         }
 
         [Test]

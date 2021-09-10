@@ -19,9 +19,6 @@ namespace Moonglade.Syndication.Tests
             // Assert
             var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(ISyndicationDataSource));
             Assert.IsNotNull(obj1);
-
-            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IOpmlWriter));
-            Assert.IsNotNull(obj2);
         }
     }
 }
