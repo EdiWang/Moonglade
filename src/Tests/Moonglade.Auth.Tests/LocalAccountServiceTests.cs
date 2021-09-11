@@ -52,8 +52,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            var account = await svc.GetAsync(Uid);
+            var handler = new GetAccountQueryHandler(_mockLocalAccountRepository.Object);
+            var account = await handler.Handle(new(Uid), default);
 
             Assert.IsNotNull(account);
             Assert.AreEqual(_accountEntity.Username, account.Username);

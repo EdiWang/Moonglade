@@ -11,7 +11,6 @@ namespace Moonglade.Auth
     public interface ILocalAccountService
     {
         int Count();
-        Task<Account> GetAsync(Guid id);
         Task<IReadOnlyList<Account>> GetAllAsync();
         Task<Guid> ValidateAsync(string username, string inputPassword);
         bool Exist(string username);
@@ -36,13 +35,6 @@ namespace Moonglade.Auth
         public int Count()
         {
             return _accountRepo.Count();
-        }
-
-        public async Task<Account> GetAsync(Guid id)
-        {
-            var entity = await _accountRepo.GetAsync(id);
-            var item = new Account(entity);
-            return item;
         }
 
         public Task<IReadOnlyList<Account>> GetAllAsync()
