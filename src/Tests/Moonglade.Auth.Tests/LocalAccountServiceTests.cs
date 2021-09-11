@@ -63,8 +63,8 @@ namespace Moonglade.Auth.Tests
         [Test]
         public async Task GetAllAsync_OK()
         {
-            var svc = CreateService();
-            var account = await svc.GetAllAsync();
+            var handler = new GetAccountsQueryHandler(_mockLocalAccountRepository.Object);
+            var account = await handler.Handle(new(), default);
 
             _mockLocalAccountRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<LocalAccountEntity, Account>>>()));
         }

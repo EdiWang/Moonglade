@@ -3,7 +3,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Moonglade.Auth
@@ -11,7 +10,6 @@ namespace Moonglade.Auth
     public interface ILocalAccountService
     {
         int Count();
-        Task<IReadOnlyList<Account>> GetAllAsync();
         Task<Guid> ValidateAsync(string username, string inputPassword);
         bool Exist(string username);
         Task<Guid> CreateAsync(string username, string clearPassword);
@@ -35,20 +33,6 @@ namespace Moonglade.Auth
         public int Count()
         {
             return _accountRepo.Count();
-        }
-
-        public Task<IReadOnlyList<Account>> GetAllAsync()
-        {
-            var list = _accountRepo.SelectAsync(p => new Account
-            {
-                Id = p.Id,
-                CreateTimeUtc = p.CreateTimeUtc,
-                LastLoginIp = p.LastLoginIp,
-                LastLoginTimeUtc = p.LastLoginTimeUtc,
-                Username = p.Username
-            });
-
-            return list;
         }
 
         public async Task<Guid> ValidateAsync(string username, string inputPassword)
