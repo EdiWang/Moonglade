@@ -1,4 +1,5 @@
 using Edi.Captcha;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -22,6 +23,7 @@ namespace Moonglade.Web.Pages
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly ILocalAccountService _localAccountService;
+        private readonly IMediator _mediator;
         private readonly ILogger<SignInModel> _logger;
         private readonly IBlogAudit _blogAudit;
         private readonly ISessionBasedCaptcha _captcha;
@@ -29,10 +31,12 @@ namespace Moonglade.Web.Pages
         public SignInModel(
             IOptions<AuthenticationSettings> authSettings,
             ILocalAccountService localAccountService,
+            IMediator mediator,
             ILogger<SignInModel> logger,
             IBlogAudit blogAudit, ISessionBasedCaptcha captcha)
         {
             _localAccountService = localAccountService;
+            _mediator = mediator;
             _logger = logger;
             _blogAudit = blogAudit;
             _captcha = captcha;
@@ -102,8 +106,7 @@ namespace Moonglade.Web.Pages
                         var p = new ClaimsPrincipal(ci);
 
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
-                        await _localAccountService.LogSuccessLoginAsync(uid,
-                            HttpContext.Connection.RemoteIpAddress?.ToString());
+                        await _mediator.Send(new LogSuccessLoginCommand(uid, HttpContext.Connection.RemoteIpAddress?.ToString()));
 
                         var successMessage = $@"Authentication success for local account ""{Username}""";
 

@@ -14,7 +14,6 @@ namespace Moonglade.Auth
         Task<Account> GetAsync(Guid id);
         Task<IReadOnlyList<Account>> GetAllAsync();
         Task<Guid> ValidateAsync(string username, string inputPassword);
-        Task LogSuccessLoginAsync(Guid id, string ipAddress);
         bool Exist(string username);
         Task<Guid> CreateAsync(string username, string clearPassword);
         Task UpdatePasswordAsync(Guid id, string clearPassword);
@@ -77,17 +76,6 @@ namespace Moonglade.Auth
 
             var valid = account.PasswordHash == Helper.HashPassword(inputPassword.Trim());
             return valid ? account.Id : Guid.Empty;
-        }
-
-        public async Task LogSuccessLoginAsync(Guid id, string ipAddress)
-        {
-            var entity = await _accountRepo.GetAsync(id);
-            if (entity is not null)
-            {
-                entity.LastLoginIp = ipAddress.Trim();
-                entity.LastLoginTimeUtc = DateTime.UtcNow;
-                await _accountRepo.UpdateAsync(entity);
-            }
         }
 
         public bool Exist(string username)

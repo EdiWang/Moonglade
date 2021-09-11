@@ -1,4 +1,5 @@
 ﻿using Edi.Captcha;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -27,6 +28,7 @@ namespace Moonglade.Web.Tests.Pages
 
         private Mock<IOptions<AuthenticationSettings>> _mockOptions;
         private Mock<ILocalAccountService> _mockLocalAccountService;
+        private Mock<IMediator> _mockMediator;
         private Mock<ILogger<SignInModel>> _mockLogger;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<ISessionBasedCaptcha> _mockSessionBasedCaptcha;
@@ -38,6 +40,7 @@ namespace Moonglade.Web.Tests.Pages
 
             _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
             _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockLogger = _mockRepository.Create<ILogger<SignInModel>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockSessionBasedCaptcha = _mockRepository.Create<ISessionBasedCaptcha>();
@@ -61,6 +64,7 @@ namespace Moonglade.Web.Tests.Pages
             var model = new SignInModel(
                 _mockOptions.Object,
                 _mockLocalAccountService.Object,
+                _mockMediator.Object,
                 _mockLogger.Object,
                 _mockBlogAudit.Object,
                 _mockSessionBasedCaptcha.Object)
