@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Auth;
@@ -18,10 +19,12 @@ namespace Moonglade.Web.Controllers
     public class LocalAccountController : ControllerBase
     {
         private readonly ILocalAccountService _accountService;
+        private readonly IMediator _mediator;
 
-        public LocalAccountController(ILocalAccountService accountService)
+        public LocalAccountController(ILocalAccountService accountService, IMediator mediator)
         {
             _accountService = accountService;
+            _mediator = mediator;
         }
 
         [HttpPost]
@@ -61,7 +64,7 @@ namespace Moonglade.Web.Controllers
                 return Conflict("Can not delete last account.");
             }
 
-            await _accountService.DeleteAsync(id);
+            await _mediator.Send(new DeleteAccountQuery(id));
             return NoContent();
         }
 

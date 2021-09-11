@@ -224,10 +224,10 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((LocalAccountEntity)null));
 
-            var svc = CreateService();
+            var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await svc.DeleteAsync(Uid);
+                await handler.Handle(new(Uid), default);
             });
         }
 
@@ -237,8 +237,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            await svc.DeleteAsync(Uid);
+            var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(Uid), default);
 
             _mockLocalAccountRepository.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsDeleteAccount, It.IsAny<string>()));

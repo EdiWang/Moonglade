@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +19,19 @@ namespace Moonglade.Web.Tests.Controllers
         private MockRepository _mockRepository;
 
         private Mock<ILocalAccountService> _mockLocalAccountService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
             _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private LocalAccountController CreateLocalAccountController()
         {
-            return new(_mockLocalAccountService.Object);
+            return new(_mockLocalAccountService.Object, _mockMediator.Object);
         }
 
         [Test]
