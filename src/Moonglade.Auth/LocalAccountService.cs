@@ -11,7 +11,6 @@ namespace Moonglade.Auth
     {
         int Count();
         Task<Guid> ValidateAsync(string username, string inputPassword);
-        bool Exist(string username);
         Task<Guid> CreateAsync(string username, string clearPassword);
         Task UpdatePasswordAsync(Guid id, string clearPassword);
     }
@@ -51,12 +50,6 @@ namespace Moonglade.Auth
 
             var valid = account.PasswordHash == Helper.HashPassword(inputPassword.Trim());
             return valid ? account.Id : Guid.Empty;
-        }
-
-        public bool Exist(string username)
-        {
-            var exist = _accountRepo.Any(p => p.Username == username.ToLower());
-            return exist;
         }
 
         public async Task<Guid> CreateAsync(string username, string clearPassword)

@@ -32,7 +32,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Create(AccountEditModel model)
         {
-            if (_accountService.Exist(model.Username))
+            if (await _mediator.Send(new AccountExistsQuery(model.Username)))
             {
                 ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
                 return Conflict(ModelState);

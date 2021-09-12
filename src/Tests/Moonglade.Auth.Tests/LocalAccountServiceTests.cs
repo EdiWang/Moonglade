@@ -148,8 +148,8 @@ namespace Moonglade.Auth.Tests
         [Test]
         public void Exist_ToHaveBeenCalled()
         {
-            var svc = CreateService();
-            svc.Exist("work996");
+            var handler = new AccountExistsQueryHandler(_mockLocalAccountRepository.Object);
+            handler.Handle(new("work996"), default);
 
             _mockLocalAccountRepository.Verify(p => p.Any(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()));
         }

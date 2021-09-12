@@ -37,7 +37,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Create_AlreadyExists()
         {
-            _mockLocalAccountService.Setup(p => p.Exist(It.IsAny<string>())).Returns(true);
+            _mockMediator.Setup(p => p.Send(It.IsAny<AccountExistsQuery>(), default)).Returns(Task.FromResult(true));
 
             var ctl = CreateLocalAccountController();
             var result = await ctl.Create(new()
@@ -52,7 +52,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Create_OK()
         {
-            _mockLocalAccountService.Setup(p => p.Exist(It.IsAny<string>())).Returns(false);
+            _mockMediator.Setup(p => p.Send(It.IsAny<AccountExistsQuery>(), default)).Returns(Task.FromResult(false));
 
             var ctl = CreateLocalAccountController();
             var result = await ctl.Create(new()
