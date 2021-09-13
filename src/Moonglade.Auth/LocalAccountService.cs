@@ -12,7 +12,6 @@ namespace Moonglade.Auth
         int Count();
         Task<Guid> ValidateAsync(string username, string inputPassword);
         Task<Guid> CreateAsync(string username, string clearPassword);
-        Task UpdatePasswordAsync(Guid id, string clearPassword);
     }
 
     public class LocalAccountService : ILocalAccountService
@@ -77,25 +76,6 @@ namespace Moonglade.Auth
             await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsAccountCreated, $"Account '{account.Id}' created.");
 
             return uid;
-        }
-
-        public async Task UpdatePasswordAsync(Guid id, string clearPassword)
-        {
-            if (string.IsNullOrWhiteSpace(clearPassword))
-            {
-                throw new ArgumentNullException(nameof(clearPassword), "value must not be empty.");
-            }
-
-            var account = await _accountRepo.GetAsync(id);
-            if (account is null)
-            {
-                throw new InvalidOperationException($"LocalAccountEntity with Id '{id}' not found.");
-            }
-
-            account.PasswordHash = Helper.HashPassword(clearPassword);
-            await _accountRepo.UpdateAsync(account);
-
-            await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsAccountPasswordUpdated, $"Account password for '{id}' updated.");
         }
     }
 }

@@ -78,7 +78,7 @@ namespace Moonglade.Web.Controllers
                 return Conflict("Password must be minimum eight characters, at least one letter and one number");
             }
 
-            await _accountService.UpdatePasswordAsync(id, newPassword);
+            await _mediator.Send(new UpdatePasswordCommand(id, newPassword));
             return NoContent();
         }
     }

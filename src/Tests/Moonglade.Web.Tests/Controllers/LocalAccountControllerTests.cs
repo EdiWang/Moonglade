@@ -149,7 +149,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), "Admin@1234");
 
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockLocalAccountService.Verify(p => p.UpdatePasswordAsync(It.IsAny<Guid>(), It.IsAny<string>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<UpdatePasswordCommand>(), default));
         }
 
         private ClaimsPrincipal GetClaimsPrincipal(string uid)
