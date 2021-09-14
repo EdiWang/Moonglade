@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 namespace Moonglade.Pingback.Tests
 {
     [TestFixture]
-    public class PingbackServiceTests
+    public class ReceivePingCommandHandlerTests
     {
         private MockRepository _mockRepository;
 
-        private Mock<ILogger<PingbackService>> _mockLogger;
+        private Mock<ILogger<ReceivePingCommandHandler>> _mockLogger;
         private Mock<IPingSourceInspector> _mockPingSourceInspector;
         private Mock<IRepository<PingbackEntity>> _mockPingbackRepo;
         private Mock<IRepository<PostEntity>> _mockPostRepo;
@@ -28,7 +28,7 @@ namespace Moonglade.Pingback.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockLogger = _mockRepository.Create<ILogger<PingbackService>>();
+            _mockLogger = _mockRepository.Create<ILogger<ReceivePingCommandHandler>>();
             _mockPingSourceInspector = _mockRepository.Create<IPingSourceInspector>();
             _mockPingbackRepo = _mockRepository.Create<IRepository<PingbackEntity>>();
             _mockPostRepo = _mockRepository.Create<IRepository<PostEntity>>();
@@ -43,7 +43,7 @@ namespace Moonglade.Pingback.Tests
                                 </methodCall>";
         }
 
-        private PingbackService CreateService() =>
+        private ReceivePingCommandHandler CreateHandler() =>
              new(
                 _mockLogger.Object,
                 _mockPingSourceInspector.Object,
@@ -56,18 +56,18 @@ namespace Moonglade.Pingback.Tests
         [TestCase(null, ExpectedResult = PingbackResponse.GenericError)]
         public async Task<PingbackResponse> ProcessReceivedPayload_EmptyRequest(string requestBody)
         {
-            var pingbackService = CreateService();
+            var handler = CreateHandler();
 
-            var result = await pingbackService.ReceivePingAsync(requestBody, "10.0.0.1", null);
+            var result = await handler.Handle(new(requestBody, "10.0.0.1", null), default);
             return result;
         }
 
         [Test]
         public async Task ProcessReceivedPayload_NoMethod()
         {
-            var pingbackService = CreateService();
+            var handler = CreateHandler();
 
-            var result = await pingbackService.ReceivePingAsync("<hello></hello>", "10.0.0.1", null);
+            var result = await handler.Handle(new("<hello></hello>", "10.0.0.1", null), default);
             Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
         }
 
@@ -80,9 +80,9 @@ namespace Moonglade.Pingback.Tests
             _mockPingSourceInspector
                 .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(tcs.Task);
 
-            var pingbackService = CreateService();
+            var handler = CreateHandler();
 
-            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await handler.Handle(new(_fakePingRequest, "10.0.0.1", null), default);
             Assert.AreEqual(result, PingbackResponse.InvalidPingRequest);
         }
 
@@ -98,9 +98,9 @@ namespace Moonglade.Pingback.Tests
             _mockPingSourceInspector
                 .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(tcs.Task);
 
-            var pingbackService = CreateService();
+            var handler = CreateHandler();
 
-            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await handler.Handle(new(_fakePingRequest, "10.0.0.1", null), default);
             Assert.AreEqual(result, PingbackResponse.Error17SourceNotContainTargetUri);
         }
 
@@ -117,9 +117,9 @@ namespace Moonglade.Pingback.Tests
             _mockPingSourceInspector
                 .Setup(p => p.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(tcs.Task);
 
-            var pingbackService = CreateService();
+            var handler = CreateHandler();
 
-            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await handler.Handle(new(_fakePingRequest, "10.0.0.1", null), default);
             Assert.AreEqual(result, PingbackResponse.SpamDetectedFakeNotFound);
         }
 
@@ -141,9 +141,9 @@ namespace Moonglade.Pingback.Tests
                 .Setup(p => p.SelectFirstOrDefaultAsync(It.IsAny<PostSpec>(), x => new Tuple<Guid, string>(x.Id, x.Title)))
                 .Returns(Task.FromResult(new Tuple<Guid, string>(Guid.Empty, string.Empty)));
 
-            var pingbackService = CreateService();
+            var handler = CreateHandler();
 
-            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await handler.Handle(new(_fakePingRequest, "10.0.0.1", null), default);
             Assert.AreEqual(PingbackResponse.Error32TargetUriNotExist, result);
         }
 
@@ -169,9 +169,9 @@ namespace Moonglade.Pingback.Tests
             _mockPingbackRepo.Setup(p => p.Any(It.IsAny<Expression<Func<PingbackEntity, bool>>>()))
                 .Returns(true);
 
-            var pingbackService = CreateService();
+            var handler = CreateHandler();
 
-            var result = await pingbackService.ReceivePingAsync(_fakePingRequest, "10.0.0.1", null);
+            var result = await handler.Handle(new(_fakePingRequest, "10.0.0.1", null), default);
             Assert.AreEqual(PingbackResponse.Error48PingbackAlreadyRegistered, result);
         }
 

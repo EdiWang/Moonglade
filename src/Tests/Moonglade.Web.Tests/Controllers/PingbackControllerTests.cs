@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
@@ -22,7 +21,6 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<ILogger<PingbackController>> _mockLogger;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IPingbackService> _mockPingbackService;
         private Mock<IMediator> _mockMediator;
         private Mock<IBlogNotificationClient> _mockBlogNotificationClient;
 
@@ -33,7 +31,6 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockLogger = _mockRepository.Create<ILogger<PingbackController>>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockPingbackService = _mockRepository.Create<IPingbackService>();
             _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogNotificationClient = _mockRepository.Create<IBlogNotificationClient>();
         }
@@ -43,7 +40,6 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockLogger.Object,
                 _mockBlogConfig.Object,
-                _mockPingbackService.Object,
                 _mockMediator.Object,
                 _mockBlogNotificationClient.Object);
         }
@@ -69,9 +65,8 @@ namespace Moonglade.Web.Tests.Controllers
                 EnablePingBackReceive = true
             });
 
-            _mockPingbackService
-                .Setup(p => p.ReceivePingAsync(It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<Action<PingbackEntity>>())).Returns(Task.FromResult(PingbackResponse.Success));
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<ReceivePingCommand>(), default)).Returns(Task.FromResult(PingbackResponse.Success));
 
             var pingbackController = CreatePingbackController();
             pingbackController.ControllerContext = new()

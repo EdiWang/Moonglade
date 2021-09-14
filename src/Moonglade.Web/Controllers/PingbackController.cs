@@ -22,20 +22,17 @@ namespace Moonglade.Web.Controllers
     {
         private readonly ILogger<PingbackController> _logger;
         private readonly IBlogConfig _blogConfig;
-        private readonly IPingbackService _pingbackService;
         private readonly IMediator _mediator;
         private readonly IBlogNotificationClient _notificationClient;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IBlogConfig blogConfig,
-            IPingbackService pingbackService,
             IMediator mediator,
             IBlogNotificationClient notificationClient)
         {
             _logger = logger;
             _blogConfig = blogConfig;
-            _pingbackService = pingbackService;
             _mediator = mediator;
             _notificationClient = notificationClient;
         }
@@ -55,7 +52,7 @@ namespace Moonglade.Web.Controllers
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
             var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
-            var response = await _pingbackService.ReceivePingAsync(requestBody, ip,
+            var response = await _mediator.Send(new ReceivePingCommand(requestBody, ip,
                 history =>
                 {
                     _notificationClient.NotifyPingbackAsync(history.TargetPostTitle,
@@ -64,7 +61,7 @@ namespace Moonglade.Web.Controllers
                         history.SourceIp,
                         history.SourceUrl,
                         history.SourceTitle);
-                });
+                }));
 
             _logger.LogInformation($"Pingback Processor Response: {response}");
             return new PingbackResult(response);

@@ -1,17 +1,35 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using System;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
 namespace Moonglade.Pingback
 {
-    public class PingbackService : IPingbackService
+    public class ReceivePingCommand : IRequest<PingbackResponse>
     {
-        private readonly ILogger<PingbackService> _logger;
+        public ReceivePingCommand(string requestBody, string ip, Action<PingbackEntity> action)
+        {
+            RequestBody = requestBody;
+            IP = ip;
+            Action = action;
+        }
+
+        public string RequestBody { get; set; }
+
+        public string IP { get; set; }
+
+        public Action<PingbackEntity> Action { get; set; }
+    }
+
+    public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, PingbackResponse>
+    {
+        private readonly ILogger<ReceivePingCommandHandler> _logger;
         private readonly IPingSourceInspector _pingSourceInspector;
         private readonly IRepository<PingbackEntity> _pingbackRepo;
         private readonly IRepository<PostEntity> _postRepo;
@@ -19,8 +37,8 @@ namespace Moonglade.Pingback
         private string _sourceUrl;
         private string _targetUrl;
 
-        public PingbackService(
-            ILogger<PingbackService> logger,
+        public ReceivePingCommandHandler(
+            ILogger<ReceivePingCommandHandler> logger,
             IPingSourceInspector pingSourceInspector,
             IRepository<PingbackEntity> pingbackRepo,
             IRepository<PostEntity> postRepo)
@@ -31,20 +49,20 @@ namespace Moonglade.Pingback
             _postRepo = postRepo;
         }
 
-        public async Task<PingbackResponse> ReceivePingAsync(string requestBody, string ip, Action<PingbackEntity> pingSuccessAction)
+        public async Task<PingbackResponse> Handle(ReceivePingCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(requestBody))
+                if (string.IsNullOrWhiteSpace(request.RequestBody))
                 {
                     _logger.LogError("Pingback requestBody is null");
                     return PingbackResponse.GenericError;
                 }
 
-                var valid = ValidateRequest(requestBody);
+                var valid = ValidateRequest(request.RequestBody);
                 if (!valid) return PingbackResponse.InvalidPingRequest;
 
-                _logger.LogInformation($"Processing Pingback from: {_sourceUrl} ({ip}) to {_targetUrl}");
+                _logger.LogInformation($"Processing Pingback from: {_sourceUrl} ({request.IP}) to {_targetUrl}");
 
                 var pingRequest = await _pingSourceInspector.ExamineSourceAsync(_sourceUrl, _targetUrl);
                 if (null == pingRequest) return PingbackResponse.InvalidPingRequest;
@@ -73,7 +91,7 @@ namespace Moonglade.Pingback
                 var pinged = _pingbackRepo.Any(p =>
                     p.TargetPostId == id &&
                     p.SourceUrl == pingRequest.SourceUrl &&
-                    p.SourceIp.Trim() == ip);
+                    p.SourceIp.Trim() == request.IP);
 
                 if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
@@ -89,17 +107,17 @@ namespace Moonglade.Pingback
                     SourceTitle = pingRequest.Title,
                     TargetPostId = id,
                     TargetPostTitle = title,
-                    SourceIp = ip
+                    SourceIp = request.IP
                 };
 
                 await _pingbackRepo.AddAsync(obj);
-                pingSuccessAction?.Invoke(obj);
+                request.Action?.Invoke(obj);
 
                 return PingbackResponse.Success;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, nameof(ReceivePingAsync));
+                _logger.LogError(e, nameof(ReceivePingCommandHandler));
                 return PingbackResponse.GenericError;
             }
         }
