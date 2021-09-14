@@ -16,7 +16,7 @@ using System.Xml.Linq;
 namespace Moonglade.Syndication.Tests
 {
     [TestFixture]
-    public class SyndicationServiceTests
+    public class SyndicationTests
     {
         private MockRepository _mockRepository;
 

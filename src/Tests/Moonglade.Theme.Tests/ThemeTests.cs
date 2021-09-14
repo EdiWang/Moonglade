@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Moonglade.Theme.Tests
 {
     [TestFixture]
-    public class ThemeServiceTests
+    public class ThemeTests
     {
         private MockRepository _mockRepository;
         private Mock<IRepository<BlogThemeEntity>> _mockThemeRepository;
