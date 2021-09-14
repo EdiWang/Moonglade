@@ -1,0 +1,429 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Allow javascript in pages" xml:space="preserve">
+    <value>允许页面中执JavaScript代码</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>作者</value>
+  </data>
+  <data name="Author Name" xml:space="preserve">
+    <value>作者名字</value>
+  </data>
+  <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
+    <value>在客户端自动适配明亮/黑暗主题</value>
+  </data>
+  <data name="Azure Function endpoint" xml:space="preserve">
+    <value>Azure Function 终端地址</value>
+  </data>
+  <data name="Blocked words" xml:space="preserve">
+    <value>违禁词</value>
+  </data>
+  <data name="Blog title" xml:space="preserve">
+    <value>博客标题</value>
+  </data>
+  <data name="Call-out section HTML code" xml:space="preserve">
+    <value>横幅HTML内容</value>
+  </data>
+  <data name="Canonical URL prefix" xml:space="preserve">
+    <value>网址 (Canonical URL)</value>
+  </data>
+  <data name="Change Publish Date" xml:space="preserve">
+    <value>修改发布日期</value>
+  </data>
+  <data name="Comments require review and approval" xml:space="preserve">
+    <value>评论需要管理员审核</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>版权信息</value>
+  </data>
+  <data name="Default language code" xml:space="preserve">
+    <value>默认语言代码</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="Display Name" xml:space="preserve">
+    <value>显示名称</value>
+  </data>
+  <data name="Display Order" xml:space="preserve">
+    <value>显示序位</value>
+  </data>
+  <data name="Enable CDN for images" xml:space="preserve">
+    <value>启用图片 CDN</value>
+  </data>
+  <data name="Enable Comment" xml:space="preserve">
+    <value>允许评论</value>
+  </data>
+  <data name="Enable comments" xml:space="preserve">
+    <value>开启评论</value>
+  </data>
+  <data name="Enable Custom CSS" xml:space="preserve">
+    <value>使用自定义 CSS</value>
+  </data>
+  <data name="Enable email sending" xml:space="preserve">
+    <value>启用Email发送</value>
+  </data>
+  <data name="Enable Gravatar in comment list" xml:space="preserve">
+    <value>在评论列表中开启Gravatar头像</value>
+  </data>
+  <data name="Enable MetaWeblog API" xml:space="preserve">
+    <value>启用 MetaWeblog API</value>
+  </data>
+  <data name="Enable OpenGraph" xml:space="preserve">
+    <value>启用 OpenGraph</value>
+  </data>
+  <data name="Enable OpenSearch" xml:space="preserve">
+    <value>启用 OpenSearch</value>
+  </data>
+  <data name="Enable Pingback receive" xml:space="preserve">
+    <value>启用 Pingback 接受</value>
+  </data>
+  <data name="Enable Pingback send" xml:space="preserve">
+    <value>启用 Pingback 发送</value>
+  </data>
+  <data name="Enable word filter" xml:space="preserve">
+    <value>启用违禁词过滤</value>
+  </data>
+  <data name="Enabled watermark" xml:space="preserve">
+    <value>启用水印</value>
+  </data>
+  <data name="Featured" xml:space="preserve">
+    <value>精选</value>
+  </data>
+  <data name="Feed Subscription" xml:space="preserve">
+    <value>加入订阅</value>
+  </data>
+  <data name="Fit image to device pixel ratio" xml:space="preserve">
+    <value>图片自动适配设备DPI</value>
+  </data>
+  <data name="Font size" xml:space="preserve">
+    <value>字号</value>
+  </data>
+  <data name="Footer HTML code" xml:space="preserve">
+    <value>页脚HTML区域</value>
+  </data>
+  <data name="Hide Sidebar" xml:space="preserve">
+    <value>隐藏侧边栏</value>
+  </data>
+  <data name="How many tags show on sidebar" xml:space="preserve">
+    <value>侧边栏显示标签数量</value>
+  </data>
+  <data name="Incorrect language code format. e.g. en-us" xml:space="preserve">
+    <value>语言代码格式错误。样例：zh-cn</value>
+  </data>
+  <data name="Invalid Icon CSS Class" xml:space="preserve">
+    <value>无效的图标CSS类名</value>
+  </data>
+  <data name="Keep origin image" xml:space="preserve">
+    <value>保留原图</value>
+  </data>
+  <data name="Link" xml:space="preserve">
+    <value>链接</value>
+  </data>
+  <data name="Logo text" xml:space="preserve">
+    <value>Logo 文字</value>
+  </data>
+  <data name="Meta description" xml:space="preserve">
+    <value>网站简介</value>
+  </data>
+  <data name="Meta keyword" xml:space="preserve">
+    <value>网站关键词</value>
+  </data>
+  <data name="MetaWeblog password" xml:space="preserve">
+    <value>MetaWeblog 密码</value>
+  </data>
+  <data name="Only letters, numbers, - and [] are allowed." xml:space="preserve">
+    <value>仅允许字母、数字、-及[]</value>
+  </data>
+  <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
+    <value>必须为小写英文字符或中划线</value>
+  </data>
+  <data name="Open in New Tab" xml:space="preserve">
+    <value>在新标签页中打开</value>
+  </data>
+  <data name="Origin Link" xml:space="preserve">
+    <value>原文链接</value>
+  </data>
+  <data name="Original" xml:space="preserve">
+    <value>原创</value>
+  </data>
+  <data name="Owner email" xml:space="preserve">
+    <value>博主邮箱</value>
+  </data>
+  <data name="Page size can only range from 1-100" xml:space="preserve">
+    <value>分页数量必须在1-100之间</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="Password must be at least 8 characters" xml:space="preserve">
+    <value>密码至少需要8位</value>
+  </data>
+  <data name="Password must be minimum eight characters, at least one letter and one number" xml:space="preserve">
+    <value>密码至少8位，且必须包含至少一个英文字母及一个数字</value>
+  </data>
+  <data name="Please enter a password." xml:space="preserve">
+    <value>请输入密码</value>
+  </data>
+  <data name="Please enter a slug." xml:space="preserve">
+    <value>请输入Slug</value>
+  </data>
+  <data name="Please enter a title." xml:space="preserve">
+    <value>请输入标题</value>
+  </data>
+  <data name="Please enter a username." xml:space="preserve">
+    <value>请输入用户名</value>
+  </data>
+  <data name="Please enter blog title" xml:space="preserve">
+    <value>请输入博客标题</value>
+  </data>
+  <data name="Please enter content." xml:space="preserve">
+    <value>请输入内容</value>
+  </data>
+  <data name="Please enter copyright" xml:space="preserve">
+    <value>请输入版权信息</value>
+  </data>
+  <data name="Please enter description" xml:space="preserve">
+    <value>请输入描述</value>
+  </data>
+  <data name="Please enter keyword" xml:space="preserve">
+    <value>请输入关键词</value>
+  </data>
+  <data name="Please enter language code." xml:space="preserve">
+    <value>请输入语言代码</value>
+  </data>
+  <data name="Please enter logo text" xml:space="preserve">
+    <value>请输入Logo文字</value>
+  </data>
+  <data name="Please enter short description" xml:space="preserve">
+    <value>请输入短简介</value>
+  </data>
+  <data name="Please enter the meta description." xml:space="preserve">
+    <value>请输入简要描述</value>
+  </data>
+  <data name="Please enter the slug." xml:space="preserve">
+    <value>请输入slug</value>
+  </data>
+  <data name="Please enter watermark text" xml:space="preserve">
+    <value>请输入水印文字</value>
+  </data>
+  <data name="Please enter your description" xml:space="preserve">
+    <value>请输入您的简介</value>
+  </data>
+  <data name="Please enter your name" xml:space="preserve">
+    <value>请输入您的名字</value>
+  </data>
+  <data name="Please select at least one category." xml:space="preserve">
+    <value>请选择至少一个分类</value>
+  </data>
+  <data name="Post footer HTML code" xml:space="preserve">
+    <value>文章页脚HTML内容</value>
+  </data>
+  <data name="Post list page size" xml:space="preserve">
+    <value>文章分页数量</value>
+  </data>
+  <data name="Publish" xml:space="preserve">
+    <value>发布</value>
+  </data>
+  <data name="Publish Date" xml:space="preserve">
+    <value>发布日期</value>
+  </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>立即发布</value>
+  </data>
+  <data name="Route Name" xml:space="preserve">
+    <value>路由名称</value>
+  </data>
+  <data name="Route Name can only accept lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle." xml:space="preserve">
+    <value>路由名称必须为小写英文字符(a-z)、数字(0-9)或中划线(-)</value>
+  </data>
+  <data name="RSS Items" xml:space="preserve">
+    <value>RSS条目数量</value>
+  </data>
+  <data name="Send email on comment reply" xml:space="preserve">
+    <value>评论被回复时发送Email通知用户</value>
+  </data>
+  <data name="Send email on new comment" xml:space="preserve">
+    <value>有新评论时发送Email通知管理员</value>
+  </data>
+  <data name="Short description" xml:space="preserve">
+    <value>博主简介(短)</value>
+  </data>
+  <data name="Show Admin login button under sidebar" xml:space="preserve">
+    <value>在侧边栏下显示管理员登录按钮</value>
+  </data>
+  <data name="Show call-out section" xml:space="preserve">
+    <value>显示横幅区</value>
+  </data>
+  <data name="Show customize footer on each post" xml:space="preserve">
+    <value>在每篇文章底下显示自定义页脚</value>
+  </data>
+  <data name="Show warning when clicking external links" xml:space="preserve">
+    <value>点击外部链接时弹出警告</value>
+  </data>
+  <data name="Side bar display" xml:space="preserve">
+    <value>侧边栏位置</value>
+  </data>
+  <data name="Side bar HTML code" xml:space="preserve">
+    <value>侧边栏HTML区域</value>
+  </data>
+  <data name="Site Map" xml:space="preserve">
+    <value>加入网站地图</value>
+  </data>
+  <data name="Tag amount can only range from 1-50" xml:space="preserve">
+    <value>标签数量必须在1-50之间</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>标签</value>
+  </data>
+  <data name="This field is required." xml:space="preserve">
+    <value>必填</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>标题</value>
+  </data>
+  <data name="Use friendly 404 image" xml:space="preserve">
+    <value>启用友好404图片</value>
+  </data>
+  <data name="Use full blog post content instead of abstract" xml:space="preserve">
+    <value>使用文章全文作为内容而非摘要</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>用户名</value>
+  </data>
+  <data name="Username must be at least 2 characters" xml:space="preserve">
+    <value>用户名必须为至少两个字符</value>
+  </data>
+  <data name="Username must be lower case letters or numbers." xml:space="preserve">
+    <value>用户名必须为小写英文字母或数字</value>
+  </data>
+  <data name="Watermark text" xml:space="preserve">
+    <value>水印文字</value>
+  </data>
+  <data name="Word filter mode" xml:space="preserve">
+    <value>违禁词屏蔽模式</value>
+  </data>
+  <data name="Your description" xml:space="preserve">
+    <value>博主简介</value>
+  </data>
+  <data name="Your name" xml:space="preserve">
+    <value>博主名字</value>
+  </data>
+</root>

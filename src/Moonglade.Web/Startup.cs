@@ -93,7 +93,10 @@ namespace Moonglade.Web
                     .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
             services.AddRazorPages()
                     .AddViewLocalization()
-                    .AddDataAnnotationsLocalization()
+                    .AddDataAnnotationsLocalization(options =>
+                    {
+                        options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(SharedResource));
+                    })
                     .AddRazorPagesOptions(options =>
                     {
                         options.Conventions.AuthorizeFolder("/Admin");
