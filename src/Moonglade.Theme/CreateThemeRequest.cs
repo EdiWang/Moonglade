@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.Web.Models.Settings
+namespace Moonglade.Theme
 {
     public class CreateThemeRequest
     {

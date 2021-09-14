@@ -6,7 +6,6 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Theme;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models.Settings;
 using Moq;
 using NUnit.Framework;
 using System;

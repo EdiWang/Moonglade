@@ -7,7 +7,6 @@ using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Theme;
-using Moonglade.Web.Models.Settings;
 using NUglify;
 using System;
 using System.Collections.Generic;

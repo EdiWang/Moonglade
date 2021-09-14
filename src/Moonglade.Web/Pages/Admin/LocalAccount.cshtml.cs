@@ -11,14 +11,14 @@ namespace Moonglade.Web.Pages.Admin
     {
         private readonly IMediator _mediator;
 
-        public AccountEditModel AccountEditModel { get; set; }
+        public EditAccountRequest EditAccountRequest { get; set; }
 
         public IReadOnlyList<Account> Accounts { get; set; }
 
         public LocalAccountModel(IMediator mediator)
         {
             _mediator = mediator;
-            AccountEditModel = new();
+            EditAccountRequest = new();
         }
 
         public async Task OnGet()

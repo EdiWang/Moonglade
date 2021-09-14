@@ -28,7 +28,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create(AccountEditModel model)
+        public async Task<IActionResult> Create(EditAccountRequest model)
         {
             if (await _mediator.Send(new AccountExistsQuery(model.Username)))
             {

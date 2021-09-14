@@ -37,8 +37,8 @@
                 callApi(`/api/localaccount`,
                     'POST',
                     {
-                        "Username": $("#AccountEditModel_Username").val(),
-                        "Password": $("#AccountEditModel_Password").val()
+                        "Username": $("#EditAccountRequest_Username").val(),
+                        "Password": $("#EditAccountRequest_Password").val()
                     },
                     (resp) => {
                         $("#edit-form")[0].reset();
@@ -132,14 +132,14 @@
                 <div class="modal-body">
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="mb-2">
-                        <label asp-for="AccountEditModel.Username"></label>
-                        <input asp-for="AccountEditModel.Username" class="form-control" />
-                        <span asp-validation-for="AccountEditModel.Username" class="text-danger"></span>
+                        <label asp-for="EditAccountRequest.Username"></label>
+                        <input asp-for="EditAccountRequest.Username" class="form-control" />
+                        <span asp-validation-for="EditAccountRequest.Username" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="AccountEditModel.Password"></label>
-                        <input asp-for="AccountEditModel.Password" class="form-control" />
-                        <span asp-validation-for="AccountEditModel.Password" class="text-danger"></span>
+                        <label asp-for="EditAccountRequest.Password"></label>
+                        <input asp-for="EditAccountRequest.Password" class="form-control" />
+                        <span asp-validation-for="EditAccountRequest.Password" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">

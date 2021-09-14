@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Models.Settings
 {
-    public class AccountEditModel
+    public class EditAccountRequest
     {
         [Required(ErrorMessage = "Please enter a username.")]
         [Display(Name = "Username")]
