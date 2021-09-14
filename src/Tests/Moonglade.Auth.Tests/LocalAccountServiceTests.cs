@@ -39,11 +39,6 @@ namespace Moonglade.Auth.Tests
             _accountEntity.PasswordHash = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=";
         }
 
-        private LocalAccountService CreateService()
-        {
-            return new(_mockLocalAccountRepository.Object);
-        }
-
         [Test]
         public async Task GetAsync_OK()
         {

@@ -22,7 +22,6 @@ namespace Moonglade.Web.Pages
     public class SignInModel : PageModel
     {
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly ILocalAccountService _localAccountService;
         private readonly IMediator _mediator;
         private readonly ILogger<SignInModel> _logger;
         private readonly IBlogAudit _blogAudit;
@@ -30,12 +29,10 @@ namespace Moonglade.Web.Pages
 
         public SignInModel(
             IOptions<AuthenticationSettings> authSettings,
-            ILocalAccountService localAccountService,
             IMediator mediator,
             ILogger<SignInModel> logger,
             IBlogAudit blogAudit, ISessionBasedCaptcha captcha)
         {
-            _localAccountService = localAccountService;
             _mediator = mediator;
             _logger = logger;
             _blogAudit = blogAudit;

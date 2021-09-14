@@ -18,12 +18,10 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class LocalAccountController : ControllerBase
     {
-        private readonly ILocalAccountService _accountService;
         private readonly IMediator _mediator;
 
-        public LocalAccountController(ILocalAccountService accountService, IMediator mediator)
+        public LocalAccountController(IMediator mediator)
         {
-            _accountService = accountService;
             _mediator = mediator;
         }
 
@@ -58,7 +56,7 @@ namespace Moonglade.Web.Controllers
                 return Conflict("Can not delete current user.");
             }
 
-            var count = _accountService.Count();
+            var count = await _mediator.Send(new CountAccountsQuery());
             if (count == 1)
             {
                 return Conflict("Can not delete last account.");

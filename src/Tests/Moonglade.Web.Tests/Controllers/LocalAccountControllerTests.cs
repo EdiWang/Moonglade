@@ -18,20 +18,18 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<ILocalAccountService> _mockLocalAccountService;
         private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
             _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private LocalAccountController CreateLocalAccountController()
         {
-            return new(_mockLocalAccountService.Object, _mockMediator.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -101,7 +99,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_LastUser()
         {
-            _mockLocalAccountService.Setup(p => p.Count()).Returns(1);
+            _mockMediator.Setup(p => p.Send(It.IsAny<CountAccountsQuery>(), default)).Returns(Task.FromResult(1));
 
             var ctl = CreateLocalAccountController();
             ctl.ControllerContext = new()
@@ -119,7 +117,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_OK()
         {
-            _mockLocalAccountService.Setup(p => p.Count()).Returns(996);
+            _mockMediator.Setup(p => p.Send(It.IsAny<CountAccountsQuery>(), default)).Returns(Task.FromResult(996));
             var ctl = CreateLocalAccountController();
             ctl.ControllerContext = new()
             {

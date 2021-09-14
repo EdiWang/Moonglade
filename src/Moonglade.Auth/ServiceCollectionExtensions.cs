@@ -15,7 +15,6 @@ namespace Moonglade.Auth
             var authentication = section.Get<AuthenticationSettings>();
             services.Configure<AuthenticationSettings>(section);
             services.AddScoped<IGetApiKeyQuery, AppSettingsGetApiKeyQuery>();
-            services.AddScoped<ILocalAccountService, LocalAccountService>();
 
             switch (authentication.Provider)
             {

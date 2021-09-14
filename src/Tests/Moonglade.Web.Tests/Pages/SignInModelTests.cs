@@ -27,7 +27,6 @@ namespace Moonglade.Web.Tests.Pages
         private MockRepository _mockRepository;
 
         private Mock<IOptions<AuthenticationSettings>> _mockOptions;
-        private Mock<ILocalAccountService> _mockLocalAccountService;
         private Mock<IMediator> _mockMediator;
         private Mock<ILogger<SignInModel>> _mockLogger;
         private Mock<IBlogAudit> _mockBlogAudit;
@@ -39,7 +38,6 @@ namespace Moonglade.Web.Tests.Pages
             _mockRepository = new(MockBehavior.Default);
 
             _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
-            _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
             _mockMediator = _mockRepository.Create<IMediator>();
             _mockLogger = _mockRepository.Create<ILogger<SignInModel>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
@@ -63,7 +61,6 @@ namespace Moonglade.Web.Tests.Pages
 
             var model = new SignInModel(
                 _mockOptions.Object,
-                _mockLocalAccountService.Object,
                 _mockMediator.Object,
                 _mockLogger.Object,
                 _mockBlogAudit.Object,
