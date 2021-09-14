@@ -3,7 +3,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
@@ -121,12 +120,6 @@ namespace Moonglade.Pingback
             var date = new DateTime(year, month, day);
 
             return (slug, date);
-        }
-
-        public async Task<IReadOnlyList<PingbackEntity>> GetPingbacksAsync()
-        {
-            var list = await _pingbackRepo.GetAsync();
-            return list;
         }
 
         public async Task DeletePingback(Guid id)

@@ -204,8 +204,8 @@ namespace Moonglade.Pingback.Tests
 
             _mockPingbackRepo.Setup(p => p.GetAsync()).Returns(Task.FromResult(list));
 
-            var pingbackService = CreateService();
-            var data = await pingbackService.GetPingbacksAsync();
+            var handler = new GetPingbacksQueryHandler(_mockPingbackRepo.Object);
+            var data = await handler.Handle(new(), default);
 
             Assert.IsNotNull(data);
             _mockPingbackRepo.Verify(p => p.GetAsync());

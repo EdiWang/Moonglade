@@ -1,3 +1,4 @@
+using MediatR;
 using Moonglade.Data.Entities;
 using Moonglade.Pingback;
 using Moonglade.Web.Pages.Admin;
@@ -13,18 +14,18 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class PingbackModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPingbackService> _mockPingbackService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPingbackService = _mockRepository.Create<IPingbackService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private PingbackModel CreatePingbackModel()
         {
-            return new(_mockPingbackService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -32,7 +33,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<PingbackEntity> pingback = new PingbackEntity[] { };
 
-            _mockPingbackService.Setup(p => p.GetPingbacksAsync())
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPingbacksQuery>(), default))
                 .Returns(Task.FromResult(pingback));
 
             var pingbackModel = CreatePingbackModel();
