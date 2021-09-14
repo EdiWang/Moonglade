@@ -38,7 +38,7 @@ namespace Moonglade.Web.Controllers
                 return Conflict(ModelState);
             }
 
-            await _accountService.CreateAsync(model.Username, model.Password);
+            await _mediator.Send(new CreateAccountCommand(model.Username, model.Password));
             return Ok();
         }
 

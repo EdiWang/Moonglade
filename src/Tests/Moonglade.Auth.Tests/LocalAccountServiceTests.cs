@@ -41,9 +41,7 @@ namespace Moonglade.Auth.Tests
 
         private LocalAccountService CreateService()
         {
-            return new(
-                _mockLocalAccountRepository.Object,
-                _mockBlogAudit.Object);
+            return new(_mockLocalAccountRepository.Object);
         }
 
         [Test]
@@ -161,18 +159,18 @@ namespace Moonglade.Auth.Tests
         [TestCase(" ", null)]
         public void CreateAsync_EmptyUsernameOrPassword(string username, string clearPassword)
         {
-            var svc = CreateService();
+            var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                await svc.CreateAsync(username, clearPassword);
+                await handler.Handle(new(username, clearPassword), default);
             });
         }
 
         [Test]
         public async Task CreateAsync_OK()
         {
-            var svc = CreateService();
-            var result = await svc.CreateAsync("work996", "&Get1n2icu");
+            var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+            var result = await handler.Handle(new("work996", "&Get1n2icu"), default);
 
             Assert.IsTrue(result != Guid.Empty);
 
