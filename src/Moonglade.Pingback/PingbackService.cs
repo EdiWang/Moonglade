@@ -122,11 +122,6 @@ namespace Moonglade.Pingback
             return (slug, date);
         }
 
-        public async Task DeletePingback(Guid id)
-        {
-            await _pingbackRepo.DeleteAsync(id);
-        }
-
         private bool ValidateRequest(string requestBody)
         {
             _logger.LogInformation($"Pingback received xml: {requestBody}");

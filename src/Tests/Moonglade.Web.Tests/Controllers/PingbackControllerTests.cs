@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<ILogger<PingbackController>> _mockLogger;
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IPingbackService> _mockPingbackService;
+        private Mock<IMediator> _mockMediator;
         private Mock<IBlogNotificationClient> _mockBlogNotificationClient;
 
         [SetUp]
@@ -32,6 +34,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockLogger = _mockRepository.Create<ILogger<PingbackController>>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockPingbackService = _mockRepository.Create<IPingbackService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogNotificationClient = _mockRepository.Create<IBlogNotificationClient>();
         }
 
@@ -41,6 +44,7 @@ namespace Moonglade.Web.Tests.Controllers
                 _mockLogger.Object,
                 _mockBlogConfig.Object,
                 _mockPingbackService.Object,
+                _mockMediator.Object,
                 _mockBlogNotificationClient.Object);
         }
 

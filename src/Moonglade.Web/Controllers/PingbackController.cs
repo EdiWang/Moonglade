@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,17 +23,20 @@ namespace Moonglade.Web.Controllers
         private readonly ILogger<PingbackController> _logger;
         private readonly IBlogConfig _blogConfig;
         private readonly IPingbackService _pingbackService;
+        private readonly IMediator _mediator;
         private readonly IBlogNotificationClient _notificationClient;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IBlogConfig blogConfig,
             IPingbackService pingbackService,
+            IMediator mediator,
             IBlogNotificationClient notificationClient)
         {
             _logger = logger;
             _blogConfig = blogConfig;
             _pingbackService = pingbackService;
+            _mediator = mediator;
             _notificationClient = notificationClient;
         }
 
@@ -71,7 +75,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId, [FromServices] IBlogAudit blogAudit)
         {
-            await _pingbackService.DeletePingback(pingbackId);
+            await _mediator.Send(new DeletePingbackCommand(pingbackId));
             await blogAudit.AddEntry(BlogEventType.Content, BlogEventId.PingbackDeleted,
                 $"Pingback '{pingbackId}' deleted.");
             return NoContent();
