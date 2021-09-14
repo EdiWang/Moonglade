@@ -93,7 +93,7 @@ namespace Moonglade.Web.Pages
 
                 if (ModelState.IsValid)
                 {
-                    var uid = await _localAccountService.ValidateAsync(Username, Password);
+                    var uid = await _mediator.Send(new ValidateLoginCommand(Username, Password));
                     if (uid != Guid.Empty)
                     {
                         var claims = new List<Claim>

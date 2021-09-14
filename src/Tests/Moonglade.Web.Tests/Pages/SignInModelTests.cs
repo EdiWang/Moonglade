@@ -116,7 +116,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
 
-            _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ValidateLoginCommand>(), default))
                 .Throws(new(FakeData.ShortString2));
 
             // Arrange
@@ -179,7 +179,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
 
-            _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(Guid.Empty));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ValidateLoginCommand>(), default)).Returns(Task.FromResult(Guid.Empty));
 
             var signInModel = CreateSignInModel();
             signInModel.Username = FakeData.ShortString1;

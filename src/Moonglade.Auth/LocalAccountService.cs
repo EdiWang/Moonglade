@@ -10,7 +10,6 @@ namespace Moonglade.Auth
     public interface ILocalAccountService
     {
         int Count();
-        Task<Guid> ValidateAsync(string username, string inputPassword);
         Task<Guid> CreateAsync(string username, string clearPassword);
     }
 
@@ -30,25 +29,6 @@ namespace Moonglade.Auth
         public int Count()
         {
             return _accountRepo.Count();
-        }
-
-        public async Task<Guid> ValidateAsync(string username, string inputPassword)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                throw new ArgumentNullException(nameof(username), "value must not be empty.");
-            }
-
-            if (string.IsNullOrWhiteSpace(inputPassword))
-            {
-                throw new ArgumentNullException(nameof(inputPassword), "value must not be empty.");
-            }
-
-            var account = await _accountRepo.GetAsync(p => p.Username == username);
-            if (account is null) return Guid.Empty;
-
-            var valid = account.PasswordHash == Helper.HashPassword(inputPassword.Trim());
-            return valid ? account.Id : Guid.Empty;
         }
 
         public async Task<Guid> CreateAsync(string username, string clearPassword)

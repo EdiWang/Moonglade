@@ -76,10 +76,10 @@ namespace Moonglade.Auth.Tests
         [TestCase(" ", null)]
         public void ValidateAsync_EmptyUsernameOrPassword(string username, string inputPassword)
         {
-            var svc = CreateService();
+            var handler = new ValidateLoginCommandHandler(_mockLocalAccountRepository.Object);
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                await svc.ValidateAsync(username, inputPassword);
+                await handler.Handle(new(username, inputPassword), default);
             });
         }
 
@@ -89,8 +89,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()))
                 .Returns(Task.FromResult((LocalAccountEntity)null));
 
-            var svc = CreateService();
-            var result = await svc.ValidateAsync("work", "996");
+            var handler = new ValidateLoginCommandHandler(_mockLocalAccountRepository.Object);
+            var result = await handler.Handle(new("work", "996"), default);
 
             Assert.AreEqual(Guid.Empty, result);
         }
@@ -103,8 +103,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()))
                 .Returns(Task.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            var result = await svc.ValidateAsync("work", "996");
+            var handler = new ValidateLoginCommandHandler(_mockLocalAccountRepository.Object);
+            var result = await handler.Handle(new("work", "996"), default);
 
             Assert.AreEqual(Guid.Empty, result);
         }
@@ -115,8 +115,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()))
                 .Returns(Task.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            var result = await svc.ValidateAsync("work996", "admin123");
+            var handler = new ValidateLoginCommandHandler(_mockLocalAccountRepository.Object);
+            var result = await handler.Handle(new("work996", "admin123"), default);
 
             Assert.AreEqual(Uid, result);
         }
