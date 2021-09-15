@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration;
 using Moonglade.FriendLink;
 using Moonglade.Web.Middleware;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -18,7 +17,6 @@ namespace Moonglade.Web.Tests.Middleware
     {
         private MockRepository _mockRepository;
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IFoafWriter> _mockFoafWriter;
         private Mock<IMediator> _mockMediator;
         private Mock<LinkGenerator> _mockLinkGenerator;
 
@@ -27,7 +25,6 @@ namespace Moonglade.Web.Tests.Middleware
         {
             _mockRepository = new(MockBehavior.Default);
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockFoafWriter = _mockRepository.Create<IFoafWriter>();
             _mockMediator = _mockRepository.Create<IMediator>();
             _mockLinkGenerator = _mockRepository.Create<LinkGenerator>();
 
@@ -69,8 +66,7 @@ namespace Moonglade.Web.Tests.Middleware
     </foaf:knows>
   </foaf:Person>
 </rdf:RDF>";
-            _mockFoafWriter.Setup(p =>
-                p.GetFoafData(It.IsAny<FoafDoc>(), It.IsAny<string>(), It.IsAny<IReadOnlyList<Link>>())).Returns(Task.FromResult(xml));
+            _mockMediator.Setup(p => p.Send(It.IsAny<WriterFoafCommand>(), default)).Returns(Task.FromResult(xml));
         }
 
         [Test]
@@ -82,10 +78,10 @@ namespace Moonglade.Web.Tests.Middleware
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new FoafMiddleware(RequestDelegate);
 
-            await middleware.Invoke(context, _mockBlogConfig.Object, _mockFoafWriter.Object, _mockMediator.Object, _mockLinkGenerator.Object);
+            await middleware.Invoke(context, _mockBlogConfig.Object, _mockMediator.Object, _mockLinkGenerator.Object);
 
             _mockMediator.Verify(p => p.Send(It.IsAny<GetAllLinksQuery>(), default), Times.Never);
-            _mockFoafWriter.Verify(p => p.GetFoafData(It.IsAny<FoafDoc>(), It.IsAny<string>(), It.IsAny<IReadOnlyList<Link>>()), Times.Never);
+            _mockMediator.Verify(p => p.Send(It.IsAny<WriterFoafCommand>(), default), Times.Never);
             Assert.Pass();
         }
 
@@ -101,10 +97,10 @@ namespace Moonglade.Web.Tests.Middleware
             static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
             var middleware = new FoafMiddleware(RequestDelegate);
 
-            await middleware.Invoke(context, _mockBlogConfig.Object, _mockFoafWriter.Object, _mockMediator.Object, _mockLinkGenerator.Object);
+            await middleware.Invoke(context, _mockBlogConfig.Object, _mockMediator.Object, _mockLinkGenerator.Object);
 
             _mockMediator.Verify(p => p.Send(It.IsAny<GetAllLinksQuery>(), default));
-            _mockFoafWriter.Verify(p => p.GetFoafData(It.IsAny<FoafDoc>(), It.IsAny<string>(), It.IsAny<IReadOnlyList<Link>>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<WriterFoafCommand>(), default));
             Assert.Pass();
         }
     }

@@ -1,23 +1,39 @@
-﻿using Moonglade.Web.Models;
+﻿using MediatR;
+using Moonglade.FriendLink;
+using Moonglade.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
 namespace Moonglade.Web.Middleware
 {
-    public interface IFoafWriter
+    public class WriterFoafCommand : IRequest<string>
     {
-        Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink.Link> friends);
+        public WriterFoafCommand(FoafDoc doc, string currentRequestUrl, IReadOnlyList<Link> links)
+        {
+            Doc = doc;
+            CurrentRequestUrl = currentRequestUrl;
+            Links = links;
+        }
+
+        public FoafDoc Doc { get; set; }
+
+        public string CurrentRequestUrl { get; set; }
+
+        public IReadOnlyList<Link> Links { get; set; }
+
+        public static string ContentType => "application/rdf+xml";
     }
 
     /// <summary>
     /// http://xmlns.com/foaf/spec/20140114.html
     /// </summary>
-    public class FoafWriter : IFoafWriter
+    public class WriterFoafCommandHandler : IRequestHandler<WriterFoafCommand, string>
     {
         private static Dictionary<string, string> _xmlNamespaces;
         private static Dictionary<string, string> SupportedNamespaces =>
@@ -27,9 +43,7 @@ namespace Moonglade.Web.Middleware
                 { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" }
             };
 
-        public static string ContentType => "application/rdf+xml";
-
-        public async Task<string> GetFoafData(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLink.Link> friends)
+        public async Task<string> Handle(WriterFoafCommand request, CancellationToken cancellationToken)
         {
             var sw = new StringWriter();
             var writer = await GetWriter(sw);
@@ -46,14 +60,14 @@ namespace Moonglade.Web.Middleware
 
             var me = new FoafPerson("#me")
             {
-                Name = doc.Name,
-                Blog = doc.BlogUrl,
-                Email = doc.Email,
-                PhotoUrl = doc.PhotoUrl,
+                Name = request.Doc.Name,
+                Blog = request.Doc.BlogUrl,
+                Email = request.Doc.Email,
+                PhotoUrl = request.Doc.PhotoUrl,
                 Friends = new()
             };
 
-            foreach (var friend in friends)
+            foreach (var friend in request.Links)
             {
                 me.Friends.Add(new("#" + friend.Id)
                 {
@@ -62,7 +76,7 @@ namespace Moonglade.Web.Middleware
                 });
             }
 
-            await WriteFoafPerson(writer, me, currentRequestUrl);
+            await WriteFoafPerson(writer, me, request.CurrentRequestUrl);
 
             await writer.WriteEndElementAsync();
             await writer.WriteEndDocumentAsync();

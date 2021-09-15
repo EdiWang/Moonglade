@@ -95,7 +95,7 @@ namespace Moonglade.Web
                     .AddViewLocalization()
                     .AddDataAnnotationsLocalization(options =>
                     {
-                        options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(SharedResource));
+                        options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
                     })
                     .AddRazorPagesOptions(options =>
                     {
@@ -146,7 +146,6 @@ namespace Moonglade.Web
                     .AddReleaseCheckerClient()
                     .AddBlogCache()
                     .AddMetaWeblog<MetaWeblogService>()
-                    .AddScoped<IFoafWriter, FoafWriter>()
                     .AddScoped<IExportManager, ExportManager>()
                     .AddScoped<ValidateCaptcha>()
                     .AddScoped<ITimeZoneResolver>(c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset))

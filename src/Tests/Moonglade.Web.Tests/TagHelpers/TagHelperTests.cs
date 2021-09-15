@@ -50,13 +50,13 @@ namespace Moonglade.Web.Tests.TagHelpers
 
             var expectedAttributeList = new TagHelperAttributeList
             {
-                new("type", new HtmlString(FoafWriter.ContentType)),
+                new("type", new HtmlString(WriterFoafCommand.ContentType)),
                 new("rel", "meta"),
                 new("title", "FOAF"),
                 new("href", tagHelper.Href)
             };
 
-            Assert.AreEqual(FoafWriter.ContentType, ((HtmlString)output.Attributes["type"].Value).Value);
+            Assert.AreEqual(WriterFoafCommand.ContentType, ((HtmlString)output.Attributes["type"].Value).Value);
             Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
             Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
             Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
@@ -80,7 +80,7 @@ namespace Moonglade.Web.Tests.TagHelpers
 
             var expectedAttributeList = new TagHelperAttributeList
             {
-                new("type", new HtmlString(FoafWriter.ContentType)),
+                new("type", new HtmlString(WriterFoafCommand.ContentType)),
                 new("rel", "alternate"),
                 new("title", tagHelper.Title),
                 new("href", tagHelper.Href)

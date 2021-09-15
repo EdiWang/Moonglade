@@ -1,7 +1,6 @@
 using Moonglade.FriendLink;
 using Moonglade.Web.Middleware;
 using Moonglade.Web.Models;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,15 +11,7 @@ namespace Moonglade.Web.Tests.Middleware
     [TestFixture]
     public class FoafWriterTests
     {
-        private MockRepository _mockRepository;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-        }
-
-        private FoafWriter CreateFoafWriter()
+        private WriterFoafCommandHandler CreateFoafWriter()
         {
             return new();
         }
@@ -43,10 +34,10 @@ namespace Moonglade.Web.Tests.Middleware
             };
 
             // Act
-            var result = await foafWriter.GetFoafData(
+            var result = await foafWriter.Handle(new(
                 doc,
                 currentRequestUrl,
-                friends);
+                friends), default);
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(result));
         }

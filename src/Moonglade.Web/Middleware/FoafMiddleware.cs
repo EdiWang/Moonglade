@@ -22,7 +22,6 @@ namespace Moonglade.Web.Middleware
         public async Task Invoke(
             HttpContext context,
             IBlogConfig blogConfig,
-            IFoafWriter foafWriter,
             IMediator mediator,
             LinkGenerator linkGenerator)
         {
@@ -51,10 +50,10 @@ namespace Moonglade.Web.Middleware
                     PhotoUrl = linkGenerator.GetUriByAction(context, "Avatar", "Assets")
                 };
                 var requestUrl = GetUri(context.Request).ToString();
-                var xml = await foafWriter.GetFoafData(foafDoc, requestUrl, friends);
+                var xml = await mediator.Send(new WriterFoafCommand(foafDoc, requestUrl, friends));
 
                 //[ResponseCache(Duration = 3600)]
-                context.Response.ContentType = FoafWriter.ContentType;
+                context.Response.ContentType = WriterFoafCommand.ContentType;
                 await context.Response.WriteAsync(xml, context.RequestAborted);
             }
             else
