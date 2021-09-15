@@ -91,7 +91,7 @@
       ]
     },
     {
-      "library": "twitter-bootstrap@5.1.0",
+      "library": "twitter-bootstrap@5.1.1",
       "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
         "css/bootstrap.min.css",
