@@ -86,14 +86,6 @@ namespace Moonglade.Configuration
             return asset?.Base64Data;
         }
 
-        public async Task<string> GetAssetDataAsync(Guid assetId)
-        {
-            var asset = await _dbConnection.QueryFirstOrDefaultAsync<BlogAsset>
-                ("SELECT TOP 1 * FROM BlogAsset ba WHERE ba.Id = @assetId", new { assetId });
-
-            return asset?.Base64Data;
-        }
-
         protected void Dirty()
         {
             _hasInitialized = false;

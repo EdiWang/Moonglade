@@ -18,18 +18,15 @@ namespace Moonglade.Web.Controllers
     [ApiController]
     public class AssetsController : ControllerBase
     {
-        private readonly IBlogConfig _blogConfig;
         private readonly IMediator _mediator;
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<AssetsController> _logger;
 
         public AssetsController(
             ILogger<AssetsController> logger,
-            IBlogConfig blogConfig,
             IMediator mediator,
             IWebHostEnvironment env)
         {
-            _blogConfig = blogConfig;
             _mediator = mediator;
             _env = env;
             _logger = logger;
@@ -47,7 +44,7 @@ namespace Moonglade.Web.Controllers
                 {
                     _logger.LogTrace("Avatar not on cache, getting new avatar image...");
 
-                    var data = await _blogConfig.GetAssetDataAsync(AssetId.AvatarBase64);
+                    var data = await _mediator.Send(new GetAssetDataQuery(AssetId.AvatarBase64));
                     if (string.IsNullOrWhiteSpace(data)) return null;
 
                     var avatarBytes = Convert.FromBase64String(data);
@@ -127,7 +124,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("siteicon")]
         public async Task<IActionResult> SiteIconOrigin()
         {
-            var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
+            var data = await _mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
             var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
             if (string.IsNullOrWhiteSpace(data))
             {

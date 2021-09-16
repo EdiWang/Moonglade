@@ -20,6 +20,5 @@ namespace Moonglade.Configuration
         Task SaveAsync<T>(T blogSettings) where T : IBlogSettings;
 
         string GetAssetData(Guid assetId);
-        Task<string> GetAssetDataAsync(Guid assetId);
     }
 }
