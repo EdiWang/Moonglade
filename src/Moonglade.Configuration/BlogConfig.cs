@@ -78,39 +78,6 @@ namespace Moonglade.Configuration
             Dirty();
         }
 
-        public async Task SaveAssetAsync(Guid assetId, string assetBase64)
-        {
-            if (assetId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(assetId));
-            if (string.IsNullOrWhiteSpace(assetBase64)) throw new ArgumentNullException(nameof(assetBase64));
-
-            var exists = await
-                _dbConnection.ExecuteScalarAsync<int>("SELECT TOP 1 1 FROM BlogAsset ba WHERE ba.Id = @assetId",
-                    new { assetId });
-
-            if (exists == 0)
-            {
-                await _dbConnection.ExecuteAsync(
-                    "INSERT INTO BlogAsset(Id, Base64Data, LastModifiedTimeUtc) VALUES (@assetId, @assetBase64, @utcNow)",
-                    new
-                    {
-                        assetId,
-                        assetBase64,
-                        DateTime.UtcNow
-                    });
-            }
-            else
-            {
-                await _dbConnection.ExecuteAsync(
-                    "UPDATE BlogAsset SET Base64Data = @assetBase64, LastModifiedTimeUtc = @utcNow WHERE Id = @assetId",
-                    new
-                    {
-                        assetId,
-                        assetBase64,
-                        DateTime.UtcNow
-                    });
-            }
-        }
-
         public string GetAssetData(Guid assetId)
         {
             var asset = _dbConnection.QueryFirstOrDefault<BlogAsset>

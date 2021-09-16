@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,15 +19,18 @@ namespace Moonglade.Web.Controllers
     public class AssetsController : ControllerBase
     {
         private readonly IBlogConfig _blogConfig;
+        private readonly IMediator _mediator;
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<AssetsController> _logger;
 
         public AssetsController(
             ILogger<AssetsController> logger,
             IBlogConfig blogConfig,
+            IMediator mediator,
             IWebHostEnvironment env)
         {
             _blogConfig = blogConfig;
+            _mediator = mediator;
             _env = env;
             _logger = logger;
         }
@@ -92,7 +96,7 @@ namespace Moonglade.Web.Controllers
                 return Conflict(e.Message);
             }
 
-            await _blogConfig.SaveAssetAsync(AssetId.AvatarBase64, base64Img);
+            await _mediator.Send(new SaveAssetCommand(AssetId.AvatarBase64, base64Img));
             return Ok();
         }
 
@@ -158,7 +162,7 @@ namespace Moonglade.Web.Controllers
             using var bmp = new Bitmap(new MemoryStream(base64Chars));
             if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
 
-            await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
+            await _mediator.Send(new SaveAssetCommand(AssetId.SiteIconBase64, base64Img));
 
             return NoContent();
         }

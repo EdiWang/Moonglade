@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -16,6 +17,7 @@ namespace Moonglade.Web.Tests.Controllers
 
         private Mock<ILogger<AssetsController>> _mockLogger;
         private Mock<IBlogConfig> _mockBlogConfig;
+        private Mock<IMediator> _mockMediator;
         private Mock<IWebHostEnvironment> _mockWebHostEnv;
 
         [SetUp]
@@ -25,6 +27,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             _mockLogger = _mockRepository.Create<ILogger<AssetsController>>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockWebHostEnv = _mockRepository.Create<IWebHostEnvironment>();
         }
 
@@ -33,6 +36,7 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockLogger.Object,
                 _mockBlogConfig.Object,
+                _mockMediator.Object,
                 _mockWebHostEnv.Object);
         }
 
