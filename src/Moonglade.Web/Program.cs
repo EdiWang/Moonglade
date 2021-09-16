@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web
 {
@@ -21,7 +23,7 @@ namespace Moonglade.Web
     {
         public static ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; } = new();
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var info = $"App:\tMoonglade {Helper.AppVersion}\n" +
                        $"Path:\t{Environment.CurrentDirectory} \n" +
@@ -50,11 +52,11 @@ namespace Moonglade.Web
                 var dbConnection = services.GetRequiredService<IDbConnection>();
                 TryInitFirstRun(dbConnection, logger);
 
-                var blogConfig = services.GetRequiredService<IBlogConfig>();
-                TryInitSiteIcons(blogConfig, env.WebRootPath, logger);
+                var mediator = services.GetRequiredService<IMediator>();
+                await TryInitSiteIcons(mediator, env.WebRootPath, logger);
             }
 
-            host.Run();
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -90,13 +92,13 @@ namespace Moonglade.Web
                               });
                 });
 
-        private static void TryInitSiteIcons(IBlogConfig blogConfig, string webRootPath, ILogger logger)
+        private static async Task TryInitSiteIcons(ISender sender, string webRootPath, ILogger logger)
         {
             try
             {
                 logger.LogInformation("Generating site icons");
 
-                var iconData = blogConfig.GetAssetData(AssetId.SiteIconBase64);
+                var iconData = await sender.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
                 MemoryStreamIconGenerator.GenerateIcons(iconData, webRootPath, logger);
 
                 logger.LogInformation($"Generated {SiteIconDictionary.Count} icon(s). \n{JsonSerializer.Serialize(SiteIconDictionary.Select(p => p.Key).OrderBy(x => x))}");

@@ -7,6 +7,23 @@ using System.Threading.Tasks;
 
 namespace Moonglade.Configuration
 {
+    public interface IBlogSettings
+    {
+    }
+
+    public interface IBlogConfig
+    {
+        GeneralSettings GeneralSettings { get; set; }
+        ContentSettings ContentSettings { get; set; }
+        NotificationSettings NotificationSettings { get; set; }
+        FeedSettings FeedSettings { get; set; }
+        ImageSettings ImageSettings { get; set; }
+        AdvancedSettings AdvancedSettings { get; set; }
+        CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+
+        Task SaveAsync<T>(T blogSettings) where T : IBlogSettings;
+    }
+
     public class BlogConfig : IBlogConfig
     {
         private readonly IDbConnection _dbConnection;
@@ -76,14 +93,6 @@ namespace Moonglade.Configuration
 
             await task;
             Dirty();
-        }
-
-        public string GetAssetData(Guid assetId)
-        {
-            var asset = _dbConnection.QueryFirstOrDefault<BlogAsset>
-                ("SELECT TOP 1 * FROM BlogAsset ba WHERE ba.Id = @assetId", new { assetId });
-
-            return asset?.Base64Data;
         }
 
         protected void Dirty()
