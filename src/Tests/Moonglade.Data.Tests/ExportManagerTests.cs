@@ -1,6 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Porting;
 using Moq;
 using NUnit.Framework;
@@ -12,24 +10,18 @@ namespace Moonglade.Data.Tests
     public class ExportManagerTests
     {
         private MockRepository _mockRepository;
-
-        private Mock<IRepository<PostEntity>> _mockRepositoryPostEntity;
         private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-
-            _mockRepositoryPostEntity = _mockRepository.Create<IRepository<PostEntity>>();
             _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private ExportManager CreateManager()
         {
-            return new(
-                _mockRepositoryPostEntity.Object,
-                _mockMediator.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
