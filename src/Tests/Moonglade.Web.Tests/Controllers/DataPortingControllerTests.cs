@@ -32,7 +32,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ExportDownload_SingleJsonFile()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportDataType.Tags, CancellationToken.None))
+            _mockExportManager.Setup(p => p.ExportData(ExportType.Tags, CancellationToken.None))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.SingleJsonFile,
@@ -40,7 +40,7 @@ namespace Moonglade.Web.Tests.Controllers
                 }));
 
             var settingsController = CreateDataPortingController();
-            ExportDataType type = ExportDataType.Tags;
+            ExportType type = ExportType.Tags;
 
             var result = await settingsController.ExportDownload(type, CancellationToken.None);
             Assert.IsInstanceOf<FileContentResult>(result);
@@ -49,7 +49,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ExportDownload_SingleCSVFile()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportDataType.Categories, CancellationToken.None))
+            _mockExportManager.Setup(p => p.ExportData(ExportType.Categories, CancellationToken.None))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.SingleCSVFile,
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Tests.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            ExportDataType type = ExportDataType.Categories;
+            ExportType type = ExportType.Categories;
 
             var result = await settingsController.ExportDownload(type, CancellationToken.None);
             Assert.IsInstanceOf<PhysicalFileResult>(result);
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ExportDownload_ZippedJsonFiles()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportDataType.Posts, CancellationToken.None))
+            _mockExportManager.Setup(p => p.ExportData(ExportType.Posts, CancellationToken.None))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.ZippedJsonFiles,
@@ -84,7 +84,7 @@ namespace Moonglade.Web.Tests.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            ExportDataType type = ExportDataType.Posts;
+            ExportType type = ExportType.Posts;
 
             var result = await settingsController.ExportDownload(type, CancellationToken.None);
             Assert.IsInstanceOf<PhysicalFileResult>(result);

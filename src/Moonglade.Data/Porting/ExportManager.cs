@@ -31,16 +31,16 @@ namespace Moonglade.Data.Porting
             return path;
         }
 
-        public Task<ExportResult> ExportData(ExportDataType dataType, CancellationToken cancellationToken)
+        public Task<ExportResult> ExportData(ExportType type, CancellationToken cancellationToken)
         {
-            return dataType switch
+            return type switch
             {
-                ExportDataType.Tags => _mediator.Send(new ExportTagsDataCommand(), cancellationToken),
-                ExportDataType.Categories => _mediator.Send(new ExportCategoryDataCommand(), cancellationToken),
-                ExportDataType.FriendLinks => _mediator.Send(new ExportLinkDataCommand(), cancellationToken),
-                ExportDataType.Pages => _mediator.Send(new ExportPageDataCommand(), cancellationToken),
-                ExportDataType.Posts => _mediator.Send(new ExportPostDataCommand(), cancellationToken),
-                _ => throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null)
+                ExportType.Tags => _mediator.Send(new ExportTagsDataCommand(), cancellationToken),
+                ExportType.Categories => _mediator.Send(new ExportCategoryDataCommand(), cancellationToken),
+                ExportType.FriendLinks => _mediator.Send(new ExportLinkDataCommand(), cancellationToken),
+                ExportType.Pages => _mediator.Send(new ExportPageDataCommand(), cancellationToken),
+                ExportType.Posts => _mediator.Send(new ExportPostDataCommand(), cancellationToken),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }
     }

@@ -41,7 +41,7 @@ namespace Moonglade.Data.Tests
         //{
         //    // Arrange
         //    var manager = CreateManager();
-        //    ExportDataType dataType = default(ExportDataType);
+        //    ExportType dataType = default(ExportType);
 
         //    // Act
         //    var result = await manager.ExportData(

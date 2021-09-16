@@ -5,6 +5,6 @@ namespace Moonglade.Data.Porting
 {
     public interface IExportManager
     {
-        Task<ExportResult> ExportData(ExportDataType dataType, CancellationToken cancellationToken);
+        Task<ExportResult> ExportData(ExportType type, CancellationToken cancellationToken);
     }
 }

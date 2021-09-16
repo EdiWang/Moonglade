@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Data.Porting
 {
-    public enum ExportDataType
+    public enum ExportType
     {
         Tags,
         Categories,
