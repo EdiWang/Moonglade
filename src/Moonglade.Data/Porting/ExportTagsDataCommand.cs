@@ -20,16 +20,15 @@ namespace Moonglade.Data.Porting
             _tagRepository = tagRepository;
         }
 
-        public async Task<ExportResult> Handle(ExportTagsDataCommand request, CancellationToken cancellationToken)
+        public Task<ExportResult> Handle(ExportTagsDataCommand request, CancellationToken cancellationToken)
         {
             var tagExp = new CSVExporter<TagEntity>(_tagRepository, "moonglade-tags", ExportManager.DataDir);
-            var tagExportData = await tagExp.ExportData(p => new
+            return tagExp.ExportData(p => new
             {
                 p.Id,
                 p.NormalizedName,
                 p.DisplayName
             }, cancellationToken);
-            return tagExportData;
         }
     }
 }

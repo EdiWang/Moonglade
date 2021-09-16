@@ -12,18 +12,15 @@ namespace Moonglade.Data.Porting
 {
     public class ExportManager : IExportManager
     {
-        private readonly IRepository<PageEntity> _pageRepository;
         private readonly IRepository<PostEntity> _postRepository;
         private readonly IMediator _mediator;
 
         public static readonly string DataDir = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString();
 
         public ExportManager(
-            IRepository<PageEntity> pageRepository,
             IRepository<PostEntity> postRepository,
             IMediator mediator)
         {
-            _pageRepository = pageRepository;
             _postRepository = postRepository;
             _mediator = mediator;
         }
@@ -42,42 +39,25 @@ namespace Moonglade.Data.Porting
             return path;
         }
 
-        public async Task<ExportResult> ExportData(ExportDataType dataType, CancellationToken cancellationToken)
+        public Task<ExportResult> ExportData(ExportDataType dataType, CancellationToken cancellationToken)
         {
             switch (dataType)
             {
                 case ExportDataType.Tags:
-                    var tagExportData = await _mediator.Send(new ExportTagsDataCommand(), cancellationToken);
-                    return tagExportData;
+                    return _mediator.Send(new ExportTagsDataCommand(), cancellationToken);
 
                 case ExportDataType.Categories:
-                    var catExportData = await _mediator.Send(new ExportCategoryDataCommand(), cancellationToken);
-                    return catExportData;
+                    return _mediator.Send(new ExportCategoryDataCommand(), cancellationToken);
 
                 case ExportDataType.FriendLinks:
-                    var fdExportData = await _mediator.Send(new ExportLinkDataCommand(), cancellationToken);
-                    return fdExportData;
+                    return _mediator.Send(new ExportLinkDataCommand(), cancellationToken);
 
                 case ExportDataType.Pages:
-                    var pgExp = new ZippedJsonExporter<PageEntity>(_pageRepository, "moonglade-pages", DataDir);
-                    var pgExportData = await pgExp.ExportData(p => new
-                    {
-                        p.Id,
-                        p.Title,
-                        p.Slug,
-                        p.MetaDescription,
-                        p.HtmlContent,
-                        p.CssContent,
-                        p.HideSidebar,
-                        p.IsPublished,
-                        p.CreateTimeUtc,
-                        p.UpdateTimeUtc
-                    }, cancellationToken);
+                    return _mediator.Send(new ExportPageDataCommand(), cancellationToken);
 
-                    return pgExportData;
                 case ExportDataType.Posts:
                     var poExp = new ZippedJsonExporter<PostEntity>(_postRepository, "moonglade-posts", DataDir);
-                    var poExportData = await poExp.ExportData(p => new
+                    var poExportData = poExp.ExportData(p => new
                     {
                         p.Title,
                         p.Slug,

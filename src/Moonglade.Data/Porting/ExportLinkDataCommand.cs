@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Porting.Exporters;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Moonglade.Data.Porting
 {
@@ -24,11 +20,10 @@ namespace Moonglade.Data.Porting
             _friendlinkRepository = friendlinkRepository;
         }
 
-        public async Task<ExportResult> Handle(ExportLinkDataCommand request, CancellationToken cancellationToken)
+        public Task<ExportResult> Handle(ExportLinkDataCommand request, CancellationToken cancellationToken)
         {
             var fdExp = new CSVExporter<FriendLinkEntity>(_friendlinkRepository, "moonglade-friendlinks", ExportManager.DataDir);
-            var fdExportData = await fdExp.ExportData(p => p, cancellationToken);
-            return fdExportData;
+            return fdExp.ExportData(p => p, cancellationToken);
         }
     }
 }

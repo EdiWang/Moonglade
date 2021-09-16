@@ -20,17 +20,16 @@ namespace Moonglade.Data.Porting
             _catRepository = catRepository;
         }
 
-        public async Task<ExportResult> Handle(ExportCategoryDataCommand request, CancellationToken cancellationToken)
+        public Task<ExportResult> Handle(ExportCategoryDataCommand request, CancellationToken cancellationToken)
         {
             var catExp = new CSVExporter<CategoryEntity>(_catRepository, "moonglade-categories", ExportManager.DataDir);
-            var catExportData = await catExp.ExportData(p => new
+            return catExp.ExportData(p => new
             {
                 p.Id,
                 p.DisplayName,
                 p.RouteName,
                 p.Note
             }, cancellationToken);
-            return catExportData;
         }
     }
 }
