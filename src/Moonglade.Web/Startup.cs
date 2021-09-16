@@ -23,7 +23,6 @@ using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data;
-using Moonglade.Data.Porting;
 using Moonglade.ImageStorage;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
@@ -146,7 +145,6 @@ namespace Moonglade.Web
                     .AddReleaseCheckerClient()
                     .AddBlogCache()
                     .AddMetaWeblog<MetaWeblogService>()
-                    .AddScoped<IExportManager, ExportManager>()
                     .AddScoped<ValidateCaptcha>()
                     .AddScoped<ITimeZoneResolver>(c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset))
                     .AddBlogConfig(_configuration)

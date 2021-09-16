@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Moonglade.Data.Porting;
-using Moq;
+﻿using Moonglade.Data.Porting;
 using NUnit.Framework;
 using System.IO;
 
@@ -9,21 +7,6 @@ namespace Moonglade.Data.Tests
     [TestFixture]
     public class ExportManagerTests
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
-
-        private ExportManager CreateManager()
-        {
-            return new(_mockMediator.Object);
-        }
-
         [Test]
         public void CreateExportDirectory_StateUnderTest_ExpectedBehavior()
         {

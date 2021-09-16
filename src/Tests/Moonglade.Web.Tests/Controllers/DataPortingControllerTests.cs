@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Data.Porting;
@@ -14,25 +15,24 @@ namespace Moonglade.Web.Tests.Controllers
     public class DataPortingControllerTests
     {
         private MockRepository _mockRepository;
-        private Mock<IExportManager> _mockExportManager;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockExportManager = _mockRepository.Create<IExportManager>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private DataPortingController CreateDataPortingController()
         {
-            return new(
-                _mockExportManager.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
         public async Task ExportDownload_SingleJsonFile()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportType.Tags, CancellationToken.None))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ExportTagsDataCommand>(), default))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.SingleJsonFile,
@@ -49,7 +49,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ExportDownload_SingleCSVFile()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportType.Categories, CancellationToken.None))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ExportCategoryDataCommand>(), default))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.SingleCSVFile,
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ExportDownload_ZippedJsonFiles()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportType.Posts, CancellationToken.None))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ExportPostDataCommand>(), default))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.ZippedJsonFiles,
