@@ -1,10 +1,10 @@
-﻿using Moonglade.Data.Entities;
+﻿using MediatR;
+using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Porting;
 using Moq;
 using NUnit.Framework;
 using System.IO;
-using MediatR;
 
 namespace Moonglade.Data.Tests
 {
@@ -13,7 +13,6 @@ namespace Moonglade.Data.Tests
     {
         private MockRepository _mockRepository;
 
-        private Mock<IRepository<CategoryEntity>> _mockRepositoryCategoryEntity;
         private Mock<IRepository<FriendLinkEntity>> _mockRepositoryFriendLinkEntity;
         private Mock<IRepository<PageEntity>> _mockRepositoryPageEntity;
         private Mock<IRepository<PostEntity>> _mockRepositoryPostEntity;
@@ -24,7 +23,6 @@ namespace Moonglade.Data.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockRepositoryCategoryEntity = _mockRepository.Create<IRepository<CategoryEntity>>();
             _mockRepositoryFriendLinkEntity = _mockRepository.Create<IRepository<FriendLinkEntity>>();
             _mockRepositoryPageEntity = _mockRepository.Create<IRepository<PageEntity>>();
             _mockRepositoryPostEntity = _mockRepository.Create<IRepository<PostEntity>>();
@@ -34,7 +32,6 @@ namespace Moonglade.Data.Tests
         private ExportManager CreateManager()
         {
             return new(
-                _mockRepositoryCategoryEntity.Object,
                 _mockRepositoryFriendLinkEntity.Object,
                 _mockRepositoryPageEntity.Object,
                 _mockRepositoryPostEntity.Object,

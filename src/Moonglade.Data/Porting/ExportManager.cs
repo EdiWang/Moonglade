@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Entities;
+﻿using MediatR;
+using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Porting.Exporters;
 using System;
@@ -6,13 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Moonglade.Data.Porting
 {
     public class ExportManager : IExportManager
     {
-        private readonly IRepository<CategoryEntity> _catRepository;
         private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
         private readonly IRepository<PageEntity> _pageRepository;
         private readonly IRepository<PostEntity> _postRepository;
@@ -21,13 +20,11 @@ namespace Moonglade.Data.Porting
         public static readonly string DataDir = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString();
 
         public ExportManager(
-            IRepository<CategoryEntity> catRepository,
             IRepository<FriendLinkEntity> friendlinkRepository,
             IRepository<PageEntity> pageRepository,
-            IRepository<PostEntity> postRepository, 
+            IRepository<PostEntity> postRepository,
             IMediator mediator)
         {
-            _catRepository = catRepository;
             _friendlinkRepository = friendlinkRepository;
             _pageRepository = pageRepository;
             _postRepository = postRepository;
@@ -57,14 +54,7 @@ namespace Moonglade.Data.Porting
                     return tagExportData;
 
                 case ExportDataType.Categories:
-                    var catExp = new CSVExporter<CategoryEntity>(_catRepository, "moonglade-categories", DataDir);
-                    var catExportData = await catExp.ExportData(p => new
-                    {
-                        p.Id,
-                        p.DisplayName,
-                        p.RouteName,
-                        p.Note
-                    }, cancellationToken);
+                    var catExportData = await _mediator.Send(new ExportCategoryDataCommand(), cancellationToken);
                     return catExportData;
 
                 case ExportDataType.FriendLinks:
