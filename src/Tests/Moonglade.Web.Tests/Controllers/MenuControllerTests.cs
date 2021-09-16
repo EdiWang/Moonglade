@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Menus;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -26,7 +25,7 @@ namespace Moonglade.Web.Tests.Controllers
             IsOpenInNewTab = true,
             Title = FakeData.Title3,
             Url = "/work/996",
-            SubMenus = new SubMenuEditViewModel[]
+            SubMenus = new EditSubMenuRequest[]
             {
                 new ()
                 {
