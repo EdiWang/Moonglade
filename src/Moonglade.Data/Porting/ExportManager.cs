@@ -12,7 +12,6 @@ namespace Moonglade.Data.Porting
 {
     public class ExportManager : IExportManager
     {
-        private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
         private readonly IRepository<PageEntity> _pageRepository;
         private readonly IRepository<PostEntity> _postRepository;
         private readonly IMediator _mediator;
@@ -20,12 +19,10 @@ namespace Moonglade.Data.Porting
         public static readonly string DataDir = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString();
 
         public ExportManager(
-            IRepository<FriendLinkEntity> friendlinkRepository,
             IRepository<PageEntity> pageRepository,
             IRepository<PostEntity> postRepository,
             IMediator mediator)
         {
-            _friendlinkRepository = friendlinkRepository;
             _pageRepository = pageRepository;
             _postRepository = postRepository;
             _mediator = mediator;
@@ -58,8 +55,7 @@ namespace Moonglade.Data.Porting
                     return catExportData;
 
                 case ExportDataType.FriendLinks:
-                    var fdExp = new CSVExporter<FriendLinkEntity>(_friendlinkRepository, "moonglade-friendlinks", DataDir);
-                    var fdExportData = await fdExp.ExportData(p => p, cancellationToken);
+                    var fdExportData = await _mediator.Send(new ExportLinkDataCommand(), cancellationToken);
                     return fdExportData;
 
                 case ExportDataType.Pages:

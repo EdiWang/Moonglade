@@ -13,7 +13,6 @@ namespace Moonglade.Data.Tests
     {
         private MockRepository _mockRepository;
 
-        private Mock<IRepository<FriendLinkEntity>> _mockRepositoryFriendLinkEntity;
         private Mock<IRepository<PageEntity>> _mockRepositoryPageEntity;
         private Mock<IRepository<PostEntity>> _mockRepositoryPostEntity;
         private Mock<IMediator> _mockMediator;
@@ -23,7 +22,6 @@ namespace Moonglade.Data.Tests
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockRepositoryFriendLinkEntity = _mockRepository.Create<IRepository<FriendLinkEntity>>();
             _mockRepositoryPageEntity = _mockRepository.Create<IRepository<PageEntity>>();
             _mockRepositoryPostEntity = _mockRepository.Create<IRepository<PostEntity>>();
             _mockMediator = _mockRepository.Create<IMediator>();
@@ -32,7 +30,6 @@ namespace Moonglade.Data.Tests
         private ExportManager CreateManager()
         {
             return new(
-                _mockRepositoryFriendLinkEntity.Object,
                 _mockRepositoryPageEntity.Object,
                 _mockRepositoryPostEntity.Object,
                 _mockMediator.Object);
