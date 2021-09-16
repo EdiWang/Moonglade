@@ -63,15 +63,15 @@ namespace Moonglade.Configuration
         {
             if (_hasInitialized) return;
 
-            var cfgDic = GetAllConfigurations();
+            var config = GetAllConfigurations();
 
-            GeneralSettings = cfgDic[nameof(GeneralSettings)].FromJson<GeneralSettings>();
-            ContentSettings = cfgDic[nameof(ContentSettings)].FromJson<ContentSettings>();
-            NotificationSettings = cfgDic[nameof(NotificationSettings)].FromJson<NotificationSettings>();
-            FeedSettings = cfgDic[nameof(FeedSettings)].FromJson<FeedSettings>();
-            ImageSettings = cfgDic[nameof(ImageSettings)].FromJson<ImageSettings>();
-            AdvancedSettings = cfgDic[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
-            CustomStyleSheetSettings = cfgDic[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
+            GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
+            ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
+            NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();
+            FeedSettings = config[nameof(FeedSettings)].FromJson<FeedSettings>();
+            ImageSettings = config[nameof(ImageSettings)].FromJson<ImageSettings>();
+            AdvancedSettings = config[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
+            CustomStyleSheetSettings = config[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
 
             _hasInitialized = true;
         }
