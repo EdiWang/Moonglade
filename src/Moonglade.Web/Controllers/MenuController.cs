@@ -41,7 +41,7 @@ namespace Moonglade.Web.Controllers
             if (null != model.SubMenus)
             {
                 var subMenuRequests = model.SubMenus
-                    .Select(p => new UpdateSubMenuRequest
+                    .Select(p => new EditSubMenuRequest
                     {
                         Title = p.Title,
                         Url = p.Url,
@@ -80,7 +80,7 @@ namespace Moonglade.Web.Controllers
                 Title = menu.Title,
                 Url = menu.Url,
                 IsOpenInNewTab = menu.IsOpenInNewTab,
-                SubMenus = menu.SubMenus.Select(p => new SubMenuEditViewModel
+                SubMenus = menu.SubMenus.Select(p => new EditSubMenuRequest
                 {
                     Id = p.Id,
                     Title = p.Title,
@@ -109,7 +109,7 @@ namespace Moonglade.Web.Controllers
             if (null != model.SubMenus)
             {
                 var subMenuRequests = model.SubMenus
-                    .Select(p => new UpdateSubMenuRequest
+                    .Select(p => new EditSubMenuRequest
                     {
                         Title = p.Title,
                         Url = p.Url,

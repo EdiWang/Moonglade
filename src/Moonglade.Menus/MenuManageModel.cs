@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.Web.Models
+namespace Moonglade.Menus
 {
     public class MenuEditViewModel
     {
@@ -24,10 +24,10 @@ namespace Moonglade.Web.Models
         [Display(Name = "Open in New Tab")]
         public bool IsOpenInNewTab { get; set; }
 
-        public SubMenuEditViewModel[] SubMenus { get; set; }
+        public EditSubMenuRequest[] SubMenus { get; set; }
     }
 
-    public class SubMenuEditViewModel
+    public class EditSubMenuRequest
     {
         [HiddenInput]
         public Guid Id { get; set; }

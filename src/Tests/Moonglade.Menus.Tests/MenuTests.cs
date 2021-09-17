@@ -121,7 +121,7 @@ namespace Moonglade.Menus.Tests
                 Url = "work/996",
                 SubMenus = new[]
                 {
-                    new UpdateSubMenuRequest
+                    new EditSubMenuRequest
                     {
                         IsOpenInNewTab = true,
                         Title = "251 Today",
@@ -164,7 +164,7 @@ namespace Moonglade.Menus.Tests
                 Url = "work/996",
                 SubMenus = new[]
                 {
-                    new UpdateSubMenuRequest
+                    new EditSubMenuRequest
                     {
                         IsOpenInNewTab = true,
                         Title = "251 Today",
