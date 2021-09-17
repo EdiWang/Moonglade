@@ -35,7 +35,7 @@ namespace Moonglade.Web.Middleware
             }
         }
 
-        private async Task<string> GetOpenSearchData(string siteRootUrl, string shortName, string description)
+        private static async Task<string> GetOpenSearchData(string siteRootUrl, string shortName, string description)
         {
             var sb = new StringBuilder();
 

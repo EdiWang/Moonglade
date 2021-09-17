@@ -52,7 +52,7 @@ namespace Moonglade.Web.Middleware
 
         private static async Task<string> GetSiteMapData(
             string siteRootUrl,
-            IConfigurationSection siteMapSection,
+            IConfiguration siteMapSection,
             IRepository<PostEntity> postRepo,
             IRepository<PageEntity> pageRepo)
         {
