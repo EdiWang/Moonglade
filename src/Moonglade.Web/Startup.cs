@@ -138,6 +138,7 @@ namespace Moonglade.Web
 
             services.AddHealthChecks();
             services.AddTransient<RequestBodyLoggingMiddleware>();
+            services.AddTransient<ResponseBodyLoggingMiddleware>();
 
             // Blog Services
             services.AddPingback()
@@ -261,6 +262,7 @@ namespace Moonglade.Web
             app.UseAuthorization();
 
             app.UseMiddleware<RequestBodyLoggingMiddleware>();
+            app.UseMiddleware<ResponseBodyLoggingMiddleware>();
 
             app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
         }
