@@ -137,6 +137,7 @@ namespace Moonglade.Web
             });
 
             services.AddHealthChecks();
+            services.AddTransient<RequestBodyLoggingMiddleware>();
 
             // Blog Services
             services.AddPingback()
@@ -258,6 +259,9 @@ namespace Moonglade.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<RequestBodyLoggingMiddleware>();
+
             app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
         }
     }
