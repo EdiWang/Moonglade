@@ -39,7 +39,7 @@ namespace Moonglade.Web.Middleware
                 };
 
                 context.Response.StatusCode = StatusCodes.Status200OK;
-                context.Response.ContentType = "application/json";
+                context.Response.ContentType = "application/manifest+json";
                 context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
                 await context.Response.WriteAsJsonAsync(model, context.RequestAborted);
