@@ -11,12 +11,12 @@ namespace Moonglade.Menus
 {
     public class CreateMenuCommand : IRequest<Guid>
     {
-        public CreateMenuCommand(UpdateMenuRequest request)
+        public CreateMenuCommand(EditMenuRequest request)
         {
             Request = request;
         }
 
-        public UpdateMenuRequest Request { get; set; }
+        public EditMenuRequest Request { get; set; }
     }
 
     public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
@@ -37,7 +37,7 @@ namespace Moonglade.Menus
             {
                 Id = uid,
                 Title = request.Request.Title.Trim(),
-                DisplayOrder = request.Request.DisplayOrder,
+                DisplayOrder = request.Request.DisplayOrder.GetValueOrDefault(),
                 Icon = request.Request.Icon,
                 Url = request.Request.Url,
                 IsOpenInNewTab = request.Request.IsOpenInNewTab

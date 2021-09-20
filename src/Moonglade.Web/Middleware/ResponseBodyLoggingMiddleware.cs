@@ -1,7 +1,7 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Microsoft.ApplicationInsights.DataContracts;
+﻿using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Middleware
 {

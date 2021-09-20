@@ -12,14 +12,14 @@ namespace Moonglade.Menus
 {
     public class UpdateMenuCommand : IRequest
     {
-        public UpdateMenuCommand(Guid id, UpdateMenuRequest request)
+        public UpdateMenuCommand(Guid id, EditMenuRequest payload)
         {
             Id = id;
-            Request = request;
+            Payload = payload;
         }
 
         public Guid Id { get; set; }
-        public UpdateMenuRequest Request { get; set; }
+        public EditMenuRequest Payload { get; set; }
     }
 
     public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
@@ -41,18 +41,18 @@ namespace Moonglade.Menus
                 throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
             }
 
-            var url = Helper.SterilizeLink(request.Request.Url.Trim());
+            var url = Helper.SterilizeLink(request.Payload.Url.Trim());
 
-            menu.Title = request.Request.Title.Trim();
+            menu.Title = request.Payload.Title.Trim();
             menu.Url = url;
-            menu.DisplayOrder = request.Request.DisplayOrder;
-            menu.Icon = request.Request.Icon;
-            menu.IsOpenInNewTab = request.Request.IsOpenInNewTab;
+            menu.DisplayOrder = request.Payload.DisplayOrder.GetValueOrDefault();
+            menu.Icon = request.Payload.Icon;
+            menu.IsOpenInNewTab = request.Payload.IsOpenInNewTab;
 
-            if (request.Request.SubMenus is { Length: > 0 })
+            if (request.Payload.SubMenus is { Length: > 0 })
             {
                 menu.SubMenus.Clear();
-                var sms = request.Request.SubMenus.Select(p => new SubMenuEntity
+                var sms = request.Payload.SubMenus.Select(p => new SubMenuEntity
                 {
                     Id = Guid.NewGuid(),
                     IsOpenInNewTab = p.IsOpenInNewTab,

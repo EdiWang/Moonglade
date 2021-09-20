@@ -27,9 +27,9 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(MenuEditViewModel model)
+        public async Task<IActionResult> Create(EditMenuRequest model)
         {
-            var request = new UpdateMenuRequest
+            var request = new EditMenuRequest
             {
                 DisplayOrder = model.DisplayOrder.GetValueOrDefault(),
                 Icon = model.Icon,
@@ -65,14 +65,14 @@ namespace Moonglade.Web.Controllers
         }
 
         [HttpGet("edit/{id:guid}")]
-        [ProducesResponseType(typeof(MenuEditViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EditMenuRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit([NotEmpty] Guid id)
         {
             var menu = await _mediator.Send(new GetMenuQuery(id));
             if (null == menu) return NotFound();
 
-            var model = new MenuEditViewModel
+            var model = new EditMenuRequest
             {
                 Id = menu.Id,
                 DisplayOrder = menu.DisplayOrder,
@@ -95,9 +95,9 @@ namespace Moonglade.Web.Controllers
         [HttpPut("edit")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Edit(MenuEditViewModel model)
+        public async Task<IActionResult> Edit(EditMenuRequest model)
         {
-            var request = new UpdateMenuRequest
+            var request = new EditMenuRequest
             {
                 Title = model.Title,
                 DisplayOrder = model.DisplayOrder.GetValueOrDefault(),

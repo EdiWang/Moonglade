@@ -17,7 +17,7 @@ namespace Moonglade.Web.Tests.Controllers
 
         private readonly Guid _noneEmptyId = Guid.Parse("4ac8e62e-92f1-449d-8feb-ee42a99caa09");
 
-        private readonly MenuEditViewModel _menuEditViewModel = new()
+        private readonly EditMenuRequest _editMenuRequest = new()
         {
             Id = FakeData.Uid1,
             DisplayOrder = FakeData.Int2,
@@ -51,7 +51,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreateMenuController();
 
-            var result = await ctl.Create(_menuEditViewModel);
+            var result = await ctl.Create(_editMenuRequest);
             Assert.IsInstanceOf<OkObjectResult>(result);
 
             _mockMediator.Verify(p => p.Send(It.IsAny<CreateMenuCommand>(), default));
@@ -110,7 +110,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Edit_Post_ok()
         {
             var ctl = CreateMenuController();
-            var result = await ctl.Edit(_menuEditViewModel);
+            var result = await ctl.Edit(_editMenuRequest);
 
             Assert.IsInstanceOf<NoContentResult>(result);
             _mockMediator.Verify(p => p.Send(It.IsAny<UpdateMenuCommand>(), default));
