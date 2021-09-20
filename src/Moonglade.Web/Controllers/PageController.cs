@@ -51,7 +51,7 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public Task<IActionResult> Create(PageEditModel model)
+        public Task<IActionResult> Create(EditPageRequest model)
         {
             return CreateOrEdit(model, async request => await _mediator.Send(new CreatePageCommand(request)));
         }
@@ -59,12 +59,12 @@ namespace Moonglade.Web.Controllers
         [HttpPut("{id:guid}")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public Task<IActionResult> Edit([NotEmpty] Guid id, PageEditModel model)
+        public Task<IActionResult> Edit([NotEmpty] Guid id, EditPageRequest model)
         {
             return CreateOrEdit(model, async request => await _mediator.Send(new UpdatePageCommand(id, request)));
         }
 
-        private async Task<IActionResult> CreateOrEdit(PageEditModel model, Func<PageEditModel, Task<Guid>> pageServiceAction)
+        private async Task<IActionResult> CreateOrEdit(EditPageRequest model, Func<EditPageRequest, Task<Guid>> pageServiceAction)
         {
             if (!string.IsNullOrWhiteSpace(model.CssContent))
             {

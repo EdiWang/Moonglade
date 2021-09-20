@@ -321,7 +321,7 @@ namespace Moonglade.Web
 
             return TryExecuteAsync(async () =>
             {
-                var pageRequest = new PageEditModel
+                var pageRequest = new EditPageRequest
                 {
                     Title = page.title,
                     HideSidebar = true,
@@ -348,7 +348,7 @@ namespace Moonglade.Web
                     throw new ArgumentException("Invalid ID", nameof(pageid));
                 }
 
-                var pageRequest = new PageEditModel
+                var pageRequest = new EditPageRequest
                 {
                     Title = page.title,
                     HideSidebar = true,

@@ -11,12 +11,12 @@ namespace Moonglade.Core.CategoryFeature
 {
     public class CreateCategoryCommand : IRequest
     {
-        public CreateCategoryCommand(EditCategoryRequest request)
+        public CreateCategoryCommand(EditCategoryRequest payload)
         {
-            Request = request;
+            Payload = payload;
         }
 
-        public EditCategoryRequest Request { get; set; }
+        public EditCategoryRequest Payload { get; set; }
     }
 
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
@@ -34,15 +34,15 @@ namespace Moonglade.Core.CategoryFeature
 
         public async Task<Unit> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-            var exists = _catRepo.Any(c => c.RouteName == request.Request.RouteName);
+            var exists = _catRepo.Any(c => c.RouteName == request.Payload.RouteName);
             if (exists) return Unit.Value;
 
             var category = new CategoryEntity
             {
                 Id = Guid.NewGuid(),
-                RouteName = request.Request.RouteName.Trim(),
-                Note = request.Request.Note?.Trim(),
-                DisplayName = request.Request.DisplayName.Trim()
+                RouteName = request.Payload.RouteName.Trim(),
+                Note = request.Payload.Note?.Trim(),
+                DisplayName = request.Payload.DisplayName.Trim()
             };
 
             await _catRepo.AddAsync(category);

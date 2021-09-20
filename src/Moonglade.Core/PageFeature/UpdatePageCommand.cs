@@ -10,14 +10,14 @@ namespace Moonglade.Core.PageFeature
 {
     public class UpdatePageCommand : IRequest<Guid>
     {
-        public UpdatePageCommand(Guid id, PageEditModel model)
+        public UpdatePageCommand(Guid id, EditPageRequest payload)
         {
             Id = id;
-            Model = model;
+            Payload = payload;
         }
 
         public Guid Id { get; set; }
-        public PageEditModel Model { get; set; }
+        public EditPageRequest Payload { get; set; }
     }
 
     public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
@@ -39,14 +39,14 @@ namespace Moonglade.Core.PageFeature
                 throw new InvalidOperationException($"PageEntity with Id '{request.Id}' not found.");
             }
 
-            page.Title = request.Model.Title.Trim();
-            page.Slug = request.Model.Slug.ToLower().Trim();
-            page.MetaDescription = request.Model.MetaDescription;
-            page.HtmlContent = request.Model.RawHtmlContent;
-            page.CssContent = request.Model.CssContent;
-            page.HideSidebar = request.Model.HideSidebar;
+            page.Title = request.Payload.Title.Trim();
+            page.Slug = request.Payload.Slug.ToLower().Trim();
+            page.MetaDescription = request.Payload.MetaDescription;
+            page.HtmlContent = request.Payload.RawHtmlContent;
+            page.CssContent = request.Payload.CssContent;
+            page.HideSidebar = request.Payload.HideSidebar;
             page.UpdateTimeUtc = DateTime.UtcNow;
-            page.IsPublished = request.Model.IsPublished;
+            page.IsPublished = request.Payload.IsPublished;
 
             await _pageRepo.UpdateAsync(page);
             await _audit.AddEntry(BlogEventType.Content, BlogEventId.PageUpdated, $"Page '{request.Id}' updated.");

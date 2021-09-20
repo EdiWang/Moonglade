@@ -10,12 +10,12 @@ namespace Moonglade.Core.PageFeature
 {
     public class CreatePageCommand : IRequest<Guid>
     {
-        public CreatePageCommand(PageEditModel model)
+        public CreatePageCommand(EditPageRequest payload)
         {
-            Model = model;
+            Payload = payload;
         }
 
-        public PageEditModel Model { get; set; }
+        public EditPageRequest Payload { get; set; }
     }
 
     public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
@@ -35,14 +35,14 @@ namespace Moonglade.Core.PageFeature
             var page = new PageEntity
             {
                 Id = uid,
-                Title = request.Model.Title.Trim(),
-                Slug = request.Model.Slug.ToLower().Trim(),
-                MetaDescription = request.Model.MetaDescription,
+                Title = request.Payload.Title.Trim(),
+                Slug = request.Payload.Slug.ToLower().Trim(),
+                MetaDescription = request.Payload.MetaDescription,
                 CreateTimeUtc = DateTime.UtcNow,
-                HtmlContent = request.Model.RawHtmlContent,
-                CssContent = request.Model.CssContent,
-                HideSidebar = request.Model.HideSidebar,
-                IsPublished = request.Model.IsPublished
+                HtmlContent = request.Payload.RawHtmlContent,
+                CssContent = request.Payload.CssContent,
+                HideSidebar = request.Payload.HideSidebar,
+                IsPublished = request.Payload.IsPublished
             };
 
             await _pageRepo.AddAsync(page);

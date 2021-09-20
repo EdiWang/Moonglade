@@ -13,12 +13,12 @@ namespace Moonglade.Web.Pages.Admin
 
         public Guid PageId { get; set; }
 
-        public PageEditModel PageEditModel { get; set; }
+        public EditPageRequest EditPageRequest { get; set; }
 
         public EditPageModel(IMediator mediator)
         {
             _mediator = mediator;
-            PageEditModel = new();
+            EditPageRequest = new();
         }
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
@@ -30,7 +30,7 @@ namespace Moonglade.Web.Pages.Admin
 
             PageId = page.Id;
 
-            PageEditModel = new()
+            EditPageRequest = new()
             {
                 Title = page.Title,
                 Slug = page.Slug,

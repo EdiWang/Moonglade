@@ -19,7 +19,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IMediator> _mockMediator;
 
-        private PageEditModel _pageEditModel;
+        private EditPageRequest _editPageRequest;
 
         [SetUp]
         public void SetUp()
@@ -29,7 +29,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockMediator = _mockRepository.Create<IMediator>();
 
-            _pageEditModel = new()
+            _editPageRequest = new()
             {
                 CssContent = ".fubao { color: #996 }",
                 HideSidebar = true,
@@ -96,7 +96,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreatePageController();
 
-            var result = await ctl.Create(_pageEditModel);
+            var result = await ctl.Create(_editPageRequest);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
@@ -105,7 +105,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreatePageController();
 
-            var result = await ctl.Edit(FakeData.Uid2, _pageEditModel);
+            var result = await ctl.Edit(FakeData.Uid2, _editPageRequest);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
     }

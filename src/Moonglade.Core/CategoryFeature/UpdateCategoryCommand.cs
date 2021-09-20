@@ -11,14 +11,14 @@ namespace Moonglade.Core.CategoryFeature
 {
     public class UpdateCategoryCommand : IRequest<OperationCode>
     {
-        public UpdateCategoryCommand(Guid id, EditCategoryRequest request)
+        public UpdateCategoryCommand(Guid id, EditCategoryRequest payload)
         {
             Id = id;
-            Request = request;
+            Payload = payload;
         }
 
         public Guid Id { get; set; }
-        public EditCategoryRequest Request { get; set; }
+        public EditCategoryRequest Payload { get; set; }
     }
 
     public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, OperationCode>
@@ -39,9 +39,9 @@ namespace Moonglade.Core.CategoryFeature
             var cat = await _catRepo.GetAsync(request.Id);
             if (cat is null) return OperationCode.ObjectNotFound;
 
-            cat.RouteName = request.Request.RouteName.Trim();
-            cat.DisplayName = request.Request.DisplayName.Trim();
-            cat.Note = request.Request.Note?.Trim();
+            cat.RouteName = request.Payload.RouteName.Trim();
+            cat.DisplayName = request.Payload.DisplayName.Trim();
+            cat.Note = request.Payload.Note?.Trim();
 
             await _catRepo.UpdateAsync(cat);
             _cache.Remove(CacheDivision.General, "allcats");

@@ -2,7 +2,7 @@
 
 namespace Moonglade.Core.PageFeature
 {
-    public class PageEditModel
+    public class EditPageRequest
     {
         [Required(ErrorMessage = "Please enter a title.")]
         [MaxLength(128)]
@@ -32,7 +32,7 @@ namespace Moonglade.Core.PageFeature
         [Display(Name = "Publish")]
         public bool IsPublished { get; set; }
 
-        public PageEditModel()
+        public EditPageRequest()
         {
             HideSidebar = true;
         }
