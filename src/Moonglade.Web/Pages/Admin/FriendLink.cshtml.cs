@@ -10,19 +10,19 @@ namespace Moonglade.Web.Pages.Admin
     {
         private readonly IMediator _mediator;
 
-        public FriendLinkEditModel FriendLinkEditViewModel { get; set; }
+        public EditLinkRequest EditLinkRequest { get; set; }
 
-        public IReadOnlyList<Link> FriendLinks { get; set; }
+        public IReadOnlyList<Link> Links { get; set; }
 
         public FriendLinkModel(IMediator mediator)
         {
             _mediator = mediator;
-            FriendLinkEditViewModel = new();
+            EditLinkRequest = new();
         }
 
         public async Task OnGet()
         {
-            FriendLinks = await _mediator.Send(new GetAllLinksQuery());
+            Links = await _mediator.Send(new GetAllLinksQuery());
         }
     }
 }

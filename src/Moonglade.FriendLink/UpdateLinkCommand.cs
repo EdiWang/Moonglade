@@ -11,7 +11,7 @@ namespace Moonglade.FriendLink
 {
     public class UpdateLinkCommand : IRequest
     {
-        public UpdateLinkCommand(Guid id, FriendLinkEditModel model)
+        public UpdateLinkCommand(Guid id, EditLinkRequest model)
         {
             Id = id;
             Model = model;
@@ -19,7 +19,7 @@ namespace Moonglade.FriendLink
 
         public Guid Id { get; set; }
 
-        public FriendLinkEditModel Model { get; set; }
+        public EditLinkRequest Model { get; set; }
     }
 
     public class UpdateLinkCommandHandler : IRequestHandler<UpdateLinkCommand>

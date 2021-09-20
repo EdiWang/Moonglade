@@ -2,7 +2,7 @@
 
 namespace Moonglade.FriendLink
 {
-    public class FriendLinkEditModel
+    public class EditLinkRequest
     {
         [Required]
         [Display(Name = "Title")]

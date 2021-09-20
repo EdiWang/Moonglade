@@ -37,7 +37,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
             var friendLinkModel = CreateFriendLinkModel();
             await friendLinkModel.OnGet();
 
-            Assert.IsNotNull(friendLinkModel.FriendLinks);
+            Assert.IsNotNull(friendLinkModel.Links);
         }
     }
 }

@@ -23,10 +23,10 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(FriendLinkEditModel model)
+        public async Task<IActionResult> Create(EditLinkRequest request)
         {
-            await _mediator.Send(new AddLinkCommand(model));
-            return Created(string.Empty, model);
+            await _mediator.Send(new AddLinkCommand(request));
+            return Created(string.Empty, request);
         }
 
         [HttpGet("{id:guid}")]
@@ -42,9 +42,9 @@ namespace Moonglade.Web.Controllers
 
         [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Update([NotEmpty] Guid id, FriendLinkEditModel model)
+        public async Task<IActionResult> Update([NotEmpty] Guid id, EditLinkRequest request)
         {
-            await _mediator.Send(new UpdateLinkCommand(id, model));
+            await _mediator.Send(new UpdateLinkCommand(id, request));
             return NoContent();
         }
 

@@ -11,12 +11,12 @@ namespace Moonglade.FriendLink
 {
     public class AddLinkCommand : IRequest
     {
-        public AddLinkCommand(FriendLinkEditModel model)
+        public AddLinkCommand(EditLinkRequest payload)
         {
-            Model = model;
+            Payload = payload;
         }
 
-        public FriendLinkEditModel Model { get; set; }
+        public EditLinkRequest Payload { get; set; }
     }
 
     public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
@@ -32,16 +32,16 @@ namespace Moonglade.FriendLink
 
         public async Task<Unit> Handle(AddLinkCommand request, CancellationToken cancellationToken)
         {
-            if (!Uri.IsWellFormedUriString(request.Model.LinkUrl, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(request.Payload.LinkUrl, UriKind.Absolute))
             {
-                throw new InvalidOperationException($"{nameof(request.Model.LinkUrl)} is not a valid url.");
+                throw new InvalidOperationException($"{nameof(request.Payload.LinkUrl)} is not a valid url.");
             }
 
             var link = new FriendLinkEntity
             {
                 Id = Guid.NewGuid(),
-                LinkUrl = Helper.SterilizeLink(request.Model.LinkUrl),
-                Title = request.Model.Title
+                LinkUrl = Helper.SterilizeLink(request.Payload.LinkUrl),
+                Title = request.Payload.Title
             };
 
             await _friendlinkRepo.AddAsync(link);
