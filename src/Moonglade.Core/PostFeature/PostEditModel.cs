@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Moonglade.Web.Models
+namespace Moonglade.Core.PostFeature
 {
     public class PostEditModel
     {
