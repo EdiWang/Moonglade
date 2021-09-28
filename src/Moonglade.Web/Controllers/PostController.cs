@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
@@ -112,6 +113,22 @@ namespace Moonglade.Web.Controllers
 
                 var catIds = model.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
 
+                string inlineCss = null; 
+                if (!string.IsNullOrWhiteSpace(model.InlineCss))
+                {
+                    var uglifyTest = Uglify.Css(model.InlineCss);
+                    if (uglifyTest.HasErrors)
+                    {
+                        foreach (var err in uglifyTest.Errors)
+                        {
+                            ModelState.AddModelError(model.InlineCss, err.ToString());
+                        }
+                        return BadRequest(ModelState.CombineErrorMessages());
+                    }
+
+                    inlineCss = model.InlineCss;
+                }
+
                 var request = new UpdatePostRequest
                 {
                     Title = model.Title.Trim(),
@@ -128,6 +145,7 @@ namespace Moonglade.Web.Controllers
                     IsOriginal = model.IsOriginal,
                     OriginLink = string.IsNullOrWhiteSpace(model.OriginLink) ? null : model.OriginLink,
                     HeroImageUrl = string.IsNullOrWhiteSpace(model.HeroImageUrl) ? null : model.HeroImageUrl,
+                    InlineCss = inlineCss,
                     Tags = tags,
                     CategoryIds = catIds
                 };
