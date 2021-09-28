@@ -126,7 +126,7 @@ namespace Moonglade.Web.Controllers
                         return BadRequest(ModelState.CombineErrorMessages());
                     }
 
-                    inlineCss = model.InlineCss;
+                    inlineCss = uglifyTest.Code;
                 }
 
                 var request = new UpdatePostRequest
