@@ -1,6 +1,7 @@
 ﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.PostModel
 @using Moonglade.Utils
+@using NUglify
 
 @inject ITimeZoneResolver _zoneResolver
 @Html.AntiForgeryToken()
@@ -28,6 +29,17 @@
     <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
     <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
+
+    @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
+    {
+        var uglifiedCss = Uglify.Css(Model.Post.InlineCss);
+        if (!uglifiedCss.HasErrors)
+        {
+            <style>
+                @uglifiedCss.Code
+            </style>
+        }
+    }
 }
 
 @if (BlogConfig.AdvancedSettings.EnableOpenGraph)
@@ -106,7 +118,7 @@
             {
                 <span class="badge bg-secondary me-2">@Localizer["Original"]</span>
             }
-            
+
             @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
             {
                 <i class="bi-person"></i>

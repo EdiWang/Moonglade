@@ -81,6 +81,10 @@ namespace Moonglade.Core.PostFeature
         [DataType(DataType.Url)]
         public string HeroImageUrl { get; set; }
 
+        [Display(Name = "Inline CSS")]
+        [MaxLength(2048)]
+        public string InlineCss { get; set; }
+        
         public PostEditModel()
         {
             PostId = Guid.Empty;

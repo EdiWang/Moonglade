@@ -1,6 +1,7 @@
 ﻿@page "/post/preview/{postId:guid}"
 @model Moonglade.Web.Pages.PostPreviewModel
 @using Moonglade.Utils
+@using NUglify
 @inject ITimeZoneResolver _zoneResolver
 
 @{
@@ -12,6 +13,17 @@
 @section meta {
     <meta name="robots" content="noindex, nofollow" />
     <meta name="title" content="@Model.Post.Title" />
+    
+    @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
+    {
+        var uglifiedCss = Uglify.Css(Model.Post.InlineCss);
+        if (!uglifiedCss.HasErrors)
+        {
+            <style>
+                @uglifiedCss.Code
+                </style>
+        }
+    }
 }
 
 @section scripts {

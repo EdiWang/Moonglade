@@ -221,6 +221,12 @@
                             @Localizer["Upload Image"]
                         </a>
                     </div>
+                    <div class="mt-2">
+                        <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
+                            <i class="bi-brush"></i>
+                            @Localizer["Inline CSS"]
+                        </a>
+                    </div>
 
                     @if (Model.ViewModel.PostId != Guid.Empty)
                     {
@@ -311,6 +317,28 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@Localizer["Continue"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="inlineCssModal" tabindex="-1" role="dialog" aria-labelledby="inlineCssModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inlineCssModalLabel">@Localizer["Inline CSS"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <textarea asp-for="ViewModel.InlineCss" class="form-control textarea-code h-300px"></textarea>
+                        <span asp-validation-for="ViewModel.InlineCss" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-accent" data-bs-dismiss="modal">@Localizer["OK"]</button>
                 </div>
             </div>
         </div>
