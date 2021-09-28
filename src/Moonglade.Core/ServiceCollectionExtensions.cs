@@ -1,24 +1,11 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Polly;
+using System;
 
 namespace Moonglade.Core
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCoreBloggingServices(this IServiceCollection services)
-        {
-            services.AddScoped<IBlogStatistics, BlogStatistics>()
-                    .AddScoped<ICategoryService, CategoryService>()
-                    .AddScoped<IPostManageService, PostManageService>()
-                    .AddScoped<IPostQueryService, PostQueryService>()
-                    .AddScoped<IBlogPageService, BlogPageService>()
-                    .AddScoped<ISearchService, SearchService>()
-                    .AddScoped<ITagService, TagService>();
-
-            return services;
-        }
-
         public static IServiceCollection AddReleaseCheckerClient(this IServiceCollection services)
         {
             services.AddHttpClient<IReleaseCheckerClient, ReleaseCheckerClient>()

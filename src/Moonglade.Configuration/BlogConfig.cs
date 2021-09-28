@@ -1,12 +1,29 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 
 namespace Moonglade.Configuration
 {
+    public interface IBlogSettings
+    {
+    }
+
+    public interface IBlogConfig
+    {
+        GeneralSettings GeneralSettings { get; set; }
+        ContentSettings ContentSettings { get; set; }
+        NotificationSettings NotificationSettings { get; set; }
+        FeedSettings FeedSettings { get; set; }
+        ImageSettings ImageSettings { get; set; }
+        AdvancedSettings AdvancedSettings { get; set; }
+        CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+
+        Task SaveAsync<T>(T blogSettings) where T : IBlogSettings;
+    }
+
     public class BlogConfig : IBlogConfig
     {
         private readonly IDbConnection _dbConnection;
@@ -46,15 +63,15 @@ namespace Moonglade.Configuration
         {
             if (_hasInitialized) return;
 
-            var cfgDic = GetAllConfigurations();
+            var config = GetAllConfigurations();
 
-            GeneralSettings = cfgDic[nameof(GeneralSettings)].FromJson<GeneralSettings>();
-            ContentSettings = cfgDic[nameof(ContentSettings)].FromJson<ContentSettings>();
-            NotificationSettings = cfgDic[nameof(NotificationSettings)].FromJson<NotificationSettings>();
-            FeedSettings = cfgDic[nameof(FeedSettings)].FromJson<FeedSettings>();
-            ImageSettings = cfgDic[nameof(ImageSettings)].FromJson<ImageSettings>();
-            AdvancedSettings = cfgDic[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
-            CustomStyleSheetSettings = cfgDic[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
+            GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
+            ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
+            NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();
+            FeedSettings = config[nameof(FeedSettings)].FromJson<FeedSettings>();
+            ImageSettings = config[nameof(ImageSettings)].FromJson<ImageSettings>();
+            AdvancedSettings = config[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
+            CustomStyleSheetSettings = config[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
 
             _hasInitialized = true;
         }
@@ -76,55 +93,6 @@ namespace Moonglade.Configuration
 
             await task;
             Dirty();
-        }
-
-        public async Task SaveAssetAsync(Guid assetId, string assetBase64)
-        {
-            if (assetId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(assetId));
-            if (string.IsNullOrWhiteSpace(assetBase64)) throw new ArgumentNullException(nameof(assetBase64));
-
-            var exists = await
-                _dbConnection.ExecuteScalarAsync<int>("SELECT TOP 1 1 FROM BlogAsset ba WHERE ba.Id = @assetId",
-                    new { assetId });
-
-            if (exists == 0)
-            {
-                await _dbConnection.ExecuteAsync(
-                    "INSERT INTO BlogAsset(Id, Base64Data, LastModifiedTimeUtc) VALUES (@assetId, @assetBase64, @utcNow)",
-                    new
-                    {
-                        assetId,
-                        assetBase64,
-                        DateTime.UtcNow
-                    });
-            }
-            else
-            {
-                await _dbConnection.ExecuteAsync(
-                    "UPDATE BlogAsset SET Base64Data = @assetBase64, LastModifiedTimeUtc = @utcNow WHERE Id = @assetId",
-                    new
-                    {
-                        assetId,
-                        assetBase64,
-                        DateTime.UtcNow
-                    });
-            }
-        }
-
-        public string GetAssetData(Guid assetId)
-        {
-            var asset = _dbConnection.QueryFirstOrDefault<BlogAsset>
-                ("SELECT TOP 1 * FROM BlogAsset ba WHERE ba.Id = @assetId", new { assetId });
-
-            return asset?.Base64Data;
-        }
-
-        public async Task<string> GetAssetDataAsync(Guid assetId)
-        {
-            var asset = await _dbConnection.QueryFirstOrDefaultAsync<BlogAsset>
-                ("SELECT TOP 1 * FROM BlogAsset ba WHERE ba.Id = @assetId", new { assetId });
-
-            return asset?.Base64Data;
         }
 
         protected void Dirty()

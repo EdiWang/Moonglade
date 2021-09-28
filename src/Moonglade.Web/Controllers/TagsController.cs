@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +6,12 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -19,11 +20,11 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class TagsController : ControllerBase
     {
-        private readonly ITagService _tagService;
+        private readonly IMediator _mediator;
 
-        public TagsController(ITagService tagService)
+        public TagsController(IMediator mediator)
         {
-            _tagService = tagService;
+            _mediator = mediator;
         }
 
         [HttpGet("list")]
@@ -32,7 +33,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(IReadOnlyList<Tag>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
         {
-            var tags = await _tagService.GetAll();
+            var tags = await _mediator.Send(new GetTagsQuery());
             return Ok(tags);
         }
 
@@ -40,7 +41,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Names()
         {
-            var tagNames = await _tagService.GetAllNames();
+            var tagNames = await _mediator.Send(new GetTagNamesQuery());
             return Ok(tagNames);
         }
 
@@ -51,9 +52,9 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Create([Required][FromBody] string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return BadRequest();
-            if (!TagService.ValidateTagName(name)) return Conflict();
+            if (!Tag.ValidateName(name)) return Conflict();
 
-            await _tagService.Create(name.Trim());
+            await _mediator.Send(new CreateTagCommand(name.Trim()));
             return Ok();
         }
 
@@ -62,7 +63,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
         {
-            var oc = await _tagService.UpdateAsync(id, name);
+            var oc = await _mediator.Send(new UpdateTagCommand(id, name));
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
             return NoContent();
@@ -73,7 +74,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([Range(0, int.MaxValue)] int id)
         {
-            var oc = await _tagService.DeleteAsync(id);
+            var oc = await _mediator.Send(new DeleteTagCommand(id));
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
             return NoContent();

@@ -1,12 +1,13 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Data.Porting;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -14,25 +15,24 @@ namespace Moonglade.Web.Tests.Controllers
     public class DataPortingControllerTests
     {
         private MockRepository _mockRepository;
-        private Mock<IExportManager> _mockExportManager;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockExportManager = _mockRepository.Create<IExportManager>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private DataPortingController CreateDataPortingController()
         {
-            return new(
-                _mockExportManager.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
         public async Task ExportDownload_SingleJsonFile()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportDataType.Tags, CancellationToken.None))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ExportTagsDataCommand>(), default))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.SingleJsonFile,
@@ -40,7 +40,7 @@ namespace Moonglade.Web.Tests.Controllers
                 }));
 
             var settingsController = CreateDataPortingController();
-            ExportDataType type = ExportDataType.Tags;
+            ExportType type = ExportType.Tags;
 
             var result = await settingsController.ExportDownload(type, CancellationToken.None);
             Assert.IsInstanceOf<FileContentResult>(result);
@@ -49,7 +49,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ExportDownload_SingleCSVFile()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportDataType.Categories, CancellationToken.None))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ExportCategoryDataCommand>(), default))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.SingleCSVFile,
@@ -62,7 +62,7 @@ namespace Moonglade.Web.Tests.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            ExportDataType type = ExportDataType.Categories;
+            ExportType type = ExportType.Categories;
 
             var result = await settingsController.ExportDownload(type, CancellationToken.None);
             Assert.IsInstanceOf<PhysicalFileResult>(result);
@@ -71,7 +71,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task ExportDownload_ZippedJsonFiles()
         {
-            _mockExportManager.Setup(p => p.ExportData(ExportDataType.Posts, CancellationToken.None))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ExportPostDataCommand>(), default))
                 .Returns(Task.FromResult(new ExportResult
                 {
                     ExportFormat = ExportFormat.ZippedJsonFiles,
@@ -84,7 +84,7 @@ namespace Moonglade.Web.Tests.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            ExportDataType type = ExportDataType.Posts;
+            ExportType type = ExportType.Posts;
 
             var result = await settingsController.ExportDownload(type, CancellationToken.None);
             Assert.IsInstanceOf<PhysicalFileResult>(result);

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Middleware
 {
@@ -39,7 +39,7 @@ namespace Moonglade.Web.Middleware
                 };
 
                 context.Response.StatusCode = StatusCodes.Status200OK;
-                context.Response.ContentType = "application/json";
+                context.Response.ContentType = "application/manifest+json";
                 context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
                 await context.Response.WriteAsJsonAsync(model, context.RequestAborted);
@@ -81,7 +81,6 @@ namespace Moonglade.Web.Middleware
         public string Src => "/" + string.Format(SrcTemplate ?? string.Empty, Sizes);
         public string Sizes => $"{Pixel}x{Pixel}";
         public string Type { get; set; }
-        public string Density { get; set; }
 
         [JsonIgnore]
         public string SrcTemplate { get; set; }

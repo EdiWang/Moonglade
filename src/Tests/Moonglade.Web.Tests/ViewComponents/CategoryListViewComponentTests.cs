@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.ViewComponents
 {
@@ -13,7 +14,7 @@ namespace Moonglade.Web.Tests.ViewComponents
     public class CategoryListViewComponentTests
     {
         private MockRepository _mockRepository;
-        private Mock<ICategoryService> _mockCategoryService;
+        private Mock<IMediator> _mockMediator;
 
         private readonly IReadOnlyList<Category> _cats = new List<Category>
         {
@@ -27,18 +28,18 @@ namespace Moonglade.Web.Tests.ViewComponents
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private CategoryListViewComponent CreateComponent()
         {
-            return new(_mockCategoryService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Throws(new(FakeData.ShortString2));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(false);
@@ -49,7 +50,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_IsMenu()
         {
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(_cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(_cats));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(true);
@@ -61,7 +62,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         [Test]
         public async Task InvokeAsync_NotMenu()
         {
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(_cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(_cats));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(false);

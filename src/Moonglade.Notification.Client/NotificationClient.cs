@@ -1,13 +1,13 @@
-﻿using System;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration;
 using Moonglade.Utils;
 using Polly;
+using System;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Moonglade.Notification.Client
 {

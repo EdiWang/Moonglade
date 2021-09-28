@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Edi.Captcha;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -15,24 +11,29 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages
 {
     public class SignInModel : PageModel
     {
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly ILocalAccountService _localAccountService;
+        private readonly IMediator _mediator;
         private readonly ILogger<SignInModel> _logger;
         private readonly IBlogAudit _blogAudit;
         private readonly ISessionBasedCaptcha _captcha;
 
         public SignInModel(
             IOptions<AuthenticationSettings> authSettings,
-            ILocalAccountService localAccountService,
+            IMediator mediator,
             ILogger<SignInModel> logger,
             IBlogAudit blogAudit, ISessionBasedCaptcha captcha)
         {
-            _localAccountService = localAccountService;
+            _mediator = mediator;
             _logger = logger;
             _blogAudit = blogAudit;
             _captcha = captcha;
@@ -89,7 +90,7 @@ namespace Moonglade.Web.Pages
 
                 if (ModelState.IsValid)
                 {
-                    var uid = await _localAccountService.ValidateAsync(Username, Password);
+                    var uid = await _mediator.Send(new ValidateLoginCommand(Username, Password));
                     if (uid != Guid.Empty)
                     {
                         var claims = new List<Claim>
@@ -102,8 +103,7 @@ namespace Moonglade.Web.Pages
                         var p = new ClaimsPrincipal(ci);
 
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
-                        await _localAccountService.LogSuccessLoginAsync(uid,
-                            HttpContext.Connection.RemoteIpAddress?.ToString());
+                        await _mediator.Send(new LogSuccessLoginCommand(uid, HttpContext.Connection.RemoteIpAddress?.ToString()));
 
                         var successMessage = $@"Authentication success for local account ""{Username}""";
 

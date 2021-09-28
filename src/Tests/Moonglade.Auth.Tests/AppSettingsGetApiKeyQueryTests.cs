@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Moonglade.Auth.Tests
 {

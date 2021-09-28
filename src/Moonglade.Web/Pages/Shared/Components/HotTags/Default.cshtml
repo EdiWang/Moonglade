@@ -1,6 +1,6 @@
-﻿@model IReadOnlyList<KeyValuePair<Moonglade.Core.Tag, int>>
+﻿@model IReadOnlyList<KeyValuePair<Moonglade.Core.TagFeature.Tag, int>>
 
 @foreach (var item in Model)
 {
-    <a asp-page="/TagList" asp-route-normalizedName="@item.Key.NormalizedName" rel="@item.Value" class="d-inline-block btn btn-sm btn-accent mb-2">@item.Key.DisplayName</a>
+    <a asp-page="/TagList" asp-route-normalizedName="@item.Key.NormalizedName" rel="@item.Value" class="d-inline-block btn btn-sm btn-accent mb-2 me-1">@item.Key.DisplayName</a>
 }

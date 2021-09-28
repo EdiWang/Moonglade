@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
@@ -8,9 +6,10 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Theme;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models.Settings;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -19,7 +18,7 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<IThemeService> _mockThemeService;
+        private Mock<IMediator> _mockMediator;
         private Mock<IBlogCache> _mockBlogCache;
         private Mock<IBlogConfig> _mockBlogConfig;
 
@@ -27,8 +26,7 @@ namespace Moonglade.Web.Tests.Controllers
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-
-            _mockThemeService = _mockRepository.Create<IThemeService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
         }
@@ -36,7 +34,7 @@ namespace Moonglade.Web.Tests.Controllers
         private ThemeController CreateThemeController()
         {
             return new(
-                _mockThemeService.Object,
+                _mockMediator.Object,
                 _mockBlogCache.Object,
                 _mockBlogConfig.Object);
         }
@@ -93,7 +91,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Create_OK()
         {
             // Arrange
-            _mockThemeService.Setup(p => p.Create(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreateThemeCommand>(), default))
                 .Returns(Task.FromResult(1));
             var themeController = CreateThemeController();
             CreateThemeRequest request = new()
@@ -109,15 +107,15 @@ namespace Moonglade.Web.Tests.Controllers
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
-            _mockThemeService.Verify(p => p.Create("996", It.IsAny<IDictionary<string, string>>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreateThemeCommand>(), default));
         }
 
         [Test]
         public async Task Create_Conflict()
         {
             // Arrange
-            _mockThemeService.Setup(p => p.Create(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
-                .Returns(Task.FromResult(0));
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreateThemeCommand>(), default))
+                 .Returns(Task.FromResult(0));
             var themeController = CreateThemeController();
             CreateThemeRequest request = new()
             {
@@ -132,14 +130,14 @@ namespace Moonglade.Web.Tests.Controllers
 
             // Assert
             Assert.IsInstanceOf<ConflictObjectResult>(result);
-            _mockThemeService.Verify(p => p.Create("996", It.IsAny<IDictionary<string, string>>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreateThemeCommand>(), default));
         }
 
         [Test]
         public async Task Delete_OK()
         {
             // Arrange
-            _mockThemeService.Setup(p => p.Delete(It.IsAny<int>())).Returns(Task.FromResult(OperationCode.Done));
+            _mockMediator.Setup(p => p.Send(It.IsAny<DeleteThemeCommand>(), default)).Returns(Task.FromResult(OperationCode.Done));
             var themeController = CreateThemeController();
             int id = 996;
 
@@ -154,7 +152,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Delete_NotFound()
         {
             // Arrange
-            _mockThemeService.Setup(p => p.Delete(It.IsAny<int>())).Returns(Task.FromResult(OperationCode.ObjectNotFound));
+            _mockMediator.Setup(p => p.Send(It.IsAny<DeleteThemeCommand>(), default)).Returns(Task.FromResult(OperationCode.ObjectNotFound));
             var themeController = CreateThemeController();
             int id = 996;
 
@@ -169,7 +167,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Delete_BadRequest()
         {
             // Arrange
-            _mockThemeService.Setup(p => p.Delete(It.IsAny<int>())).Returns(Task.FromResult(OperationCode.Canceled));
+            _mockMediator.Setup(p => p.Send(It.IsAny<DeleteThemeCommand>(), default)).Returns(Task.FromResult(OperationCode.Canceled));
             var themeController = CreateThemeController();
             int id = 996;
 

@@ -16,6 +16,7 @@
     cursor: pointer;
     margin: 0 !important;
     padding: 0 !important;
+    border-radius: 3px 0 0 3px;
 }
 
 #imgzoom {

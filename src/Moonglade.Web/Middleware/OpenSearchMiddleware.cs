@@ -1,11 +1,11 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
 using Moonglade.Utils;
+using System;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace Moonglade.Web.Middleware
 {
@@ -35,7 +35,7 @@ namespace Moonglade.Web.Middleware
             }
         }
 
-        private async Task<string> GetOpenSearchData(string siteRootUrl, string shortName, string description)
+        private static async Task<string> GetOpenSearchData(string siteRootUrl, string shortName, string description)
         {
             var sb = new StringBuilder();
 

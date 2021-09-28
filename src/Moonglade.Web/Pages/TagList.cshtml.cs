@@ -1,30 +1,29 @@
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Core;
+using Moonglade.Core.PostFeature;
+using Moonglade.Core.TagFeature;
+using System.Threading.Tasks;
 using X.PagedList;
 
 namespace Moonglade.Web.Pages
 {
     public class TagListModel : PageModel
     {
-        private readonly ITagService _tagService;
+        private readonly IMediator _mediator;
         private readonly IBlogConfig _blogConfig;
-        private readonly IPostQueryService _postQueryService;
         private readonly IBlogCache _cache;
 
         [BindProperty(SupportsGet = true)]
         public int P { get; set; }
         public StaticPagedList<PostDigest> Posts { get; set; }
 
-        public TagListModel(
-            ITagService tagService, IBlogConfig blogConfig, IPostQueryService postQueryService, IBlogCache cache)
+        public TagListModel(IMediator mediator, IBlogConfig blogConfig, IBlogCache cache)
         {
-            _tagService = tagService;
+            _mediator = mediator;
             _blogConfig = blogConfig;
-            _postQueryService = postQueryService;
             _cache = cache;
 
             P = 1;
@@ -32,12 +31,12 @@ namespace Moonglade.Web.Pages
 
         public async Task<IActionResult> OnGet(string normalizedName)
         {
-            var tagResponse = _tagService.Get(normalizedName);
+            var tagResponse = await _mediator.Send(new GetTagQuery(normalizedName));
             if (tagResponse is null) return NotFound();
 
             var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _postQueryService.ListByTagAsync(tagResponse.Id, pagesize, P);
-            var count = _cache.GetOrCreate(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _postQueryService.CountByTag(tagResponse.Id));
+            var posts = await _mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
+            var count = await _cache.GetOrCreateAsync(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _mediator.Send(new CountPostQuery(CountType.Tag, tagId: tagResponse.Id)));
 
             ViewData["TitlePrefix"] = tagResponse.DisplayName;
 

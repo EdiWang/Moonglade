@@ -1,12 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Pages
 {
@@ -17,8 +18,8 @@ namespace Moonglade.Web.Tests.Pages
         private MockRepository _mockRepository;
 
         private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IPostQueryService> _mockPostQueryService;
         private Mock<IBlogCache> _mockBlogCache;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
@@ -26,8 +27,8 @@ namespace Moonglade.Web.Tests.Pages
             _mockRepository = new(MockBehavior.Default);
 
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
+            _mockMediator = _mockRepository.Create<IMediator>();
 
             _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
             {
@@ -39,19 +40,19 @@ namespace Moonglade.Web.Tests.Pages
         {
             return new(
                 _mockBlogConfig.Object,
-                _mockPostQueryService.Object,
-                _mockBlogCache.Object);
+                _mockBlogCache.Object,
+                _mockMediator.Object);
         }
 
         [Test]
         public async Task OnGet_StateUnderTest_ExpectedBehavior()
         {
-            _mockPostQueryService.Setup(p => p.ListFeaturedAsync(It.IsAny<int>(), It.IsAny<int>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListFeaturedQuery>(), default))
                 .Returns(Task.FromResult(FakeData.FakePosts));
 
             _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.PostCountFeatured, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, int>>()))
-                .Returns(FakeData.Int1);
+                    p.GetOrCreateAsync(CacheDivision.PostCountFeatured, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, Task<int>>>()))
+                .Returns(Task.FromResult(FakeData.Int1));
 
 
             // Arrange

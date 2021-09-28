@@ -1,28 +1,29 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Auth;
 using Moonglade.Web.Models.Settings;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages.Admin
 {
     public class LocalAccountModel : PageModel
     {
-        private readonly ILocalAccountService _accountService;
+        private readonly IMediator _mediator;
 
-        public AccountEditModel AccountEditModel { get; set; }
+        public EditAccountRequest EditAccountRequest { get; set; }
 
         public IReadOnlyList<Account> Accounts { get; set; }
 
-        public LocalAccountModel(ILocalAccountService accountService)
+        public LocalAccountModel(IMediator mediator)
         {
-            _accountService = accountService;
-            AccountEditModel = new();
+            _mediator = mediator;
+            EditAccountRequest = new();
         }
 
         public async Task OnGet()
         {
-            Accounts = await _accountService.GetAllAsync();
+            Accounts = await _mediator.Send(new GetAccountsQuery());
         }
     }
 }

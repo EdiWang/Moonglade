@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Moonglade.Auth.Tests
 {

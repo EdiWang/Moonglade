@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration;
 using Moonglade.FriendLink;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Middleware
 {
@@ -21,8 +22,7 @@ namespace Moonglade.Web.Middleware
         public async Task Invoke(
             HttpContext context,
             IBlogConfig blogConfig,
-            IFoafWriter foafWriter,
-            IFriendLinkService friendLinkService,
+            IMediator mediator,
             LinkGenerator linkGenerator)
         {
             if (context.Request.Path == "/foaf.xml")
@@ -41,7 +41,7 @@ namespace Moonglade.Web.Middleware
                         request.QueryString.HasValue ? request.QueryString.Value : string.Empty));
                 }
 
-                var friends = await friendLinkService.GetAllAsync();
+                var friends = await mediator.Send(new GetAllLinksQuery());
                 var foafDoc = new FoafDoc
                 {
                     Name = blogConfig.GeneralSettings.OwnerName,
@@ -50,10 +50,10 @@ namespace Moonglade.Web.Middleware
                     PhotoUrl = linkGenerator.GetUriByAction(context, "Avatar", "Assets")
                 };
                 var requestUrl = GetUri(context.Request).ToString();
-                var xml = await foafWriter.GetFoafData(foafDoc, requestUrl, friends);
+                var xml = await mediator.Send(new WriterFoafCommand(foafDoc, requestUrl, friends));
 
                 //[ResponseCache(Duration = 3600)]
-                context.Response.ContentType = FoafWriter.ContentType;
+                context.Response.ContentType = WriterFoafCommand.ContentType;
                 await context.Response.WriteAsync(xml, context.RequestAborted);
             }
             else

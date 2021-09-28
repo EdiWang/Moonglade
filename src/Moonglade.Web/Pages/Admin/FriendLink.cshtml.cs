@@ -1,28 +1,28 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.FriendLink;
-using Moonglade.Web.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages.Admin
 {
     public class FriendLinkModel : PageModel
     {
-        private readonly IFriendLinkService _friendLinkService;
+        private readonly IMediator _mediator;
 
-        public FriendLinkEditModel FriendLinkEditViewModel { get; set; }
+        public EditLinkRequest EditLinkRequest { get; set; }
 
-        public IReadOnlyList<Link> FriendLinks { get; set; }
+        public IReadOnlyList<Link> Links { get; set; }
 
-        public FriendLinkModel(IFriendLinkService friendLinkService)
+        public FriendLinkModel(IMediator mediator)
         {
-            _friendLinkService = friendLinkService;
-            FriendLinkEditViewModel = new();
+            _mediator = mediator;
+            EditLinkRequest = new();
         }
 
         public async Task OnGet()
         {
-            FriendLinks = await _friendLinkService.GetAllAsync();
+            Links = await _mediator.Send(new GetAllLinksQuery());
         }
     }
 }

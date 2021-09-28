@@ -1,22 +1,24 @@
-﻿using System;
+﻿using Edi.Captcha;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Comments
 {
-    public class CommentRequest
+    public class CommentRequest : ICaptchable
     {
-        public Guid PostId { get; }
-
+        [Required]
+        [MaxLength(64)]
         public string Username { get; set; }
 
+        [Required]
+        [DataType(DataType.MultilineText), MaxLength(1024)]
         public string Content { get; set; }
 
+        [MaxLength(128)]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        public string IpAddress { get; set; }
-
-        public CommentRequest(Guid postId)
-        {
-            PostId = postId;
-        }
+        [Required]
+        [StringLength(4)]
+        public string CaptchaCode { get; set; }
     }
 }

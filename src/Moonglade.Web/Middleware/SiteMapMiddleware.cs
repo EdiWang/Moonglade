@@ -1,10 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moonglade.Caching;
 using Moonglade.Configuration;
@@ -12,6 +6,12 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace Moonglade.Web.Middleware
 {
@@ -52,7 +52,7 @@ namespace Moonglade.Web.Middleware
 
         private static async Task<string> GetSiteMapData(
             string siteRootUrl,
-            IConfigurationSection siteMapSection,
+            IConfiguration siteMapSection,
             IRepository<PostEntity> postRepo,
             IRepository<PageEntity> pageRepo)
         {

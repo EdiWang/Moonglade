@@ -1,13 +1,8 @@
-﻿#region Usings
+#region Usings
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Text.Unicode;
 using AspNetCoreRateLimit;
 using Edi.Captcha;
+using MediatR;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
@@ -28,17 +23,19 @@ using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data;
-using Moonglade.Data.Porting;
-using Moonglade.FriendLink;
 using Moonglade.ImageStorage;
-using Moonglade.Menus;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
-using Moonglade.Theme;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using WilderMinds.MetaWeblog;
 
 #endregion
@@ -66,6 +63,11 @@ namespace Moonglade.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
+            AppDomain.CurrentDomain.Load("Moonglade.Menus");
+            AppDomain.CurrentDomain.Load("Moonglade.Theme");
+            services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+
             // ASP.NET Setup
             services.AddOptions()
                     .AddHttpContextAccessor()
@@ -90,7 +92,10 @@ namespace Moonglade.Web
                     .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
             services.AddRazorPages()
                     .AddViewLocalization()
-                    .AddDataAnnotationsLocalization()
+                    .AddDataAnnotationsLocalization(options =>
+                    {
+                        options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
+                    })
                     .AddRazorPagesOptions(options =>
                     {
                         options.Conventions.AuthorizeFolder("/Admin");
@@ -131,19 +136,17 @@ namespace Moonglade.Web
                 options.AppendTrailingSlash = false;
             });
 
+            services.AddHealthChecks();
+            services.AddTransient<RequestBodyLoggingMiddleware>();
+            services.AddTransient<ResponseBodyLoggingMiddleware>();
+
             // Blog Services
-            services.AddCoreBloggingServices()
-                    .AddPingback()
+            services.AddPingback()
                     .AddSyndication()
                     .AddNotificationClient()
                     .AddReleaseCheckerClient()
                     .AddBlogCache()
-                    .AddBlogTheme()
                     .AddMetaWeblog<MetaWeblogService>()
-                    .AddScoped<IMenuService, MenuService>()
-                    .AddScoped<IFriendLinkService, FriendLinkService>()
-                    .AddScoped<IFoafWriter, FoafWriter>()
-                    .AddScoped<IExportManager, ExportManager>()
                     .AddScoped<ValidateCaptcha>()
                     .AddScoped<ITimeZoneResolver>(c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset))
                     .AddBlogConfig(_configuration)
@@ -257,6 +260,10 @@ namespace Moonglade.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<RequestBodyLoggingMiddleware>();
+            app.UseMiddleware<ResponseBodyLoggingMiddleware>();
+
             app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
         }
     }

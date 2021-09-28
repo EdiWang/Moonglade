@@ -1,8 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +18,10 @@ using Moonglade.Utils;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
 using NUglify;
+using System;
+using System.Data;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {

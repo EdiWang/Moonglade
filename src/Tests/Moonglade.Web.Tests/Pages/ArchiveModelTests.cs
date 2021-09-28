@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Moonglade.Core;
+﻿using MediatR;
+using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Pages
 {
@@ -12,18 +13,18 @@ namespace Moonglade.Web.Tests.Pages
     public class ArchiveModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPostQueryService> _mockPostQueryService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private ArchiveModel CreateArchiveModel()
         {
-            return new(_mockPostQueryService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -35,7 +36,7 @@ namespace Moonglade.Web.Tests.Pages
                 new (FakeData.Int1,3,5)
             };
 
-            _mockPostQueryService.Setup(p => p.GetArchiveAsync())
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetArchiveQuery>(), default))
                 .Returns(Task.FromResult((IReadOnlyList<Archive>)fakeArchives));
 
             var archiveModel = CreateArchiveModel();

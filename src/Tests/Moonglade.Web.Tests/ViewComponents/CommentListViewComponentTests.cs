@@ -1,12 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
 using Moonglade.Comments;
 using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.ViewComponents
 {
@@ -16,7 +17,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         private MockRepository _mockRepository;
 
         private Mock<ILogger<CommentListViewComponent>> _mockLogger;
-        private Mock<ICommentService> _mockCommentService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
@@ -24,20 +25,20 @@ namespace Moonglade.Web.Tests.ViewComponents
             _mockRepository = new(MockBehavior.Default);
 
             _mockLogger = _mockRepository.Create<ILogger<CommentListViewComponent>>();
-            _mockCommentService = _mockRepository.Create<ICommentService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private CommentListViewComponent CreateComponent()
         {
             return new(
                 _mockLogger.Object,
-                _mockCommentService.Object);
+                _mockMediator.Object);
         }
 
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockCommentService.Setup(p => p.GetApprovedCommentsAsync(It.IsAny<Guid>())).Throws(new(FakeData.ShortString2));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default)).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));
@@ -59,7 +60,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         {
             IReadOnlyList<Comment> comments = new List<Comment>();
 
-            _mockCommentService.Setup(p => p.GetApprovedCommentsAsync(It.IsAny<Guid>())).Returns(Task.FromResult(comments));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default)).Returns(Task.FromResult(comments));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));

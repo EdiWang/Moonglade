@@ -1,21 +1,22 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moonglade.Comments;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.ViewComponents
 {
     public class CommentListViewComponent : ViewComponent
     {
         private readonly ILogger<CommentListViewComponent> _logger;
-        private readonly ICommentService _commentService;
+        private readonly IMediator _mediator;
 
         public CommentListViewComponent(
-            ILogger<CommentListViewComponent> logger, ICommentService commentService)
+            ILogger<CommentListViewComponent> logger, IMediator mediator)
         {
             _logger = logger;
-            _commentService = commentService;
+            _mediator = mediator;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(Guid postId)
@@ -28,7 +29,7 @@ namespace Moonglade.Web.ViewComponents
                     throw new ArgumentOutOfRangeException(nameof(postId));
                 }
 
-                var comments = await _commentService.GetApprovedCommentsAsync(postId);
+                var comments = await _mediator.Send(new GetApprovedCommentsQuery(postId));
                 return View(comments);
             }
             catch (Exception e)

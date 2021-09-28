@@ -1,9 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Edi.ImageWatermark;
+﻿using Edi.ImageWatermark;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +9,11 @@ using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {

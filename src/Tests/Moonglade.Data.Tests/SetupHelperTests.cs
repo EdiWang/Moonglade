@@ -1,9 +1,9 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using Moonglade.Data.Setup;
 using Moq;
 using Moq.Dapper;
 using NUnit.Framework;
+using System.Data;
 
 namespace Moonglade.Data.Tests
 {

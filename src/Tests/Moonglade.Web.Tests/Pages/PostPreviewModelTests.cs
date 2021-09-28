@@ -1,14 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Pages
 {
@@ -17,13 +18,13 @@ namespace Moonglade.Web.Tests.Pages
     public class PostPreviewModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPostQueryService> _mockPostQueryService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPostQueryService = _mockRepository.Create<IPostQueryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private PostPreviewModel CreatePostPreviewModel()
@@ -39,7 +40,7 @@ namespace Moonglade.Web.Tests.Pages
                 ViewData = viewData
             };
 
-            var model = new PostPreviewModel(_mockPostQueryService.Object)
+            var model = new PostPreviewModel(_mockMediator.Object)
             {
                 PageContext = pageContext,
                 TempData = tempData
@@ -51,7 +52,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_NotFound()
         {
-            _mockPostQueryService.Setup(p => p.GetDraftAsync(Guid.Empty))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetDraftQuery>(), default))
                 .Returns(Task.FromResult((Post)null));
             var postPreviewModel = CreatePostPreviewModel();
 
@@ -62,7 +63,7 @@ namespace Moonglade.Web.Tests.Pages
         [Test]
         public async Task OnGetAsync_Found()
         {
-            _mockPostQueryService.Setup(p => p.GetDraftAsync(Guid.Empty))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetDraftQuery>(), default))
                 .Returns(Task.FromResult(new Post()));
             var postPreviewModel = CreatePostPreviewModel();
 

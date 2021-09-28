@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +9,10 @@ using Moonglade.Data.Entities;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Models;
+using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -21,18 +22,18 @@ namespace Moonglade.Web.Controllers
     {
         private readonly ILogger<PingbackController> _logger;
         private readonly IBlogConfig _blogConfig;
-        private readonly IPingbackService _pingbackService;
+        private readonly IMediator _mediator;
         private readonly IBlogNotificationClient _notificationClient;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IBlogConfig blogConfig,
-            IPingbackService pingbackService,
+            IMediator mediator,
             IBlogNotificationClient notificationClient)
         {
             _logger = logger;
             _blogConfig = blogConfig;
-            _pingbackService = pingbackService;
+            _mediator = mediator;
             _notificationClient = notificationClient;
         }
 
@@ -51,7 +52,7 @@ namespace Moonglade.Web.Controllers
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
             var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
-            var response = await _pingbackService.ReceivePingAsync(requestBody, ip,
+            var response = await _mediator.Send(new ReceivePingCommand(requestBody, ip,
                 history =>
                 {
                     _notificationClient.NotifyPingbackAsync(history.TargetPostTitle,
@@ -60,7 +61,7 @@ namespace Moonglade.Web.Controllers
                         history.SourceIp,
                         history.SourceUrl,
                         history.SourceTitle);
-                });
+                }));
 
             _logger.LogInformation($"Pingback Processor Response: {response}");
             return new PingbackResult(response);
@@ -71,7 +72,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId, [FromServices] IBlogAudit blogAudit)
         {
-            await _pingbackService.DeletePingback(pingbackId);
+            await _mediator.Send(new DeletePingbackCommand(pingbackId));
             await blogAudit.AddEntry(BlogEventType.Content, BlogEventId.PingbackDeleted,
                 $"Pingback '{pingbackId}' deleted.");
             return NoContent();

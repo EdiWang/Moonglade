@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,22 +8,26 @@ using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Utils;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
     [ApiController]
     public class AssetsController : ControllerBase
     {
-        private readonly IBlogConfig _blogConfig;
+        private readonly IMediator _mediator;
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<AssetsController> _logger;
 
         public AssetsController(
             ILogger<AssetsController> logger,
-            IBlogConfig blogConfig,
+            IMediator mediator,
             IWebHostEnvironment env)
         {
-            _blogConfig = blogConfig;
+            _mediator = mediator;
             _env = env;
             _logger = logger;
         }
@@ -43,7 +44,7 @@ namespace Moonglade.Web.Controllers
                 {
                     _logger.LogTrace("Avatar not on cache, getting new avatar image...");
 
-                    var data = await _blogConfig.GetAssetDataAsync(AssetId.AvatarBase64);
+                    var data = await _mediator.Send(new GetAssetDataQuery(AssetId.AvatarBase64));
                     if (string.IsNullOrWhiteSpace(data)) return null;
 
                     var avatarBytes = Convert.FromBase64String(data);
@@ -92,7 +93,7 @@ namespace Moonglade.Web.Controllers
                 return Conflict(e.Message);
             }
 
-            await _blogConfig.SaveAssetAsync(AssetId.AvatarBase64, base64Img);
+            await _mediator.Send(new SaveAssetCommand(AssetId.AvatarBase64, base64Img));
             return Ok();
         }
 
@@ -123,7 +124,7 @@ namespace Moonglade.Web.Controllers
         [HttpGet("siteicon")]
         public async Task<IActionResult> SiteIconOrigin()
         {
-            var data = await _blogConfig.GetAssetDataAsync(AssetId.SiteIconBase64);
+            var data = await _mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
             var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
             if (string.IsNullOrWhiteSpace(data))
             {
@@ -158,7 +159,7 @@ namespace Moonglade.Web.Controllers
             using var bmp = new Bitmap(new MemoryStream(base64Chars));
             if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
 
-            await _blogConfig.SaveAssetAsync(AssetId.SiteIconBase64, base64Img);
+            await _mediator.Send(new SaveAssetCommand(AssetId.SiteIconBase64, base64Img));
 
             return NoContent();
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +7,12 @@ using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Theme;
-using Moonglade.Web.Models.Settings;
 using NUglify;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -20,13 +20,15 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class ThemeController : ControllerBase
     {
-        private readonly IThemeService _themeService;
+        private readonly IMediator _mediator;
+
         private readonly IBlogCache _cache;
         private readonly IBlogConfig _blogConfig;
 
-        public ThemeController(IThemeService themeService, IBlogCache cache, IBlogConfig blogConfig)
+        public ThemeController(IMediator mediator, IBlogCache cache, IBlogConfig blogConfig)
         {
-            _themeService = themeService;
+            _mediator = mediator;
+
             _cache = cache;
             _blogConfig = blogConfig;
         }
@@ -50,7 +52,7 @@ namespace Moonglade.Web.Controllers
                         await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
                     }
 
-                    var data = await _themeService.GetStyleSheet(_blogConfig.GeneralSettings.ThemeId);
+                    var data = await _mediator.Send(new GetStyleSheetQuery(_blogConfig.GeneralSettings.ThemeId));
                     return data;
                 });
 
@@ -81,7 +83,7 @@ namespace Moonglade.Web.Controllers
                 { "--accent-color3", request.AccentColor3 }
             };
 
-            var id = await _themeService.Create(request.Name, dic);
+            var id = await _mediator.Send(new CreateThemeCommand(request.Name, dic));
             if (id == 0) return Conflict("Theme with same name already exists");
 
             return Ok(id);
@@ -93,7 +95,7 @@ namespace Moonglade.Web.Controllers
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
         public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
         {
-            var oc = await _themeService.Delete(id);
+            var oc = await _mediator.Send(new DeleteThemeCommand(id));
             return oc switch
             {
                 OperationCode.ObjectNotFound => NotFound(),

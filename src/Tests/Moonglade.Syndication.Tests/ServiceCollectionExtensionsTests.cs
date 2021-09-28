@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Moonglade.Syndication.Tests
 {
@@ -17,11 +17,8 @@ namespace Moonglade.Syndication.Tests
             services.AddSyndication();
 
             // Assert
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(ISyndicationService));
+            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(ISyndicationDataSource));
             Assert.IsNotNull(obj1);
-
-            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IOpmlWriter));
-            Assert.IsNotNull(obj2);
         }
     }
 }

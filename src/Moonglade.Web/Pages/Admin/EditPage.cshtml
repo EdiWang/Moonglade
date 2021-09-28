@@ -6,7 +6,7 @@
 
 @{
     <script>
-    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.PageEditModel.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.PageEditModel.CssContent)).ToString().ToLower());
+    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.EditPageRequest.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.EditPageRequest.CssContent)).ToString().ToLower());
     </script>
 }
 
@@ -38,7 +38,7 @@
             htmlContentEditor.layout();
 
             if (needLoadInitValues) {
-                var htmlValue = $("#PageEditModel_RawHtmlContent").val();
+                var htmlValue = $("#EditPageRequest_RawHtmlContent").val();
                 htmlContentEditor.setValue(htmlValue);
             }
         }
@@ -52,7 +52,7 @@
             hasCssEditorInitialized = true;
 
             if (needLoadInitValues) {
-                var cssValue = $("#PageEditModel_CssContent").val();
+                var cssValue = $("#EditPageRequest_CssContent").val();
                 window.cssContentEditor.setValue(cssValue);
             }
         }
@@ -61,11 +61,11 @@
             var htmlValue = window.htmlContentEditor.getValue();
 
             // Edit Mode, preserve old value when user has not clicked on CSS tab
-            var oldCssValue = $("#PageEditModel_CssContent").val();
+            var oldCssValue = $("#EditPageRequest_CssContent").val();
             var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
 
-            $("#PageEditModel_RawHtmlContent").val(htmlValue);
-            $("#PageEditModel_CssContent").val(cssValue);
+            $("#EditPageRequest_RawHtmlContent").val(htmlValue);
+            $("#EditPageRequest_CssContent").val(cssValue);
         }
 
         $('#btn-preview').click(function () {
@@ -97,13 +97,13 @@
 
             callApi(apiAddress, verb,
                 {
-                    "Title": $("#PageEditModel_Title").val(),
-                    "Slug": $("#PageEditModel_Slug").val(),
-                    "MetaDescription": $("#PageEditModel_MetaDescription").val(),
-                    "RawHtmlContent": $("#PageEditModel_RawHtmlContent").val(),
-                    "CssContent": $("#PageEditModel_CssContent").val(),
-                    "HideSidebar": $('#PageEditModel_HideSidebar').prop('checked'),
-                    "IsPublished": $('#PageEditModel_IsPublished').prop('checked')
+                    "Title": $("#EditPageRequest_Title").val(),
+                    "Slug": $("#EditPageRequest_Slug").val(),
+                    "MetaDescription": $("#EditPageRequest_MetaDescription").val(),
+                    "RawHtmlContent": $("#EditPageRequest_RawHtmlContent").val(),
+                    "CssContent": $("#EditPageRequest_CssContent").val(),
+                    "HideSidebar": $('#EditPageRequest_HideSidebar').prop('checked'),
+                    "IsPublished": $('#EditPageRequest_IsPublished').prop('checked')
                 },
                 async (resp) => {
                     onPageCreateEditComplete();
@@ -175,24 +175,24 @@
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <div class="row">
         <div class="col-md-9 col-xl-10">
-            <input type="text" asp-for="PageEditModel.Title" class="form-control form-control-lg mb-1" placeholder="Title" />
+            <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" />
             <div>
-                <span asp-validation-for="PageEditModel.Title" class="text-danger"></span>
+                <span asp-validation-for="EditPageRequest.Title" class="text-danger"></span>
             </div>
 
             <div class="input-group input-group-sm">
                 <span class="input-group-text" id="basic-addon3">page/</span>
-                <input type="text" asp-for="PageEditModel.Slug" class="form-control form-control-sm" placeholder="slug" />
+                <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="slug" />
             </div>
             <div>
-                <span asp-validation-for="PageEditModel.Slug" class="text-danger"></span>
+                <span asp-validation-for="EditPageRequest.Slug" class="text-danger"></span>
             </div>
 
             <div>
-                <span asp-validation-for="PageEditModel.RawHtmlContent" class="text-danger"></span>
+                <span asp-validation-for="EditPageRequest.RawHtmlContent" class="text-danger"></span>
             </div>
             <div>
-                <span asp-validation-for="PageEditModel.CssContent" class="text-danger"></span>
+                <span asp-validation-for="EditPageRequest.CssContent" class="text-danger"></span>
             </div>
 
             <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
@@ -209,13 +209,13 @@
                     <div id="RawHtmlContentEditor" class="monaco-target">
 
                     </div>
-                    <textarea asp-for="PageEditModel.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
+                    <textarea asp-for="EditPageRequest.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
                 </div>
                 <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
                     <div id="CssContentEditor" class="monaco-target">
 
                     </div>
-                    <textarea asp-for="PageEditModel.CssContent" class="page-csscontent-textarea d-none"></textarea>
+                    <textarea asp-for="EditPageRequest.CssContent" class="page-csscontent-textarea d-none"></textarea>
                 </div>
             </div>
         </div>
@@ -226,26 +226,26 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="PageEditModel.HideSidebar" class="form-check-input">
-                            <label asp-for="PageEditModel.HideSidebar" class="form-check-label"></label>
+                            <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
+                            <label asp-for="EditPageRequest.HideSidebar" class="form-check-label"></label>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="PageEditModel.IsPublished" class="form-check-input">
-                            <label asp-for="PageEditModel.IsPublished" class="form-check-label"></label>
+                            <input type="checkbox" asp-for="EditPageRequest.IsPublished" class="form-check-input">
+                            <label asp-for="EditPageRequest.IsPublished" class="form-check-label"></label>
                         </div>
                     </li>
                 </ul>
                 <div class="card-body">
                     <div class="form-floating">
-                        <textarea asp-for="PageEditModel.MetaDescription"
-                                      placeholder="@Html.DisplayNameFor(m => m.PageEditModel.MetaDescription)"
+                        <textarea asp-for="EditPageRequest.MetaDescription"
+                                      placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
                                       class="form-control form-control-sm h-200px"
                                       spellcheck="false"></textarea>
-                        <label class="form-label" asp-for="PageEditModel.MetaDescription"></label>
+                        <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
                     </div>
-                    <span asp-validation-for="PageEditModel.MetaDescription" class="text-danger"></span>
+                    <span asp-validation-for="EditPageRequest.MetaDescription" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -257,7 +257,7 @@
         <button type="button" class="btn btn-success" id="btn-submit">
             @Localizer["Save"]
         </button>
-        @if (!Model.PageEditModel.IsPublished)
+        @if (!Model.EditPageRequest.IsPublished)
         {
             <button type="button" class="btn btn-outline-success" id="btn-preview">
                 <i class="bi-eye"></i>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +7,14 @@ using Moonglade.Auth;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
+using Moonglade.Core.PageFeature;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
 using NUglify;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -23,14 +24,14 @@ namespace Moonglade.Web.Controllers
     public class PageController : Controller
     {
         private readonly IBlogCache _cache;
-        private readonly IBlogPageService _blogPageService;
+        private readonly IMediator _mediator;
 
         public PageController(
             IBlogCache cache,
-            IBlogPageService blogPageService)
+            IMediator mediator)
         {
             _cache = cache;
-            _blogPageService = blogPageService;
+            _mediator = mediator;
         }
 
         [HttpGet("segment/published")]
@@ -39,7 +40,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<PageSegment>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Segment()
         {
-            var pageSegments = await _blogPageService.ListSegmentAsync();
+            var pageSegments = await _mediator.Send(new ListPageSegmentQuery());
             if (pageSegments is null) return Ok(Array.Empty<PageSegment>());
 
             // for security, only allow published pages to be listed to third party API calls
@@ -50,20 +51,20 @@ namespace Moonglade.Web.Controllers
         [HttpPost]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public Task<IActionResult> Create(PageEditModel model)
+        public Task<IActionResult> Create(EditPageRequest model)
         {
-            return CreateOrEdit(model, async request => await _blogPageService.CreateAsync(request));
+            return CreateOrEdit(model, async request => await _mediator.Send(new CreatePageCommand(request)));
         }
 
         [HttpPut("{id:guid}")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public Task<IActionResult> Edit([NotEmpty] Guid id, PageEditModel model)
+        public Task<IActionResult> Edit([NotEmpty] Guid id, EditPageRequest model)
         {
-            return CreateOrEdit(model, async request => await _blogPageService.UpdateAsync(id, request));
+            return CreateOrEdit(model, async request => await _mediator.Send(new UpdatePageCommand(id, request)));
         }
 
-        private async Task<IActionResult> CreateOrEdit(PageEditModel model, Func<UpdatePageRequest, Task<Guid>> pageServiceAction)
+        private async Task<IActionResult> CreateOrEdit(EditPageRequest model, Func<EditPageRequest, Task<Guid>> pageServiceAction)
         {
             if (!string.IsNullOrWhiteSpace(model.CssContent))
             {
@@ -78,20 +79,9 @@ namespace Moonglade.Web.Controllers
                 }
             }
 
-            var req = new UpdatePageRequest
-            {
-                HtmlContent = model.RawHtmlContent,
-                CssContent = model.CssContent,
-                HideSidebar = model.HideSidebar,
-                Slug = model.Slug,
-                MetaDescription = model.MetaDescription,
-                Title = model.Title,
-                IsPublished = model.IsPublished
-            };
+            var uid = await pageServiceAction(model);
 
-            var uid = await pageServiceAction(req);
-
-            _cache.Remove(CacheDivision.Page, req.Slug.ToLower());
+            _cache.Remove(CacheDivision.Page, model.Slug.ToLower());
             return Ok(new { PageId = uid });
         }
 
@@ -99,10 +89,10 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            var page = await _blogPageService.GetAsync(id);
+            var page = await _mediator.Send(new GetPageByIdQuery(id));
             if (page == null) return NotFound();
 
-            await _blogPageService.DeleteAsync(id);
+            await _mediator.Send(new DeletePageCommand(id));
 
             _cache.Remove(CacheDivision.Page, page.Slug);
             return NoContent();

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Moonglade.Core.StatisticFeature;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Core.Tests
 {
@@ -20,11 +21,6 @@ namespace Moonglade.Core.Tests
             _mockPostExtensionRepo = _mockRepository.Create<IRepository<PostExtensionEntity>>();
         }
 
-        private BlogStatistics CreateBlogStatistics()
-        {
-            return new(_mockPostExtensionRepo.Object);
-        }
-
         [Test]
         public async Task GetStatisticAsync_StateUnderTest_ExpectedBehavior()
         {
@@ -36,11 +32,11 @@ namespace Moonglade.Core.Tests
                 }));
 
             // Arrange
-            var blogStatistics = CreateBlogStatistics();
+            var handler = new GetStatisticQueryHandler(_mockPostExtensionRepo.Object);
             Guid postId = Guid.Empty;
 
             // Act
-            var result = await blogStatistics.GetStatisticAsync(postId);
+            var result = await handler.Handle(new(postId), default);
 
             // Assert
             Assert.AreEqual(996, result.Hits);
@@ -54,11 +50,11 @@ namespace Moonglade.Core.Tests
             _mockPostExtensionRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((PostExtensionEntity)null));
 
-            var blogStatistics = CreateBlogStatistics();
+            var handler = new UpdateStatisticCommandHandler(_mockPostExtensionRepo.Object);
             Guid postId = Guid.Empty;
 
             // Act
-            await blogStatistics.UpdateStatisticAsync(postId, true);
+            await handler.Handle(new(postId, true), default);
 
             // Assert
             _mockPostExtensionRepo.Verify(p => p.UpdateAsync(It.IsAny<PostExtensionEntity>()), Times.Never);
@@ -76,11 +72,12 @@ namespace Moonglade.Core.Tests
 
             _mockPostExtensionRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(ett));
-            var blogStatistics = CreateBlogStatistics();
+
+            var handler = new UpdateStatisticCommandHandler(_mockPostExtensionRepo.Object);
             Guid postId = Guid.Empty;
 
             // Act
-            await blogStatistics.UpdateStatisticAsync(postId, true);
+            await handler.Handle(new(postId, true), default);
 
             // Assert
             Assert.AreEqual(251 + 1, ett.Likes);
@@ -99,11 +96,11 @@ namespace Moonglade.Core.Tests
 
             _mockPostExtensionRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(ett));
-            var blogStatistics = CreateBlogStatistics();
+            var handler = new UpdateStatisticCommandHandler(_mockPostExtensionRepo.Object);
             Guid postId = Guid.Empty;
 
             // Act
-            await blogStatistics.UpdateStatisticAsync(postId, true);
+            await handler.Handle(new(postId, true), default);
 
             // Assert
             Assert.AreEqual(int.MaxValue, ett.Likes);
@@ -122,11 +119,11 @@ namespace Moonglade.Core.Tests
 
             _mockPostExtensionRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(ett));
-            var blogStatistics = CreateBlogStatistics();
+            var handler = new UpdateStatisticCommandHandler(_mockPostExtensionRepo.Object);
             Guid postId = Guid.Empty;
 
             // Act
-            await blogStatistics.UpdateStatisticAsync(postId, false);
+            await handler.Handle(new(postId, false), default);
 
             // Assert
             Assert.AreEqual(996 + 1, ett.Hits);
@@ -145,11 +142,11 @@ namespace Moonglade.Core.Tests
 
             _mockPostExtensionRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(ett));
-            var blogStatistics = CreateBlogStatistics();
+            var handler = new UpdateStatisticCommandHandler(_mockPostExtensionRepo.Object);
             Guid postId = Guid.Empty;
 
             // Act
-            await blogStatistics.UpdateStatisticAsync(postId, false);
+            await handler.Handle(new(postId, false), default);
 
             // Assert
             Assert.AreEqual(int.MaxValue, ett.Hits);

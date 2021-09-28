@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Moonglade.Core.PageFeature;
+using Moonglade.Core.PostFeature;
+using Moonglade.Core.TagFeature;
+using System;
 using System.Collections.Generic;
-using Moonglade.Core;
 
 namespace Moonglade.Web.Tests
 {

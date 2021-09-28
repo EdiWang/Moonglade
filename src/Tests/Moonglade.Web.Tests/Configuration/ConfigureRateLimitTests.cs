@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using AspNetCoreRateLimit;
+﻿using AspNetCoreRateLimit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Web.Configuration;
 using Moq;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Moonglade.Web.Tests.Configuration
 {

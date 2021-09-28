@@ -1,10 +1,11 @@
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -12,18 +13,18 @@ namespace Moonglade.Web.Tests.Controllers
     public class TagsControllerTests
     {
         private MockRepository _mockRepository;
-        private Mock<ITagService> _mockTagService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockTagService = _mockRepository.Create<ITagService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private TagsController CreateTagsController()
         {
-            return new(_mockTagService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -62,15 +63,15 @@ namespace Moonglade.Web.Tests.Controllers
             var ctl = CreateTagsController();
             var result = await ctl.Create(FakeData.ShortString2);
 
-            _mockTagService.Verify(p => p.Create(It.IsAny<string>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreateTagCommand>(), default));
             Assert.IsInstanceOf<OkResult>(result);
         }
 
         [Test]
         public async Task Delete_ValidId()
         {
-            _mockTagService
-                .Setup(p => p.DeleteAsync(It.IsAny<int>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<DeleteTagCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.Done));
 
             var ctl = CreateTagsController();
@@ -82,8 +83,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_NotFound()
         {
-            _mockTagService
-                .Setup(p => p.DeleteAsync(It.IsAny<int>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<DeleteTagCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.ObjectNotFound));
 
             var ctl = CreateTagsController();
@@ -95,8 +96,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Update_OK()
         {
-            _mockTagService
-                .Setup(p => p.UpdateAsync(It.IsAny<int>(), It.IsAny<string>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<UpdateTagCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.Done));
 
             var ctl = CreateTagsController();
@@ -108,8 +109,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Update_NotFound()
         {
-            _mockTagService
-                .Setup(p => p.UpdateAsync(It.IsAny<int>(), It.IsAny<string>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<UpdateTagCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.ObjectNotFound));
 
             var ctl = CreateTagsController();

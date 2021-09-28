@@ -1,7 +1,8 @@
-﻿using System;
-using Microsoft.Azure.CognitiveServices.ContentModerator;
+﻿using Microsoft.Azure.CognitiveServices.ContentModerator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moonglade.Comments.Moderators;
+using System;
 
 namespace Moonglade.Comments
 {
@@ -9,8 +10,6 @@ namespace Moonglade.Comments
     {
         public static IServiceCollection AddComments(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<ICommentService, CommentService>();
-
             var section = configuration.GetSection("CommentModerator");
             var settings = section.Get<CommentModeratorSettings>();
 

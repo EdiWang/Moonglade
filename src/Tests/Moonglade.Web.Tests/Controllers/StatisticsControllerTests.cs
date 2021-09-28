@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core;
+using Moonglade.Core.StatisticFeature;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -13,27 +14,25 @@ namespace Moonglade.Web.Tests.Controllers
     public class StatisticsControllerTests
     {
         private MockRepository _mockRepository;
-
-        private Mock<IBlogStatistics> _mockBlogStatistics;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void Setup()
         {
             _mockRepository = new(MockBehavior.Default);
-
-            _mockBlogStatistics = _mockRepository.Create<IBlogStatistics>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private StatisticsController CreateStatisticsController()
         {
-            return new(_mockBlogStatistics.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
         public async Task Get_OK()
         {
-            _mockBlogStatistics.Setup(p => p.GetStatisticAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult((996, 404)));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetStatisticQuery>(), default))
+                         .Returns(Task.FromResult((996, 404)));
 
             var ctl = CreateStatisticsController();
             var result = await ctl.Get(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
@@ -45,7 +44,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Hit_DNTEnabled()
         {
             var ctx = new DefaultHttpContext { Items = { ["DNT"] = true } };
-            var ctl = new StatisticsController(_mockBlogStatistics.Object)
+            var ctl = new StatisticsController(_mockMediator.Object)
             {
                 ControllerContext = { HttpContext = ctx }
             };
@@ -58,7 +57,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Like_DNTEnabled()
         {
             var ctx = new DefaultHttpContext { Items = { ["DNT"] = true } };
-            var ctl = new StatisticsController(_mockBlogStatistics.Object)
+            var ctl = new StatisticsController(_mockMediator.Object)
             {
                 ControllerContext = { HttpContext = ctx }
             };

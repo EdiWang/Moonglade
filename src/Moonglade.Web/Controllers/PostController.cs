@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +9,16 @@ using Moonglade.Auth;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
+using Moonglade.Core.PostFeature;
 using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -26,8 +27,7 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class PostController : ControllerBase
     {
-        private readonly IPostQueryService _postQueryService;
-        private readonly IPostManageService _postManageService;
+        private readonly IMediator _mediator;
 
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
@@ -35,15 +35,13 @@ namespace Moonglade.Web.Controllers
         private readonly ILogger<PostController> _logger;
 
         public PostController(
-            IPostQueryService postQueryService,
-            IPostManageService postManageService,
+            IMediator mediator,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IPingbackSender pingbackSender,
             ILogger<PostController> logger)
         {
-            _postQueryService = postQueryService;
-            _postManageService = postManageService;
+            _mediator = mediator;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _pingbackSender = pingbackSender;
@@ -57,7 +55,7 @@ namespace Moonglade.Web.Controllers
         public async Task<IActionResult> Segment()
         {
             // for security, only allow published posts to be listed to third party API calls
-            var list = await _postQueryService.ListSegmentAsync(PostStatus.Published);
+            var list = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Published));
             return Ok(list);
         }
 
@@ -71,7 +69,7 @@ namespace Moonglade.Web.Controllers
             var take = model.Length;
             var offset = model.Start;
 
-            var (posts, totalRows) = await _postQueryService.ListSegmentAsync(PostStatus.Published, offset, take, searchBy);
+            var (posts, totalRows) = await _mediator.Send(new ListPostSegmentQuery(PostStatus.Published, offset, take, searchBy));
             var response = new JqDataTable<PostSegment>
             {
                 Draw = model.Draw,
@@ -144,8 +142,8 @@ namespace Moonglade.Web.Controllers
                 }
 
                 var postEntity = model.PostId == Guid.Empty ?
-                    await _postManageService.CreateAsync(request) :
-                    await _postManageService.UpdateAsync(model.PostId, request);
+                    await _mediator.Send(new CreatePostCommand(request)) :
+                    await _mediator.Send(new UpdatePostCommand(model.PostId, request));
 
                 if (model.IsPublished)
                 {
@@ -184,7 +182,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Restore([NotEmpty] Guid postId)
         {
-            await _postManageService.RestoreAsync(postId);
+            await _mediator.Send(new RestorePostCommand(postId));
             return NoContent();
         }
 
@@ -195,7 +193,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid postId)
         {
-            await _postManageService.DeleteAsync(postId, true);
+            await _mediator.Send(new DeletePostCommand(postId, true));
             return NoContent();
         }
 
@@ -205,7 +203,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
         {
-            await _postManageService.DeleteAsync(postId);
+            await _mediator.Send(new DeletePostCommand(postId));
             return NoContent();
         }
 
@@ -215,7 +213,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> EmptyRecycleBin()
         {
-            await _postManageService.PurgeRecycledAsync();
+            await _mediator.Send(new PurgeRecycledCommand());
             return NoContent();
         }
 

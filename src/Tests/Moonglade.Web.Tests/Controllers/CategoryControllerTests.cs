@@ -1,12 +1,12 @@
-using System;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Data;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -14,18 +14,18 @@ namespace Moonglade.Web.Tests.Controllers
     public class CategoryControllerTests
     {
         private MockRepository _mockRepository;
-        private Mock<ICategoryService> _mockCategoryService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private CategoryController CreateCategoryController()
         {
-            return new(_mockCategoryService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Get_NonExists()
         {
-            _mockCategoryService.Setup(c => c.GetAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(c => c.Send(It.IsAny<GetCategoryByIdCommand>(), default))
                 .Returns(Task.FromResult((Category)null));
 
             var categoryController = CreateCategoryController();
@@ -58,7 +58,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Get_Exists()
         {
-            _mockCategoryService.Setup(c => c.GetAsync(It.IsAny<Guid>()))
+            _mockMediator.Setup(c => c.Send(It.IsAny<GetCategoryByIdCommand>(), default))
                 .Returns(Task.FromResult(new Category()));
 
             var categoryController = CreateCategoryController();
@@ -70,8 +70,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Update_ValidModel()
         {
-            _mockCategoryService
-                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<UpdateCategoryCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.Done));
 
             var categoryController = CreateCategoryController();
@@ -89,8 +89,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Update_NotFound()
         {
-            _mockCategoryService
-                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<UpdateCategoryCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.ObjectNotFound));
 
             var categoryController = CreateCategoryController();
@@ -108,8 +108,8 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_ValidId()
         {
-            _mockCategoryService
-                .Setup(p => p.DeleteAsync(It.IsAny<Guid>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<DeleteCategoryCommand>(), default))
                 .Returns(Task.FromResult(OperationCode.Done));
 
             var categoryController = CreateCategoryController();
@@ -120,9 +120,9 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_NotFound()
         {
-            _mockCategoryService
-                .Setup(p => p.DeleteAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(OperationCode.ObjectNotFound));
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<DeleteCategoryCommand>(), default))
+               .Returns(Task.FromResult(OperationCode.ObjectNotFound));
 
             var categoryController = CreateCategoryController();
             var result = await categoryController.Delete(Guid.NewGuid());

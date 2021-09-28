@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net;
 using System.Net.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Moonglade.Pingback
 {
@@ -14,7 +14,6 @@ namespace Moonglade.Pingback
             services.AddScoped<IPingbackWebRequest, PingbackWebRequest>();
             services.AddHttpClient<IPingbackSender, PingbackSender>()
                     .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { Credentials = CredentialCache.DefaultNetworkCredentials });
-            services.AddScoped<IPingbackService, PingbackService>();
 
             return services;
         }

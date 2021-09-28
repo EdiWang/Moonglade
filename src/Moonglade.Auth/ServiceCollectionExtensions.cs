@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace Moonglade.Auth
 {
@@ -15,7 +15,6 @@ namespace Moonglade.Auth
             var authentication = section.Get<AuthenticationSettings>();
             services.Configure<AuthenticationSettings>(section);
             services.AddScoped<IGetApiKeyQuery, AppSettingsGetApiKeyQuery>();
-            services.AddScoped<ILocalAccountService, LocalAccountService>();
 
             switch (authentication.Provider)
             {

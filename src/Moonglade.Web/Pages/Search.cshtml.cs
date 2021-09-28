@@ -1,18 +1,19 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
+using Moonglade.Core.PostFeature;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages
 {
     public class SearchModel : PageModel
     {
-        private readonly ISearchService _searchService;
+        private readonly IMediator _mediator;
 
-        public SearchModel(ISearchService searchService)
+        public SearchModel(IMediator mediator)
         {
-            _searchService = searchService;
+            _mediator = mediator;
         }
 
         public IReadOnlyList<PostDigest> Posts { get; set; }
@@ -26,7 +27,7 @@ namespace Moonglade.Web.Pages
 
             ViewData["TitlePrefix"] = term;
 
-            var posts = await _searchService.SearchAsync(term);
+            var posts = await _mediator.Send(new SearchPostQuery(term));
             Posts = posts;
 
             return Page();

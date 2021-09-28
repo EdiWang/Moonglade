@@ -1,18 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
+using Moonglade.Core.PageFeature;
+using Moonglade.Core.PostFeature;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using WilderMinds.MetaWeblog;
-using Post = Moonglade.Core.Post;
-using Tag = Moonglade.Core.Tag;
+using Post = Moonglade.Core.PostFeature.Post;
+using Tag = Moonglade.Core.TagFeature.Tag;
 
 namespace Moonglade.Web.Tests
 {
@@ -25,13 +29,9 @@ namespace Moonglade.Web.Tests
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<ILogger<MetaWeblogService>> _mockLogger;
-        private Mock<ITagService> _mockTagService;
-        private Mock<ICategoryService> _mockCategoryService;
-        private Mock<IPostQueryService> _mockPostService;
-        private Mock<IPostManageService> _mockPostManageService;
-        private Mock<IBlogPageService> _mockPageService;
         private Mock<IBlogImageStorage> _mockBlogImageStorage;
         private Mock<IFileNameGenerator> _mockFileNameGenerator;
+        private Mock<IMediator> _mockMediator;
 
         private readonly string _key = "work996andgetintoicu";
         private readonly string _username = "moonglade";
@@ -77,13 +77,9 @@ namespace Moonglade.Web.Tests
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockLogger = _mockRepository.Create<ILogger<MetaWeblogService>>();
-            _mockTagService = _mockRepository.Create<ITagService>();
-            _mockCategoryService = _mockRepository.Create<ICategoryService>();
-            _mockPostService = _mockRepository.Create<IPostQueryService>();
-            _mockPostManageService = _mockRepository.Create<IPostManageService>();
-            _mockPageService = _mockRepository.Create<IBlogPageService>();
             _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
             _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
+            _mockMediator = _mockRepository.Create<IMediator>();
 
             _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
             {
@@ -105,13 +101,8 @@ namespace Moonglade.Web.Tests
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
                 _mockLogger.Object,
-                _mockTagService.Object,
-                _mockCategoryService.Object,
-                _mockPostService.Object,
-                _mockPostManageService.Object,
-                _mockPageService.Object,
                 _mockBlogImageStorage.Object,
-                _mockFileNameGenerator.Object);
+                _mockFileNameGenerator.Object, _mockMediator.Object);
         }
 
         [TestCase(null, null)]
@@ -161,7 +152,7 @@ namespace Moonglade.Web.Tests
         [Test]
         public async Task GetPostAsync_ExpectedBehavior()
         {
-            _mockPostService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(Post));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPostByIdQuery>(), default)).Returns(Task.FromResult(Post));
 
             var service = CreateService();
             var result = await service.GetPostAsync(FakeData.Uid1.ToString(), _username, _password);
@@ -204,8 +195,8 @@ namespace Moonglade.Web.Tests
                 Cat
             };
 
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
-            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default))
                 .Returns(Task.FromResult(new PostEntity { Id = FakeData.Uid1 }));
 
             var service = CreateService();
@@ -218,7 +209,7 @@ namespace Moonglade.Web.Tests
                 mt_keywords = "996,icu"
             }, true);
 
-            _mockPostManageService.Verify(p => p.CreateAsync(It.IsAny<UpdatePostRequest>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreatePostCommand>(), default));
         }
 
         [Test]
@@ -228,7 +219,7 @@ namespace Moonglade.Web.Tests
             {
                 Cat
             };
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var service = CreateService();
             var result = await service.EditPostAsync(FakeData.Uid1.ToString(), _username, _password, new()
@@ -241,7 +232,7 @@ namespace Moonglade.Web.Tests
             }, true);
 
             Assert.IsTrue(result);
-            _mockPostManageService.Verify(p => p.UpdateAsync(FakeData.Uid1, It.IsAny<UpdatePostRequest>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<UpdatePostCommand>(), default));
         }
 
         [Test]
@@ -251,7 +242,7 @@ namespace Moonglade.Web.Tests
             {
                 Cat
             };
-            _mockCategoryService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(cats));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
             var service = CreateService();
             var result = await service.GetCategoriesAsync("996.icu", _username, _password);
@@ -273,14 +264,14 @@ namespace Moonglade.Web.Tests
             var result = await service.AddCategoryAsync("996.icu", _username, _password, cat);
 
             Assert.AreEqual(996, result);
-            _mockCategoryService.Verify(p => p.CreateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreateCategoryCommand>(), default));
         }
 
         [Test]
         public async Task GetTagsAsync_OK()
         {
             IReadOnlyList<string> names = new[] { "996", "icu" };
-            _mockTagService.Setup(p => p.GetAllNames()).Returns(Task.FromResult(names));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagNamesQuery>(), default)).Returns(Task.FromResult(names));
 
             var service = CreateService();
             var result = await service.GetTagsAsync("996.icu", _username, _password);
@@ -325,7 +316,7 @@ namespace Moonglade.Web.Tests
         [Test]
         public async Task GetPageAsync_OK()
         {
-            _mockPageService.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(FakeData.FakePage));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default)).Returns(Task.FromResult(FakeData.FakePage));
             var service = CreateService();
 
             var result = await service.GetPageAsync("996.icu", FakeData.Uid2.ToString(), _username, _password);
@@ -338,7 +329,7 @@ namespace Moonglade.Web.Tests
         public async Task GetPagesAsync_OK()
         {
             IReadOnlyList<BlogPage> pages = new List<BlogPage> { FakeData.FakePage };
-            _mockPageService.Setup(p => p.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(pages));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPagesQuery>(), default)).Returns(Task.FromResult(pages));
             var service = CreateService();
 
             var result = await service.GetPagesAsync("996.icu", _username, _password, 996);
@@ -360,10 +351,10 @@ namespace Moonglade.Web.Tests
         [Test]
         public async Task AddPageAsync_OK()
         {
-            _mockPageService
-                .Setup(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<CreatePageCommand>(), default))
                 .Returns(Task.FromResult(Guid.Empty));
-            var page = new WilderMinds.MetaWeblog.Page
+            var page = new Page
             {
                 title = FakeData.FakePage.Title,
                 description = "fubao"
@@ -374,16 +365,16 @@ namespace Moonglade.Web.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(Guid.Empty.ToString(), result);
-            _mockPageService.Verify(p => p.CreateAsync(It.IsAny<UpdatePageRequest>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<CreatePageCommand>(), default));
         }
 
         [Test]
         public async Task EditPageAsync_OK()
         {
-            _mockPageService
-                .Setup(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()))
+            _mockMediator
+                .Setup(p => p.Send(It.IsAny<UpdatePageCommand>(), default))
                 .Returns(Task.FromResult(Guid.Empty));
-            var page = new WilderMinds.MetaWeblog.Page
+            var page = new Page
             {
                 page_id = Guid.Empty.ToString(),
                 title = FakeData.FakePage.Title,
@@ -394,7 +385,7 @@ namespace Moonglade.Web.Tests
             var result = await service.EditPageAsync("996.icu", Guid.Empty.ToString(), _username, _password, page, true);
 
             Assert.IsTrue(result);
-            _mockPageService.Verify(p => p.UpdateAsync(It.IsAny<Guid>(), It.IsAny<UpdatePageRequest>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<UpdatePageCommand>(), default));
         }
 
         [Test]
@@ -414,7 +405,7 @@ namespace Moonglade.Web.Tests
             var service = CreateService();
             await service.DeletePostAsync("996.icu", FakeData.Uid1.ToString(), _username, _password, true);
 
-            _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeletePostCommand>(), default));
         }
 
         [Test]
@@ -445,7 +436,7 @@ namespace Moonglade.Web.Tests
             var result = await service.DeletePageAsync("996.icu", _username, _password, FakeData.Uid2.ToString());
 
             Assert.IsTrue(result);
-            _mockPageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeletePageCommand>(), default));
         }
 
         [Test]

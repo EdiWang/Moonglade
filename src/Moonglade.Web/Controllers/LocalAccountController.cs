@@ -1,14 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Auth;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -17,25 +18,25 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class LocalAccountController : ControllerBase
     {
-        private readonly ILocalAccountService _accountService;
+        private readonly IMediator _mediator;
 
-        public LocalAccountController(ILocalAccountService accountService)
+        public LocalAccountController(IMediator mediator)
         {
-            _accountService = accountService;
+            _mediator = mediator;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create(AccountEditModel model)
+        public async Task<IActionResult> Create(EditAccountRequest model)
         {
-            if (_accountService.Exist(model.Username))
+            if (await _mediator.Send(new AccountExistsQuery(model.Username)))
             {
                 ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
                 return Conflict(ModelState);
             }
 
-            await _accountService.CreateAsync(model.Username, model.Password);
+            await _mediator.Send(new CreateAccountCommand(model.Username, model.Password));
             return Ok();
         }
 
@@ -55,13 +56,13 @@ namespace Moonglade.Web.Controllers
                 return Conflict("Can not delete current user.");
             }
 
-            var count = _accountService.Count();
+            var count = await _mediator.Send(new CountAccountsQuery());
             if (count == 1)
             {
                 return Conflict("Can not delete last account.");
             }
 
-            await _accountService.DeleteAsync(id);
+            await _mediator.Send(new DeleteAccountQuery(id));
             return NoContent();
         }
 
@@ -75,7 +76,7 @@ namespace Moonglade.Web.Controllers
                 return Conflict("Password must be minimum eight characters, at least one letter and one number");
             }
 
-            await _accountService.UpdatePasswordAsync(id, newPassword);
+            await _mediator.Send(new UpdatePasswordCommand(id, newPassword));
             return NoContent();
         }
     }

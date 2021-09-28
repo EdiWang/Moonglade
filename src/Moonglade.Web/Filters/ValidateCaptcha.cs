@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Edi.Captcha;
+﻿using Edi.Captcha;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
 
 namespace Moonglade.Web.Filters
 {

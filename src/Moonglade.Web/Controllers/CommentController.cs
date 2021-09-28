@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +13,10 @@ using Moonglade.Notification.Client;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
-using CommentRequest = Moonglade.Web.Models.CommentRequest;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -27,7 +27,8 @@ namespace Moonglade.Web.Controllers
     {
         #region Private Fields
 
-        private readonly ICommentService _commentService;
+        private readonly IMediator _mediator;
+
         private readonly IBlogNotificationClient _notificationClient;
         private readonly ITimeZoneResolver _timeZoneResolver;
         private readonly IBlogConfig _blogConfig;
@@ -35,12 +36,12 @@ namespace Moonglade.Web.Controllers
         #endregion
 
         public CommentController(
-            ICommentService commentService,
+            IMediator mediator,
             IBlogConfig blogConfig,
             ITimeZoneResolver timeZoneResolver,
             IBlogNotificationClient notificationClient)
         {
-            _commentService = commentService;
+            _mediator = mediator;
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
             _notificationClient = notificationClient;
@@ -52,7 +53,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> List([NotEmpty] Guid postId)
         {
-            var comments = await _commentService.GetApprovedCommentsAsync(postId);
+            var comments = await _mediator.Send(new GetApprovedCommentsQuery(postId));
             var resp = comments.Select(p => new
             {
                 p.Username,
@@ -83,13 +84,8 @@ namespace Moonglade.Web.Controllers
 
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            var item = await _commentService.CreateAsync(new(postId)
-            {
-                Username = request.Username,
-                Content = request.Content,
-                Email = request.Email,
-                IpAddress = (bool)HttpContext.Items["DNT"] ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString()
-            });
+            var ip = (bool)HttpContext.Items["DNT"] ? "N/A" : HttpContext.Connection.RemoteIpAddress?.ToString();
+            var item = await _mediator.Send(new CreateCommentCommand(postId, request, ip));
 
             if (item is null)
             {
@@ -123,7 +119,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
         {
-            await _commentService.ToggleApprovalAsync(new[] { commentId });
+            await _mediator.Send(new ToggleApprovalCommand(new[] { commentId }));
             return Ok(commentId);
         }
 
@@ -138,7 +134,7 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            await _commentService.DeleteAsync(commentIds);
+            await _mediator.Send(new DeleteCommentsCommand(commentIds));
             return Ok(commentIds);
         }
 
@@ -149,7 +145,7 @@ namespace Moonglade.Web.Controllers
         {
             if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-            var reply = await _commentService.AddReply(commentId, replyContent);
+            var reply = await _mediator.Send(new ReplyCommentCommand(commentId, replyContent));
             if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
             {
                 var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);

@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +6,10 @@ using Moonglade.Auth;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -17,24 +18,24 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<ILocalAccountService> _mockLocalAccountService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private LocalAccountController CreateLocalAccountController()
         {
-            return new(_mockLocalAccountService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
         public async Task Create_AlreadyExists()
         {
-            _mockLocalAccountService.Setup(p => p.Exist(It.IsAny<string>())).Returns(true);
+            _mockMediator.Setup(p => p.Send(It.IsAny<AccountExistsQuery>(), default)).Returns(Task.FromResult(true));
 
             var ctl = CreateLocalAccountController();
             var result = await ctl.Create(new()
@@ -49,7 +50,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Create_OK()
         {
-            _mockLocalAccountService.Setup(p => p.Exist(It.IsAny<string>())).Returns(false);
+            _mockMediator.Setup(p => p.Send(It.IsAny<AccountExistsQuery>(), default)).Returns(Task.FromResult(false));
 
             var ctl = CreateLocalAccountController();
             var result = await ctl.Create(new()
@@ -98,7 +99,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_LastUser()
         {
-            _mockLocalAccountService.Setup(p => p.Count()).Returns(1);
+            _mockMediator.Setup(p => p.Send(It.IsAny<CountAccountsQuery>(), default)).Returns(Task.FromResult(1));
 
             var ctl = CreateLocalAccountController();
             ctl.ControllerContext = new()
@@ -116,7 +117,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Delete_OK()
         {
-            _mockLocalAccountService.Setup(p => p.Count()).Returns(996);
+            _mockMediator.Setup(p => p.Send(It.IsAny<CountAccountsQuery>(), default)).Returns(Task.FromResult(996));
             var ctl = CreateLocalAccountController();
             ctl.ControllerContext = new()
             {
@@ -146,7 +147,7 @@ namespace Moonglade.Web.Tests.Controllers
             var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), "Admin@1234");
 
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockLocalAccountService.Verify(p => p.UpdatePasswordAsync(It.IsAny<Guid>(), It.IsAny<string>()));
+            _mockMediator.Verify(p => p.Send(It.IsAny<UpdatePasswordCommand>(), default));
         }
 
         private ClaimsPrincipal GetClaimsPrincipal(string uid)

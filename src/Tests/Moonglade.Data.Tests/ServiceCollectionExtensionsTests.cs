@@ -1,8 +1,8 @@
-﻿using System.Data;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using NUnit.Framework;
+using System.Data;
+using System.Linq;
 
 namespace Moonglade.Data.Tests
 {

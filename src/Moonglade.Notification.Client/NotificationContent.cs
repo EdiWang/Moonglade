@@ -1,6 +1,6 @@
-﻿using System.Net.Http;
+﻿using Moonglade.Configuration;
+using System.Net.Http;
 using System.Text;
-using Moonglade.Configuration;
 
 namespace Moonglade.Notification.Client
 {

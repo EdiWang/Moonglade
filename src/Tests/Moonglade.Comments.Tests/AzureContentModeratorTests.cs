@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Azure.CognitiveServices.ContentModerator;
+using Microsoft.Azure.CognitiveServices.ContentModerator.Models;
+using Microsoft.Rest;
+using Moonglade.Comments.Moderators;
+using Moq;
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.CognitiveServices.ContentModerator;
-using Microsoft.Azure.CognitiveServices.ContentModerator.Models;
-using Microsoft.Rest;
-using Moq;
-using NUnit.Framework;
 
 namespace Moonglade.Comments.Tests
 {

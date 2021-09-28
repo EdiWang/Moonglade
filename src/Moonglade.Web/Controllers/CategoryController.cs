@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Data;
 using Moonglade.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -18,11 +19,11 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryService _catService;
+        private readonly IMediator _mediator;
 
-        public CategoryController(ICategoryService catService)
+        public CategoryController(IMediator mediator)
         {
-            _catService = catService;
+            _mediator = mediator;
         }
 
         [HttpGet("{id:guid}")]
@@ -30,7 +31,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([NotEmpty] Guid id)
         {
-            var cat = await _catService.GetAsync(id);
+            var cat = await _mediator.Send(new GetCategoryByIdCommand(id));
             if (null == cat) return NotFound();
 
             return Ok(cat);
@@ -42,7 +43,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
         {
-            var cats = await _catService.GetAllAsync();
+            var cats = await _mediator.Send(new GetCategoriesQuery());
             return Ok(cats);
         }
 
@@ -50,7 +51,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(EditCategoryRequest model)
         {
-            await _catService.CreateAsync(model.DisplayName, model.RouteName, model.Note);
+            await _mediator.Send(new CreateCategoryCommand(model));
             return Created(string.Empty, model);
         }
 
@@ -58,7 +59,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> Update([NotEmpty] Guid id, EditCategoryRequest model)
         {
-            var oc = await _catService.UpdateAsync(id, model.DisplayName, model.RouteName, model.Note);
+            var oc = await _mediator.Send(new UpdateCategoryCommand(id, model));
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
             return NoContent();
@@ -68,7 +69,7 @@ namespace Moonglade.Web.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            var oc = await _catService.DeleteAsync(id);
+            var oc = await _mediator.Send(new DeleteCategoryCommand(id));
             if (oc == OperationCode.ObjectNotFound) return NotFound();
 
             return NoContent();

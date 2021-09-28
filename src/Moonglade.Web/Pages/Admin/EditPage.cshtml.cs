@@ -1,36 +1,36 @@
-using System;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
-using Moonglade.Web.Models;
+using Moonglade.Core.PageFeature;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages.Admin
 {
     public class EditPageModel : PageModel
     {
-        private readonly IBlogPageService _blogPageService;
+        private readonly IMediator _mediator;
 
         public Guid PageId { get; set; }
 
-        public PageEditModel PageEditModel { get; set; }
+        public EditPageRequest EditPageRequest { get; set; }
 
-        public EditPageModel(IBlogPageService blogPageService)
+        public EditPageModel(IMediator mediator)
         {
-            _blogPageService = blogPageService;
-            PageEditModel = new();
+            _mediator = mediator;
+            EditPageRequest = new();
         }
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
             if (id is null) return Page();
 
-            var page = await _blogPageService.GetAsync(id.Value);
+            var page = await _mediator.Send(new GetPageByIdQuery(id.Value));
             if (page is null) return NotFound();
 
             PageId = page.Id;
 
-            PageEditModel = new()
+            EditPageRequest = new()
             {
                 Title = page.Title,
                 Slug = page.Slug,

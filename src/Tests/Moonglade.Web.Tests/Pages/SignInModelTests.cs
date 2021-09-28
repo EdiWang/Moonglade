@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Edi.Captcha;
+﻿using Edi.Captcha;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -16,6 +14,9 @@ using Moonglade.Data.Entities;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Pages
 {
@@ -26,7 +27,7 @@ namespace Moonglade.Web.Tests.Pages
         private MockRepository _mockRepository;
 
         private Mock<IOptions<AuthenticationSettings>> _mockOptions;
-        private Mock<ILocalAccountService> _mockLocalAccountService;
+        private Mock<IMediator> _mockMediator;
         private Mock<ILogger<SignInModel>> _mockLogger;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<ISessionBasedCaptcha> _mockSessionBasedCaptcha;
@@ -37,7 +38,7 @@ namespace Moonglade.Web.Tests.Pages
             _mockRepository = new(MockBehavior.Default);
 
             _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
-            _mockLocalAccountService = _mockRepository.Create<ILocalAccountService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
             _mockLogger = _mockRepository.Create<ILogger<SignInModel>>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockSessionBasedCaptcha = _mockRepository.Create<ISessionBasedCaptcha>();
@@ -60,7 +61,7 @@ namespace Moonglade.Web.Tests.Pages
 
             var model = new SignInModel(
                 _mockOptions.Object,
-                _mockLocalAccountService.Object,
+                _mockMediator.Object,
                 _mockLogger.Object,
                 _mockBlogAudit.Object,
                 _mockSessionBasedCaptcha.Object)
@@ -112,7 +113,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
 
-            _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _mockMediator.Setup(p => p.Send(It.IsAny<ValidateLoginCommand>(), default))
                 .Throws(new(FakeData.ShortString2));
 
             // Arrange
@@ -175,7 +176,7 @@ namespace Moonglade.Web.Tests.Pages
         {
             _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
 
-            _mockLocalAccountService.Setup(p => p.ValidateAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(Guid.Empty));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ValidateLoginCommand>(), default)).Returns(Task.FromResult(Guid.Empty));
 
             var signInModel = CreateSignInModel();
             signInModel.Username = FakeData.ShortString1;

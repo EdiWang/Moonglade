@@ -1,10 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.FriendLink;
 using Moonglade.Web.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -13,19 +14,19 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class FriendLinkController : ControllerBase
     {
-        private readonly IFriendLinkService _friendLinkService;
+        private readonly IMediator _mediator;
 
-        public FriendLinkController(IFriendLinkService friendLinkService)
+        public FriendLinkController(IMediator mediator)
         {
-            _friendLinkService = friendLinkService;
+            _mediator = mediator;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(FriendLinkEditModel model)
+        public async Task<IActionResult> Create(EditLinkRequest request)
         {
-            await _friendLinkService.AddAsync(model.Title, model.LinkUrl);
-            return Created(string.Empty, model);
+            await _mediator.Send(new AddLinkCommand(request));
+            return Created(string.Empty, request);
         }
 
         [HttpGet("{id:guid}")]
@@ -33,7 +34,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([NotEmpty] Guid id)
         {
-            var link = await _friendLinkService.GetAsync(id);
+            var link = await _mediator.Send(new GetLinkQuery(id));
             if (null == link) return NotFound();
 
             return Ok(link);
@@ -41,9 +42,9 @@ namespace Moonglade.Web.Controllers
 
         [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Update([NotEmpty] Guid id, FriendLinkEditModel model)
+        public async Task<IActionResult> Update([NotEmpty] Guid id, EditLinkRequest request)
         {
-            await _friendLinkService.UpdateAsync(id, model.Title, model.LinkUrl);
+            await _mediator.Send(new UpdateLinkCommand(id, request));
             return NoContent();
         }
 
@@ -51,7 +52,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            await _friendLinkService.DeleteAsync(id);
+            await _mediator.Send(new DeleteLinkCommand(id));
             return NoContent();
         }
     }

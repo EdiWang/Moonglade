@@ -1,20 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
+using Moonglade.Core.PostFeature;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -23,8 +25,8 @@ namespace Moonglade.Web.Tests.Controllers
     {
         private MockRepository _mockRepository;
 
-        private Mock<IPostQueryService> _mockPostService;
-        private Mock<IPostManageService> _mockPostManageService;
+        private Mock<IMediator> _mockMediator;
+
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<ITimeZoneResolver> _mockTZoneResolver;
         private Mock<IPingbackSender> _mockPingbackSender;
@@ -67,8 +69,8 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockRepository = new(MockBehavior.Default);
 
-            _mockPostService = _mockRepository.Create<IPostQueryService>();
-            _mockPostManageService = _mockRepository.Create<IPostManageService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
+
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
             _mockPingbackSender = _mockRepository.Create<IPingbackSender>();
@@ -78,8 +80,7 @@ namespace Moonglade.Web.Tests.Controllers
         private PostController CreatePostController()
         {
             return new(
-                _mockPostService.Object,
-                _mockPostManageService.Object,
+                _mockMediator.Object,
                 _mockBlogConfig.Object,
                 _mockTZoneResolver.Object,
                 _mockPingbackSender.Object,
@@ -98,7 +99,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task Segment_OK()
         {
             IReadOnlyList<PostSegment> ps = new List<PostSegment>();
-            _mockPostService.Setup(p => p.ListSegmentAsync(PostStatus.Published)).Returns(Task.FromResult(ps));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentByStatusQuery>(), default)).Returns(Task.FromResult(ps));
 
             var ctl = CreatePostController();
             var result = await ctl.Segment();
@@ -111,7 +112,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             (IReadOnlyList<PostSegment> Posts, int TotalRows) data = new(new List<PostSegment>(), 996);
 
-            _mockPostService.Setup(p => p.ListSegmentAsync(It.IsAny<PostStatus>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(data));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentQuery>(), default)).Returns(Task.FromResult(data));
 
             var postManageController = CreatePostController();
             var model = new DataTableRequest
@@ -173,7 +174,7 @@ namespace Moonglade.Web.Tests.Controllers
 
             Mock<LinkGenerator> mockLinkGenerator = new();
 
-            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Throws(new("Work 996"));
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default)).Throws(new("Work 996"));
 
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
             Assert.IsInstanceOf<ConflictObjectResult>(result);
@@ -209,7 +210,7 @@ namespace Moonglade.Web.Tests.Controllers
             };
 
             Mock<LinkGenerator> mockLinkGenerator = new();
-            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Returns(Task.FromResult(new PostEntity
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default)).Returns(Task.FromResult(new PostEntity
             {
                 Id = FakeData.Uid1
             }));
@@ -271,7 +272,7 @@ namespace Moonglade.Web.Tests.Controllers
                 trySendPingAsyncCalled.Set();
             });
 
-            _mockPostManageService.Setup(p => p.CreateAsync(It.IsAny<UpdatePostRequest>())).Returns(Task.FromResult(new PostEntity
+            _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default)).Returns(Task.FromResult(new PostEntity
             {
                 Id = FakeData.Uid1,
                 PubDateUtc = new(1996, 7, 2, 5, 1, 0),
@@ -302,7 +303,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostController();
             var result = await postManageController.Delete(FakeData.Uid1);
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), true));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeletePostCommand>(), default));
         }
 
         [Test]
@@ -311,7 +312,7 @@ namespace Moonglade.Web.Tests.Controllers
             var postManageController = CreatePostController();
             var result = await postManageController.DeleteFromRecycleBin(FakeData.Uid1);
             Assert.IsInstanceOf<NoContentResult>(result);
-            _mockPostManageService.Verify(p => p.DeleteAsync(It.IsAny<Guid>(), false));
+            _mockMediator.Verify(p => p.Send(It.IsAny<DeletePostCommand>(), default));
         }
 
         [Test]

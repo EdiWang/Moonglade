@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
 using NUglify;
+using System;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Middleware
 {

@@ -1,30 +1,31 @@
-﻿using System;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moonglade.Core.CategoryFeature;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Moonglade.Core;
 
 namespace Moonglade.Web.ViewComponents
 {
     public class RssListViewComponent : ViewComponent
     {
         private readonly ILogger<RssListViewComponent> _logger;
+        private readonly IMediator _mediator;
 
-        private readonly ICategoryService _catService;
 
-        public RssListViewComponent(ILogger<RssListViewComponent> logger, ICategoryService catService)
+        public RssListViewComponent(ILogger<RssListViewComponent> logger, IMediator mediator)
         {
             _logger = logger;
-            _catService = catService;
+            _mediator = mediator;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             try
             {
-                var cats = await _catService.GetAllAsync();
+                var cats = await _mediator.Send(new GetCategoriesQuery());
                 var items = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
 
                 return View(items);

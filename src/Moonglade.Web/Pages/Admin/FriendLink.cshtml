@@ -27,8 +27,8 @@
         function editFriendLink(id) {
             $.get(`/api/friendlink/${id}`, function (data) {
                 fid = data.id;
-                $('#FriendLinkEditViewModel_Title').val(data.title);
-                $('#FriendLinkEditViewModel_LinkUrl').val(data.linkUrl);
+                $('#EditLinkRequest_Title').val(data.title);
+                $('#EditLinkRequest_LinkUrl').val(data.linkUrl);
                 editCanvas.show();
             });
         }
@@ -54,8 +54,8 @@
                 callApi(apiAddress, httpVerb,
                     {
                         "Id": fid,
-                        "Title": $("#FriendLinkEditViewModel_Title").val(),
-                        "LinkUrl": $("#FriendLinkEditViewModel_LinkUrl").val()
+                        "Title": $("#EditLinkRequest_Title").val(),
+                        "LinkUrl": $("#EditLinkRequest_LinkUrl").val()
                     },
                     (resp) => {
                         $("#edit-form")[0].reset();
@@ -94,7 +94,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.FriendLinks.OrderBy(m => m.Title))
+        @foreach (var item in Model.Links.OrderBy(m => m.Title))
         {
             <tr id="tr-@item.Id">
                 <td>
@@ -126,14 +126,14 @@
         <form id="edit-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
-                <label class="form-label" asp-for="FriendLinkEditViewModel.Title"></label>
-                <input asp-for="FriendLinkEditViewModel.Title" class="form-control" />
-                <span asp-validation-for="FriendLinkEditViewModel.Title" class="text-danger"></span>
+                <label class="form-label" asp-for="EditLinkRequest.Title"></label>
+                <input asp-for="EditLinkRequest.Title" class="form-control" />
+                <span asp-validation-for="EditLinkRequest.Title" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="FriendLinkEditViewModel.LinkUrl"></label>
-                <input asp-for="FriendLinkEditViewModel.LinkUrl" class="form-control" />
-                <span asp-validation-for="FriendLinkEditViewModel.LinkUrl" class="text-danger"></span>
+                <label class="form-label" asp-for="EditLinkRequest.LinkUrl"></label>
+                <input asp-for="EditLinkRequest.LinkUrl" class="form-control" />
+                <span asp-validation-for="EditLinkRequest.LinkUrl" class="text-danger"></span>
             </div>
         </form>
         <div class="mt-3">

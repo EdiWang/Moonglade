@@ -1,13 +1,13 @@
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moonglade.Caching;
+using Moonglade.Core.PageFeature;
+using Moonglade.Web.Controllers;
+using Moq;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Moonglade.Caching;
-using Moonglade.Core;
-using Moonglade.Web.Controllers;
-using Moonglade.Web.Models;
-using Moq;
-using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Controllers
 {
@@ -17,9 +17,9 @@ namespace Moonglade.Web.Tests.Controllers
         private MockRepository _mockRepository;
 
         private Mock<IBlogCache> _mockBlogCache;
-        private Mock<IBlogPageService> _mockPageService;
+        private Mock<IMediator> _mockMediator;
 
-        private PageEditModel _pageEditModel;
+        private EditPageRequest _editPageRequest;
 
         [SetUp]
         public void SetUp()
@@ -27,9 +27,9 @@ namespace Moonglade.Web.Tests.Controllers
             _mockRepository = new(MockBehavior.Default);
 
             _mockBlogCache = _mockRepository.Create<IBlogCache>();
-            _mockPageService = _mockRepository.Create<IBlogPageService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
 
-            _pageEditModel = new()
+            _editPageRequest = new()
             {
                 CssContent = ".fubao { color: #996 }",
                 HideSidebar = true,
@@ -43,15 +43,13 @@ namespace Moonglade.Web.Tests.Controllers
 
         private PageController CreatePageController()
         {
-            return new(
-                _mockBlogCache.Object,
-                _mockPageService.Object);
+            return new(_mockBlogCache.Object, _mockMediator.Object);
         }
 
         [Test]
         public async Task Delete_Success()
         {
-            _mockPageService.Setup(p => p.GetAsync(Guid.Empty)).Returns(Task.FromResult(new BlogPage() { Slug = "996" }));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default)).Returns(Task.FromResult(new BlogPage() { Slug = "996" }));
 
             var ctl = CreatePageController();
             var result = await ctl.Delete(Guid.Empty);
@@ -74,7 +72,7 @@ namespace Moonglade.Web.Tests.Controllers
                     Title = FakeData.Title3
                 }
             };
-            _mockPageService.Setup(p => p.ListSegmentAsync()).Returns(Task.FromResult(ps));
+            _mockMediator.Setup(p => p.Send(new ListPageSegmentQuery(), default)).Returns(Task.FromResult(ps));
 
             var ctl = CreatePageController();
             var result = await ctl.Segment();
@@ -85,7 +83,7 @@ namespace Moonglade.Web.Tests.Controllers
         [Test]
         public async Task Segment_Null()
         {
-            _mockPageService.Setup(p => p.ListSegmentAsync()).Returns(Task.FromResult((IReadOnlyList<PageSegment>)null));
+            _mockMediator.Setup(p => p.Send(new ListPageSegmentQuery(), default)).Returns(Task.FromResult((IReadOnlyList<PageSegment>)null));
 
             var ctl = CreatePageController();
             var result = await ctl.Segment();
@@ -98,7 +96,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreatePageController();
 
-            var result = await ctl.Create(_pageEditModel);
+            var result = await ctl.Create(_editPageRequest);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
@@ -107,7 +105,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             var ctl = CreatePageController();
 
-            var result = await ctl.Edit(FakeData.Uid2, _pageEditModel);
+            var result = await ctl.Edit(FakeData.Uid2, _editPageRequest);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
     }

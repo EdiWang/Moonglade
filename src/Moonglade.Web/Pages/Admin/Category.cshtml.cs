@@ -1,28 +1,28 @@
+using MediatR;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moonglade.Core.CategoryFeature;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Pages.Admin
 {
     public class CategoryModel : PageModel
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IMediator _mediator;
 
         public EditCategoryRequest EditCategoryRequest { get; set; }
 
         public IReadOnlyList<Category> Categories { get; set; }
 
-        public CategoryModel(ICategoryService categoryService)
+        public CategoryModel(IMediator mediator)
         {
-            _categoryService = categoryService;
+            _mediator = mediator;
             EditCategoryRequest = new();
         }
 
         public async Task OnGet()
         {
-            Categories = await _categoryService.GetAllAsync();
+            Categories = await _mediator.Send(new GetCategoriesQuery());
         }
     }
 }

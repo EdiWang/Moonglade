@@ -1,9 +1,10 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
 using Moonglade.Theme;
 using Moonglade.Web.Models.Settings;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages.Settings
 {
@@ -11,7 +12,7 @@ namespace Moonglade.Web.Pages.Settings
     {
         private readonly IBlogConfig _blogConfig;
         private readonly ITimeZoneResolver _timeZoneResolver;
-        private readonly IThemeService _themeService;
+        private readonly IMediator _mediator;
 
         public GeneralSettingsViewModel ViewModel { get; set; }
 
@@ -19,11 +20,11 @@ namespace Moonglade.Web.Pages.Settings
 
         public IReadOnlyList<ThemeSegment> Themes { get; set; }
 
-        public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver, IThemeService themeService)
+        public GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneResolver, IMediator mediator)
         {
             _blogConfig = blogConfig;
             _timeZoneResolver = timeZoneResolver;
-            _themeService = themeService;
+            _mediator = mediator;
         }
 
         public async Task OnGetAsync()
@@ -49,7 +50,7 @@ namespace Moonglade.Web.Pages.Settings
                 AutoDarkLightTheme = _blogConfig.GeneralSettings.AutoDarkLightTheme
             };
 
-            Themes = await _themeService.GetAllSegment();
+            Themes = await _mediator.Send(new GetAllThemeSegmentQuery());
         }
     }
 }

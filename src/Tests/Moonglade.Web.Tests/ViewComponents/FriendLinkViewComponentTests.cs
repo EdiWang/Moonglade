@@ -1,11 +1,12 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
 using Moonglade.FriendLink;
 using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.ViewComponents
 {
@@ -15,7 +16,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         private MockRepository _mockRepository;
 
         private Mock<ILogger<FriendLinkViewComponent>> _mockLogger;
-        private Mock<IFriendLinkService> _mockFriendLinkService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
@@ -23,20 +24,20 @@ namespace Moonglade.Web.Tests.ViewComponents
             _mockRepository = new(MockBehavior.Default);
 
             _mockLogger = _mockRepository.Create<ILogger<FriendLinkViewComponent>>();
-            _mockFriendLinkService = _mockRepository.Create<IFriendLinkService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private FriendLinkViewComponent CreateComponent()
         {
             return new(
                 _mockLogger.Object,
-                _mockFriendLinkService.Object);
+                _mockMediator.Object);
         }
 
         [Test]
         public async Task InvokeAsync_Exception()
         {
-            _mockFriendLinkService.Setup(p => p.GetAllAsync()).Throws(new(FakeData.ShortString2));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Throws(new(FakeData.ShortString2));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync();
@@ -49,7 +50,7 @@ namespace Moonglade.Web.Tests.ViewComponents
         {
             IReadOnlyList<Link> links = new List<Link>();
 
-            _mockFriendLinkService.Setup(p => p.GetAllAsync()).Returns(Task.FromResult(links));
+            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Returns(Task.FromResult(links));
 
             var component = CreateComponent();
             var result = await component.InvokeAsync();

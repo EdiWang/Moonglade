@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +6,8 @@ using Moonglade.Configuration;
 using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Middleware
 {

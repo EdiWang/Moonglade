@@ -1,11 +1,11 @@
-using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Moonglade.Auth.Tests
 {
@@ -39,21 +39,14 @@ namespace Moonglade.Auth.Tests
             _accountEntity.PasswordHash = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=";
         }
 
-        private LocalAccountService CreateService()
-        {
-            return new(
-                _mockLocalAccountRepository.Object,
-                _mockBlogAudit.Object);
-        }
-
         [Test]
         public async Task GetAsync_OK()
         {
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            var account = await svc.GetAsync(Uid);
+            var handler = new GetAccountQueryHandler(_mockLocalAccountRepository.Object);
+            var account = await handler.Handle(new(Uid), default);
 
             Assert.IsNotNull(account);
             Assert.AreEqual(_accountEntity.Username, account.Username);
@@ -63,8 +56,8 @@ namespace Moonglade.Auth.Tests
         [Test]
         public async Task GetAllAsync_OK()
         {
-            var svc = CreateService();
-            var account = await svc.GetAllAsync();
+            var handler = new GetAccountsQueryHandler(_mockLocalAccountRepository.Object);
+            var account = await handler.Handle(new(), default);
 
             _mockLocalAccountRepository.Verify(p => p.SelectAsync(It.IsAny<Expression<Func<LocalAccountEntity, Account>>>()));
         }
@@ -76,10 +69,10 @@ namespace Moonglade.Auth.Tests
         [TestCase(" ", null)]
         public void ValidateAsync_EmptyUsernameOrPassword(string username, string inputPassword)
         {
-            var svc = CreateService();
+            var handler = new ValidateLoginCommandHandler(_mockLocalAccountRepository.Object);
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                await svc.ValidateAsync(username, inputPassword);
+                await handler.Handle(new(username, inputPassword), default);
             });
         }
 
@@ -89,8 +82,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()))
                 .Returns(Task.FromResult((LocalAccountEntity)null));
 
-            var svc = CreateService();
-            var result = await svc.ValidateAsync("work", "996");
+            var handler = new ValidateLoginCommandHandler(_mockLocalAccountRepository.Object);
+            var result = await handler.Handle(new("work", "996"), default);
 
             Assert.AreEqual(Guid.Empty, result);
         }
@@ -103,8 +96,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()))
                 .Returns(Task.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            var result = await svc.ValidateAsync("work", "996");
+            var handler = new ValidateLoginCommandHandler(_mockLocalAccountRepository.Object);
+            var result = await handler.Handle(new("work", "996"), default);
 
             Assert.AreEqual(Guid.Empty, result);
         }
@@ -115,8 +108,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()))
                 .Returns(Task.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            var result = await svc.ValidateAsync("work996", "admin123");
+            var handler = new ValidateLoginCommandHandler(_mockLocalAccountRepository.Object);
+            var result = await handler.Handle(new("work996", "admin123"), default);
 
             Assert.AreEqual(Uid, result);
         }
@@ -127,8 +120,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((LocalAccountEntity)null));
 
-            var svc = CreateService();
-            await svc.LogSuccessLoginAsync(Guid.Empty, "1.1.1.1");
+            var handler = new LogSuccessLoginCommandHandler(_mockLocalAccountRepository.Object);
+            await handler.Handle(new(Guid.Empty, "1.1.1.1"), default);
 
             _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()), Times.Never);
         }
@@ -139,8 +132,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            await svc.LogSuccessLoginAsync(Uid, "1.1.1.1");
+            var handler = new LogSuccessLoginCommandHandler(_mockLocalAccountRepository.Object);
+            await handler.Handle(new(Uid, "1.1.1.1"), default);
 
             _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()), Times.Once);
         }
@@ -148,8 +141,8 @@ namespace Moonglade.Auth.Tests
         [Test]
         public void Exist_ToHaveBeenCalled()
         {
-            var svc = CreateService();
-            svc.Exist("work996");
+            var handler = new AccountExistsQueryHandler(_mockLocalAccountRepository.Object);
+            handler.Handle(new("work996"), default);
 
             _mockLocalAccountRepository.Verify(p => p.Any(It.IsAny<Expression<Func<LocalAccountEntity, bool>>>()));
         }
@@ -161,18 +154,18 @@ namespace Moonglade.Auth.Tests
         [TestCase(" ", null)]
         public void CreateAsync_EmptyUsernameOrPassword(string username, string clearPassword)
         {
-            var svc = CreateService();
+            var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                await svc.CreateAsync(username, clearPassword);
+                await handler.Handle(new(username, clearPassword), default);
             });
         }
 
         [Test]
         public async Task CreateAsync_OK()
         {
-            var svc = CreateService();
-            var result = await svc.CreateAsync("work996", "&Get1n2icu");
+            var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+            var result = await handler.Handle(new("work996", "&Get1n2icu"), default);
 
             Assert.IsTrue(result != Guid.Empty);
 
@@ -185,10 +178,10 @@ namespace Moonglade.Auth.Tests
         [TestCase(" ")]
         public void UpdatePasswordAsync_EmptyPassword(string clearPassword)
         {
-            var svc = CreateService();
+            var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                await svc.UpdatePasswordAsync(Uid, clearPassword);
+                await handler.Handle(new(Uid, clearPassword), default);
             });
         }
 
@@ -198,10 +191,10 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((LocalAccountEntity)null));
 
-            var svc = CreateService();
+            var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await svc.UpdatePasswordAsync(Uid, "Work996");
+                await handler.Handle(new(Uid, "Work996"), default);
             });
         }
 
@@ -211,8 +204,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            await svc.UpdatePasswordAsync(Uid, "Work996andGetintoICU");
+            var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(Uid, "Work996andGetintoICU"), default);
 
             _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsAccountPasswordUpdated, It.IsAny<string>()));
@@ -224,10 +217,10 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult((LocalAccountEntity)null));
 
-            var svc = CreateService();
+            var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await svc.DeleteAsync(Uid);
+                await handler.Handle(new(Uid), default);
             });
         }
 
@@ -237,8 +230,8 @@ namespace Moonglade.Auth.Tests
             _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
                 .Returns(ValueTask.FromResult(_accountEntity));
 
-            var svc = CreateService();
-            await svc.DeleteAsync(Uid);
+            var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+            await handler.Handle(new(Uid), default);
 
             _mockLocalAccountRepository.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
             _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsDeleteAccount, It.IsAny<string>()));

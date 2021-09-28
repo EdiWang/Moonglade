@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +6,9 @@ using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Menus;
 using Moonglade.Web.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
@@ -16,19 +17,19 @@ namespace Moonglade.Web.Controllers
     [Route("api/[controller]")]
     public class MenuController : ControllerBase
     {
-        private readonly IMenuService _menuService;
+        private readonly IMediator _mediator;
 
-        public MenuController(IMenuService menuService)
+        public MenuController(IMediator mediator)
         {
-            _menuService = menuService;
+            _mediator = mediator;
         }
 
         [HttpPost]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(MenuEditViewModel model)
+        public async Task<IActionResult> Create(EditMenuRequest model)
         {
-            var request = new UpdateMenuRequest
+            var request = new EditMenuRequest
             {
                 DisplayOrder = model.DisplayOrder.GetValueOrDefault(),
                 Icon = model.Icon,
@@ -40,7 +41,7 @@ namespace Moonglade.Web.Controllers
             if (null != model.SubMenus)
             {
                 var subMenuRequests = model.SubMenus
-                    .Select(p => new UpdateSubMenuRequest
+                    .Select(p => new EditSubMenuRequest
                     {
                         Title = p.Title,
                         Url = p.Url,
@@ -50,7 +51,7 @@ namespace Moonglade.Web.Controllers
                 request.SubMenus = subMenuRequests;
             }
 
-            var response = await _menuService.CreateAsync(request);
+            var response = await _mediator.Send(new CreateMenuCommand(request));
             return Ok(response);
         }
 
@@ -59,19 +60,19 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([NotEmpty] Guid id)
         {
-            await _menuService.DeleteAsync(id);
+            await _mediator.Send(new DeleteMenuCommand(id));
             return NoContent();
         }
 
         [HttpGet("edit/{id:guid}")]
-        [ProducesResponseType(typeof(MenuEditViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EditMenuRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit([NotEmpty] Guid id)
         {
-            var menu = await _menuService.GetAsync(id);
+            var menu = await _mediator.Send(new GetMenuQuery(id));
             if (null == menu) return NotFound();
 
-            var model = new MenuEditViewModel
+            var model = new EditMenuRequest
             {
                 Id = menu.Id,
                 DisplayOrder = menu.DisplayOrder,
@@ -79,7 +80,7 @@ namespace Moonglade.Web.Controllers
                 Title = menu.Title,
                 Url = menu.Url,
                 IsOpenInNewTab = menu.IsOpenInNewTab,
-                SubMenus = menu.SubMenus.Select(p => new SubMenuEditViewModel
+                SubMenus = menu.SubMenus.Select(p => new EditSubMenuRequest
                 {
                     Id = p.Id,
                     Title = p.Title,
@@ -94,9 +95,9 @@ namespace Moonglade.Web.Controllers
         [HttpPut("edit")]
         [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Edit(MenuEditViewModel model)
+        public async Task<IActionResult> Edit(EditMenuRequest model)
         {
-            var request = new UpdateMenuRequest
+            var request = new EditMenuRequest
             {
                 Title = model.Title,
                 DisplayOrder = model.DisplayOrder.GetValueOrDefault(),
@@ -108,7 +109,7 @@ namespace Moonglade.Web.Controllers
             if (null != model.SubMenus)
             {
                 var subMenuRequests = model.SubMenus
-                    .Select(p => new UpdateSubMenuRequest
+                    .Select(p => new EditSubMenuRequest
                     {
                         Title = p.Title,
                         Url = p.Url,
@@ -118,7 +119,7 @@ namespace Moonglade.Web.Controllers
                 request.SubMenus = subMenuRequests;
             }
 
-            await _menuService.UpdateAsync(model.Id, request);
+            await _mediator.Send(new UpdateMenuCommand(model.Id, request));
             return NoContent();
         }
     }

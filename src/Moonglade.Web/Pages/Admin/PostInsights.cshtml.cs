@@ -1,28 +1,29 @@
+using MediatR;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moonglade.Core.PostFeature;
+using Moonglade.Data.Spec;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
-using Moonglade.Data.Spec;
 
 namespace Moonglade.Web.Pages.Admin
 {
     public class PostInsightsModel : PageModel
     {
-        private readonly IPostQueryService _postQueryService;
+        private readonly IMediator _mediator;
 
         public IReadOnlyList<PostSegment> TopReadList { get; set; }
 
         public IReadOnlyList<PostSegment> TopCommentedList { get; set; }
 
-        public PostInsightsModel(IPostQueryService postQueryService)
+        public PostInsightsModel(IMediator mediator)
         {
-            _postQueryService = postQueryService;
+            _mediator = mediator;
         }
 
         public async Task OnGet()
         {
-            TopReadList = await _postQueryService.ListSegmentAsync(PostInsightsType.TopRead);
-            TopCommentedList = await _postQueryService.ListSegmentAsync(PostInsightsType.TopCommented);
+            TopReadList = await _mediator.Send(new ListInsightsQuery(PostInsightsType.TopRead));
+            TopCommentedList = await _mediator.Send(new ListInsightsQuery(PostInsightsType.TopCommented));
         }
     }
 }

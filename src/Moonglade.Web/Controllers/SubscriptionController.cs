@@ -1,47 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
-using Moonglade.Core;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Syndication;
 using Moonglade.Utils;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {
     [ApiController]
     public class SubscriptionController : ControllerBase
     {
-        private readonly ISyndicationService _syndicationService;
-        private readonly ICategoryService _catService;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogCache _cache;
-        private readonly IOpmlWriter _opmlWriter;
+        private readonly IMediator _mediator;
 
         public SubscriptionController(
-            ISyndicationService syndicationService,
-            ICategoryService catService,
             IBlogConfig blogConfig,
             IBlogCache cache,
-            IOpmlWriter opmlWriter)
+            IMediator mediator)
         {
-            _syndicationService = syndicationService;
-            _catService = catService;
             _blogConfig = blogConfig;
             _cache = cache;
-            _opmlWriter = opmlWriter;
+            _mediator = mediator;
         }
 
         [FeatureGate(FeatureFlags.OPML)]
         [HttpGet("opml")]
         public async Task<IActionResult> Opml()
         {
-            var cats = await _catService.GetAllAsync();
+            var cats = await _mediator.Send(new GetCategoriesQuery());
             var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
             var rootUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix);
 
@@ -55,7 +50,7 @@ namespace Moonglade.Web.Controllers
                 HtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
             };
 
-            var xml = await _opmlWriter.GetOpmlDataAsync(oi);
+            var xml = await _mediator.Send(new GetOpmlQuery(oi));
             return Content(xml, "text/xml");
         }
 
@@ -70,7 +65,7 @@ namespace Moonglade.Web.Controllers
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var xml = await _syndicationService.GetRssStringAsync(routeName);
+                var xml = await _mediator.Send(new GetRssStringQuery(routeName));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();
@@ -87,7 +82,7 @@ namespace Moonglade.Web.Controllers
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var xml = await _syndicationService.GetAtomStringAsync();
+                var xml = await _mediator.Send(new GetAtomStringQuery());
                 return Content(xml, "text/xml");
             });
         }

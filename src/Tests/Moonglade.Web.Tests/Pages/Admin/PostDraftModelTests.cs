@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Moonglade.Core;
-using Moonglade.Data.Spec;
+using MediatR;
+using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Pages.Admin
 {
@@ -13,18 +13,18 @@ namespace Moonglade.Web.Tests.Pages.Admin
     public class PostDraftModelTests
     {
         private MockRepository _mockRepository;
-        private Mock<IPostQueryService> _mockPostService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new(MockBehavior.Default);
-            _mockPostService = _mockRepository.Create<IPostQueryService>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private PostDraftModel CreatePostDraftModel()
         {
-            return new(_mockPostService.Object);
+            return new(_mockMediator.Object);
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace Moonglade.Web.Tests.Pages.Admin
         {
             IReadOnlyList<PostSegment> data = new List<PostSegment>();
 
-            _mockPostService.Setup(p => p.ListSegmentAsync(PostStatus.Draft)).Returns(Task.FromResult(data));
+            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentByStatusQuery>(), default)).Returns(Task.FromResult(data));
 
             var postDraftModel = CreatePostDraftModel();
             await postDraftModel.OnGet();

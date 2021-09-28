@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Configurations;
 using Moonglade.Data.Entities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data
 {

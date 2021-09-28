@@ -6,8 +6,7 @@ namespace Moonglade.Syndication
     {
         public static IServiceCollection AddSyndication(this IServiceCollection services)
         {
-            services.AddScoped<ISyndicationService, SyndicationService>();
-            services.AddScoped<IOpmlWriter, StringOpmlWriter>();
+            services.AddScoped<ISyndicationDataSource, SyndicationDataSource>();
 
             return services;
         }

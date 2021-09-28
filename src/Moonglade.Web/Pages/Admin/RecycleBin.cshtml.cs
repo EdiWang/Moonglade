@@ -1,25 +1,26 @@
+using MediatR;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moonglade.Core.PostFeature;
+using Moonglade.Data.Spec;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Core;
-using Moonglade.Data.Spec;
 
 namespace Moonglade.Web.Pages.Admin
 {
     public class RecycleBinModel : PageModel
     {
-        private readonly IPostQueryService _postQueryService;
+        private readonly IMediator _mediator;
 
         public IReadOnlyList<PostSegment> Posts { get; set; }
 
-        public RecycleBinModel(IPostQueryService postQueryService)
+        public RecycleBinModel(IMediator mediator)
         {
-            _postQueryService = postQueryService;
+            _mediator = mediator;
         }
 
         public async Task OnGet()
         {
-            Posts = await _postQueryService.ListSegmentAsync(PostStatus.Deleted);
+            Posts = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
         }
     }
 }
