@@ -14,12 +14,12 @@ using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
+using NUglify;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using NUglify;
 
 namespace Moonglade.Web.Controllers
 {
@@ -107,13 +107,6 @@ namespace Moonglade.Web.Controllers
                 // temp solution
                 var model = temp.ViewModel;
 
-                var tags = string.IsNullOrWhiteSpace(model.Tags)
-                    ? Array.Empty<string>()
-                    : model.Tags.Split(',').ToArray();
-
-                var catIds = model.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
-
-                string inlineCss = null; 
                 if (!string.IsNullOrWhiteSpace(model.InlineCss))
                 {
                     var uglifyTest = Uglify.Css(model.InlineCss);
@@ -126,29 +119,8 @@ namespace Moonglade.Web.Controllers
                         return BadRequest(ModelState.CombineErrorMessages());
                     }
 
-                    inlineCss = uglifyTest.Code;
+                    model.InlineCss = uglifyTest.Code;
                 }
-
-                var request = new UpdatePostRequest
-                {
-                    Title = model.Title.Trim(),
-                    Slug = model.Slug.Trim(),
-                    Author = model.Author?.Trim(),
-                    EditorContent = model.EditorContent,
-                    EnableComment = model.EnableComment,
-                    ExposedToSiteMap = model.ExposedToSiteMap,
-                    IsFeedIncluded = model.FeedIncluded,
-                    ContentLanguageCode = model.LanguageCode,
-                    Abstract = model.Abstract,
-                    IsPublished = model.IsPublished,
-                    IsFeatured = model.Featured,
-                    IsOriginal = model.IsOriginal,
-                    OriginLink = string.IsNullOrWhiteSpace(model.OriginLink) ? null : model.OriginLink,
-                    HeroImageUrl = string.IsNullOrWhiteSpace(model.HeroImageUrl) ? null : model.HeroImageUrl,
-                    InlineCss = inlineCss,
-                    Tags = tags,
-                    CategoryIds = catIds
-                };
 
                 var tzDate = _timeZoneResolver.NowOfTimeZone;
                 if (model.ChangePublishDate &&
@@ -156,12 +128,12 @@ namespace Moonglade.Web.Controllers
                     model.PublishDate <= tzDate &&
                     model.PublishDate.GetValueOrDefault().Year >= 1975)
                 {
-                    request.PublishDate = _timeZoneResolver.ToUtc(model.PublishDate.Value);
+                    model.PublishDate = _timeZoneResolver.ToUtc(model.PublishDate.Value);
                 }
 
                 var postEntity = model.PostId == Guid.Empty ?
-                    await _mediator.Send(new CreatePostCommand(request)) :
-                    await _mediator.Send(new UpdatePostCommand(model.PostId, request));
+                    await _mediator.Send(new CreatePostCommand(model)) :
+                    await _mediator.Send(new UpdatePostCommand(model.PostId, model));
 
                 if (model.IsPublished)
                 {

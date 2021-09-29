@@ -18,7 +18,7 @@ namespace Moonglade.Core.PostFeature
 {
     public class UpdatePostCommand : IRequest<PostEntity>
     {
-        public UpdatePostCommand(Guid id, UpdatePostRequest payload)
+        public UpdatePostCommand(Guid id, PostEditModel payload)
         {
             Id = id;
             Payload = payload;
@@ -26,7 +26,7 @@ namespace Moonglade.Core.PostFeature
 
         public Guid Id { get; set; }
 
-        public UpdatePostRequest Payload { get; set; }
+        public PostEditModel Payload { get; set; }
     }
 
     public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
@@ -94,12 +94,12 @@ namespace Moonglade.Core.PostFeature
 
             post.Author = request.Payload.Author?.Trim();
             post.Slug = request.Payload.Slug.ToLower().Trim();
-            post.Title = request.Payload.Title;
+            post.Title = request.Payload.Title.Trim();
             post.ExposedToSiteMap = request.Payload.ExposedToSiteMap;
             post.LastModifiedUtc = DateTime.UtcNow;
-            post.IsFeedIncluded = request.Payload.IsFeedIncluded;
-            post.ContentLanguageCode = request.Payload.ContentLanguageCode;
-            post.IsFeatured = request.Payload.IsFeatured;
+            post.IsFeedIncluded = request.Payload.FeedIncluded;
+            post.ContentLanguageCode = request.Payload.LanguageCode;
+            post.IsFeatured = request.Payload.Featured;
             post.IsOriginal = request.Payload.IsOriginal;
             post.OriginLink = string.IsNullOrWhiteSpace(request.Payload.OriginLink) ? null : Helper.SterilizeLink(request.Payload.OriginLink);
             post.HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl);
@@ -111,7 +111,11 @@ namespace Moonglade.Core.PostFeature
             post.HashCheckSum = checkSum;
 
             // 1. Add new tags to tag lib
-            foreach (var item in request.Payload.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
+            var tags = string.IsNullOrWhiteSpace(request.Payload.Tags) ?
+                Array.Empty<string>() :
+                request.Payload.Tags.Split(',').ToArray();
+
+            foreach (var item in tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
             {
                 await _tagRepo.AddAsync(new()
                 {
@@ -125,9 +129,9 @@ namespace Moonglade.Core.PostFeature
 
             // 2. update tags
             post.Tags.Clear();
-            if (request.Payload.Tags.Any())
+            if (tags.Any())
             {
-                foreach (var tagName in request.Payload.Tags)
+                foreach (var tagName in tags)
                 {
                     if (!Tag.ValidateName(tagName))
                     {
@@ -140,10 +144,12 @@ namespace Moonglade.Core.PostFeature
             }
 
             // 3. update categories
+            var catIds = request.Payload.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
             post.PostCategory.Clear();
-            if (request.Payload.CategoryIds is { Length: > 0 })
+
+            if (catIds is { Length: > 0 })
             {
-                foreach (var cid in request.Payload.CategoryIds)
+                foreach (var cid in catIds)
                 {
                     post.PostCategory.Add(new()
                     {

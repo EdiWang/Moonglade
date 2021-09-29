@@ -11,6 +11,7 @@ using Moonglade.Data.Spec;
 using Moonglade.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,12 +19,12 @@ namespace Moonglade.Core.PostFeature
 {
     public class CreatePostCommand : IRequest<PostEntity>
     {
-        public CreatePostCommand(UpdatePostRequest payload)
+        public CreatePostCommand(PostEditModel payload)
         {
             Payload = payload;
         }
 
-        public UpdatePostRequest Payload { get; set; }
+        public PostEditModel Payload { get; set; }
     }
 
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostEntity>
@@ -71,13 +72,13 @@ namespace Moonglade.Core.PostFeature
                 Slug = request.Payload.Slug.ToLower().Trim(),
                 Author = request.Payload.Author?.Trim(),
                 Title = request.Payload.Title.Trim(),
-                ContentLanguageCode = request.Payload.ContentLanguageCode,
+                ContentLanguageCode = request.Payload.LanguageCode,
                 ExposedToSiteMap = request.Payload.ExposedToSiteMap,
-                IsFeedIncluded = request.Payload.IsFeedIncluded,
+                IsFeedIncluded = request.Payload.FeedIncluded,
                 PubDateUtc = request.Payload.IsPublished ? DateTime.UtcNow : null,
                 IsDeleted = false,
                 IsPublished = request.Payload.IsPublished,
-                IsFeatured = request.Payload.IsFeatured,
+                IsFeatured = request.Payload.Featured,
                 IsOriginal = request.Payload.IsOriginal,
                 OriginLink = string.IsNullOrWhiteSpace(request.Payload.OriginLink) ? null : Helper.SterilizeLink(request.Payload.OriginLink),
                 HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
@@ -104,9 +105,10 @@ namespace Moonglade.Core.PostFeature
             post.HashCheckSum = checkSum;
 
             // add categories
-            if (request.Payload.CategoryIds is { Length: > 0 })
+            var catIds = request.Payload.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
+            if (catIds is { Length: > 0 })
             {
-                foreach (var id in request.Payload.CategoryIds)
+                foreach (var id in catIds)
                 {
                     post.PostCategory.Add(new()
                     {
@@ -117,14 +119,15 @@ namespace Moonglade.Core.PostFeature
             }
 
             // add tags
-            if (request.Payload.Tags is { Length: > 0 })
+            var tags = string.IsNullOrWhiteSpace(request.Payload.Tags) ?
+                        Array.Empty<string>() :
+                        request.Payload.Tags.Split(',').ToArray();
+
+            if (tags is { Length: > 0 })
             {
-                foreach (var item in request.Payload.Tags)
+                foreach (var item in tags)
                 {
-                    if (!Tag.ValidateName(item))
-                    {
-                        continue;
-                    }
+                    if (!Tag.ValidateName(item)) continue;
 
                     var tag = await _tagRepo.GetAsync(q => q.DisplayName == item) ?? await CreateTag(item);
                     post.Tags.Add(tag);
