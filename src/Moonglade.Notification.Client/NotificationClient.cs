@@ -84,26 +84,6 @@ namespace Moonglade.Notification.Client
             }
         }
 
-        public async Task NotifyPingbackAsync(string targetPostTitle, DateTime pingTimeUtc, string domain, string sourceIp, string sourceUrl, string sourceTitle)
-        {
-            var payload = new PingPayload(
-                targetPostTitle,
-                pingTimeUtc,
-                domain,
-                sourceIp,
-                sourceUrl,
-                sourceTitle);
-
-            try
-            {
-                await SendAsync(new NotificationRequest<PingPayload>(MailMesageTypes.BeingPinged, payload));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-            }
-        }
-
         public async Task<HttpResponseMessage> SendNotification<T>(MailMesageTypes type, T payload) where T : class
         {
             try

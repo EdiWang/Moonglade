@@ -181,7 +181,6 @@ namespace Moonglade.Notification.Client.Tests
         [Test]
         public async Task NotifyPingbackAsync_StateUnderTest_ExpectedBehavior()
         {
-            var notificationClient = CreateNotificationClient();
             string targetPostTitle = "Work 996 and get into ICU";
             DateTime pingTimeUtc = default(DateTime);
             string domain = "996.icu";
@@ -189,13 +188,15 @@ namespace Moonglade.Notification.Client.Tests
             string sourceUrl = "https://996.icu/fuck-jack-ma";
             string sourceTitle = "996 is Fubao";
 
-            await notificationClient.NotifyPingbackAsync(
-                targetPostTitle,
+            var l = _mockRepository.Create<ILogger<PingbackNotificationHandler>>();
+            var handler = new PingbackNotificationHandler(CreateNotificationClient(), l.Object);
+
+            await handler.Handle(new(targetPostTitle,
                 pingTimeUtc,
                 domain,
                 sourceIp,
                 sourceUrl,
-                sourceTitle);
+                sourceTitle), default);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",

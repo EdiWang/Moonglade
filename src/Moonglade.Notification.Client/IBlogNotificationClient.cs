@@ -11,7 +11,5 @@ namespace Moonglade.Notification.Client
         Task NotifyCommentAsync(string username, string email, string ipAddress, string postTitle, string commentContent, DateTime createTimeUtc);
 
         Task NotifyCommentReplyAsync(string email, string commentContent, string title, string replyContentHtml, string postLink);
-
-        Task NotifyPingbackAsync(string targetPostTitle, DateTime pingTimeUtc, string domain, string sourceIp, string sourceUrl, string sourceTitle);
     }
 }

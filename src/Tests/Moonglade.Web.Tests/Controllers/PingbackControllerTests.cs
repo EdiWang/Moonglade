@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -23,6 +24,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IMediator> _mockMediator;
         private Mock<IBlogNotificationClient> _mockBlogNotificationClient;
+        private Mock<IServiceScopeFactory> _mockServiceScopeFactory;
 
         [SetUp]
         public void SetUp()
@@ -33,6 +35,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockMediator = _mockRepository.Create<IMediator>();
             _mockBlogNotificationClient = _mockRepository.Create<IBlogNotificationClient>();
+            _mockServiceScopeFactory = _mockRepository.Create<IServiceScopeFactory>();
         }
 
         private PingbackController CreatePingbackController()
@@ -53,7 +56,7 @@ namespace Moonglade.Web.Tests.Controllers
             });
 
             var pingbackController = CreatePingbackController();
-            var result = await pingbackController.Process();
+            var result = await pingbackController.Process(_mockServiceScopeFactory.Object);
             Assert.IsInstanceOf(typeof(ForbidResult), result);
         }
 
@@ -74,7 +77,7 @@ namespace Moonglade.Web.Tests.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await pingbackController.Process();
+            var result = await pingbackController.Process(_mockServiceScopeFactory.Object);
             Assert.IsInstanceOf(typeof(PingbackResult), result);
         }
 

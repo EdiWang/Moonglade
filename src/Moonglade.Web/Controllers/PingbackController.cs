@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -41,7 +42,7 @@ namespace Moonglade.Web.Controllers
         [IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Process()
+        public async Task<IActionResult> Process([FromServices] IServiceScopeFactory factory)
         {
             if (!_blogConfig.AdvancedSettings.EnablePingBackReceive)
             {
@@ -55,12 +56,21 @@ namespace Moonglade.Web.Controllers
             var response = await _mediator.Send(new ReceivePingCommand(requestBody, ip,
                 history =>
                 {
-                    _notificationClient.NotifyPingbackAsync(history.TargetPostTitle,
-                        history.PingTimeUtc,
-                        history.Domain,
-                        history.SourceIp,
-                        history.SourceUrl,
-                        history.SourceTitle);
+                    _ = Task.Run(async () =>
+                    {
+                        var scope = factory.CreateScope();
+                        var mediator = scope.ServiceProvider.GetService<IMediator>();
+                        if (mediator != null)
+                        {
+                            await mediator.Publish(new PingbackNotification(
+                                history.TargetPostTitle,
+                                history.PingTimeUtc,
+                                history.Domain,
+                                history.SourceIp,
+                                history.SourceUrl,
+                                history.SourceTitle));
+                        }
+                    });
                 }));
 
             _logger.LogInformation($"Pingback Processor Response: {response}");
