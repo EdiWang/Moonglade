@@ -41,28 +41,6 @@ namespace Moonglade.Notification.Client
             }
         }
 
-        public async Task NotifyCommentAsync(
-            string username, string email, string ipAddress, string postTitle, string commentContent, DateTime createTimeUtc)
-        {
-            var payload = new CommentPayload(
-                username,
-                email,
-                ipAddress,
-                postTitle,
-                ContentProcessor.MarkdownToContent(commentContent, ContentProcessor.MarkdownConvertType.Html),
-                createTimeUtc
-            );
-
-            try
-            {
-                await SendAsync(new NotificationRequest<CommentPayload>(MailMesageTypes.NewCommentNotification, payload));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-            }
-        }
-
         public async Task NotifyCommentReplyAsync(string email, string commentContent, string title, string replyContentHtml, string postLink)
         {
             var payload = new CommentReplyPayload(

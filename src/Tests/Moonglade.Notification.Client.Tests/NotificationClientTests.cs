@@ -123,7 +123,6 @@ namespace Moonglade.Notification.Client.Tests
         [Test]
         public async Task NotifyCommentAsync_StateUnderTest_ExpectedBehavior()
         {
-            var notificationClient = CreateNotificationClient();
             string username = "Fubao";
             string email = "fubao@996.icu";
             string ipAddress = "9.9.6.007";
@@ -131,13 +130,16 @@ namespace Moonglade.Notification.Client.Tests
             string commentContent = "This is fubao";
             DateTime createTimeUtc = default(DateTime);
 
-            await notificationClient.NotifyCommentAsync(
+            var l = _mockRepository.Create<ILogger<CommentNotificationHandler>>();
+            var handler = new CommentNotificationHandler(CreateNotificationClient(), l.Object);
+
+            await handler.Handle(new(
                 username,
                 email,
                 ipAddress,
                 postTitle,
                 commentContent,
-                createTimeUtc);
+                createTimeUtc), default);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Comments;
@@ -74,7 +75,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
+        public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request, [FromServices] IServiceScopeFactory factory)
         {
             if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
             {
@@ -97,13 +98,18 @@ namespace Moonglade.Web.Controllers
             {
                 _ = Task.Run(async () =>
                 {
-                    await _notificationClient.NotifyCommentAsync(
-                        item.Username,
-                        item.Email,
-                        item.IpAddress,
-                        item.PostTitle,
-                        item.CommentContent,
-                        item.CreateTimeUtc);
+                    var scope = factory.CreateScope();
+                    var mediator = scope.ServiceProvider.GetService<IMediator>();
+                    if (mediator != null)
+                    {
+                        await mediator.Publish(new CommentNotification(
+                            item.Username,
+                            item.Email,
+                            item.IpAddress,
+                            item.PostTitle,
+                            item.CommentContent,
+                            item.CreateTimeUtc));
+                    }
                 });
             }
 
