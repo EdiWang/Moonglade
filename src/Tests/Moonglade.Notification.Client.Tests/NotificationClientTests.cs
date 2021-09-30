@@ -155,19 +155,20 @@ namespace Moonglade.Notification.Client.Tests
         [Test]
         public async Task NotifyCommentReplyAsync_StateUnderTest_ExpectedBehavior()
         {
-            var notificationClient = CreateNotificationClient();
             string email = "fubao@996.icu";
             string commentContent = "This is fubao";
             string title = "Work 996 and get into ICU";
             string replyContentHtml = "<p>Jack Ma's fubao</p>";
             string postLink = "https://996.icu/fuck-jack-ma";
 
-            await notificationClient.NotifyCommentReplyAsync(
+            var l = _mockRepository.Create<ILogger<CommentReplyNotificationHandler>>();
+            var handler = new CommentReplyNotificationHandler(CreateNotificationClient(), l.Object);
+            await handler.Handle(new(
                 email,
                 commentContent,
                 title,
                 replyContentHtml,
-                postLink);
+                postLink), default);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",

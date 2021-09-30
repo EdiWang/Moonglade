@@ -225,7 +225,7 @@ namespace Moonglade.Web.Tests.Controllers
             });
 
             var ctl = CreateCommentController();
-            var result = await ctl.Reply(Guid.NewGuid(), "996", null);
+            var result = await ctl.Reply(Guid.NewGuid(), "996", null, _mockServiceScopeFactory.Object);
 
             Assert.IsInstanceOf<ForbidResult>(result);
         }

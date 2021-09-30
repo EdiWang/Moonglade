@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace Moonglade.Notification.Client
 {
+    public interface IBlogNotificationClient
+    {
+        Task<HttpResponseMessage> SendNotification<T>(MailMesageTypes type, T payload) where T : class;
+    }
+
     public class NotificationClient : IBlogNotificationClient
     {
         private readonly HttpClient _httpClient;
@@ -38,25 +43,6 @@ namespace Moonglade.Notification.Client
                     _isEnabled = false;
                     _logger.LogError($"'{_blogConfig.NotificationSettings.AzureFunctionEndpoint}' is not a valid URI for notification endpoint, email sending has been disabled.");
                 }
-            }
-        }
-
-        public async Task NotifyCommentReplyAsync(string email, string commentContent, string title, string replyContentHtml, string postLink)
-        {
-            var payload = new CommentReplyPayload(
-                email,
-                commentContent,
-                title,
-                replyContentHtml,
-                postLink);
-
-            try
-            {
-                await SendAsync(new NotificationRequest<CommentReplyPayload>(MailMesageTypes.AdminReplyNotification, payload));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
             }
         }
 
