@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration;
 using Moonglade.Utils;
-using Polly;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -114,19 +112,6 @@ namespace Moonglade.Notification.Client
             var response = await _httpClient.SendAsync(req);
 
             return response;
-        }
-    }
-
-    public static class ServiceCollectionExtension
-    {
-        public static IServiceCollection AddNotificationClient(this IServiceCollection services)
-        {
-            services.AddHttpClient<IBlogNotificationClient, NotificationClient>()
-                .AddTransientHttpErrorPolicy(builder =>
-                    builder.WaitAndRetryAsync(3,
-                        retryCount => TimeSpan.FromSeconds(Math.Pow(2, retryCount))));
-
-            return services;
         }
     }
 }
