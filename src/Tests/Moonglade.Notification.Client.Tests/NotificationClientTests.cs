@@ -69,9 +69,9 @@ namespace Moonglade.Notification.Client.Tests
         [Test]
         public async Task TestNotificationAsync_StateUnderTest_ExpectedBehavior()
         {
-            var notificationClient = CreateNotificationClient();
-
-            await notificationClient.TestNotificationAsync();
+            var l = _mockRepository.Create<ILogger<TestNotificationHandler>>();
+            var handler = new TestNotificationHandler(CreateNotificationClient(), l.Object);
+            await handler.Handle(new(), default);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",
@@ -101,11 +101,12 @@ namespace Moonglade.Notification.Client.Tests
                 })
                 .Verifiable();
 
-            var notificationClient = CreateNotificationClient();
+            var l = _mockRepository.Create<ILogger<TestNotificationHandler>>();
+            var handler = new TestNotificationHandler(CreateNotificationClient(), l.Object);
 
             Assert.ThrowsAsync<Exception>(async () =>
             {
-                await notificationClient.TestNotificationAsync();
+                await handler.Handle(new(), default);
             });
 
             _handlerMock.Protected().Verify(

@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -6,7 +7,6 @@ using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
 using Moq;
@@ -24,6 +24,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<ILogger<SettingsController>> _mockLogger;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
@@ -33,6 +34,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockLogger = _mockRepository.Create<ILogger<SettingsController>>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private SettingsController CreateSettingsController()
@@ -40,7 +42,8 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockBlogConfig.Object,
                 _mockBlogAudit.Object,
-                _mockLogger.Object);
+                _mockLogger.Object,
+                _mockMediator.Object);
         }
 
         [Test]
@@ -172,9 +175,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task SendTestEmail_Post()
         {
             var settingsController = CreateSettingsController();
-            Mock<IBlogNotificationClient> notificationClientMock = new();
-
-            var result = await settingsController.TestEmail(notificationClientMock.Object);
+            var result = await settingsController.TestEmail();
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 

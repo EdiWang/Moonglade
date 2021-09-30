@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,7 @@ namespace Moonglade.Web.Controllers
     {
         #region Private Fields
 
+        private readonly IMediator _mediator;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
         private readonly ILogger<SettingsController> _logger;
@@ -41,12 +43,14 @@ namespace Moonglade.Web.Controllers
         public SettingsController(
             IBlogConfig blogConfig,
             IBlogAudit blogAudit,
-            ILogger<SettingsController> logger)
+            ILogger<SettingsController> logger,
+            IMediator mediator)
         {
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
 
             _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpGet("release/check")]
@@ -179,10 +183,17 @@ namespace Moonglade.Web.Controllers
         [HttpPost("test-email")]
         [IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> TestEmail([FromServices] IBlogNotificationClient notificationClient)
+        public async Task<IActionResult> TestEmail()
         {
-            await notificationClient.TestNotificationAsync();
-            return Ok(true);
+            try
+            {
+                await _mediator.Publish(new TestNotification());
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
         }
 
         [HttpPost("subscription")]

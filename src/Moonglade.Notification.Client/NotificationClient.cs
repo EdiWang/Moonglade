@@ -6,7 +6,6 @@ using Moonglade.Utils;
 using Polly;
 using System;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Moonglade.Notification.Client
@@ -41,23 +40,6 @@ namespace Moonglade.Notification.Client
                     _isEnabled = false;
                     _logger.LogError($"'{_blogConfig.NotificationSettings.AzureFunctionEndpoint}' is not a valid URI for notification endpoint, email sending has been disabled.");
                 }
-            }
-        }
-
-        public async Task TestNotificationAsync()
-        {
-            var req = BuildRequest(() =>
-                new NotificationRequest<EmptyPayload>(MailMesageTypes.TestMail, EmptyPayload.Default));
-            var response = await _httpClient.SendAsync(req);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var dataStr = await response.Content.ReadAsStringAsync();
-                _logger.LogInformation($"Test email is sent, server response: '{dataStr}'");
-            }
-            else
-            {
-                throw new($"Test email sending failed, response code: '{response.StatusCode}'");
             }
         }
 
@@ -122,33 +104,36 @@ namespace Moonglade.Notification.Client
             }
         }
 
-        private async Task SendAsync<T>(NotificationRequest<T> request, [CallerMemberName] string callerMemberName = "") where T : class
+        public async Task<HttpResponseMessage> SendNotification<T>(MailMesageTypes type, T payload) where T : class
         {
-            if (!_isEnabled)
+            try
             {
-                _logger.LogWarning($"Skipped '{callerMemberName}' because Email sending is disabled.");
-                return;
+                var nr = new NotificationRequest<T>(type, payload);
+                var response = await SendAsync(nr);
+                return response;
             }
-
-            var req = BuildRequest(() => request);
-            var response = await _httpClient.SendAsync(req);
-            if (!response.IsSuccessStatusCode)
+            catch (Exception e)
             {
-                _logger.LogError($"Error executing request '{callerMemberName}', response: {response.StatusCode}");
+                _logger.LogError(e, e.Message);
+                throw;
             }
         }
 
-        private HttpRequestMessage BuildRequest<T>(Func<NotificationRequest<T>> request) where T : class
+        private async Task<HttpResponseMessage> SendAsync<T>(NotificationRequest<T> request) where T : class
         {
-            var nf = request();
-            nf.EmailDisplayName = _blogConfig.NotificationSettings.EmailDisplayName;
-            nf.AdminEmail = _blogConfig.GeneralSettings.OwnerEmail;
+            if (!_isEnabled) { return null; }
+
+            request.EmailDisplayName = _blogConfig.NotificationSettings.EmailDisplayName;
+            request.AdminEmail = _blogConfig.GeneralSettings.OwnerEmail;
 
             var req = new HttpRequestMessage(HttpMethod.Post, string.Empty)
             {
-                Content = new NotificationContent<T>(nf)
+                Content = new NotificationContent<T>(request)
             };
-            return req;
+
+            var response = await _httpClient.SendAsync(req);
+
+            return response;
         }
     }
 
