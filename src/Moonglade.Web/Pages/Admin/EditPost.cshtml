@@ -100,270 +100,272 @@
     </script>
 }
 
-<form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit"
-      data-ajax-begin="onPostCreateEditBegin"
-      data-ajax-complete="onPostCreateEditComplete"
-      data-ajax-failure="onPostCreateEditFailed"
-      data-ajax-success="onPostCreateEditSuccess"
-      data-ajax="true"
-      data-ajax-method="POST">
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-    <input type="hidden" asp-for="ViewModel.PostId" />
-    <input type="hidden" asp-for="ViewModel.IsPublished" />
-    <div class="row">
-        <div class="col-md-9 col-xl-10">
-            <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" />
-            <div>
-                <span asp-validation-for="ViewModel.Title" class="text-danger"></span>
-            </div>
-            <div class="mt-1">
+<div class="p-4">
+
+    <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit"
+          data-ajax-begin="onPostCreateEditBegin"
+          data-ajax-complete="onPostCreateEditComplete"
+          data-ajax-failure="onPostCreateEditFailed"
+          data-ajax-success="onPostCreateEditSuccess"
+          data-ajax="true"
+          data-ajax-method="POST">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <input type="hidden" asp-for="ViewModel.PostId" />
+        <input type="hidden" asp-for="ViewModel.IsPublished" />
+        <div class="row">
+            <div class="col-md-9 col-xl-10">
+                <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" />
+                <div>
+                    <span asp-validation-for="ViewModel.Title" class="text-danger"></span>
+                </div>
+                <div class="mt-1">
+                    <div class="row g-1">
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <label class="input-group-text" asp-for="ViewModel.Slug">Slug</label>
+                                <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" />
+                            </div>
+                            <div>
+                                <span asp-validation-for="ViewModel.Slug" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <div class="input-group input-group-sm mb-2">
+                                <label class="input-group-text" asp-for="ViewModel.Author"></label>
+                                <input type="text" class="form-control form-control-sm" spellcheck="false" asp-for="ViewModel.Author" />
+                            </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <div class="input-group input-group-sm mb-2">
+                                <label class="input-group-text" asp-for="ViewModel.LanguageCode"></label>
+                                <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
+                <div class="mb-2">
+                    <span asp-validation-for="ViewModel.EditorContent" class="text-danger"></span>
+                </div>
+
                 <div class="row g-1">
-                    <div class="col">
-                        <div class="input-group input-group-sm">
-                            <label class="input-group-text" asp-for="ViewModel.Slug">Slug</label>
-                            <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" />
+                    <div class="col-8">
+                        <div class="form-floating">
+                            <textarea asp-for="ViewModel.Abstract"
+                                      placeholder="@Localizer["Abstract"]"
+                                      class="form-control form-control-sm"
+                                      data-bs-toggle="tooltip"
+                                      data-placement="top"
+                                      title="@Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", Settings.Value.PostAbstractWords]"
+                                      style="height: 90px"></textarea>
+                            <label for="ViewModel_Abstract">@Localizer["Abstract"]</label>
+                        </div>
+                        <span asp-validation-for="ViewModel.Abstract" class="text-danger"></span>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-xl-2">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="bi-clipboard-check me-1"></i>
+                        @Localizer["Options"]
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.EnableComment" class="form-check-input">
+                                <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.Featured" class="form-check-input">
+                                <label asp-for="ViewModel.Featured" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.FeedIncluded" class="form-check-input">
+                                <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.ExposedToSiteMap" class="form-check-input">
+                                <label asp-for="ViewModel.ExposedToSiteMap" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.IsOriginal" class="form-check-input">
+                                <label asp-for="ViewModel.IsOriginal" class="form-check-label"></label>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <div class="form-floating mb-2">
+                            <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
+                            <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
+                        </div>
+                        <div class="form-floating mb-1">
+                            <textarea asp-for="ViewModel.HeroImageUrl"
+                                      class="form-control form-control-sm"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.HeroImageUrl)"></textarea>
+                            <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
                         </div>
                         <div>
-                            <span asp-validation-for="ViewModel.Slug" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-auto">
-                        <div class="input-group input-group-sm mb-2">
-                            <label class="input-group-text" asp-for="ViewModel.Author"></label>
-                            <input type="text" class="form-control form-control-sm" spellcheck="false" asp-for="ViewModel.Author" />
-                        </div>
-                    </div>
-                    <div class="col-md-auto">
-                        <div class="input-group input-group-sm mb-2">
-                            <label class="input-group-text" asp-for="ViewModel.LanguageCode"></label>
-                            <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
-            <div class="mb-2">
-                <span asp-validation-for="ViewModel.EditorContent" class="text-danger"></span>
-            </div>
-
-            <div class="row g-1">
-                <div class="col-8">
-                    <div class="form-floating">
-                        <textarea asp-for="ViewModel.Abstract"
-                                  placeholder="@Localizer["Abstract"]"
-                                  class="form-control form-control-sm"
-                                  data-bs-toggle="tooltip"
-                                  data-placement="top"
-                                  title="@Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", Settings.Value.PostAbstractWords]"
-                                  style="height: 90px"></textarea>
-                        <label for="ViewModel_Abstract">@Localizer["Abstract"]</label>
-                    </div>
-                    <span asp-validation-for="ViewModel.Abstract" class="text-danger"></span>
-                </div>
-                <div class="col-4">
-                    <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-xl-2">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <i class="bi-clipboard-check me-1"></i>
-                    @Localizer["Options"]
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableComment" class="form-check-input">
-                            <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.Featured" class="form-check-input">
-                            <label asp-for="ViewModel.Featured" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.FeedIncluded" class="form-check-input">
-                            <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.ExposedToSiteMap" class="form-check-input">
-                            <label asp-for="ViewModel.ExposedToSiteMap" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.IsOriginal" class="form-check-input">
-                            <label asp-for="ViewModel.IsOriginal" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="form-floating mb-2">
-                        <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
-                        <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
-                    </div>
-                    <div class="form-floating mb-1">
-                        <textarea asp-for="ViewModel.HeroImageUrl"
-                                  class="form-control form-control-sm"
-                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.HeroImageUrl)"></textarea>
-                        <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
-                    </div>
-                    <div>
-                        <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
-                            <i class="bi-upload"></i>
-                            @Localizer["Upload Image"]
-                        </a>
-                    </div>
-                    <div class="mt-2">
-                        <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
-                            <i class="bi-brush"></i>
-                            @Localizer["Inline CSS"]
-                        </a>
-                    </div>
-
-                    @if (Model.ViewModel.PostId != Guid.Empty)
-                    {
-                        <div class="mt-2">
-                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
-                                <i class="bi-clock-history"></i>
-                                @Localizer["Change Publish Date"]
+                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
+                                <i class="bi-upload"></i>
+                                @Localizer["Upload Image"]
                             </a>
                         </div>
-                    }
-                </div>
-                <div class="card-body border-top">
-                    <h6 class="card-subtitle mb-3 text-muted">
-                        <i class="bi-folder2 me-1"></i>
-                        @Localizer["Categories"]
-                    </h6>
-
-                    @if (null != Model.ViewModel.CategoryList && Model.ViewModel.CategoryList.Any())
-                    {
-                        <div class="catlist mb-2">
-                            <ul>
-                                @for (int i = 0; i < Model.ViewModel.CategoryList.Count; i++)
-                                {
-                                    <li>
-                                        <div class="form-check">
-                                            <input type="checkbox" asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-input" />
-                                            <label asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-label">
-                                                @Model.ViewModel.CategoryList[i].DisplayText
-                                            </label>
-                                        </div>
-                                        <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].Id" />
-                                        <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].DisplayText" />
-                                    </li>
-                                }
-                            </ul>
+                        <div class="mt-2">
+                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
+                                <i class="bi-brush"></i>
+                                @Localizer["Inline CSS"]
+                            </a>
                         </div>
-                    }
 
-                    <a asp-page="./Category" class="btn btn-sm btn-outline-secondary w-100">
-                        <i class="bi-box-arrow-up-right"></i>
-                        @Localizer["Manage"]
-                    </a>
+                        @if (Model.ViewModel.PostId != Guid.Empty)
+                        {
+                            <div class="mt-2">
+                                <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
+                                    <i class="bi-clock-history"></i>
+                                    @Localizer["Change Publish Date"]
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-body border-top">
+                        <h6 class="card-subtitle mb-3 text-muted">
+                            <i class="bi-folder2 me-1"></i>
+                            @Localizer["Categories"]
+                        </h6>
+
+                        @if (null != Model.ViewModel.CategoryList && Model.ViewModel.CategoryList.Any())
+                        {
+                            <div class="catlist mb-2">
+                                <ul>
+                                    @for (int i = 0; i < Model.ViewModel.CategoryList.Count; i++)
+                                    {
+                                        <li>
+                                            <div class="form-check">
+                                                <input type="checkbox" asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-input" />
+                                                <label asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-label">
+                                                    @Model.ViewModel.CategoryList[i].DisplayText
+                                                </label>
+                                            </div>
+                                            <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].Id" />
+                                            <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].DisplayText" />
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <a asp-page="./Category" class="btn btn-sm btn-outline-secondary w-100">
+                            <i class="bi-box-arrow-up-right"></i>
+                            @Localizer["Manage"]
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <hr />
+        <hr />
 
-    <div>
-        <button type="submit" class="btn btn-success ediblogeditor-save" id="btn-save">
-            @Localizer["Save"]
-        </button>
-        @if (!Model.ViewModel.IsPublished)
-        {
-            <button type="submit" class="btn btn-accent ediblogeditor-publish" id="btn-publish">
-                @Localizer["Publish"]
+        <div>
+            <button type="submit" class="btn btn-accent ediblogeditor-save" id="btn-save">
+                @Localizer["Save"]
             </button>
-            <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">
-                <i class="bi-eye"></i>
-                @Localizer["Preview"]
-            </button>
-        }
-        <a asp-page="./Post" class="btn btn-outline-secondary">@Localizer["Cancel"]</a>
-    </div>
+            @if (!Model.ViewModel.IsPublished)
+            {
+                <button type="submit" class="btn btn-outline-accent ediblogeditor-publish" id="btn-publish">
+                    @Localizer["Publish"]
+                </button>
+                <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">
+                    @Localizer["Preview"]
+                </button>
+            }
+            <a asp-page="./Post" class="btn btn-outline-secondary">@Localizer["Cancel"]</a>
+        </div>
 
-    <div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changePublishDateModalLabel">@Localizer["Change Publish Date"]</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">@Localizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
-                    <div class="mb-2">
-                        <input asp-for="ViewModel.ChangePublishDate" type="checkbox" />
-                        <label asp-for="ViewModel.ChangePublishDate"></label>
+        <div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePublishDateModalLabel">@Localizer["Change Publish Date"]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
                     </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning">@Localizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
+                        <div class="mb-2">
+                            <input asp-for="ViewModel.ChangePublishDate" type="checkbox" />
+                            <label asp-for="ViewModel.ChangePublishDate"></label>
+                        </div>
 
-                    <div class="mb-2">
-                        <label asp-for="ViewModel.PublishDate"></label>
-                        <input asp-for="ViewModel.PublishDate" class="form-control" />
-                        <span asp-validation-for="ViewModel.PublishDate" class="text-danger"></span>
+                        <div class="mb-2">
+                            <label asp-for="ViewModel.PublishDate"></label>
+                            <input asp-for="ViewModel.PublishDate" class="form-control" />
+                            <span asp-validation-for="ViewModel.PublishDate" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@Localizer["Continue"]</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@Localizer["Continue"]</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade" id="inlineCssModal" tabindex="-1" role="dialog" aria-labelledby="inlineCssModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="inlineCssModalLabel">@Localizer["Inline CSS"]</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <textarea asp-for="ViewModel.InlineCss" class="form-control textarea-code h-300px"></textarea>
-                        <span asp-validation-for="ViewModel.InlineCss" class="text-danger"></span>
+        <div class="modal fade" id="inlineCssModal" tabindex="-1" role="dialog" aria-labelledby="inlineCssModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="inlineCssModalLabel">@Localizer["Inline CSS"]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <textarea asp-for="ViewModel.InlineCss" class="form-control textarea-code h-300px"></textarea>
+                            <span asp-validation-for="ViewModel.InlineCss" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                        <button type="button" class="btn btn-accent" data-bs-dismiss="modal">@Localizer["OK"]</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
-                    <button type="button" class="btn btn-accent" data-bs-dismiss="modal">@Localizer["OK"]</button>
-                </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 
-<form id="form-hero-image" action="/image?skipWatermark=true"
-      enctype="multipart/form-data" onsubmit="ajaxImageUpload(this);return false;"
-      method="post">
-    <div class="modal fade" id="heroImageModal" tabindex="-1" role="dialog" aria-labelledby="heroImageModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="heroImageModalLabel">@Localizer["Upload Image"]</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body text-center">
-                    <input type="file" accept="image/png, image/jpeg" class="form-control" id="heroImageFile" name="file">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
-                    <button type="submit" class="btn btn-accent"><i class="bi-upload"></i> @Localizer["Upload"]</button>
+    <form id="form-hero-image" action="/image?skipWatermark=true"
+          enctype="multipart/form-data" onsubmit="ajaxImageUpload(this);return false;"
+          method="post">
+        <div class="modal fade" id="heroImageModal" tabindex="-1" role="dialog" aria-labelledby="heroImageModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="heroImageModalLabel">@Localizer["Upload Image"]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <input type="file" accept="image/png, image/jpeg" class="form-control" id="heroImageFile" name="file">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                        <button type="submit" class="btn btn-accent"><i class="bi-upload"></i> @Localizer["Upload"]</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
