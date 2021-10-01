@@ -84,7 +84,7 @@
     </nav>
     <div class="d-flex admin-body-wrapper">
         <aside class="admin-nav">
-            <section class="admin-nav-section mt-4 mb-3">
+            <section class="admin-nav-section rounded-3 shadow-sm border bg-white mt-4 mb-3">
                 <div class="list-group list-group-flush">
                     <a asp-page="/Admin/Post" class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/PostDraft" or "/Admin/PostInsights" or "/Admin/RecycleBin" ? "active" : null)">
                         <i class="bi-file-earmark-richtext admin-nav-icon"></i>
@@ -128,7 +128,7 @@
                 </div>
             </section>
         </aside>
-        <div class="admin-main border box mt-4 mb-4 me-3 ms-3">
+        <div class="admin-main rounded-3 shadow-sm border bg-white mt-4 mb-4 me-3 ms-3">
             <div class="container-fluid">
                 @RenderBody()
             </div>
